@@ -15,3 +15,5 @@
 - Instead of two MotorOut Arrays, Make there only one!!
 
 - Grab more can wires so we can test multiple motors at once - SUNDAY 
+
+- Add support for can2
