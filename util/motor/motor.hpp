@@ -1,4 +1,5 @@
 #include "mbed.h"
+#include "pid.hpp"
 #include <cstdint>
 #ifndef motor_hpp
 #define motor_hpp
@@ -49,6 +50,7 @@ static double PIDValuesPosition[8][3] = {{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0}
 static double PIDValuesSpeed[8][3] = {{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0}};
 
 static int multiTurnPositionAngle[8] = {0,0,0,0,0,0,0,0};
+
 
 class Motor {
 
