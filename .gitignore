@@ -1,0 +1,10 @@
+## git ignore shortcut folder
+*.lnk
+*.url
+mbed-os
+.build
+.mbed
+projectfiles
+*.py*
+BUILD
+mbed-os.lib
