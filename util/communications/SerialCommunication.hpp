@@ -1,5 +1,5 @@
 #include "mbed.h"
-
+#include <cctype>
 
 
 class SerialCommunication : BufferedSerial {
@@ -8,7 +8,6 @@ class SerialCommunication : BufferedSerial {
         int index = 0;  
     
     public:
-
         /**
         * @brief Construct a new Serial Communication Object
         * @param TX is TX pin or USBTX
@@ -21,7 +20,7 @@ class SerialCommunication : BufferedSerial {
 
         /**
         * @brief Check for new input into Serial monitor. 
-        * @param message is a char array[] of which the message will be filled into only when '\' is sent.
+        * @param message is a char array[] intialized in the main function of which the message will be filled into only when '\' is sent.
         * @return Returns True if new message
         */
         bool update(char *message) {
@@ -54,7 +53,23 @@ class SerialCommunication : BufferedSerial {
                 return false;
             } 
             return false;
-            
+        }
+
+        /**
+        * @brief Check whether message is a number. Works with negatives as well
+        * @param message is the message array
+        * @return integer if it is a number, NULL if not convertable.
+        */
+        int isNum(char message[]) {
+            int i = 0;
+            if (message[i] == '-')
+                i++;
+            while(message[i] != '\0') {
+                if (!isdigit(message[i]))
+                    return NULL;
+                i++;
+            }
+            return std::atoi(message);
         }
 
 };
