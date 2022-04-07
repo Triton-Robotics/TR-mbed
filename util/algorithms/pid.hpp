@@ -9,6 +9,13 @@ class PID {
         int integralCap;
         int outputCap;
     public:
+
+        PID(){
+            kP = 1; kI = 0; kD = 0;
+            integralCap = 0;
+            outputCap = 0;
+        }
+
         /**
          * Simple PID Constructor, has a default P, I, and D parameters
          *
@@ -45,6 +52,10 @@ class PID {
 
         void setOutputCap(int outCap){
             outputCap = outCap;
+        }
+
+        void setPID(int p, int i, int d){
+            kP = p; kI = i; kD = d;
         }
 };
 

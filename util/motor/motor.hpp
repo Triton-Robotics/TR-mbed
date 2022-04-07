@@ -46,11 +46,13 @@ static CANMsg rxMsg; //Message object reused to recieve messages from motors
 
 static motorMode mode[8] = {DISABLED, DISABLED, DISABLED, DISABLED, DISABLED, DISABLED, DISABLED, DISABLED};
 
-static double PIDValuesPosition[8][3] = {{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0}};
-static double PIDValuesSpeed[8][3] = {{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0}};
+//static double PIDValuesPosition[8][3] = {{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0}};
+//static double PIDValuesSpeed[8][3] = {{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0}};
 
 static int multiTurnPositionAngle[8] = {0,0,0,0,0,0,0,0};
 
+static PID pidPos[8];
+static PID pidSpeed[8];
 
 class Motor {
 
@@ -225,142 +227,54 @@ class Motor {
     }
 
     void setPositionPID(double Kp, double Ki, double Kd){
-        PIDValuesPosition[motorNumber][0] = Kp;
-        PIDValuesPosition[motorNumber][1] = Ki;
-        PIDValuesPosition[motorNumber][2] = Kd;
+        pidPos[motorNumber].setPID(Kp,Ki,Kd);
     }
 
     void setSpeedPID(double Kp, double Ki, double Kd){
-        PIDValuesSpeed[motorNumber][0] = Kp;
-        PIDValuesSpeed[motorNumber][1] = Ki;
-        PIDValuesSpeed[motorNumber][2] = Kd;
+        pidSpeed[motorNumber].setPID(Kp,Ki,Kd);
     }
     
-    /**
-     * @brief turns an int to four bytes
-     * 
-     * @param n an int
-     * @return an array of four unsigned bytes in the form of int8_ts
-     */
-    uint8_t* intToBytes(int n){
-        uint8_t out[4] = {(uint8_t)(n >> 24),(uint8_t)(n >> 16),(uint8_t)(n >> 8),(uint8_t)n};
-        return out;
-    }
+    // /**
+    //  * @brief turns an int to four bytes
+    //  * 
+    //  * @param n an int
+    //  * @return an array of four unsigned bytes in the form of int8_ts
+    //  */
+    // uint8_t* intToBytes(int n){
+    //     uint8_t out[4] = {(uint8_t)(n >> 24),(uint8_t)(n >> 16),(uint8_t)(n >> 8),(uint8_t)n};
+    //     return out;
+    // }
 
-    /**
-     * @brief turns four bytes into an int
-     * 
-     * @param bytes array of four unsigned bytes
-     * @return an int
-     */
-    int bytesToInt(uint8_t bytes[4]){
-        return (int)((bytes[0] << 24) + (bytes[1] << 16) + (bytes[2] << 8) + (bytes[3]));
-    } 
+    // /**
+    //  * @brief turns four bytes into an int
+    //  * 
+    //  * @param bytes array of four unsigned bytes
+    //  * @return an int
+    //  */
+    // int bytesToInt(uint8_t bytes[4]){
+    //     return (int)((bytes[0] << 24) + (bytes[1] << 16) + (bytes[2] << 8) + (bytes[3]));
+    // } 
 
-    /**
-     * @brief turns an int to two bytes
-     * 
-     * @param n an int
-     * @return an array of two unsigned bytes (int8_ts)
-     */
-    uint8_t* int16ToBytes(int n){
-        uint8_t out[2] = {(uint8_t)(n >> 8),(uint8_t)n};
-        return out;
-    }
+    // /**
+    //  * @brief turns an int to two bytes
+    //  * 
+    //  * @param n an int
+    //  * @return an array of two unsigned bytes (int8_ts)
+    //  */
+    // uint8_t* int16ToBytes(int n){
+    //     uint8_t out[2] = {(uint8_t)(n >> 8),(uint8_t)n};
+    //     return out;
+    // }
 
-    /**
-     * @brief turns two bytes into an int
-     * 
-     * @param bytes array of two unsigned bytes (int8_ts)
-     * @return an int
-     */
-    int bytesToInt16(uint8_t bytes[2]){
-        return (int)((bytes[2] << 8) + (bytes[3]));
-    } 
-
-    static int PIDPositionError(int desiredAngle, int motorID) {
-        int error = multiTurnPositionAngle[motorID] - desiredAngle;
-        static unsigned long lastTime[8] = {0};
-        unsigned long Time = us_ticker_read() / 1000;
-        unsigned long timeDifference = Time - lastTime[motorID];
-
-        static int lastError[8] = {0};
-        static int sumerror[8] = {0};
-        sumerror[motorID] += error;
-        double kP = PIDValuesPosition[motorID][0];
-        double kI = PIDValuesPosition[motorID][1];
-        double kD = PIDValuesPosition[motorID][2];
-
-
-        if (abs(error) < 2500)
-            sumerror[motorID] = 0;
-
-        int maxsumerror = 2000;
-
-        if (sumerror[motorID] > maxsumerror)
-            sumerror[motorID] = maxsumerror;
-        else if (sumerror[motorID] < -maxsumerror)
-            sumerror[motorID] = -maxsumerror;   
-
-        
-    
-        int PIDCalc = kP * error + kI * sumerror[motorID] + kD * ((double)(error - lastError[motorID])/timeDifference);
-        
-        //printf("PIDCALC: %d\n",PIDCalc);
-        
-        int maxcurrent = 20000;
-        if (PIDCalc > maxcurrent)
-            PIDCalc = maxcurrent;
-        else if (PIDCalc < -maxcurrent)
-            PIDCalc = -maxcurrent;
-
-        lastTime[motorID] = Time;
-        error = lastError[motorID];
-
-        return PIDCalc;
-    }
-
-    static int PIDSpeedError(int desiredSpeed, int motorID) {
-        int error = staticSpeed(motorID) - desiredSpeed;
-        static unsigned long lastTime[8] = {0};
-        unsigned long Time = us_ticker_read() / 1000;
-        unsigned long timeDifference = Time - lastTime[motorID];
-
-        static int lastError[8] = {0};
-        static int sumerror[8] = {0};
-        sumerror[motorID] += error;
-        double kP = PIDValuesSpeed[motorID][0];
-        double kI = PIDValuesSpeed[motorID][1];
-        double kD = PIDValuesSpeed[motorID][2];
-
-
-        if (abs(error) < 2500)
-            sumerror[motorID] = 0;
-
-        int maxsumerror = 2000;
-
-        if (sumerror[motorID] > maxsumerror)
-            sumerror[motorID] = maxsumerror;
-        else if (sumerror[motorID] < -maxsumerror)
-            sumerror[motorID] = -maxsumerror;   
-
-        
-    
-        int PIDCalc = kP * error + kI * sumerror[motorID] + kD * ((double)(error - lastError[motorID])/timeDifference);
-        
-        printf("PIDCALC: %d\n",PIDCalc);
-        
-        int maxcurrent = 5000;
-        if (PIDCalc > maxcurrent)
-            PIDCalc = maxcurrent;
-        else if (PIDCalc < -maxcurrent)
-            PIDCalc = -maxcurrent;
-
-        lastTime[motorID] = Time;
-        error = lastError[motorID];
-
-        return PIDCalc;
-    }
+    // /**
+    //  * @brief turns two bytes into an int
+    //  * 
+    //  * @param bytes array of two unsigned bytes (int8_ts)
+    //  * @return an int
+    //  */
+    // int bytesToInt16(uint8_t bytes[2]){
+    //     return (int)((bytes[2] << 8) + (bytes[3]));
+    // } 
     
     /**
      * @brief Prints a CANMessage nicely
@@ -467,15 +381,21 @@ class Motor {
      */
     static void sendValues(){
         //CAN Sending to the two sending IDs
+        static unsigned long lastTime[8] = {0};
+        unsigned long Time = us_ticker_read() / 1000;
+
         if(motorExists[0] || motorExists[1] || motorExists[2] || motorExists[3]){
             int16_t outputArray[4] = {0, 0, 0, 0};
             for (int i = 0; i < 4; i++) {
+                unsigned long timeDifference = Time - lastTime[i];
                 if (mode[i] == DISABLED)
                     outputArray[i] = 0;
                 else if (mode[i] == POSITION)
-                    outputArray[i] = -PIDPositionError(motorOut1[i], i);
+                    outputArray[i] = pidPos[i].calculate(motorOut1[i],multiTurnPositionAngle[i],timeDifference);
+                    //-PIDPositionError(motorOut1[i], i);
                 else if (mode[i] == SPEED)
-                    outputArray[i] += -PIDSpeedError(motorOut1[i], i);
+                    outputArray[i] += pidSpeed[i].calculate(motorOut1[i],multiTurnPositionAngle[i],timeDifference);
+                    //-PIDSpeedError(motorOut1[i], i);
                 else if (mode[i] == CURRENT) {
                     outputArray[i] = motorOut1[i];
                 }
@@ -488,14 +408,17 @@ class Motor {
             int16_t outputArrayGM6020[4] = {0, 0, 0, 0};
             bool doSend[2] = {false,false};
             for (int i = 0; i < 4; i++) {
+                unsigned long timeDifference = Time - lastTime[i+4];
                 if(types[i+4] == STANDARD){
                     if (mode[i+4] == DISABLED){
                         outputArray[i] = 0;
                     }else if (mode[i+4] == POSITION){
-                        outputArray[i] = -PIDPositionError(motorOut2[i], i+4);
+                        outputArray[i] = pidPos[i+4].calculate(motorOut2[i],multiTurnPositionAngle[i+4],timeDifference);
+                        //-PIDPositionError(motorOut2[i], i+4);
                         doSend[0] = true;
                     }else if (mode[i+4] == SPEED){
-                        outputArray[i] += -PIDSpeedError(motorOut2[i], i+4);
+                        outputArray[i] += pidSpeed[i+4].calculate(motorOut2[i],multiTurnPositionAngle[i+4],timeDifference);
+                        //-PIDSpeedError(motorOut2[i], i+4);
                         doSend[0] = true;
                     }else if (mode[i+4] == CURRENT) {
                         outputArray[i] = motorOut2[i];
@@ -504,14 +427,16 @@ class Motor {
                 }else if(types[i+4] == GM6020){
                     if (mode[i+4] == DISABLED){
                         outputArrayGM6020[i] = 0;
-                    }else if (mode[i+4] == SPEED){
-                        //printf("Poes:%d\n",motorOut2[i]);
-                        outputArrayGM6020[i] += -PIDSpeedError(motorOut2[i], i+4);
-                        printf("\t\t\t\tCurrent given:%d\n",outputArrayGM6020[i]);
-                        doSend[1] = true;
                     }else if (mode[i+4] == POSITION){
                         //printf("Poes:%d\n",motorOut2[i]);
-                        outputArrayGM6020[i] = -PIDPositionError(motorOut2[i], i+4);
+                        outputArrayGM6020[i] = pidPos[i+4].calculate(motorOut2[i],multiTurnPositionAngle[i+4],timeDifference);
+                        //-PIDPositionError(motorOut2[i], i+4);
+                        doSend[1] = true;
+                    }else if (mode[i+4] == SPEED){
+                        //printf("Poes:%d\n",motorOut2[i]);
+                        outputArrayGM6020[i] += pidSpeed[i+4].calculate(motorOut2[i],multiTurnPositionAngle[i+4],timeDifference);
+                        //-PIDSpeedError(motorOut2[i], i+4);
+                        printf("\t\t\t\tCurrent given:%d\n",outputArrayGM6020[i]);
                         doSend[1] = true;
                     }else if (mode[i+4] == CURRENT) {
                         outputArrayGM6020[i] = motorOut2[i];
