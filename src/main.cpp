@@ -1,5 +1,4 @@
-#include "mbed.h"
-#include "motor.hpp"
+#include "main.hpp"
 
 Motor wheel(1,STANDARD);
 

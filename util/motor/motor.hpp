@@ -1,9 +1,9 @@
 #include "mbed.h"
-#include "pid.hpp"
+#include "../algorithms/pid.hpp"
 #include <cstdint>
 #ifndef motor_hpp
 #define motor_hpp
-#include "CANMsg.h"
+#include "../communications/CANMsg.h"
 
 //////////////////////////////////////////////
 //VERY IMPORTANT TO SET FREQUENCY HERE AND NOW
