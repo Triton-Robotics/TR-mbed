@@ -20,7 +20,7 @@ class SerialCommunication : BufferedSerial {
 
         /**
         * @brief Check for new input into Serial monitor. 
-        * @param message is a char array[] of which the message will be filled into only when '\' is sent.
+        * @param message is a char array[] intialized in the main function of which the message will be filled into only when '\' is sent.
         * @return Returns True if new message
         */
         bool update(char *message) {
