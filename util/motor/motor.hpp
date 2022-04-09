@@ -34,6 +34,8 @@ static bool motorExists[8] = {0,0,0,0,0,0,0,0};
 
 static int motorOut[8] = {0,0,0,0,0,0,0,0}; //All motor output values, depending on what mode they're in.
 
+static int canOutput = 1;
+
 static bool motorDebug = 0;
 
 static motorType types[] = {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE};
@@ -64,8 +66,6 @@ class Motor{
         motorOut[motorNumber] = value;
         return motorOut[motorNumber];
     }
-
-    static int canOutput;
     
     int motorNumber;
 
@@ -121,7 +121,6 @@ class Motor{
         totalMotors++;
         motorExists[motorNumber] = 1;
         types[motorNumber] = type;
-        canOutput = 1;
         //TODO Throw error when motorNumber isnt within the range [0,7]
     }
 
