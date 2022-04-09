@@ -51,7 +51,7 @@ static int multiTurnPositionAngle[8] = {0,0,0,0,0,0,0,0};
 static PID pidPos[8];
 static PID pidSpeed[8];
 
-class Motor {
+class Motor{
 
     public:
     /**
