@@ -10,7 +10,7 @@
 
 - Make Chassis Subsystem
 
-- 
+- Make documentation for how to install mbed os, setting up the team github, making new program in mbed studio
 
 - Make a class for Referee System 
 

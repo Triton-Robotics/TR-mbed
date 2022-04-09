@@ -10,6 +10,7 @@
 //////////////////////////////////////////////
 
 static CAN can1(PA_11,PA_12,1000000);
+//static CAN can1(PB_12,PB_13,1000000);
 static CAN can2(PB_12,PB_13,1000000);
 
 enum motorMode {DISABLED, POSITION, SPEED, CURRENT};
@@ -23,8 +24,6 @@ enum motorType {
     GM6020 = 2
 };
 
-static int feedbackIDs[12] = {0x201,0x202,0x203,0x204,0x205,0x206,0x207,0x208,0x209,0x20a,0x20b,0x20c}; //IDs to recieve data back from the motors
-
 static int sendIDs[3] = {0x200,0x1FF,0x2FF}; //IDs to send data
 
 static int16_t feedback[12][4] = {{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0}}; //Array holding the feedback values of the individual motors
@@ -32,10 +31,6 @@ static int16_t feedback[12][4] = {{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0
 static int totalMotors; //total number of motors in play
 
 static bool motorExists[8] = {0,0,0,0,0,0,0,0};
-
-//static int motorOut1[4] = {0,0,0,0}; //First four motors in can, controlled through ID 0x200
-
-//static int motorOut2[4] = {0,0,0,0}; //Second four motors in can, controlled through ID 0x1FF
 
 static int motorOut[8] = {0,0,0,0,0,0,0,0}; //All motor output values, depending on what mode they're in.
 
@@ -58,7 +53,7 @@ static PID pidSpeed[8];
 
 class Motor {
 
-    private:
+    public:
     /**
      * @brief Set the desired value of this motor
      * 
@@ -70,40 +65,47 @@ class Motor {
         return motorOut[motorNumber];
     }
 
-    public:
-
+    static int canOutput;
+    
     int motorNumber;
 
     int gearRatio = 19;
 
     bool isInverted = false;
 
+    // /**
+    //  * @brief Construct a new Motor object
+    //  * 
+    //  * @param canNum is a number from 1-8 signifying which CAN id is attached, blinking LED on motor controller will show this
+    //  */
+    // Motor(int canNum)
+    // {
+    //     gearRatio = 19;
+    //     motorNumber = canNum - 1; //Changes range from 1-8 to 0-7
+    //     totalMotors++;
+    //     motorExists[motorNumber] = 1;
+    //     types[motorNumber] = STANDARD;
+    //     canOutput = 1;
+    //     //TODO Throw error when motorNumber isnt within the range [0,7]
+    // }
+
+    // Motor(int canNum, int ratio = 19, int inverted = false)
+    // {
+    //     isInverted = inverted;
+    //     gearRatio = ratio;
+    //     motorNumber = canNum - 1; //Changes range from 1-8 to 0-7
+    //     totalMotors++;
+    //     motorExists[motorNumber] = 1;
+    //     types[motorNumber] = STANDARD;
+    //     canOutput = 1;
+    //     //TODO Throw error when motorNumber isnt within the range [0,7]
+    // }
+
     /**
      * @brief Construct a new Motor object
      * 
      * @param canNum is a number from 1-8 signifying which CAN id is attached, blinking LED on motor controller will show this
      */
-    Motor(int canNum)
-    {
-        gearRatio = 19;
-        motorNumber = canNum - 1; //Changes range from 1-8 to 0-7
-        totalMotors++;
-        motorExists[motorNumber] = 1;
-        types[motorNumber] = STANDARD;
-        //TODO Throw error when motorNumber isnt within the range [0,7]
-    }
-
-    Motor(int canNum, int ratio = 19, int inverted = false)
-    {
-        isInverted = inverted;
-        gearRatio = ratio;
-        motorNumber = canNum - 1; //Changes range from 1-8 to 0-7
-        totalMotors++;
-        motorExists[motorNumber] = 1;
-        types[motorNumber] = STANDARD;
-        //TODO Throw error when motorNumber isnt within the range [0,7]
-    }
-
     Motor(int canNum, motorType type = STANDARD, int ratio = 19, int inverted = false)
     {
         isInverted = inverted;
@@ -119,6 +121,7 @@ class Motor {
         totalMotors++;
         motorExists[motorNumber] = 1;
         types[motorNumber] = type;
+        canOutput = 1;
         //TODO Throw error when motorNumber isnt within the range [0,7]
     }
 
@@ -225,48 +228,6 @@ class Motor {
         pidSpeed[motorNumber].setPID(Kp,Ki,Kd);
     }
     
-    // /**
-    //  * @brief turns an int to four bytes
-    //  * 
-    //  * @param n an int
-    //  * @return an array of four unsigned bytes in the form of int8_ts
-    //  */
-    // uint8_t* intToBytes(int n){
-    //     uint8_t out[4] = {(uint8_t)(n >> 24),(uint8_t)(n >> 16),(uint8_t)(n >> 8),(uint8_t)n};
-    //     return out;
-    // }
-
-    // /**
-    //  * @brief turns four bytes into an int
-    //  * 
-    //  * @param bytes array of four unsigned bytes
-    //  * @return an int
-    //  */
-    // int bytesToInt(uint8_t bytes[4]){
-    //     return (int)((bytes[0] << 24) + (bytes[1] << 16) + (bytes[2] << 8) + (bytes[3]));
-    // } 
-
-    // /**
-    //  * @brief turns an int to two bytes
-    //  * 
-    //  * @param n an int
-    //  * @return an array of two unsigned bytes (int8_ts)
-    //  */
-    // uint8_t* int16ToBytes(int n){
-    //     uint8_t out[2] = {(uint8_t)(n >> 8),(uint8_t)n};
-    //     return out;
-    // }
-
-    // /**
-    //  * @brief turns two bytes into an int
-    //  * 
-    //  * @param bytes array of two unsigned bytes (int8_ts)
-    //  * @return an int
-    //  */
-    // int bytesToInt16(uint8_t bytes[2]){
-    //     return (int)((bytes[2] << 8) + (bytes[3]));
-    // } 
-    
     /**
      * @brief Prints a CANMessage nicely
      * 
@@ -289,7 +250,7 @@ class Motor {
      * 
      */
     static void getFeedback(){
-        if (can1.read(rxMsg)) {
+        if ((can1.read(rxMsg) && canOutput == 1) || (can2.read(rxMsg) && canOutput == 2)) {
             if(motorDebug){
                 printf("-------------------------------------\r\n");
                 printf("CAN message received\r\n");
@@ -356,7 +317,7 @@ class Motor {
 
     /**
      * @brief Returns specified data of specified motor
-     * canBuss is a field between 1 and 8, specifing the can bus of the motor
+     * canBus is a field between 1 and 8, specifing the can bus of the motor
      * dataNumber is the element of data you want
      * Angle: 0
      * Speed: 1
@@ -422,14 +383,10 @@ class Motor {
                     if (mode[i+4] == DISABLED){
                         outputArrayGM6020[i] = 0;
                     }else if (mode[i+4] == POSITION){
-                        //printf("Poes:%d\n",motorOut2[i]);
                         outputArrayGM6020[i] = pidPos[i+4].calculate(motorOut[i+4],multiTurnPositionAngle[i+4],timeDifference);
-                        //-PIDPositionError(motorOut2[i], i+4);
                         doSend[1] = true;
                     }else if (mode[i+4] == SPEED){
-                        //printf("Poes:%d\n",motorOut2[i]);
                         outputArrayGM6020[i] += pidSpeed[i+4].calculate(motorOut[i+4],multiTurnPositionAngle[i+4],timeDifference);
-                        //-PIDSpeedError(motorOut2[i], i+4);
                         printf("\t\t\t\tCurrent given:%d\n",outputArrayGM6020[i]);
                         doSend[1] = true;
                     }else if (mode[i+4] == CURRENT) {
@@ -456,8 +413,6 @@ class Motor {
      */
     static void rawSend(int id, int data1, int data2, int data3, int data4){
         txMsg.clear(); // clear Tx message storage
-        //txMsg.format = CANStandard;
-        //txMsg.type = CANData; 
         txMsg.id = id; 
 
         int motorSending[4] = {data1,data2,data3,data4};
@@ -470,12 +425,11 @@ class Motor {
         for(int i = 0;  i < 8; i ++){
             txMsg << sentBytes1[i]; //2 bytes per motor
         }
-        //printf(".");
         bool isWrite = 1;
-        isWrite = can1.write(txMsg);
-        //printf("Bool:%d\n",isWrite);
-        //isWrite = 1;
-        //printf("Erpr:%d\n", can1.tderror());
+        if (canOutput == 1)
+            isWrite = can1.write(txMsg);
+        if (canOutput == 2)
+            isWrite = can2.write(txMsg);
         if (isWrite) {
             // transmit message
             if(motorDebug){
@@ -504,7 +458,7 @@ class Motor {
     }
 
     /**
-     * @brief equivalent to tick
+     * @brief equivalent to tick just for Ming
      * 
      */
     static void update(){
