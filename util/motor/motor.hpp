@@ -18,6 +18,7 @@ enum motorMode {DISABLED, POSITION, SPEED, CURRENT};
 enum motorType {
     NONE = 0,
     STANDARD = 1,
+    M2006 = 1,
     C620 = 1,
     M3508 = 1,
     GIMBLY = 2,
@@ -371,7 +372,7 @@ class Motor{
                         //-PIDPositionError(motorOut2[i], i+4);
                         doSend[0] = true;
                     }else if (mode[i+4] == SPEED){
-                        outputArray[i] += pidSpeed[i+4].calculate(motorOut[i+4],multiTurnPositionAngle[i+4],timeDifference);
+                        outputArray[i] += pidSpeed[i+4].calculate(motorOut[i+4],staticSpeed(i+4),timeDifference);
                         //-PIDSpeedError(motorOut2[i], i+4);
                         doSend[0] = true;
                     }else if (mode[i+4] == CURRENT) {
@@ -385,7 +386,7 @@ class Motor{
                         outputArrayGM6020[i] = pidPos[i+4].calculate(motorOut[i+4],multiTurnPositionAngle[i+4],timeDifference);
                         doSend[1] = true;
                     }else if (mode[i+4] == SPEED){
-                        outputArrayGM6020[i] += pidSpeed[i+4].calculate(motorOut[i+4],multiTurnPositionAngle[i+4],timeDifference);
+                        outputArrayGM6020[i] += pidSpeed[i+4].calculate(motorOut[i+4],staticSpeed(i+4),timeDifference);
                         printf("\t\t\t\tCurrent given:%d\n",outputArrayGM6020[i]);
                         doSend[1] = true;
                     }else if (mode[i+4] == CURRENT) {
