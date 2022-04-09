@@ -33,9 +33,11 @@ static int totalMotors; //total number of motors in play
 
 static bool motorExists[8] = {0,0,0,0,0,0,0,0};
 
-static int motorOut1[4] = {0,0,0,0}; //First four motors in can, controlled through ID 0x200
+//static int motorOut1[4] = {0,0,0,0}; //First four motors in can, controlled through ID 0x200
 
-static int motorOut2[4] = {0,0,0,0}; //Second four motors in can, controlled through ID 0x1FF
+//static int motorOut2[4] = {0,0,0,0}; //Second four motors in can, controlled through ID 0x1FF
+
+static int motorOut[8] = {0,0,0,0,0,0,0,0}; //All motor output values, depending on what mode they're in.
 
 static bool motorDebug = 0;
 
@@ -64,14 +66,8 @@ class Motor {
      * @return int value
      */
     int setDesiredValue(int value){
-        if(motorNumber < 4){
-            motorOut1[motorNumber] = value;
-            return motorOut1[motorNumber];
-        }else if(motorNumber >= 4){
-            motorOut2[motorNumber-4] = value;
-            return motorOut2[motorNumber-4];
-        }
-        return -1;
+        motorOut[motorNumber] = value;
+        return motorOut[motorNumber];
     }
 
     public:
@@ -161,12 +157,7 @@ class Motor {
      * @return int value
      */
     int getDesiredValue(){
-        if(motorNumber < 4){
-            return motorOut1[motorNumber];
-        }else if(motorNumber >= 4){
-            return motorOut2[motorNumber-4];
-        }
-        return -1;
+        return motorOut[motorNumber];
     }
 
     
@@ -329,6 +320,9 @@ class Motor {
         //CAN Recieving from feedback IDs
     }
 
+    /**
+     * @brief Updates global array for multiTurnPositionontrol
+     */
     static void multiTurnPositionControl() {
         int Threshold = 3000;
 
@@ -391,13 +385,13 @@ class Motor {
                 if (mode[i] == DISABLED)
                     outputArray[i] = 0;
                 else if (mode[i] == POSITION)
-                    outputArray[i] = pidPos[i].calculate(motorOut1[i],multiTurnPositionAngle[i],timeDifference);
+                    outputArray[i] = pidPos[i].calculate(motorOut[i],multiTurnPositionAngle[i],timeDifference);
                     //-PIDPositionError(motorOut1[i], i);
                 else if (mode[i] == SPEED)
-                    outputArray[i] += pidSpeed[i].calculate(motorOut1[i],multiTurnPositionAngle[i],timeDifference);
+                    outputArray[i] += pidSpeed[i].calculate(motorOut[i],multiTurnPositionAngle[i],timeDifference);
                     //-PIDSpeedError(motorOut1[i], i);
                 else if (mode[i] == CURRENT) {
-                    outputArray[i] = motorOut1[i];
+                    outputArray[i] = motorOut[i];
                 }
             }
 
@@ -413,15 +407,15 @@ class Motor {
                     if (mode[i+4] == DISABLED){
                         outputArray[i] = 0;
                     }else if (mode[i+4] == POSITION){
-                        outputArray[i] = pidPos[i+4].calculate(motorOut2[i],multiTurnPositionAngle[i+4],timeDifference);
+                        outputArray[i] = pidPos[i+4].calculate(motorOut[i+4],multiTurnPositionAngle[i+4],timeDifference);
                         //-PIDPositionError(motorOut2[i], i+4);
                         doSend[0] = true;
                     }else if (mode[i+4] == SPEED){
-                        outputArray[i] += pidSpeed[i+4].calculate(motorOut2[i],multiTurnPositionAngle[i+4],timeDifference);
+                        outputArray[i] += pidSpeed[i+4].calculate(motorOut[i+4],multiTurnPositionAngle[i+4],timeDifference);
                         //-PIDSpeedError(motorOut2[i], i+4);
                         doSend[0] = true;
                     }else if (mode[i+4] == CURRENT) {
-                        outputArray[i] = motorOut2[i];
+                        outputArray[i] = motorOut[i+4];
                         doSend[0] = true;
                     }
                 }else if(types[i+4] == GM6020){
@@ -429,17 +423,17 @@ class Motor {
                         outputArrayGM6020[i] = 0;
                     }else if (mode[i+4] == POSITION){
                         //printf("Poes:%d\n",motorOut2[i]);
-                        outputArrayGM6020[i] = pidPos[i+4].calculate(motorOut2[i],multiTurnPositionAngle[i+4],timeDifference);
+                        outputArrayGM6020[i] = pidPos[i+4].calculate(motorOut[i+4],multiTurnPositionAngle[i+4],timeDifference);
                         //-PIDPositionError(motorOut2[i], i+4);
                         doSend[1] = true;
                     }else if (mode[i+4] == SPEED){
                         //printf("Poes:%d\n",motorOut2[i]);
-                        outputArrayGM6020[i] += pidSpeed[i+4].calculate(motorOut2[i],multiTurnPositionAngle[i+4],timeDifference);
+                        outputArrayGM6020[i] += pidSpeed[i+4].calculate(motorOut[i+4],multiTurnPositionAngle[i+4],timeDifference);
                         //-PIDSpeedError(motorOut2[i], i+4);
                         printf("\t\t\t\tCurrent given:%d\n",outputArrayGM6020[i]);
                         doSend[1] = true;
                     }else if (mode[i+4] == CURRENT) {
-                        outputArrayGM6020[i] = motorOut2[i];
+                        outputArrayGM6020[i] = motorOut[i+4];
                         doSend[1] = true;
                     }
                 }

@@ -1,4 +1,4 @@
 #include "mbed.h"
-#include "motor/motor.hpp"
-#include "communications/DJIRemote.cpp"
-#include "algorithms/pid.hpp"
+#include "../util/motor/motor.hpp"
+//#include "../util/communications/DJIRemote.cpp"
+#include "../util/algorithms/pid.hpp"

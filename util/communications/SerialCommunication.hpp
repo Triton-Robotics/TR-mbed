@@ -60,7 +60,7 @@ class SerialCommunication : BufferedSerial {
         * @param message is the message array
         * @return integer if it is a number, NULL if not convertable.
         */
-        int isNum(char message[]) {
+        int toNum(char message[]) {
             int i = 0;
             if (message[i] == '-')
                 i++;

@@ -1,13 +1,14 @@
 #include "mbed.h" // I would remove this but I think somehow it supports std::max and std::min
+#include <cstdlib>
 #ifndef pid_hpp
 #define pid_hpp
 class PID {
     private:
-        int kP;
-        int kI;
-        int kD;
-        int integralCap;
-        int outputCap;
+        float kP;
+        float kI;
+        float kD;
+        float integralCap;
+        float outputCap;
     public:
 
         PID(){
@@ -24,19 +25,20 @@ class PID {
          * and outCap, a cap on the actual output so you can limit how much the pid will output until you're sure it 
          * works well before you let it loose
          */
-        PID(int p, int i, int d, int sumCap = 0, int outCap = 0){
+        PID(float p, float i, float d, float sumCap = 0, float outCap = 0){
             kP = p; kI = i; kD = d;
             integralCap = sumCap;
             outputCap = outCap;
         }
 
-        int calculate(int desiredV, int actualV, int dt){
-            static int lastError = 0;
-            static int sumError = 0;
-            int error = (desiredV - actualV);
-            int PIDCalc = kP * error + kI * sumError + kD * ((double)(error - lastError)/dt);
+        float calculate(float desiredV, float actualV, float dt){
+            static float lastError = 0;
+            static float sumError = 0;
+            float error = (desiredV - actualV);
+            float PIDCalc = kP * error + kI * sumError + kD * ((double)(error - lastError)/dt);
             sumError += error;
             lastError = error;
+            printf("Error: %d\t",(int)error);
             if(integralCap != 0){
                 sumError = std::max(std::min(sumError,integralCap),-integralCap);
             }
@@ -46,15 +48,15 @@ class PID {
             return PIDCalc;
         }
 
-        void setIntegralCap(int sumCap){
+        void setIntegralCap(float sumCap){
             integralCap = sumCap;
         }
 
-        void setOutputCap(int outCap){
+        void setOutputCap(float outCap){
             outputCap = outCap;
         }
 
-        void setPID(int p, int i, int d){
+        void setPID(float p, float i, float d){
             kP = p; kI = i; kD = d;
         }
 };
