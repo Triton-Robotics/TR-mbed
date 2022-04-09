@@ -10,11 +10,8 @@
 //////////////////////////////////////////////
 
 static CAN can1(PA_11,PA_12,1000000);
-<<<<<<< Updated upstream
 //static CAN can1(PB_12,PB_13,1000000);
 static CAN can2(PB_12,PB_13,1000000);
-=======
->>>>>>> Stashed changes
 
 enum motorMode {DISABLED, POSITION, SPEED, CURRENT};
 
