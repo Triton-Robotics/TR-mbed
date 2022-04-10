@@ -1,7 +1,7 @@
 #include "main.hpp"
 
 Motor wheel(7,GIMBLY);
-Motor m3(1,STANDARD);
+Motor m3(2,STANDARD);
 CANHandler nucleoCan(PA_11,PA_12,PB_12,PB_13);
 
 int main(){
@@ -9,7 +9,7 @@ int main(){
     while(1){
         printf("DELETUS\n");
         int val = 8738;
-        int bytes[] = {0,0,0,0,0x01,0xF4,0,0};
+        int8_t bytes[] = {0,0,0x2,0x4,0x5,0x4,0,0};
         nucleoCan.rawSend(0x200, bytes, CANHandler::CANBUS_1);
     }
 }
