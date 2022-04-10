@@ -1,0 +1,61 @@
+#include "mbed.h"
+#include "CANMsg.h"
+#include "canHandler.hpp"
+
+CANHandler::CANHandler(PinName can1Rx, PinName can1Tx, PinName can2Rx, PinName can2Tx):
+    can1(can1Rx,can1Tx,1000000), 
+    can2(can2Rx,can2Tx,1000000)
+{
+    
+}
+
+/**
+* Handles two CAN busses for a total of 16 motors for a robot.
+*/
+CAN* CANHandler::busAt(CANBus bus){
+    can1.reset();
+    return &can1;
+}
+
+/**
+* @brief Raw sending of CAN Messages
+* 
+* @param id the CAN ID you're sending to
+* @param bytes the bytes you're sending
+* @param bus the bus you're sending the CAN messages to
+*/
+bool CANHandler::rawSend(int id, int bytes[], CANBus bus){
+    txMsg.clear(); // clear Tx message storage
+    txMsg.id = id; 
+
+    for(int i = 0;  i < 8; i ++){
+        txMsg << bytes[i]; //2 bytes per motor
+    }
+    bool isWrite = 1;
+    isWrite = (*busAt(bus)).write(txMsg);
+    if(isWrite == 0){
+        printf("Transmission error\n");
+        //break; //TODO AT SOME POINT REMOVE THIs WHEN A TRANSMISSION ERROR ISNT CATASTROPHIC
+    }
+    return isWrite;
+}
+
+/**
+    * @brief Get feedback back from the motor
+    * 
+    */
+bool CANHandler::getFeedback(int id, int bytes[], CANBus bus){
+    if (busAt(bus)) {
+        int motorID = rxMsg.id-0x201;
+        if(motorID >= 8){
+            motorID -= 4;
+        }
+        for(int i = 0;  i < 8; i ++){
+            rxMsg >> bytes[i]; //2 bytes per motor
+        }
+        return true;
+        //printf("Motor 0x%x:\tAngle (0,8191):%d\tSpeed  ( RPM ):%d\tTorque ( CUR ):%d\tTemperature(C):%d \n",rxMsg.id,feedback[motorID][0],feedback[motorID][1],feedback[motorID][2],feedback[motorID][3]);
+    }
+    return false;
+    //CAN Recieving from feedback IDs
+}
