@@ -75,18 +75,18 @@ class Motor{
      * 
      * @param canNum is a number from 1-8 signifying which CAN id is attached, blinking LED on motor controller will show this
      */
-    Motor(int canNum, CANHandler::CANBus bus, motorType type = STANDARD, int ratio = 19, int inverted = false)
+    Motor(int canID, CANHandler::CANBus bus, motorType type = STANDARD, int ratio = 19, int inverted = false)
     {
         isInverted = inverted;
         if(type == GM6020){
             gearRatio = 1; //TODO FIND THE ACTUAL GEAR RATIO
-            if(canNum <= 4){
+            if(canID <= 4){
                 printf("ERROR. IT IS HIGHLY DISCOURAGED OF YOU TO USE CAN BUSSES 1-4 FOR THE GM6020s. YOU WILL HAVE ERRORS. DO NOT\n");
             }
         }else{
             gearRatio = ratio;
         }
-        motorNumber = canNum - 1; //Changes range from 1-8 to 0-7
+        motorNumber = canID - 1; //Changes range from 1-8 to 0-7
         totalMotors++;
         motorExists[motorNumber] = 1;
         types[motorNumber] = type;

@@ -58,8 +58,7 @@ Finally, the most important part of using the Motor class is running Motor::tick
 ***
 ## IMPORTANT
 ***
-___
-## Making the Motor class work:
+## Requirements to making the Motor class work:
 
 There are some things you need to make sure you have to make the motor class work:
 ### 1. Attach CANHandler
