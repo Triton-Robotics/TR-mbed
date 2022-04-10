@@ -23,7 +23,7 @@ class SerialCommunication : BufferedSerial {
         * @param message is a char array[] intialized in the main function of which the message will be filled into only when '\' is sent.
         * @return Returns True if new message
         */
-        bool update(char *message) {
+        bool update(char message[]) {
             if (readable()) {
                 int z = 0;
                 if (comdata[0] == '\\') { // Clear previous message
