@@ -1,6 +1,7 @@
 #include "mbed.h"
 #include "CANMsg.h"
-
+#ifndef canHandler_hpp
+#define canHandler_hpp
 class CANHandler{
     private:
         CANMsg txMsg; //Message object reused to send messages to motors
@@ -8,8 +9,10 @@ class CANHandler{
         CAN can1;
         CAN can2;
         
-
+        
     public:
+
+        bool exists = false;
 
         //////////////////////////////////////////////
         //VERY IMPORTANT TO SET FREQUENCY HERE AND NOW
@@ -17,19 +20,17 @@ class CANHandler{
         CANHandler(PinName can1Rx, PinName can1Tx, PinName can2Rx, PinName can2Tx):
             can1(can1Rx,can1Tx,1000000), 
             can2(can2Rx,can2Tx,1000000)
-        {}
+        {exists = true;}
+
         enum CANBus {CANBUS_1, CANBUS_2};
+
         /**
             * @brief Get feedback back from the motor
             * 
             */
-        bool getFeedback(int id, uint8_t bytes[], CANBus bus){
+        bool getFeedback(uint8_t bytes[], CANBus bus){
             rxMsg.clear();
             if (busAt(bus)) {
-                int motorID = rxMsg.id-0x201;
-                if(motorID >= 8){
-                    motorID -= 4;
-                }
                 for(int i = 0;  i < 8; i ++){
                     rxMsg >> bytes[i]; //2 bytes per motor
                 }
@@ -58,7 +59,7 @@ class CANHandler{
             isWrite = (*busAt(bus)).write(txMsg);
             if(isWrite == 0){
                 printf("Transmission error\n");
-                //break; //TODO AT SOME POINT REMOVE THIs WHEN A TRANSMISSION ERROR ISNT CATASTROPHIC
+                //break; 
             }
             return isWrite;
         }
@@ -74,3 +75,4 @@ class CANHandler{
             return NULL;
         }
 };
+#endif

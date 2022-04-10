@@ -4,14 +4,15 @@
 #ifndef motor_hpp
 #define motor_hpp
 #include "../communications/CANMsg.h"
+#include "../communications/canHandler.hpp"
 
 //////////////////////////////////////////////
 //VERY IMPORTANT TO SET FREQUENCY HERE AND NOW
 //////////////////////////////////////////////
 
-static CAN can1(PA_11,PA_12,1000000);
+//static CAN can1(PA_11,PA_12,1000000);
 //static CAN can1(PB_12,PB_13,1000000);
-static CAN can2(PB_12,PB_13,1000000);
+//static CAN can2(PB_12,PB_13,1000000);
 
 enum motorMode {DISABLED, POSITION, SPEED, CURRENT};
 
@@ -33,7 +34,7 @@ static int totalMotors; //total number of motors in play
 
 static bool motorExists[8] = {0,0,0,0,0,0,0,0};
 
-static int motorOut[8] = {0,0,0,0,0,0,0,0}; //All motor output values, depending on what mode they're in.
+static int motorOut[2][8] = {{0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0}}; //All motor output values, depending on what mode they're in.
 
 static int canOutput = 1;
 
@@ -57,57 +58,24 @@ static PID pidSpeed[8];
 class Motor{
 
     public:
-    /**
-     * @brief Set the desired value of this motor
-     * 
-     * @param value
-     * @return int value
-     */
-    int setDesiredValue(int value){
-        motorOut[motorNumber] = value;
-        return motorOut[motorNumber];
-    }
-    
+        
     int motorNumber;
 
     int gearRatio = 19;
 
     bool isInverted = false;
 
-    // /**
-    //  * @brief Construct a new Motor object
-    //  * 
-    //  * @param canNum is a number from 1-8 signifying which CAN id is attached, blinking LED on motor controller will show this
-    //  */
-    // Motor(int canNum)
-    // {
-    //     gearRatio = 19;
-    //     motorNumber = canNum - 1; //Changes range from 1-8 to 0-7
-    //     totalMotors++;
-    //     motorExists[motorNumber] = 1;
-    //     types[motorNumber] = STANDARD;
-    //     canOutput = 1;
-    //     //TODO Throw error when motorNumber isnt within the range [0,7]
-    // }
+    CANHandler::CANBus currentBus;
 
-    // Motor(int canNum, int ratio = 19, int inverted = false)
-    // {
-    //     isInverted = inverted;
-    //     gearRatio = ratio;
-    //     motorNumber = canNum - 1; //Changes range from 1-8 to 0-7
-    //     totalMotors++;
-    //     motorExists[motorNumber] = 1;
-    //     types[motorNumber] = STANDARD;
-    //     canOutput = 1;
-    //     //TODO Throw error when motorNumber isnt within the range [0,7]
-    // }
+    static CANHandler* canHandles;
+
 
     /**
      * @brief Construct a new Motor object
      * 
      * @param canNum is a number from 1-8 signifying which CAN id is attached, blinking LED on motor controller will show this
      */
-    Motor(int canNum, motorType type = STANDARD, int ratio = 19, int inverted = false)
+    Motor(int canNum, CANHandler::CANBus bus, motorType type = STANDARD, int ratio = 19, int inverted = false)
     {
         isInverted = inverted;
         if(type == GM6020){
@@ -131,6 +99,24 @@ class Motor{
         types[motorNumber] = NONE;
     }
     
+        /**
+     * @brief Set the desired value of this motor
+     * 
+     * @param value
+     * @return int value
+     */
+    int setDesiredValue(int value){
+        if((*canHandles).exists){
+            motorOut[currentBus][motorNumber] = value;
+            return motorOut[currentBus][motorNumber];
+        }else{
+            return NULL;
+        }
+    }
+
+    static void setCANHandler(CANHandler* handle){
+        canHandles = handle;
+    }
 
     void setDesiredCurrent(int value) {
         if (isInverted)
@@ -160,7 +146,7 @@ class Motor{
      * @return int value
      */
     int getDesiredValue(){
-        return motorOut[motorNumber];
+        return motorOut[currentBus][motorNumber];
     }
 
     
@@ -265,26 +251,12 @@ class Motor{
      * @brief Get feedback back from the motor
      * 
      */
-    static void getFeedback(){
-        if ((can1.read(rxMsg) && canOutput == 1) || (can2.read(rxMsg) && canOutput == 2)) {
-            if(motorDebug){
-                printf("-------------------------------------\r\n");
-                printf("CAN message received\r\n");
-                printMsg(rxMsg);
-            }
+    static void getFeedback(CANHandler::CANBus bus){
+        uint8_t recievedBytes[8] = {0,0,0,0,0,0,0,0};
+        if ((*canHandles).getFeedback(recievedBytes,bus)) {
             int motorID = rxMsg.id-0x201;
             if(motorID >= 8){
                 motorID -= 4;
-            }
-            uint8_t recievedBytes[8] = {0,0,0,0,0,0,0,0};
-            for(int i = 0;  i < 8; i ++){
-                rxMsg >> recievedBytes[i]; //2 bytes per motor
-            }
-            if(motorDebug){
-                printf("ArrayData    =");
-                for (int i = 0; i < sizeof(recievedBytes); i++)
-                    printf(" 0x%.2X", recievedBytes[i]);
-                printf("\r\n");
             }
    
             feedback[motorID][0] = 0 | (recievedBytes[0]<<8) | recievedBytes[1];
@@ -350,7 +322,7 @@ class Motor{
      * @brief send all motor values after setting them in setDesiredValues
      * 
      */
-    static void sendValues(){
+    static void sendValues(CANHandler::CANBus bus){
         //CAN Sending to the two sending IDs
         static unsigned long lastTime[8] = {0};
         unsigned long Time = us_ticker_read() / 1000;
@@ -362,17 +334,17 @@ class Motor{
                 if (mode[i] == DISABLED)
                     outputArray[i] = 0;
                 else if (mode[i] == POSITION)
-                    outputArray[i] = pidPos[i].calculate(motorOut[i],multiTurnPositionAngle[i],timeDifference);
+                    outputArray[i] = pidPos[i].calculate(motorOut[bus][i],multiTurnPositionAngle[i],timeDifference);
                     //-PIDPositionError(motorOut1[i], i);
                 else if (mode[i] == SPEED)
-                    outputArray[i] += pidSpeed[i].calculate(motorOut[i],multiTurnPositionAngle[i],timeDifference);
+                    outputArray[i] += pidSpeed[i].calculate(motorOut[bus][i],multiTurnPositionAngle[i],timeDifference);
                     //-PIDSpeedError(motorOut1[i], i);
                 else if (mode[i] == CURRENT) {
-                    outputArray[i] = motorOut[i];
+                    outputArray[i] = motorOut[bus][i];
                 }
             }
 
-            rawSend(sendIDs[0], outputArray[0], outputArray[1], outputArray[2], outputArray[3]);
+            rawSend(sendIDs[0], outputArray[0], outputArray[1], outputArray[2], outputArray[3], bus);
         }
         if(motorExists[4] || motorExists[5] || motorExists[6] || motorExists[7]){
             int16_t outputArray[4] = {0, 0, 0, 0};
@@ -384,37 +356,37 @@ class Motor{
                     if (mode[i+4] == DISABLED){
                         outputArray[i] = 0;
                     }else if (mode[i+4] == POSITION){
-                        outputArray[i] = pidPos[i+4].calculate(motorOut[i+4],multiTurnPositionAngle[i+4],timeDifference);
+                        outputArray[i] = pidPos[i+4].calculate(motorOut[bus][i+4],multiTurnPositionAngle[i+4],timeDifference);
                         //-PIDPositionError(motorOut2[i], i+4);
                         doSend[0] = true;
                     }else if (mode[i+4] == SPEED){
-                        outputArray[i] += pidSpeed[i+4].calculate(motorOut[i+4],staticSpeed(i+4),timeDifference);
+                        outputArray[i] += pidSpeed[i+4].calculate(motorOut[bus][i+4],staticSpeed(i+4),timeDifference);
                         //-PIDSpeedError(motorOut2[i], i+4);
                         doSend[0] = true;
                     }else if (mode[i+4] == CURRENT) {
-                        outputArray[i] = motorOut[i+4];
+                        outputArray[i] = motorOut[bus][i+4];
                         doSend[0] = true;
                     }
                 }else if(types[i+4] == GM6020){
                     if (mode[i+4] == DISABLED){
                         outputArrayGM6020[i] = 0;
                     }else if (mode[i+4] == POSITION){
-                        outputArrayGM6020[i] = pidPos[i+4].calculate(motorOut[i+4],multiTurnPositionAngle[i+4],timeDifference);
+                        outputArrayGM6020[i] = pidPos[i+4].calculate(motorOut[bus][i+4],multiTurnPositionAngle[i+4],timeDifference);
                         doSend[1] = true;
                     }else if (mode[i+4] == SPEED){
-                        outputArrayGM6020[i] += pidSpeed[i+4].calculate(motorOut[i+4],staticSpeed(i+4),timeDifference);
+                        outputArrayGM6020[i] += pidSpeed[i+4].calculate(motorOut[bus][i+4],staticSpeed(i+4),timeDifference);
                         printf("\t\t\t\tCurrent given:%d\n",outputArrayGM6020[i]);
                         doSend[1] = true;
                     }else if (mode[i+4] == CURRENT) {
-                        outputArrayGM6020[i] = motorOut[i+4];
+                        outputArrayGM6020[i] = motorOut[bus][i+4];
                         doSend[1] = true;
                     }
                 }
             }
             if(doSend[0])
-                rawSend(sendIDs[1], outputArray[0], outputArray[1], outputArray[2], outputArray[3]);
+                rawSend(sendIDs[1], outputArray[0], outputArray[1], outputArray[2], outputArray[3], bus);
             if(doSend[1])
-                rawSend(sendIDs[2], outputArrayGM6020[0], outputArrayGM6020[1], outputArrayGM6020[2], outputArrayGM6020[3]);
+                rawSend(sendIDs[2], outputArrayGM6020[0], outputArrayGM6020[1], outputArrayGM6020[2], outputArrayGM6020[3], bus);
         }
     }
 
@@ -427,10 +399,7 @@ class Motor{
      * @param data3 data to the third motor
      * @param data4 data to the fourth
      */
-    static void rawSend(int id, int data1, int data2, int data3, int data4){
-        txMsg.clear(); // clear Tx message storage
-        txMsg.id = id; 
-
+    static void rawSend(int id, int data1, int data2, int data3, int data4, CANHandler::CANBus bus){
         int motorSending[4] = {data1,data2,data3,data4};
 
         int8_t sentBytes1[8] = {0,0,0,0,0,0,0,0};
@@ -438,29 +407,8 @@ class Motor{
             sentBytes1[(2*i)+1] = motorSending[i] & (0xFF);
             sentBytes1[2*i] = (motorSending[i] >> 8) & (0xFF);
         }
-        for(int i = 0;  i < 8; i ++){
-            txMsg << sentBytes1[i]; //2 bytes per motor
-        }
-        bool isWrite = 1;
-        if (canOutput == 1)
-            isWrite = can1.write(txMsg);
-        if (canOutput == 2)
-            isWrite = can2.write(txMsg);
-        if (isWrite) {
-            // transmit message
-            if(motorDebug){
-                printf("-------------------------------------\r\n");
-                printf("-------------------------------------\r\n");
-                printf("CAN message sent\r\n");
-                printMsg(txMsg);
-            }
-        }
-        else if(isWrite == 0){
-            //printf("Transmission error\n");
-            //break; //TODO AT SOME POINT REMOVE THIs WHEN A TRANSMISSION ERROR ISNT CATASTROPHIC
-        }else{
-            printf("???????????????????\n");
-        }
+
+        
     }
 
     /**
@@ -468,9 +416,11 @@ class Motor{
      * 
      */
     static void tick(){
-        getFeedback();
         multiTurnPositionControl();
-        sendValues();
+        getFeedback(CANHandler::CANBUS_1);
+        sendValues(CANHandler::CANBUS_1);
+        getFeedback(CANHandler::CANBUS_2);
+        sendValues(CANHandler::CANBUS_2);
     }
 
     /**
