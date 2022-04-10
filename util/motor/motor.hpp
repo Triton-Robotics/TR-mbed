@@ -224,8 +224,24 @@ class Motor{
         pidPos[motorNumber].setPID(Kp,Ki,Kd);
     }
 
+    void setPositionIntegralCap(double cap) {
+        pidPos[motorNumber].setIntegralCap(cap);
+    }
+
+    void setPositionOutputCap(double cap) {
+        pidPos[motorNumber].setOutputCap(cap);
+    }
+
     void setSpeedPID(double Kp, double Ki, double Kd){
         pidSpeed[motorNumber].setPID(Kp,Ki,Kd);
+    }
+
+    void setSpeedIntegralCap(double cap) {
+        pidSpeed[motorNumber].setIntegralCap(cap);
+    }
+
+    void setSpeedOutputCap(double cap) {
+        pidSpeed[motorNumber].setOutputCap(cap);
     }
     
     /**

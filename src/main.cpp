@@ -12,4 +12,3 @@ int main(){
         m3.setDesiredCurrent(500);
         Motor::tick();
     }
-}
