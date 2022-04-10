@@ -11,6 +11,9 @@ class CANHandler{
 
     public:
 
+        //////////////////////////////////////////////
+        //VERY IMPORTANT TO SET FREQUENCY HERE AND NOW
+        //////////////////////////////////////////////
         CANHandler(PinName can1Rx, PinName can1Tx, PinName can2Rx, PinName can2Tx):
             can1(can1Rx,can1Tx,1000000), 
             can2(can2Rx,can2Tx,1000000)
@@ -20,7 +23,8 @@ class CANHandler{
             * @brief Get feedback back from the motor
             * 
             */
-        bool getFeedback(int id, int8_t bytes[], CANBus bus){
+        bool getFeedback(int id, uint8_t bytes[], CANBus bus){
+            rxMsg.clear();
             if (busAt(bus)) {
                 int motorID = rxMsg.id-0x201;
                 if(motorID >= 8){
@@ -63,7 +67,10 @@ class CANHandler{
         * Handles two CAN busses for a total of 16 motors for a robot.
         */
         CAN* busAt(CANBus bus){
-            can1.reset();
-            return &can1;
+            if(bus == CANBUS_1)
+                return &can1;
+            else if(bus == CANBUS_2)
+                return &can2;
+            return NULL;
         }
 };
