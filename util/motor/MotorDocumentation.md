@@ -1,5 +1,3 @@
-
-
 # Class Constructor:
 
 ```cpp
@@ -18,16 +16,12 @@ Motor(int canID, CANHandler::CANBus bus, motorType type = STANDARD, int ratio = 
 
 **inverted** : Boolean value to invert the motor's forward rotation
 
-
-
-## Examples:
+## Examples
 
 Some sample motor creations below:  
 `Motor gimbalXZ(5, CANBUS_1, GM6020, 1, false);`
 
 `Motor turretYaw(3, CANBUS_2, M3508);`
-
-
 
 ___
 
@@ -63,43 +57,7 @@ or you can just give it a current:
 
 Finally, the most important part of using the Motor class is running Motor::tick(); to send all the motor values, get feedback values, and calculate multiTurn angle. 
 
-***
-
-# Requirements to making the Motor class work:
-
-There are some things you need to make sure you have to make the motor class work:
-
-## 1. Attach CANHandler
-
-To make the Motor class work, you need to attach a CANHandler object to it, which stores two can busses that we use to make the motors run.
-
-You do this with this function
-
-`Motor::setCANHandler(&handler);`
-
-Where handler is a CANHandler object.
-
-## 2. Motor::tick()
-
-This is explained more later, but you need to have a
-
-`Motor::tick();`
-
-at the end of your loops, or on a scheduler to send all the motor values, as well as some other things.
-
-IT IS VITAL THAT YOU CALL THIS AT THE END OF EACH LOOP
-
-```cpp
-Motor::tick();
-```
-
-## **VERY IMPORTANT**
-
-Keep in mind that while the GM6020 motors are technically capable to operate on canIDs 1-7, CAN restrictions do not allow them to operate on IDs other than 5-7. This means with two CAN busses, you have a limit of 6 GM6020s. Motors using the C620s do not have any limitations like this.
-
-___
-
-# Examples
+## Examples
 
 Example code with PID is:
 
@@ -135,3 +93,70 @@ int main(){
     }
 }
 ```
+
+---
+
+# Requirements to making the Motor class work:
+
+There are some things you need to make sure you have to make the motor class work:
+
+## 1. Attach CANHandler
+
+To make the Motor class work, you need to attach a CANHandler object to it, which stores two can busses that we use to make the motors run.
+
+You do this with this function
+
+`Motor::setCANHandler(&handler);`
+
+Where handler is a CANHandler object.
+
+## 2. Motor::tick()
+
+This is explained more later, but you need to have a `Motor::tick();` at the end of your loops, or on a scheduler to send all the motor values, as well as some other things.
+
+IT IS VITAL THAT YOU CALL THIS AT THE END OF EACH LOOP
+
+```cpp
+Motor::tick();
+```
+
+## **VERY IMPORTANT**
+
+Keep in mind that while the GM6020 motors are technically capable to operate on canIDs 1-7, CAN restrictions do not allow them to operate on IDs other than 5-7. This means with two CAN busses, you have a limit of 6 GM6020s. Motors using the C620s do not have any limitations like this.
+
+___
+
+# Motor Feedback
+
+When you run `Motor::tick();`, the Motor class reads a message from both CAN busses and updates a collection of feedback data collected from all collected motors. You can get that data with the following getters:
+
+`int getAngle()` (0-8191)
+
+`int getSpeed()` (RPM)
+
+`int getTorque()` (?)
+
+`int getTemperature()` (Celsius)
+
+There are also static versions of these, where motorID:
+
+`static int staticAngle(int motorID)` (0-8191)
+
+`static int staticSpeed(int motorID)` (RPM)
+
+`static int staticTorque(int motorID)` (?)
+
+`static int staticTemperature(int motorID)` (Celsius)
+
+It's important to keep in mind that `getAngle()` only a relative angle, which resets when it goes over 8191, the range is always from 0 to 8191. It is more useful to use the multiturn functionality, as it operates in degrees of the shaft, and also handles angles larger than the bounds of a full rotation, so you could enter in 720 and it would do two full rotations, or -960 to go three rotations the other direction.
+
+`int getMultiTurnAngle()`
+
+Positional PID uses this instead, and it also operates in degrees instead of a range from 0-8191.
+You can also reset the multiTurnAngle with zeroPos
+
+`void zeroPos()`
+
+or its static equivalent
+
+`static void staticZeroPos(int motorID)`

@@ -1,6 +1,6 @@
 # SerialCommunication.hpp
 
-- Facilitates Computer -> Nucleo communication through Mbed Studio's serial monitor. (Great for testing)
+- Facilitates Computer to Nucleo communication through Mbed Studio's serial monitor. (Great for testing)
   
   - Because the "Enter" button does not do anything on the Serial Monitor, pressing '\' will act like the Enter button.
   
@@ -20,11 +20,15 @@ SerialCommunication(PinName TX, PinName RX, int baud)
 
 **baud** Baudrate, usually set to 9600
 
+For example you can use the Tx and Rx built into the mini-usb connecting to the pc.
+
+`SerialCommunication Serial(USBTX, USBRX, 9600)`
+
 ## Functions
 
 ### bool update(char message[])
 
-- Takes in a **char array**. This is where the message will be stored into if there is new data in the Serial line. 
+- Takes in a **char array**, which is where the message will be stored into if there is new data in the Serial line. 
 
 - Returns **True** if there is new data
 

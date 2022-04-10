@@ -2,6 +2,8 @@
 
 - Write mecanum code - WRITTEN BUT UNTESTED
 
+- # IMPORTANT: WRITE CAN2 SUPPORT FOR FEEDBACK ARRAYS
+
 - Grab more can wires so we can test multiple motors at once - SUNDAY 
 
 - Add support for can2 by making a can handler
@@ -13,10 +15,6 @@
 - Make a class for Referee System 
 
 - Look into MBED-os scheduler
-
-
-
-
 
 # MBED STUDIO Setup
 
@@ -57,18 +55,6 @@
 8) If you did everything right, the built-in LED should start blinking on the Nucleo!
 
 ## TODO Cloning TR Repo
-
-
-
-
-
-
-
-
-
-
-
-
 
 FOR NEW SETUPS, REMEMBER YOU NEED A JUNCTION IN THE TR-mbed6 folder to the mbed-os library.
 I installed Link Shell Extension, but you can also do it on the command line with mklink
