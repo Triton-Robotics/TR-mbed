@@ -8,7 +8,7 @@ class PWMMotor : PwmOut{
     * @param pin 
     * @param defaultVal from 0 - 0.99f
     */
-    PWMMotor(PinName pin, double defaultVal) : PwmOut(pin) {
+    PWMMotor(PinName pin, double defaultVal = 0) : PwmOut(pin) {
         period(.00001f);
         write(defaultVal);
     }                                                                               
