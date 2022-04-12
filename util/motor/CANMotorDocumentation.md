@@ -140,13 +140,13 @@ When you run `Motor::tick();`, the Motor class reads a message from both CAN bus
 
 There are also static versions of these, where motorID:
 
-`static int staticAngle(int motorID)` (0-8191)
+`static int staticAngle(CANBus bus, int motorID)` (0-8191)
 
-`static int staticSpeed(int motorID)` (RPM)
+`static int staticSpeed(CANBus bus,int motorID)` (RPM)
 
-`static int staticTorque(int motorID)` (?)
+`static int staticTorque(CANBus bus,int motorID)` (?)
 
-`static int staticTemperature(int motorID)` (Celsius)
+`static int staticTemperature(CANBus bus,int motorID)` (Celsius)
 
 It's important to keep in mind that `getAngle()` only a relative angle, which resets when it goes over 8191, the range is always from 0 to 8191. It is more useful to use the multiturn functionality, as it operates in degrees of the shaft, and also handles angles larger than the bounds of a full rotation, so you could enter in 720 and it would do two full rotations, or -960 to go three rotations the other direction.
 

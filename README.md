@@ -2,7 +2,7 @@
 
 - Write mecanum code - WRITTEN BUT UNTESTED
 
-- # IMPORTANT: WRITE CAN2 SUPPORT FOR FEEDBACK ARRAYS
+- Can2 and CANHandler class use in motor.hpp masterclass - WRITTEN BUT UNTESTED
 
 - Grab more can wires so we can test multiple motors at once - SUNDAY 
 
