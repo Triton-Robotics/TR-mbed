@@ -57,6 +57,8 @@ static int multiTurnPositionAngle[8] = {0,0,0,0,0,0,0,0};
 static PID pidPos[8];
 static PID pidSpeed[8];
 
+static CANHandler* canHandles;
+
 class Motor{
 
     public:
@@ -68,9 +70,6 @@ class Motor{
     bool isInverted = false;
 
     CANHandler::CANBus currentBus;
-
-    static CANHandler* canHandles;
-
 
     /**
      * @brief Construct a new Motor object
@@ -328,7 +327,6 @@ class Motor{
         //CAN Sending to the two sending IDs
         static unsigned long lastTime[8] = {0};
         unsigned long Time = us_ticker_read() / 1000;
-
         if(motorExists[0] || motorExists[1] || motorExists[2] || motorExists[3]){
             int16_t outputArray[4] = {0, 0, 0, 0};
             for (int i = 0; i < 4; i++) {
@@ -345,7 +343,6 @@ class Motor{
                     outputArray[i] = motorOut[bus][i];
                 }
             }
-
             rawSend(sendIDs[0], outputArray[0], outputArray[1], outputArray[2], outputArray[3], bus);
         }
         if(motorExists[4] || motorExists[5] || motorExists[6] || motorExists[7]){
@@ -409,8 +406,7 @@ class Motor{
             sentBytes1[(2*i)+1] = motorSending[i] & (0xFF);
             sentBytes1[2*i] = (motorSending[i] >> 8) & (0xFF);
         }
-
-        
+        canHandles->rawSend(id,sentBytes1,bus);
     }
 
     /**

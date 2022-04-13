@@ -30,6 +30,7 @@ class CANHandler{
             */
         bool getFeedback(uint8_t bytes[], CANBus bus){
             rxMsg.clear();
+            rxMsg.len = 8;
             if (busAt(bus)) {
                 for(int i = 0;  i < 8; i ++){
                     rxMsg >> bytes[i]; //2 bytes per motor
@@ -39,6 +40,23 @@ class CANHandler{
             }
             return false;
             //CAN Recieving from feedback IDs
+        }
+
+        /**
+        * @brief Prints a CANMessage nicely
+        * 
+        * @param msg 
+        */
+        static void printMsg(CANMessage& msg)
+        {
+            printf("  ID      = 0x%.3x\r\n", msg.id);
+            printf("  Type    = %d\r\n", msg.type);
+            printf("  Format  = %d\r\n", msg.format);
+            printf("  Length  = %d\r\n", msg.len);
+            printf("  Data    =");
+            for (int i = 0; i < msg.len; i++)
+                printf(" 0x%.2X", msg.data[i]);
+            printf("\r\n");
         }
 
         /**
@@ -61,6 +79,7 @@ class CANHandler{
                 printf("Transmission error\n");
                 //break; 
             }
+            //printMsg(txMsg);
             return isWrite;
         }
 
