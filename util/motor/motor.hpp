@@ -6,14 +6,6 @@
 #include "../communications/CANMsg.h"
 #include "../communications/canHandler.hpp"
 
-//////////////////////////////////////////////
-//VERY IMPORTANT TO SET FREQUENCY HERE AND NOW
-//////////////////////////////////////////////
-
-//static CAN can1(PA_11,PA_12,1000000);
-//static CAN can1(PB_12,PB_13,1000000);
-//static CAN can2(PB_12,PB_13,1000000);
-
 enum motorMode {DISABLED, POSITION, SPEED, CURRENT};
 
 enum motorType {
@@ -38,8 +30,6 @@ static bool motorExists[8] = {0,0,0,0,0,0,0,0};
 
 static int motorOut[2][8] = {{0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0}}; //All motor output values, depending on what mode they're in.
 
-static int canOutput = 1;
-
 static bool motorDebug = 0;
 
 static motorType types[] = {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE};
@@ -60,7 +50,6 @@ static PID pidSpeed[8];
 static CANHandler* canHandles;
 
 class Motor{
-
     public:
         
     int motorNumber;
@@ -79,19 +68,16 @@ class Motor{
     Motor(int canID, CANHandler::CANBus bus, motorType type = STANDARD, int ratio = 19, int inverted = false)
     {
         isInverted = inverted;
-        if(type == GM6020){
-            gearRatio = 1; //TODO FIND THE ACTUAL GEAR RATIO
-            if(canID <= 4){
-                printf("ERROR. IT IS HIGHLY DISCOURAGED OF YOU TO USE CAN BUSSES 1-4 FOR THE GM6020s. YOU WILL HAVE ERRORS. DO NOT\n");
-            }
-        }else{
-            gearRatio = ratio;
-        }
+        if(type == GM6020 && canID <= 4) // Check for them fucking gimblies
+            printf("ERROR. IT IS HIGHLY DISCOURAGED OF YOU TO USE CAN BUSSES 1-4 FOR THE GM6020s. YOU WILL HAVE ERRORS.\n");
+        if (canID > 8 || canID < 1)
+            printf("canID not within correct bounds\n");
+
         motorNumber = canID - 1; //Changes range from 1-8 to 0-7
         totalMotors++;
         motorExists[motorNumber] = 1;
         types[motorNumber] = type;
-        //TODO Throw error when motorNumber isnt within the range [0,7]
+        
     }
 
     ~Motor(){ //DESTRUCTOR
@@ -100,28 +86,35 @@ class Motor{
         types[motorNumber] = NONE;
     }
     
-        /**
+    /**
      * @brief Set the desired value of this motor
      * 
-     * @param value
+     * @param value 
      * @return int value
      */
     int setDesiredValue(int value){
-        if((*canHandles).exists){
+        if (isInverted)
+            value = -value;
+        if(canHandles->exists){
             motorOut[currentBus][motorNumber] = value;
             return motorOut[currentBus][motorNumber];
         }else{
+            printf("ERROR: CAN Bus does not exist!! \n");
             return NULL;
         }
     }
 
-    static void setCANHandler(CANHandler* handle){
-        canHandles = handle;
+    /**
+     * @brief Import function to setup the CANHandler constructor
+     * 
+     * @param value 
+     * @return int value
+     */
+    static void setCANHandler(CANHandler* CANPorts){
+        canHandles = CANPorts;
     }
 
     void setDesiredCurrent(int value) {
-        if (isInverted)
-            value = -value;
         setDesiredValue(value);
         mode[motorNumber] = CURRENT;
     }
@@ -132,7 +125,7 @@ class Motor{
     }
 
     /**
-     * @brief Set the desired position of this motor in degrees
+     * @brief Set the desired position of the motor's output shaft in DEGREEs
      * 
      * @param value
      */
@@ -229,23 +222,6 @@ class Motor{
 
     void setSpeedOutputCap(double cap) {
         pidSpeed[motorNumber].setOutputCap(cap);
-    }
-    
-    /**
-     * @brief Prints a CANMessage nicely
-     * 
-     * @param msg 
-     */
-    static void printMsg(CANMessage& msg)
-    {
-        printf("  ID      = 0x%.3x\r\n", msg.id);
-        printf("  Type    = %d\r\n", msg.type);
-        printf("  Format  = %d\r\n", msg.format);
-        printf("  Length  = %d\r\n", msg.len);
-        printf("  Data    =");
-        for (int i = 0; i < msg.len; i++)
-            printf(" 0x%.2X", msg.data[i]);
-        printf("\r\n");
     }
 
     /**
@@ -423,15 +399,6 @@ class Motor{
         getFeedback(CANHandler::CANBUS_2);
         sendValues(CANHandler::CANBUS_2);
     }
-
-    /**
-     * @brief equivalent to tick just for Ming
-     * 
-     */
-    static void update(){
-        tick();
-    }
-
 
 };
 
