@@ -1,5 +1,5 @@
 #include "mbed.h"
 #include "../util/motor/motor.hpp"
-//#include "../util/communications/DJIRemote.cpp"
+#include "../util/communications/include/DJIRemote.hpp"
 #include "../util/communications/canHandler.hpp"
 #include "../util/algorithms/pid.hpp"

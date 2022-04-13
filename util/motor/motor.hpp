@@ -52,7 +52,7 @@ static motorMode mode[8] = {DISABLED, DISABLED, DISABLED, DISABLED, DISABLED, DI
 //static double PIDValuesPosition[8][3] = {{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0}};
 //static double PIDValuesSpeed[8][3] = {{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0}};
 
-static int multiTurnPositionAngle[8] = {0,0,0,0,0,0,0,0};
+static int multiTurnPositionAngle[2][8] = {{0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0}};
 
 static PID pidPos[8];
 static PID pidSpeed[8];
@@ -161,7 +161,7 @@ class Motor{
     }
 
     int getMultiTurnAngle(){
-        return multiTurnPositionAngle[motorNumber];
+        return multiTurnPositionAngle[currentBus][motorNumber];
     }
 
     static int staticAngle(CANHandler::CANBus bus, int motorID){
@@ -169,11 +169,11 @@ class Motor{
     }
 
     void zeroPos() {
-        multiTurnPositionAngle[motorNumber] = 0;
+        multiTurnPositionAngle[currentBus][motorNumber] = 0;
     }
 
-    static void staticZeroPos(int motorID) {
-        multiTurnPositionAngle[motorID] = 0;
+    static void staticZeroPos(int motorID,CANHandler::CANBus bus) {
+        multiTurnPositionAngle[bus][motorID] = 0;
     }
 
     /**
@@ -254,15 +254,16 @@ class Motor{
      */
     static void getFeedback(CANHandler::CANBus bus){
         uint8_t recievedBytes[8] = {0,0,0,0,0,0,0,0};
-        if ((*canHandles).getFeedback(recievedBytes,bus)) {
+        if(canHandles->getFeedback(recievedBytes,bus)) {
             int motorID = rxMsg.id-0x201;
             if(motorID >= 8){
                 motorID -= 4;
             }
-   
-            feedback[bus][motorID][0] = 0 | (recievedBytes[0]<<8) | recievedBytes[1];
-            feedback[bus][motorID][1] = 0 | (recievedBytes[2]<<8) | recievedBytes[3];
-            feedback[bus][motorID][2] = 0 | (recievedBytes[4]<<8) | recievedBytes[5];
+            for (int i = 0; i < 8; i++)
+                printf(" 0x%.2X", recievedBytes[i]);
+            feedback[bus][motorID][0] = (recievedBytes[0]<<8) | recievedBytes[1];
+            feedback[bus][motorID][1] = (recievedBytes[2]<<8) | recievedBytes[3];
+            feedback[bus][motorID][2] = (recievedBytes[4]<<8) | recievedBytes[5];
             feedback[bus][motorID][3] = ((int16_t) recievedBytes[6]);
 
             //printf("Motor 0x%x:\tAngle (0,8191):%d\tSpeed  ( RPM ):%d\tTorque ( CUR ):%d\tTemperature(C):%d \n",rxMsg.id,feedback[motorID][0],feedback[motorID][1],feedback[motorID][2],feedback[motorID][3]);
@@ -281,21 +282,21 @@ class Motor{
         for (int i = 0; i < 7; i++) {
             if (abs(staticSpeed(bus,i)) < 100) {
                 if ( staticAngle(bus,i) > (8191 - Threshold) && lastMotorAngle[i] < Threshold)
-                    multiTurnPositionAngle[i] += -(staticAngle(bus,i) - 8191) - lastMotorAngle[i];
+                    multiTurnPositionAngle[bus][i] += -(staticAngle(bus,i) - 8191) - lastMotorAngle[i];
 
                 else if (staticAngle(bus,i) < Threshold && lastMotorAngle[i] > (8191 - Threshold))
-                    multiTurnPositionAngle[i] -= -(staticAngle(bus,i) - 8191) - lastMotorAngle[i];
+                    multiTurnPositionAngle[bus][i] -= -(staticAngle(bus,i) - 8191) - lastMotorAngle[i];
                 else 
-                    multiTurnPositionAngle[i] += staticAngle(bus,i) - lastMotorAngle[i];
+                    multiTurnPositionAngle[bus][i] += staticAngle(bus,i) - lastMotorAngle[i];
             }
             else {
                 int delta = staticAngle(bus,i) - lastMotorAngle[i]; // 0 to 199 POS// 8000 to 128 NEG
                 if(staticSpeed(bus,i) < 0 && delta > 0){ //neg skip
-                    multiTurnPositionAngle[i] += (delta - 8191);
+                    multiTurnPositionAngle[bus][i] += (delta - 8191);
                 }else if(staticSpeed(bus,i) > 0 && delta < 0){ //pos skip
-                    multiTurnPositionAngle[i] += (delta + 8191);
+                    multiTurnPositionAngle[bus][i] += (delta + 8191);
                 }else { //pos no skip or neg no skip same case
-                    multiTurnPositionAngle[i] += delta;
+                    multiTurnPositionAngle[bus][i] += delta;
                 }
             }
             lastMotorAngle[i] = staticAngle(bus,i);
@@ -334,10 +335,10 @@ class Motor{
                 if (mode[i] == DISABLED)
                     outputArray[i] = 0;
                 else if (mode[i] == POSITION)
-                    outputArray[i] = pidPos[i].calculate(motorOut[bus][i],multiTurnPositionAngle[i],timeDifference);
+                    outputArray[i] = pidPos[i].calculate(motorOut[bus][i],multiTurnPositionAngle[bus][i],timeDifference);
                     //-PIDPositionError(motorOut1[i], i);
                 else if (mode[i] == SPEED)
-                    outputArray[i] += pidSpeed[i].calculate(motorOut[bus][i],multiTurnPositionAngle[i],timeDifference);
+                    outputArray[i] += pidSpeed[i].calculate(motorOut[bus][i],multiTurnPositionAngle[bus][i],timeDifference);
                     //-PIDSpeedError(motorOut1[i], i);
                 else if (mode[i] == CURRENT) {
                     outputArray[i] = motorOut[bus][i];
@@ -355,7 +356,7 @@ class Motor{
                     if (mode[i+4] == DISABLED){
                         outputArray[i] = 0;
                     }else if (mode[i+4] == POSITION){
-                        outputArray[i] = pidPos[i+4].calculate(motorOut[bus][i+4],multiTurnPositionAngle[i+4],timeDifference);
+                        outputArray[i] = pidPos[i+4].calculate(motorOut[bus][i+4],multiTurnPositionAngle[bus][i+4],timeDifference);
                         //-PIDPositionError(motorOut2[i], i+4);
                         doSend[0] = true;
                     }else if (mode[i+4] == SPEED){
@@ -370,7 +371,7 @@ class Motor{
                     if (mode[i+4] == DISABLED){
                         outputArrayGM6020[i] = 0;
                     }else if (mode[i+4] == POSITION){
-                        outputArrayGM6020[i] = pidPos[i+4].calculate(motorOut[bus][i+4],multiTurnPositionAngle[i+4],timeDifference);
+                        outputArrayGM6020[i] = pidPos[i+4].calculate(motorOut[bus][i+4],multiTurnPositionAngle[bus][i+4],timeDifference);
                         doSend[1] = true;
                     }else if (mode[i+4] == SPEED){
                         outputArrayGM6020[i] += pidSpeed[i+4].calculate(motorOut[bus][i+4],staticSpeed(bus,i+4),timeDifference);

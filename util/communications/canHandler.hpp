@@ -31,7 +31,8 @@ class CANHandler{
         bool getFeedback(uint8_t bytes[], CANBus bus){
             rxMsg.clear();
             rxMsg.len = 8;
-            if (busAt(bus)) {
+            if (busAt(bus)->read(rxMsg)) {
+                //printMsg(rxMsg);
                 for(int i = 0;  i < 8; i ++){
                     rxMsg >> bytes[i]; //2 bytes per motor
                 }
