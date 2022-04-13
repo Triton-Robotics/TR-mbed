@@ -28,6 +28,8 @@
 
 ## Blinky Demo
 
+Test upload code to verifiy correct installation to the STM32 Nucleo F446RE
+
 1) Open MBED Studio
 
 2) Go to file -> New Program
@@ -42,6 +44,8 @@
    
    4) Click Add program
    
+   5) These are the steps you should take everytime you create a new, local program.
+   
    ![](assets/2022-04-09-16-37-36-image.png)
 
 4) Open main.cpp under the Blinky program folder you just created![](assets/2022-04-09-16-42-55-image.png)
@@ -54,14 +58,22 @@
 
 8) If you did everything right, the built-in LED should start blinking on the Nucleo!
 
-## TODO Cloning TR Repo
+## Cloning Triton Robotics Github Repo
 
-FOR NEW SETUPS, REMEMBER YOU NEED A JUNCTION IN THE TR-mbed6 folder to the mbed-os library.
-I installed Link Shell Extension, but you can also do it on the command line with mklink
+- Clone the [TR Github](https://github.com/Triton-Robotics/TR-mbed6) with Github Desktop
 
-Link Shell Extension Steps:
+- Put it in the "User/Mbed Programs" location
 
-1. Download LSE: https://download.cnet.com/Link-Shell-Extension-64-bit/3000-2248_4-75213087.html
-2. Right click on mbed-os folder 
-3. Pick Link Source on the mbed-os folder
-4. Go inside TR-mbed6 and right click, select Drop As, Junction.
+
+
+## Installion a Junction
+
+You need to create a **JUNCTION** in the TR-mbed6 folder to point to the mbed-os library.
+
+1) Install the [Link Shell Extension](https://download.cnet.com/Link-Shell-Extension-64-bit/3000-2248_4-75213087.html)
+
+2) Right click on the mbed-os folder that you cloned at the very beginning
+
+3) Pick Link Source on the mbed-os folder 
+
+4) Go inside TR-mbed6 and right click, select **Drop As Junction** 
