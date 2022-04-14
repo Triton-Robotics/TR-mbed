@@ -18,6 +18,14 @@ enum motorType {
     GM6020 = 2
 };
 
+enum dataType {
+    ANGLE = 0,
+    VELOCITY = 1,
+    TORQUE = 2,
+    TEMPERATURE = 3,
+    MULTITURNANGLE = 5
+};
+
 static int sendIDs[3] = {0x200,0x1FF,0x2FF}; //IDs to send data
 
 static int16_t feedback[2][8][4] = 
@@ -49,6 +57,17 @@ static PID pidSpeed[8];
 
 static CANHandler* canHandles;
 
+
+/**
+     * @brief Construct a new Motor object
+     * 
+     * @param canID is a number from 1-8 signifying which CAN id is attached, blinking LED on motor controller will show this
+     * @param bus bus that the motor is attached to. This is either CANBUS_1 or CANBUS_2 
+     * @param type Type of motor controller.  
+     * @param ratio Gear ratio inbetween the motor -> output shaft. 
+     *   Ex: The M3508s have a 19:1 planetary gearbox, so this value would be 19.
+     * @param inverted Inverts the output direction of the motor shaft.
+     */ 
 class Motor{
     public:
         
@@ -60,11 +79,7 @@ class Motor{
 
     CANHandler::CANBus currentBus;
 
-    /**
-     * @brief Construct a new Motor object
-     * 
-     * @param canNum is a number from 1-8 signifying which CAN id is attached, blinking LED on motor controller will show this
-     */
+    
     Motor(int canID, CANHandler::CANBus bus, motorType type = STANDARD, int ratio = 19, int inverted = false)
     {
         isInverted = inverted;
@@ -105,10 +120,9 @@ class Motor{
     }
 
     /**
-     * @brief Import function to setup the CANHandler constructor
+     * @brief Import function to setup the CANHandler constructor. Must be run at the start of the main.cpp file
      * 
-     * @param value 
-     * @return int value
+     * @param CANPorts An address to the CANHandler class
      */
     static void setCANHandler(CANHandler* CANPorts){
         canHandles = CANPorts;
@@ -144,21 +158,27 @@ class Motor{
     }
 
     
+
     /**
-     * @brief Returns angle of motor
-     * 
-     * @return int 
+     * @brief Returns data from motor
+     * @param data Either ANGLE, MULTITURNANGLE, VELOCITY, TORQUE, or TEMPERATURE
+     * @return integer data 
      */
-    int getAngle(){
-        return feedback[currentBus][motorNumber][0];
+
+    int getData(dataType data) {
+        if (data != MULTITURNANGLE)
+            return feedback[currentBus][motorNumber][data];
+        else 
+            return multiTurnPositionAngle[currentBus][motorNumber];
     }
 
-    int getMultiTurnAngle(){
-        return multiTurnPositionAngle[currentBus][motorNumber];
-    }
-
-    static int staticAngle(CANHandler::CANBus bus, int motorID){
-        return feedback[bus][motorID][0];
+    /**
+     * @brief Returns data from motor
+     * @param data Either ANGLE, VELOCITY, TORQUE, or TEMPERATURE
+     * @return integer data 
+     */
+    static int getStaticData(CANHandler::CANBus bus, int motorID, dataType data){
+        return feedback[bus][motorID][data];
     }
 
     void zeroPos() {
@@ -167,37 +187,6 @@ class Motor{
 
     static void staticZeroPos(int motorID,CANHandler::CANBus bus) {
         multiTurnPositionAngle[bus][motorID] = 0;
-    }
-
-    /**
-     * @brief Returns speed of motor
-     * 
-     * @return int 
-     */
-    int getSpeed(){
-        return feedback[currentBus][motorNumber][1];
-    }
-
-    static int staticSpeed(CANHandler::CANBus bus, int motorID) {
-        return feedback[bus][motorID][1];
-    }
-
-    /**
-     * @brief Returns torque of motor
-     * 
-     * @return int 
-     */
-    int getTorque(){
-        return feedback[currentBus][motorNumber][2];
-    }
-
-    /**
-     * @brief Returns temperature of motor
-     * 
-     * @return int 
-     */
-    int getTemperature(){
-        return feedback[currentBus][motorNumber][3];
     }
 
     void setPositionPID(double Kp, double Ki, double Kd){
@@ -225,14 +214,14 @@ class Motor{
     }
 
     /**
-     * @brief Get feedback back from the motor
-     * 
+     * @brief Get feedback back from the motors attached to a CANBUS
+     * @param bus BUS that you want to get motor data from. Either CANBUS_1 or CANBUS_2 
      */
     static void getFeedback(CANHandler::CANBus bus){
         uint8_t recievedBytes[8] = {0,0,0,0,0,0,0,0};
-        if(canHandles->getFeedback(recievedBytes,bus)) {
+        if(canHandles->getFeedback(recievedBytes,bus)) { // As long as theres a new message, keep on runnin!
             int motorID = rxMsg.id-0x201;
-            if(motorID >= 8){
+            if(motorID >= 8){ // Shifting IDs to automatically handle gimblies 
                 motorID -= 4;
             }
             for (int i = 0; i < 8; i++)
@@ -244,11 +233,11 @@ class Motor{
 
             //printf("Motor 0x%x:\tAngle (0,8191):%d\tSpeed  ( RPM ):%d\tTorque ( CUR ):%d\tTemperature(C):%d \n",rxMsg.id,feedback[motorID][0],feedback[motorID][1],feedback[motorID][2],feedback[motorID][3]);
         }
-        //CAN Recieving from feedback IDs
     }
 
     /**
      * @brief Updates global array for multiTurnPositionontrol
+     * @param bus BUS that you want to get update multiTurnPosition from. Either CANBUS_1 or CANBUS_2  
      */
     static void multiTurnPositionControl(CANHandler::CANBus bus) {
         int Threshold = 3000;
@@ -256,44 +245,29 @@ class Motor{
         static int lastMotorAngle[8] = {0,0,0,0,0,0,0,0};
 
         for (int i = 0; i < 7; i++) {
-            if (abs(staticSpeed(bus,i)) < 100) {
-                if ( staticAngle(bus,i) > (8191 - Threshold) && lastMotorAngle[i] < Threshold)
-                    multiTurnPositionAngle[bus][i] += -(staticAngle(bus,i) - 8191) - lastMotorAngle[i];
+            if (abs(getStaticData(bus,i, VELOCITY)) < 100) {
+                if ( getStaticData(bus,i, ANGLE) > (8191 - Threshold) && lastMotorAngle[i] < Threshold)
+                    multiTurnPositionAngle[bus][i] += -(getStaticData(bus,i, ANGLE) - 8191) - lastMotorAngle[i];
 
-                else if (staticAngle(bus,i) < Threshold && lastMotorAngle[i] > (8191 - Threshold))
-                    multiTurnPositionAngle[bus][i] -= -(staticAngle(bus,i) - 8191) - lastMotorAngle[i];
+                else if (getStaticData(bus,i, ANGLE) < Threshold && lastMotorAngle[i] > (8191 - Threshold))
+                    multiTurnPositionAngle[bus][i] -= -(getStaticData(bus,i, ANGLE) - 8191) - lastMotorAngle[i];
                 else 
-                    multiTurnPositionAngle[bus][i] += staticAngle(bus,i) - lastMotorAngle[i];
+                    multiTurnPositionAngle[bus][i] += getStaticData(bus,i, ANGLE) - lastMotorAngle[i];
             }
             else {
-                int delta = staticAngle(bus,i) - lastMotorAngle[i]; // 0 to 199 POS// 8000 to 128 NEG
-                if(staticSpeed(bus,i) < 0 && delta > 0){ //neg skip
+                int delta = getStaticData(bus,i, ANGLE) - lastMotorAngle[i]; // 0 to 199 POS// 8000 to 128 NEG
+                if(getStaticData(bus,i, VELOCITY) < 0 && delta > 0){ //neg skip
                     multiTurnPositionAngle[bus][i] += (delta - 8191);
-                }else if(staticSpeed(bus,i) > 0 && delta < 0){ //pos skip
+                }else if(getStaticData(bus,i, VELOCITY) > 0 && delta < 0){ //pos skip
                     multiTurnPositionAngle[bus][i] += (delta + 8191);
                 }else { //pos no skip or neg no skip same case
                     multiTurnPositionAngle[bus][i] += delta;
                 }
             }
-            lastMotorAngle[i] = staticAngle(bus,i);
+            lastMotorAngle[i] = getStaticData(bus,i, ANGLE);
 
         }
       
-    }
-
-    /**
-     * @brief Returns specified data of specified motor
-     * canBus is a field between 1 and 8, specifing the can bus of the motor
-     * dataNumber is the element of data you want
-     * Angle: 0
-     * Speed: 1
-     * Torque: 2
-     * Temperature: 3
-     * 
-     * @return int 
-     */
-    static int getData(CANHandler::CANBus bus, int canBus, int dataNumber){
-        return feedback[bus][canBus -1][dataNumber];
     }
 
     /**
@@ -336,7 +310,7 @@ class Motor{
                         //-PIDPositionError(motorOut2[i], i+4);
                         doSend[0] = true;
                     }else if (mode[i+4] == SPEED){
-                        outputArray[i] += pidSpeed[i+4].calculate(motorOut[bus][i+4],staticSpeed(bus,i+4),timeDifference);
+                        outputArray[i] += pidSpeed[i+4].calculate(motorOut[bus][i+4],getStaticData(bus,i, VELOCITY),timeDifference);
                         //-PIDSpeedError(motorOut2[i], i+4);
                         doSend[0] = true;
                     }else if (mode[i+4] == CURRENT) {
@@ -350,7 +324,7 @@ class Motor{
                         outputArrayGM6020[i] = pidPos[i+4].calculate(motorOut[bus][i+4],multiTurnPositionAngle[bus][i+4],timeDifference);
                         doSend[1] = true;
                     }else if (mode[i+4] == SPEED){
-                        outputArrayGM6020[i] += pidSpeed[i+4].calculate(motorOut[bus][i+4],staticSpeed(bus,i+4),timeDifference);
+                        outputArrayGM6020[i] += pidSpeed[i+4].calculate(motorOut[bus][i+4],getStaticData(bus,i, VELOCITY),timeDifference);
                         printf("\t\t\t\tCurrent given:%d\n",outputArrayGM6020[i]);
                         doSend[1] = true;
                     }else if (mode[i+4] == CURRENT) {
