@@ -2,15 +2,11 @@
 
 - Write mecanum code - WRITTEN BUT UNTESTED
 
-- Can2 and CANHandler class use in motor.hpp masterclass - WRITTEN BUT UNTESTED
+- FIX SPEED PID somethings fucked up on CAN2 and maybe on CAN1?
 
 - Grab more can wires so we can test multiple motors at once - SUNDAY 
 
-- Add support for can2 by making a can handler
-
 - Make Chassis Subsystem
-
-- Finish Cloning TR Repo section on documentation
 
 - Make a class for Referee System 
 

@@ -27,11 +27,12 @@ class CANHandler{
         * @brief Get feedback back from the motor
         * 
         */
-        bool getFeedback(uint8_t bytes[], CANBus bus){
+        bool getFeedback(int *id, uint8_t bytes[], CANBus bus){
             rxMsg.clear();
             rxMsg.len = 8;
             if (busAt(bus)->read(rxMsg)) {
                 //printMsg(rxMsg);
+                *id = rxMsg.id;
                 for(int i = 0;  i < 8; i ++){
                     rxMsg >> bytes[i]; //Extract information from rxMsg and store it into the bytes array
                 }
@@ -67,6 +68,7 @@ class CANHandler{
         * @param bus the bus you're sending the CAN messages to
         */
         bool rawSend(int id, int8_t bytes[], CANBus bus){
+            static int errorCount = 0;
             txMsg.clear(); // clear Tx message storage
             txMsg.id = id; 
 
@@ -75,9 +77,16 @@ class CANHandler{
             }
 
             bool isWrite = busAt(bus)->write(txMsg);
-            if(isWrite == 0){
-                printf("Transmission error in rawSend()\n");
+            
+            if(isWrite == 0) {
+                errorCount++;
             }
+            else{
+                errorCount = 0;
+            }
+
+            if (errorCount > 1000)
+                printf("Transmission error in rawSend()\n");
             //printMsg(txMsg);
             return isWrite;
         }
