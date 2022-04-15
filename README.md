@@ -38,6 +38,22 @@ You need to create a **JUNCTION** in the TR-mbed6 folder to point to the mbed-os
 
 4. Go inside **TR-mbed6** and right click, select **Drop As Junction**
 
+## OPTIONAL: Setting hotkeys for building/running
+
+Hitting the play button over and over again hurts fingies. Why not set a hotkey for it? 
+
+1) Press ctrl+alt+comma to open the shortcuts menu
+
+2) Search for "Run on device" 
+
+3) Set that hotkey to "ctrl+u"
+
+4) Search for "Build"
+
+5) Set that hotkey to "ctrl+r"
+
+**Your fingers will thank you later.......**
+
 # Blinky Demo
 
 Test upload code to verifiy correct installation to the STM32 Nucleo F446RE
