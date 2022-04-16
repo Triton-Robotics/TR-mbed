@@ -8,15 +8,15 @@
 
 enum turretMode{RELATIVE, ANGULAR};
 
-class TurretSubsystem(){
+class TurretSubsystem{
     public:
         Motor* gimbalX;
         Motor* gimbalY;
-        PWMMotor flywheelL;
-        PWMMotor flywheelR;
+        PWMMotor* flywheelL;
+        PWMMotor* flywheelR;
         Motor* serializer;
-        int xBounds = {0,0} //angle array for the x axis as a bound for the amount of allowed rotation;
-        int YBounds = {0,0} //angle array for the y axis as a bound for the amount of allowed rotation;
+        int xBounds[2] = {0,0}; //angle array for the x axis as a bound for the amount of allowed rotation;
+        int yBounds[2] = {0,0}; //angle array for the y axis as a bound for the amount of allowed rotation;
 
         TurretSubsystem(Motor gX, Motor gY, PWMMotor flyL, PWMMotor flyR, Motor serialize)
         {
@@ -27,11 +27,11 @@ class TurretSubsystem(){
             serializer = &serialize;
         }
 
-        gimbalMove(int angleX, int angleY){
+        void gimbalMove(int angleX, int angleY){
             angleX = std::min(std::max(xBounds[1],angleX),xBounds[0]);
             angleY = std::min(std::max(yBounds[1],angleY),yBounds[0]);
-            gimbalX.setDesiredPosition(angleX);
-            gimbalY.setDesiredPosition(angleY);
+            gimbalX->setDesiredPos(angleX);
+            gimbalY->setDesiredPos(angleY);
         }
 
 
