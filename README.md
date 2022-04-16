@@ -2,15 +2,11 @@
 
 - Write mecanum code - WRITTEN BUT UNTESTED
 
-- Can2 and CANHandler class use in motor.hpp masterclass - WRITTEN BUT UNTESTED
+- FIX SPEED PID somethings fucked up on CAN2 and maybe on CAN1?
 
 - Grab more can wires so we can test multiple motors at once - SUNDAY 
 
-- Add support for can2 by making a can handler
-
 - Make Chassis Subsystem
-
-- Finish Cloning TR Repo section on documentation
 
 - Make a class for Referee System 
 
@@ -41,6 +37,22 @@ You need to create a **JUNCTION** in the TR-mbed6 folder to point to the mbed-os
 3. Pick Link Source on the **mbed-os** folder
 
 4. Go inside **TR-mbed6** and right click, select **Drop As Junction**
+
+## OPTIONAL: Setting hotkeys for building/running
+
+Hitting the play button over and over again hurts fingies. Why not set a hotkey for it? 
+
+1) Press ctrl+alt+comma to open the shortcuts menu
+
+2) Search for "Run on device" 
+
+3) Set that hotkey to "ctrl+u"
+
+4) Search for "Build"
+
+5) Set that hotkey to "ctrl+r"
+
+**Your fingers will thank you later.......**
 
 # Blinky Demo
 

@@ -3,7 +3,7 @@
 /**
     * @brief Construct a new PWM Output 
     * @param pin 
-    * @param defaultVal integerfrom 0 - 180 corresponds with a pulse width from 1ms to 2ms which is default for most servos/pwm motor controllers
+    * @param defaultVal integer from 0 - 180 corresponds with a pulse width from 1ms to 2ms which is default for most servos/pwm motor controllers
     */
 class PWMMotor : PwmOut{
 
@@ -15,7 +15,7 @@ class PWMMotor : PwmOut{
     public: 
         PWMMotor(PinName pin, int defaultVal = 0) : PwmOut(pin) {
             period(.02);
-            pulsewidth(defaultVal);
+            pulsewidth(intToPulse(defaultVal));
         }            
 
         /**

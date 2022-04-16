@@ -38,7 +38,7 @@ class PID {
             float PIDCalc = kP * error + kI * sumError + kD * ((double)(error - lastError)/dt);
             sumError += error;
             lastError = error;
-            printf("Error: %d\t",(int)error);
+            printf("error: %d\t",(int)error);
             if(integralCap != 0){
                 sumError = std::max(std::min(sumError,integralCap),-integralCap);
             }
