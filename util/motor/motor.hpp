@@ -55,8 +55,10 @@ static int multiTurnPositionAngle[2][8] = {{0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0}};
 static PID pidPos[2][8];
 static PID pidSpeed[2][8];
 
-static double defaultGimblyPosPID[3] = {5,0,3};
-static double defaultGimblySpeedPID[3] = {50,0,0};
+static double defaultGimblyPosPID[3] = {5,0,3}; // pos output cap of 8000
+static double defaultGimblySpeedPID[3] = {50,10,0}; //speed icap of 1000
+
+static double defaultM3508SpeedPID[3] = {.5, .2, 7}; //ICAP OF 400 REQUIRED
 
 static CANHandler* canHandles;
 
@@ -148,7 +150,7 @@ class Motor{
     }
 
     void setDesiredSpeed(int value) {
-        setDesiredValue(value);
+        setDesiredValue(value * gearRatio);
         mode[currentBus][motorNumber] = SPEED;
     }
 
@@ -261,7 +263,7 @@ class Motor{
     static void multiTurnPositionControl(CANHandler::CANBus bus) {
         int Threshold = 3000; // From 0 - 8191
 
-        static int lastMotorAngle[2][8] = {0,0,0,0,0,0,0,0};
+        static int lastMotorAngle[2][8] = {{0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0}};
 
         for (int i = 0; i < 7; i++) {
             if (abs(getStaticData(bus,i, VELOCITY)) < 100) { // Check for slow speeds DJI's speed readout is shit when slow rpm

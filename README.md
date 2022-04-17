@@ -2,7 +2,7 @@
 
 - Write mecanum code - WRITTEN BUT UNTESTED
 
-- Check Speed PID on can2
+- Add error for trying to run position pid on the M3508s because those will nevewr fucking work
 
 - Grab more can wires so we can test multiple motors at once - SUNDAY 
 
