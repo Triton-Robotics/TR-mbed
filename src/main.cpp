@@ -21,7 +21,12 @@ int main(){
         //printf("%d\n", feedback[CANHandler::CANBUS_1][1][2]);
 
         if(rType == INFANTRY){
-            //chassis.move(remoteController.getChannel(Remote::LEFT_HORIZONTAL))
+            chassis.move(
+                remoteController.getChannel(Remote::Channel::LEFT_HORIZONTAL),
+                remoteController.getChannel(Remote::Channel::LEFT_VERTICAL),
+                remoteController.getChannel(Remote::Channel::RIGHT_HORIZONTAL),3);
+            //since max value of output is 660, 1980 seems right for testing purposes.
+
         }
 
 
