@@ -10,15 +10,18 @@ enum motorMode {DISABLED, POSITION, SPEED, CURRENT};
 
 enum motorType {
     NONE = 0,
-    STANDARD = 1,
-    M2006 = 1,
-    C620 = 1,
+    STANDARD = 1, //all motors that use the standard can protocol, used by the C610 and C620
+    
+    C610 = 4,
+    M2006 = 4,
+    
+    C620 = 3,
     M3508 = 3, 
     //keep in mind that in the constructor, this is only used to 
     //set the default pid values and gear ratio. The motortype will 
     //be changed to STANDARD, because thats what the code uses.
 
-    GIMBLY = 2,
+    GIMBLY = 2, //Gimblyyyyyyyyyy
     GM6020 = 2
 };
 
@@ -105,22 +108,36 @@ class Motor{
         if(type == GM6020) {
             ratio = 1;
             setPositionPID(defaultGimblyPosPID[0], defaultGimblyPosPID[1], defaultGimblyPosPID[2]);
+            //setSpeedIntegralCap(?);
             setPositionOutputCap(8000);
 
             setSpeedPID(defaultGimblySpeedPID[0], defaultGimblySpeedPID[1], defaultGimblySpeedPID[2]);
             setSpeedOutputCap(20000);
             setSpeedIntegralCap(1000);
         }else if(type == M3508){
-            gearRatio = 19;
+            ratio = 19;
             types[bus][motorNumber] = STANDARD;
 
-            //setPositionPID(defaultM3508PosPID[0], defaultGimblyPosPID[1], defaultGimblyPosPID[2]);
+            //setPositionPID(defaultM3508PosPID[0], defaultM3508PosPID[1], defaultM3508PosPID[2]);
+            //setSpeedIntegralCap(?);
             setPositionOutputCap(8000);
 
             setSpeedPID(defaultM3508SpeedPID[0], defaultM3508SpeedPID[1], defaultM3508SpeedPID[2]);
             setSpeedIntegralCap(1000);
             setSpeedOutputCap(8000);
+        }else if(type == M2006){
+            ratio = 36;
+            types[bus][motorNumber] = STANDARD;
+
+            //setPositionPID(defaultM2006PosPID[0], defaultM2006PosPID[1], defaultM2006PosPID[2]);
+            //setSpeedIntegralCap(?);
+            //setPositionOutputCap(?);
+
+            //setSpeedPID(defaultM2006SpeedPID[0], defaultM2006SpeedPID[1], defaultM2006SpeedPID[2]);
+            //setSpeedIntegralCap(?);
+            //setSpeedOutputCap(?);
         }
+
         
         gearRatio = ratio;
 
