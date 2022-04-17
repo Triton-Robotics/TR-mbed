@@ -2,11 +2,11 @@
 
 - Discuss structure for the main mastercode
 
-- Write simple joystick-mecanum code to run infantry before we pop it into the Chassis Class.ss
+- Write simple joystick-mecanum code to run infantry before we pop it into the Chassis Class - WRITTEN BUT UNTESTED
 
 - Write a Turret Subsystem Class - WRITTEN BUT UNTESTED
 
-- Write a Chassis Subsystem Class
+- Write a Chassis Subsystem Class - WRITTEN BUT UNTESTED
 
 - Write mecanum code - WRITTEN BUT UNTESTED
 
