@@ -34,6 +34,15 @@ class TurretSubsystem{
             gimbalY->setDesiredPos(angleY);
         }
 
+        /**
+        * @brief Set flywheel out. 
+        * @param speed double from 0 - 1 which corresponds to a pulse width from 1ms to 2ms
+        */
+        void setFlywheelSpeed(double speed){
+            flywheelL->set(speed * 180);
+            flywheelR->set(-speed * 180);
+        }
+
 
 };
 
