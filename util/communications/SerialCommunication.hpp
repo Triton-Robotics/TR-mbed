@@ -35,7 +35,7 @@ class SerialCommunication : BufferedSerial {
                 for (int i = 0; i < sizeof(comdata); i++)
                     comdata[i] = 0;
 
-                ThisThread::sleep_for(20ms);
+                ThisThread::sleep_for(1ms);
                 read(comdata, sizeof(comdata));
 
                 if (comdata[0] == '\\') {
