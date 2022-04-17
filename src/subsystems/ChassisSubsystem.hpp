@@ -4,7 +4,7 @@
 #ifndef chassis_subsystem_cpp
 #define chassis_subsystem_cpp
 
-enum chassisMovementMode{TANK, MECANUM, BEYBLADE, RIGHT_ANGLE_MECANUM, SENTRY};
+enum chassisMovementMode{TANK, MECANUM, BEYBLADE, RIGHT_ANGLE_MECANUM, SENTRY_CARRIAGE};
 
 class ChassisSubsystem{
     public:
@@ -52,7 +52,7 @@ class ChassisSubsystem{
                 motors[1].setDesiredSpeed(-magnitude * (y - rx));
                 motors[2].setDesiredSpeed(magnitude * (y + rx));
                 motors[3].setDesiredSpeed(-magnitude * (y - rx));
-            }if(chassisMode == SENTRY){
+            }if(chassisMode == SENTRY_CARRIAGE){
                 motors[0].setDesiredSpeed(magnitude * (x));
                 motors[1].setDesiredSpeed(magnitude * (x));
             }if(chassisMode == BEYBLADE){
