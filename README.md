@@ -2,7 +2,7 @@
 
 - Write mecanum code - WRITTEN BUT UNTESTED
 
-- FIX SPEED PID somethings fucked up on CAN2 and maybe on CAN1?
+- Add error for trying to run position pid on the M3508s because those will nevewr fucking work
 
 - Grab more can wires so we can test multiple motors at once - SUNDAY 
 
@@ -24,7 +24,7 @@
 
 ## Cloning Triton Robotics Github Repo
 
-- Clone the [TR Github](https://github.com/Triton-Robotics/TR-mbed6) with Github Desktop and PUT IT IN THE "C:/Users/Mbed Programs" location
+- Clone the [TR Github](https://github.com/Triton-Robotics/TR-mbed6) with Github Desktop and PUT IT IN THE MBED PROGRAMS FOLDER. It should look like this: "C:/Users/Mbed Programs/TR-mbed6" 
 
 ## Installing a Junction
 
@@ -32,7 +32,7 @@ You need to create a **JUNCTION** in the TR-mbed6 folder to point to the mbed-os
 
 1. Install the [Link Shell Extension](https://download.cnet.com/Link-Shell-Extension-64-bit/3000-2248_4-75213087.html)
 
-2. Right click on the **mbed-os** folder that you cloned at the very beginning
+2. Right click on the **mbed-os** folder that you cloned at the very beginning (Usually in Docuements/Github)
 
 3. Pick Link Source on the **mbed-os** folder
 
@@ -46,11 +46,11 @@ Hitting the play button over and over again hurts fingies. Why not set a hotkey 
 
 2) Search for "Run on device" 
 
-3) Set that hotkey to "ctrl+u"
+3) Set that hotkey to "ctrl+u" (LITERALLY TYPE THAT IN)
 
 4) Search for "Build"
 
-5) Set that hotkey to "ctrl+r"
+5) Set that hotkey to "ctrl+r" (LITERALLY TYPE THAT IN)
 
 **Your fingers will thank you later.......**
 
@@ -68,7 +68,7 @@ Test upload code to verifiy correct installation to the STM32 Nucleo F446RE
    
    2) Program name: Blinky
    
-   3) Click on "Link to an existing shared MBED OS instance". Select the MBED OS folder that you cloned 
+   3) Click on "Link to an existing shared MBED OS instance". Select the MBED OS folder that you cloned (Documents/Github/mbed-os)
    
    4) Click Add program
    

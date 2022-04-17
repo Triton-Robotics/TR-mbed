@@ -55,6 +55,11 @@ static int multiTurnPositionAngle[2][8] = {{0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0}};
 static PID pidPos[2][8];
 static PID pidSpeed[2][8];
 
+static double defaultGimblyPosPID[3] = {5,0,3}; // pos output cap of 8000
+static double defaultGimblySpeedPID[3] = {50,10,0}; //speed icap of 1000
+
+static double defaultM3508SpeedPID[3] = {.5, .2, 7}; //ICAP OF 400 REQUIRED
+
 static CANHandler* canHandles;
 
 
@@ -79,14 +84,22 @@ class Motor{
 
     CANHandler::CANBus currentBus;
 
-    
     Motor(int canID, CANHandler::CANBus bus, motorType type = STANDARD, int ratio = 19, int inverted = false)
     {
         isInverted = inverted;
+        motorNumber = canID - 1; //Changes range from 1-8 to 0-7
+        totalMotors++;
+        motorExists[bus][motorNumber] = 1;
+        types[bus][motorNumber] = type;
+        currentBus = bus;
+
         if(type == GM6020) {
             ratio = 1;
+            setPositionPID(defaultGimblyPosPID[0], defaultGimblyPosPID[1], defaultGimblyPosPID[2]);
+            printf("sucessfull set!\n");
+            setSpeedPID(defaultGimblySpeedPID[0], defaultGimblySpeedPID[1], defaultGimblySpeedPID[2]);
         }
-
+        
         gearRatio = ratio;
 
         if(type == GM6020 && canID <= 4) // Check for them fucking gimblies
@@ -94,11 +107,7 @@ class Motor{
         if (canID > 8 || canID < 1)
             printf("canID not within correct bounds\n");
 
-        motorNumber = canID - 1; //Changes range from 1-8 to 0-7
-        totalMotors++;
-        motorExists[bus][motorNumber] = 1;
-        types[bus][motorNumber] = type;
-        currentBus = bus;
+        
         
     }
 
@@ -141,7 +150,7 @@ class Motor{
     }
 
     void setDesiredSpeed(int value) {
-        setDesiredValue(value);
+        setDesiredValue(value * gearRatio);
         mode[currentBus][motorNumber] = SPEED;
     }
 
@@ -254,7 +263,7 @@ class Motor{
     static void multiTurnPositionControl(CANHandler::CANBus bus) {
         int Threshold = 3000; // From 0 - 8191
 
-        static int lastMotorAngle[2][8] = {0,0,0,0,0,0,0,0};
+        static int lastMotorAngle[2][8] = {{0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0}};
 
         for (int i = 0; i < 7; i++) {
             if (abs(getStaticData(bus,i, VELOCITY)) < 100) { // Check for slow speeds DJI's speed readout is shit when slow rpm
@@ -300,7 +309,7 @@ class Motor{
                     outputArray[i] = pidPos[bus][i].calculate(motorOut[bus][i],multiTurnPositionAngle[bus][i],timeDifference);
                     //-PIDPositionError(motorOut1[i], i);
                 else if (mode[bus][i] == SPEED)
-                    outputArray[i] += pidSpeed[bus][i].calculate(motorOut[bus][i],multiTurnPositionAngle[bus][i],timeDifference);
+                    outputArray[i] += pidSpeed[bus][i].calculate(motorOut[bus][i],getStaticData(bus,i, VELOCITY),timeDifference);
                     //-PIDSpeedError(motorOut1[i], i);
                 else if (mode[bus][i] == CURRENT) {
                     outputArray[i] = motorOut[bus][i];
@@ -323,7 +332,7 @@ class Motor{
                         //-PIDPositionError(motorOut2[i], i+4);
                         doSend[0] = true;
                     }else if (mode[bus][i+4] == SPEED){
-                        outputArray[i] += pidSpeed[bus][i+4].calculate(motorOut[bus][i+4],getStaticData(bus,i, VELOCITY),timeDifference);
+                        outputArray[i] += pidSpeed[bus][i+4].calculate(motorOut[bus][i+4],getStaticData(bus,i+4, VELOCITY),timeDifference);
                         //-PIDSpeedError(motorOut2[i], i+4);
                         doSend[0] = true;
                     }else if (mode[bus][i+4] == CURRENT) {
@@ -337,8 +346,7 @@ class Motor{
                         outputArrayGM6020[i] = pidPos[bus][i+4].calculate(motorOut[bus][i+4],multiTurnPositionAngle[bus][i+4],timeDifference);
                         doSend[1] = true;
                     }else if (mode[bus][i+4] == SPEED){
-                        outputArrayGM6020[i] += pidSpeed[bus][i+4].calculate(motorOut[bus][i+4],getStaticData(bus,i, VELOCITY),timeDifference);
-                        printf("\t\t\t\tCurrent given:%d\n",outputArrayGM6020[i]);
+                        outputArrayGM6020[i] += pidSpeed[bus][i+4].calculate(motorOut[bus][i+4],getStaticData(bus,i+4, VELOCITY),timeDifference);
                         doSend[1] = true;
                     }else if (mode[bus][i+4] == CURRENT) {
                         outputArrayGM6020[i] = motorOut[bus][i+4];
