@@ -10,11 +10,18 @@ enum motorMode {DISABLED, POSITION, SPEED, CURRENT};
 
 enum motorType {
     NONE = 0,
-    STANDARD = 1,
-    M2006 = 1,
-    C620 = 1,
-    M3508 = 1,
-    GIMBLY = 2,
+    STANDARD = 1, //all motors that use the standard can protocol, used by the C610 and C620
+    
+    C610 = 4,
+    M2006 = 4,
+    
+    C620 = 3,
+    M3508 = 3, 
+    //keep in mind that in the constructor, this is only used to 
+    //set the default pid values and gear ratio. The motortype will 
+    //be changed to STANDARD, because thats what the code uses.
+
+    GIMBLY = 2, //Gimblyyyyyyyyyy
     GM6020 = 2
 };
 
@@ -58,6 +65,7 @@ static PID pidSpeed[2][8];
 static double defaultGimblyPosPID[3] = {5,0,3}; // pos output cap of 8000
 static double defaultGimblySpeedPID[3] = {50,10,0}; //speed icap of 1000
 
+//static double defaultM3508PosPID[3] = {?, ?, ?}; 
 static double defaultM3508SpeedPID[3] = {.5, .2, 7}; //ICAP OF 400 REQUIRED
 
 static CANHandler* canHandles;
@@ -84,7 +92,7 @@ class Motor{
 
     CANHandler::CANBus currentBus;
 
-    Motor(int canID, CANHandler::CANBus bus, motorType type = STANDARD, int ratio = 19, int inverted = false)
+    Motor(int canID, CANHandler::CANBus bus, motorType type = STANDARD, int ratio = -1, int inverted = false)
     {
         isInverted = inverted;
         motorNumber = canID - 1; //Changes range from 1-8 to 0-7
@@ -93,17 +101,48 @@ class Motor{
         types[bus][motorNumber] = type;
         currentBus = bus;
 
+        if(ratio == -1){
+            ratio = 1; //default gearbox ratio is no gearbox ratio, 1
+        }
+
         if(type == GM6020) {
             ratio = 1;
             setPositionPID(defaultGimblyPosPID[0], defaultGimblyPosPID[1], defaultGimblyPosPID[2]);
-            printf("sucessfull set!\n");
+            //setSpeedIntegralCap(?);
+            setPositionOutputCap(8000);
+
             setSpeedPID(defaultGimblySpeedPID[0], defaultGimblySpeedPID[1], defaultGimblySpeedPID[2]);
+            setSpeedOutputCap(20000);
+            setSpeedIntegralCap(1000);
+        }else if(type == M3508){
+            ratio = 19;
+            types[bus][motorNumber] = STANDARD;
+
+            //setPositionPID(defaultM3508PosPID[0], defaultM3508PosPID[1], defaultM3508PosPID[2]);
+            //setSpeedIntegralCap(?);
+            setPositionOutputCap(8000);
+
+            setSpeedPID(defaultM3508SpeedPID[0], defaultM3508SpeedPID[1], defaultM3508SpeedPID[2]);
+            setSpeedIntegralCap(1000);
+            setSpeedOutputCap(8000);
+        }else if(type == M2006){
+            ratio = 36;
+            types[bus][motorNumber] = STANDARD;
+
+            //setPositionPID(defaultM2006PosPID[0], defaultM2006PosPID[1], defaultM2006PosPID[2]);
+            //setSpeedIntegralCap(?);
+            //setPositionOutputCap(?);
+
+            //setSpeedPID(defaultM2006SpeedPID[0], defaultM2006SpeedPID[1], defaultM2006SpeedPID[2]);
+            //setSpeedIntegralCap(?);
+            //setSpeedOutputCap(?);
         }
+
         
         gearRatio = ratio;
 
         if(type == GM6020 && canID <= 4) // Check for them fucking gimblies
-            printf("ERROR. IT IS HIGHLY DISCOURAGED OF YOU TO USE CAN BUSSES 1-4 FOR THE GM6020s. YOU WILL HAVE ERRORS.\n");
+            printf("ERROR. IT IS HIGHLY DISCOURAGED OF YOU TO USE CAN BUSSES 1-4 FOR THE GM6020s. YOU WILL HAVE ERRORS.\n YOU DUMB BITCH WHY WOULD YOU (WHO IS LIKELY ME) DO THIS I HAVENT CODED THIS IN DONT MAKE ME CODE THIS IN PLEASE\n");
         if (canID > 8 || canID < 1)
             printf("canID not within correct bounds\n");
 

@@ -64,7 +64,7 @@ class CANHandler{
         * @brief Raw sending of CAN Messages
         * 
         * @param id the CAN ID you're sending to
-        * @param bytes the bytes you're sending
+        * @param bytes the bytes you're sending (8)
         * @param bus the bus you're sending the CAN messages to
         */
         bool rawSend(int id, int8_t bytes[], CANBus bus){

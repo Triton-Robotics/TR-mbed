@@ -1,8 +1,24 @@
 # EMBEDDED TO DO
 
+- Discuss structure for the main mastercode
+
+- Write simple joystick-mecanum code to run infantry before we pop it into the Chassis Class - WRITTEN BUT UNTESTED
+
+- Write a Turret Subsystem Class - WRITTEN BUT UNTESTED
+
+- Write a Chassis Subsystem Class - WRITTEN BUT UNTESTED
+
 - Write mecanum code - WRITTEN BUT UNTESTED
 
-- Add error for trying to run position pid on the M3508s because those will nevewr fucking work
+- Remove ratio option for motor constructor, if its an external gearbox have the end-user deal with it on their own.
+
+- Add switch to the motor auto-ratio definitions instead of if-else
+
+- Add ???? (FUCK WHAT WAS I WRITING I HAD TO GO TO THE BATHROOM 4-17-2022-2:05AM)
+
+- Add error for trying to run position pid on the M3508s because those will never fucking work
+
+- Remove STANDARD and make it if motor.type == C620 || C610 instead of motor.type == STANDARD.
 
 - Grab more can wires so we can test multiple motors at once - SUNDAY 
 
