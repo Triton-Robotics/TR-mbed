@@ -46,7 +46,7 @@ class PID {
                 PIDCalc = std::max(std::min(PIDCalc,outputCap),-outputCap);
             }
 
-            printf("desired: %d actual: %d \n",(int)desiredV, int(actualV));
+            //printf("desired: %d actual: %d \n",(int)desiredV, int(actualV));
 
             return PIDCalc;
         }
