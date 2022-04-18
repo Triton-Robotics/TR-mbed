@@ -45,9 +45,10 @@ class PID {
             if(outputCap != 0){
                 PIDCalc = std::max(std::min(PIDCalc,outputCap),-outputCap);
             }
-
+            //ThisThread::sleep_for(1ms); //neccessary or else dt -> 0 and causes issues....
             //printf("desired: %d actual: %d \n",(int)desiredV, int(actualV));
 
+            
             return PIDCalc;
         }
 

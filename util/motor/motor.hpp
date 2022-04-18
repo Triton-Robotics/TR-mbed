@@ -70,6 +70,8 @@ static double defaultM3508SpeedPID[3] = {.5, .2, 7}; //ICAP OF 400 REQUIRED
 
 static CANHandler* canHandles;
 
+static Thread thread(osPriorityHigh);
+
 
 /**
      * @brief Construct a new Motor object
@@ -181,6 +183,7 @@ class Motor{
      */
     static void setCANHandler(CANHandler* CANPorts){
         canHandles = CANPorts;
+        thread.start(tickThread);
     }
 
     void setDesiredCurrent(int value) {
@@ -313,6 +316,7 @@ class Motor{
                     multiTurnPositionAngle[bus][i] -= -(getStaticData(bus,i, ANGLE) - 8191) - lastMotorAngle[bus][i];
                 else 
                     multiTurnPositionAngle[bus][i] += getStaticData(bus,i, ANGLE) - lastMotorAngle[bus][i];
+                //printf("\t\t\t Using slower multiturnposition control\n");
             }
             else {
                 int delta = getStaticData(bus,i, ANGLE) - lastMotorAngle[bus][i]; // 0 to 199 POS// 8000 to 128 NEG
@@ -433,6 +437,14 @@ class Motor{
         multiTurnPositionControl(CANHandler::CANBUS_2);
         getFeedback(CANHandler::CANBUS_2);
         sendValues(CANHandler::CANBUS_2);
+    }
+
+    static void tickThread() {
+        while (true) {
+            tick();
+            ThisThread::sleep_for(1);
+        }
+            
     }
 
 };
