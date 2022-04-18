@@ -3,7 +3,7 @@
 
 CANHandler canPorts(PA_11,PA_12,PB_12,PB_13);
 
-Remote remoteController(D15); 
+//Remote remoteController(D15); 
 robotType rType = INFANTRY;
 
 //Motor gimly(7,CANHandler::CANBUS_1,GIMBLY);
@@ -21,11 +21,13 @@ int main(){
         //printf("%d\n", feedback[CANHandler::CANBUS_1][1][2]);
 
         if(rType == INFANTRY){
-            chassis.move(
-                remoteController.getChannel(Remote::Channel::LEFT_HORIZONTAL),
-                remoteController.getChannel(Remote::Channel::LEFT_VERTICAL),
-                remoteController.getChannel(Remote::Channel::RIGHT_HORIZONTAL),3);
+            // chassis.move(
+            //     remoteController.getChannel(Remote::Channel::LEFT_HORIZONTAL),
+            //     remoteController.getChannel(Remote::Channel::LEFT_VERTICAL),
+            //     remoteController.getChannel(Remote::Channel::RIGHT_HORIZONTAL),3);
             //since max value of output is 660, 1980 seems right for testing purposes.
+
+            chassis.move(1,0,0,60);
 
         }
 

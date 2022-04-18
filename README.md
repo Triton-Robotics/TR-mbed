@@ -1,14 +1,12 @@
 # EMBEDDED TO DO
 
-- Discuss structure for the main mastercode
+- Discuss structure for the main mastercode - TUESDAY
 
 - Write simple joystick-mecanum code to run infantry before we pop it into the Chassis Class - WRITTEN BUT UNTESTED
 
 - Write a Turret Subsystem Class - WRITTEN BUT UNTESTED
 
-- Write a Chassis Subsystem Class - WRITTEN BUT UNTESTED
-
-- Write mecanum code - WRITTEN BUT UNTESTED
+- Fix position PID for M3508s
 
 - Remove ratio option for motor constructor, if its an external gearbox have the end-user deal with it on their own.
 
@@ -19,10 +17,6 @@
 - Add error for trying to run position pid on the M3508s because those will never fucking work
 
 - Remove STANDARD and make it if motor.type == C620 || C610 instead of motor.type == STANDARD.
-
-- Grab more can wires so we can test multiple motors at once - SUNDAY 
-
-- Make Chassis Subsystem
 
 - Make a class for Referee System 
 
