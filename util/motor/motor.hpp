@@ -306,8 +306,14 @@ class Motor{
         int Threshold = 3000; // From 0 - 8191
 
         static int lastMotorAngle[2][8] = {{0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0}};
+        // static unsigned long lastTime[2][8] = {{0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0}};
+        // unsigned long Time = us_ticker_read() / 1000;
 
         for (int i = 0; i < 7; i++) {
+            // unsigned long timeDifference = Time - lastTime[bus][i];
+            // if(abs(getStaticData(bus, i, VELOCITY)) < 110)
+            //   multiTurnPositionAngle[bus][i] += getStaticData(bus,i, VELOCITY) * timeDifference * 60 / 1000;
+            
             if (abs(getStaticData(bus,i, VELOCITY)) < 100) { // Check for slow speeds DJI's speed readout is shit when slow rpm
                 if ( getStaticData(bus,i, ANGLE) > (8191 - Threshold) && lastMotorAngle[bus][i] < Threshold) // Check to see whether the encoder reading "looped"
                     multiTurnPositionAngle[bus][i] += -(getStaticData(bus,i, ANGLE) - 8191) - lastMotorAngle[bus][i];
@@ -329,7 +335,7 @@ class Motor{
                 }
             }
             lastMotorAngle[bus][i] = getStaticData(bus,i, ANGLE);
-
+            // lastTime[bus][i] = Time;
         }
       
     }
@@ -340,12 +346,12 @@ class Motor{
      */
     static void sendValues(CANHandler::CANBus bus){
         //CAN Sending to the two sending IDs
-        static unsigned long lastTime[8] = {0,0,0,0,0,0,0,0};
+        static unsigned long lastTime[2][8] = {{0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0}};
         unsigned long Time = us_ticker_read() / 1000;
         if(motorExists[bus][0] || motorExists[bus][1] || motorExists[bus][2] || motorExists[bus][3]){
             int16_t outputArray[4] = {0, 0, 0, 0};
             for (int i = 0; i < 4; i++) {
-                unsigned long timeDifference = Time - lastTime[i];
+                unsigned long timeDifference = Time - lastTime[bus][i];
                 if (mode[bus][i] == DISABLED)
                     outputArray[i] = 0;
                 else if (mode[bus][i] == POSITION)
@@ -357,7 +363,7 @@ class Motor{
                 else if (mode[bus][i] == CURRENT) {
                     outputArray[i] = motorOut[bus][i];
                 }
-                lastTime[i] = Time;
+                lastTime[bus][i] = Time;
             }
             rawSend(sendIDs[0], outputArray[0], outputArray[1], outputArray[2], outputArray[3], bus);
         }
@@ -366,7 +372,7 @@ class Motor{
             int16_t outputArrayGM6020[4] = {0, 0, 0, 0};
             bool doSend[2] = {false,false};
             for (int i = 0; i < 4; i++) {
-                unsigned long timeDifference = Time - lastTime[i+4];
+                unsigned long timeDifference = Time - lastTime[bus][i+4];
                 if(types[bus][i+4] == STANDARD){
                     if (mode[bus][i+4] == DISABLED){
                         outputArray[i] = 0;
@@ -396,7 +402,7 @@ class Motor{
                         doSend[1] = true;
                     }
                 }
-                lastTime[i+4] = Time;
+                lastTime[bus][i+4] = Time;
             }
             if(doSend[0])
                 rawSend(sendIDs[1], outputArray[0], outputArray[1], outputArray[2], outputArray[3], bus);
@@ -442,7 +448,7 @@ class Motor{
     static void tickThread() {
         while (true) {
             tick();
-            ThisThread::sleep_for(1);
+            ThisThread::sleep_for(1ms);
         }
             
     }
