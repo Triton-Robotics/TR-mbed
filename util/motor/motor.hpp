@@ -1,6 +1,7 @@
 #include "mbed.h"
 #include "../algorithms/pid.hpp"
 #include <cstdint>
+#include <cstdlib>
 #ifndef motor_hpp
 #define motor_hpp
 #include "../communications/CANMsg.h"
@@ -61,6 +62,8 @@ static int multiTurnPositionAngle[2][8] = {{0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0}};
 
 static PID pidPos[2][8];
 static PID pidSpeed[2][8];
+
+static double positionBounds[2][8][2] {{{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}},{{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}}};
 
 static double defaultGimblyPosPID[3] = {5,0,3}; // pos output cap of 8000
 static double defaultGimblySpeedPID[3] = {50,10,0}; //speed icap of 1000
@@ -202,6 +205,10 @@ class Motor{
      * @param value
      */
     void setDesiredPos(int value) {
+        if(value < positionBounds[currentBus][motorNumber][0])
+            value = positionBounds[currentBus][motorNumber][0];
+        else if(value > positionBounds[currentBus][motorNumber][1])
+            value = positionBounds[currentBus][motorNumber][1];
         setDesiredValue(value * 8191 * gearRatio / 360);
         mode[currentBus][motorNumber] = POSITION;
     }
@@ -260,6 +267,11 @@ class Motor{
         pidPos[currentBus][motorNumber].setOutputCap(cap);
     }
 
+    void setPositionBounds(double min, double max) {
+        positionBounds[currentBus][motorNumber][0] = min;
+        positionBounds[currentBus][motorNumber][0] = max;
+    }
+
     void setSpeedPID(double Kp, double Ki, double Kd){
         pidSpeed[currentBus][motorNumber].setPID(Kp,Ki,Kd);
     }
@@ -271,6 +283,8 @@ class Motor{
     void setSpeedOutputCap(double cap) {
         pidSpeed[currentBus][motorNumber].setOutputCap(cap);
     }
+
+    
 
     /**
      * @brief Get feedback back from the motors attached to a CANBUS

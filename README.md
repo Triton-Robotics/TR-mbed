@@ -24,6 +24,8 @@
 
 - Look into MBED-os scheduler
 
+- Add option in setDesiredPosition so you can pass degrees, radians, or something relative to the feedback values (1-8191) sleep_for has options like ms, us, ns, etc.
+
 # MBED STUDIO Setup
 
 ## Basic Installation
