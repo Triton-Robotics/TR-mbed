@@ -3,6 +3,7 @@ using namespace std::chrono;
 
 Remote::Remote(PinName dbus) : receiver(NC, dbus) {
 
+    printf("deletus\n");
     receiver.set_baud(115200);
     receiver.set_format(8, BufferedSerial::Even, 1);
     receiver.set_blocking(false);
@@ -30,12 +31,12 @@ void Remote::read()
     // Read next byte if available and more needed for the current packet
     while (receiver.read(&data, 1) && currentBufferIndex < REMOTE_BUF_LEN)
     {   
-        //printf("%x \t", data);
+        printf("%x \t", data);
         rxBuffer[currentBufferIndex] = data;
         currentBufferIndex++;
         lastRead = duration_cast<milliseconds>(readTimer.elapsed_time()).count();
     }
-    //printf("\n");
+    printf("\n");
     // Check read timeout
     if (duration_cast<milliseconds>(readTimer.elapsed_time()).count() - lastRead > REMOTE_READ_TIMEOUT)
     {

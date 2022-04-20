@@ -51,7 +51,7 @@ class ChassisSubsystem{
                 motors[1].setDesiredSpeed(magnitude * (y - x - rx));
                 motors[2].setDesiredSpeed(magnitude * (y - x + rx));
                 motors[3].setDesiredSpeed(magnitude * (y + x - rx));
-                printf("M1:%d\tM2:%d\tM3:%d\tM4:%d\n",motors[0].getDesiredValue(),motors[1].getDesiredValue(),motors[2].getDesiredValue(),motors[3].getDesiredValue());
+                //printf("M1:%d\tM2:%d\tM3:%d\tM4:%d\n",motors[0].getDesiredValue(),motors[1].getDesiredValue(),motors[2].getDesiredValue(),motors[3].getDesiredValue());
             }if(chassisMode == TANK){
                 motors[0].setDesiredSpeed(magnitude * (y + rx));
                 motors[1].setDesiredSpeed(magnitude * (y - rx));

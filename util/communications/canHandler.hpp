@@ -85,9 +85,9 @@ class CANHandler{
                 errorCount = 0;
             }
 
-            if (errorCount > 1000)
-                printf("Transmission error in rawSend()\n");
-            //printMsg(txMsg);
+            if (errorCount > 1000){
+                //printf("Transmission error in rawSend()\n");
+            }//printMsg(txMsg);
             return isWrite;
         }
 
