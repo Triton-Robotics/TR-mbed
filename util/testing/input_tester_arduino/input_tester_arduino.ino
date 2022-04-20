@@ -42,5 +42,5 @@ void loop()
 //  Serial.print(greenButton.updateButton());
   Serial.println();
 
-  delay(500);
+  delay(50);
 }

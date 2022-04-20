@@ -7,4 +7,3 @@ mbed-os
 projectfiles
 *.py*
 BUILD
-mbed-os.lib
