@@ -2,8 +2,6 @@
 
 - Discuss structure for the main mastercode - TUESDAY
 
-- Fix mbed bug where cannot set active program to desired file
-
 - Write simple joystick-mecanum code to run infantry before we pop it into the Chassis Class - WRITTEN BUT UNTESTED
 
 - Write a Turret Subsystem Class - WRITTEN BUT UNTESTED

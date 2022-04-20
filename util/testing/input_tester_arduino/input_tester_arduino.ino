@@ -7,9 +7,9 @@ MyButton blueButton = MyButton(5);
 MyButton yellowButton = MyButton(3);
 
 int potBottom = A3;
-int pottopLeft = A2;
+int pottopRight = A2;
 int pottopMiddle = A1;
-int pottopRight = A0;
+int pottopLeft = A0;
 
 void setup()
 {
@@ -23,24 +23,27 @@ void setup()
 void loop() 
 {
   Serial.print(analogRead(potBottom));
-//  Serial.print(" ");
-//  Serial.print(analogRead(pottopLeft));
-//  Serial.print(" ");
-//  Serial.print(analogRead(pottopMiddle));
-//  Serial.print(" ");
-//  Serial.print(analogRead(pottopRight));
-//  Serial.print(" ");
-//  
-//  Serial.print(smallButton.updateButton());
-//  Serial.print(" ");
-//  Serial.print(yellowButton.updateButton());
-//  Serial.print(" ");
-//  Serial.print(redButton.updateButton());
-//  Serial.print(" ");
-//  Serial.print(blueButton.updateButton());
-//  Serial.print(" ");
-//  Serial.print(greenButton.updateButton());
-  Serial.println();
+  Serial.print("|");
+  Serial.print(analogRead(pottopLeft));
+  Serial.print("|");
+  Serial.print(analogRead(pottopMiddle));
+  Serial.print("|");
+  Serial.print(analogRead(pottopRight));
+  Serial.print("|");
+  
+  Serial.print(smallButton.updateButton());
+  Serial.print("|");
+  Serial.print(yellowButton.updateButton());
+  Serial.print("|");
+  Serial.print(redButton.updateButton());
+  Serial.print("|");
+  Serial.print(blueButton.updateButton());
+  Serial.print("|");
+  Serial.print(greenButton.updateButton());
+  Serial.print("|");
+  
+  Serial.println("*");
 
-  delay(50);
+  delay(200);
+  //delay(analogRead(potBottom));
 }
