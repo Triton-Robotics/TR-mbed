@@ -1,25 +1,37 @@
 #include "mbed.h"
 #include <cstdlib>
 #include <cctype>
+#include "buttonanalyzer.hpp"
 
 
 static BufferedSerial mySerial(PA_0, PA_1, 9600);
-//Thread thread;
+
+
+enum MyButtons {
+    SMALL,
+    YELLOW,
+    BLUE,
+    RED,
+    GREEN,
+};
+
+enum MyPots{
+    BOTTOM,
+    LEFT,
+    MIDDLE,
+    RIGHT,
+};
 
 class InputTester{
     private:
-        char message[32];
-        int data[9];
+        char message[35];
+        int data[9] = {0,0,0,0,0,0,0,0,0};
+        buttonanalyzer myButtons[5];
 
-    public: 
-
-    InputTester() {}
-
-     void updateThread() {
-        while (true) {
-            update();
-            ThisThread::sleep_for(1ms);
-        }
+    float mapPots(int x, float out_min, float out_max) {
+        float in_min = 0;
+        float in_max = 1010;
+        return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
 
     int toNum(char nums[]) {
@@ -37,7 +49,6 @@ class InputTester{
         }
 
     void getData(char msg[]) {
-        
         int i = 0;
         int z = 0;
         int curIndex = 0;
@@ -59,11 +70,22 @@ class InputTester{
         }        
     }
 
+    public: 
+
+    InputTester() {}
+    /**
+    * @brief Update Potentiometer and Button data
+    * NOTE: MUST BE CALLED IN MAIN LOOP
+    *
+    */
     void update() {
+        for (int i = 0; i < 5; i++) {
+            myButtons[i].update(data[i+4]);
+        }
         if (mySerial.readable()) {
-            ThisThread::sleep_for(31ms); // Very important so that you can actually "read" the entire message. Should be: Time(ms) = NumChars + 5
+            ThisThread::sleep_for(50ms); // Very important so that you can actually "read" the entire message. Should be: Time(ms) = NumChars + 5
             mySerial.read(message, sizeof(message));
-            printf("message : %s", message);
+            //printf("message : %s", message);
 
             getData(message);
 
@@ -72,6 +94,58 @@ class InputTester{
 
         }
     }    
+
+    /**
+     * @brief Get data from Pot
+     * 
+     * @param pot Desired Potentiometer 
+     * @param lowBound Lowest possible desired float value
+     * @param highBound Highest possible desired float value
+     * @return FLOAT value (NOTE: UNABLE TO BE PRINTFed UNLESS CAST TO AN INT)
+     */
+    float getPot(MyPots pot,float lowBound, float highBound) {
+        return mapPots(data[pot], lowBound, highBound);
+    }
+
+    /**
+     * @brief Returns button status
+     * 
+     * @param desiredButton Desired Button 
+     * @return Either pressed or not pressed (1 or 0)
+     */
+    bool getButtonStatus(MyButtons desiredButton) {
+        return myButtons[desiredButton].getStatus();
+    }
+
+    /**
+     * @brief Returns toggling of button
+     * 
+     * @param desiredButton Desired Button 
+     * @return Either toggled on or off. Default is off.
+     */
+    bool getButtonToggle(MyButtons desiredButton) {
+        return myButtons[desiredButton].getToggle();
+    }
+
+    /**
+     * @brief Returns the moment the button is pressed
+     * 
+     * @param desiredButton Desired Button 
+     * @return 1 at the moment the button is pressed. 0 Elsewise.
+     */
+    bool getButtonPress(MyButtons desiredButton) {
+        return myButtons[desiredButton].getInitialPress();
+    }
+
+    /**
+     * @brief Returns the moment the button is released
+     * 
+     * @param desiredButton Desired Button 
+     * @return 1 at the moment the button is released. 0 Elsewise.
+     */
+    bool getButtonRelease(MyButtons desiredButton) {
+        return myButtons[desiredButton].getInitialRelease();
+    }
 
     
 };

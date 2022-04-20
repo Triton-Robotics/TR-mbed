@@ -20,15 +20,19 @@ void setup()
   pinMode(pottopRight, INPUT_PULLUP);
 }
 
+int reversePotVal(int val) {
+  return 1023-val;
+}
+
 void loop() 
 {
-  Serial.print(analogRead(potBottom));
+  Serial.print(reversePotVal(analogRead(potBottom)));
   Serial.print("|");
-  Serial.print(analogRead(pottopLeft));
+  Serial.print(reversePotVal(analogRead(pottopLeft)));
   Serial.print("|");
-  Serial.print(analogRead(pottopMiddle));
+  Serial.print(reversePotVal(analogRead(pottopMiddle)));
   Serial.print("|");
-  Serial.print(analogRead(pottopRight));
+  Serial.print(reversePotVal(analogRead(pottopRight)));
   Serial.print("|");
   
   Serial.print(smallButton.updateButton());

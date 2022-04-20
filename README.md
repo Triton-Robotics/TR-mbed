@@ -12,15 +12,11 @@
 
 - Add switch to the motor auto-ratio definitions instead of if-else
 
-- Add ???? (FUCK WHAT WAS I WRITING I HAD TO GO TO THE BATHROOM 4-17-2022-2:05AM)
-
 - Add error for trying to run position pid on the M3508s because those will never fucking work
 
 - Remove STANDARD and make it if motor.type == C620 || C610 instead of motor.type == STANDARD.
 
 - Make a class for Referee System 
-
-- Look into MBED-os scheduler
 
 - Add option in setDesiredPosition so you can pass degrees, radians, or something relative to the feedback values (1-8191) sleep_for has options like ms, us, ns, etc.
 
