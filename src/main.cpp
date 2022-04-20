@@ -16,7 +16,11 @@ int main(){
     //Motor::setCANHandler(&canPorts);
     //ChassisSubsystem chassis(CANHandler::CANBUS_1,1,2,3,4,M3508);
     while(1){
-        printf("%d\n", int(remoteController.getChannel(Remote::Channel::LEFT_HORIZONTAL)* 100));
+        remoteController.read();
+        int val = (remoteController.getChannel(Remote::Channel::LEFT_HORIZONTAL)* 100);
+        if (val != -150)
+            printf("%d\n", val);
+        // printf("%d\n", int(remoteController.getChannel(Remote::Channel::LEFT_HORIZONTAL)* 100));
         //printf("%d\n", gimly.getData(ANGLE));
         //gimly.setDesiredCurrent(1000);
         //printf("%d\n", feedback[CANHandler::CANBUS_1][1][2]);
