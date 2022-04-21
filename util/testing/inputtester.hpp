@@ -1,10 +1,9 @@
 #include "mbed.h"
-#include <cstdlib>
-#include <cctype>
+#include "../communications/SerialCommunication.hpp"
 #include "buttonanalyzer.hpp"
 
 
-static BufferedSerial mySerial(PA_0, PA_1, 9600);
+static SerialCommunication Arduino(PA_0, PA_1, 9600);
 
 
 enum MyButtons {
@@ -82,13 +81,9 @@ class InputTester{
         for (int i = 0; i < 5; i++) {
             myButtons[i].update(data[i+4]);
         }
-        if (mySerial.readable()) {
-            ThisThread::sleep_for(50ms); // Very important so that you can actually "read" the entire message. Should be: Time(ms) = NumChars + 5
-            mySerial.read(message, sizeof(message));
-            //printf("message : %s", message);
-
+        if (Arduino.update(message, 35, 50)) {
             getData(message);
-
+            //printf("%s",message);
             for (int i = 0; i < sizeof(message); i++)
                 message[i] = '\0';
 
