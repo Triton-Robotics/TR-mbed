@@ -75,7 +75,7 @@ static CANHandler* canHandles;
 
 static Thread thread(osPriorityHigh);
 
-
+static int countWithoutTick = 0;
 /**
      * @brief Construct a new Motor object
      * 
@@ -168,6 +168,10 @@ class Motor{
      * @return int value
      */
     int setDesiredValue(int value){
+        countWithoutTick ++;
+        if(countWithoutTick > 64){
+            printf("You are not calling Motor::tick() often enough. You should be doing that at the end of every loop.\n");
+        }
         if (isInverted)
             value = -value;
         if(canHandles->exists){
@@ -450,6 +454,7 @@ class Motor{
      * 
      */
     static void tick(){
+        countWithoutTick = 0;
         multiTurnPositionControl(CANHandler::CANBUS_1);
         getFeedback(CANHandler::CANBUS_1);
         sendValues(CANHandler::CANBUS_1);
