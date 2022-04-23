@@ -4,7 +4,7 @@ using namespace std::chrono;
 Remote::Remote(PinName dbus) : receiver(NC, dbus) {
 
     printf("deletus\n");
-    receiver.set_baud(115200);
+    receiver.set_baud(100000);
     receiver.set_format(8, BufferedSerial::Even, 1);
     receiver.set_blocking(false);
     receiver.set_flow_control(BufferedSerial::Disabled);
@@ -18,7 +18,7 @@ void Remote::initialize()
 
 void Remote::read()
 {
-    
+    //printf("redin\n");
     // Read next byte if available and more needed for the current packet
     // Check disconnect timeout
     if (duration_cast<milliseconds>(readTimer.elapsed_time()).count() - lastRead > REMOTE_DISCONNECT_TIMEOUT)
@@ -100,14 +100,20 @@ void Remote::parseBuffer()
 {
     // values implemented by shifting bits across based on the dr16
     // values documentation and code created last year
-    remote.rightHorizontal = (rxBuffer[0] | rxBuffer[1] << 8) & 0x07FF;
-    remote.rightHorizontal -= 1024;
-    remote.rightVertical = (rxBuffer[1] >> 3 | rxBuffer[2] << 5) & 0x07FF;
-    remote.rightVertical -= 1024;
-    remote.leftHorizontal = (rxBuffer[2] >> 6 | rxBuffer[3] << 2 | rxBuffer[4] << 10) & 0x07FF;
-    remote.leftHorizontal -= 1024;
-    remote.leftVertical = (rxBuffer[4] >> 1 | rxBuffer[5] << 7) & 0x07FF;
-    remote.leftVertical -= 1024;
+    
+    int16_t rH = ((rxBuffer[0] | rxBuffer[1] << 8) & 0x07FF) - 1024;
+    int16_t rV = ((rxBuffer[1] >> 3 | rxBuffer[2] << 5) & 0x07FF) - 1024;
+    int16_t lH = ((rxBuffer[2] >> 6 | rxBuffer[3] << 2 | rxBuffer[4] << 10) & 0x07FF) - 1024;
+    int16_t lV = ((rxBuffer[4] >> 1 | rxBuffer[5] << 7) & 0x07FF) - 1024;
+
+    if(rH > -STICK_MAX_VALUE && rH < STICK_MAX_VALUE)
+        remote.rightHorizontal = rH;
+    if(rV > -STICK_MAX_VALUE && rV < STICK_MAX_VALUE)
+        remote.rightVertical = rV;
+    if(lH > -STICK_MAX_VALUE && lH < STICK_MAX_VALUE)
+        remote.leftHorizontal = lH;
+    if(lV > -STICK_MAX_VALUE && lV < STICK_MAX_VALUE)
+        remote.leftVertical = lV;
 
     //printf("%d \t", (rxBuffer[14] >> 1 | rxBuffer[15] << 7) & 0x07FF);
     //printf("\n");
@@ -186,11 +192,11 @@ void Remote::clearRxBuffer()
     // Clear Usart1 rxBuffer
     receiver.sync();
 
-    uint8_t data;
-    while (receiver.readable())
-    {
-        receiver.read(&data, 1);
-    }
+    // uint8_t data;
+    // while (receiver.readable())
+    // {
+    //     receiver.read(&data, 1);
+    // }
 }
 
 void Remote::reset()
