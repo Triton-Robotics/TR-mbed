@@ -69,9 +69,16 @@ DMA_HandleTypeDef hdma_usart2_tx;
 /* USER CODE BEGIN PV */
 char buf[200];
 int count;
-
 short isKB = 0;
 
+int leftJoyX;
+int leftJoyY;
+int rightJoyX;
+int rightJoyY;
+
+int wheel;
+int leftSwitch;
+int rightSwitch;
 
 /* USER CODE END PV */
 
@@ -96,69 +103,17 @@ void processSentry();
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void getRCVals() {
+	leftJoyX = rc.ch3;
+	leftJoyY = rc.ch4;
+	rightJoyX = rc.ch1;
+	rightJoyY = rc.ch2;
 
-//
-//void processController(){
-//	// axies y-> up, x -> right, motors going forward when pos (left CCW, right CW)
-//
-//
-//	if (rc.sw1 == 2 && rc.sw2 == 2){
-//		if (!isKB){ // last time not kb
-//			// transition from controller to KB
-//			gimbal_pid_clear();
-//		}
-//		isKB = 1;
-//		processMKB();
-//		return;
-//	}
-//	if (isKB) { // last time kb
-//		// transition from KB to controller
-//		gimbal_pid_clear();
-//	}
-//	isKB = 0;
-//	short joyLeftX = (short)(rc.ch3); // positive direction stay at right
-//	short joyLeftY = (short)(rc.ch4); // change positive direction to up
-//	short joyRightX = (short)(rc.ch1); // positive direction stay at right
-//	short joyRightY = (short)(-rc.ch2); // change positive direction to up
-//	short joyRotation = 0;
-//	switch(rc.sw1){
-//		case 1: //left up (left stick strafe, right stick bot rotation)
-//			joyRotation = joyRightX;
-//			indexer_speed = 0 * RPM_SCALE;
-//			break;
-//		case 3: //left middle (left stick strafe, right stick aim)
-//			yaw_delta = (short)(joyRightX * JOY_TO_ECD);
-//			indexer_speed = 0 * RPM_SCALE;
-//			break;
-//		default: // reserve for keyboard
-//			if (rc.sw2 == 1){ // flywheel on
-//				yaw_delta += (short)(joyRightX * JOY_TO_ECD * 0.1f);
-//				indexer_speed = INDEXER_SPEED_DEFAULT * RPM_SCALE;
-//			}
-//			break;
-//	}
-//	switch(rc.sw2){
-//		case 1:
-//
-//			flywheel_speed = (short) (PWM_RESOLUTION * FLYWHEEL_ON_PERCENT);
-//			break;
-//		case 3:
-//			flywheel_speed = (short) (PWM_RESOLUTION * FLYWHEEL_OFF_PERCENT);
-//			indexer_speed = 0 * RPM_SCALE;
-//
-//			break;
-//		default: // reserve for keyboard
-//			break;
-//
-//	}
-//
-//	pitch_delta += (short)((joyRightY * JOY_TO_ECD) * 0.05f); // pitch don't have the same range as yaw, now limit to 20 degrees
-//	LF_rpm = (short) ((joyLeftX - joyLeftY - joyRotation) * JOY_TO_RPM * RPM_SCALE * DRIVE_SPEED_DEFAULT);
-//	RF_rpm = (short) ((joyLeftX + joyLeftY + joyRotation) * JOY_TO_RPM * RPM_SCALE * DRIVE_SPEED_DEFAULT);
-//	LB_rpm = (short) ((joyLeftX + joyLeftY - joyRotation) * JOY_TO_RPM * RPM_SCALE * DRIVE_SPEED_DEFAULT);
-//	RB_rpm = (short) ((joyLeftX - joyLeftY + joyRotation) * JOY_TO_RPM * RPM_SCALE * DRIVE_SPEED_DEFAULT);
-//}
+	wheel = rc.wheel;
 
+	leftSwitch = rc.sw1;
+	rightSwitch = rc.sw2;
+}
 /* USER CODE END 0 */
 
 /**
@@ -210,7 +165,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	HAL_Delay(1);
+	  getRCVals();
+	  HAL_Delay(1);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
