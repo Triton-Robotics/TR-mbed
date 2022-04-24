@@ -1,24 +1,16 @@
 # EMBEDDED TO DO
 
-- Discuss structure for the main mastercode - TUESDAY
+- GET REMOTE CONTROL CODE WORKING!!
 
 - Write simple joystick-mecanum code to run infantry before we pop it into the Chassis Class - WRITTEN BUT UNTESTED
 
 - Write a Turret Subsystem Class - WRITTEN BUT UNTESTED
 
-- Fix position PID for M3508s
-
 - Remove ratio option for motor constructor, if its an external gearbox have the end-user deal with it on their own.
 
 - Add switch to the motor auto-ratio definitions instead of if-else
 
-- Add error for trying to run position pid on the M3508s because those will never fucking work
-
-- Remove STANDARD and make it if motor.type == C620 || C610 instead of motor.type == STANDARD.
-
 - Make a class for Referee System 
-
-- Add option in setDesiredPosition so you can pass degrees, radians, or something relative to the feedback values (1-8191) sleep_for has options like ms, us, ns, etc.
 
 # MBED STUDIO Setup
 
