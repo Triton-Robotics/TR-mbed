@@ -1,0 +1,17 @@
+rm_imu.c:50:7:inv_sqrt	32	static
+rm_imu.c:76:9:mpu_write_byte	24	static
+rm_imu.c:94:9:mpu_read_byte	24	static
+rm_imu.c:112:9:mpu_read_bytes	24	static
+rm_imu.c:130:13:ist_reg_write_by_mpu	16	static
+rm_imu.c:151:16:ist_reg_read_by_mpu	24	static
+rm_imu.c:171:13:mpu_master_i2c_auto_read_config	16	static
+rm_imu.c:211:9:ist8310_init	8	static
+rm_imu.c:280:6:ist8310_get_data	16	static
+rm_imu.c:292:6:mpu_get_data	8	static
+rm_imu.c:332:9:mpu_set_gyro_fsr	16	static
+rm_imu.c:344:9:mpu_set_accel_fsr	16	static
+rm_imu.c:357:9:mpu_device_init	32	static
+rm_imu.c:391:6:mpu_offset_call	16	static
+rm_imu.c:424:6:init_quaternion	48	static
+rm_imu.c:585:6:imu_ahrs_update	128	static
+rm_imu.c:688:6:imu_attitude_update	32	static
