@@ -75,12 +75,9 @@ static double defautlGimblySpeedSettings[5] = {41.980, 6.311, 19.960, 15000, 100
 * Default settings for M3508
 * {kP, kI, kD, OutPutCap, ITermCap}
 */
+static double defautM3508PosSettings[5] = {.128, 1.029, 15.405, 3000, 300};
 
-static double defautlM3508SpeedSettings[5] = {3.091, 0.207, 4.707, 15000, 500};
-
-
-//static double defaultM3508PosPID[3] = {?, ?, ?}; 
-static double defaultM3508SpeedPID[3] = {.5, .2, 7}; //ICAP OF 400 REQUIRED
+static double defautM3508SpeedSettings[5] = {3.091, 0.207, 4.707, 15000, 500};
 
 static CANHandler* canHandles;
 
@@ -136,13 +133,13 @@ class Motor{
             ratio = 19;
             types[bus][motorNumber] = STANDARD;
 
-            //setPositionPID(defaultM3508PosPID[0], defaultM3508PosPID[1], defaultM3508PosPID[2]);
-            //setSpeedIntegralCap(?);
-            setPositionOutputCap(8000);
-
-            setSpeedPID(defaultM3508SpeedPID[0], defaultM3508SpeedPID[1], defaultM3508SpeedPID[2]);
-            setSpeedIntegralCap(1000);
-            setSpeedOutputCap(8000);
+            setPositionPID(defautM3508PosSettings[0], defautM3508PosSettings[1], defautM3508PosSettings[2]);
+            setPositionOutputCap(defautM3508PosSettings[3]);
+            setPositionIntegralCap(defautM3508PosSettings[4]);
+    
+            setSpeedPID(defautM3508SpeedSettings[0], defautM3508SpeedSettings[1], defautM3508SpeedSettings[2]);
+            setSpeedOutputCap(defautM3508SpeedSettings[3]);
+            setSpeedIntegralCap(defautM3508SpeedSettings[4]);
         }else if(type == M2006){
             ratio = 36;
             types[bus][motorNumber] = STANDARD;
