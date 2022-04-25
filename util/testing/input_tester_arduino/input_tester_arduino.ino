@@ -1,4 +1,4 @@
-#include "C:\Users\mingw\Documents\Arduino\Examples\ToggleButtonAndClasses_Example\MyButton.h"
+#include "INCLUDE PATH TO: \MyButton.h"
 
 MyButton smallButton = MyButton(7);
 MyButton greenButton = MyButton(6);
