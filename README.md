@@ -1,17 +1,3 @@
-# EMBEDDED TO DO
-
-- GET REMOTE CONTROL CODE WORKING!!
-
-- Write simple joystick-mecanum code to run infantry before we pop it into the Chassis Class - WRITTEN BUT UNTESTED
-
-- Write a Turret Subsystem Class - WRITTEN BUT UNTESTED
-
-- Remove ratio option for motor constructor, if its an external gearbox have the end-user deal with it on their own.
-
-- Add switch to the motor auto-ratio definitions instead of if-else
-
-- Make a class for Referee System 
-
 # MBED STUDIO Setup
 
 ## Basic Installation
@@ -74,14 +60,17 @@ Test upload code to verifiy correct installation to the STM32 Nucleo F446RE
    
    5) These are the steps you should take everytime you create a new, local program.
    
-   ![](assets/2022-04-09-16-37-36-image.png)
+![](assets/2022-04-09-16-37-36-image.png)
 
-4) Open main.cpp under the Blinky program folder you just created![](assets/2022-04-09-16-42-55-image.png)
+4) Open main.cpp under the Blinky program folder you just created
+![](assets/2022-04-09-16-42-55-image.png)
 
-5) Type this code into main.cpp![](assets/2022-04-09-16-43-56-image.png)
+5) Type this code into main.cpp
+![](assets/2022-04-09-16-43-56-image.png)
 
-6) Plug in to the Nucleo. Make sure Blinky is set to Active Program and that when you plugged into the Nucleo there is a little green USB Icon next to the name.![](assets/2022-04-09-16-46-26-image.png)
+6) Plug in to the Nucleo. Make sure Blinky is set to Active Program and that when you plugged into the Nucleo there is a little green USB Icon next to the name.
+![](assets/2022-04-09-16-46-26-image.png)
 
-7) Hit the play button to compile and upload to the board. It will take some time as this is the first time you are compiling the entire project]]]
+7) Hit the play button to compile and upload to the board. It will take some time as this is the first time you are compiling the entire project
 
 8) If you did everything right, the built-in LED should start blinking on the Nucleo!
