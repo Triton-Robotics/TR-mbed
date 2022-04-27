@@ -71,8 +71,8 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define APB1_TIMER_CLOCKS 84000000
 #define APB2_TIMER_CLOCKS 168000000
-#define PWM_FREQUENCE 400
-#define PWM_RESOLUTION 2500
+#define PWM_FREQUENCE 50
+#define PWM_RESOLUTION 10000
 #define PWM_DEFAULT_DUTY 1000
 #define TIM_PSC_APB1 ((APB1_TIMER_CLOCKS/PWM_FREQUENCE)/PWM_RESOLUTION -1)
 #define TIM_PSC_APB2 ((APB2_TIMER_CLOCKS/PWM_FREQUENCE)/PWM_RESOLUTION -1)
@@ -96,5 +96,3 @@ void Error_Handler(void);
 #endif
 
 #endif /* __MAIN_H */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
