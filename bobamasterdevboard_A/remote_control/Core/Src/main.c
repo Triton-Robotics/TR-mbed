@@ -62,14 +62,13 @@ TIM_HandleTypeDef htim4;
 TIM_HandleTypeDef htim5;
 TIM_HandleTypeDef htim12;
 
+UART_HandleTypeDef huart4;
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart6;
 DMA_HandleTypeDef hdma_usart1_rx;
 DMA_HandleTypeDef hdma_usart2_rx;
 DMA_HandleTypeDef hdma_usart2_tx;
-
-I2C_HandleTypeDef arduino;
 
 /* USER CODE BEGIN PV */
 char buf[200];
@@ -103,6 +102,7 @@ static void MX_TIM3_Init(void);
 static void MX_TIM12_Init(void);
 static void MX_TIM5_Init(void);
 static void MX_I2C3_Init(void);
+static void MX_UART4_Init(void);
 /* USER CODE BEGIN PFP */
 void processMKB();
 void processController();
@@ -168,6 +168,7 @@ int main(void)
   MX_TIM12_Init();
   MX_TIM5_Init();
   MX_I2C3_Init();
+  MX_UART4_Init();
   /* USER CODE BEGIN 2 */
 
   led_off();
@@ -180,11 +181,14 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  buf[0] = 0x00;
-	  getRCVals();
-	  ret = HAL_I2C_Master_Transmit(&hi2c3, ADDR7BIT, buf, 1, HAL_MAX_DELAY);
+	  //buf[0] = 0x00;
+	  //getRCVals();
+	  // ret = HAL_I2C_Master_Transmit(&hi2c3, ADDR7BIT, buf, 1, HAL_MAX_DELAY);
+	  if (HAL_UART_Transmit(&huart1,"WORKUBITCH",12,100) != HAL_OK)
+		  Error_Handler();
 
-	  HAL_Delay(1);
+	  HAL_Delay(1000);
+	  HAL_GPIO_TogglePin (GPIOG, GPIO_PIN_1);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -431,14 +435,6 @@ static void MX_TIM2_Init(void)
   sConfigOC.Pulse = PWM_DEFAULT_DUTY;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-  if (HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  if (HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_2) != HAL_OK)
-  {
-    Error_Handler();
-  }
   if (HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_3) != HAL_OK)
   {
     Error_Handler();
@@ -664,6 +660,39 @@ static void MX_TIM12_Init(void)
 }
 
 /**
+  * @brief UART4 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_UART4_Init(void)
+{
+
+  /* USER CODE BEGIN UART4_Init 0 */
+
+  /* USER CODE END UART4_Init 0 */
+
+  /* USER CODE BEGIN UART4_Init 1 */
+
+  /* USER CODE END UART4_Init 1 */
+  huart4.Instance = UART4;
+  huart4.Init.BaudRate = 115200;
+  huart4.Init.WordLength = UART_WORDLENGTH_8B;
+  huart4.Init.StopBits = UART_STOPBITS_1;
+  huart4.Init.Parity = UART_PARITY_EVEN;
+  huart4.Init.Mode = UART_MODE_TX_RX;
+  huart4.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart4.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart4) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN UART4_Init 2 */
+
+  /* USER CODE END UART4_Init 2 */
+
+}
+
+/**
   * @brief USART1 Initialization Function
   * @param None
   * @retval None
@@ -812,6 +841,9 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6|LED_GREEN_Pin, GPIO_PIN_RESET);
 
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOG, GPIO_PIN_1, GPIO_PIN_RESET);
+
   /*Configure GPIO pins : IST_INT_Pin IST_RST_Pin */
   GPIO_InitStruct.Pin = IST_INT_Pin|IST_RST_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -832,6 +864,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PG1 */
+  GPIO_InitStruct.Pin = GPIO_PIN_1;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LED_RED_Pin */
   GPIO_InitStruct.Pin = LED_RED_Pin;

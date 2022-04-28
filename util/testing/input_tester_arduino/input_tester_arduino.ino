@@ -1,4 +1,4 @@
-#include "INCLUDE PATH TO: \MyButton.h"
+#include "MyButton.h"
 
 MyButton smallButton = MyButton(7);
 MyButton greenButton = MyButton(6);
@@ -13,7 +13,7 @@ int pottopLeft = A0;
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(1000000);
   pinMode(potBottom, INPUT_PULLUP);
   pinMode(pottopLeft, INPUT_PULLUP);
   pinMode(pottopMiddle, INPUT_PULLUP);
@@ -45,9 +45,8 @@ void loop()
   Serial.print("|");
   Serial.print(greenButton.updateButton());
   Serial.print("|");
-  
-  Serial.println("*");
 
-  delay(200);
+  delay(75);
+  //Serial.println(analogRead(potBottom));
   //delay(analogRead(potBottom));
 }

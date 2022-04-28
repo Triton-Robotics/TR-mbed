@@ -3,7 +3,7 @@
 #include "buttonanalyzer.hpp"
 
 
-static SerialCommunication Arduino(PA_0, PA_1, 9600);
+static SerialCommunication Arduino(PA_0, PA_1, 1000000);
 
 
 enum MyButtons {
@@ -81,9 +81,9 @@ class InputTester{
         for (int i = 0; i < 5; i++) {
             myButtons[i].update(data[i+4]);
         }
-        if (Arduino.update(message, 35, 50)) {
+        if (Arduino.update(message, 35, 35)) {
             getData(message);
-            //printf("%s",message);
+            //printf("%s\n",message);
             for (int i = 0; i < sizeof(message); i++)
                 message[i] = '\0';
 
