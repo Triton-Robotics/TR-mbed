@@ -432,7 +432,7 @@ int main(void)
  8000546:	4603      	mov	r3, r0
  8000548:	2b00      	cmp	r3, #0
  800054a:	d001      	beq.n	8000550 <main+0x6c>
-		  Error_Handler();// Sending in normal mode
+		  Error_Handler();
  800054c:	f000 fd0e 	bl	8000f6c <Error_Handler>
 
 	  HAL_Delay(1000);
