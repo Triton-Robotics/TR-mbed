@@ -1,3 +1,5 @@
+#ifndef SerialCommunication_hpp
+#define SerialCommunication_hpp
 #include "mbed.h"
 #include <cctype>
 #include <ratio>
@@ -31,7 +33,7 @@ class SerialCommunication : BufferedSerial {
                         message[i++] = '\0';
                 }
 
-            if (update(comdata, 6, 3)) {
+            if (update(comdata, 6, 1)) {
                 int z = 0;
                 if (comdata[0] == '\\') { // Return true once backslash is hit
                     index = 0;
@@ -87,3 +89,4 @@ class SerialCommunication : BufferedSerial {
         }
 
 };
+#endif
