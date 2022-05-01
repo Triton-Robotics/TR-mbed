@@ -17,11 +17,9 @@ int main(){
     //ChassisSubsystem chassis(CANHandler::CANBUS_1,1,2,3,4,M3508);
     while(1){
         remoteController.read();
-        double x = remoteController.getChannel(Remote::Channel::LEFT_HORIZONTAL);
-        double y = remoteController.getChannel(Remote::Channel::LEFT_VERTICAL);
-        double rx = remoteController.getChannel(Remote::Channel::RIGHT_HORIZONTAL);
-        printf("Lx%d\t,Ly%d\t,Rx%d\n",(int)(x * 10000),(int)(y * 10000),(int)(rx * 10000));
-        
+        int val = (remoteController.getChannel(Remote::Channel::LEFT_HORIZONTAL)* 100);
+        if (val != -150)
+            printf("%d\n", val);
         // printf("%d\n", int(remoteController.getChannel(Remote::Channel::LEFT_HORIZONTAL)* 100));
         //printf("%d\n", gimly.getData(ANGLE));
         //gimly.setDesiredCurrent(1000);
@@ -33,7 +31,7 @@ int main(){
             // double y = remoteController.getChannel(Remote::Channel::LEFT_VERTICAL);
             // double rx = remoteController.getChannel(Remote::Channel::RIGHT_HORIZONTAL);
             //chassis.move(x,y,rx,3);
-            // printf("Lx%d\t,Ly%d\t,Rx%d\n",(int)(x * 10000),(int)(y * 10000),(int)(rx * 10000));
+            //printf("Lx%d\t,Ly%d\t,Rx%d\n",x,y,rx);gf
             //since max value of output is 660, 1980 seems right for testing purposes.
 
             //chassis.move(1,0,0,60);
