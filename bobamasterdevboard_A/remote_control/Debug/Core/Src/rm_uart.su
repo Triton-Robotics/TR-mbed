@@ -1,0 +1,6 @@
+rm_uart.c:23:12:uart_receive_dma_no_it	32	static
+rm_uart.c:63:10:dma_current_data_counter	16	static
+rm_uart.c:77:6:rc_callback_handler	16	static
+rm_uart.c:114:13:uart_rx_idle_callback	24	static
+rm_uart.c:142:6:uart_receive_handler	16	static
+rm_uart.c:156:6:dbus_uart_init	16	static

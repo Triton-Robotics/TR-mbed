@@ -1,0 +1,5 @@
+pid.c:53:6:PID_init	32	static
+pid.c:83:7:PID_calc	24	static
+pid.c:131:6:PID_clear	16	static
+pid.c:144:7:mapPeriod	24	static
+pid.c:155:7:get_rotation_actual_error	32	static

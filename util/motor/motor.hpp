@@ -55,9 +55,6 @@ static CANMsg rxMsg; //Message object reused to recieve messages from motors
 
 static motorMode mode[2][8] = {{DISABLED, DISABLED, DISABLED, DISABLED, DISABLED, DISABLED, DISABLED, DISABLED},{DISABLED, DISABLED, DISABLED, DISABLED, DISABLED, DISABLED, DISABLED, DISABLED}};
 
-//static double PIDValuesPosition[8][3] = {{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0}};
-//static double PIDValuesSpeed[8][3] = {{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0},{1,0,0}};
-
 static int multiTurnPositionAngle[2][8] = {{0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0}};
 
 static PID pidPos[2][8];
@@ -65,11 +62,22 @@ static PID pidSpeed[2][8];
 
 static double positionBounds[2][8][2] {{{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}},{{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}}};
 
-static double defaultGimblyPosPID[3] = {5,0,3}; // pos output cap of 8000
-static double defaultGimblySpeedPID[3] = {50,10,0}; //speed icap of 1000
+/**
+* Default settings for Gimblies
+* {kP, kI, kD, OutPutCap, ITermCap}
+*/
+static double defaultGimblyPosSettings[5] = {15,1.797,10,8000,500}; 
 
-//static double defaultM3508PosPID[3] = {?, ?, ?}; 
-static double defaultM3508SpeedPID[3] = {.5, .2, 7}; //ICAP OF 400 REQUIRED
+static double defautlGimblySpeedSettings[5] = {41.980, 6.311, 19.960, 15000, 1000};
+
+
+/**
+* Default settings for M3508
+* {kP, kI, kD, OutPutCap, ITermCap}
+*/
+static double defautM3508PosSettings[5] = {.128, 1.029, 15.405, 3000, 300};
+
+static double defautM3508SpeedSettings[5] = {3.091, 0.207, 4.707, 15000, 500};
 
 static CANHandler* canHandles;
 
@@ -112,24 +120,26 @@ class Motor{
 
         if(type == GM6020) {
             ratio = 1;
-            setPositionPID(defaultGimblyPosPID[0], defaultGimblyPosPID[1], defaultGimblyPosPID[2]);
-            //setSpeedIntegralCap(?);
-            setPositionOutputCap(8000);
 
-            setSpeedPID(defaultGimblySpeedPID[0], defaultGimblySpeedPID[1], defaultGimblySpeedPID[2]);
-            setSpeedOutputCap(20000);
-            setSpeedIntegralCap(1000);
+            setPositionPID(defaultGimblyPosSettings[0], defaultGimblyPosSettings[1], defaultGimblyPosSettings[2]);
+            setPositionOutputCap(defaultGimblyPosSettings[3]);
+            setPositionIntegralCap(defaultGimblyPosSettings[4]);
+    
+            setSpeedPID(defautlGimblySpeedSettings[0], defautlGimblySpeedSettings[1], defautlGimblySpeedSettings[2]);
+            setSpeedOutputCap(defautlGimblySpeedSettings[3]);
+            setSpeedIntegralCap(defautlGimblySpeedSettings[4]);
+
         }else if(type == M3508){
             ratio = 19;
             types[bus][motorNumber] = STANDARD;
 
-            //setPositionPID(defaultM3508PosPID[0], defaultM3508PosPID[1], defaultM3508PosPID[2]);
-            //setSpeedIntegralCap(?);
-            setPositionOutputCap(8000);
-
-            setSpeedPID(defaultM3508SpeedPID[0], defaultM3508SpeedPID[1], defaultM3508SpeedPID[2]);
-            setSpeedIntegralCap(1000);
-            setSpeedOutputCap(8000);
+            setPositionPID(defautM3508PosSettings[0], defautM3508PosSettings[1], defautM3508PosSettings[2]);
+            setPositionOutputCap(defautM3508PosSettings[3]);
+            setPositionIntegralCap(defautM3508PosSettings[4]);
+    
+            setSpeedPID(defautM3508SpeedSettings[0], defautM3508SpeedSettings[1], defautM3508SpeedSettings[2]);
+            setSpeedOutputCap(defautM3508SpeedSettings[3]);
+            setSpeedIntegralCap(defautM3508SpeedSettings[4]);
         }else if(type == M2006){
             ratio = 36;
             types[bus][motorNumber] = STANDARD;
@@ -209,10 +219,13 @@ class Motor{
      * @param value
      */
     void setDesiredPos(int value) {
-        if(value < positionBounds[currentBus][motorNumber][0])
-            value = positionBounds[currentBus][motorNumber][0];
-        else if(value > positionBounds[currentBus][motorNumber][1])
-            value = positionBounds[currentBus][motorNumber][1];
+        if (positionBounds[currentBus][motorNumber][0] != 0 && positionBounds[currentBus][motorNumber][1] != 0)
+        {
+            if(value < positionBounds[currentBus][motorNumber][0])
+                value = positionBounds[currentBus][motorNumber][0];
+            else if(value > positionBounds[currentBus][motorNumber][1])
+                value = positionBounds[currentBus][motorNumber][1];
+        }
         setDesiredValue(value * 8191 * gearRatio / 360);
         mode[currentBus][motorNumber] = POSITION;
     }

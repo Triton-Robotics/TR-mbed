@@ -4,68 +4,41 @@
 #ifndef chassis_subsystem_cpp
 #define chassis_subsystem_cpp
 
-enum chassisMovementMode{TANK, MECANUM, BEYBLADE, SENTRY_CARRIAGE};
+enum chassisMode{TANK, MECANUM, BEYBLADE, RIGHT_ANGLE_MECANUM};
 
 class ChassisSubsystem{
     public:
-        Motor motors[4];
-        chassisMovementMode chassisMode;
+        Motor MotorRightFront;
+        Motor MotorLeftFront;
+        Motor MotorRightBack;
+        Motor MotorLeftBack;
+       
+       ChassisSubsystem(size_t m1_pin,size_t m2_pin,size_t m3_pin,size_t m4_pin, CANHandler::CANBus MOTOR,motorType TYPE):
+        MotorRightFront(m1_pin,MOTOR,TYPE),
+        MotorLeftFront(m2_pin,MOTOR,TYPE),
+        MotorRightBack(m3_pin,MOTOR,TYPE),
+        MotorLeftBack(m4_pin,MOTOR,TYPE)
+        {}
+       
+        
+        void set_speeds(int RF,int LF, int RB, int LB){
 
-        //       \\\       ///
-        //       \0\-------/1/
-        //       \\\       ///
-        //        |         | 
-        //        |         | 
-        //        |         | 
-        //       \\\       ///
-        //       \2\-------/3/
-        //       \\\       ///
-
-
-        ChassisSubsystem(CANHandler::CANBus bus, int motorCanID1_TL, int motorCanID2_TR, int motorCanID3_BL, int motorCANID4_BR, motorType type, chassisMovementMode cMode = MECANUM):
-            motors{
-                Motor(motorCanID1_TL,bus,type),
-                Motor(motorCanID2_TR,bus,type),
-                Motor(motorCanID3_BL,bus,type),
-                Motor(motorCANID4_BR,bus,type)}
-        {
-            //do something here
-            chassisMode = cMode;
-            if(chassisMode == TANK || chassisMode == MECANUM){
-                motors[0].isInverted = true;
-                motors[1].isInverted = true;
-            }
+            MotorRightFront.setDesiredSpeed(RF);
+            MotorLeftFront.setDesiredSpeed(LF);
+            MotorRightBack.setDesiredSpeed(RB);
+            MotorLeftBack.setDesiredSpeed(LB);
+            
         }
 
-        /**
-         * @brief Move the chassis
-         * 
-         * @param x linear sideways movement (-1,1)
-         * @param y forward and backward movement (-1,1)
-         * @param rx rotation (-1,1)
-         * @param magnitude the speed at which the chassis is moving
-         */ 
-        void move(int x, int y, int rx, int magnitude){
-            if(chassisMode == MECANUM){
-                motors[0].setDesiredSpeed(magnitude * (y + x + rx));
-                motors[1].setDesiredSpeed(magnitude * (y - x - rx));
-                motors[2].setDesiredSpeed(magnitude * (y - x + rx));
-                motors[3].setDesiredSpeed(magnitude * (y + x - rx));
-                //printf("M1:%d\tM2:%d\tM3:%d\tM4:%d\n",motors[0].getDesiredValue(),motors[1].getDesiredValue(),motors[2].getDesiredValue(),motors[3].getDesiredValue());
-            }if(chassisMode == TANK){
-                motors[0].setDesiredSpeed(magnitude * (y + rx));
-                motors[1].setDesiredSpeed(magnitude * (y - rx));
-                motors[2].setDesiredSpeed(magnitude * (y + rx));
-                motors[3].setDesiredSpeed(magnitude * (y - rx));
-            }if(chassisMode == SENTRY_CARRIAGE){
-                motors[0].setDesiredSpeed(magnitude * (x));
-                motors[1].setDesiredSpeed(magnitude * (x));
-            }if(chassisMode == BEYBLADE){
-                //How does this work??
-            }
-
+        void set_Direction(int y, int x, int rx){
+            y=-y/660;
+            x=x/660;
+            rx = rx/660;
+            int RF = y - x - rx, LF = y + x + rx, RB = y + x - rx, LB = y - x + rx;
+            set_speeds(RF,LF,RB,LB);
+            Motor::tick();
         }
-        //add methods to make it easy for an end-user to use chassis without worry.
+
 };
 
-#endif
+#endif  

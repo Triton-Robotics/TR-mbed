@@ -7,3 +7,4 @@ mbed-os
 projectfiles
 *.py*
 BUILD
+bobamasterdevboard_A\remote_control\Debug
