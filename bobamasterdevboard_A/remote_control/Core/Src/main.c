@@ -63,6 +63,7 @@ TIM_HandleTypeDef htim5;
 TIM_HandleTypeDef htim12;
 
 UART_HandleTypeDef huart4;
+UART_HandleTypeDef huart7;
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart6;
@@ -75,14 +76,14 @@ char buf[200];
 int count;
 short isKB = 0;
 
-int leftJoyX;
-int leftJoyY;
-int rightJoyX;
-int rightJoyY;
+int16_t leftJoyX;
+int16_t leftJoyY;
+int16_t rightJoyX;
+int16_t rightJoyY;
 
-int wheel;
-int leftSwitch;
-int rightSwitch;
+int16_t wheel;
+int16_t leftSwitch;
+int16_t rightSwitch;
 
 /* USER CODE END PV */
 
@@ -103,6 +104,7 @@ static void MX_TIM12_Init(void);
 static void MX_TIM5_Init(void);
 static void MX_I2C3_Init(void);
 static void MX_UART4_Init(void);
+static void MX_UART7_Init(void);
 /* USER CODE BEGIN PFP */
 void processMKB();
 void processController();
@@ -111,7 +113,15 @@ void processSentry();
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-static const uint8_t ADDR7BIT = 0x48 << 1; // Use 8-bit address
+
+char* int16ToInt8s(int16_t in){
+	char out[2] = {in>>8, in & 0xFF};
+	return out;
+}
+char int2sToInt8(int in1, int in2){
+	char out = in1 << 2 | in2;
+	return out;
+}
 
 void getRCVals() {
 	leftJoyX = rc.ch3;
@@ -123,7 +133,11 @@ void getRCVals() {
 
 	leftSwitch = rc.sw1;
 	rightSwitch = rc.sw2;
+
+
 }
+
+
 /* USER CODE END 0 */
 
 /**
@@ -133,8 +147,6 @@ void getRCVals() {
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  HAL_StatusTypeDef ret;
-  uint8_t buf[12];
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -169,6 +181,7 @@ int main(void)
   MX_TIM5_Init();
   MX_I2C3_Init();
   MX_UART4_Init();
+  MX_UART7_Init();
   /* USER CODE BEGIN 2 */
 
   led_off();
@@ -181,11 +194,25 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  //buf[0] = 0x00;
-	  //getRCVals();
-	  // ret = HAL_I2C_Master_Transmit(&hi2c3, ADDR7BIT, buf, 1, HAL_MAX_DELAY);
-	  if (HAL_UART_Transmit(&huart1,"WORKUBITCH",12,100) != HAL_OK)
-		  Error_Handler();
+	  getRCVals();
+	  char sendString[11] = {0,0,0,0,0,0,0,0,0,0,0};
+	  char *lXC = int16ToInt8s(leftJoyX);
+	  char *lYC = int16ToInt8s(leftJoyY);
+	  char *rXC = int16ToInt8s(rightJoyX);
+	  char *rYC = int16ToInt8s(rightJoyY);
+	  char *wC = int16ToInt8s(wheel);
+	  sendString[0] = lXC[0];
+	  sendString[1] = lXC[1];
+	  sendString[2] = lYC[0];
+	  sendString[3] = lYC[1];
+	  sendString[4] = rXC[0];
+	  sendString[5] = rXC[1];
+	  sendString[6] = rYC[0];
+	  sendString[7] = rYC[1];
+	  sendString[8] = wC[0];
+	  sendString[9] = wC[1];
+	  sendString[10] = int2sToInt8(leftSwitch, rightSwitch);
+	  HAL_UART_Transmit(&huart7, sendString ,sizeof(sendString),HAL_MAX_DELAY);
 
 	  HAL_Delay(1000);
 	  HAL_GPIO_TogglePin (GPIOG, GPIO_PIN_1);
@@ -689,6 +716,39 @@ static void MX_UART4_Init(void)
   /* USER CODE BEGIN UART4_Init 2 */
 
   /* USER CODE END UART4_Init 2 */
+
+}
+
+/**
+  * @brief UART7 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_UART7_Init(void)
+{
+
+  /* USER CODE BEGIN UART7_Init 0 */
+
+  /* USER CODE END UART7_Init 0 */
+
+  /* USER CODE BEGIN UART7_Init 1 */
+
+  /* USER CODE END UART7_Init 1 */
+  huart7.Instance = UART7;
+  huart7.Init.BaudRate = 115200;
+  huart7.Init.WordLength = UART_WORDLENGTH_8B;
+  huart7.Init.StopBits = UART_STOPBITS_1;
+  huart7.Init.Parity = UART_PARITY_NONE;
+  huart7.Init.Mode = UART_MODE_TX_RX;
+  huart7.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart7.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart7) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN UART7_Init 2 */
+
+  /* USER CODE END UART7_Init 2 */
 
 }
 
