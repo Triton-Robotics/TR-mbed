@@ -8,6 +8,9 @@ inline float map(int x, float in_min, float in_max, float out_min, float out_max
     }
 
 inline void printFloat(float input, int decimals) {
+    if (input < 0) 
+        printf("-");
+    input = abs(input);
     printf("%d", int(input));
     printf(".");
     input = input - int(input);

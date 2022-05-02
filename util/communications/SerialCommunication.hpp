@@ -74,7 +74,7 @@ class SerialCommunication : BufferedSerial {
         /**
         * @brief Check whether message is a number. Works with negatives as well
         * @param message is a string of chars to convert
-        * @return integer if it is a number, NULL if not convertable.
+        * @return integer if it is a number, -999 if not convertable.
         */
         int toNum(char message[]) {
             int i = 0;
@@ -82,7 +82,7 @@ class SerialCommunication : BufferedSerial {
                 i++;
             while(message[i] != '\0') {
                 if (!isdigit(message[i]))
-                    return NULL;
+                    return -999; // Cannot use NULL because 0 is a number that we may want to return
                 i++;
             }
             return std::atoi(message);

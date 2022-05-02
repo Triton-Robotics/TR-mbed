@@ -72,9 +72,6 @@ DMA_HandleTypeDef hdma_usart2_rx;
 DMA_HandleTypeDef hdma_usart2_tx;
 
 /* USER CODE BEGIN PV */
-char buf[200];
-int count;
-short isKB = 0;
 
 int16_t leftJoyX;
 int16_t leftJoyY;
@@ -114,13 +111,23 @@ void processSentry();
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-char* int16ToInt8s(int16_t in){
-	char out[2] = {in>>8, in & 0xFF};
-	return out;
+char numdataToMSC(int in){
+	in += 660; // Fuck them negatives
+	int carry = in / 94;
+	char charCarry = (char)(carry+32);
+	return charCarry;
 }
-char int2sToInt8(int in1, int in2){
-	char out = in1 << 2 | in2;
-	return out;
+
+char numdataToLSC(int in){
+	in += 660; // Fuck them negatives
+	int remainder = in % 94;
+	char charRemainder = (char)(remainder+32);
+	return charRemainder;
+}
+
+char switchToChar(int in) {
+    in += 32;
+    return (char)in;
 }
 
 void getRCVals() {
@@ -133,7 +140,6 @@ void getRCVals() {
 
 	leftSwitch = rc.sw1;
 	rightSwitch = rc.sw2;
-
 
 }
 
@@ -196,26 +202,23 @@ int main(void)
   {
 	  getRCVals();
 	  char sendString[11] = {0,0,0,0,0,0,0,0,0,0,0};
-	  char *lXC = int16ToInt8s(leftJoyX);
-	  char *lYC = int16ToInt8s(leftJoyY);
-	  char *rXC = int16ToInt8s(rightJoyX);
-	  char *rYC = int16ToInt8s(rightJoyY);
-	  char *wC = int16ToInt8s(wheel);
-	  sendString[0] = lXC[0];
-	  sendString[1] = lXC[1];
-	  sendString[2] = lYC[0];
-	  sendString[3] = lYC[1];
-	  sendString[4] = rXC[0];
-	  sendString[5] = rXC[1];
-	  sendString[6] = rYC[0];
-	  sendString[7] = rYC[1];
-	  sendString[8] = wC[0];
-	  sendString[9] = wC[1];
-	  sendString[10] = int2sToInt8(leftSwitch, rightSwitch);
-	  HAL_UART_Transmit(&huart7, sendString ,sizeof(sendString),HAL_MAX_DELAY);
 
-	  HAL_Delay(1000);
-	  HAL_GPIO_TogglePin (GPIOG, GPIO_PIN_1);
+	  sendString[0] = numdataToMSC(leftJoyX);
+	  sendString[1] = numdataToLSC(leftJoyX);
+	  sendString[2] = numdataToMSC(leftJoyY);
+	  sendString[3] = numdataToLSC(leftJoyY);
+	  sendString[4] = numdataToMSC(rightJoyX);
+	  sendString[5] = numdataToLSC(rightJoyX);
+	  sendString[6] = numdataToMSC(rightJoyY);
+	  sendString[7] = numdataToLSC(rightJoyY);
+	  sendString[8] = numdataToMSC(wheel);
+	  sendString[9] = numdataToLSC(wheel);
+	  sendString[10] = switchToChar(leftSwitch);
+	  sendString[11] = switchToChar(rightSwitch);
+
+	  HAL_UART_Transmit(&huart7, sendString ,12,HAL_MAX_DELAY);
+	  HAL_Delay(40); // Important as to not spam the Nucleo
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -735,7 +738,7 @@ static void MX_UART7_Init(void)
 
   /* USER CODE END UART7_Init 1 */
   huart7.Instance = UART7;
-  huart7.Init.BaudRate = 115200;
+  huart7.Init.BaudRate = 1000000;
   huart7.Init.WordLength = UART_WORDLENGTH_8B;
   huart7.Init.StopBits = UART_STOPBITS_1;
   huart7.Init.Parity = UART_PARITY_NONE;
