@@ -18,11 +18,14 @@ class PID {
         }
 
         /**
-         * Simple PID Constructor, has a default P, I, and D parameters
+         * @brief Simple PID Constructor
          *
-         * Optional Parameters are sumCap which respectively control the integral sum cap, to prevent runaway I values
+         * @param p
+         * @param i
+         * @param d
+         * @param sumCap the integral sum cap, to prevent runaway I values
          *
-         * and outCap, a cap on the actual output so you can limit how much the pid will output until you're sure it 
+         * @param outCap a cap on the actual output so you can limit how much the pid will output until you're sure it 
          * works well before you let it loose
          */
         PID(float p, float i, float d, float sumCap = 0, float outCap = 0){
@@ -31,6 +34,13 @@ class PID {
             outputCap = outCap;
         }
 
+        /**
+         * @brief calculate the PID output
+         *
+         * @param desiredV the desired value
+         * @param actualV the actual value
+         * @param dt the change in time
+         */
         float calculate(float desiredV, float actualV, float dt){
             static float lastError = 0;
             static float sumError = 0;
@@ -52,14 +62,28 @@ class PID {
             return PIDCalc;
         }
 
+        /**
+         * @brief set the integral cap
+         * @param sumCap the integral cap
+         */
         void setIntegralCap(float sumCap){
             integralCap = sumCap;
         }
 
+        /**
+         * @brief set the output cap
+         * @param outCap the output cap
+         */
         void setOutputCap(float outCap){
             outputCap = outCap;
         }
 
+        /**
+         * @brief set the PID values
+         * @param p
+         * @param i
+         * @param d
+         */
         void setPID(float p, float i, float d){
             kP = p; kI = i; kD = d;
         }
