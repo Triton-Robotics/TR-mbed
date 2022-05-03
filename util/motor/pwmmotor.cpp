@@ -13,6 +13,10 @@ class PWMMotor : PwmOut{
         }         
 
     public: 
+        /**
+        * @brief Constructor for PWMMotor
+        * @param defaultVal some motors will require a default value to send to the motor to initialize it.
+        */
         PWMMotor(PinName pin, int defaultVal = 0) : PwmOut(pin) {
             period(.02);
             pulsewidth(intToPulse(defaultVal));

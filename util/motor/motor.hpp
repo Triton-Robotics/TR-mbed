@@ -11,7 +11,7 @@ enum motorMode {DISABLED, POSITION, SPEED, CURRENT};
 
 enum motorType {
     NONE = 0,
-    STANDARD = 1, //all motors that use the standard can protocol, used by the C610 and C620
+    STANDARD = 1, //identifier for all motors that use the standard can protocol, used by the C610 and C620
     
     C610 = 4,
     M2006 = 4,
@@ -25,66 +25,100 @@ enum motorType {
     GIMBLY = 2, //Gimblyyyyyyyyyy
     GM6020 = 2
 };
-
+ 
+/**
+ * @brief enum of the five datatypes: ANGLE, VELOCITY, TORQUE (CURRENT), TEMPERATURE, and MULTITURNANGLE
+ */
 enum dataType {
     ANGLE = 0,
     VELOCITY = 1,
     TORQUE = 2,
+    CURRENT = 2,
     TEMPERATURE = 3,
     MULTITURNANGLE = 5
 };
 
 static int sendIDs[3] = {0x200,0x1FF,0x2FF}; //IDs to send data
 
+//Array holding the feedback values of the individual motors
 static int16_t feedback[2][8][4] = 
 {{{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0}},
-{{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0}}}; //Array holding the feedback values of the individual motors
+{{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0}}}; 
 
 static int totalMotors; //total number of motors in play
 
-static bool motorExists[2][8] = {{0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0}};
+static bool motorExists[2][8] = {{0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0}}; //Whether or not a motor exists, determines whether data is sent to a code.
 
 static int motorOut[2][8] = {{0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0}}; //All motor output values, depending on what mode they're in.
 
 static bool motorDebug = 0;
 
+
+//an array of all the motor types of motors, types[bus][motorID]
 static motorType types[2][8] = {{NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},{NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE}};
+
 
 static CANMsg txMsg(0x000,CANStandard); //Message object reused to send messages to motors
 static CANMsg rxMsg; //Message object reused to recieve messages from motors
 
+//Modes for each 
 static motorMode mode[2][8] = {{DISABLED, DISABLED, DISABLED, DISABLED, DISABLED, DISABLED, DISABLED, DISABLED},{DISABLED, DISABLED, DISABLED, DISABLED, DISABLED, DISABLED, DISABLED, DISABLED}};
 
+//an array of all the motor types of motors, multiTurnPositionAngle[bus][motorID]
 static int multiTurnPositionAngle[2][8] = {{0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0}};
 
-static PID pidPos[2][8];
-static PID pidSpeed[2][8];
 
+static PID pidPos[2][8]; //array of all PID objects for motor position
+static PID pidSpeed[2][8]; //array of all PID objects for motor speed
+
+//array of positional bounds for all motors positionBounds[bus][motorID][0 or 1]
 static double positionBounds[2][8][2] {{{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}},{{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}}};
 
 /**
-* Default settings for Gimblies
+* Default settings for position PID of Gimblies
 * {kP, kI, kD, OutPutCap, ITermCap}
 */
 static double defaultGimblyPosSettings[5] = {15,1.797,10,8000,500}; 
-
+/**
+* Default settings for speed PID of Gimblies
+* {kP, kI, kD, OutPutCap, ITermCap}
+*/
 static double defautlGimblySpeedSettings[5] = {41.980, 6.311, 19.960, 15000, 1000};
 
 
 /**
-* Default settings for M3508
+* Default settings for position PID of M3508
 * {kP, kI, kD, OutPutCap, ITermCap}
 */
 static double defautM3508PosSettings[5] = {.128, 1.029, 15.405, 3000, 300};
-
+/**
+* Default settings for speed PID of M3508
+* {kP, kI, kD, OutPutCap, ITermCap}
+*/
 static double defautM3508SpeedSettings[5] = {3.091, 0.207, 4.707, 15000, 500};
 
-static CANHandler* canHandles;
+static CANHandler* canHandles; //the canHandler object we use to send/recieve through the can bus
 
-static Thread thread(osPriorityHigh);
+static Thread thread(osPriorityHigh); //threading for Motor::tick()
 
-static int countWithoutTick = 0;
+static int countWithoutTick = 0; //the number of setValues without calling Motor::tick();
+
 /**
+ * Motor class to handle all motors that use CAN
+ * Lots of functionality, very proud, very happy.
+ */
+class Motor{
+    public:
+        
+    int motorNumber; //the number of motor this is, canID - 1, because canID is 1-8, arrays are 0-7
+
+    int gearRatio; //the gear ratio of the motor to encoder
+
+    bool isInverted = false; //is this motor inverted
+
+    CANHandler::CANBus currentBus; //the CANBus this motor is on
+
+    /**
      * @brief Construct a new Motor object
      * 
      * @param canID is a number from 1-8 signifying which CAN id is attached, blinking LED on motor controller will show this
@@ -94,17 +128,6 @@ static int countWithoutTick = 0;
      *   Ex: The M3508s have a 19:1 planetary gearbox, so this value would be 19.
      * @param inverted Inverts the output direction of the motor shaft.
      */ 
-class Motor{
-    public:
-        
-    int motorNumber;
-
-    int gearRatio;
-
-    bool isInverted = false;
-
-    CANHandler::CANBus currentBus;
-
     Motor(int canID, CANHandler::CANBus bus, motorType type = STANDARD, int ratio = -1, int inverted = false)
     {
         isInverted = inverted;
@@ -203,11 +226,21 @@ class Motor{
         thread.start(tickThread);
     }
 
+    /**
+     * @brief set the desired current (Not actually current, more like power)
+     * 
+     * @param value the current value [0-16000] for M3508 and [0-30000]6 for GM6020
+     */
     void setDesiredCurrent(int value) {
         setDesiredValue(value);
         mode[currentBus][motorNumber] = CURRENT;
     }
 
+    /**
+     * @brief set the desired speed of the motor (RPM)
+     * 
+     * @param value the speed value (RPM)
+     */
     void setDesiredSpeed(int value) {
         setDesiredValue(value * gearRatio);
         mode[currentBus][motorNumber] = SPEED;
@@ -216,7 +249,7 @@ class Motor{
     /**
      * @brief Set the desired position of the motor's output shaft in DEGREEs
      * 
-     * @param value
+     * @param value the angle in degrees
      */
     void setDesiredPos(int value) {
         if (positionBounds[currentBus][motorNumber][0] != 0 && positionBounds[currentBus][motorNumber][1] != 0)
@@ -264,39 +297,88 @@ class Motor{
         return feedback[bus][motorID][data];
     }
 
+    /**
+     * @brief zero the motor's multiturn angle
+     */
     void zeroPos() {
         multiTurnPositionAngle[currentBus][motorNumber] = 0;
     }
 
+    /**
+     * @brief zero the motor's multiturn angle
+     * 
+     * @param motorID the motorID of the motor
+     * @param bus the bus of the motor
+     */
     static void staticZeroPos(int motorID,CANHandler::CANBus bus) {
         multiTurnPositionAngle[bus][motorID] = 0;
     }
 
+    /**
+     * @brief set the PID constants of this motor's position PID
+     * 
+     * @param Kp
+     * @param Ki
+     * @param Kd
+     */
     void setPositionPID(double Kp, double Ki, double Kd){
         pidPos[currentBus][motorNumber].setPID(Kp,Ki,Kd);
     }
 
+    /**
+     * @brief set the integral cap of the motor
+     * 
+     * @param cap the integral cap
+     */
     void setPositionIntegralCap(double cap) {
         pidPos[currentBus][motorNumber].setIntegralCap(cap);
     }
 
+    /**
+     * @brief set the output cap of the motor
+     * 
+     * @param cap the output cap
+     */
     void setPositionOutputCap(double cap) {
         pidPos[currentBus][motorNumber].setOutputCap(cap);
     }
 
+    /**
+     * @brief set the positional bounds of the motor
+     * 
+     * @param min the minimum position bound
+     * @param max the maximum position bound
+     */
     void setPositionBounds(double min, double max) {
         positionBounds[currentBus][motorNumber][0] = min;
-        positionBounds[currentBus][motorNumber][0] = max;
+        positionBounds[currentBus][motorNumber][1] = max;
     }
 
+    /**
+     * @brief set the PID constants of this motor's speed PID
+     * 
+     * @param Kp
+     * @param Ki
+     * @param Kd
+     */
     void setSpeedPID(double Kp, double Ki, double Kd){
         pidSpeed[currentBus][motorNumber].setPID(Kp,Ki,Kd);
     }
 
+    /**
+     * @brief set the integral cap of the motor's speed PID
+     * 
+     * @param cap the integral cap
+     */
     void setSpeedIntegralCap(double cap) {
         pidSpeed[currentBus][motorNumber].setIntegralCap(cap);
     }
 
+    /**
+     * @brief set the output cap of the motor's speed PID
+     * 
+     * @param cap the output cap
+     */
     void setSpeedOutputCap(double cap) {
         pidSpeed[currentBus][motorNumber].setOutputCap(cap);
     }
@@ -477,6 +559,9 @@ class Motor{
         sendValues(CANHandler::CANBUS_2);
     }
 
+    /**
+     * @brief the thread that runs the ever-necessary Motor::tick()
+     */
     static void tickThread() {
         while (true) {
             tick();
