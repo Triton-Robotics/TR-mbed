@@ -1,7 +1,10 @@
 #include "../communications/SerialCommunication.hpp"
 #include "../helperFunctions.hpp"
 
-enum joysticks{
+/**
+ * enum for all axix coming from the DJIRemote
+ */
+enum axis{
     LEFTJOYX,
     LEFTJOYY,
     RIGHTJOYX,
@@ -9,15 +12,22 @@ enum joysticks{
     WHEEL,
 };
 
+/**
+ * enum for the switches coming from the DJIRemote
+ */
 enum switches {
     LSWITCH,
     RSWITCH
 };
 
+/**
+ * The DJIRemote handler for Robomaster Devboard 
+ * sending remote signals through UART
+ */
 class DJIRemote : SerialCommunication {
     private: 
-        char mymessage[12];
-        int data[7] = {0,0,0,0,0,0,0};
+        char mymessage[12]; //message to be read
+        int data[7] = {0,0,0,0,0,0,0}; //data out
 
         int charToNum(char MSC, char LSC, bool switches = 0) {
             if (!switches)
@@ -46,21 +56,38 @@ class DJIRemote : SerialCommunication {
         }
 
     public: 
+    /**
+     * @brief Constructor for DJIRemote UART handler
+     * 
+     * @param TX_PIN the tx pin
+     * @param RX_PIN the rx pin
+     */
     DJIRemote(PinName TX_PIN, PinName RX_PIN) : SerialCommunication(TX_PIN, RX_PIN, 1000000) {}
 
+    /**
+     * @brief get data from remote
+     * 
+     * @param printData whether or not to print the data
+     */
     void remoteUpdate(bool printData = 0) {
         if (update(mymessage, sizeof(mymessage), 20)) {
             getData();
 
             if (printData) {
-            for (int i = 0; i < 7; i++) 
-                printf("%d\t", data[i]);
-            printf("\n");
+                for (int i = 0; i < 7; i++) 
+                    printf("%d\t", data[i]);
+                printf("\n");
             }
         }
     }
 
-    float getStickData(joysticks stick, float lowerbound, float upperbound) {
+    /**
+     * @brief get a stick's data
+     * 
+     * @param lowerbound the lower bound of the output
+     * @param upperbound the upper bound of the output
+     */
+    float getStickData(axis stick, float lowerbound = -1, float upperbound = 1) {
         bool negative = false;
         if (data[stick] < 0)
             negative = true;
