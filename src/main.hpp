@@ -5,5 +5,6 @@
 #include "../util/algorithms/pid.hpp"
 #include "subsystems/ChassisSubsystem.hpp"
 #include "subsystems/TurretSubsystem.hpp"
+#include "../TR-mbed6/util/communications/djiremoteuart.hpp"
 
 enum robotType{TEST_BENCH, INFANTRY, HERO, ENGINEER, SENTRY};
