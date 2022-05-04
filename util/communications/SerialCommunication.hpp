@@ -88,5 +88,14 @@ class SerialCommunication : BufferedSerial {
             return std::atoi(message);
         }
 
+        bool strCompare(char word1[], char word2[]) {
+            int i = 0;
+            while (word1[i++] != '\0') {
+                if (word1[i] != word2[i])
+                    return false;
+            }
+            return true;
+        }
+
 };
 #endif
