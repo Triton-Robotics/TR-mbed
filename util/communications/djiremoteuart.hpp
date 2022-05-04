@@ -87,7 +87,7 @@ class DJIRemote : SerialCommunication {
      * @param lowerbound the lower bound of the output
      * @param upperbound the upper bound of the output
      */
-    float getStickData(axis stick, float lowerbound = -1, float upperbound = 1) {
+    float getStickData(axis stick, float lowerbound = 0, float upperbound = 1) {
         bool negative = false;
         if (data[stick] < 0)
             negative = true;

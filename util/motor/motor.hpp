@@ -193,6 +193,10 @@ class Motor{
         types[currentBus][motorNumber] = NONE;
     }
     
+    void setInverted(bool val) {
+        isInverted = val;
+    } 
+
     /**
      * @brief Set the desired value of this motor
      * 
@@ -566,7 +570,6 @@ class Motor{
             tick();
             ThisThread::sleep_for(1ms);
         }
-            
     }
 
 };

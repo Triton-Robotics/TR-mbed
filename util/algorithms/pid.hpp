@@ -9,6 +9,8 @@ class PID {
         float kD;
         float integralCap;
         float outputCap;
+        float lastError = 0;
+        float sumError = 0;
     public:
 
         PID(){
@@ -42,8 +44,6 @@ class PID {
          * @param dt the change in time
          */
         float calculate(float desiredV, float actualV, float dt){
-            static float lastError = 0;
-            static float sumError = 0;
             float error = (desiredV - actualV);
             float PIDCalc = kP * error + kI * sumError + kD * ((double)(error - lastError)/dt);
             sumError += error;

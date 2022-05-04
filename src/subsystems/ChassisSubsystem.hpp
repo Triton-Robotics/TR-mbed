@@ -29,12 +29,16 @@ class ChassisSubsystem{
          * @param bus can bus
          * @param TYPE the type of motor
          */ 
-        ChassisSubsystem(size_t m1_pin,size_t m2_pin,size_t m3_pin,size_t m4_pin, CANHandler::CANBus bus,motorType TYPE):
-            MotorLeftFront(m1_pin,bus,TYPE),
-            MotorRightFront(m2_pin,bus,TYPE),
-            MotorLeftBack(m3_pin,bus,TYPE),
-            MotorRightBack(m4_pin,bus,TYPE)
-        {}
+        ChassisSubsystem(int m1_can_id,int m2_can_id,int m3_can_id,int m4_can_id, CANHandler::CANBus bus,motorType TYPE):
+            MotorLeftFront(m1_can_id,bus,TYPE),
+            MotorRightFront(m2_can_id,bus,TYPE),
+            MotorLeftBack(m3_can_id,bus,TYPE),
+            MotorRightBack(m4_can_id,bus,TYPE)
+
+        {
+            MotorRightFront.setInverted(true);
+            MotorRightBack.setInverted(true);
+        }
        
         /**
          * @brief Sets the individual speed of all four motors with given values.
@@ -45,7 +49,6 @@ class ChassisSubsystem{
          * @param RB speed for right back motor
          */ 
         void setSpeeds(int LF,int RF, int LB, int RB){
-
             MotorRightFront.setDesiredSpeed(RF);
             MotorLeftFront.setDesiredSpeed(LF);
             MotorRightBack.setDesiredSpeed(RB);
@@ -61,12 +64,11 @@ class ChassisSubsystem{
          * @param rx the sideways movement of the chassis
          */
         void move(int y, int x, int rx){
-            y=-y/660;
-            x=x/660;
-            rx = rx/660;
-            int RF = y - x - rx, LF = y + x + rx, RB = y + x - rx, LB = y - x + rx;
+            // y=-y/660;
+            // x=x/660;
+            // rx = rx/660;
+            int RF = y + x + rx, LF = y - x - rx, RB = y - x + rx, LB = y + x - rx;
             setSpeeds(RF,LF,RB,LB);
-            Motor::tick();
         }
 
         /**
