@@ -33,7 +33,6 @@ enum dataType {
     ANGLE = 0,
     VELOCITY = 1,
     TORQUE = 2,
-    CURRENT = 2,
     TEMPERATURE = 3,
     MULTITURNANGLE = 5
 };
