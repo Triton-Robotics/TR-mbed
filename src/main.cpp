@@ -6,40 +6,46 @@ CANHandler canPorts(PA_11,PA_12,PB_12,PB_13);
 Remote remoteController(A1); 
 robotType rType = INFANTRY;
 
-//Motor gimly(7,CANHandler::CANBUS_1,GIMBLY);
-//Motor m3508(2,CANHandler::CANBUS_1,STANDARD);
-
-
-
 int main(){
-    printf("idk maybe this will work?\n");
-    //Motor::setCANHandler(&canPorts);
-    //ChassisSubsystem chassis(CANHandler::CANBUS_1,1,2,3,4,M3508);
-    while(1){
-        remoteController.read();
-        int val = (remoteController.getChannel(Remote::Channel::LEFT_HORIZONTAL)* 100);
-        if (val != -150)
-            printf("%d\n", val);
-        // printf("%d\n", int(remoteController.getChannel(Remote::Channel::LEFT_HORIZONTAL)* 100));
-        //printf("%d\n", gimly.getData(ANGLE));
-        //gimly.setDesiredCurrent(1000);
-        //printf("%d\n", feedback[CANHandler::CANBUS_1][1][2]);
-        //printf("yettus\n");
-        // if(rType == INFANTRY){
-            //printf("Dataaa.");
-            // double x = remoteController.getChannel(Remote::Channel::LEFT_HORIZONTAL);
-            // double y = remoteController.getChannel(Remote::Channel::LEFT_VERTICAL);
-            // double rx = remoteController.getChannel(Remote::Channel::RIGHT_HORIZONTAL);
-            //chassis.move(x,y,rx,3);
-            //printf("Lx%d\t,Ly%d\t,Rx%d\n",x,y,rx);gf
-            //since max value of output is 660, 1980 seems right for testing purposes.
-
-            //chassis.move(1,0,0,60);
-
-        //}
-
-
-        //Motor::tick();
+    printf("Starting robot\n");
+    Motor::setCANHandler(&canPorts);
+    if(rType == TEST_BENCH){
+        //ChassisSubsystem chassis(1,2,3,4,CANHandler::CANBUS_1,M3508);
+        while(1){
+            remoteController.read();
+            
+        }
+    }else if(rType == SENTRY){
+        ChassisSubsystem chassis(3,4,0,0,CANHandler::CANBUS_1,M3508);
+        Motor gimbalX(2,CANHandler::CANBUS_1,GM6020);
+        Motor gimbalY(5,CANHandler::CANBUS_1,GM6020);
+        Motor indexer(7,CANHandler::CANBUS_1,M3508);
+        while(1){
+            remoteController.read();
+            
+        }
+    }else if(rType == INFANTRY){
+        ChassisSubsystem chassis(1,2,3,4,CANHandler::CANBUS_1,M3508);
+        //Motor gimbalX(5,CANHandler::CANBUS_1,GM6020); //NONE OF THESE IDs ARE CORRECT
+        //Motor gimbalY(6,CANHandler::CANBUS_1,GM6020); //NONE OF THESE IDs ARE CORRECT
+        while(1){
+            remoteController.read();
+            
+        }
+    }else if(rType == HERO){
+        ChassisSubsystem chassis(1,2,3,4,CANHandler::CANBUS_1,M3508);
+        //Motor gimbalX(5,CANHandler::CANBUS_1,M3508); //NONE OF THESE IDs ARE CORRECT
+        //Motor gimbalY(6,CANHandler::CANBUS_1,GM6020); //NONE OF THESE IDs ARE CORRECT
+        while(1){
+            remoteController.read();
+            
+        }
+    }else if(rType == ENGINEER){
+        ChassisSubsystem chassis(1,2,3,4,CANHandler::CANBUS_1,M3508);
+        while(1){
+            remoteController.read();
+            
+        }
     }
 }
 
