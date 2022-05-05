@@ -1,10 +1,10 @@
 #include "main.hpp"
 #include "../util/communications/SerialCommunication.hpp"
-
-CANHandler canPorts(PA_11,PA_12,PB_12,PB_13);
 DJIRemote myremote(PA_0, PA_1);
-Remote remoteController(A1); 
-robotType rType = INFANTRY;
+CANHandler canPorts(PA_11,PA_12,PB_12,PB_13);
+
+//Remote remoteController(A1); 
+robotType rType = SENTRY;
 int maxspeed = 300;
 
 int main(){
@@ -21,12 +21,17 @@ int main(){
         Motor chassis1(3,CANHandler::CANBUS_1,M3508);
         Motor chassis2(4,CANHandler::CANBUS_1,M3508);
 
-        Motor gimbalX(2,CANHandler::CANBUS_1,GM6020);
-        Motor gimbalY(5,CANHandler::CANBUS_1,GM6020);
+        //Motor gimbalX(2,CANHandler::CANBUS_1,GM6020);
+        Motor gimbalY(6,CANHandler::CANBUS_1,GM6020);
+        //gimbalY.setPositionBounds(645, 2383);
         Motor indexer(7,CANHandler::CANBUS_1,M3508);
         while(1){
-            myremote.remoteUpdate(); //remoteController.read();
-            
+            myremote.remoteUpdate(); //remoteController.read(); 645 2383
+            chassis1.setDesiredSpeed(myremote.getStickData(LEFTJOYX, 0, maxspeed));
+            chassis2.setDesiredSpeed(myremote.getStickData(LEFTJOYX, 0, maxspeed));
+            gimbalY.setDesiredPos(myremote.getStickData(RIGHTJOYY, 0, 700) + 1500);
+            printf("%d\t",(int)(gimbalY.getData(ANGLE)));
+            printf("%d\n",(int)(myremote.getStickData(RIGHTJOYY, 0, 700) + 1500));
         }
     }else if(rType == INFANTRY){
         printf("INFANTRY\n");
