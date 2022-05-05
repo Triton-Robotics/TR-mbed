@@ -29,6 +29,7 @@ int main(){
             
         }
     }else if(rType == INFANTRY){
+        printf("INFANTRY\n");
         ChassisSubsystem chassis(4,2,1,3,CANHandler::CANBUS_1,M3508);
         Motor gimbalX(5,CANHandler::CANBUS_1,GM6020); //NONE OF THESE IDs ARE CORRECT
         Motor gimbalY(6,CANHandler::CANBUS_1,GM6020); //NONE OF THESE IDs ARE CORRECT
@@ -40,6 +41,7 @@ int main(){
                 myremote.getStickData(RIGHTJOYX, 0, maxspeed)); //rx
             gimbalY.setDesiredSpeed(myremote.getStickData(RIGHTJOYY, 0, maxspeed));
             gimbalX.setDesiredSpeed(myremote.getStickData(WHEEL, 0, maxspeed));
+            printf("%d\n",int(myremote.getStickData(LEFTJOYY, 0, maxspeed)*5));
         }
     }else if(rType == HERO){
         ChassisSubsystem chassis(1,2,3,4,CANHandler::CANBUS_1,M3508);
