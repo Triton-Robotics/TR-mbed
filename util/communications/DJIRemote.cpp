@@ -1,4 +1,5 @@
 #include "include/DJIRemote.hpp"
+
 using namespace std::chrono;
 
 Remote::Remote(PinName dbus) : receiver(NC, dbus) {

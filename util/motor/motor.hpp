@@ -426,10 +426,6 @@ class Motor{
         // unsigned long Time = us_ticker_read() / 1000;
 
         for (int i = 0; i < 7; i++) {
-            // unsigned long timeDifference = Time - lastTime[bus][i];
-            // if(abs(getStaticData(bus, i, VELOCITY)) < 110)
-            //   multiTurnPositionAngle[bus][i] += getStaticData(bus,i, VELOCITY) * timeDifference * 60 / 1000;
-            
             if (abs(getStaticData(bus,i, VELOCITY)) < 100) { // Check for slow speeds DJI's speed readout is shit when slow rpm
                 if ( getStaticData(bus,i, ANGLE) > (8191 - Threshold) && lastMotorAngle[bus][i] < Threshold) // Check to see whether the encoder reading "looped"
                     multiTurnPositionAngle[bus][i] += -(getStaticData(bus,i, ANGLE) - 8191) - lastMotorAngle[bus][i];
@@ -438,7 +434,6 @@ class Motor{
                     multiTurnPositionAngle[bus][i] -= -(getStaticData(bus,i, ANGLE) - 8191) - lastMotorAngle[bus][i];
                 else 
                     multiTurnPositionAngle[bus][i] += getStaticData(bus,i, ANGLE) - lastMotorAngle[bus][i];
-                //printf("\t\t\t Using slower multiturnposition control\n");
             }
             else {
                 int delta = getStaticData(bus,i, ANGLE) - lastMotorAngle[bus][i]; // 0 to 199 POS// 8000 to 128 NEG
@@ -451,7 +446,6 @@ class Motor{
                 }
             }
             lastMotorAngle[bus][i] = getStaticData(bus,i, ANGLE);
-            // lastTime[bus][i] = Time;
         }
       
     }
@@ -472,10 +466,8 @@ class Motor{
                     outputArray[i] = 0;
                 else if (mode[bus][i] == POSITION)
                     outputArray[i] = pidPos[bus][i].calculate(motorOut[bus][i],multiTurnPositionAngle[bus][i],timeDifference);
-                    //-PIDPositionError(motorOut1[i], i);
                 else if (mode[bus][i] == SPEED)
                     outputArray[i] += pidSpeed[bus][i].calculate(motorOut[bus][i],getStaticData(bus,i, VELOCITY),timeDifference);
-                    //-PIDSpeedError(motorOut1[i], i);
                 else if (mode[bus][i] == CURRENT) {
                     outputArray[i] = motorOut[bus][i];
                 }

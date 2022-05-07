@@ -45,7 +45,7 @@ void loop()
   Serial.print("|");
   Serial.print(greenButton.updateButton());
   Serial.print("|");
-  Serial.print("*"); // Really fricking important
+  Serial.println("*"); // Really fricking important
   
   delay(75);
   //Serial.println(analogRead(potBottom));
