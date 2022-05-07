@@ -200,23 +200,23 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  getRCVals();
-	  char sendString[11] = {0,0,0,0,0,0,0,0,0,0,0};
+	  // getRCVals();
+	  // char sendString[11] = {0,0,0,0,0,0,0,0,0,0,0};
 
-	  sendString[0] = numdataToMSC(leftJoyX);
-	  sendString[1] = numdataToLSC(leftJoyX);
-	  sendString[2] = numdataToMSC(leftJoyY);
-	  sendString[3] = numdataToLSC(leftJoyY);
-	  sendString[4] = numdataToMSC(rightJoyX);
-	  sendString[5] = numdataToLSC(rightJoyX);
-	  sendString[6] = numdataToMSC(rightJoyY);
-	  sendString[7] = numdataToLSC(rightJoyY);
-	  sendString[8] = numdataToMSC(wheel);
-	  sendString[9] = numdataToLSC(wheel);
-	  sendString[10] = switchToChar(leftSwitch);
-	  sendString[11] = switchToChar(rightSwitch);
+	  // sendString[0] = numdataToMSC(leftJoyX);
+	  // sendString[1] = numdataToLSC(leftJoyX);
+	  // sendString[2] = numdataToMSC(leftJoyY);
+	  // sendString[3] = numdataToLSC(leftJoyY);
+	  // sendString[4] = numdataToMSC(rightJoyX);
+	  // sendString[5] = numdataToLSC(rightJoyX);
+	  // sendString[6] = numdataToMSC(rightJoyY);
+	  // sendString[7] = numdataToLSC(rightJoyY);
+	  // sendString[8] = numdataToMSC(wheel);
+	  // sendString[9] = numdataToLSC(wheel);
+	  // sendString[10] = switchToChar(leftSwitch);
+	  // sendString[11] = switchToChar(rightSwitch);
 
-	  HAL_UART_Transmit(&huart7, sendString ,12,HAL_MAX_DELAY);
+	  HAL_UART_Transmit(&huart7, dbus_buf , 18,HAL_MAX_DELAY);
 	  HAL_Delay(40); // Important as to not spam the Nucleo
 
     /* USER CODE END WHILE */

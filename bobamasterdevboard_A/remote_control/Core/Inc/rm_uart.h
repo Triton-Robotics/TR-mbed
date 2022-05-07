@@ -69,6 +69,7 @@ typedef struct
 } rc_info_t;
 
 extern rc_info_t rc;
+extern uint8_t dbus_buf[DBUS_MAX_LEN];
 
 void uart_receive_handler(UART_HandleTypeDef *huart);
 void dbus_uart_init(void);
