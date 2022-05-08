@@ -1,5 +1,6 @@
 #include "../communications/SerialCommunication.hpp"
 #include "../helperFunctions.hpp"
+#include "../buttonanalyzer.hpp"
 #include <iostream>
 using namespace std;
 /**
@@ -19,6 +20,14 @@ enum axis{
 enum switches {
     LSWITCH,
     RSWITCH
+};
+
+enum mouse {
+    SPEEDX,
+    SPEEDY,
+    SPEEDZ,
+    LCLICK,
+    RCLICK
 };
 
 enum keyboard {
@@ -43,10 +52,13 @@ enum keyboard {
  * The DJIRemote handler for Robomaster Devboard 
  * sending remote signals through UART
  */
+
+static buttonanalyzer keyboardkeys[15];
+
 class DJIRemote : SerialCommunication {
     private: 
         char mymessage[36]; //message to be read
-        int data[27]; //data out
+        int data[12]; //data out
         int keyboardData[16];
 
         int charToNum(char MSC, char LSC, bool switches = 0) {
@@ -81,8 +93,10 @@ class DJIRemote : SerialCommunication {
 
             int16ToBitArray((int)mymessage[20], keyboardData);
 
-            for (int i = 0; i < sizeof(keyboardData); i++)
-                data[12+i] = keyboardData[i];
+
+            for (int i = 0; i < 15; i++) 
+                keyboardkeys[i].update(keyboardData[15-i]);
+            
 
         }
 
@@ -100,14 +114,12 @@ class DJIRemote : SerialCommunication {
      * 
      * @param printData whether or not to print the data
      */
-    void remoteUpdate(bool printData = 0) {
+    void remoteUpdate(bool printControllerData = 0) {
         if (update(mymessage, sizeof(mymessage), 20)) {
             getData();
-
-            if (printData) {
-                for (int i = 12; i < 27; i++)
+            if (printControllerData) {
+                for (int i = 0; i < 7; i++)
                     printf("%d\t", data[i]);
-
                 printf("\n");
             }
         }
@@ -138,6 +150,28 @@ class DJIRemote : SerialCommunication {
     int getSwitchData(switches switchie) {
         return data[switchie+5];
     }
+
+    int getMouseData(mouse button) {
+        return data[7 + button];
+    }
+
+    bool getKeyState(keyboard key) {
+        return keyboardkeys[key].getStatus();
+    }
+
+    bool getToggleState(keyboard key) {
+        return keyboardkeys[key].getToggle();
+    }
+
+    bool getInitialPress(keyboard key) {
+        return keyboardkeys[key].getInitialPress();
+    }
+
+    bool getInitialRelease(keyboard key) {
+        return keyboardkeys[key].getInitialRelease();
+    }
+
+
 
 };
 
