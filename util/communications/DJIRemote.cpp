@@ -4,7 +4,7 @@ using namespace std::chrono;
 
 Remote::Remote(PinName dbus) : receiver(NC, dbus) {
 
-    printf("deletus\n");
+    printf("YEETUSdeletus\n");
     receiver.set_baud(115200);
     receiver.set_format(8, BufferedSerial::Even, 1);
     receiver.set_blocking(false);
