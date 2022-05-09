@@ -31,7 +31,12 @@ class CANHandler{
             rxMsg.clear();
             rxMsg.len = 8;
             if (busAt(bus)->read(rxMsg)) {
-                //printMsg(rxMsg);
+                // if(rxMsg.id == 0x20a)
+                //     printMsg(rxMsg);
+                if (busAt(bus)->rderror()){
+                    printf("read error\n");
+                    return false;
+                }
                 *id = rxMsg.id;
                 for(int i = 0;  i < 8; i ++){
                     rxMsg >> bytes[i]; //Extract information from rxMsg and store it into the bytes array
@@ -50,14 +55,14 @@ class CANHandler{
         */
         static void printMsg(CANMessage& msg)
         {
-            printf("  ID      = 0x%.3x\r\n", msg.id);
-            printf("  Type    = %d\r\n", msg.type);
-            printf("  Format  = %d\r\n", msg.format);
-            printf("  Length  = %d\r\n", msg.len);
-            printf("  Data    =");
+            printf(" ID = 0x%.3x\t", msg.id);
+            //printf("  Type    = %d\r\n", msg.type);
+            //printf("  Format  = %d\r\n", msg.format);
+            //printf("  Length  = %d\r\n", msg.len);
+            //printf("  Data    =");
             for (int i = 0; i < msg.len; i++)
                 printf(" 0x%.2X", msg.data[i]);
-            printf("\r\n");
+            printf("\t");
         }
 
         /**

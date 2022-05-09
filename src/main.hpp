@@ -7,6 +7,6 @@
 #include "subsystems/TurretSubsystem.hpp"
 #include "../util/communications/djiremoteuart.hpp"
 #include "../util/helperFunctions.hpp"
-#include "robots/include/infantry.hpp"
+//#include "robots/include/infantry.hpp"
 
 enum robotType{TEST_BENCH, INFANTRY, HERO, ENGINEER, SENTRY};

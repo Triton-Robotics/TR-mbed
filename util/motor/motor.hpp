@@ -545,13 +545,20 @@ class Motor{
      */
     static void tick(){
         countWithoutTick = 0;
+        unsigned long time = us_ticker_read() / 1000;
         multiTurnPositionControl(CANHandler::CANBUS_1);
+        //////printf("Mp%lu\t",us_ticker_read() / 1000 - time);
+        //////time = us_ticker_read() / 1000;
         getFeedback(CANHandler::CANBUS_1);
+        //////printf("fB%lu\t",us_ticker_read() / 1000 - time);
+        //////time = us_ticker_read() / 1000;
         sendValues(CANHandler::CANBUS_1);
+        //////printf("sV%lu\t",us_ticker_read() / 1000 - time);
+        //////time = us_ticker_read() / 1000;
         
-        multiTurnPositionControl(CANHandler::CANBUS_2);
-        getFeedback(CANHandler::CANBUS_2);
-        sendValues(CANHandler::CANBUS_2);
+        // multiTurnPositionControl(CANHandler::CANBUS_2);
+        // getFeedback(CANHandler::CANBUS_2);
+        // sendValues(CANHandler::CANBUS_2);
     }
 
     /**
@@ -561,6 +568,7 @@ class Motor{
         while (true) {
             tick();
             ThisThread::sleep_for(1ms);
+            //////printf("Ticked\t");
         }
     }
 

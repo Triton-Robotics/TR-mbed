@@ -1,15 +1,17 @@
 #include "main.hpp"
 #include "../util/communications/SerialCommunication.hpp"
+#include <ios>
 DJIRemote myremote(PA_0, PA_1);
 CANHandler canPorts(PA_11,PA_12,PB_12,PB_13);
 
 //Remote remoteController(A1); 
-robotType rType = SENTRY;
+robotType rType = HERO;
 int maxspeed = 300;
 
 int main(){
-    printf("Starting robot\n");
+    printf("Initializing. . .\n");
     Motor::setCANHandler(&canPorts);
+    printf("Starting robot\n");
     if(rType == TEST_BENCH){
         printf("--TEST_BENCH--\n");
         //ChassisSubsystem chassis(1,2,3,4,CANHandler::CANBUS_1,M3508);
@@ -20,6 +22,7 @@ int main(){
     }else if(rType == SENTRY){
         printf("--SENTRY--\n");
         int gimYBound[2] = {32,96};
+        int gim2YBound[2] = {700,2300};
         int gimXBound[2] = {-180,180};
         //ChassisSubsystem chassis(3,4,0,0,CANHandler::CANBUS_1,M3508);
         Motor chassis1(3,CANHandler::CANBUS_1,M3508);
@@ -36,11 +39,19 @@ int main(){
         gimbalX.setPositionIntegralCap(50);
 
         gimbalY.setPositionOutputCap(5000);
+        gimbalY.setSpeedOutputCap(4000);
         gimbalX.setPositionIntegralCap(2000);
 
-        PID pidGimY(1,0,10,0,5000);
+        PID pidGimY(.1,0,10,0,1000);
+        PID pidGimyPos(7,1,10,2000,4500);
+
+        PWMMotor leftFlywheel(PA_5);
+        PWMMotor rightFlywheel(PA_6);
+
 
         Motor indexer(2,CANHandler::CANBUS_1,M3508);
+        indexer.setSpeedPID(3,0,2);
+
         unsigned long lastTime = us_ticker_read() / 1000;
         while(1){
             
@@ -48,18 +59,70 @@ int main(){
             unsigned long timeDifference = Time - lastTime;
             myremote.remoteUpdate(); //remoteController.read(); 645 2383
 
+            
+
             int gimY = (int)(myremote.getStickData(RIGHTJOYY, 0, (gimYBound[1] - gimYBound[0])/2.0) + gimYBound[0] + (gimYBound[1] - gimYBound[0])/2.0);
             int gimX = (int)(myremote.getStickData(RIGHTJOYX, 0, 1000));
             
+            int stickRY = int(myremote.getStickData(RIGHTJOYY,0,gim2YBound[1] - gim2YBound[0])) + gim2YBound[0];
+            int gimYAngle = gimbalY.getData(ANGLE);
+
+            int rY = int(myremote.getStickData(RIGHTJOYY,0,5000));
+            int rX = int(myremote.getStickData(RIGHTJOYX,0,5000));
+
             //chassis1.setDesiredSpeed(myremote.getStickData(LEFTJOYX, 0, maxspeed));
             //chassis2.setDesiredSpeed(myremote.getStickData(LEFTJOYX, 0, maxspeed));
             //if(gimY != 1501 && gimY != 637)
             int calc  = pidGimY.calculate(
-                    myremote.getStickData(RIGHTJOYY,0,8191), 
-                    gimbalY.getData(ANGLE), 
-                    timeDifference);
-            printf("%d\t%d\t%lu\t%d\n",int(myremote.getStickData(RIGHTJOYY,0,8191)),gimbalY.getData(ANGLE),timeDifference,calc);            
-            gimbalY.setDesiredSpeed(calc);
+                stickRY, 
+                gimYAngle, 
+                timeDifference);
+            int calcPosOnly = pidGimyPos.calculate(
+                stickRY,
+                gimYAngle,
+                timeDifference);
+            //printf("%d\t%d\t%lu\t%d\n",stickRY,gimYAngle,timeDifference,calcPosOnly);            
+            //gimbalY.setDesiredSpeed(calc);
+            
+            gimbalY.setDesiredCurrent(rY);
+            gimbalX.setDesiredCurrent(rX);
+            int indexJamTime = 0;
+            if(myremote.getSwitchData(LSWITCH) == 2){
+                indexer.setDesiredSpeed(0);
+            }else if(myremote.getSwitchData(LSWITCH) == 1){
+                if(abs(indexer.getData(TORQUE)) > 1700){ //jam
+                    indexJamTime = us_ticker_read() /1000;
+                }
+                if(us_ticker_read() / 1000 - indexJamTime < 500){
+                    indexer.setDesiredSpeed(45); //jam
+                }else{
+                    indexer.setDesiredSpeed(-45);
+                }
+            }else if(myremote.getSwitchData(LSWITCH) == 3){
+                if(abs(indexer.getData(TORQUE)) > 1700){ //jam
+                    indexJamTime = us_ticker_read() /1000;
+                }
+                if(us_ticker_read() / 1000 - indexJamTime < 500){
+                    indexer.setDesiredSpeed(-45); //jam
+                }else{
+                    indexer.setDesiredSpeed(45);
+                }
+            }
+            printf("rY:%d\n",rY);
+
+            if(myremote.getSwitchData(RSWITCH) == 2){
+                leftFlywheel.set(0);
+                rightFlywheel.set(0);
+            }else if(myremote.getSwitchData(RSWITCH) == 1){
+                leftFlywheel.set(20);
+                rightFlywheel.set(20);
+            }else if(myremote.getSwitchData(RSWITCH) == 3){
+                leftFlywheel.set(-20);
+                rightFlywheel.set(-20);
+            }
+            
+
+            //printf("%dL  R%d\n",myremote.getSwitchData(LSWITCH),myremote.getSwitchData(RSWITCH));
             // for(int i = 29; i < 100; i ++){
             //     gimbalY.setDesiredPos(i);
             //     ThisThread::sleep_for(10ms);
@@ -95,12 +158,16 @@ int main(){
         }
     }else if(rType == HERO){
         printf("--HERO--\n");
-        ChassisSubsystem chassis(1,2,3,4,CANHandler::CANBUS_1,M3508);
+        ChassisSubsystem chassis(4,3,1,2,CANHandler::CANBUS_1,M3508);
         //Motor gimbalX(5,CANHandler::CANBUS_1,M3508); //NONE OF THESE IDs ARE CORRECT
         //Motor gimbalY(6,CANHandler::CANBUS_1,GM6020); //NONE OF THESE IDs ARE CORRECT
         while(1){
             myremote.remoteUpdate(); //remoteController.read();
-            
+            chassis.move(
+                myremote.getStickData(LEFTJOYX,0,1000),
+                myremote.getStickData(LEFTJOYY,0,1000),
+                myremote.getStickData(RIGHTJOYX,0,1000));
+            printf("%d\t%d\t%d\n",int(myremote.getStickData(LEFTJOYX,0,1000)),int(myremote.getStickData(LEFTJOYY,0,1000)),int(myremote.getStickData(RIGHTJOYX,0,1000)));
         }
     }else if(rType == ENGINEER){
         printf("--ENGINEER--\n");

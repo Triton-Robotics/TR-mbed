@@ -5,6 +5,6 @@ class Robot {
     public :
         virtual int execute() = 0;
         virtual int finish() = 0;
-        virtual void log();
+        virtual void log() = 0;
 
 };
