@@ -166,7 +166,7 @@ int main(){
         while(1){
             myremote.remoteUpdate(1); //remoteController.read();
             int dats[7] = {0,0,0,0,0,0,0};
-            myremote.getData(dats);
+            myremote.getArray(dats);
             // chassis.move(
             //     myremote.getStickData(LEFTJOYY,0,1000),
             //     myremote.getStickData(LEFTJOYX,0,1000),
