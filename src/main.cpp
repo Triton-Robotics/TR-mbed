@@ -1,5 +1,4 @@
 #include "main.hpp"
-#include "../util/communications/SerialCommunication.hpp"
 #include <ios>
 DJIRemote myremote(PA_0, PA_1);
 CANHandler canPorts(PA_11,PA_12,PB_12,PB_13);

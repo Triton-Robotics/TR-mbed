@@ -496,7 +496,9 @@ class Motor{
                         outputArray[i] = motorOut[bus][i+4];
                         doSend[0] = true;
                     }
-                }else if(types[bus][i+4] == GM6020){
+                }
+                if(types[bus][i+4] == GM6020){
+                    printf("Sending for GM6020\n");
                     if (mode[bus][i+4] == DISABLED){
                         outputArrayGM6020[i] = 0;
                     }else if (mode[bus][i+4] == POSITION){
@@ -537,6 +539,7 @@ class Motor{
             sentBytes1[2*i] = (motorSending[i] >> 8) & (0xFF);
         }
         canHandles->rawSend(id,sentBytes1,bus);
+        printf("Sending: %d %d %d %d at ID %d\n", data1, data2, data3, data4, id);
     }
 
     /**

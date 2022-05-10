@@ -116,7 +116,7 @@ class DJIRemote : SerialCommunication {
      * @param printData whether or not to print the data
      */
     void remoteUpdate(bool printControllerData = 0) {
-        if (update(mymessage, sizeof(mymessage), 20)) {
+        if (update(mymessage, sizeof(mymessage), 5)) {
             getData();
             if (printControllerData) {
                 for (int i = 0; i < 7; i++)
@@ -139,9 +139,10 @@ class DJIRemote : SerialCommunication {
         float val = map(abs(data[stick]), 0, 660, lowerbound, upperbound);
         if (negative)
             val *= -1;
-        printf("%d->%d\n",int(data[stick] * 10000),int(val));
+        //printf("%d->%d\n",int(data[stick] * 10000),int(val));
         return val;
     }
+    
 
     /**
      * @brief get a stick's data
@@ -153,16 +154,42 @@ class DJIRemote : SerialCommunication {
         return data[stick];
     }
 
-    void getArray(int out[7]){
-        for (int i = 0; i < 7; i++)
+    void getArray(int* out){
+        for (int i = 0; i < 7; i++){
             out[i] = data[i];
+            printf("%d\t", out[i]);
+        }
     }
 
     /**
      * @brief Get data from Switches
      * 
      * @param switches Desired Switch 
-     * @return int value (1, 2, or 3) (Low, Medium, High)
+     * @return int value (1, 2, ochassis.move(
+            lY,
+            lX,
+            Wh
+        );
+        if(lS == 1){
+            duck.setDesiredCurrent(750);
+        }else if(lS == 3){
+            duck.setDesiredCurrent(-750);
+        }else if(lS == 2){
+            duck.setDesiredCurrent(0);
+        }
+        if(rS == 1){
+            indexer.setDesiredCurrent(750);
+            flywheelLeft.set(75);
+            flywheelRight.set(75);
+        }else if(rS == 3){
+            indexer.setDesiredCurrent(-750);
+            flywheelLeft.set(75);
+            flywheelRight.set(75);
+        }else if(rS == 2){
+            indexer.setDesiredCurrent(0);
+        }
+        turretX.setDesiredCurrent(rX);
+        turretY.setDesiredCurrent(rY);r 3) (Low, Medium, High)
      */
     int getSwitchData(switches switchie) {
         return data[switchie+5];
