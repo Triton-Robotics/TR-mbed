@@ -84,8 +84,8 @@ int main(){
             //printf("%d\t%d\t%lu\t%d\n",stickRY,gimYAngle,timeDifference,calcPosOnly);            
             //gimbalY.setDesiredSpeed(calc);
             
-            gimbalY.setDesiredCurrent(rY);
-            gimbalX.setDesiredCurrent(rX);
+            //gimbalY.setDesiredCurrent(rY);
+            //gimbalX.setDesiredCurrent(rX);
             int indexJamTime = 0;
             if(myremote.getSwitchData(LSWITCH) == 2){
                 indexer.setDesiredSpeed(0);
@@ -108,7 +108,7 @@ int main(){
                     indexer.setDesiredSpeed(45);
                 }
             }
-            printf("rY:%d\n",rY);
+            //printf("rY:%d\n",rY);
 
             if(myremote.getSwitchData(RSWITCH) == 2){
                 leftFlywheel.set(0);
@@ -120,7 +120,8 @@ int main(){
                 leftFlywheel.set(-20);
                 rightFlywheel.set(-20);
             }
-            
+            //printf("lX%d\tlY%d\trX%d\trY%d\tWh%d\n",int(myremote.getStickData(LEFTJOYX,0,1000)),int(myremote.getStickData(LEFTJOYY,0,1000)),int(myremote.getStickData(RIGHTJOYX,0,1000)),int(myremote.getStickData(RIGHTJOYY,0,1000)),int(myremote.getStickData(WHEEL,0,1000)));
+
 
             //printf("%dL  R%d\n",myremote.getSwitchData(LSWITCH),myremote.getSwitchData(RSWITCH));
             // for(int i = 29; i < 100; i ++){
@@ -149,8 +150,8 @@ int main(){
         while(1){
             myremote.remoteUpdate(); //remoteController.read();
             chassis.move(
-                myremote.getStickData(LEFTJOYY, 0, maxspeed), //x
-                myremote.getStickData(LEFTJOYX, 0, maxspeed), //y
+                myremote.getStickData(LEFTJOYY, 0, maxspeed), //y
+                myremote.getStickData(LEFTJOYX, 0, maxspeed), //x
                 myremote.getStickData(RIGHTJOYX, 0, maxspeed)); //rx
             gimbalY.setDesiredSpeed(myremote.getStickData(RIGHTJOYY, 0, maxspeed));
             gimbalX.setDesiredSpeed(myremote.getStickData(WHEEL, 0, maxspeed));
@@ -159,15 +160,39 @@ int main(){
     }else if(rType == HERO){
         printf("--HERO--\n");
         ChassisSubsystem chassis(4,3,1,2,CANHandler::CANBUS_1,M3508);
-        //Motor gimbalX(5,CANHandler::CANBUS_1,M3508); //NONE OF THESE IDs ARE CORRECT
-        //Motor gimbalY(6,CANHandler::CANBUS_1,GM6020); //NONE OF THESE IDs ARE CORRECT
+        Motor turretX(5,CANHandler::CANBUS_1,M3508);
+        Motor turretY(7,CANHandler::CANBUS_1,GIMBLY); 
+        Motor duck(8,CANHandler::CANBUS_1,M2006); 
         while(1){
-            myremote.remoteUpdate(); //remoteController.read();
-            chassis.move(
-                myremote.getStickData(LEFTJOYX,0,1000),
-                myremote.getStickData(LEFTJOYY,0,1000),
-                myremote.getStickData(RIGHTJOYX,0,1000));
-            printf("%d\t%d\t%d\n",int(myremote.getStickData(LEFTJOYX,0,1000)),int(myremote.getStickData(LEFTJOYY,0,1000)),int(myremote.getStickData(RIGHTJOYX,0,1000)));
+            myremote.remoteUpdate(1); //remoteController.read();
+            int dats[7] = {0,0,0,0,0,0,0};
+            myremote.getData(dats);
+            // chassis.move(
+            //     myremote.getStickData(LEFTJOYY,0,1000),
+            //     myremote.getStickData(LEFTJOYX,0,1000),
+            //     myremote.getStickData(RIGHTJOYX,0,1000));
+
+            // turretY.setDesiredCurrent(myremote.getStickData(RIGHTJOYY, 0, maxspeed));
+            // turretX.setDesiredCurrent(myremote.getStickData(WHEEL, 0, maxspeed));
+
+            // if(myremote.getSwitchData(RSWITCH) == 2){
+            //     duck.setDesiredCurrent(0);
+            // }else if(myremote.getSwitchData(RSWITCH) == 1){
+            //     duck.setDesiredCurrent(-500);
+            // }else if(myremote.getSwitchData(RSWITCH) == 3){
+            //     duck.setDesiredCurrent(500);
+            // }
+
+            for (int i = 0; i < 7; i++)
+                printf("%d\t", dats[i]);
+            printf("\n");
+
+            // printf("lX%d\tlY%d\tlX%d\tlY%d\tWh%d\n",
+            // int16_t(myremote.getRawStick(LEFTJOYX)),
+            // int16_t(myremote.getRawStick(LEFTJOYY)),
+            // int16_t(myremote.getRawStick(RIGHTJOYX)),
+            // int16_t(myremote.getRawStick(RIGHTJOYY)),
+            // int16_t(myremote.getRawStick(WHEEL)));
         }
     }else if(rType == ENGINEER){
         printf("--ENGINEER--\n");

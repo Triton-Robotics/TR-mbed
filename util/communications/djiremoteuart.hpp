@@ -93,6 +93,7 @@ class DJIRemote : SerialCommunication {
 
             int16ToBitArray((int)mymessage[20], keyboardData);
 
+            
 
             for (int i = 0; i < 15; i++) 
                 keyboardkeys[i].update(keyboardData[15-i]);
@@ -138,7 +139,23 @@ class DJIRemote : SerialCommunication {
         float val = map(abs(data[stick]), 0, 660, lowerbound, upperbound);
         if (negative)
             val *= -1;
+        printf("%d->%d\n",int(data[stick] * 10000),int(val));
         return val;
+    }
+
+    /**
+     * @brief get a stick's data
+     * 
+     * @param lowerbound the lower bound of the output
+     * @param upperbound the upper bound of the output
+     */
+    int getRawStick(axis stick) {
+        return data[stick];
+    }
+
+    void getArray(int out[7]){
+        for (int i = 0; i < 7; i++)
+            out[i] = data[i];
     }
 
     /**
