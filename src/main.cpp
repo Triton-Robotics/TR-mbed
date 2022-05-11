@@ -1,15 +1,18 @@
 #include "main.hpp"
 #include <ios>
-DJIRemote myremote(PA_0, PA_1);
 CANHandler canPorts(PA_11,PA_12,PB_12,PB_13);
 
 //Remote remoteController(A1); 
 robotType rType = HERO;
 int maxspeed = 300;
 
+
+Thread remote(osPriorityHigh);
+
 int main(){
     printf("Initializing. . .\n");
     Motor::setCANHandler(&canPorts);
+    remote.start(&remoteThread);
     printf("Starting robot\n");
     if(rType == TEST_BENCH){
         printf("--TEST_BENCH--\n");
@@ -160,31 +163,62 @@ int main(){
         printf("--HERO--\n");
         ChassisSubsystem chassis(4,3,1,2,CANHandler::CANBUS_1,M3508);
         Motor turretX(5,CANHandler::CANBUS_1,M3508);
-        Motor turretY(7,CANHandler::CANBUS_1,GIMBLY); 
+        Motor turretY(6,CANHandler::CANBUS_1,GIMBLY); 
+        Motor indexer(7,CANHandler::CANBUS_1,GIMBLY);
         Motor duck(8,CANHandler::CANBUS_1,M2006); 
+        PWMMotor flyWheelL(PA_5);
+        PWMMotor flyWheelR(PA_6);
         while(1){
-            myremote.remoteUpdate(1); //remoteController.read();
+            //myremote.remoteUpdate(); //remoteController.read();
             int dats[7] = {0,0,0,0,0,0,0};
             myremote.getArray(dats);
             // chassis.move(
-            //     myremote.getStickData(LEFTJOYY,0,1000),
-            //     myremote.getStickData(LEFTJOYX,0,1000),
-            //     myremote.getStickData(RIGHTJOYX,0,1000));
+            //     lY,
+            //     lX,
+            //     Wh);
 
-            // turretY.setDesiredCurrent(myremote.getStickData(RIGHTJOYY, 0, maxspeed));
-            // turretX.setDesiredCurrent(myremote.getStickData(WHEEL, 0, maxspeed));
+            //turretY.setDesiredCurrent(lY);
+            //turretX.setDesiredCurrent(lX);
 
-            // if(myremote.getSwitchData(RSWITCH) == 2){
-            //     duck.setDesiredCurrent(0);
-            // }else if(myremote.getSwitchData(RSWITCH) == 1){
-            //     duck.setDesiredCurrent(-500);
-            // }else if(myremote.getSwitchData(RSWITCH) == 3){
-            //     duck.setDesiredCurrent(500);
-            // }
+            if(myremote.getSwitchData(RSWITCH) == 2){
+                duck.setDesiredCurrent(0);
+                
+            }else if(myremote.getSwitchData(RSWITCH) == 1){
+                duck.setDesiredCurrent(-500);
+                
+            }else if(myremote.getSwitchData(RSWITCH) == 3){
+                duck.setDesiredCurrent(500);
+                
+            }
 
-            for (int i = 0; i < 7; i++)
-                printf("%d\t", dats[i]);
+            if(myremote.getSwitchData(LSWITCH) == 2){
+                flyWheelL.set(0);
+                flyWheelR.set(0);
+                indexer.setDesiredCurrent(0);
+            }else if(myremote.getSwitchData(LSWITCH) == 1){
+                flyWheelL.set(100);
+                flyWheelR.set(100);
+                indexer.setDesiredCurrent(6000);
+            }else if(myremote.getSwitchData(LSWITCH) == 3){
+                flyWheelL.set(-100);
+                flyWheelR.set(-100);
+                indexer.setDesiredCurrent(-6000);
+            }
+
+            //indexer.setDesiredCurrent(15000);
+
+            turretX.setDesiredCurrent(rX);
+            turretY.setDesiredCurrent(rY * 15);
+
+            for(int j = 0; j < 8;j++){
+                printf("%d ",motorOut[0][j]);
+            }
             printf("\n");
+
+            // for (int i = 0; i < 7; i++)
+            //     printf("%d\t", dats[i]);
+            // printf("%d\t%d\t%d\t%d\t%d\t%d\t",lX,lY,rX,rY,lS,rS);
+            // printf("\n");
 
             // printf("lX%d\tlY%d\tlX%d\tlY%d\tWh%d\n",
             // int16_t(myremote.getRawStick(LEFTJOYX)),
@@ -201,4 +235,5 @@ int main(){
         }
     }
 }
+
 

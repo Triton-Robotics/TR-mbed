@@ -501,7 +501,7 @@ class Motor{
                     }
                 }
                 if(types[bus][i+4] == GM6020){
-                    //printf("\t\t\t\t\t\tSending %d to GM6020 at %d\n",motorOut[bus][i+4],i+4);
+                    
                     if (mode[bus][i+4] == DISABLED){
                         outputArrayGM6020[i] = 0;
                     }else if (mode[bus][i+4] == POSITION){
@@ -512,17 +512,22 @@ class Motor{
                         doSend[1] = true;
                     }else if (mode[bus][i+4] == CURRENT) {
                         outputArrayGM6020[i] = motorOut[bus][i+4];
+                        //printf("\t\t\t\t\t\tSending %d to GM6020 at %d\n",motorOut[bus][i+4],i+4);
                         doSend[1] = true;
                     }
                 }
                 lastTime[bus][i+4] = Time;
             }
-            //if(doSend[0])
+            if(doSend[0])
                 rawSend(sendIDs[1], outputArray[0], outputArray[1], outputArray[2], outputArray[3], bus);
-            //if(doSend[1]){
+            if(doSend[1]){
                 rawSend(sendIDs[2], outputArrayGM6020[0], outputArrayGM6020[1], outputArrayGM6020[2], outputArrayGM6020[3], bus);
-            
-            //}
+                printf("\t\t\t");
+                // for(int j = 0; j < 4;j++){
+                //     printf(".%d ",outputArrayGM6020[j]);
+                // }
+                // printf("\n");
+            }
         }
     }
 

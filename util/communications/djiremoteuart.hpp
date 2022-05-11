@@ -157,8 +157,9 @@ class DJIRemote : SerialCommunication {
     void getArray(int* out){
         for (int i = 0; i < 7; i++){
             out[i] = data[i];
-            printf("%d\t", out[i]);
+            //printf("%d\t", out[i]);
         }
+        //printf("\n");
     }
 
     /**
