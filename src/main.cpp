@@ -172,48 +172,48 @@ int main(){
             //myremote.remoteUpdate(); //remoteController.read();
             int dats[7] = {0,0,0,0,0,0,0};
             myremote.getArray(dats);
-            // chassis.move(
-            //     lY,
-            //     lX,
-            //     Wh);
+            chassis.move(
+                lY,
+                lX,
+                Wh);
 
             //turretY.setDesiredCurrent(lY);
             //turretX.setDesiredCurrent(lX);
 
-            if(myremote.getSwitchData(RSWITCH) == 2){
-                duck.setDesiredCurrent(0);
+            // if(myremote.getSwitchData(RSWITCH) == 2){
+            //     duck.setDesiredCurrent(0);
                 
-            }else if(myremote.getSwitchData(RSWITCH) == 1){
-                duck.setDesiredCurrent(-500);
+            // }else if(myremote.getSwitchData(RSWITCH) == 1){
+            //     duck.setDesiredCurrent(-1200);
                 
-            }else if(myremote.getSwitchData(RSWITCH) == 3){
-                duck.setDesiredCurrent(500);
+            // }else if(myremote.getSwitchData(RSWITCH) == 3){
+            //     duck.setDesiredCurrent(650);
                 
-            }
+            // }
 
-            if(myremote.getSwitchData(LSWITCH) == 2){
-                flyWheelL.set(0);
-                flyWheelR.set(0);
-                indexer.setDesiredCurrent(0);
-            }else if(myremote.getSwitchData(LSWITCH) == 1){
-                flyWheelL.set(100);
-                flyWheelR.set(100);
-                indexer.setDesiredCurrent(6000);
-            }else if(myremote.getSwitchData(LSWITCH) == 3){
-                flyWheelL.set(-100);
-                flyWheelR.set(-100);
-                indexer.setDesiredCurrent(-6000);
-            }
+            // if(myremote.getSwitchData(LSWITCH) == 2){
+            //     flyWheelL.set(0);
+            //     flyWheelR.set(0);
+            //     //indexer.setDesiredCurrent(0);
+            // }else if(myremote.getSwitchData(LSWITCH) == 1){
+            //     flyWheelL.set(100);
+            //     flyWheelR.set(100);
+            //     //indexer.setDesiredCurrent(6000);
+            // }else if(myremote.getSwitchData(LSWITCH) == 3){
+            //     flyWheelL.set(-100);
+            //     flyWheelR.set(-100);
+            //     //indexer.setDesiredCurrent(-6000);
+            // }
 
-            //indexer.setDesiredCurrent(15000);
+            // indexer.setDesiredCurrent(20 * lY);
 
-            turretX.setDesiredCurrent(rX);
-            turretY.setDesiredCurrent(rY * 15);
+            // turretX.setDesiredCurrent(-rX);
+            // turretY.setDesiredCurrent(rY * 15);
 
-            for(int j = 0; j < 8;j++){
-                printf("%d ",motorOut[0][j]);
-            }
-            printf("\n");
+            // for(int j = 0; j < 8;j++){
+            //     printf("%d ",motorOut[0][j]);
+            // }
+            // printf("\n");
 
             // for (int i = 0; i < 7; i++)
             //     printf("%d\t", dats[i]);
