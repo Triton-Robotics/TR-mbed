@@ -10,14 +10,10 @@
 enum errorCodes{
     MOTOR_DISABLED,
     OUTSIDE_OF_BOUNDS,
-}
+};
 
 class CANMotor{
     public:
-
-        static CANMotor motors[12];
-
-        static motorType mTypes[12] = {NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE};
 
         short motorNumber; //the number of motor this is, canID - 1, because canID is 1-8, arrays are 0-7
 
@@ -43,14 +39,23 @@ class CANMotor{
 
         int value;
 
+        CANMotor(){
+            motorNumber = -1;
+            canBus = CANHandler::NOBUS;
+            gearRatio = 1;
+            value = 0;
+
+            type = NONE;
+        }
+
         CANMotor(short canID, CANHandler::CANBus bus, motorType mType = STANDARD, int ratio = 1){
             motorNumber = canID - 1;
             canBus = bus;
             gearRatio = ratio;
-
+            value = 0;
             
             type = mType;
-
+            
             if(type == GM6020){
                 motorNumber += 4; 
             }
@@ -60,8 +65,6 @@ class CANMotor{
             if (canID > 8 || canID < 1)
                 printf("canID not within correct bounds\n");
             
-            value = 0;
-            motors[motorNumber] = this;
         }
 
         ~CANMotor(){
@@ -71,12 +74,6 @@ class CANMotor{
         void setValue(int val){
             value = val;
         }
-
-        void tick(){
-            
-        }
-
-
 
 
 };
