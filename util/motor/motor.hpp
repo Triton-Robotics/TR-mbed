@@ -206,7 +206,7 @@ class Motor{
     int setDesiredValue(int value){
         countWithoutTick ++;
         if(countWithoutTick > 64){
-            printf("You are not calling Motor::tick() often enough. There should be a thread doing this, and if you've disabled that, You should be doing that at the end of every loop.\n");
+            //printf("You are not calling Motor::tick() often enough. There should be a thread doing this, and if you've disabled that, You should be doing that at the end of every loop.\n");
         }
         if (isInverted)
             value = -value;
