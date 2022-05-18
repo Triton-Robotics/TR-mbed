@@ -522,7 +522,7 @@ class Motor{
                 rawSend(sendIDs[1], outputArray[0], outputArray[1], outputArray[2], outputArray[3], bus);
             if(doSend[1]){
                 rawSend(sendIDs[2], outputArrayGM6020[0], outputArrayGM6020[1], outputArrayGM6020[2], outputArrayGM6020[3], bus);
-                printf("\t\t\t");
+                // printf("\t\t\t");
                 // for(int j = 0; j < 4;j++){
                 //     printf(".%d ",outputArrayGM6020[j]);
                 // }

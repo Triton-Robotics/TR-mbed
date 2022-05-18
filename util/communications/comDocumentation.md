@@ -4,7 +4,7 @@
 
 - Facilitates Computer to Nucleo communication through Mbed Studio's serial monitor. (Great for testing)
   
-  - Because the "Enter" button does not do anything on the Serial Monitor, pressing '\' will act like the Enter button in our SerialComm class.
+  - Because the "Enter" button does not do anything on mbed's serial monitor, pressing '\' will act like the Enter button in our SerialComm class.
   
   - Prints out data as you type and only sends the data to the nucleo when you press backslash
 
@@ -28,13 +28,15 @@ For example you can use the Tx and Rx built into the mini-usb connecting to the 
 
 ## Functions
 
-## bool PCRead(char message[])
+### PCRead(char message[])
 
 - Takes in a **char array**
 
-- Returns true once backslash (\\\) is sent 
+- Handles the update() function automatically
 
-### update(char message[], int sizeOfMessage, int sleep_fordelay)
+- Returns true once backslash (\\\) is sent and updates the char message with text in the serial monitor 
+
+#### update(char message[], int sizeOfMessage, int sleep_fordelay)
 
 - Takes in a **char array**, which is where the message will be stored into if there is new data in the Serial line. 
 
@@ -46,11 +48,17 @@ For example you can use the Tx and Rx built into the mini-usb connecting to the 
 
 - Returns **True** if there is new data and automatically populates **message** with this data.
 
-### int toNum(char message[])
+#### toNum(char message[])
 
 - Converts message array to an int (if valid)
 
-- Returns INT if possible to convert, NULL if not possible
+- Returns **INT** if possible to convert, -999 if not possible (Since 0 = NULL)
+
+#### strCompare(char word1[], char word2[])
+
+- Compares two strings
+
+- Returns **True** if they are the same
 
 ## Example
 
@@ -69,13 +77,13 @@ char mycoolmessage[64];
 int main() {
 
   while (1) {
-        
+
         if (Serial.PCRead(mycoolmessage)) {
             printf("your new messsage: %s\n", mycoolmessage);
 
-            if (Serial.toNum(mycoolmessage) != NULL) 
+            if (Serial.toNum(mycoolmessage) != -999) 
                 printf("message as an int: %d\n", Serial.toNum(mycoolmessage));
-            
+
         }
 
     }
