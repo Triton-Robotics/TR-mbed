@@ -476,6 +476,8 @@ class Motor{
                 }
                 lastTime[bus][i] = Time;
             }
+            printf("%d %d %d %d\t",motorOut[bus][0],motorOut[bus][1],motorOut[bus][2],motorOut[bus][3]);
+            printf("%d %d %d %d\n",outputArray[0],outputArray[1],outputArray[2],outputArray[3]);
             rawSend(sendIDs[0], outputArray[0], outputArray[1], outputArray[2], outputArray[3], bus);
         }
         if(motorExists[bus][4] || motorExists[bus][5] || motorExists[bus][6] || motorExists[bus][7]){

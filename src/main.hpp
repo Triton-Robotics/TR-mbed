@@ -34,3 +34,10 @@ static void remoteThread(){
         ThisThread::sleep_for(1ms);
     }
 }
+
+static void remotePrint(){
+    // for (int i = 0; i < 7; i++)
+    //     printf("%d\t", dats[i]);
+    printf("%d\t%d\t%d\t%d\t%d\t%d\t",lX,lY,rX,rY,lS,rS);
+    printf("\n");
+}

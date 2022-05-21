@@ -67,8 +67,10 @@ class ChassisSubsystem{
             // y=-y/660;
             // x=x/660;
             // rx = rx/660;
+            //printf("%d,%d,%d\n",y,x,rx);
             int RF = y + x + rx, LF = y - x - rx, RB = y - x + rx, LB = y + x - rx;
             setSpeeds(RF,LF,RB,LB);
+            //printf("%d,%d,%d,%d\n",RF,LF,RB,LB);
         }
 
         /**
