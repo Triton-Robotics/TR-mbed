@@ -44,9 +44,11 @@ class CANMotor{
             ERR = 4
         };
 
-        static CANMotor* allMotors[2][3][4];
+        inline static CANMotor* allMotors[2][3][4];
 
-        static NewCANHandler* canHandlers[2];
+        //CANMotor* CANMotor::allMotors[];
+
+        inline static NewCANHandler* canHandlers[2];
 
         short motorNumber; //the number of motor this is, canID - 1, because canID is 1-8, arrays are 0-7
 
@@ -78,6 +80,7 @@ class CANMotor{
         bool conflict; //check for a conflict when running motors
 
         CANMotor(bool isErroneousMotor = false){
+            
             motorNumber = -1;
             canBus = CANHandler::NOBUS;
             gearRatio = 1;
@@ -87,6 +90,7 @@ class CANMotor{
             mode = OFF;
 
             conflict = isErroneousMotor;
+            printf("standard bitch motor with %dNUM\n",motorNumber);
         }
 
         CANMotor(short canID, CANHandler::CANBus bus, motorType mType = STANDARD){
@@ -111,7 +115,9 @@ class CANMotor{
             //printf("sendID:%d,0x%x\n",motorNumber/4,sendIDs[motorNumber/4]);
             //printf("sendSlot:%d\n",motorNumber%4);
 
-            if(allMotors[bus][motorNumber/4][motorNumber%4]->type == NONE){
+            printf("allMotors[bus][%d][%d]->motorNumber = %d\n",motorNumber/4,motorNumber%4, allMotors[bus][motorNumber/4][motorNumber%4]);
+
+            if(allMotors[bus][motorNumber/4][motorNumber%4] == 0){
                 allMotors[bus][motorNumber/4][motorNumber%4] = this;
             }else{
                 CANMotor mot(true);
@@ -125,6 +131,12 @@ class CANMotor{
             if (canID > 8 || canID < 1)
                 printf("canID not within correct bounds\n");
             
+            // for(int  i = 0 ; i < 3; i ++){
+            //     for(int j = 0; j < 4; j ++){
+            //         printf("%d ",allMotors[0][i][j]->motorNumber);
+            //     }
+            //     printf("\n");
+            // }
         }
 
         ~CANMotor(){
@@ -134,8 +146,8 @@ class CANMotor{
         static void setCANHandlers(PinName can1Tx, PinName can1Rx, PinName can2Tx, PinName can2Rx){
             NewCANHandler can1(can1Tx,can1Rx);
             NewCANHandler can2(can1Tx,can1Rx);
-            canHandlers[0] = &can1;
-            canHandlers[0] = &can2;
+            CANMotor::canHandlers[0] = &can1;
+            CANMotor::canHandlers[1] = &can2;
         }
 
         void setValue(int val){
@@ -178,26 +190,22 @@ class CANMotor{
 
         }
 
-        // static void sendOneID(CANHandler::CANBus bus, short sendIDindex){
-        //     int8_t bytes[] = {
-        //         int8_t((allMotors[bus][sendIDindex][0]->powerOut >> 8)),
-        //         int8_t((allMotors[bus][sendIDindex][0]->powerOut)),
-        //         int8_t((allMotors[bus][sendIDindex][1]->powerOut >> 8)),
-        //         int8_t((allMotors[bus][sendIDindex][1]->powerOut)),
-        //         int8_t((allMotors[bus][sendIDindex][2]->powerOut >> 8)),
-        //         int8_t((allMotors[bus][sendIDindex][2]->powerOut)),
-        //         int8_t((allMotors[bus][sendIDindex][3]->powerOut >> 8)),
-        //         int8_t((allMotors[bus][sendIDindex][3]->powerOut))};
-        //     canHandlers[bus]->rawSend(sendIDs[sendIDindex], bytes);
-        // }
-
-        // static void tick(){
-        //     for(int i = 0; i < 3; i ++)
-        //         sendOneID(CANHandler::CANBUS_1,i);
-        // }
+        static void sendOneID(CANHandler::CANBus bus, short sendIDindex){
+            int8_t bytes[] = {
+                int8_t((allMotors[bus][sendIDindex][0]->powerOut >> 8)),
+                int8_t((allMotors[bus][sendIDindex][0]->powerOut)),
+                int8_t((allMotors[bus][sendIDindex][1]->powerOut >> 8)),
+                int8_t((allMotors[bus][sendIDindex][1]->powerOut)),
+                int8_t((allMotors[bus][sendIDindex][2]->powerOut >> 8)),
+                int8_t((allMotors[bus][sendIDindex][2]->powerOut)),
+                int8_t((allMotors[bus][sendIDindex][3]->powerOut >> 8)),
+                int8_t((allMotors[bus][sendIDindex][3]->powerOut))};
+            canHandlers[bus]->rawSend(sendIDs[sendIDindex], bytes);
+        }
 
         static void tick(){
-            
+            for(int i = 0; i < 3; i ++)
+                sendOneID(CANHandler::CANBUS_1,i);
         }
 
 };
