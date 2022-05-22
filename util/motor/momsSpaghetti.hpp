@@ -2,6 +2,8 @@
 #include "motor.hpp"
 #include "../algorithms/pid.hpp"
 #include "../communications/causeSpaghettiComesOnceInALifetime.hpp"
+#include "../helperFunctions.hpp"
+#include <cmath>
 //TR-mbed6/util/communications/causeSpaghettiComesOnceInALifetime.hpp
 
 // #pragma once
@@ -52,6 +54,8 @@ class CANMotor{
 
         static NewCANHandler* canHandlers[2];
 
+        static bool motorsExist[2][3][4];
+
         short motorNumber; //the number of motor this is, canID - 1, because canID is 1-8, arrays are 0-7
 
         int gearRatio = 1; //the gear ratio of the motor to encoder
@@ -76,7 +80,7 @@ class CANMotor{
         PID pidSpeed;
         PID pidPosition;
 
-        int value;
+        int value = 0;
         int16_t powerOut;
 
         bool conflict; //check for a conflict when running motors
@@ -92,6 +96,10 @@ class CANMotor{
             mode = OFF;
 
             conflict = isErroneousMotor;
+            if(isErroneousMotor)
+                mode = ERR;
+
+            powerOut = 0;
         }
 
         CANMotor(short canID, CANHandler::CANBus bus, motorType mType = STANDARD){
@@ -117,28 +125,32 @@ class CANMotor{
             //printf("sendID:%d,0x%x\n",motorNumber/4,sendIDs[motorNumber/4]);
             //printf("sendSlot:%d\n",motorNumber%4);
 
-            //printf("allMotors[bus][%d][%d]->motorNumber = %d\n",motorNumber/4,motorNumber%4, allMotors[bus][motorNumber/4][motorNumber%4]);
+            //printf("allMotors[bus][%d][%d]-> = %d\n",motorNumber/4,motorNumber%4, allMotors[bus][motorNumber/4][motorNumber%4]);
 
-            if(allMotors[bus][motorNumber/4][motorNumber%4] == 0){
+            if(/**motorsExist[bus][motorNumber/4][motorNumber%4] == false**/allMotors[bus][motorNumber/4][motorNumber%4]->motorNumber == -1){
                 allMotors[bus][motorNumber/4][motorNumber%4] = this;
+                motorsExist[bus][motorNumber/4][motorNumber%4] = true;
             }else{
                 CANMotor mot(true);
                 allMotors[bus][motorNumber/4][motorNumber%4] = &mot;
-                printf("ERROR. THERES A CONFLICT. YOU WILL HAVE ERRORS.\n YOU DUMB BITCH WHY WOULD YOU (WHO IS LIKELY ME) DO THIS. FIX YOUR MOTOR IDS YOU IDIOT.\n");
+                printf("[ERROR] THERES A CONFLICT. YOU WILL HAVE ERRORS.\n YOU DUMB BITCH WHY WOULD YOU (WHO IS LIKELY ME) DO THIS. FIX YOUR MOTOR IDS YOU IDIOT.\n");
             }
             
 
             // if(type == GM6020 && canID <= 4) // Check for them fucking gimblies
             //     printf("ERROR. IT IS HIGHLY DISCOURAGED OF YOU TO USE CAN BUSSES 1-4 FOR THE GM6020s. YOU WILL HAVE ERRORS.\n YOU DUMB BITCH WHY WOULD YOU (WHO IS LIKELY ME) DO THIS I HAVENT CODED THIS IN DONT MAKE ME CODE THIS IN PLEASE\n");
             if (canID > 8 || canID < 1)
-                printf("canID not within correct bounds\n");
+                printf("[ERROR] The canID [%d] not within correct bounds\n", canID);
             
-            // for(int  i = 0 ; i < 3; i ++){
-            //     for(int j = 0; j < 4; j ++){
-            //         printf("%d ",allMotors[0][i][j]->motorNumber);
-            //     }
-            //     printf("\n");
-            // }
+            for(int  i = 0 ; i < 3; i ++){
+                for(int j = 0; j < 4; j ++){
+                    printf("%d ",allMotors[0][i][j]->motorNumber);
+                }
+                printf("\n");
+            }
+            printf("\n---------\n");
+
+            powerOut = 0;
         }
 
         ~CANMotor(){
@@ -150,6 +162,14 @@ class CANMotor{
             NewCANHandler can2(can1Tx,can1Rx);
             CANMotor::canHandlers[0] = &can1;
             CANMotor::canHandlers[1] = &can2;
+            for(int i = 0; i < 3; i ++){
+                for(int j = 0; j < 4; j++){
+                    for(int k = 0; k < 2; k++){
+                        CANMotor m;
+                        allMotors[k][i][j] = &m;
+                    }
+                }
+            }
         }
 
         void setValue(int val){
@@ -183,6 +203,10 @@ class CANMotor{
                 powerOut += pidSpeed.calculate(value, velocity, time - lastTime);
             }else if(mode == POS){
                 powerOut = pidPosition.calculate(value, angle, time - lastTime);
+            }else if(mode == OFF){
+                powerOut = 0;
+            }else if(mode == ERR){
+                printf("[ERROR] THIS IS AN ERRONEOUS MOTOR. DO NOT ATTEMPT TO SEND IT DATA, DO NOT PASS GO, FIX THIS!\n");
             }
             lastTime = time;
 
@@ -192,26 +216,50 @@ class CANMotor{
 
         }
 
-        // static void sendOneID(CANHandler::CANBus bus, short sendIDindex){
-        //     int8_t bytes[] = {
-        //         int8_t((allMotors[bus][sendIDindex][0]->powerOut >> 8)),
-        //         int8_t((allMotors[bus][sendIDindex][0]->powerOut)),
-        //         int8_t((allMotors[bus][sendIDindex][1]->powerOut >> 8)),
-        //         int8_t((allMotors[bus][sendIDindex][1]->powerOut)),
-        //         int8_t((allMotors[bus][sendIDindex][2]->powerOut >> 8)),
-        //         int8_t((allMotors[bus][sendIDindex][2]->powerOut)),
-        //         int8_t((allMotors[bus][sendIDindex][3]->powerOut >> 8)),
-        //         int8_t((allMotors[bus][sendIDindex][3]->powerOut))};
-        //     canHandlers[bus]->rawSend(sendIDs[sendIDindex], bytes);
-        // }
+        static void sendOneID(CANHandler::CANBus bus, short sendIDindex){
+            // int8_t bytes[] = {
+            //     int8_t((allMotors[bus][sendIDindex][0]->powerOut >> 8)),
+            //     int8_t((allMotors[bus][sendIDindex][0]->powerOut)),
+            //     int8_t((allMotors[bus][sendIDindex][1]->powerOut >> 8)),
+            //     int8_t((allMotors[bus][sendIDindex][1]->powerOut)),
+            //     int8_t((allMotors[bus][sendIDindex][2]->powerOut >> 8)),
+            //     int8_t((allMotors[bus][sendIDindex][2]->powerOut)),
+            //     int8_t((allMotors[bus][sendIDindex][3]->powerOut >> 8)),
+            //     int8_t((allMotors[bus][sendIDindex][3]->powerOut))};
 
-        // static void tick(){
-        //     for(int i = 0; i < 3; i ++)
-        //         sendOneID(CANHandler::CANBUS_1,i);
-        // }
-        static void tick(){
+            //canHandlers[bus]->rawSend(sendIDs[sendIDindex], bytes);
 
+            int8_t bytes[8]  = {0,0,0,0,0,0,0,0};
+            for(int i = 0; i < 4; i++){
+                //printf("AL%d:\t",allMotors[bus][sendIDindex][i]);
+                if(/**motorsExist[bus][sendIDindex][i] == true**/allMotors[bus][sendIDindex][i]->motorNumber != -1){
+                    int16_t pO = allMotors[bus][sendIDindex][i]->powerOut;
+                    //printf("%d\t",pO);
+                    // printf("%d",pO >> 8);
+                    bytes[2*i] = int8_t(pO >> 8);
+                    // printf("%d",pO & 0xFF);
+                    bytes[2*i + 1] = int8_t(pO);
+                    // printf(" = %d",int16_t(pO));
+                }else{
+                    //printf("\t");
+                }  
+            }
+            printArray(bytes, 8);
+            //printf("\n");
+            if(/**canHandlers[bus] != 0**/canHandlers[bus]->exists){
+                canHandlers[bus]->rawSend(sendIDs[sendIDindex], bytes);
+            }else{
+                printf("[ERROR] YOUR CANHANDLERS ARE NOT DEFINED YET. DO THIS BEFORE YOU CALL ANY MOTORS,\n USING [(]CANMotor::setCANHandlers(PA_11,PA_12,PB_12,PB_13)], WHERE PA_11, PA_12 ARE TX, RX\n");
+            }
         }
+
+        static void tick(){
+            for(int i = 0; i < 3; i ++)
+                sendOneID(CANHandler::CANBUS_1,i);
+        }
+        // static void tick(){
+
+        // }
 
 };
 
