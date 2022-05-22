@@ -44,11 +44,13 @@ class CANMotor{
             ERR = 4
         };
 
-        inline static CANMotor* allMotors[2][3][4];
+        static CANMotor* allMotors[2][3][4];
+
+        //static int y;
 
         //CANMotor* CANMotor::allMotors[];
 
-        inline static NewCANHandler* canHandlers[2];
+        static NewCANHandler* canHandlers[2];
 
         short motorNumber; //the number of motor this is, canID - 1, because canID is 1-8, arrays are 0-7
 
@@ -90,7 +92,6 @@ class CANMotor{
             mode = OFF;
 
             conflict = isErroneousMotor;
-            printf("standard bitch motor with %dNUM\n",motorNumber);
         }
 
         CANMotor(short canID, CANHandler::CANBus bus, motorType mType = STANDARD){
@@ -112,10 +113,11 @@ class CANMotor{
             if(type == GM6020){
                 motorNumber += 4; 
             }
+
             //printf("sendID:%d,0x%x\n",motorNumber/4,sendIDs[motorNumber/4]);
             //printf("sendSlot:%d\n",motorNumber%4);
 
-            printf("allMotors[bus][%d][%d]->motorNumber = %d\n",motorNumber/4,motorNumber%4, allMotors[bus][motorNumber/4][motorNumber%4]);
+            //printf("allMotors[bus][%d][%d]->motorNumber = %d\n",motorNumber/4,motorNumber%4, allMotors[bus][motorNumber/4][motorNumber%4]);
 
             if(allMotors[bus][motorNumber/4][motorNumber%4] == 0){
                 allMotors[bus][motorNumber/4][motorNumber%4] = this;
@@ -190,22 +192,25 @@ class CANMotor{
 
         }
 
-        static void sendOneID(CANHandler::CANBus bus, short sendIDindex){
-            int8_t bytes[] = {
-                int8_t((allMotors[bus][sendIDindex][0]->powerOut >> 8)),
-                int8_t((allMotors[bus][sendIDindex][0]->powerOut)),
-                int8_t((allMotors[bus][sendIDindex][1]->powerOut >> 8)),
-                int8_t((allMotors[bus][sendIDindex][1]->powerOut)),
-                int8_t((allMotors[bus][sendIDindex][2]->powerOut >> 8)),
-                int8_t((allMotors[bus][sendIDindex][2]->powerOut)),
-                int8_t((allMotors[bus][sendIDindex][3]->powerOut >> 8)),
-                int8_t((allMotors[bus][sendIDindex][3]->powerOut))};
-            canHandlers[bus]->rawSend(sendIDs[sendIDindex], bytes);
-        }
+        // static void sendOneID(CANHandler::CANBus bus, short sendIDindex){
+        //     int8_t bytes[] = {
+        //         int8_t((allMotors[bus][sendIDindex][0]->powerOut >> 8)),
+        //         int8_t((allMotors[bus][sendIDindex][0]->powerOut)),
+        //         int8_t((allMotors[bus][sendIDindex][1]->powerOut >> 8)),
+        //         int8_t((allMotors[bus][sendIDindex][1]->powerOut)),
+        //         int8_t((allMotors[bus][sendIDindex][2]->powerOut >> 8)),
+        //         int8_t((allMotors[bus][sendIDindex][2]->powerOut)),
+        //         int8_t((allMotors[bus][sendIDindex][3]->powerOut >> 8)),
+        //         int8_t((allMotors[bus][sendIDindex][3]->powerOut))};
+        //     canHandlers[bus]->rawSend(sendIDs[sendIDindex], bytes);
+        // }
 
+        // static void tick(){
+        //     for(int i = 0; i < 3; i ++)
+        //         sendOneID(CANHandler::CANBUS_1,i);
+        // }
         static void tick(){
-            for(int i = 0; i < 3; i ++)
-                sendOneID(CANHandler::CANBUS_1,i);
+
         }
 
 };
