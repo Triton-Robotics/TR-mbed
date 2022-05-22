@@ -8,6 +8,8 @@
 #include "../util/communications/djiremoteuart.hpp"
 #include "../util/helperFunctions.hpp"
 #include "../util/communications/SerialCommunication.hpp"
+#include "../util/motor/momsSpaghetti.hpp"
+
 //#include "robots/include/infantry.hpp"
 static DJIRemote myremote(PA_0, PA_1);
 

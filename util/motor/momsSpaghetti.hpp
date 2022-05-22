@@ -1,6 +1,8 @@
 #include "mbed.h"
 #include "motor.hpp"
 #include "../algorithms/pid.hpp"
+#include "../communications/causeSpaghettiComesOnceInALifetime.hpp"
+//TR-mbed6/util/communications/causeSpaghettiComesOnceInALifetime.hpp
 
 // #pragma once
 // namespace{
@@ -11,10 +13,10 @@
 // }
 
 // #ifndef motorhandler_hpp
-#include "youOnlyGetOneSpaghetti.hpp"
+//#include "youOnlyGetOneSpaghetti.hpp"
 // #endif
 
-class MotorHandler;
+//class MotorHandler;
 
 #ifndef canmotor_hpp
 #define canmotor_hpp
@@ -22,31 +24,41 @@ class MotorHandler;
 //#define sendIDs {0x200,0x1FF,0x2FF}
 
 enum errorCodes{
+    NO_ERROR,
+    MOTOR_CONFLICT,
     MOTOR_DISABLED,
     OUTSIDE_OF_BOUNDS,
 };
 
 class CANMotor{
+
     public:
+
+        
 
         enum motorMoveMode{
             OFF = 0, 
             POS = 1, 
             SPD = 2, 
-            POW = 3
+            POW = 3,
+            ERR = 4
         };
 
-        static MotorHandler motorHandler;
+        static CANMotor* allMotors[2][3][4];
+
+        static NewCANHandler* canHandlers[2];
 
         short motorNumber; //the number of motor this is, canID - 1, because canID is 1-8, arrays are 0-7
 
         int gearRatio = 1; //the gear ratio of the motor to encoder
 
-        CANHandler::CANBus canBus; //the CANBus this motor is on
+        CANHandler::CANBus canBus = CANHandler::NOBUS; //the CANBus this motor is on
 
         motorType type = NONE; //mode of the motor
 
         motorMoveMode mode = OFF; //mode of the motor
+
+        //static MotorHandler motorHandler;
 
         int bounds[2] = {0,0};
 
@@ -61,9 +73,11 @@ class CANMotor{
         PID pidPosition;
 
         int value;
-        int powerOut;
+        int16_t powerOut;
 
-        CANMotor(){
+        bool conflict; //check for a conflict when running motors
+
+        CANMotor(bool isErroneousMotor = false){
             motorNumber = -1;
             canBus = CANHandler::NOBUS;
             gearRatio = 1;
@@ -71,9 +85,12 @@ class CANMotor{
 
             type = NONE;
             mode = OFF;
+
+            conflict = isErroneousMotor;
         }
 
         CANMotor(short canID, CANHandler::CANBus bus, motorType mType = STANDARD){
+            
             motorNumber = canID - 1;
             canBus = bus;
             if(mType == GM6020)
@@ -85,15 +102,26 @@ class CANMotor{
             else
                 gearRatio = 1;
             value = 0;
-            
+
             type = mType;
             
             if(type == GM6020){
                 motorNumber += 4; 
             }
+            //printf("sendID:%d,0x%x\n",motorNumber/4,sendIDs[motorNumber/4]);
+            //printf("sendSlot:%d\n",motorNumber%4);
 
-            if(type == GM6020 && canID <= 4) // Check for them fucking gimblies
-                printf("ERROR. IT IS HIGHLY DISCOURAGED OF YOU TO USE CAN BUSSES 1-4 FOR THE GM6020s. YOU WILL HAVE ERRORS.\n YOU DUMB BITCH WHY WOULD YOU (WHO IS LIKELY ME) DO THIS I HAVENT CODED THIS IN DONT MAKE ME CODE THIS IN PLEASE\n");
+            if(allMotors[bus][motorNumber/4][motorNumber%4]->type == NONE){
+                allMotors[bus][motorNumber/4][motorNumber%4] = this;
+            }else{
+                CANMotor mot(true);
+                allMotors[bus][motorNumber/4][motorNumber%4] = &mot;
+                printf("ERROR. THERES A CONFLICT. YOU WILL HAVE ERRORS.\n YOU DUMB BITCH WHY WOULD YOU (WHO IS LIKELY ME) DO THIS. FIX YOUR MOTOR IDS YOU IDIOT.\n");
+            }
+            
+
+            // if(type == GM6020 && canID <= 4) // Check for them fucking gimblies
+            //     printf("ERROR. IT IS HIGHLY DISCOURAGED OF YOU TO USE CAN BUSSES 1-4 FOR THE GM6020s. YOU WILL HAVE ERRORS.\n YOU DUMB BITCH WHY WOULD YOU (WHO IS LIKELY ME) DO THIS I HAVENT CODED THIS IN DONT MAKE ME CODE THIS IN PLEASE\n");
             if (canID > 8 || canID < 1)
                 printf("canID not within correct bounds\n");
             
@@ -101,6 +129,13 @@ class CANMotor{
 
         ~CANMotor(){
             type = NONE;
+        }
+
+        static void setCANHandlers(PinName can1Tx, PinName can1Rx, PinName can2Tx, PinName can2Rx){
+            NewCANHandler can1(can1Tx,can1Rx);
+            NewCANHandler can2(can1Tx,can1Rx);
+            canHandlers[0] = &can1;
+            canHandlers[0] = &can2;
         }
 
         void setValue(int val){
@@ -141,6 +176,28 @@ class CANMotor{
 
         void getFeedback(){
 
+        }
+
+        // static void sendOneID(CANHandler::CANBus bus, short sendIDindex){
+        //     int8_t bytes[] = {
+        //         int8_t((allMotors[bus][sendIDindex][0]->powerOut >> 8)),
+        //         int8_t((allMotors[bus][sendIDindex][0]->powerOut)),
+        //         int8_t((allMotors[bus][sendIDindex][1]->powerOut >> 8)),
+        //         int8_t((allMotors[bus][sendIDindex][1]->powerOut)),
+        //         int8_t((allMotors[bus][sendIDindex][2]->powerOut >> 8)),
+        //         int8_t((allMotors[bus][sendIDindex][2]->powerOut)),
+        //         int8_t((allMotors[bus][sendIDindex][3]->powerOut >> 8)),
+        //         int8_t((allMotors[bus][sendIDindex][3]->powerOut))};
+        //     canHandlers[bus]->rawSend(sendIDs[sendIDindex], bytes);
+        // }
+
+        // static void tick(){
+        //     for(int i = 0; i < 3; i ++)
+        //         sendOneID(CANHandler::CANBUS_1,i);
+        // }
+
+        static void tick(){
+            
         }
 
 };

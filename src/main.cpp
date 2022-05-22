@@ -3,7 +3,7 @@
 CANHandler canPorts(PA_11,PA_12,PB_12,PB_13);
 
 Remote remoteController(D9); 
-robotType rType = SENTRY;
+robotType rType = TEST_BENCH;
 int maxspeed = 300;
 
 
@@ -15,12 +15,18 @@ int main(){
     remote.start(&remoteThread);
     printf("Starting robot\n");
     if(rType == TEST_BENCH){
+        CANMotor::setCANHandlers(PA_11,PA_12,PB_12,PB_13);
         printf("--TEST_BENCH--\n");
+        CANMotor test(4,CANHandler::CANBUS_1,M3508);
+        CANMotor yeet(8,CANHandler::CANBUS_1,M3508);
+        CANMotor weet(2,CANHandler::CANBUS_1,GM6020);
+        CANMotor dlete(6,CANHandler::CANBUS_1,GM6020);
         //ChassisSubsystem chassis(1,2,3,4,CANHandler::CANBUS_1,M3508);
         while(1){
-            remoteController.read(); //myremote.remoteUpdate(); 
-            printf("%d\n",int(remoteController.getChannel(Remote::Channel::LEFT_HORIZONTAL) * 10000));
-            
+            //remoteController.read(); //myremote.remoteUpdate(); 
+            //printf("%d\n",int(remoteController.getChannel(Remote::Channel::LEFT_HORIZONTAL) * 10000));
+            test.setPower(700);
+            CANMotor::tick();
         }
     }else if(rType == SENTRY){
         printf("--SENTRY--\n");

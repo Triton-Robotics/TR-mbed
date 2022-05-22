@@ -13,6 +13,10 @@ class NewCANHandler{
 
         bool exists = false;
         // Declaring CanHandler, can1, and can2
+        NewCANHandler():
+            can(PA_11,PA_12,1000000)
+            {exists = false;}
+
         NewCANHandler(PinName canRx, PinName canTx):
             can(canRx,canTx,1000000)
             {exists = true;}
