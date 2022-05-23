@@ -1,6 +1,8 @@
 #include "main.hpp"
 #include <ios>
 CANHandler canPorts(PA_11,PA_12,PB_12,PB_13);
+NewCANHandler canHandler1(PA_11,PA_12);
+NewCANHandler canHandler2(PB_12,PB_13);
 
 Remote remoteController(D9); 
 robotType rType = TEST_BENCH;
@@ -15,7 +17,7 @@ int main(){
     remote.start(&remoteThread);
     printf("Starting robot\n");
     if(rType == TEST_BENCH){
-        CANMotor::setCANHandlers(PA_11,PA_12,PB_12,PB_13);
+        CANMotor::setCANHandlers(&canHandler1,&canHandler2);
         printf("--TEST_BENCH--\n");
         CANMotor test(4,CANHandler::CANBUS_1,M3508);
         CANMotor yeet(8,CANHandler::CANBUS_1,M3508);
@@ -26,6 +28,7 @@ int main(){
             //remoteController.read(); //myremote.remoteUpdate(); 
             //printf("%d\n",int(remoteController.getChannel(Remote::Channel::LEFT_HORIZONTAL) * 10000));
             test.setPower(700);
+            dlete.setPower(-100);
             CANMotor::tick();
         }
     }else if(rType == SENTRY){

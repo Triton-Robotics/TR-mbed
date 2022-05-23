@@ -57,6 +57,13 @@ inline void printArray(int8_t array[], int length){
     printf("\n");
 }
 
+inline void printArray(uint8_t array[], int length){
+    for(int i = 0; i < length; i ++){
+        printf("%d\t",array[i]);
+    }
+    printf("\n");
+}
+
 
 
 

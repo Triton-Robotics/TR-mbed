@@ -21,6 +21,11 @@ class NewCANHandler{
             can(canRx,canTx,1000000)
             {exists = true;}
 
+        void updateCANs(PinName canRx, PinName canTx){
+            //can = new CAN(canRx,canTx,1000000);
+            CAN can(canRx,canTx,1000000);
+        }
+
         /**
         * @brief Get feedback back from the motor
         * 
