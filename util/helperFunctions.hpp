@@ -20,15 +20,19 @@ inline float map(int x, float in_min, float in_max, float out_min, float out_max
  * 
  * @param input the number to print
  * @param decimals the number of decimal points to keep.
+ * @param newline whether to print this as a line or keep it in the serial buffer.
  */ 
-inline void printFloat(float input, int decimals) {
+inline void printFloat(float input, int decimals, bool newline = 0) {
     if (input < 0) 
         printf("-");
     input = abs(input);
     printf("%d", int(input));
     printf(".");
     input = input - int(input);
-    printf("%d\n", int(input * (pow(10, decimals))));
+    if (newline)
+        printf("%d\n", int(input * (pow(10, decimals))));
+    else 
+        printf("%d", int(input * (pow(10, decimals))));
 } 
 
 inline void int16ToBitArray(int n, int binaryNum[])
