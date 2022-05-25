@@ -206,7 +206,7 @@ class CANMotor{
             setOutput();
         }
 
-        void setPostiion(int position){
+        void setPosition(int position){
             setValue(position);
             mode = POS; 
             setOutput();
@@ -232,6 +232,7 @@ class CANMotor{
 
         static void sendOneID(CANHandler::CANBus bus, short sendIDindex){
             int8_t bytes[8]  = {0,0,0,0,0,0,0,0};
+            printf("0x%x:\t",sendIDs[sendIDindex]);
             for(int i = 0; i < 4; i++){
                 //printf("AL%d:\t",allMotors[bus][sendIDindex][i]);
                 if(motorsExist[bus][sendIDindex][i] == true/**allMotors[bus][sendIDindex][i]->motorNumber != -1**/){
@@ -246,16 +247,18 @@ class CANMotor{
                     //printf("%d ",pO & 0xFF);
 
                 }else{
-                    //printf("\t");
+                    //printf("NA\t");
                 }  
             }
+            //printf("\n");
             //printf("0x%x:\t",sendIDs[sendIDindex]);
             //printArray(bytes, 8);
             //printf("meh1%d, meh2%d\n",canHandlers[0]->exists,canHandlers[1]->exists);
+            //printf("canhandler id is%d\n",canHandlers[bus]);
             if(/**canHandlers[bus] != 0**/canHandlers[bus]->exists == true){
                 canHandlers[bus]->rawSend(sendIDs[sendIDindex], bytes);
             }else{
-                printf("[ERROR] YOUR CANHANDLERS ARE NOT DEFINED YET. DO THIS BEFORE YOU CALL ANY MOTORS,\n USING [(]CANMotor::setCANHandlers(PA_11,PA_12,PB_12,PB_13)], WHERE PA_11, PA_12 ARE TX, RX\n");
+                printf("[ERROR] YOUR CANHANDLERS ARE NOT DEFINED YET. DO THIS BEFORE YOU CALL ANY MOTORS,\n USING [(CANMotor::setCANHandlers(PA_11,PA_12,PB_12,PB_13)], WHERE PA_11, PA_12 ARE TX, RX\n");
             }
         }
 
@@ -263,6 +266,7 @@ class CANMotor{
             for(int i = 0; i < CAN_HANDLER_NUMBER; i ++){
                 uint8_t recievedBytes[8] = {0,0,0,0,0,0,0,0};
                 int msgID;
+                printf("canhandler id is%d\n",canHandlers[i]);
                 if(canHandlers[i]->getFeedback(&msgID,recievedBytes)) {
                     int mNum = msgID - 0x201;
                     if(motorsExist[i][mNum/4][mNum%4]){
@@ -289,4 +293,11 @@ class CANMotor{
 
 };
 
+#endif
+
+#ifndef canmotor_statics
+#define canmotor_statics
+CANMotor* CANMotor::allMotors[2][3][4];
+NewCANHandler* CANMotor::canHandlers[2];
+bool CANMotor::motorsExist[2][3][4];
 #endif

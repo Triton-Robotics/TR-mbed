@@ -83,6 +83,8 @@ class NewCANHandler{
                 txMsg << bytes[i]; //Take data from bytes array and one at a time store it into txMsg
             }
 
+            //printMsg(txMsg);
+
             bool isWrite = can.write(txMsg);
             
             if(isWrite == 0) {

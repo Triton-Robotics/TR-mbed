@@ -19,16 +19,19 @@ int main(){
     if(rType == TEST_BENCH){
         CANMotor::setCANHandlers(&canHandler1,&canHandler2);
         printf("--TEST_BENCH--\n");
-        CANMotor test(4,CANHandler::CANBUS_1,M3508);
-        CANMotor yeet(8,CANHandler::CANBUS_1,M3508);
-        CANMotor weet(2,CANHandler::CANBUS_1,GM6020);
-        CANMotor dlete(6,CANHandler::CANBUS_1,GM6020);
+        // CANMotor test(4,CANHandler::CANBUS_1,M3508);
+        // CANMotor yeet(8,CANHandler::CANBUS_1,M3508);
+        // CANMotor weet(2,CANHandler::CANBUS_1,GM6020);
+        // CANMotor dlete(6,CANHandler::CANBUS_1,GM6020);
         //ChassisSubsystem chassis(1,2,3,4,CANHandler::CANBUS_1,M3508);
+
+        CANMotor actualMotor(3,CANHandler::CANBUS_1,M3508);
         while(1){
             //remoteController.read(); //myremote.remoteUpdate(); 
             //printf("%d\n",int(remoteController.getChannel(Remote::Channel::LEFT_HORIZONTAL) * 10000));
-            test.setPower(700);
-            dlete.setPower(-100);
+            //test.setPower(700);
+            //dlete.setPower(-100);
+            actualMotor.setPower(500);
             CANMotor::tick();
         }
     }else if(rType == SENTRY){
