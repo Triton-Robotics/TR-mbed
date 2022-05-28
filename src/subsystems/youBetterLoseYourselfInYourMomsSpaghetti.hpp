@@ -50,10 +50,15 @@ class NewChassisSubsystem{
          * @param RB speed for right back motor
          */ 
         void setSpeeds(int LF,int RF, int LB, int RB){
-            MotorRightFront.setPower(RF);
-            MotorLeftFront.setPower(LF);
-            MotorRightBack.setPower(RB);
-            MotorLeftBack.setPower(LB);
+            MotorRightFront.setSpeed(RF);
+            MotorLeftFront.setSpeed(LF);
+            MotorRightBack.setSpeed(RB);
+            MotorLeftBack.setSpeed(LB);
+
+            // MotorRightFront.setPower(RF);
+            // MotorLeftFront.setPower(LF);
+            // MotorRightBack.setPower(RB);
+            // MotorLeftBack.setPower(LB);
             
         }
 

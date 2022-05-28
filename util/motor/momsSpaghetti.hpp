@@ -131,7 +131,7 @@ class CANMotor{
                 pidPosition.setOutputCap(defaultGimblyPosSettings[3]);
                 pidPosition.setIntegralCap(defaultGimblyPosSettings[4]);
             }else if(type == M3508){
-                pidSpeed.setPID(1,0,0);
+                pidSpeed.setPID(1,0,-1);
                 pidSpeed.setOutputCap(defautM3508SpeedSettings[3]);
                 pidSpeed.setIntegralCap(defautM3508SpeedSettings[4]);
                 
@@ -265,7 +265,7 @@ class CANMotor{
                     if(debug) printf("NA\t");
                 }  
             }
-            if(debug) printf("\n");
+            //if(debug) printf("\n");
             //printf("0x%x:\t",sendIDs[sendIDindex]);
             //printArray(bytes, 8);
             //printf("meh1%d, meh2%d\n",canHandlers[0]->exists,canHandlers[1]->exists);
@@ -298,12 +298,12 @@ class CANMotor{
 
         static void tick(bool debug = false){
             for(int i = 0; i < 3; i ++)
-                sendOneID(CANHandler::CANBUS_1,i);
+                sendOneID(CANHandler::CANBUS_1,i,debug);
             if(debug) printf("\n");
             for(int i = 0; i < 3; i ++)
-                sendOneID(CANHandler::CANBUS_2,i);
+                sendOneID(CANHandler::CANBUS_2,i,debug);
             if(debug) printf("\n");
-            if(debug) printf("\n");
+            //if(debug) printf("\n");
         }
         // static void tick(){
 

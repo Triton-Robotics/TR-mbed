@@ -54,6 +54,8 @@ int main()
 
         remotePrint();
 
+        //for(int i = 0; i < 12; i)
+
         // else {
         //     //yawval+= (int)myremote.getStickData(LEFTJOYY, 0, maxpitchyawchange);
         //     pitchval+=(int)myremote.getStickData(LEFTJOYY, 0, maxpitchyawchange);
@@ -82,7 +84,7 @@ int main()
         //yaw.setDesiredPos(yawval);
         //pitch.setPower(220);
 
-        CANMotor::tick();
+        CANMotor::tick(true);
 
     }
 }

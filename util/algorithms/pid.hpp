@@ -50,10 +50,18 @@ class PID {
             lastError = error;
             
             if(integralCap != 0){
-                sumError = std::max(std::min(sumError,integralCap),-integralCap);
+                //sumError = std::max(std::min(sumError,integralCap),-integralCap);
+                if(sumError > integralCap)
+                    sumError = integralCap;
+                else if(sumError < -integralCap)
+                    sumError = integralCap;
             }
             if(outputCap != 0){
-                PIDCalc = std::max(std::min(PIDCalc,outputCap),-outputCap);
+                //PIDCalc = std::max(std::min(PIDCalc,outputCap),-outputCap);
+                if(PIDCalc > outputCap)
+                    PIDCalc = outputCap;
+                else if(PIDCalc < -outputCap)
+                    PIDCalc = outputCap;
             }
             //ThisThread::sleep_for(1ms); //neccessary or else dt -> 0 and causes issues....
             //printf("desired: %d actual: %d \n",(int)desiredV, int(actualV));
