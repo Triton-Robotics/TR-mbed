@@ -1,5 +1,5 @@
 #include "mbed.h"
-#include "../../util/motor/motor.hpp"
+#include "../../util/motor/momsSpaghetti.hpp"
 #include <cstdlib>
 #ifndef chassis_subsystem_cpp
 #define chassis_subsystem_cpp
@@ -13,10 +13,10 @@ enum motorLoc{LEFT_FRONT,RIGHT_FRONT,LEFT_BACK,RIGHT_BACK}; //the four potential
  */
 class ChassisSubsystem{
     public:
-        Motor MotorRightFront; 
-        Motor MotorLeftFront; 
-        Motor MotorRightBack;
-        Motor MotorLeftBack;
+        CANMotor MotorRightFront; 
+        CANMotor MotorLeftFront; 
+        CANMotor MotorRightBack;
+        CANMotor MotorLeftBack;
        
         /**
          * @brief Constructor for a chassis
@@ -36,8 +36,8 @@ class ChassisSubsystem{
             MotorRightBack(m4_can_id,bus,TYPE)
 
         {
-            MotorRightFront.setInverted(true);
-            MotorRightBack.setInverted(true);
+            // MotorRightFront.setInverted(true);
+            // MotorRightBack.setInverted(true);
         }
        
         /**
@@ -49,10 +49,10 @@ class ChassisSubsystem{
          * @param RB speed for right back motor
          */ 
         void setSpeeds(int LF,int RF, int LB, int RB){
-            MotorRightFront.setDesiredSpeed(RF);
-            MotorLeftFront.setDesiredSpeed(LF);
-            MotorRightBack.setDesiredSpeed(RB);
-            MotorLeftBack.setDesiredSpeed(LB);
+            MotorRightFront.setSpeed(RF);
+            MotorLeftFront.setSpeed(LF);
+            MotorRightBack.setSpeed(RB);
+            MotorLeftBack.setSpeed(LB);
             
         }
 
@@ -73,18 +73,18 @@ class ChassisSubsystem{
             //printf("%d,%d,%d,%d\n",RF,LF,RB,LB);
         }
 
-        /**
-         * @brief Returns a motor given a motorLoc enum value
-         * 
-         * @param location, which motor to return
-         * @return the motor
-         */
-        Motor getMotor(motorLoc location){
-            if(location == LEFT_FRONT) return MotorLeftFront;
-            else if(location == RIGHT_FRONT) return MotorRightFront;
-            else if(location == LEFT_BACK) return MotorLeftBack;
-            else return MotorRightBack;
-        }
+        // /**
+        //  * @brief Returns a motor given a motorLoc enum value
+        //  * 
+        //  * @param location, which motor to return
+        //  * @return the motor
+        //  */
+        // CANMotor getMotor(motorLoc location){
+        //     if(location == LEFT_FRONT) return MotorLeftFront;
+        //     else if(location == RIGHT_FRONT) return MotorRightFront;
+        //     else if(location == LEFT_BACK) return MotorLeftBack;
+        //     else return MotorRightBack;
+        // }
 
 };
 

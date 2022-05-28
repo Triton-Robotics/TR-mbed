@@ -1,31 +1,17 @@
 #include "mbed.h"
-#include "motor.hpp"
 #include "../algorithms/pid.hpp"
 #include "../communications/causeSpaghettiComesOnceInALifetime.hpp"
 #include "../helperFunctions.hpp"
 #include <cmath>
+#include "../communications/canHandler.hpp"
 //TR-mbed6/util/communications/causeSpaghettiComesOnceInALifetime.hpp
 
-// #pragma once
-// namespace{
-//     class MotorHandler{
-//         public:
-//             void send();
-//     };
-// }
-
-// #ifndef motorhandler_hpp
-//#include "youOnlyGetOneSpaghetti.hpp"
-// #endif
-
-//class MotorHandler;
-
 #define CAN_HANDLER_NUMBER 2 //Number of can handlers
-
 #ifndef canmotor_hpp
 #define canmotor_hpp
 
-//#define sendIDs {0x200,0x1FF,0x2FF}
+static int sendIDs[3] = {0x200,0x1FF,0x2FF}; //IDs to send data
+static Thread motorupdatethread(osPriorityHigh); //threading for Motor::tick()
 
 enum errorCodes{
     NO_ERROR,
@@ -34,10 +20,38 @@ enum errorCodes{
     OUTSIDE_OF_BOUNDS,
 };
 
-class CANMotor{
+enum motorDataType {
+    ANGLE = 0,
+    MULTITURNANGLE = 1,
+    VELOCITY = 2,
+    TORQUE = 3,
+    TEMPERATURE = 4,
+};
 
+
+enum motorType {
+    NONE = 0,
+    STANDARD = 1, //identifier for all motors that use the standard can protocol, used by the C610 and C620
     
+    C610 = 4,
+    M2006 = 4,
+    
+    C620 = 3,
+    M3508 = 3, 
+    //keep in mind that in the constructor, this is only used to 
+    //set the default pid values and gear ratio. The motortype will 
+    //be changed to STANDARD, because thats what the code uses.
 
+    GIMBLY = 2, //Gimblyyyyyyyyyy
+    GM6020 = 2
+};
+
+static double defaultGimblyPosSettings[5] = {15,1.797,10,8000,500}; 
+static double defautlGimblySpeedSettings[5] = {41.980, 6.311, 19.960, 15000, 1000};
+static double defautM3508PosSettings[5] = {.128, 1.029, 15.405, 3000, 300};
+static double defautM3508SpeedSettings[5] = {3.091, 0.207, 4.707, 15000, 500};
+
+class CANMotor{
     private:
 
         enum motorMoveMode{
@@ -73,12 +87,8 @@ class CANMotor{
     public:
         int bounds[2] = {0,0};
 
-        int16_t angle = 0;
-        int16_t velocity = 0;
-        int16_t torque = 0;
-        int16_t temperature = 0;
-
-        int multiturnAngle = 0;
+        //angle | multiturnangle | velocity | torque | temperature
+        int motorData[5] = {0,0,0,0,0};
 
         PID pidSpeed;
         PID pidPosition;
@@ -133,7 +143,7 @@ class CANMotor{
                 pidPosition.setOutputCap(defaultGimblyPosSettings[3]);
                 pidPosition.setIntegralCap(defaultGimblyPosSettings[4]);
             }else if(type == M3508){
-                pidSpeed.setPID(0,0,0);
+                pidSpeed.setPID(1,0,0);
                 pidSpeed.setOutputCap(defautM3508SpeedSettings[3]);
                 pidSpeed.setIntegralCap(defautM3508SpeedSettings[4]);
                 
@@ -197,14 +207,8 @@ class CANMotor{
         static void setCANHandlers(NewCANHandler* bus_1, NewCANHandler* bus_2){
             canHandlers[0] = bus_1;
             canHandlers[1] = bus_2;
-            // for(int i = 0; i < 3; i ++){
-            //     for(int j = 0; j < 4; j++){
-            //         for(int k = 0; k < 2; k++){
-            //             CANMotor m;
-            //             allMotors[k][i][j] = &m;
-            //         }
-            //     }
-            // }
+
+            motorupdatethread.start(tickThread);
         }
 
         void setValue(int val){
@@ -234,10 +238,9 @@ class CANMotor{
             if(mode == POW){
                 powerOut = value;
             }else if(mode == SPD){
-                powerOut += pidSpeed.calculate(value, velocity, time - lastTime);
+                powerOut += pidSpeed.calculate(value, getData(VELOCITY), time - lastTime);
             }else if(mode == POS){
-                powerOut = pidPosition.calculate(value, angle, time - lastTime);
-                printf("%d\t %d \n", value, angle);
+                powerOut = pidPosition.calculate(value, motorData[0], time - lastTime);
             }else if(mode == OFF){
                 powerOut = 0;
             }else if(mode == ERR){
@@ -245,6 +248,10 @@ class CANMotor{
             }
             lastTime = time;
 
+        }
+
+        int getData(motorDataType data) {
+            return motorData[data];
         }
 
         static void sendOneID(CANHandler::CANBus bus, short sendIDindex, bool debug = false){
@@ -279,7 +286,7 @@ class CANMotor{
             }
         }
 
-        static void getFeedback(bool printData = 0){
+        static void getFeedback(){
             for(int i = 0; i < CAN_HANDLER_NUMBER; i ++){
                 uint8_t recievedBytes[8] = {0,0,0,0,0,0,0,0};
                 int msgID;
@@ -287,19 +294,24 @@ class CANMotor{
                 if(canHandlers[i]->getFeedback(&msgID,recievedBytes)) {
                     int mNum = msgID - 0x201;
                     if(motorsExist[i][mNum/4][mNum%4]){
-                        allMotors[i][mNum/4][mNum%4]->angle = (recievedBytes[0]<<8) | recievedBytes[1];
-                        allMotors[i][mNum/4][mNum%4]->velocity = (recievedBytes[2]<<8) | recievedBytes[3];
-                        allMotors[i][mNum/4][mNum%4]->torque = (recievedBytes[4]<<8) | recievedBytes[5];
-                        allMotors[i][mNum/4][mNum%4]->temperature = ((int16_t) recievedBytes[6]);
-                        if (printData) printf("angle: %d velocity: %d torque: %d temp: %d \n", 
-                            allMotors[i][mNum/4][mNum%4]->angle, 
-                            allMotors[i][mNum/4][mNum%4]->velocity, 
-                            allMotors[i][mNum/4][mNum%4]->torque, 
-                            allMotors[i][mNum/4][mNum%4]->temperature);
+                        allMotors[i][mNum/4][mNum%4]->motorData[ANGLE] = (recievedBytes[0]<<8) | recievedBytes[1];
+                        allMotors[i][mNum/4][mNum%4]->motorData[VELOCITY] = (recievedBytes[2]<<8) | recievedBytes[3];
+                        allMotors[i][mNum/4][mNum%4]->motorData[TORQUE] = (recievedBytes[4]<<8) | recievedBytes[5];
+                        allMotors[i][mNum/4][mNum%4]->motorData[TEMPERATURE] = ((int16_t) recievedBytes[6]);
                     }else{
                         //printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS NOT INITIALIZED.. WHY\n",msgID);
                     }
                 }
+            }
+        }
+
+        /**
+        * @brief the thread that runs the ever-necessary Motor::tick()
+        */
+        static void tickThread() {
+            while (true) {
+                tick();
+                ThisThread::sleep_for(1ms);
             }
         }
 
@@ -311,11 +323,7 @@ class CANMotor{
             for(int i = 0; i < 3; i ++)
                 sendOneID(CANHandler::CANBUS_2,i,debug);
             if(debug) printf("\n");
-            //if(debug) printf("\n");
         }
-        // static void tick(){
-
-        // }
 
 };
 

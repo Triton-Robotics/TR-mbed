@@ -5,7 +5,7 @@ Thread remote(osPriorityHigh);
 
 CANMotor chassis1(3,CANHandler::CANBUS_1,M3508);
 
-int maxspeed = 500;
+int maxspeed = 10000;
 
 int main()
 {
