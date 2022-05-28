@@ -130,6 +130,14 @@ class CANMotor{
                 pidPosition.setPID(defaultGimblyPosSettings[0],defaultGimblyPosSettings[1],defaultGimblyPosSettings[2]);
                 pidPosition.setOutputCap(defaultGimblyPosSettings[3]);
                 pidPosition.setIntegralCap(defaultGimblyPosSettings[4]);
+            }else if(type == M3508){
+                pidSpeed.setPID(1,0,0);
+                pidSpeed.setOutputCap(defautM3508SpeedSettings[3]);
+                pidSpeed.setIntegralCap(defautM3508SpeedSettings[4]);
+                
+                pidPosition.setPID(defautM3508PosSettings[0],defautM3508PosSettings[1],defautM3508PosSettings[2]);
+                pidPosition.setOutputCap(defautM3508PosSettings[3]);
+                pidPosition.setIntegralCap(defautM3508PosSettings[4]);
             }
 
             //printf("sendID:%d,0x%x\n",motorNumber/4,sendIDs[motorNumber/4]);
@@ -237,15 +245,15 @@ class CANMotor{
 
         }
 
-        static void sendOneID(CANHandler::CANBus bus, short sendIDindex){
+        static void sendOneID(CANHandler::CANBus bus, short sendIDindex, bool debug = false){
             int8_t bytes[8]  = {0,0,0,0,0,0,0,0};
-            printf("0x%x:\t",sendIDs[sendIDindex]);
+            if(debug) printf("0x%x:\t",sendIDs[sendIDindex]);
             for(int i = 0; i < 4; i++){
                 //printf("AL%d:\t",allMotors[bus][sendIDindex][i]);
                 if(motorsExist[bus][sendIDindex][i] == true/**allMotors[bus][sendIDindex][i]->motorNumber != -1**/){
                     allMotors[bus][sendIDindex][i]->setOutput();
                     int16_t pO = allMotors[bus][sendIDindex][i]->powerOut;
-                    //printf("%d\t",pO);
+                    if(debug) printf("%d\t",pO);
                     
                     bytes[2*i] = int8_t(pO >> 8);
                     //printf("%d ",pO >> 8);
@@ -254,10 +262,10 @@ class CANMotor{
                     //printf("%d ",pO & 0xFF);
 
                 }else{
-                    //printf("NA\t");
+                    if(debug) printf("NA\t");
                 }  
             }
-            //printf("\n");
+            if(debug) printf("\n");
             //printf("0x%x:\t",sendIDs[sendIDindex]);
             //printArray(bytes, 8);
             //printf("meh1%d, meh2%d\n",canHandlers[0]->exists,canHandlers[1]->exists);
@@ -288,11 +296,14 @@ class CANMotor{
             }
         }
 
-        static void tick(){
+        static void tick(bool debug = false){
             for(int i = 0; i < 3; i ++)
                 sendOneID(CANHandler::CANBUS_1,i);
+            if(debug) printf("\n");
             for(int i = 0; i < 3; i ++)
                 sendOneID(CANHandler::CANBUS_2,i);
+            if(debug) printf("\n");
+            if(debug) printf("\n");
         }
         // static void tick(){
 

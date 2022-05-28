@@ -42,14 +42,15 @@ int main()
     //Motor::setCANHandler(&canPorts);
     CANMotor::setCANHandlers(&canHandler1, &canHandler2);
     //pitch.zeroPos();
-
+    threadingRemote.start(&remoteThread);
     while (true) {
-        myremote.remoteUpdate();
+        
 
         // if (myremote.getSwitchData(RSWITCH) == 2) {
         //     chassis.move(lY,lX,rX);
         // }
-        chassis.move(3000,0,0);
+        //chassis.move(3000,0,0);
+        chassis.move(lY,lX,rX);
 
         remotePrint();
 

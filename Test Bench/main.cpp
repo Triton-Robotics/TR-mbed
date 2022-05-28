@@ -10,6 +10,7 @@ int main()
 {
     CANMotor::setCANHandlers(&canHandler1, &canHandler2);
     int sp = 2000;
+    threadingRemote.start(&remoteThread);
     while (true) {
         remotePrint();
         //mots.setPower(sp);
