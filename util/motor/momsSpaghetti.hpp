@@ -88,6 +88,8 @@ class CANMotor{
 
         bool conflict; //check for a conflict when running motors
 
+        unsigned long lastTime = 0;
+
         CANMotor(bool isErroneousMotor = false){
             
             motorNumber = -1;
@@ -228,7 +230,7 @@ class CANMotor{
         }
 
         void setOutput(){
-            static unsigned long lastTime = 0;
+            //static unsigned long lastTime = 0;
             unsigned long time = us_ticker_read() / 1000;
             if(mode == POW){
                 powerOut = value;
