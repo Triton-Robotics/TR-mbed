@@ -1,11 +1,7 @@
-#include "mbed.h"
-#include "../src/subsystems/ChassisSubsystem.hpp"
-#include "../util/communications/djiremoteuart.hpp"
-#include "../util/motor/pwmmotor.cpp"
-#include "../util/motor/motor.hpp"
+#include "../src/main.hpp"
 
-DJIRemote myremote(PA_0, PA_1);
-CANHandler canPorts(PA_11,PA_12,PB_12,PB_13);
+//DJIRemote myremote(PA_0, PA_1);
+//CANHandler canPorts(PA_11,PA_12,PB_12,PB_13);
 
 ChassisSubsystem awesomechassis(4,2,1,3, CANHandler::CANBUS_1, C620);
 

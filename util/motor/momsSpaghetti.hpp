@@ -123,6 +123,13 @@ class CANMotor{
             
             if(type == GM6020){
                 motorNumber += 4; 
+                pidSpeed.setPID(defautlGimblySpeedSettings[0],defautlGimblySpeedSettings[1],defautlGimblySpeedSettings[2]);
+                pidSpeed.setOutputCap(defautlGimblySpeedSettings[3]);
+                pidSpeed.setIntegralCap(defautlGimblySpeedSettings[4]);
+                
+                pidPosition.setPID(defaultGimblyPosSettings[0],defaultGimblyPosSettings[1],defaultGimblyPosSettings[2]);
+                pidPosition.setOutputCap(defaultGimblyPosSettings[3]);
+                pidPosition.setIntegralCap(defaultGimblyPosSettings[4]);
             }
 
             //printf("sendID:%d,0x%x\n",motorNumber/4,sendIDs[motorNumber/4]);

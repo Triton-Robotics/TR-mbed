@@ -1,8 +1,8 @@
 #include "main.hpp"
 #include <ios>
-CANHandler canPorts(PA_11,PA_12,PB_12,PB_13);
-NewCANHandler canHandler1(PA_11,PA_12);
-NewCANHandler canHandler2(PB_12,PB_13);
+//CANHandler canPorts(PA_11,PA_12,PB_12,PB_13);
+//NewCANHandler canHandler1(PA_11,PA_12);
+//NewCANHandler canHandler2(PB_12,PB_13);
 
 Remote remoteController(D9); 
 robotType rType = TEST_BENCH;
