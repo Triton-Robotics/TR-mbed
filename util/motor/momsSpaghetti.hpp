@@ -133,7 +133,7 @@ class CANMotor{
                 pidPosition.setOutputCap(defaultGimblyPosSettings[3]);
                 pidPosition.setIntegralCap(defaultGimblyPosSettings[4]);
             }else if(type == M3508){
-                pidSpeed.setPID(1,0,-1);
+                pidSpeed.setPID(0,0,0);
                 pidSpeed.setOutputCap(defautM3508SpeedSettings[3]);
                 pidSpeed.setIntegralCap(defautM3508SpeedSettings[4]);
                 
@@ -230,7 +230,6 @@ class CANMotor{
         }
 
         void setOutput(){
-            //static unsigned long lastTime = 0;
             unsigned long time = us_ticker_read() / 1000;
             if(mode == POW){
                 powerOut = value;
@@ -238,6 +237,7 @@ class CANMotor{
                 powerOut += pidSpeed.calculate(value, velocity, time - lastTime);
             }else if(mode == POS){
                 powerOut = pidPosition.calculate(value, angle, time - lastTime);
+                printf("%d\t %d \n", value, angle);
             }else if(mode == OFF){
                 powerOut = 0;
             }else if(mode == ERR){
@@ -279,11 +279,11 @@ class CANMotor{
             }
         }
 
-        static void getFeedback(){
+        static void getFeedback(bool printData = 0){
             for(int i = 0; i < CAN_HANDLER_NUMBER; i ++){
                 uint8_t recievedBytes[8] = {0,0,0,0,0,0,0,0};
                 int msgID;
-                printf("canhandler id is%d\n",canHandlers[i]);
+                // printf("canhandler id is%d\n",canHandlers[i]);
                 if(canHandlers[i]->getFeedback(&msgID,recievedBytes)) {
                     int mNum = msgID - 0x201;
                     if(motorsExist[i][mNum/4][mNum%4]){
@@ -291,14 +291,20 @@ class CANMotor{
                         allMotors[i][mNum/4][mNum%4]->velocity = (recievedBytes[2]<<8) | recievedBytes[3];
                         allMotors[i][mNum/4][mNum%4]->torque = (recievedBytes[4]<<8) | recievedBytes[5];
                         allMotors[i][mNum/4][mNum%4]->temperature = ((int16_t) recievedBytes[6]);
+                        if (printData) printf("angle: %d velocity: %d torque: %d temp: %d \n", 
+                            allMotors[i][mNum/4][mNum%4]->angle, 
+                            allMotors[i][mNum/4][mNum%4]->velocity, 
+                            allMotors[i][mNum/4][mNum%4]->torque, 
+                            allMotors[i][mNum/4][mNum%4]->temperature);
                     }else{
-                        printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS NOT INITIALIZED.. WHY\n",msgID);
+                        //printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS NOT INITIALIZED.. WHY\n",msgID);
                     }
                 }
             }
         }
 
         static void tick(bool debug = false){
+            getFeedback();
             for(int i = 0; i < 3; i ++)
                 sendOneID(CANHandler::CANBUS_1,i,debug);
             if(debug) printf("\n");

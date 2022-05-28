@@ -23,8 +23,6 @@ static int Wh = 0;
 static int lS = 0;
 static int rS = 0;
 
-enum robotType{TEST_BENCH, INFANTRY, HERO, ENGINEER, SENTRY};
-
 static void remoteThread(){
     while(1){
         myremote.remoteUpdate();

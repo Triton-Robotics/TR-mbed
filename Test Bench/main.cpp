@@ -1,23 +1,22 @@
+#include "mbed.h"
 #include "../src/main.hpp"
 
-// main() runs in its own thread in the OS
-CANMotor mots(4,CANHandler::CANBUS_1,M3508);
-CANMotor mots1(3,CANHandler::CANBUS_1,M3508);
-CANMotor mots2(1,CANHandler::CANBUS_1,M3508);
-CANMotor mots3(2,CANHandler::CANBUS_1,M3508);
+Thread remote(osPriorityHigh);
+
+CANMotor chassis1(3,CANHandler::CANBUS_1,M3508);
+
+int maxspeed = 500;
 
 int main()
 {
-    CANMotor::setCANHandlers(&canHandler1, &canHandler2);
-    int sp = 2000;
     threadingRemote.start(&remoteThread);
-    while (true) {
-        remotePrint();
-        //mots.setPower(sp);
-        //mots1.setPower(-sp);
-        //mots2.setPower(sp);
-        //mots3.setPower(-sp);
-        CANMotor::tick();
-    }
+    CANMotor::setCANHandlers(&canHandler1,&canHandler2);
+
+        while(1){
+            //chassis1.getFeedback(1);
+            chassis1.setPosition(myremote.getStickData(LEFTJOYX, 0, maxspeed));
+            CANMotor::tick();
+        }
+
 }
 
