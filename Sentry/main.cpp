@@ -29,9 +29,9 @@ int main()
 
         while(1){
 
-            chassis1.setPosition(myremote.getStickData(LEFTJOYX, 0, maxspeed));
-            // chassis2.setSpeed(myremote.getStickData(LEFTJOYX, 0, maxspeed));
-            CANMotor::tick();
+            chassis1.setPosition(lX);
+            //chassis2.setSpeed(lY);
+            //CANMotor::tick();
         }
 
 }

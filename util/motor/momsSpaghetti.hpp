@@ -6,6 +6,15 @@
 #include "../communications/canHandler.hpp"
 //TR-mbed6/util/communications/causeSpaghettiComesOnceInALifetime.hpp
 
+///////////////////////////////////////////////////////////////////////
+//  __  __           _      ___                 _        _   _   _ 
+// |  \/  |___ _ __ ( )___ / __|_ __  __ _ __ _| |_  ___| |_| |_(_)
+// | |\/| / _ \ '  \|/(_-< \__ \ '_ \/ _` / _` | ' \/ -_)  _|  _| |
+// |_|  |_\___/_|_|_| /__/ |___/ .__/\__,_\__, |_||_\___|\__|\__|_|
+//                             |_|        |___/                    
+//
+///////////////////////////////////////////////////////////////////////
+
 #define CAN_HANDLER_NUMBER 2 //Number of can handlers
 #ifndef canmotor_hpp
 #define canmotor_hpp
@@ -208,11 +217,11 @@ class CANMotor{
         //     }
         // }
 
-        static void setCANHandlers(NewCANHandler* bus_1, NewCANHandler* bus_2){
+        static void setCANHandlers(NewCANHandler* bus_1, NewCANHandler* bus_2, bool thread = true){
             canHandlers[0] = bus_1;
             canHandlers[1] = bus_2;
-
-            motorupdatethread.start(tickThread);
+            if(thread)
+                motorupdatethread.start(tickThread);
         }
 
         void setValue(int val){
