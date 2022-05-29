@@ -356,8 +356,6 @@ class CANMotor{
                         allMotors[i][mNum/4][mNum%4]->motorData[TEMPERATURE] = ((int16_t) recievedBytes[6]);
                         if(printFeedback)
                             allMotors[i][mNum/4][mNum%4]->printAllMotorData();
-                    }else{
-                        printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS NOT INITIALIZED.. WHY\n",msgID);
                     }
                 }
             }
