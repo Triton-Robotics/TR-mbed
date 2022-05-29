@@ -22,10 +22,10 @@ enum errorCodes{
 
 enum motorDataType {
     ANGLE = 0,
-    MULTITURNANGLE = 1,
-    VELOCITY = 2,
-    TORQUE = 3,
-    TEMPERATURE = 4,
+    VELOCITY = 1,
+    TORQUE = 2,
+    TEMPERATURE = 3,
+    MULTITURNANGLE = 4,
 };
 
 
@@ -87,8 +87,10 @@ class CANMotor{
     public:
         int bounds[2] = {0,0};
 
-        //angle | multiturnangle | velocity | torque | temperature
-        int motorData[5] = {0,0,0,0,0};
+        //angle | velocity | torque | temperature
+        int16_t motorData[4] = {0,0,0,0};
+        int multiTurn = 0;
+        int lastMotorAngle = 0;
 
         PID pidSpeed;
         PID pidPosition;
@@ -251,7 +253,55 @@ class CANMotor{
         }
 
         int getData(motorDataType data) {
-            return motorData[data];
+            if (data != MULTITURNANGLE)
+                return motorData[data];
+            else 
+                return multiTurn;
+
+        }
+
+        void printAllMotorData() {
+            printf("angle:%d multiturn:%d velocity:%d torque:%d temperature:%d\n", getData(ANGLE), getData(MULTITURNANGLE), getData(VELOCITY), getData(TORQUE), getData(TEMPERATURE));
+        }
+
+        static void updateMultiTurnPosition() {
+            int Threshold = 3000; // From 0 - 8191
+            int curAngle, lastAngle, deltaAngle, speed;
+            CANMotor *curMotor;
+            for(int x = 0; x < CAN_HANDLER_NUMBER; x++){
+                for (int y = 0; y < 3; y++) {
+                    for (int z = 0; z < 4; z++) {
+                        if (motorsExist[x][y][z]) {
+                            curMotor = allMotors[x][y][z];
+                            
+                            curAngle = curMotor->getData(ANGLE);
+                            lastAngle = curMotor->lastMotorAngle;
+                            speed = curMotor->getData(VELOCITY);
+                            deltaAngle = curAngle - lastAngle;
+
+                            printf("multiturn: %d\n", curMotor->multiTurn);
+
+                            if (abs(speed) < 100) {
+                                if (curAngle > (8191 - Threshold) && lastAngle < Threshold)
+                                    curMotor->multiTurn -= deltaAngle + 8191;
+                                else if (curAngle < Threshold && lastAngle > (8191 - Threshold))
+                                    curMotor->multiTurn += deltaAngle + 8191;
+                                else
+                                    curMotor->multiTurn += deltaAngle;
+                            }
+                            else {
+                                if (speed < 0 && deltaAngle > 0)  // neg skip
+                                    curMotor->multiTurn += deltaAngle - 8191;
+                                else if (speed > 0 && deltaAngle < 0) // pos skip
+                                    curMotor->multiTurn += deltaAngle + 8191;
+                                else 
+                                    curMotor->multiTurn += deltaAngle; 
+                            }
+                            curMotor->lastMotorAngle = curAngle;
+                        }
+                    }
+                }
+            }
         }
 
         static void sendOneID(CANHandler::CANBus bus, short sendIDindex, bool debug = false){
@@ -317,6 +367,7 @@ class CANMotor{
 
         static void tick(bool debug = false){
             getFeedback();
+            updateMultiTurnPosition();
             for(int i = 0; i < 3; i ++)
                 sendOneID(CANHandler::CANBUS_1,i,debug);
             if(debug) printf("\n");

@@ -14,8 +14,10 @@ int main()
 
         while(1){
             //chassis1.getFeedback(1);
-            chassis1.setPosition(myremote.getStickData(LEFTJOYX, 0, maxspeed));
-            CANMotor::tick();
+            // printf("multiturn:%d\n", chassis1.getData(MULTITURNANGLE));
+            // chassis1.printAllMotorData();
+            // chassis1.setPosition(myremote.getStickData(LEFTJOYX, 0, maxspeed));
+
         }
 
 }
