@@ -13,8 +13,12 @@ CANMotor chassis2(4,CANHandler::CANBUS_1,M3508);
 CANMotor gimbalX(7,CANHandler::CANBUS_1,GM6020);
 CANMotor gimbalY(6,CANHandler::CANBUS_1,GM6020);
 
-PWMMotor leftFlywheel(PA_5);
-PWMMotor rightFlywheel(PA_6);
+PWMMotor leftFlywheelTop(PA_5);
+PWMMotor rightFlywheelTop(PA_6);
+PWMMotor leftFlywheelBot(PB_6);
+PWMMotor rightFlywheelBot(PA_7);
+
+CANMotor indexer(2,CANHandler::CANBUS_1,M2006);
 
 int maxspeed = 500;
 
@@ -26,19 +30,36 @@ int main()
     CANMotor::setCANHandlers(&canHandler1,&canHandler2);
     //Motor::setCANHandler(&canPorts);
     chassis1.multiTurn = 0;
-    chassis1.pidSpeed.setPID(2, 0, 0);
+    //chassis1.pidSpeed.setPID(.1, 0, 0);
+    //chassis1.pidPosition.setPID(.08,0,0.0125);
 
         while(1){
 
-            if(lS == 1)
-                chassis1.setPosition(lX * 100);
-            else if(lS == 2)
-                chassis1.setPower(2*lX);
-            else if(lS == 3)
+            if(rS == 2){
                 chassis1.setSpeed(lX);
+                chassis2.setSpeed(lX);
+            }else{
+                chassis1.setPower(lX);
+                chassis2.setPower(lX);
+            }
+            gimbalX.setPosition(rX);
+            gimbalY.setPosition(rY);
 
-            if(rS == 1)
-                chassis1.multiTurn = 0;
+            if(lS == 2){
+                leftFlywheelTop.set(60);
+                leftFlywheelBot.set(60);
+                rightFlywheelTop.set(60);
+                rightFlywheelBot.set(60);   
+            }else{
+                leftFlywheelTop.set(0);
+                leftFlywheelBot.set(0);
+                rightFlywheelTop.set(0);
+                rightFlywheelBot.set(0);   
+            }
+
+            indexer.setSpeed((rS - 2) * 700);
+
+
             //chassis2.setSpeed(lY);
             //CANMotor::tick();
             remotePrint();
