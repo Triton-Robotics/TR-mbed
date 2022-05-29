@@ -25,13 +25,23 @@ int main()
     threadingRemote.start(&remoteThread);
     CANMotor::setCANHandlers(&canHandler1,&canHandler2);
     //Motor::setCANHandler(&canPorts);
-
+    chassis1.multiTurn = 0;
+    chassis1.pidSpeed.setPID(2, 0, 0);
 
         while(1){
 
-            chassis1.setPosition(lX);
+            if(lS == 1)
+                chassis1.setPosition(lX * 100);
+            else if(lS == 2)
+                chassis1.setPower(2*lX);
+            else if(lS == 3)
+                chassis1.setSpeed(lX);
+
+            if(rS == 1)
+                chassis1.multiTurn = 0;
             //chassis2.setSpeed(lY);
             //CANMotor::tick();
+            remotePrint();
         }
 
 }

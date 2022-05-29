@@ -156,7 +156,7 @@ class CANMotor{
                 pidPosition.setOutputCap(defaultGimblyPosSettings[3]);
                 pidPosition.setIntegralCap(defaultGimblyPosSettings[4]);
             }else if(type == M3508){
-                pidSpeed.setPID(.1,0,0);
+                pidSpeed.setPID(1,0,0);
                 pidSpeed.setOutputCap(defautM3508SpeedSettings[3]);
                 pidSpeed.setIntegralCap(defautM3508SpeedSettings[4]);
                 
@@ -255,6 +255,7 @@ class CANMotor{
                 //printFloat(powerOut, 2, 1);
             }else if(mode == POS){
                 powerOut = pidPosition.calculate(value, multiTurn, time - lastTime);
+                //printf("DES:%d,ACT:%d\t",value,multiTurn);
             }else if(mode == OFF){
                 powerOut = 0;
             }else if(mode == ERR){
