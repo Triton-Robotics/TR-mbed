@@ -5,7 +5,7 @@ Thread remote(osPriorityHigh);
 
 CANMotor chassis1(3,CANHandler::CANBUS_1,M3508);
 
-int maxspeed = 10000;
+int maxspeed = 100;
 
 int main()
 {
@@ -16,7 +16,8 @@ int main()
             //chassis1.getFeedback(1);
             // printf("multiturn:%d\n", chassis1.getData(MULTITURNANGLE));
             // chassis1.printAllMotorData();
-            // chassis1.setPosition(myremote.getStickData(LEFTJOYX, 0, maxspeed));
+            chassis1.setSpeed(myremote.getStickData(LEFTJOYX, 0, maxspeed));
+            // printf("actual: %d desired: %d\n", chassis1.getData(VELOCITY), (int)myremote.getStickData(LEFTJOYX, 0, maxspeed));
 
         }
 

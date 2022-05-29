@@ -145,7 +145,7 @@ class CANMotor{
                 pidPosition.setOutputCap(defaultGimblyPosSettings[3]);
                 pidPosition.setIntegralCap(defaultGimblyPosSettings[4]);
             }else if(type == M3508){
-                pidSpeed.setPID(1,0,0);
+                pidSpeed.setPID(defautM3508SpeedSettings[0],defautM3508SpeedSettings[1],defautM3508SpeedSettings[2]);
                 pidSpeed.setOutputCap(defautM3508SpeedSettings[3]);
                 pidSpeed.setIntegralCap(defautM3508SpeedSettings[4]);
                 
@@ -240,9 +240,10 @@ class CANMotor{
             if(mode == POW){
                 powerOut = value;
             }else if(mode == SPD){
-                powerOut += pidSpeed.calculate(value, getData(VELOCITY), time - lastTime);
+                powerOut = value + pidSpeed.calculate(value, getData(VELOCITY), time - lastTime);
+                printFloat(powerOut, 2, 1);
             }else if(mode == POS){
-                powerOut = pidPosition.calculate(value, motorData[0], time - lastTime);
+                powerOut = pidPosition.calculate(value, multiTurn, time - lastTime);
             }else if(mode == OFF){
                 powerOut = 0;
             }else if(mode == ERR){
@@ -278,8 +279,6 @@ class CANMotor{
                             lastAngle = curMotor->lastMotorAngle;
                             speed = curMotor->getData(VELOCITY);
                             deltaAngle = curAngle - lastAngle;
-
-                            printf("multiturn: %d\n", curMotor->multiTurn);
 
                             if (abs(speed) < 100) {
                                 if (curAngle > (8191 - Threshold) && lastAngle < Threshold)
