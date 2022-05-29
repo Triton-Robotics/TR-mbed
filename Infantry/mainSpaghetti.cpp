@@ -23,19 +23,19 @@ int pitchval = 220;
 int maxspeed = 300;
 int maxpitchyawchange = 5;
 
-bool checkJam(Motor *mymotor) {
-    static int mycount = 0;
+// bool checkJam(Motor *mymotor) {
+//     static int mycount = 0;
 
-    if (mymotor->getData(VELOCITY) == 0) 
-        mycount++;
-    else
-        mycount = 0;
+//     if (mymotor->getData(VELOCITY) == 0) 
+//         mycount++;
+//     else
+//         mycount = 0;
     
-    if (mycount > 10)
-        return true;
-    else
-        return false;
-}
+//     if (mycount > 10)
+//         return true;
+//     else
+//         return false;
+// }
 
 int main()
 {
@@ -84,7 +84,7 @@ int main()
         //yaw.setDesiredPos(yawval);
         //pitch.setPower(220);
 
-        CANMotor::tick(true);
+        CANMotor::tick(lS == 2, rS == 2);
 
     }
 }

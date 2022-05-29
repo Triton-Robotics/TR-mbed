@@ -102,6 +102,8 @@ class CANMotor{
 
         unsigned long lastTime = 0;
 
+        int16_t outCap = 800;
+
         CANMotor(bool isErroneousMotor = false){
             
             motorNumber = -1;
@@ -145,7 +147,7 @@ class CANMotor{
                 pidPosition.setOutputCap(defaultGimblyPosSettings[3]);
                 pidPosition.setIntegralCap(defaultGimblyPosSettings[4]);
             }else if(type == M3508){
-                pidSpeed.setPID(defautM3508SpeedSettings[0],defautM3508SpeedSettings[1],defautM3508SpeedSettings[2]);
+                pidSpeed.setPID(.1,0,0);
                 pidSpeed.setOutputCap(defautM3508SpeedSettings[3]);
                 pidSpeed.setIntegralCap(defautM3508SpeedSettings[4]);
                 
@@ -241,14 +243,19 @@ class CANMotor{
                 powerOut = value;
             }else if(mode == SPD){
                 powerOut = value + pidSpeed.calculate(value, getData(VELOCITY), time - lastTime);
-                printFloat(powerOut, 2, 1);
+                //printFloat(powerOut, 2, 1);
             }else if(mode == POS){
                 powerOut = pidPosition.calculate(value, multiTurn, time - lastTime);
             }else if(mode == OFF){
                 powerOut = 0;
             }else if(mode == ERR){
-                printf("[ERROR] THIS IS AN ERRONEOUS MOTOR. DO NOT ATTEMPT TO SEND IT DATA, DO NOT PASS GO, FIX THIS!\n");
+                printf("[ERROR] THIS IS AN ERRONEOUS MOTOR. DO NOT ATTEMPT TO SEND IT DATA, DO NOT PASS GO, DO NOT COLLECT $200, FIX THIS!\n");
             }
+
+            if(powerOut > outCap)
+                powerOut = outCap;
+            else if(powerOut < -outCap)
+                powerOut = -outCap;
             lastTime = time;
 
         }
@@ -262,7 +269,7 @@ class CANMotor{
         }
 
         void printAllMotorData() {
-            printf("angle:%d multiturn:%d velocity:%d torque:%d temperature:%d\n", getData(ANGLE), getData(MULTITURNANGLE), getData(VELOCITY), getData(TORQUE), getData(TEMPERATURE));
+            printf("ANGL:%d MLTI:%d VELO:%d TORQ:%d TEMP:%d\n", getData(ANGLE), getData(MULTITURNANGLE), getData(VELOCITY), getData(TORQUE), getData(TEMPERATURE));
         }
 
         static void updateMultiTurnPosition() {
@@ -335,7 +342,7 @@ class CANMotor{
             }
         }
 
-        static void getFeedback(){
+        static void getFeedback(bool printFeedback = false){
             for(int i = 0; i < CAN_HANDLER_NUMBER; i ++){
                 uint8_t recievedBytes[8] = {0,0,0,0,0,0,0,0};
                 int msgID;
@@ -347,11 +354,14 @@ class CANMotor{
                         allMotors[i][mNum/4][mNum%4]->motorData[VELOCITY] = (recievedBytes[2]<<8) | recievedBytes[3];
                         allMotors[i][mNum/4][mNum%4]->motorData[TORQUE] = (recievedBytes[4]<<8) | recievedBytes[5];
                         allMotors[i][mNum/4][mNum%4]->motorData[TEMPERATURE] = ((int16_t) recievedBytes[6]);
+                        if(printFeedback)
+                            allMotors[i][mNum/4][mNum%4]->printAllMotorData();
                     }else{
-                        //printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS NOT INITIALIZED.. WHY\n",msgID);
+                        printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS NOT INITIALIZED.. WHY\n",msgID);
                     }
                 }
             }
+            updateMultiTurnPosition();
         }
 
         /**
@@ -364,9 +374,9 @@ class CANMotor{
             }
         }
 
-        static void tick(bool debug = false){
-            getFeedback();
-            updateMultiTurnPosition();
+        static void tick(bool debug = false, bool printFeedback = false){
+            getFeedback(printFeedback);
+            //updateMultiTurnPosition();
             for(int i = 0; i < 3; i ++)
                 sendOneID(CANHandler::CANBUS_1,i,debug);
             if(debug) printf("\n");
