@@ -2,6 +2,8 @@
 
 - Write a Turret Subsystem Class - WRITTEN BUT UNTESTED
 
+- Fix and set up pids again. . .
+
 - In new CANHandler spaghetti, set up a system to tell if new messages are not coming instead
 
 - In new CANMotor Spaghetti, set up a system to take the fact that its frozen and not do anything new

@@ -68,7 +68,7 @@ int main()
             if(rS == 2){
                 indexer.setPower(0);
             }else if(rS == 3){
-                if(indexer.powerOut > abs(indexer.getData(VELOCITY)) < 20){ //jam
+                if(abs(indexer.getData(TORQUE)) > 1000 & abs(indexer.getData(VELOCITY)) < 20){ //jam
                     indexJamTime = us_ticker_read() /1000;
                 }
                 if(us_ticker_read() / 1000 - indexJamTime < 500){
