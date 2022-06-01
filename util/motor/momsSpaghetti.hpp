@@ -55,8 +55,9 @@ enum motorType {
     GM6020 = 2
 };
 
-static double defaultGimblyPosSettings[5] = {15,1.797,10,8000,500}; 
-static double defautlGimblySpeedSettings[5] = {41.980, 6.311, 19.960, 15000, 1000};
+
+static double defaultGimblyPosSettings[5] = {10.88,1.2,18.9,8000,500}; 
+static double defautlGimblySpeedSettings[5] = {0.13, 8.8, 0, 7500, 1000};
 static double defautM3508PosSettings[5] = {.128, 1.029, 15.405, 3000, 300};
 static double defautM3508SpeedSettings[5] = {3.091, 0.207, 4.707, 15000, 500};
 
@@ -111,7 +112,7 @@ class CANMotor{
 
         unsigned long lastTime = 0;
 
-        int16_t outCap = 800;
+        int outCap = 99999;
 
         CANMotor(bool isErroneousMotor = false){
             
@@ -228,6 +229,10 @@ class CANMotor{
             value = val;
         }
 
+        int getValue() {
+            return value;
+        }
+
         void setPower(int power){
             setValue(power);
             mode = POW; 
@@ -246,15 +251,23 @@ class CANMotor{
             setOutput();
         }
 
+        void setPositionPID(float kP, float kI, float kD) {
+            pidPosition.setPID(kP, kI, kD);
+        }
+
+        void setSpeedPID(float kP, float kI, float kD) {
+            pidSpeed.setPID(kP, kI, kD);
+        }
+
         void setOutput(){
             unsigned long time = us_ticker_read() / 1000;
             if(mode == POW){
                 powerOut = value;
             }else if(mode == SPD){
-                powerOut = value + pidSpeed.calculate(value, getData(VELOCITY), time - lastTime);
+                powerOut = pidSpeed.calculate(value, getData(VELOCITY), time - lastTime);
                 //printFloat(powerOut, 2, 1);
             }else if(mode == POS){
-                powerOut = pidPosition.calculate(value, multiTurn, time - lastTime);
+                powerOut = pidPosition.calculate(value, getData(MULTITURNANGLE), time - lastTime);
                 //printf("DES:%d,ACT:%d\t",value,multiTurn);
             }else if(mode == OFF){
                 powerOut = 0;
@@ -267,7 +280,10 @@ class CANMotor{
             else if(powerOut < -outCap)
                 powerOut = -outCap;
             lastTime = time;
+        }
 
+        int getPowerOut() {
+            return powerOut;
         }
 
         int getData(motorDataType data) {
@@ -275,7 +291,6 @@ class CANMotor{
                 return motorData[data];
             else 
                 return multiTurn;
-
         }
 
         void printAllMotorData() {
@@ -298,11 +313,11 @@ class CANMotor{
                             deltaAngle = curAngle - lastAngle;
 
                             if (abs(speed) < 100) {
-                                if (curAngle > (8191 - Threshold) && lastAngle < Threshold)
-                                    curMotor->multiTurn -= deltaAngle + 8191;
-                                else if (curAngle < Threshold && lastAngle > (8191 - Threshold))
+                                if (curAngle > (8191 - Threshold) && lastAngle < Threshold) {
+                                    curMotor->multiTurn -= deltaAngle - 8191;
+                                }else if (curAngle < Threshold && lastAngle > (8191 - Threshold)) {
                                     curMotor->multiTurn += deltaAngle + 8191;
-                                else
+                                }else
                                     curMotor->multiTurn += deltaAngle;
                             }
                             else {
