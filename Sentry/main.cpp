@@ -32,6 +32,7 @@ int main()
     chassis1.multiTurn = 0;
     //chassis1.pidSpeed.setPID(.1, 0, 0);
     //chassis1.pidPosition.setPID(.08,0,0.0125);
+    indexer.outCap = 2500;
 
         while(1){
 
@@ -42,8 +43,10 @@ int main()
                 chassis1.setPower(lX);
                 chassis2.setPower(lX);
             }
-            gimbalX.setPosition(rX);
-            gimbalY.setPosition(rY);
+            //gimbalX.setPosition(rX);
+            //gimbalY.setPosition(rY);
+            //gimbalX.setPower(rX);
+            //gimbalY.setPower(rY);
 
             if(lS == 2){
                 leftFlywheelTop.set(60);
@@ -57,12 +60,39 @@ int main()
                 rightFlywheelBot.set(0);   
             }
 
-            indexer.setSpeed((rS - 2) * 700);
+            //indexer.setSpeed((rS - 2) * 700);
+            
+            //indexer.setPower((rS - 2) * 1400);
+            
+            int indexJamTime = 0;
+            if(rS == 2){
+                indexer.setPower(0);
+            }else if(rS == 3){
+                if(indexer.powerOut > abs(indexer.getData(VELOCITY)) < 20){ //jam
+                    indexJamTime = us_ticker_read() /1000;
+                }
+                if(us_ticker_read() / 1000 - indexJamTime < 500){
+                    indexer.setPower(-3000); //jam
+                    printf("JAMMMMM- ");
+                }else{
+                    indexer.setPower(1700);
+                }
+                printf("PWR:%d Jam-Free:%dms TORQ:%d\n",indexer.powerOut,us_ticker_read() / 1000 - indexJamTime, indexer.getData(TORQUE));
+            }else if(rS == 1){
+                indexer.setPower(rY*4);
+            }
 
+            // if(rS == 2){
+            //     indexer.setPower(0);
+            // }else if(rS == 3){
+            //     indexer.setPower(1500);
+            // }else if(rS == 1){
+            //     indexer.setPower(-2000);
+            // }
 
             //chassis2.setSpeed(lY);
             //CANMotor::tick();
-            remotePrint();
+            //remotePrint();
         }
 
 }

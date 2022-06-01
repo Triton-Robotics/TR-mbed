@@ -64,7 +64,7 @@ class PID {
                     PIDCalc = -outputCap;
             }
             //ThisThread::sleep_for(1ms); //neccessary or else dt -> 0 and causes issues....
-            printf("DES: %d ACT: %d PID: %d\n",(int)desiredV, int(actualV), int(PIDCalc));
+            //printf("DES: %d ACT: %d PID: %d\n",(int)desiredV, int(actualV), int(PIDCalc));
 
             
             return PIDCalc;
