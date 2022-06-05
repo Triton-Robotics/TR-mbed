@@ -44,8 +44,10 @@ int main()
                 //chassis1.setPower(lX);
                 //chassis2.setPower(lX);
             }
+
             //gimbalX.setPosition(rX);
             //gimbalY.setPosition(rY);
+
             gimbalX.setPower(rX * 2);
             gimbalY.setPower(rY * 6);
 
@@ -60,10 +62,6 @@ int main()
                 rightFlywheelTop.set(0);
                 rightFlywheelBot.set(0);   
             }
-
-            //indexer.setSpeed((rS - 2) * 700);
-            
-            //indexer.setPower((rS - 2) * 1400);
             
             int indexJamTime = 0;
             if(rS == 2){
@@ -86,14 +84,6 @@ int main()
                 indexer.setPower(rY*4);
                 printf("MANUAL-PWR:%d VELO:%d\n", indexer.powerOut, indexer.getData(VELOCITY));
             }
-
-            // if(rS == 2){
-            //     indexer.setPower(0);
-            // }else if(rS == 3){
-            //     indexer.setPower(1500);
-            // }else if(rS == 1){
-            //     indexer.setPower(-2000);
-            // }
 
             //chassis2.setSpeed(lY);
             //CANMotor::tick();

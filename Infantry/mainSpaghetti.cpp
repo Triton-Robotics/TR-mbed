@@ -11,38 +11,16 @@ NewChassisSubsystem chassis(4,2,1,3, CANHandler::CANBUS_1, C620);
 CANMotor pitch(6, CANHandler::CANBUS_1, GIMBLY);
 CANMotor serializer(7, CANHandler::CANBUS_1, C610);
 
-int neutralval = 0;
-int revval = 75;
-
-
-PWMMotor RFLYWHEEL(D12, neutralval);
-PWMMotor LFLYWHEEL(D11, neutralval);
-
-int yawval = 0;
-int pitchval = 220;
-int maxspeed = 300;
-int maxpitchyawchange = 5;
-
-// bool checkJam(Motor *mymotor) {
-//     static int mycount = 0;
-
-//     if (mymotor->getData(VELOCITY) == 0) 
-//         mycount++;
-//     else
-//         mycount = 0;
-    
-//     if (mycount > 10)
-//         return true;
-//     else
-//         return false;
-// }
+PWMMotor RFLYWHEEL(D12);
+PWMMotor LFLYWHEEL(D11);
 
 int main()
 {
-    //Motor::setCANHandler(&canPorts);
-    CANMotor::setCANHandlers(&canHandler1, &canHandler2);
-    //pitch.zeroPos();
     threadingRemote.start(&remoteThread);
+    CANMotor::setCANHandlers(&canHandler1,&canHandler2);
+
+    //pitch.zeroPos();
+
     while (true) {
         
 
@@ -52,7 +30,7 @@ int main()
         //chassis.move(3000,0,0);
         chassis.movePow(lY * 1.5,lX * 1.5,rX * 1.5);
 
-        remotePrint();
+        //remotePrint();
 
         //for(int i = 0; i < 12; i)
 
