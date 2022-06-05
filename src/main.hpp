@@ -33,6 +33,14 @@ static void remoteThread(){
         lS = myremote.getSwitchData(LSWITCH);
         rS = myremote.getSwitchData(RSWITCH);
         ThisThread::sleep_for(1ms);
+        if(lX > 1000)
+            lX = 0;
+        if(rX > 1000)
+            rX = 0;
+        if(lY > 1000)
+            lY = 0;
+        if(rY > 1000)
+            rY = 0;
     }
 }
 

@@ -90,7 +90,7 @@ class NewCANHandler{
             txMsg.id = id; 
 
             for(int i = 0; i < 8; i++){
-                txMsg << bytes[i]; //Take data from bytes array and one at a time store it into txMsg
+                txMsg << int8_t(bytes[i]); //Take data from bytes array and one at a time store it into txMsg
             }
 
             //printMsg(txMsg);

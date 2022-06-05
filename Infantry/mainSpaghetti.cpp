@@ -50,7 +50,7 @@ int main()
         //     chassis.move(lY,lX,rX);
         // }
         //chassis.move(3000,0,0);
-        chassis.move(lY,lX,rX);
+        chassis.movePow(lY * 1.5,lX * 1.5,rX * 1.5);
 
         remotePrint();
 
@@ -84,7 +84,7 @@ int main()
         //yaw.setDesiredPos(yawval);
         //pitch.setPower(220);
 
-        CANMotor::tick(lS == 2, rS == 2);
+        //CANMotor::tick(lS == 2, rS == 2);
 
     }
 }

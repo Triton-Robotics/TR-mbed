@@ -88,6 +88,27 @@ class NewChassisSubsystem{
         }
 
         /**
+         * @brief moves the chassis
+         * 
+         * @param y the forward movement of the chassis
+         * @param x the sideways movement of the chassis
+         * @param rx the sideways movement of the chassis
+         */
+        void movePow(int y, int x, int rx){
+            // y=-y/660;
+            // x=x/660;
+            // rx = rx/660;
+            //printf("%d,%d,%d\n",y,x,rx);
+            int LF = y + x + rx, RF = y - x - rx, LB = y - x + rx, RB = y + x - rx;
+            //setSpeeds(LF,-RF,LB,-RB);
+            MotorLeftFront.setPower(LF);
+            MotorRightFront.setPower(-RF);
+            MotorLeftBack.setPower(LB);
+            MotorRightBack.setPower(-RB);
+            //printf("%d,%d,%d,%d\n",RF,LF,RB,LB);
+        }
+
+        /**
          * @brief Returns a motor given a motorLoc enum value
          * 
          * @param location, which motor to return
