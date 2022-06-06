@@ -1,8 +1,8 @@
 #include "mbed.h"
 #include "../src/main.hpp"
 
-DigitalInOut clawPin(PA_13);
-DigitalInOut rfidPin(PA_14);
+DigitalOut clawPin(PA_13);
+DigitalOut rfidPin(PA_14);
 
 NewChassisSubsystem chassis(4,2,1,3, CANHandler::CANBUS_1, C620);
 
@@ -22,8 +22,6 @@ int main()
 {
     threadingRemote.start(&remoteThread);
     CANMotor::setCANHandlers(&canHandler1,&canHandler2);
-    clawPin.output();
-    rfidPin.output();
     //Motor::setCANHandler(&canPorts);
     //chassis1.pidSpeed.setPID(.1, 0, 0);
     //chassis1.pidPosition.setPID(.08,0,0.0125);

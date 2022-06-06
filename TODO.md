@@ -15,3 +15,7 @@
 - Add switch to the motor auto-ratio definitions instead of if-else
 
 - Make a class for Referee System 
+
+- Add class M3508, M2006, and GM6020 as extensions of CANMotor which reduces arguments by one
+
+- move CANBus enum to outside so we dont keep having to do CanHandler::CANBus_1
