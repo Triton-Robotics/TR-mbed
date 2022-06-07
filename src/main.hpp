@@ -4,12 +4,11 @@
 #include "../util/communications/canHandler.hpp"
 #include "../util/algorithms/pid.hpp"
 #include "subsystems/ChassisSubsystem.hpp"
-#include "subsystems/youBetterLoseYourselfInYourMomsSpaghetti.hpp"
 //#include "subsystems/TurretSubsystem.hpp"
 #include "../util/communications/djiremoteuart.hpp"
 #include "../util/helperFunctions.hpp"
 #include "../util/communications/SerialCommunication.hpp"
-#include "../util/motor/momsSpaghetti.hpp"
+#include "../util/motor/CANMotor.hpp"
 
 //#include "robots/include/infantry.hpp"
 static DJIRemote myremote(PA_0, PA_1);

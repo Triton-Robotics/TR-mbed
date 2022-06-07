@@ -1,7 +1,0 @@
-struct for data
-
-make ratio defined not as parameter but depending on standard
-
-setPos, setSpeed, setPower make it in motor class
-
-add the arrays for the three rawSends in MotorHandler

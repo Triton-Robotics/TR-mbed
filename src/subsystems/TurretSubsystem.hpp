@@ -1,5 +1,5 @@
 #include "mbed.h"
-#include "../../util/motor/momsSpaghetti.hpp"
+#include "../../util/motor/CANMotor.hpp"
 #include "../../util/motor/pwmmotor.cpp"
 #include <cstdlib>
 
