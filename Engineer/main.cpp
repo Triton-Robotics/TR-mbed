@@ -1,7 +1,7 @@
 #include "mbed.h"
 #include "../src/main.hpp"
 
-//DigitalOut clawPin(PA_13);
+DigitalOut clawPin(PA_13);
 //DigitalOut rfidPin(PA_14);
 
 NewChassisSubsystem chassis(4,3,1,2, CANHandler::CANBUS_1, C620);
@@ -48,16 +48,16 @@ int main()
             //gimbalX.setPower(rX * 2);
             //gimbalY.setPower(rY * 6);
 
-            // if(lS == 2){
-            //     clawPin = 0;
-            //     rfidPin = 0;
-            // }else if(lS == 3){
-            //     clawPin = 1;
-            //     rfidPin = 0;
-            // }else if(lS == 1){
-            //     clawPin = 0;
-            //     rfidPin = 1;
-            // }
+            if(lS == 2){
+                clawPin = 0;
+                //rfidPin = 0;
+            }else if(lS == 3){
+                clawPin = 1;
+                //rfidPin = 0;
+            }else if(lS == 1){
+                clawPin = 0;
+                //rfidPin = 1;
+            }
             
             //int indexJamTime = 0;
             // if(rS == 2){
