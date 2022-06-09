@@ -46,7 +46,7 @@ class TurretSubsystem{
          * @param flywheelL2Pin pin for L2 flywheel
          * @param flywheelR2Pin pin for R2 flywheel
          */ 
-        TurretSubsystem(int turretXID, motorType turretXType, int turretYID, motorType turretYType,int indexerID, motorType indexerType, CANHandler::CANBus bus, PinName flywheelL1Pin, PinName flywheelR1Pin, PinName flywheelL2Pin, PinName flywheelR2Pin):
+        TurretSubsystem(int turretXID, motorType turretXType, int turretYID, motorType turretYType,int indexerID, motorType indexerType, CANHandler::CANBus bus, PinName flywheelL1Pin, PinName flywheelR1Pin, PinName flywheelL2Pin = NC, PinName flywheelR2Pin = NC):
             turretX(turretXID,bus,turretXType),
             turretY(turretYID,bus,turretYType),
             indexer(indexerID,bus,indexerType),
@@ -56,30 +56,19 @@ class TurretSubsystem{
             flywheelR2(flywheelR2Pin) //INCOMPLETE
         {}
 
-                /**
+        /**
          * @brief Constructor for a chassis
          *
          * @param turretXID pin for left front motor
-         * @param turretXType pin for right front motor
          * @param turretYID pin for left front motor
-         * @param turretYType pin for right front motor
          * @param indexerID pin for left front motor
-         * @param indexerType pin for right front motor
          * 
          * @param bus can bus
          * @param flywheelL1Pin pin for L1 flywheel
          * @param flywheelR1Pin pin for R1 flywheel
-         * @param flywheelL2Pin pin for L2 flywheel
-         * @param flywheelR2Pin pin for R2 flywheel
          */ 
-        TurretSubsystem(int turretXID, motorType turretXType, int turretYID, motorType turretYType,int indexerID, motorType indexerType, CANHandler::CANBus bus, PinName flywheelL1Pin, PinName flywheelR1Pin):
-            turretX(turretXID,bus,turretXType),
-            turretY(turretYID,bus,turretYType),
-            indexer(indexerID,bus,indexerType),
-            flywheelL1(flywheelL1Pin),
-            flywheelR1(flywheelR1Pin),
-            flywheelL2(NC),
-            flywheelR2(NC) //INCOMPLETE
+        TurretSubsystem(int turretXID, int turretYID, int indexerID, CANHandler::CANBus bus, PinName flywheelL1Pin, PinName flywheelR1Pin, PinName flywheelL2Pin = NC, PinName flywheelR2Pin = NC):
+            TurretSubsystem(turretXID, GM6020, turretYID, GM6020, indexerID, M2006, bus, flywheelL1Pin, flywheelR1Pin, flywheelL2Pin, flywheelR2Pin)
         {}
 
         void serializer(int mode, int manualPower = 0){ //mode [2,off] [3,normal] [1, manual]
@@ -95,7 +84,7 @@ class TurretSubsystem{
                     printf("JAMMMMM- ");
                 }else if(us_ticker_read() / 1000 - indexJamTime < 750){
                     indexer.setPower(7000); //jam
-                    printf("POWER FORWARD- ");
+                    printf("PWR FWD- ");
                 }else{
                     indexer.setPower(1700);
                 }
@@ -121,6 +110,24 @@ class TurretSubsystem{
             int angleY = map(y, -1, 1, turretYBounds[0], turretYBounds[1]);
             moveRawPos(angleX, angleY);
         }
+};
+
+class HeroTurretSubsystem : TurretSubsystem{
+    private:
+        /**
+         * @brief Constructor for a chassis
+         *
+         * @param turretXID pin for left front motor
+         * @param turretYID pin for left front motor
+         * @param indexerID pin for left front motor
+         * 
+         * @param bus can bus
+         * @param flywheelL1Pin pin for L1 flywheel
+         * @param flywheelR1Pin pin for R1 flywheel
+         */ 
+        HeroTurretSubsystem(int turretXID, int turretYID, int indexerID, CANHandler::CANBus bus, PinName flywheelL1Pin, PinName flywheelR1Pin):
+            TurretSubsystem(turretXID, M3508, turretYID, GM6020,indexerID, GM6020, bus, flywheelL1Pin, flywheelR1Pin)
+        {}
 };
 
 #endif  
