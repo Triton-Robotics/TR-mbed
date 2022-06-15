@@ -1,6 +1,7 @@
 #include "mbed.h"
 #include "../../util/motor/CANMotor.hpp"
 #include <cstdlib>
+#include <math.h>
 ///////////////////////////////////////////////////////////////////////
 //                  ___      __  __          __             __  __                      _________ __  __              __  ___          _      ____               __       __  __  _ 
 //  __ _____  __ __/ _ )___ / /_/ /____ ____/ /  ___  ___ __\ \/ /__  __ _________ ___ / / _/  _/_\ \/ /__  __ ______/  |/  /__  __ _ ( )___ / __/__  ___ ____ _/ /  ___ / /_/ /_(_)
@@ -25,6 +26,8 @@ class NewChassisSubsystem{
         CANMotor MotorLeftFront; 
         CANMotor MotorRightBack;
         CANMotor MotorLeftBack;
+
+        int theta;
        
         /**
          * @brief Constructor for a chassis
@@ -42,8 +45,9 @@ class NewChassisSubsystem{
             MotorRightFront(m2_can_id,bus,TYPE),
             MotorLeftBack(m3_can_id,bus,TYPE),
             MotorRightBack(m4_can_id,bus,TYPE)
-
+            
         {
+            theta = 0;
             //MotorRightFront.setInverted(true);
             //MotorRightBack.setInverted(true);
         }
@@ -104,7 +108,12 @@ class NewChassisSubsystem{
             MotorRightFront.setPower(-RF);
             MotorLeftBack.setPower(LB);
             MotorRightBack.setPower(-RB);
-            //printf("%d,%d,%d,%d\n",RF,LF,RB,LB);
+            //printf("MOVEPOW- %d,%d,%d,%d\n",RF,LF,RB,LB);
+        }
+
+        void beyblade(int y, int x, int dTheta, int theta){
+            int angle = theta - atan(y/x);
+            
         }
 
         /**

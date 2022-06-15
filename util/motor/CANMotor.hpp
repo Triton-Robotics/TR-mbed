@@ -205,6 +205,13 @@ class CANMotor{
             canBus = CANHandler::NOBUS;
         }
 
+        static void printChunk(CANHandler::CANBus bus, short sendID){
+            for(int i = 0; i < 4; i ++){
+                printf("%d ",allMotors[bus][sendID][i]->powerOut);
+            }
+            printf("\n");
+        }
+
         // static void setCANHandlers(PinName can1Tx, PinName can1Rx, PinName can2Tx, PinName can2Rx){
         //     canHandlers[0].updateCANs(PinName canRx, PinName canTx);
         //     canHandlers[1]* = &can2;
@@ -382,7 +389,7 @@ class CANMotor{
                         if(printFeedback)
                             allMotors[i][mNum/4][mNum%4]->printAllMotorData();
                     }else{
-                        printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS NOT INITIALIZED.. WHY\n",msgID);
+                        //printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS NOT INITIALIZED.. WHY\n",msgID);
                     }
                 }
             }

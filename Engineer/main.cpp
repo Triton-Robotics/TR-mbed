@@ -38,8 +38,8 @@ int main()
                 //chassis2.setPower(lX);
                 chassis.movePow(0,0,0);
             }
-            rescueL.setPower(rY * 2);
-            rescueR.setPower(rY * -2);
+            //rescueL.setPower(rY * 2);
+            //rescueR.setPower(rY * -2);
             //chassis.move(lY,lX,rX);
 
             //gimbalX.setPosition(rX);
