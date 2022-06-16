@@ -9,6 +9,7 @@
 //CANHandler canPorts(PA_11,PA_12,PB_12,PB_13);
 
 //NewChassisSubsystem chassis(4,2,1,3, CANHandler::CANBUS_1, C620);
+int pitchval = 0;
 CANMotor LF(4,CANHandler::CANBUS_1,M3508);
 CANMotor RF(2,CANHandler::CANBUS_1,M3508);
 CANMotor LB(1,CANHandler::CANBUS_1,M3508);
@@ -34,6 +35,7 @@ int main()
         float WHEELBASE_LENGTH = 0.41;
         float GIMBAL_X_OFFSET = 0;
         float GIMBAL_Y_OFFSET = 0;
+        
 
         // if (myremote.getSwitchData(RSWITCH) == 2) {
         //     chassis.move(lY,lX,rX);
@@ -79,18 +81,31 @@ int main()
             // RF.setPower(3000);
             // LB.setPower(3000);
             // RB.setPower(3000);
+            if (pitchval < 1500) // lowerbound
+                pitchval = 1500;
+            if (pitchval > 3000) //upperbound
+                pitchval = 3000;
+            pitchval += (int)myremote.getStickData(RIGHTJOYY, 0, 3);
+            // printf("%d\n", pitchval);
+
             int LFa = lY + lX + Wh, RFa = lY - lX - Wh, LBa = lY - lX + Wh, RBa = lY + lX - Wh;
             LF.setSpeed(LFa*2);
-            RF.setSpeed(RFa*2);
+            RF.setSpeed(-RFa*2);
             LB.setSpeed(LBa*2);
-            RB.setSpeed(RBa*2);
+            RB.setSpeed(-RBa*2);
             yaw.setPower(rX * 4);
-            pitch.setSpeed(rY * 2);
-            CANMotor::printChunk(CANHandler::CANBUS_1,3);
+            pitch.setPosition(pitchval);
+
+
+            
+
+            //pitch.printAllMotorData();
+            //printf("%d\n", pitch.getData(ANGLE));
+            //CANMotor::printChunk(CANHandler::CANBUS_1,2);
         }else if(rS == 1){
             LF.setPower(0);RF.setPower(0);LB.setPower(0);RB.setPower(0);
             yaw.setPower(0);
-        }else if(rS == 3){
+        }else if(rS == 3 && 0){
             int speedMult = 2;
 
             float raw_x = lX * speedMult;
@@ -130,7 +145,7 @@ int main()
             indexer.setPower(0);
             LFLYWHEEL.set(0);
             RFLYWHEEL.set(0);
-        }else if(rS == 3){
+        }else if(lS == 3){
             if(abs(indexer.getData(TORQUE)) > 1000 & abs(indexer.getData(VELOCITY)) < 20){ //jam
                 indexJamTime = us_ticker_read() /1000;
             }
@@ -141,17 +156,17 @@ int main()
                 indexer.setPower(7000); //jam
                 printf("POWER FORWARD- ");
             }else{
-                indexer.setPower(-1700);
+                indexer.setSpeed(-700);
             }
             printf("AUTO-PWR:%d Jam-Free:%dms TORQ:%d, VELO:%d\n",indexer.powerOut,us_ticker_read() / 1000 - indexJamTime, indexer.getData(TORQUE), indexer.getData(VELOCITY));
-            LFLYWHEEL.set(80);
-            RFLYWHEEL.set(80);
-        }else if(rS == 1){
+            LFLYWHEEL.set(60);
+            RFLYWHEEL.set(60);
+        }else if(lS == 1){
             indexer.setPower(rY * 3);
-            CANMotor::printChunk(CANHandler::CANBUS_1,1);
+            //CANMotor::printChunk(CANHandler::CANBUS_1,1);
             //printf("MANUAL-PWR:%d VELO:%d\n", indexer.powerOut, indexer.getData(VELOCITY));
-            LFLYWHEEL.set(80);
-            RFLYWHEEL.set(80);
+            LFLYWHEEL.set(40);
+            RFLYWHEEL.set(40);
         }
 
         // if(lS == 2)

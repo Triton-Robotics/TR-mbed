@@ -206,8 +206,17 @@ class CANMotor{
         }
 
         static void printChunk(CANHandler::CANBus bus, short sendID){
+            printf("Bus:");
+            if(bus == CANHandler::CANBUS_1)
+                printf("BUS_1");
+            else if(bus == CANHandler::CANBUS_2)
+                printf("BUS_2");
+            printf(" sendID:0x%x ",sendIDs[sendID]);
             for(int i = 0; i < 4; i ++){
-                printf("%d ",allMotors[bus][sendID][i]->powerOut);
+                if(motorsExist[bus][sendID][i])
+                    printf("%d ",allMotors[bus][sendID][i]->powerOut);
+                else
+                    printf("NA ");
             }
             printf("\n");
         }
