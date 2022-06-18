@@ -38,6 +38,10 @@ int main()
 
     gimbalY.pidPosition.debug = true;
 
+    //gimbalY.setPositionPID(36, 0, 0);
+    gimbalY.outCap = 30000;
+    gimbalY.pidPosition.setOutputCap(30000);
+
     while(1){
 
         if(rS == 2){
@@ -55,6 +59,12 @@ int main()
         //gimbalY.setPower(rY * 6);
 
         if(lS == 1){
+            if (gimbalY.getData(MULTITURNANGLE) < (1450 + lY * 1.5)){
+                gimbalY.pidPosition.feedForward = 27000;
+            }
+            else {
+                gimbalY.pidPosition.feedForward = -7000;
+            }
             gimbalY.setPosition(1450 + lY * 1.5);
         }else if(lS == 2){
             gimbalX.setPower(0);

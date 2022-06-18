@@ -13,13 +13,16 @@ class PID {
         float lastError = 0;
         float sumError = 0;
         
+        
     public:
         bool debug = false;
+        float feedForward = 0;
 
         PID(){
             kP = 1; kI = 0; kD = 0;
             integralCap = 0;
             outputCap = 0;
+            feedForward = 0;
         }
 
         /**
@@ -70,7 +73,7 @@ class PID {
             if(debug)
                 printf("DES: %d ACT: %d PID: %d\n",(int)desiredV, int(actualV), int(PIDCalc));
 
-            return PIDCalc;
+            return PIDCalc + feedForward;
         }
 
         /**
