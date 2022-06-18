@@ -35,6 +35,7 @@ enum motorDataType {
     TORQUE = 2,
     TEMPERATURE = 3,
     MULTITURNANGLE = 4,
+    MULTI  = 4,
 };
 
 
@@ -269,13 +270,13 @@ class CANMotor{
             setOutput();
         }
 
-        void setPositionPID(float kP, float kI, float kD) {
-            pidPosition.setPID(kP, kI, kD);
-        }
+        void setPositionPID(float kP, float kI, float kD) {pidPosition.setPID(kP, kI, kD);}
+        void setPositionIntegralCap(double cap){pidPosition.setIntegralCap(cap);}
+        void setPositionOutputCap(double cap){pidPosition.setOutputCap(cap);}
 
-        void setSpeedPID(float kP, float kI, float kD) {
-            pidSpeed.setPID(kP, kI, kD);
-        }
+        void setSpeedPID(float kP, float kI, float kD) {pidSpeed.setPID(kP, kI, kD);}
+        void setSpeedIntegralCap(double cap){pidSpeed.setIntegralCap(cap);}
+        void setSpeedOutputCap(double cap){pidSpeed.setOutputCap(cap);}
 
         void setOutput(){
             unsigned long time = us_ticker_read() / 1000;
@@ -405,6 +406,10 @@ class CANMotor{
                 }
             }
             updateMultiTurnPosition();
+        }
+
+        void zeroPos(){
+            multiTurn = 0;
         }
 
         /**

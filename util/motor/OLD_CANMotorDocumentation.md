@@ -1,29 +1,21 @@
 # Class Constructor:
 
 ```cpp
-Motor(int canID, CANHandler::CANBus bus, motorType type = STANDARD, int ratio = 19, int inverted = false)
+CanMotor(int canID, CANHandler::CANBus bus, motorType mType = STANDARD)
 ```
 
 **canID** : The ID of the motor. Most, if not all motors will blink quickly, and counting the blinks will tell you what the ID of the motor is
 
 **CANBus** : An enum of two possible can busses the [Waveshare Can transciever](https://www.amazon.com/SN65HVD230-CAN-Board-Communication-Development/dp/B00KM6XMXO/ref=sr_1_1?crid=PL0JKI6FA69A&keywords=waveshare+can+transceiver&qid=1649575254&sprefix=waveshare+can+transceiv%2Caps%2C323&sr=8-1) could be on: CANBUS_1 or CANBUS_2.
 
-**motorType** : enum that determines what kind of motor is being represented by a specific Motor Object.
-
-**ratio** : measure of what the motor's gear ratio from the motor -> output shaft. Mainly used for Position PID control when the user wants a desired output shaft angle. 
-
-    Ex: The M3508 has a 19:1 gearbox. Therefore this value would be 19.
-
-**inverted** : Boolean value to invert the motor's forward rotation
+**motorType** : enum that determines what kind of motor is being represented by a specific CanMotor Object.
 
 ## Examples
 
 Some sample motor creations below:  
-`Motor gimbalXZ(5, CANBUS_1, GM6020, 1, false);`
+`CanMotor gimbalXZ(5, CANHandler::CANBUS_1, GM6020);`
 
-`Motor turretYaw(3, CANBUS_2, M3508);`
-
-___
+`CanMotor turretYaw(3, CANHandler::CANBUS_2, M3508);`
 
 # Motor movement:
 
@@ -47,33 +39,44 @@ and
 
 Once the PID is set up, you can just give it a speed or a position:
 
-`void setDesiredPos(int value)`
+`void setPosition(int value)`
 
-`void setDesiredSpeed(int value)`
+`void setSpeed(int value)`
 
-or you can just give it a current:
+or you can just give it a power value:
 
-`void setDesiredCurrent(int value)`
+`void setPower(int value)`
 
-Finally, the most important part of using the Motor class is running Motor::tick(); to send all the motor values, get feedback values, and calculate multiTurn angle. 
+Finally, the most important part of using the CanMotor class is running CANMotor::tick(); to send all the motor values, get feedback values, and calculate multiTurn angle. 
+
+However, if the threading is active, it will create a new thread for it, do not call it, or you will get a hard fault
 
 ## Examples
 
 Example code with PID is:
 
 ```cpp
-#include "mbed.h"
-#include "motor.hpp"
+#include "main.hpp"
+///////////////////////////////////////////////////
+//IN main.hpp
+static DJIRemote myremote(PA_0, PA_1);
+
+NewCANHandler canHandler1(PA_11,PA_12);
+NewCANHandler canHandler2(PB_12,PB_13);
 
 CANHandler canPorts(PA_11,PA_12,PB_12,PB_13);
 
+Thread threadingRemote(osPriorityHigh);
+///////////////////////////////////////////////////
+
+CANHandler canPorts(PA_11,PA_12,PB_12,PB_13);
+
+CANMotor standard(1,CANHandler::CANBUS_1,STANDARD);
+CANMotor gimbly(7,CANHandler::CANBUS_1,GIMBLY);
+
 int main(){
-    motorDebug = 0;
-
-    Motor::setCANHandler(&canPorts);
-
-    Motor standard(1,CANHandler::CANBUS_1,STANDARD);
-    Motor gimbly(7,CANHandler::CANBUS_1,GIMBLY);
+    threadingRemote.start(&remoteThread);
+    CANMotor::setCANHandlers(&canHandler1,&canHandler2);
 
     gimbly.setPositionPID(5, 0, 10);
     standard.setSpeedPID(0.5, 0, 2);
@@ -83,80 +86,89 @@ int main(){
 
     int val = 8738;
     while(1){
-        standard.setDesiredSpeed(2000);
+        standard.setSpeed(2000);
 
-        gimbly.setDesiredPos(val);
+        gimbly.setPosition(val);
 
-        Motor::tick();
+        CANMotor::tick();
 
-        printf("Speed:%d\n",standard.getSpeed());
+        printf("Speed:%d\n",standard.getData(VELOCITY));
     }
 }
 ```
 
 ---
 
-# Requirements to making the Motor class work:
+# Requirements to making the CanMotor class work:
 
 There are some things you need to make sure you have to make the motor class work:
 
-## 1. Attach CANHandler
+## 1. Attach NewCANHandlers
 
-To make the Motor class work, you need to attach a CANHandler object to it, which stores two can busses that we use to make the motors run.
+To make the CanMotor class work, you need to attach two NewCANHandler objects to it, which stores two can busses that we use to make the motors run.
 
 You do this with this function
 
-`Motor::setCANHandler(&handler);`
+`CANMotor::setCANHandlers(&handler1, &handler2);`
 
-Where handler is a CANHandler object.
+Where each handler is a NewCANHandler object.
 
-## 2. Motor::tick()
+## 2. CANMotor::tick()
 
-This is explained more later, but you need to have a `Motor::tick();` at the end of your loops, or on a scheduler to send all the motor values, as well as some other things.
+You need to have a `CANMotor::tick();` at the end of your loops, or on a scheduler to send all the motor values, as well as some other things.
 
 IT IS VITAL THAT YOU CALL THIS AT THE END OF EACH LOOP
 
 ```cpp
-Motor::tick();
+CANMotor::tick();
 ```
+
+However, normally this is automatically done by the setCANHandlers() function, unless you give it the option not to begin the thread.
 
 ## **VERY IMPORTANT**
 
 Keep in mind that while the GM6020 motors are technically capable to operate on canIDs 1-7, CAN restrictions do not allow them to operate on IDs other than 5-7. This means with two CAN busses, you have a limit of 6 GM6020s. Motors using the C620s do not have any limitations like this.
 
-___
+Keep in mind that the GM6020s operate on one higher of a can chunk than the M3508s and the M2006s. This means that its id is effectively increased by four. An M3508 on can ID 6 has the same configuration as a GM6020 on can ID 2. If the motor class detects conflicting motors of this nature, it will tell you, and both motors will be disabled.
+
+Also keep in mind that the GM6020s can only operate on can IDs 1-7, so essentially each CAN Handler can handle 4 STANDARDs, 3 GM6020s, and then 4 more which can be assigned to either.
 
 # Motor Feedback
 
-When you run `Motor::tick();`, the Motor class reads a message from both CAN busses and updates a collection of feedback data collected from all collected motors. You can get that data with the following getters:
+When you run `CANMotor::tick();`, the CANMotor class reads a message from both CAN busses and updates a collection of feedback data collected from all collected motors. You can get that data with the following getter:
 
-`int getAngle()` (0-8191)
+`int getData(motorDataType data)`
 
-`int getSpeed()` (RPM)
+`data` can be:
 
-`int getTorque()` (?)
+`ANGLE` (0-8191)
 
-`int getTemperature()` (Celsius)
+`VELOCITY` (RPM)
 
-There are also static versions of these, where motorID:
+`TORQUE` (?)
 
-`static int staticAngle(CANBus bus, int motorID)` (0-8191)
+`TEMPERATURE` (Celsius)
 
-`static int staticSpeed(CANBus bus,int motorID)` (RPM)
+`MULTITURNANGLE` (0-8191) , with no limit on how far back or forward.
 
-`static int staticTorque(CANBus bus,int motorID)` (?)
-
-`static int staticTemperature(CANBus bus,int motorID)` (Celsius)
-
-It's important to keep in mind that `getAngle()` only a relative angle, which resets when it goes over 8191, the range is always from 0 to 8191. It is more useful to use the multiturn functionality, as it operates in degrees of the shaft, and also handles angles larger than the bounds of a full rotation, so you could enter in 720 and it would do two full rotations, or -960 to go three rotations the other direction.
-
-`int getMultiTurnAngle()`
-
-Positional PID uses this instead, and it also operates in degrees instead of a range from 0-8191.
+It's important to keep in mind that `ANGLE` is only a relative angle, which resets when it goes over 8191, the range is always from 0 to 8191. It is more useful to use the `MULTITURN` functionality, as it handles angles larger than the bounds of a full rotation, so you could enter in 16282 and it would do two full rotations, or -24573 to go three rotations the other direction.
 You can also reset the multiTurnAngle with zeroPos
 
 `void zeroPos()`
 
-or its static equivalent
 
-`static void staticZeroPos(int motorID)`
+
+# Debugging
+
+There are some options to be had for debugging data, such as:
+
+
+`static void printChunk(CANHandler::CANBus bus, short sendID)`
+
+Which will print the set of four motors in that chunk.
+
+
+
+`void printAllMotorData()`
+
+Which will print all the motor data of a single motor
