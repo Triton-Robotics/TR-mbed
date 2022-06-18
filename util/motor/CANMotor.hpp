@@ -59,7 +59,7 @@ enum motorType {
 static double defaultGimblyPosSettings[5] = {10.88,1.2,18.9,8000,500}; 
 static double defautlGimblySpeedSettings[5] = {0.13, 8.8, 0, 7500, 1000};
 static double defautM3508PosSettings[5] = {.128, 1.029, 15.405, 3000, 300};
-static double defautM3508SpeedSettings[5] = {3.091, 0.207, 4.707, 15000, 500};
+static double defautM3508SpeedSettings[5] = {1.79, 0.27, 10.57, 15000, 500};
 
 class CANMotor{
     private:
@@ -256,6 +256,8 @@ class CANMotor{
         }
 
         void setSpeed(int speed){
+            if (type == M3508)
+                speed *= 19;
             setValue(speed);
             mode = SPD; 
             setOutput();
