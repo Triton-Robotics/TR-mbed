@@ -48,19 +48,24 @@ int main()
             //gimbalX.setPosition(rX);
             //gimbalY.setPosition(rY);
 
-            gimbalX.setPower(rX * 2);
-            gimbalY.setPower(rY * 6);
+            //gimbalX.setPower(rX * 2);
+            //gimbalY.setPower(rY * 6);
 
-            if(lS == 2){
+            if(lS == 1){
                 leftFlywheelTop.set(60);
                 leftFlywheelBot.set(60);
                 rightFlywheelTop.set(60);
                 rightFlywheelBot.set(60);   
-            }else{
+            }else if(lS == 2){
                 leftFlywheelTop.set(0);
                 leftFlywheelBot.set(0);
                 rightFlywheelTop.set(0);
                 rightFlywheelBot.set(0);   
+            }else if(lS == 3){
+                leftFlywheelTop.set(lX * 60.0/1000);
+                leftFlywheelBot.set(lY * 60.0/1000);
+                rightFlywheelTop.set(rX * 60.0/1000);
+                rightFlywheelBot.set(rY * 60.0/1000); 
             }
             
             int indexJamTime = 0;
@@ -87,7 +92,7 @@ int main()
 
             //chassis2.setSpeed(lY);
             //CANMotor::tick();
-            //remotePrint();
+            remotePrint();
         }
 
 }
