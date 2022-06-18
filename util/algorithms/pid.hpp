@@ -12,7 +12,9 @@ class PID {
         float outputCap;
         float lastError = 0;
         float sumError = 0;
+        
     public:
+        bool debug = false;
 
         PID(){
             kP = 1; kI = 0; kD = 0;
@@ -65,8 +67,8 @@ class PID {
                     PIDCalc = -outputCap;
             }
             //ThisThread::sleep_for(1ms); //neccessary or else dt -> 0 and causes issues....
-
-            //printf("DES: %d ACT: %d PID: %d\n",(int)desiredV, int(actualV), int(PIDCalc));
+            if(debug)
+                printf("DES: %d ACT: %d PID: %d\n",(int)desiredV, int(actualV), int(PIDCalc));
 
             return PIDCalc;
         }
