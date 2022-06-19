@@ -272,6 +272,11 @@ class CANMotor{
         void setPositionPID(float kP, float kI, float kD) {
             pidPosition.setPID(kP, kI, kD);
         }
+        
+        void setPosPIDSettings(float outputCap, float integralCap) {
+            pidPosition.setIntegralCap(integralCap);
+            pidPosition.setOutputCap(outputCap);
+        }
 
         void setSpeedPID(float kP, float kI, float kD) {
             pidSpeed.setPID(kP, kI, kD);
