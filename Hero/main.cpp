@@ -15,9 +15,9 @@ CANMotor RF(2,CANHandler::CANBUS_1,M3508);
 CANMotor LB(1,CANHandler::CANBUS_1,M3508);
 CANMotor RB(3,CANHandler::CANBUS_1,M3508);
 
-CANMotor yaw(5, CANHandler::CANBUS_1, GIMBLY);
-CANMotor pitch(6, CANHandler::CANBUS_1, GIMBLY);
-CANMotor indexer(7, CANHandler::CANBUS_1, C610);
+CANMotor yaw(5, CANHandler::CANBUS_1, M3508);
+CANMotor pitch(6, CANHandler::CANBUS_1, GM6020);
+CANMotor indexer(7, CANHandler::CANBUS_1, GM6020);
 
 PWMMotor RFLYWHEEL(D12);
 PWMMotor LFLYWHEEL(D11);
@@ -81,11 +81,11 @@ int main()
             // RF.setPower(3000);
             // LB.setPower(3000);
             // RB.setPower(3000);
-            if (pitchval < 1500) // lowerbound
-                pitchval = 1500;
-            if (pitchval > 3000) //upperbound
-                pitchval = 3000;
-            pitchval += (int)myremote.getStickData(RIGHTJOYY, 0, 3);
+            // if (pitchval < 1500) // lowerbound
+            //     pitchval = 1500;
+            // if (pitchval > 3000) //upperbound
+            //     pitchval = 3000;
+            //pitchval += (int)myremote.getStickData(RIGHTJOYY, 0, 3);
             // printf("%d\n", pitchval);
 
             int LFa = lY + lX + Wh, RFa = lY - lX - Wh, LBa = lY - lX + Wh, RBa = lY + lX - Wh;
@@ -94,10 +94,7 @@ int main()
             LB.setSpeed(LBa*speedMultplier);
             RB.setSpeed(-RBa*speedMultplier);
             yaw.setPower(rX * 4);
-            pitch.setPosition(pitchval);
-
-
-            
+            pitch.setSpeed(rY/4);
 
             //pitch.printAllMotorData();
             //printf("%d\n", pitch.getData(ANGLE));
@@ -105,40 +102,8 @@ int main()
         }else if(rS == 1){
             LF.setPower(0);RF.setPower(0);LB.setPower(0);RB.setPower(0);
             yaw.setPower(0);
-        }else if(rS == 3 && 0){
-            int speedMult = 2;
+        }else if(rS == 3){
 
-            float raw_x = lX * speedMult;
-            float raw_y = lY * speedMult;
-
-            // change of angle from the original position
-            //radian = sig->gimbal.yaw_ecd / ECD_PERIOD * 2 * PI;
-
-            // apply rotational matrix
-            float x = (float) (raw_x * cos(angle) - raw_y * sin(angle));
-            float y = (float) (raw_x * sin(angle) + raw_y * cos(angle));
-
-            
-            // float wheelbaseCenterDist = sqrtf(powf(WHEELBASE_WIDTH / 2.0f, 2.0f) + powf(WHEELBASE_LENGTH / 2.0f, 2.0f));
-
-            // // offset gimbal center from center of wheelbase so we rotate around the gimbal
-            // float leftFrontRotationRatio =
-            //     (wheelbaseCenterDist - GIMBAL_X_OFFSET - GIMBAL_Y_OFFSET) * 180/PI;
-            // float rightFrontRotationRatio =
-            //     (wheelbaseCenterDist - GIMBAL_X_OFFSET + GIMBAL_Y_OFFSET) * 180/PI;
-            // float leftBackRotationRatio =
-            //     (wheelbaseCenterDist + GIMBAL_X_OFFSET - GIMBAL_Y_OFFSET) * 180/PI;
-            // float rightBackRotationRatio =
-            //     (wheelbaseCenterDist + GIMBAL_X_OFFSET + GIMBAL_Y_OFFSET) * 180/PI;
-
-            // float chassisRotateTranslated = (rotSped * PI/180) / wheelbaseCenterDist;
-            int beyblade_rotation = 2000;
-            LF.setSpeed(x + y + beyblade_rotation);
-            RF.setSpeed(x - y + beyblade_rotation);
-            LB.setSpeed(-x + y + beyblade_rotation);
-            RB.setSpeed(-x - y + beyblade_rotation);
-            yaw.setSpeed(20);
-            printf("nu\n");
         }
         int indexJamTime = 0;
         if(lS == 2){
@@ -150,13 +115,13 @@ int main()
                 indexJamTime = us_ticker_read() /1000;
             }
             if(us_ticker_read() / 1000 - indexJamTime < 500){
-                indexer.setPower(-7000); //jam
+                indexer.setPower(-10000); //jam
                 printf("JAMMMMM- ");
             }else if(us_ticker_read() / 1000 - indexJamTime < 750){
-                indexer.setPower(7000); //jam
+                indexer.setPower(10000); //jam
                 printf("POWER FORWARD- ");
             }else{
-                indexer.setSpeed(-700);
+                indexer.setSpeed(-2000);
             }
             printf("AUTO-PWR:%d Jam-Free:%dms TORQ:%d, VELO:%d\n",indexer.powerOut,us_ticker_read() / 1000 - indexJamTime, indexer.getData(TORQUE), indexer.getData(VELOCITY));
             LFLYWHEEL.set(60);
