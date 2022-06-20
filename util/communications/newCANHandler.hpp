@@ -12,6 +12,8 @@
 #ifndef newCanHandler_hpp
 #define newCanHandler_hpp
 
+#define CAN_BAUD 1000000
+
 class NewCANHandler{
     private:
         CANMsg txMsg; //Message object reused to send messages to motors
@@ -24,16 +26,16 @@ class NewCANHandler{
         bool exists = false;
         // Declaring CanHandler, can1, and can2
         NewCANHandler():
-            can(PA_11,PA_12,1000000)
+            can(PA_11,PA_12,CAN_BAUD)
             {exists = false;}
 
         NewCANHandler(PinName canRx, PinName canTx):
-            can(canRx,canTx,1000000)
+            can(canRx,canTx,CAN_BAUD)
             {exists = true;}
 
         void updateCANs(PinName canRx, PinName canTx){
             //can = new CAN(canRx,canTx,1000000);
-            CAN can(canRx,canTx,1000000);
+            CAN can(canRx,canTx,CAN_BAUD);
         }
 
         /**
@@ -43,7 +45,7 @@ class NewCANHandler{
         bool getFeedback(int *id, uint8_t bytes[]){
             rxMsg.clear();
             rxMsg.len = 8;
-            if (can.read(rxMsg)) {
+            while (can.read(rxMsg)) {
                 int err = can.rderror();
                 if (err){
                     printf("Read Error: %d\n", err);
