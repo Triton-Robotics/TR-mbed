@@ -20,9 +20,10 @@ class NewCANHandler{
         CANMsg rxMsg; //Message object reused to recieve messages from motors
         
         
-        
     public:
         CAN can;
+
+        enum CANBus {CANBUS_1, CANBUS_2, NOBUS};
 
         bool exists = false;
         // Declaring CanHandler, can1, and can2

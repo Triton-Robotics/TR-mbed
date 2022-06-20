@@ -3,7 +3,7 @@
 #include "../communications/newCANHandler.hpp"
 #include "../helperFunctions.hpp"
 #include <cmath>
-#include "../communications/canHandler.hpp"
+//#include "../communications/canHandler.hpp"
 //TR-mbed6/util/communications/causeSpaghettiComesOnceInALifetime.hpp
 
 ///////////////////////////////////////////////////////////////////////
@@ -89,7 +89,7 @@ class CANMotor{
 
         int gearRatio = 1; //the gear ratio of the motor to encoder
 
-        CANHandler::CANBus canBus = CANHandler::NOBUS; //the CANBus this motor is on
+        NewCANHandler::CANBus canBus = NewCANHandler::NOBUS; //the CANBus this motor is on
 
         motorType type = NONE; //mode of the motor
 
@@ -126,7 +126,7 @@ class CANMotor{
         CANMotor(bool isErroneousMotor = false){
             
             motorNumber = -1;
-            canBus = CANHandler::NOBUS;
+            canBus = NewCANHandler::NOBUS;
             gearRatio = 1;
             value = 0;
 
@@ -140,7 +140,7 @@ class CANMotor{
             powerOut = 0;
         }
 
-        CANMotor(short canID, CANHandler::CANBus bus, motorType mType = STANDARD){
+        CANMotor(short canID, NewCANHandler::CANBus bus, motorType mType = STANDARD){
             
             motorNumber = canID - 1;
             canBus = bus;
@@ -211,14 +211,14 @@ class CANMotor{
             mode = OFF;
             motorsExist[canBus][motorNumber/4][motorNumber%4] = false;
             motorNumber = -1;
-            canBus = CANHandler::NOBUS;
+            canBus = NewCANHandler::NOBUS;
         }
 
-        static void printChunk(CANHandler::CANBus bus, short sendID){
+        static void printChunk(NewCANHandler::CANBus bus, short sendID){
             printf("Bus:");
-            if(bus == CANHandler::CANBUS_1)
+            if(bus == NewCANHandler::CANBUS_1)
                 printf("BUS_1");
-            else if(bus == CANHandler::CANBUS_2)
+            else if(bus == NewCANHandler::CANBUS_2)
                 printf("BUS_2");
             printf(" sendID:0x%x ",sendIDs[sendID]);
             for(int i = 0; i < 4; i ++){
@@ -377,7 +377,7 @@ class CANMotor{
             }
         }
 
-        static void sendOneID(CANHandler::CANBus bus, short sendIDindex, bool debug = false){
+        static void sendOneID(NewCANHandler::CANBus bus, short sendIDindex, bool debug = false){
             int8_t bytes[8]  = {0,0,0,0,0,0,0,0};
             if(debug) printf("0x%x:\t",sendIDs[sendIDindex]);
             for(int i = 0; i < 4; i++){
@@ -465,10 +465,10 @@ class CANMotor{
         static void sendThread() {
             while (true) {
                 for(int i = 0; i < 3; i ++)
-                    sendOneID(CANHandler::CANBUS_1,i,sendDebug);
+                    sendOneID(NewCANHandler::CANBUS_1,i,sendDebug);
                 if(sendDebug) printf("\n");
                 for(int i = 0; i < 3; i ++)
-                    sendOneID(CANHandler::CANBUS_2,i,sendDebug);
+                    sendOneID(NewCANHandler::CANBUS_2,i,sendDebug);
                 if(sendDebug) printf("\n");
                 ThisThread::sleep_for(1ms);
             }
@@ -478,10 +478,10 @@ class CANMotor{
             getFeedback();
             //updateMultiTurnPosition();
             for(int i = 0; i < 3; i ++)
-                sendOneID(CANHandler::CANBUS_1,i,debug);
+                sendOneID(NewCANHandler::CANBUS_1,i,debug);
             if(debug) printf("\n");
             for(int i = 0; i < 3; i ++)
-                sendOneID(CANHandler::CANBUS_2,i,debug);
+                sendOneID(NewCANHandler::CANBUS_2,i,debug);
             if(debug) printf("\n");
         }
 
