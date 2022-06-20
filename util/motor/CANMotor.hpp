@@ -20,7 +20,8 @@
 #define canmotor_hpp
 
 static int sendIDs[3] = {0x200,0x1FF,0x2FF}; //IDs to send data
-static Thread motorupdatethread(osPriorityHigh); //threading for Motor::tick()
+static Thread motorFeedbackThread(osPriorityHigh); //threading for Motor::tick()
+static Thread motorSendThread(osPriorityNormal); //threading for Motor::tick()
 
 enum errorCodes{
     NO_ERROR,
@@ -94,8 +95,12 @@ class CANMotor{
 
         motorMoveMode mode = OFF; //mode of the motor
 
+        unsigned long timeOfLastFeedback = 0;
+
         //static MotorHandler motorHandler;
     public:
+        unsigned long timeSinceLastFeedback = 0;
+
         int bounds[2] = {0,0};
 
         //angle | velocity | torque | temperature
@@ -113,7 +118,10 @@ class CANMotor{
 
         unsigned long lastTime = 0;
 
-        int outCap = 99999;
+        int outCap = 30000;
+
+        static bool sendDebug;
+        static bool feedbackDebug;
 
         CANMotor(bool isErroneousMotor = false){
             
@@ -238,8 +246,11 @@ class CANMotor{
         static void setCANHandlers(NewCANHandler* bus_1, NewCANHandler* bus_2, bool thread = true){
             canHandlers[0] = bus_1;
             canHandlers[1] = bus_2;
-            if(thread)
-                motorupdatethread.start(tickThread);
+            if(thread){
+                //motorupdatethread.start(tickThread);
+                motorSendThread.start(sendThread);
+                motorFeedbackThread.start(feedbackThread);
+            }
         }
 
         void setValue(int val){
@@ -387,6 +398,7 @@ class CANMotor{
         }
 
         static void getFeedback(bool printFeedback = false){
+            //unsigned long time = us_ticker_read() / 1000;
             for(int i = 0; i < CAN_HANDLER_NUMBER; i ++){
                 uint8_t recievedBytes[8] = {0,0,0,0,0,0,0,0};
                 int msgID;
@@ -400,6 +412,9 @@ class CANMotor{
                         allMotors[i][mNum/4][mNum%4]->motorData[TEMPERATURE] = ((int16_t) recievedBytes[6]);
                         if(printFeedback)
                             allMotors[i][mNum/4][mNum%4]->printAllMotorData();
+                        allMotors[i][mNum/4][mNum%4]->timeSinceLastFeedback = us_ticker_read() / 1000 - allMotors[i][mNum/4][mNum%4]->timeOfLastFeedback;
+                        allMotors[i][mNum/4][mNum%4]->timeOfLastFeedback = us_ticker_read() / 1000;
+
                     }else{
                         //printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS NOT INITIALIZED.. WHY\n",msgID);
                     }
@@ -418,6 +433,32 @@ class CANMotor{
         static void tickThread() {
             while (true) {
                 tick();
+                ThisThread::sleep_for(1ms);
+            }
+        }
+
+        /**
+        * @brief the thread that runs the ever-necessary Motor::tick()
+        */
+        static void feedbackThread() {
+            while (true) {
+                getFeedback(feedbackDebug);
+                ThisThread::sleep_for(1ms);
+            }
+        }
+        
+
+        /**
+        * @brief the thread that runs the ever-necessary Motor::tick()
+        */
+        static void sendThread() {
+            while (true) {
+                for(int i = 0; i < 3; i ++)
+                    sendOneID(CANHandler::CANBUS_1,i,sendDebug);
+                if(sendDebug) printf("\n");
+                for(int i = 0; i < 3; i ++)
+                    sendOneID(CANHandler::CANBUS_2,i,sendDebug);
+                if(sendDebug) printf("\n");
                 ThisThread::sleep_for(1ms);
             }
         }
@@ -442,4 +483,6 @@ class CANMotor{
 CANMotor* CANMotor::allMotors[2][3][4];
 NewCANHandler* CANMotor::canHandlers[2];
 bool CANMotor::motorsExist[2][3][4];
+bool CANMotor::sendDebug = false;
+bool CANMotor::feedbackDebug = false;
 #endif
