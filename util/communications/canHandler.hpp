@@ -19,8 +19,6 @@ class CANHandler{
             can2(can2Rx,can2Tx,1000000) 
             {exists = true;}
 
-        
-
         enum CANBus {CANBUS_1, CANBUS_2, NOBUS};
 
         /**

@@ -53,6 +53,6 @@ static void remotePrint(){
 NewCANHandler canHandler1(PA_11,PA_12);
 NewCANHandler canHandler2(PB_12,PB_13);
 
-CANHandler canPorts(PA_11,PA_12,PB_12,PB_13);
+//CANHandler canPorts(PA_11,PA_12,PB_12,PB_13);
 
 Thread threadingRemote(osPriorityHigh);

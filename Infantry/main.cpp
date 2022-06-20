@@ -121,7 +121,7 @@ int main()
             // RB.setSpeed(-x - y + beyblade_rotation);
             int compensation = 200;
             //yaw.setPosition(- yaw.getData(MULTI) + (rY * 2 + compensation));
-            yaw.setPosition(rX * 8);
+            yaw.setPosition(-rX * 8);
             //yaw.setSpeed(20);
             //printf("nu\n");
 

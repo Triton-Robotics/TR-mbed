@@ -20,7 +20,7 @@
 #define canmotor_hpp
 
 static int sendIDs[3] = {0x200,0x1FF,0x2FF}; //IDs to send data
-static Thread motorFeedbackThread(osPriorityHigh); //threading for Motor::tick()
+static Thread motorFeedbackThread(osPriorityRealtime); //threading for Motor::tick()
 static Thread motorSendThread(osPriorityNormal); //threading for Motor::tick()
 
 enum errorCodes{
@@ -250,6 +250,18 @@ class CANMotor{
                 //motorupdatethread.start(tickThread);
                 motorSendThread.start(sendThread);
                 motorFeedbackThread.start(feedbackThread);
+
+                // canHandlers[0]->attach(&getFeedback);
+                // canHandlers[1]->attach(&getFeedback);
+
+                // CAN *can1, *can2;
+                // canHandlers[0]->getCAN(can1);
+                // canHandlers[1]->getCAN(can2);
+                // can1->attach(&getFeedback);
+                // can2->attach(&getFeedback);
+
+                // canHandlers[0]->can.attach(&getFeedback);
+                // canHandlers[1]->can.attach(&getFeedback);
             }
         }
 
@@ -397,7 +409,7 @@ class CANMotor{
             }
         }
 
-        static void getFeedback(bool printFeedback = false){
+        static void getFeedback(){
             //unsigned long time = us_ticker_read() / 1000;
             for(int i = 0; i < CAN_HANDLER_NUMBER; i ++){
                 uint8_t recievedBytes[8] = {0,0,0,0,0,0,0,0};
@@ -410,11 +422,10 @@ class CANMotor{
                         allMotors[i][mNum/4][mNum%4]->motorData[VELOCITY] = (recievedBytes[2]<<8) | recievedBytes[3];
                         allMotors[i][mNum/4][mNum%4]->motorData[TORQUE] = (recievedBytes[4]<<8) | recievedBytes[5];
                         allMotors[i][mNum/4][mNum%4]->motorData[TEMPERATURE] = ((int16_t) recievedBytes[6]);
-                        if(printFeedback)
+                        if(feedbackDebug)
                             allMotors[i][mNum/4][mNum%4]->printAllMotorData();
                         allMotors[i][mNum/4][mNum%4]->timeSinceLastFeedback = us_ticker_read() / 1000 - allMotors[i][mNum/4][mNum%4]->timeOfLastFeedback;
                         allMotors[i][mNum/4][mNum%4]->timeOfLastFeedback = us_ticker_read() / 1000;
-
                     }else{
                         //printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS NOT INITIALIZED.. WHY\n",msgID);
                     }
@@ -442,7 +453,7 @@ class CANMotor{
         */
         static void feedbackThread() {
             while (true) {
-                getFeedback(feedbackDebug);
+                getFeedback();
                 ThisThread::sleep_for(1ms);
             }
         }
@@ -464,7 +475,7 @@ class CANMotor{
         }
 
         static void tick(bool debug = false, bool printFeedback = false){
-            getFeedback(printFeedback);
+            getFeedback();
             //updateMultiTurnPosition();
             for(int i = 0; i < 3; i ++)
                 sendOneID(CANHandler::CANBUS_1,i,debug);

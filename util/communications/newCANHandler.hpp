@@ -18,13 +18,15 @@ class NewCANHandler{
     private:
         CANMsg txMsg; //Message object reused to send messages to motors
         CANMsg rxMsg; //Message object reused to recieve messages from motors
-        CAN can;
+        
         
         
     public:
+        CAN can;
 
         bool exists = false;
         // Declaring CanHandler, can1, and can2
+        
         NewCANHandler():
             can(PA_11,PA_12,CAN_BAUD)
             {exists = false;}
@@ -33,9 +35,19 @@ class NewCANHandler{
             can(canRx,canTx,CAN_BAUD)
             {exists = true;}
 
+        void attach	(Callback< void()> 	func,
+        CAN::IrqType 	type = CAN::IrqType::RxIrq 
+        ){
+            can.attach(func,type);
+        }
+
         void updateCANs(PinName canRx, PinName canTx){
             //can = new CAN(canRx,canTx,1000000);
             CAN can(canRx,canTx,CAN_BAUD);
+        }
+
+        void getCAN(CAN *getCAN){
+            getCAN = &can;
         }
 
         /**
@@ -49,6 +61,7 @@ class NewCANHandler{
                 int err = can.rderror();
                 if (err){
                     printf("Read Error: %d\n", err);
+                    can.reset();
                     return false;
                 }
                 *id = rxMsg.id;
