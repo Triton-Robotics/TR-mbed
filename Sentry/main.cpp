@@ -22,25 +22,19 @@ CANMotor indexer(5,CANHandler::CANBUS_1,M2006);
 
 int maxspeed = 500;
 
-// main() runs in its own thread in the OS
-
 int main()
 {
     threadingRemote.start(&remoteThread);
     CANMotor::setCANHandlers(&canHandler1,&canHandler2);
-    //Motor::setCANHandler(&canPorts);
     chassis1.multiTurn = 0;
     chassis2.multiTurn = 0;
-    //chassis1.pidSpeed.setPID(.1, 0, 0);
-    //chassis1.pidPosition.setPID(.08,0,0.0125);
     indexer.outCap = 7000;
     int pitchval = 0;
 
-    gimbalY.pidPosition.debug = true;
+    gimbalY.setPositionPID(7.221, 0.116, 4.152);
+    gimbalY.setPositionOutputCap(20000);
+    gimbalY.setPositionIntegralCap(100000);
 
-    //gimbalY.setPositionPID(36, 0, 0);
-    gimbalY.outCap = 30000;
-    gimbalY.pidPosition.setOutputCap(30000);
 
     while(1){
 
@@ -59,19 +53,13 @@ int main()
         //gimbalY.setPower(rY * 6);
 
         if(lS == 1){
-            if (gimbalY.getData(MULTITURNANGLE) < (1450 + lY * 1.5)){
-                gimbalY.pidPosition.feedForward = 27000;
-            }
-            else {
-                gimbalY.pidPosition.feedForward = -7000;
-            }
-            gimbalY.setPosition(1450 + lY * 1.5);
+            gimbalY.setPosition(1200 + lY);
+            printf("Act:%d\n", gimbalY.getData(MULTITURNANGLE));
         }else if(lS == 2){
             gimbalX.setPower(0);
             gimbalY.setPower(0);
         }else if(lS == 3){ //700 to 2200
-            gimbalY.setPower(lY*20 + 7000);
-            //printf("LSwtich Position 3,DESIRED:%d POW:%d POS:%d ",gimbalY.value, gimbalY.powerOut, gimbalY.getData(MULTITURNANGLE));
+           
         }
         
         int indexJamTime = 0;
@@ -83,7 +71,6 @@ int main()
             rightFlywheelTop.set(0);
             rightFlywheelBot.set(0);
 
-            remotePrint();
         }else if(rS == 3){
             if(abs(indexer.getData(TORQUE)) > 1000 & abs(indexer.getData(VELOCITY)) < 20){ //jam
                 indexJamTime = us_ticker_read() /1000;
