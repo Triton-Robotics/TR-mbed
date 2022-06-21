@@ -1,8 +1,6 @@
 #include "mbed.h"
 #include "../src/main.hpp"
 
-
-Thread remote(osPriorityHigh);
 int gimYBound[2] = {32,96};
 int gim2YBound[2] = {700,2300};
 int gimXBound[2] = {-180,180};
@@ -13,14 +11,16 @@ CANMotor chassis2(4,NewCANHandler::CANBUS_1,M3508);
 CANMotor gimbalX(3,NewCANHandler::CANBUS_1,GM6020);
 CANMotor gimbalY(6,NewCANHandler::CANBUS_1,GM6020);
 
-PWMMotor leftFlywheelTop(PA_5);
-PWMMotor rightFlywheelTop(PA_6);
-PWMMotor leftFlywheelBot(PB_6);
-PWMMotor rightFlywheelBot(PA_7);
+PWMMotor flyWheelMotors[4] = {PA_5, PA_6, PB_6, PA_7};
 
 CANMotor indexer(5,NewCANHandler::CANBUS_1,M2006);
 
 int maxspeed = 500;
+
+void setFlyWheelPwr(int val) {
+    for (int i = 0; i < 4; i++) 
+        flyWheelMotors[i].set(val);
+}
 
 int main()
 {
@@ -54,22 +54,19 @@ int main()
 
         if(lS == 1){
             gimbalY.setPosition(1200 + lY);
-            printf("Act:%d\n", gimbalY.getData(MULTITURNANGLE));
+            gimbalX.setPosition(1000);
+            // printf("Act:%d\n", gimbalY.getData(MULTITURNANGLE));
         }else if(lS == 2){
             gimbalX.setPower(0);
             gimbalY.setPower(0);
-        }else if(lS == 3){ //700 to 2200
+        }else if(lS == 3){ 
            
         }
         
         int indexJamTime = 0;
         if(rS == 2){
             indexer.setPower(0);
-
-            leftFlywheelTop.set(0);
-            leftFlywheelBot.set(0);
-            rightFlywheelTop.set(0);
-            rightFlywheelBot.set(0);
+            setFlyWheelPwr(0);
 
         }else if(rS == 3){
             if(abs(indexer.getData(TORQUE)) > 1000 & abs(indexer.getData(VELOCITY)) < 20){ //jam
@@ -85,27 +82,21 @@ int main()
                 indexer.setPower(1700);
             }
 
-            leftFlywheelTop.set(60);
-            leftFlywheelBot.set(60);
-            rightFlywheelTop.set(60);
-            rightFlywheelBot.set(60); 
+            setFlyWheelPwr(60);
 
             printf("AUTO-PWR:%d Jam-Free:%dms TORQ:%d, VELO:%d\n",indexer.powerOut,us_ticker_read() / 1000 - indexJamTime, indexer.getData(TORQUE), indexer.getData(VELOCITY));
         }else if(rS == 1){
             indexer.setPower(rY*4);
 
-            leftFlywheelTop.set(60);
-            leftFlywheelBot.set(60);
-            rightFlywheelTop.set(60);
-            rightFlywheelBot.set(60);  
+            setFlyWheelPwr(60);
 
             printf("MANUAL-PWR:%d VELO:%d", indexer.powerOut, indexer.getData(VELOCITY));
+
             CANMotor::printChunk(NewCANHandler::CANBUS_1,1);
         }
 
         //chassis2.setSpeed(lY);
         //CANMotor::tick();
-        
     }
 
 }
