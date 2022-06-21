@@ -10,14 +10,14 @@
 
 //NewChassisSubsystem chassis(4,2,1,3, CANHandler::CANBUS_1, C620);
 int pitchval = 0;
-CANMotor LF(4,CANHandler::CANBUS_1,M3508);
-CANMotor RF(2,CANHandler::CANBUS_1,M3508);
-CANMotor LB(1,CANHandler::CANBUS_1,M3508);
-CANMotor RB(3,CANHandler::CANBUS_1,M3508);
+CANMotor LF(4,NewCANHandler::CANBUS_1,M3508);
+CANMotor RF(2,NewCANHandler::CANBUS_1,M3508);
+CANMotor LB(1,NewCANHandler::CANBUS_1,M3508);
+CANMotor RB(3,NewCANHandler::CANBUS_1,M3508);
 
-CANMotor yaw(5, CANHandler::CANBUS_1, GIMBLY);
-CANMotor pitch(6, CANHandler::CANBUS_1, GIMBLY);
-CANMotor indexer(7, CANHandler::CANBUS_1, C610);
+CANMotor yaw(5, NewCANHandler::CANBUS_1, GIMBLY);
+CANMotor pitch(6, NewCANHandler::CANBUS_1, GIMBLY);
+CANMotor indexer(7, NewCANHandler::CANBUS_1, C610);
 
 PWMMotor RFLYWHEEL(D12);
 PWMMotor LFLYWHEEL(D11);
@@ -95,7 +95,7 @@ int main()
 
             //pitch.printAllMotorData();
             //printf("%d\n", pitch.getData(ANGLE));
-            CANMotor::printChunk(CANHandler::CANBUS_1,2);
+            CANMotor::printChunk(NewCANHandler::CANBUS_1,2);
         }else if(rS == 2){
             LF.setPower(0);RF.setPower(0);LB.setPower(0);RB.setPower(0);
             yaw.setPower(0);

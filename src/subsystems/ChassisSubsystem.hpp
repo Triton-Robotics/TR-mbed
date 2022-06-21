@@ -40,7 +40,7 @@ class NewChassisSubsystem{
          * @param bus can bus
          * @param TYPE the type of motor
          */ 
-        NewChassisSubsystem(int m1_can_id,int m2_can_id,int m3_can_id,int m4_can_id, CANHandler::CANBus bus,motorType TYPE):
+        NewChassisSubsystem(int m1_can_id,int m2_can_id,int m3_can_id,int m4_can_id, NewCANHandler::CANBus bus,motorType TYPE):
             MotorLeftFront(m1_can_id,bus,TYPE),
             MotorRightFront(m2_can_id,bus,TYPE),
             MotorLeftBack(m3_can_id,bus,TYPE),

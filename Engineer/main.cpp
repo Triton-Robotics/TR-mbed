@@ -4,7 +4,7 @@
 DigitalOut clawPin(PA_13);
 //DigitalOut rfidPin(PA_14);
 
-NewChassisSubsystem chassis(4,3,1,2, CANHandler::CANBUS_1, C620);
+NewChassisSubsystem chassis(4,3,1,2, NewCANHandler::CANBUS_1, C620);
 
 // CANMotor gimbalX(3,CANHandler::CANBUS_1,M3508);
 // CANMotor gimbalY(6,CANHandler::CANBUS_1,GM6020);
@@ -12,8 +12,8 @@ NewChassisSubsystem chassis(4,3,1,2, CANHandler::CANBUS_1, C620);
 // PWMMotor leftFlywheel(PA_5);
 // PWMMotor rightFlywheel(PA_6);
 
-CANMotor rescueL(5,CANHandler::CANBUS_1,M2006);
-CANMotor rescueR(6,CANHandler::CANBUS_1,M2006);
+CANMotor rescueL(5,NewCANHandler::CANBUS_1,M2006);
+CANMotor rescueR(6,NewCANHandler::CANBUS_1,M2006);
 
 int maxspeed = 500;
 

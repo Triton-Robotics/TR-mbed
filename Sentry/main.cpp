@@ -7,18 +7,18 @@ int gimYBound[2] = {32,96};
 int gim2YBound[2] = {700,2300};
 int gimXBound[2] = {-180,180};
 
-CANMotor chassis1(3,CANHandler::CANBUS_1,M3508);
-CANMotor chassis2(4,CANHandler::CANBUS_1,M3508);
+CANMotor chassis1(3,NewCANHandler::CANBUS_1,M3508);
+CANMotor chassis2(4,NewCANHandler::CANBUS_1,M3508);
 
-CANMotor gimbalX(3,CANHandler::CANBUS_1,GM6020);
-CANMotor gimbalY(6,CANHandler::CANBUS_1,GM6020);
+CANMotor gimbalX(3,NewCANHandler::CANBUS_1,GM6020);
+CANMotor gimbalY(6,NewCANHandler::CANBUS_1,GM6020);
 
 PWMMotor leftFlywheelTop(PA_5);
 PWMMotor rightFlywheelTop(PA_6);
 PWMMotor leftFlywheelBot(PB_6);
 PWMMotor rightFlywheelBot(PA_7);
 
-CANMotor indexer(5,CANHandler::CANBUS_1,M2006);
+CANMotor indexer(5,NewCANHandler::CANBUS_1,M2006);
 
 int maxspeed = 500;
 
@@ -100,7 +100,7 @@ int main()
             rightFlywheelBot.set(60);  
 
             printf("MANUAL-PWR:%d VELO:%d", indexer.powerOut, indexer.getData(VELOCITY));
-            CANMotor::printChunk(CANHandler::CANBUS_1,1);
+            CANMotor::printChunk(NewCANHandler::CANBUS_1,1);
         }
 
         //chassis2.setSpeed(lY);
