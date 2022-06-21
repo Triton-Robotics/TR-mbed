@@ -10,14 +10,14 @@
 
 //NewChassisSubsystem chassis(4,2,1,3, CANHandler::CANBUS_1, C620);
 int pitchval = 0;
-CANMotor LF(4,CANHandler::CANBUS_1,M3508);
-CANMotor RF(2,CANHandler::CANBUS_1,M3508);
-CANMotor LB(1,CANHandler::CANBUS_1,M3508);
-CANMotor RB(3,CANHandler::CANBUS_1,M3508);
+CANMotor LF(4,NewCANHandler::CANBUS_1,M3508);
+CANMotor RF(2,NewCANHandler::CANBUS_1,M3508);
+CANMotor LB(1,NewCANHandler::CANBUS_1,M3508);
+CANMotor RB(3,NewCANHandler::CANBUS_1,M3508);
 
-CANMotor yaw(5, CANHandler::CANBUS_1, M3508);
-CANMotor pitch(6, CANHandler::CANBUS_1, GM6020);
-CANMotor indexer(7, CANHandler::CANBUS_1, GM6020);
+CANMotor yaw(5, NewCANHandler::CANBUS_1, M3508);
+CANMotor pitch(6, NewCANHandler::CANBUS_1, GM6020);
+CANMotor indexer(7, NewCANHandler::CANBUS_1, GM6020);
 
 PWMMotor RFLYWHEEL(D12);
 PWMMotor LFLYWHEEL(D11);
@@ -110,6 +110,7 @@ int main()
             indexer.setPower(0);
             LFLYWHEEL.set(0);
             RFLYWHEEL.set(0);
+
         }else if(lS == 3){
             if(abs(indexer.getData(TORQUE)) > 1000 & abs(indexer.getData(VELOCITY)) < 20){ //jam
                 indexJamTime = us_ticker_read() /1000;
@@ -121,17 +122,17 @@ int main()
                 indexer.setPower(10000); //jam
                 printf("POWER FORWARD- ");
             }else{
-                indexer.setSpeed(-2000);
+                indexer.setSpeed(2000);
             }
             printf("AUTO-PWR:%d Jam-Free:%dms TORQ:%d, VELO:%d\n",indexer.powerOut,us_ticker_read() / 1000 - indexJamTime, indexer.getData(TORQUE), indexer.getData(VELOCITY));
             LFLYWHEEL.set(60);
             RFLYWHEEL.set(60);
         }else if(lS == 1){
-            indexer.setPower(rY * 3);
+            indexer.setPower(rY * 8);
             //CANMotor::printChunk(CANHandler::CANBUS_1,1);
             //printf("MANUAL-PWR:%d VELO:%d\n", indexer.powerOut, indexer.getData(VELOCITY));
-            LFLYWHEEL.set(40);
-            RFLYWHEEL.set(40);
+            LFLYWHEEL.set(60);
+            RFLYWHEEL.set(60);
         }
 
         // if(lS == 2)
