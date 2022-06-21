@@ -1,6 +1,8 @@
 #include "mbed.h"
-#include "crc.hpp"
+#include "crc.cpp"
 
+#ifndef referee_hpp
+#define referee_hpp
 class Referee {
 public:
     Referee(PinName pin_tx, PinName pin_rx);
@@ -675,3 +677,5 @@ typedef __packed struct
 } client_custom_data_t;
 
 void referee_data_pack_handle(uint8_t sof,uint16_t cmd_id, uint8_t *p_data, uint16_t len, BufferedSerial* b);
+
+#endif

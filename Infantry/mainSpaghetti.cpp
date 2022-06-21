@@ -25,6 +25,7 @@ PWMMotor LFLYWHEEL(D11);
 int main()
 {
     threadingRemote.start(&remoteThread);
+    threadingReferee.start(&refereeThread);
     CANMotor::setCANHandlers(&canHandler1,&canHandler2);
 
     //pitch.zeroPos();
