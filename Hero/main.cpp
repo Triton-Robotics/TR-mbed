@@ -68,7 +68,7 @@ int main()
 
 
 
-        if(rS == 2){
+        if(rS == 1){
             angle = jAngle - tAngle;
             // LF.setSpeed(sin(angle + 0.25 * PI) * std::sqrt(lY * lY + lX * lX) * 2 + Wh * 2);
             // RF.setSpeed(-sin(angle - 0.25 * PI) * std::sqrt(lY * lY + lX * lX) * 2 + Wh * 2);
@@ -99,7 +99,7 @@ int main()
             //pitch.printAllMotorData();
             //printf("%d\n", pitch.getData(ANGLE));
             //CANMotor::printChunk(CANHandler::CANBUS_1,2);
-        }else if(rS == 1){
+        }else if(rS == 2){
             LF.setPower(0);RF.setPower(0);LB.setPower(0);RB.setPower(0);
             yaw.setPower(0);
         }else if(rS == 3){
@@ -110,7 +110,7 @@ int main()
             indexer.setPower(0);
             LFLYWHEEL.set(0);
             RFLYWHEEL.set(0);
-
+            remotePrint();
         }else if(lS == 3){
             if(abs(indexer.getData(TORQUE)) > 1000 & abs(indexer.getData(VELOCITY)) < 20){ //jam
                 indexJamTime = us_ticker_read() /1000;
@@ -125,8 +125,8 @@ int main()
                 indexer.setSpeed(2000);
             }
             printf("AUTO-PWR:%d Jam-Free:%dms TORQ:%d, VELO:%d\n",indexer.powerOut,us_ticker_read() / 1000 - indexJamTime, indexer.getData(TORQUE), indexer.getData(VELOCITY));
-            LFLYWHEEL.set(60);
-            RFLYWHEEL.set(60);
+            LFLYWHEEL.set(100);
+            RFLYWHEEL.set(100);
         }else if(lS == 1){
             indexer.setPower(rY * 8);
             //CANMotor::printChunk(CANHandler::CANBUS_1,1);
@@ -134,6 +134,9 @@ int main()
             LFLYWHEEL.set(60);
             RFLYWHEEL.set(60);
         }
+
+        pitch.setPower(rY);
+        yaw.setPower(rX);
 
         // if(lS == 2)
         //     yaw.setSpeed(rX/10);
@@ -181,6 +184,7 @@ int main()
 
         //yaw.setDesiredPos(yawval);
         //pitch.setPower(220);
+        remotePrint();
 
         //CANMotor::tick(lS == 2, rS == 2);
         ThisThread::sleep_for(1ms);

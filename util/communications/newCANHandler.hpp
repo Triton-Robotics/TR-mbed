@@ -90,7 +90,7 @@ class NewCANHandler{
             //printf("  Data    =");
             for (int i = 0; i < msg.len; i++)
                 printf(" 0x%.2X", msg.data[i]);
-            printf("\t");
+            printf("\n");
         }
 
         /**
