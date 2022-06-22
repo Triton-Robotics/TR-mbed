@@ -10,6 +10,8 @@ CANMotor yaw(5, NewCANHandler::CANBUS_1, M3508);
 CANMotor pitch(6, NewCANHandler::CANBUS_1, GM6020);
 CANMotor indexer(7, NewCANHandler::CANBUS_1, GM6020);
 int indexJamTime = 0;
+bool lastJam = 0;
+int indexUnJamTime = 0;
 
 PWMMotor RFLYWHEEL(D12);
 PWMMotor LFLYWHEEL(D11);
@@ -29,12 +31,7 @@ int main()
     while (true) {
 
         if(rS == 1){ // Everything non-chassis enable
-            // if (pitchval < 1500) // lowerbound
-            //     pitchval = 1500;
-            // if (pitchval > 3000) //upperbound
-            //     pitchval = 3000;
-            //pitchval += (int)myremote.getStickData(RIGHTJOYY, 0, 3);
-            // printf("%d\n", pitchval);
+            yaw.setPower(rX*4);
 
                     
         }else if(rS == 2){ // Chassis enable 
@@ -64,19 +61,23 @@ int main()
                 indexer.setPower(0);
                 setFlyWheelPwr(0);
 
-                remotePrint();
-            }else if(lS == 3){
-                if(abs(indexer.getData(TORQUE)) > 1000 & abs(indexer.getData(VELOCITY)) < 20){ //jam
-                    indexJamTime = us_ticker_read() /1000;
+            }else if(lS == 3){ //Start serializing with anti-jam code
+                if(abs(indexer.getData(TORQUE)) > 2000 & abs(indexer.getData(VELOCITY)) < 20){ //jam
+                    if (lastJam == 0) {
+                        indexJamTime = us_ticker_read() /1000;
+                        lastJam = 1;
+                        printf("jam detected!\n");
+                    }
                 }
-                if(us_ticker_read() / 1000 - indexJamTime < 500){
-                    indexer.setPower(-10000); //jam
-                    printf("JAMMMMM- ");
-                }else if(us_ticker_read() / 1000 - indexJamTime < 750){
-                    indexer.setPower(10000); //jam
-                    printf("POWER FORWARD- ");
+                else {
+                    lastJam = 0;
+                }
+                if(lastJam && us_ticker_read() / 1000 - indexJamTime > 250){
+                    indexer.setPower(-7500); //jam
+                    printf("Jammed\n");
                 }else{
-                    indexer.setSpeed(2000);
+                    indexer.setSpeed(50);
+                    printf("setting speed\n");
                 }
                 //printf("AUTO-PWR:%d Jam-Free:%dms TORQ:%d, VELO:%d\n",indexer.powerOut,us_ticker_read() / 1000 - indexJamTime, indexer.getData(TORQUE), indexer.getData(VELOCITY));
                 //setFlyWheelPwr(100);
@@ -84,7 +85,7 @@ int main()
         }
 
 
-        ThisThread::sleep_for(1ms); // maybe needed??
+        ThisThread::sleep_for(1ms); 
     }
 }
 
