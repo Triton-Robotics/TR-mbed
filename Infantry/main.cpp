@@ -10,14 +10,14 @@
 
 //NewChassisSubsystem chassis(4,2,1,3, CANHandler::CANBUS_1, C620);
 int pitchval = 0;
-CANMotor LF(4,CANHandler::CANBUS_1,M3508);
-CANMotor RF(2,CANHandler::CANBUS_1,M3508);
-CANMotor LB(1,CANHandler::CANBUS_1,M3508);
-CANMotor RB(3,CANHandler::CANBUS_1,M3508);
+CANMotor LF(4,NewCANHandler::CANBUS_1,M3508);
+CANMotor RF(2,NewCANHandler::CANBUS_1,M3508);
+CANMotor LB(1,NewCANHandler::CANBUS_1,M3508);
+CANMotor RB(3,NewCANHandler::CANBUS_1,M3508);
 
-CANMotor yaw(5, CANHandler::CANBUS_1, GIMBLY);
-CANMotor pitch(6, CANHandler::CANBUS_1, GIMBLY);
-CANMotor indexer(7, CANHandler::CANBUS_1, C610);
+CANMotor yaw(5, NewCANHandler::CANBUS_1, GIMBLY);
+CANMotor pitch(6, NewCANHandler::CANBUS_1, GIMBLY);
+CANMotor indexer(7, NewCANHandler::CANBUS_1, C610);
 
 PWMMotor RFLYWHEEL(D12);
 PWMMotor LFLYWHEEL(D11);
@@ -57,11 +57,7 @@ int main()
         // double jAngle = std::atan((double)(lY)/lX);
         // if(lX < 0 != lY < 0)
         //     jAngle = PI/2 + jAngle;
-        double jAngle = std::atan2(lY,lX);
-        double tAngle = std::fmod((PI * 2 - 5.53 + (PI * yaw.getData(ANGLE)/ 4096)),(PI * 2));
-        if(lY < 0)
-            jAngle = jAngle + PI * 2;
-        //double angle = jAngle - tAngle;
+        
         double angle = yaw.getData(ANGLE) / 8192.0 * PI * 2;
         angle -= PI/4;
         
@@ -69,19 +65,8 @@ int main()
 
 
 
-        if(rS == 2){
-            angle = jAngle - tAngle;
-            // LF.setSpeed(sin(angle + 0.25 * PI) * std::sqrt(lY * lY + lX * lX) * 2 + Wh * 2);
-            // RF.setSpeed(-sin(angle - 0.25 * PI) * std::sqrt(lY * lY + lX * lX) * 2 + Wh * 2);
-            // LB.setSpeed(sin(angle - 0.25 * PI) * std::sqrt(lY * lY + lX * lX) * 2 + Wh * 2);
-            // RB.setSpeed(-sin(angle + 0.25 * PI) * std::sqrt(lY * lY + lX * lX) * 2 + Wh * 2);
-            // yaw.setPower(Wh * 3);
-            //pitch.setPower()
-
-            // LF.setPower(3000);
-            // RF.setPower(3000);
-            // LB.setPower(3000);
-            // RB.setPower(3000);
+        if(rS == 1){
+            
             if (pitchval < 1500) // lowerbound
                 pitchval = 1500;
             if (pitchval > 3000) //upperbound
@@ -97,42 +82,23 @@ int main()
             yaw.setPower(rX * 4);
             pitch.setPosition(pitchval);
 
-
-            
-
             //pitch.printAllMotorData();
             //printf("%d\n", pitch.getData(ANGLE));
-            //CANMotor::printChunk(CANHandler::CANBUS_1,2);
-        }else if(rS == 1){
+            CANMotor::printChunk(NewCANHandler::CANBUS_1,0, ANGLE);
+        }else if(rS == 2){
             LF.setPower(0);RF.setPower(0);LB.setPower(0);RB.setPower(0);
             yaw.setPower(0);
+            //remotePrint();
+            CANMotor::printChunk(NewCANHandler::CANBUS_1,2, ANGLE);
         }else if(rS == 3 && 0){
             int speedMult = 2;
 
             float raw_x = lX * speedMult;
             float raw_y = lY * speedMult;
 
-            // change of angle from the original position
-            //radian = sig->gimbal.yaw_ecd / ECD_PERIOD * 2 * PI;
-
-            // apply rotational matrix
             float x = (float) (raw_x * cos(angle) - raw_y * sin(angle));
             float y = (float) (raw_x * sin(angle) + raw_y * cos(angle));
 
-            
-            // float wheelbaseCenterDist = sqrtf(powf(WHEELBASE_WIDTH / 2.0f, 2.0f) + powf(WHEELBASE_LENGTH / 2.0f, 2.0f));
-
-            // // offset gimbal center from center of wheelbase so we rotate around the gimbal
-            // float leftFrontRotationRatio =
-            //     (wheelbaseCenterDist - GIMBAL_X_OFFSET - GIMBAL_Y_OFFSET) * 180/PI;
-            // float rightFrontRotationRatio =
-            //     (wheelbaseCenterDist - GIMBAL_X_OFFSET + GIMBAL_Y_OFFSET) * 180/PI;
-            // float leftBackRotationRatio =
-            //     (wheelbaseCenterDist + GIMBAL_X_OFFSET - GIMBAL_Y_OFFSET) * 180/PI;
-            // float rightBackRotationRatio =
-            //     (wheelbaseCenterDist + GIMBAL_X_OFFSET + GIMBAL_Y_OFFSET) * 180/PI;
-
-            // float chassisRotateTranslated = (rotSped * PI/180) / wheelbaseCenterDist;
             int beyblade_rotation = 2000;
             LF.setSpeed(x + y + beyblade_rotation);
             RF.setSpeed(x - y + beyblade_rotation);
@@ -141,6 +107,9 @@ int main()
             yaw.setSpeed(20);
             printf("nu\n");
         }
+
+
+
         int indexJamTime = 0;
         if(lS == 2){
             indexer.setPower(0);
@@ -166,8 +135,8 @@ int main()
             indexer.setPower(rY * 3);
             //CANMotor::printChunk(CANHandler::CANBUS_1,1);
             //printf("MANUAL-PWR:%d VELO:%d\n", indexer.powerOut, indexer.getData(VELOCITY));
-            LFLYWHEEL.set(40);
-            RFLYWHEEL.set(40);
+            // LFLYWHEEL.set(40);
+            // RFLYWHEEL.set(40);
         }
 
         // if(lS == 2)

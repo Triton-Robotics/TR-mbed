@@ -37,6 +37,7 @@ enum motorDataType {
     TEMPERATURE = 3,
     MULTITURNANGLE = 4,
     MULTI  = 4,
+    POWEROUT = 5,
 };
 
 
@@ -214,7 +215,7 @@ class CANMotor{
             canBus = NewCANHandler::NOBUS;
         }
 
-        static void printChunk(NewCANHandler::CANBus bus, short sendID){
+        static void printChunk(NewCANHandler::CANBus bus, short sendID, motorDataType data = POWEROUT){
             printf("Bus:");
             if(bus == NewCANHandler::CANBUS_1)
                 printf("BUS_1");
@@ -223,7 +224,10 @@ class CANMotor{
             printf(" sendID:0x%x ",sendIDs[sendID]);
             for(int i = 0; i < 4; i ++){
                 if(motorsExist[bus][sendID][i])
-                    printf("%d ",allMotors[bus][sendID][i]->powerOut);
+                    if(data == POWEROUT)
+                        printf("%d ",allMotors[bus][sendID][i]->powerOut);
+                    else
+                        printf("%d ",allMotors[bus][sendID][i]->getData(data));
                 else
                     printf("NA ");
             }
@@ -329,10 +333,13 @@ class CANMotor{
         }
 
         int getData(motorDataType data) {
-            if (data != MULTITURNANGLE)
+            if(data == POWEROUT)
+                return powerOut;
+            else if (data != MULTITURNANGLE)
                 return motorData[data];
-            else 
+            else if(data == MULTITURNANGLE) 
                 return multiTurn;
+            return 0;
         }
 
         void printAllMotorData() {

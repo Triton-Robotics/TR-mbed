@@ -115,14 +115,16 @@ class NewCANHandler{
             
             if(isWrite == 0) {
                 errorCount++;
+                can.reset();
             }
             else{
                 errorCount = 0;
             }
 
             if (errorCount > 1000){
-                //printf("Transmission error in rawSend()\n");
-            }//printMsg(txMsg);
+                printf("Transmission error in rawSend()\n");
+            }
+            //printMsg(txMsg);
             return isWrite;
         }
 };

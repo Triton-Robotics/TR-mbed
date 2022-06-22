@@ -161,37 +161,6 @@ class DJIRemote : SerialCommunication {
         }
         //printf("\n");
     }
-
-    /**
-     * @brief Get data from Switches
-     * 
-     * @param switches Desired Switch 
-     * @return int value (1, 2, ochassis.move(
-            lY,
-            lX,
-            Wh
-        );
-        if(lS == 1){
-            duck.setDesiredCurrent(750);
-        }else if(lS == 3){
-            duck.setDesiredCurrent(-750);
-        }else if(lS == 2){
-            duck.setDesiredCurrent(0);
-        }
-        if(rS == 1){
-            indexer.setDesiredCurrent(750);
-            flywheelLeft.set(75);
-            flywheelRight.set(75);
-        }else if(rS == 3){
-            indexer.setDesiredCurrent(-750);
-            flywheelLeft.set(75);
-            flywheelRight.set(75);
-        }else if(rS == 2){
-            indexer.setDesiredCurrent(0);
-        }
-        turretX.setDesiredCurrent(rX);
-        turretY.setDesiredCurrent(rY);r 3) (Low, Medium, High)
-     */
     int getSwitchData(switches switchie) {
         return data[switchie+5];
     }
