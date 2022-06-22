@@ -2,6 +2,7 @@
 #include "../algorithms/pid.hpp"
 #include "../communications/newCANHandler.hpp"
 #include "../helperFunctions.hpp"
+#include "../algorithms/speedtocurrent.hpp"
 #include <cmath>
 //#include "../communications/canHandler.hpp"
 //TR-mbed6/util/communications/causeSpaghettiComesOnceInALifetime.hpp
@@ -310,7 +311,10 @@ class CANMotor{
             if(mode == POW){
                 powerOut = value;
             }else if(mode == SPD){
-                powerOut = pidSpeed.calculate(value, getData(VELOCITY), time - lastTime);
+                if (type == M3508)
+                    powerOut = M3508speedtocurrent(value) + pidSpeed.calculate(value, getData(VELOCITY), time - lastTime);
+                else 
+                    powerOut = pidSpeed.calculate(value, getData(VELOCITY), time - lastTime);
                 //printFloat(powerOut, 2, 1);
             }else if(mode == POS){
                 powerOut = pidPosition.calculate(value, getData(MULTITURNANGLE), time - lastTime);
