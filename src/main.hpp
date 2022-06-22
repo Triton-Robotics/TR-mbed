@@ -98,7 +98,8 @@ static void refereeThread(){
         if(referee.readable()){
             JudgeSystem_USART_Receive_DMA(&referee);
             Judge_GetMessage(JUDGESYSTEM_PACKSIZE);
-            if(loop % 10==0){ // print out only every 10 iterations
+            /**
+            if(loop % 10==0 ){ // print out only every 10 iterations
                 string id="robot id: " + to_string(get_robot_id()) + "  ";
                 //string hp="robot hp: " + to_string(get_remain_hp() ) +"  ";
 
@@ -121,10 +122,11 @@ static void refereeThread(){
                 // pc.write(&id, id.length());
                 // pc.write(&hp, hp.length());
             }
+            **/
         }
         else{
             if(loop % 10==0){ // print out only every 10 iterations
-                printf("Not readable!\n");
+                printf("REFEREE - Not readable!\n");
             }
         }
 

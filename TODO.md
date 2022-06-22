@@ -2,6 +2,8 @@
 
 - Write a Turret Subsystem Class - WRITTEN BUT UNTESTED
 
+- Set default speed motor pid constants for motor base and add functions to set maxSpeed (as it relates to speed pid)
+
 - Fix and set up pids again. . .
 
 - In new CANHandler spaghetti, set up a system to tell if new messages are not coming instead

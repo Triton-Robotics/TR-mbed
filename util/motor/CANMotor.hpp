@@ -102,6 +102,8 @@ class CANMotor{
     public:
         unsigned long timeSinceLastFeedback = 0;
 
+        int maxSpeed = 8723;
+
         int bounds[2] = {0,0};
 
         //angle | velocity | torque | temperature
@@ -284,8 +286,8 @@ class CANMotor{
         }
 
         void setSpeed(int speed){
-            if (type == M3508)
-                speed *= 19;
+            // if (type == M3508)
+            //     speed *= 19;
             setValue(speed);
             mode = SPD; 
             setOutput();
@@ -310,7 +312,7 @@ class CANMotor{
             if(mode == POW){
                 powerOut = value;
             }else if(mode == SPD){
-                powerOut = pidSpeed.calculate(value, getData(VELOCITY), time - lastTime);
+                powerOut = value * 16000.0/maxSpeed + pidSpeed.calculate(value, getData(VELOCITY), time - lastTime);
                 //printFloat(powerOut, 2, 1);
             }else if(mode == POS){
                 powerOut = pidPosition.calculate(value, getData(MULTITURNANGLE), time - lastTime);

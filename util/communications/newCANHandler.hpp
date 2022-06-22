@@ -121,7 +121,7 @@ class NewCANHandler{
                 errorCount = 0;
             }
 
-            if (errorCount > 1000){
+            if (errorCount > 100000){
                 printf("Transmission error in rawSend()\n");
             }
             //printMsg(txMsg);
