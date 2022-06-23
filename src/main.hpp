@@ -12,6 +12,7 @@
 #include "../util/communications/ref_serial.cpp"
 
 
+
 //#include "robots/include/infantry.hpp"
 
 // screen resolution for RM Client
@@ -28,7 +29,6 @@ static int rY = 0;
 static int Wh = 0;
 static int lS = 0;
 static int rS = 0;
-
 
 static void refereeThread(){
     ext_student_interactive_header_data_t custom_grapic_draw;			//自定义图像绘制
@@ -164,3 +164,4 @@ NewCANHandler canHandler2(PB_12,PB_13);
 
 Thread threadingRemote(osPriorityHigh);
 Thread threadingReferee(osPriorityNormal);
+Thread threadingPrint(osPriorityBelowNormal);
