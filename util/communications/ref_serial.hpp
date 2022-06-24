@@ -97,7 +97,7 @@ private:
 // BELOW: from SCUT code line 733-1102
 
 /* 自定义帧头 */
-typedef struct //__packed struct
+typedef struct __packed
 {
 	uint8_t  SOF;
 	uint16_t DataLength;

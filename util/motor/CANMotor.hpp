@@ -2,6 +2,7 @@
 #include "../algorithms/pid.hpp"
 #include "../communications/newCANHandler.hpp"
 #include "../helperFunctions.hpp"
+#include "../algorithms/speedtocurrent.hpp"
 #include <cmath>
 //#include "../communications/canHandler.hpp"
 //TR-mbed6/util/communications/causeSpaghettiComesOnceInALifetime.hpp
@@ -61,7 +62,7 @@ enum motorType {
 
 static double defaultGimblyPosSettings[5] = {10.88,1.2,18.9,8000,500}; 
 static double defautlGimblySpeedSettings[5] = {0.13, 8.8, 0, 7500, 1000};
-static double defautM3508PosSettings[5] = {.128, 1.029, 15.405, 3000, 300};
+static double defautM3508PosSettings[5] = {.48, 0.0137, 4.2, 3000, 300};
 static double defautM3508SpeedSettings[5] = {1.79, 0.27, 10.57, 15000, 500};
 
 class CANMotor{
@@ -286,8 +287,6 @@ class CANMotor{
         }
 
         void setSpeed(int speed){
-            // if (type == M3508)
-            //     speed *= 19;
             setValue(speed);
             mode = SPD; 
             setOutput();
@@ -312,10 +311,9 @@ class CANMotor{
             if(mode == POW){
                 powerOut = value;
             }else if(mode == SPD){
-                powerOut = value * 16000.0/maxSpeed + pidSpeed.calculate(value, getData(VELOCITY), time - lastTime);
-                //printFloat(powerOut, 2, 1);
+                powerOut = pidSpeed.calculate(value, getData(VELOCITY), time - lastTime);
             }else if(mode == POS){
-                powerOut = pidPosition.calculate(value, getData(MULTITURNANGLE), time - lastTime);
+                powerOut = pidSpeed.calculate(pidPosition.calculate(value, getData(MULTITURNANGLE), time - lastTime), getData(VELOCITY), time - lastTime);
                 //printf("DES:%d,ACT:%d\t",value,multiTurn);
             }else if(mode == OFF){
                 powerOut = 0;
@@ -345,7 +343,7 @@ class CANMotor{
         }
 
         void printAllMotorData() {
-            printf("ANGL:%d MLTI:%d VELO:%d TORQ:%d TEMP:%d\n", getData(ANGLE), getData(MULTITURNANGLE), getData(VELOCITY), getData(TORQUE), getData(TEMPERATURE));
+            printf("ANGL:%d MLTI:%d VELO:%d TORQ:%d TEMP:%d | PWR:%d\n", getData(ANGLE), getData(MULTITURNANGLE), getData(VELOCITY), getData(TORQUE), getData(TEMPERATURE), powerOut);
         }
 
         static void updateMultiTurnPosition() {
