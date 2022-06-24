@@ -5,7 +5,10 @@
 
 
 
-CANMotor LF(4,NewCANHandler::CANBUS_1,M3508); CANMotor RF(2,NewCANHandler::CANBUS_1,M3508); CANMotor LB(1,NewCANHandler::CANBUS_1,M3508); CANMotor RB(3,NewCANHandler::CANBUS_1,M3508);
+CANMotor LF(4,NewCANHandler::CANBUS_1,M3508); 
+CANMotor RF(2,NewCANHandler::CANBUS_1,M3508); 
+CANMotor LB(1,NewCANHandler::CANBUS_1,M3508); 
+CANMotor RB(3,NewCANHandler::CANBUS_1,M3508);
 float multiplier = 1;
 
 float speedMult = 0.3;
@@ -32,13 +35,14 @@ void setFlyWheelPwr(int pwr) {
 int main()
 {
     threadingRemote.start(&remoteThread);
-    threadingReferee.start(&refereeThread);
+    //threadingReferee.start(&refereeThread);
     CANMotor::setCANHandlers(&canHandler1,&canHandler2);
 
     LB.setSpeedPID(1.75, 0.351, 5.63);
     RF.setSpeedPID(2.744, 0.285, 4.192);
     RB.setSpeedPID(2.572, 0.113, 1.723);
-    LF.setSpeedPID(2.217, 0.66, 0.693);
+    LF.setSpeedPID(.992, 0.164, 0.069);
+    pitch.setPositionPID(0,0,0);
 
     while (true) {
 
@@ -49,20 +53,18 @@ int main()
         
 
         if(rS == 1){ // All non-serializer motors activated
-            int LFa = lY + lX + Wh, RFa = lY - lX - Wh, LBa = lY - lX + Wh, RBa = lY + lX - Wh;
-            printf("%d\n", LF.getData(MULTITURNANGLE));
-            //LF.setSpeed(0);
-            // RF.setSpeed(-RFa*multiplier);
-            // LB.setSpeed(LBa*multiplier);
-            // RB.setSpeed(-RBa*multiplier);
+            int LFa = lY + lX, RFa = lY - lX, LBa = lY - lX, RBa = lY + lX;
+            LF.setSpeed(LFa * multiplier);
+            RF.setSpeed(-RFa*multiplier);
+            LB.setSpeed(LBa*multiplier);
+            RB.setSpeed(-RBa*multiplier);
             
             if (pitchval < LOWERBOUND) // lowerbound
                 pitchval = LOWERBOUND;
             if (pitchval > UPPERBOUND) //upperbound
                 pitchval = UPPERBOUND;
             pitchval += (int)myremote.getStickData(RIGHTJOYY, 0, 3);
-            
-            // pitch.setPosition(pitchval);
+            pitch.setPosition(pitchval);
             // yaw.setPower(rX * 4);
             
 
