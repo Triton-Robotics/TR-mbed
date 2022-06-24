@@ -69,7 +69,7 @@ class PID {
                 else if(PIDCalc < -outputCap)
                     PIDCalc = -outputCap;
             }
-            //ThisThread::sleep_for(1ms); //neccessary or else dt -> 0 and causes issues....
+            ThisThread::sleep_for(1ms); //neccessary or else dt -> 0 and causes issues....
             if(debug)
                 printf("DES: %d ACT: %d PID: %d\n",(int)desiredV, int(actualV), int(PIDCalc));
 
@@ -100,6 +100,18 @@ class PID {
          */
         void setPID(float p, float i, float d){
             kP = p; kI = i; kD = d;
+        }
+
+        int getkP(){
+            return kP;
+        }
+
+        int getkI(){
+            return kI;
+        }
+
+        int getkD(){
+            return kD;
         }
 };
 

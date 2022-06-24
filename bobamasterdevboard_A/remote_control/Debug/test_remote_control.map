@@ -1518,7 +1518,7 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x16 ./Core/Src/syscalls.o
  .debug_macro   0x0000000000000000       0xce ./Core/Src/syscalls.o
  .debug_line    0x0000000000000000      0x806 ./Core/Src/syscalls.o
- .debug_str     0x0000000000000000     0x8f19 ./Core/Src/syscalls.o
+ .debug_str     0x0000000000000000     0x8eec ./Core/Src/syscalls.o
  .comment       0x0000000000000000       0x54 ./Core/Src/syscalls.o
  .debug_frame   0x0000000000000000      0x2ac ./Core/Src/syscalls.o
  .ARM.attributes
@@ -1606,7 +1606,7 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x16 ./Core/Src/sysmem.o
  .debug_macro   0x0000000000000000      0x145 ./Core/Src/sysmem.o
  .debug_line    0x0000000000000000      0x58a ./Core/Src/sysmem.o
- .debug_str     0x0000000000000000     0x7bef ./Core/Src/sysmem.o
+ .debug_str     0x0000000000000000     0x7bc2 ./Core/Src/sysmem.o
  .comment       0x0000000000000000       0x54 ./Core/Src/sysmem.o
  .debug_frame   0x0000000000000000       0x34 ./Core/Src/sysmem.o
  .ARM.attributes

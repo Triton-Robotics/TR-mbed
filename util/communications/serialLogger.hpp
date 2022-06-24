@@ -10,7 +10,7 @@ using namespace std;
 class Logger{
     private:
         int index = 0;
-        string toSend = ""
+        string toSend = "";
 
     public:
 
