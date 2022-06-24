@@ -61,7 +61,7 @@ class NewCANHandler{
             while (can.read(rxMsg)) {
                 int err = can.rderror();
                 if (err){
-                    printf("Read Error: %d\n", err);
+                    printf("[%d CAN Read Errors]\n", err);
                     can.reset();
                     return false;
                 }
