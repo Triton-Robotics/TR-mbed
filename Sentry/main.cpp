@@ -30,10 +30,11 @@ int main()
         if(rS == 2){
             yaw.setPower(0);
             pitch.setPower(0);
-        }else if(rS == 1){
+        }else if(rS == 1) {
+            chassis1.setPower(lX);
+            chassis2.setPower(lX);
             yaw.setPower(rX * 2);
-            pitch.setPower(rY * 20/** + 7000**/);
-            printf("MOT:%d\t\tPowa:%d\n",pitch.getData(MULTI),pitch.powerOut);
+            pitch.setPower(rY * 20);
         }
         int indexJamTime = 0;
         if(lS == 2){

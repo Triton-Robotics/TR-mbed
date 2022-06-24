@@ -54,6 +54,7 @@ enum keyboard {
  */
 
 static buttonanalyzer keyboardkeys[15];
+static buttonanalyzer Mousebuttons[2];
 
 class DJIRemote : SerialCommunication {
     private: 
@@ -88,8 +89,8 @@ class DJIRemote : SerialCommunication {
             data[7] = charToNum(mymessage[12], mymessage[13]); //mousex
             data[8] = charToNum(mymessage[14], mymessage[15]); //mousey
             data[9] = charToNum(mymessage[16], mymessage[17]); //mousez
-            data[10] = charToNum(' ', mymessage[18], 1); // mouse left
-            data[11] = charToNum(' ', mymessage[19], 1); // mouse right
+            data[10] = charToNum(' ', mymessage[18], 1)-2; // mouse left
+            data[11] = charToNum(' ', mymessage[19], 1)-2; // mouse right
 
             int16ToBitArray((int)mymessage[20], keyboardData);
 
@@ -98,6 +99,8 @@ class DJIRemote : SerialCommunication {
             for (int i = 0; i < 15; i++) 
                 keyboardkeys[i].update(keyboardData[15-i]);
             
+            Mousebuttons[0].update(data[10]); //mouse left
+            Mousebuttons[1].update(data[11]); //mouse right
 
         }
 
@@ -169,6 +172,10 @@ class DJIRemote : SerialCommunication {
 
     int getMouseData(mouse button) {
         return data[7 + button];
+    }
+
+    bool getMouseButtonTogStatae(mouse button) {
+        return Mousebuttons[button-3].getToggle();
     }
 
     bool getKeyState(keyboard key) {
