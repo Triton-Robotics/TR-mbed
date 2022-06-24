@@ -111,17 +111,28 @@ class DJIRemote : SerialCommunication {
     DJIRemote(PinName TX_PIN, PinName RX_PIN) : SerialCommunication(TX_PIN, RX_PIN, 100000) {}
 
     /**
-     * @brief get data from remote
+     * @brief get data from remote, must be continuously called!!
      * 
-     * @param printData whether or not to print the data
+     * @param printData Type of data to print
+     *  1 - DJI Remote data
+     *  2 - Keyboard Data
+     *  3 - Mouse Data
      */
-    void remoteUpdate(bool printControllerData = 0) {
+    void remoteUpdate(int printData = 0) {
         if (update(mymessage, sizeof(mymessage), 5)) {
             getData();
-            if (printControllerData) {
+            if (printData == 1) { // print DJI Remote data
                 for (int i = 0; i < 7; i++)
                     printf("%d\t", data[i]);
                 printf("\n");
+            }
+            else if (printData == 2) { // print Keyboard data
+                for (int i = 0; i < 15; i++)
+                    printf("%d\t", keyboardkeys[i].getStatus());
+                printf("\n");
+            }
+            else if (printData == 3) { // print Mouse data
+                printf("%d\t%d\t%d\t%d\t%d\n", getMouseData(SPEEDX),getMouseData(SPEEDY),getMouseData(SPEEDZ),getMouseData(LCLICK),getMouseData(RCLICK));
             }
         }
     }
@@ -139,17 +150,10 @@ class DJIRemote : SerialCommunication {
         float val = map(abs(data[stick]), 0, 660, lowerbound, upperbound);
         if (negative)
             val *= -1;
-        //printf("%d->%d\n",int(data[stick] * 10000),int(val));
         return val;
     }
     
 
-    /**
-     * @brief get a stick's data
-     * 
-     * @param lowerbound the lower bound of the output
-     * @param upperbound the upper bound of the output
-     */
     int getRawStick(axis stick) {
         return data[stick];
     }
@@ -157,9 +161,7 @@ class DJIRemote : SerialCommunication {
     void getArray(int* out){
         for (int i = 0; i < 7; i++){
             out[i] = data[i];
-            //printf("%d\t", out[i]);
         }
-        //printf("\n");
     }
     int getSwitchData(switches switchie) {
         return data[switchie+5];
