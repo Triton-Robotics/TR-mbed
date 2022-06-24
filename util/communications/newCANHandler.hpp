@@ -47,8 +47,8 @@ class NewCANHandler{
             CAN can(canRx,canTx,CAN_BAUD);
         }
 
-        void getCAN(CAN *getCAN){
-            getCAN = &can;
+        CAN* getCAN(){
+            return &can;
         }
 
         /**

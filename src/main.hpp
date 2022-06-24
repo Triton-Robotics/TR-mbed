@@ -22,6 +22,9 @@
 static DJIRemote myremote(PA_0, PA_1);
 BufferedSerial referee(PC_10, PC_11, 115200); // Nucleo board: top left male pins. 
 
+NewCANHandler canHandler1(PA_11,PA_12);
+NewCANHandler canHandler2(PB_12,PB_13);
+
 static int lX = 0;
 static int lY = 0;
 static int rX = 0;
@@ -159,8 +162,6 @@ static void remotePrint(){
     printf("\n");
 }
 
-NewCANHandler canHandler1(PA_11,PA_12);
-NewCANHandler canHandler2(PB_12,PB_13);
 
 //CANHandler canPorts(PA_11,PA_12,PB_12,PB_13);
 
