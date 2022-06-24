@@ -30,24 +30,7 @@ int main()
         if(rS == 1){ // Everything non-chassis enable
             //yaw.setPower(rX*4);
             yaw.setSpeed(rX * 3);
-
-            printf("Torque:%d", indexer.getData(TORQUE));
-                if(abs(indexer.getData(TORQUE)) > 2000 & abs(indexer.getData(VELOCITY)) < 20){ //jam
-                    if (lastJam == 0) {
-                        indexJamTime = us_ticker_read() /1000;
-                        lastJam = 1;
-                        printf("jam detected!\n");
-                    }
-                }
-                else {
-                    lastJam = 0;
-                }
-                if(lastJam && us_ticker_read() / 1000 - indexJamTime > 250){
-                    indexer.setPower(-7500); //jam
-                    printf("Jammed\n");
-                }else{
-                    indexer.setSpeed(50);
-                    printf("setting speed\n");
+            pitch.setPower(rY * 3);
                 }
         }else if(rS == 3){ // Chassis enable 
 

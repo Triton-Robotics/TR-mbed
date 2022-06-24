@@ -45,6 +45,7 @@
 // int main()
 // {
 //     threadingRemote.start(&remoteThread);
+//     threadingReferee.start(&refereeThread);
 //     CANMotor::setCANHandlers(&canHandler1,&canHandler2);
 
 //     while (true) {

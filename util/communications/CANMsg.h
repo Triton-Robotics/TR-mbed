@@ -54,6 +54,7 @@ public:
      */
     template<class T>
     CANMsg &operator>>(T& val) {
+        //printf("Size:%d\tmax length:%d\n", sizeof(T), len);
         MBED_ASSERT(sizeof(T) <= len);
         if (sizeof(T) > len) {
             memcpy(&val, data, len);

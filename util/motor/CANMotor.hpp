@@ -123,7 +123,7 @@ class CANMotor{
 
         unsigned long lastTime = 0;
 
-        int outCap = 30000;
+        int outCap = 16000;
 
         static bool sendDebug;
         static bool feedbackDebug;
