@@ -16,21 +16,23 @@ int turretYval = 0;
 
 int indexJamTime = 0; bool lastJam = 0; int indexUnJamTime = 0;
 
-PWMMotor RFLYWHEEL(D12); PWMMotor LFLYWHEEL(D11);
-PWMMotor FlyWheels[2] = {RFLYWHEEL, LFLYWHEEL};
+// PWMMotor RFLYWHEEL(D12); PWMMotor LFLYWHEEL(D11);
+//PWMMotor FlyWheels[2] = {RFLYWHEEL, LFLYWHEEL};
+PWMMotor LFLYWHEEL(D11);
+CANMotor RFLYWHEEL(6,NewCANHandler::CANBUS_1,M3508);
 
 
-CANMotor allMotors[] = {LF, RF, LB, RB, turretx, turrety, indexer};
+CANMotor heroMotors[] = {LF, RF, LB, RB, turretx, turrety, indexer};
 
 void regularMotorTemp() {
     for (int i = 0; i < 7; i++) 
-        if (allMotors[i].getData(TEMPERATURE) > maxMotorTemp)
+        if (heroMotors[i].getData(TEMPERATURE) > maxMotorTemp)
             printf("Warning, Motor[%d] is over %d!!!\n", i, maxMotorTemp);
 }
 
 void setFlyWheelPwr(int val) {
-    for (int i = 0; i < 2; i++)
-        FlyWheels[i].set(val);
+    LFLYWHEEL.set(val);
+    RFLYWHEEL.setPower(-1000 * val/180);
 }
 
 void keepturretYinBounds() {
@@ -57,18 +59,20 @@ int main()
             turretYval += rY/100;
             keepturretYinBounds();
             turrety.setPosition(turretYval);
-                    
-        }else if(rS == 2){ // Chassis enable 
+            printf("RFLYWHEEL VELOCITY:%d\n",RFLYWHEEL.getData(TEMPERATURE));
+        }else if(rS == 3){ // Chassis enable 
             int LFa = lY + lX + rX, RFa = lY - lX - rX, LBa = lY - lX + rX, RBa = lY + lX - rX;
             LF.setSpeed(LFa*speedMultplier); RF.setSpeed(-RFa*speedMultplier); LB.setSpeed(LBa*speedMultplier); RB.setSpeed(-RBa*speedMultplier);
-
-        }else if(rS == 3){ // Disable robot
+            printf("LF:%d\tRF:%d\tLB:%d\tRB:%d\n",LF.powerOut,RF.powerOut,LB.powerOut,RB.powerOut);
+        }else if(rS == 2){ // Disable robot
             LF.setPower(0);RF.setPower(0);LB.setPower(0);RB.setPower(0);
             turretx.setPower(0); turrety.setPower(0); indexer.setPower(0);
-            setFlyWheelPwr(0);
+            LFLYWHEEL.set(0);
+            RFLYWHEEL.setPower(0);
+            remotePrint();
         }
         
-        if (rS != 3) {
+        if (rS != 2) {
             if (lS == 1) {
                 indexer.setPower(rY * 8);
                 setFlyWheelPwr(100);
