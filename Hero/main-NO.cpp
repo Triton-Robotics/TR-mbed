@@ -31,7 +31,7 @@ int main()
             //yaw.setPower(rX*4);
             yaw.setSpeed(rX * 3);
             pitch.setPower(rY * 3);
-                }
+                
         }else if(rS == 3){ // Chassis enable 
 
             int LFa = lY + lX, RFa = lY - lX, LBa = lY - lX, RBa = lY + lX;
