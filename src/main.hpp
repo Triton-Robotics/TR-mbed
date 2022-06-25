@@ -15,9 +15,11 @@
 
 //#include "robots/include/infantry.hpp"
 
-// screen resolution for RM Client
-#define SCREEN_LENGTH 1920
-#define SCREEN_WIDTH 1080
+//屏幕分辨率1920x1080
+// #define SCREEN_WIDTH 1080
+// #define SCREEN_LENGTH 1920
+#define SCREEN_WIDTH 720
+#define SCREEN_LENGTH 1280
 
 static DJIRemote myremote(PA_0, PA_1);
 BufferedSerial referee(PC_10, PC_11, 115200); // Nucleo board: top left male pins. 
@@ -37,14 +39,15 @@ static void refereeThread(){
     ext_student_interactive_header_data_t custom_grapic_draw;			//自定义图像绘制
     // ext_client_custom_graphic_seven_t custom_graphic;	//自定义图像
 
-    //初始化图形数据变量
+//初始化图形数据变量
 	//自定义图形绘制
 	{
     
 		custom_grapic_draw.data_cmd_id=0x0110;//绘制七个图形（内容ID，查询裁判系统手册）//0104 for 7 diagrams, 0110 for drawing text
 		
-        // custom_grapic_draw.sender_ID=3;//发送者ID，机器人对应ID，此处为蓝方英雄
-        // custom_grapic_draw.receiver_ID=0x0103;//接收者ID，操作手客户端ID，此处为蓝方英雄操作手客户端
+
+			custom_grapic_draw.sender_ID=3;//发送者ID，机器人对应ID，此处为蓝方英雄
+			custom_grapic_draw.receiver_ID=0x0103;//接收者ID，操作手客户端ID，此处为蓝方英雄操作手客户端
 		//自定义图像数据
 		{
             // For drawing text ------------------
@@ -58,24 +61,43 @@ static void refereeThread(){
             }
 
             custom_grapic_draw.graphic_custom.grapic_data_struct.graphic_name[0] = 97;
+            custom_grapic_draw.graphic_custom.grapic_data_struct.graphic_name[1] = 97;
+            custom_grapic_draw.graphic_custom.grapic_data_struct.graphic_name[2] = 0;//图形名
+            //上面三个字节代表的是图形名，用于图形索引，可自行定义
             custom_grapic_draw.graphic_custom.grapic_data_struct.operate_tpye=1;//图形操作，0：空操作；1：增加；2：修改；3：删除；
             custom_grapic_draw.graphic_custom.grapic_data_struct.graphic_tpye=7;//图形类型，0为直线，其他的查看用户手册
             custom_grapic_draw.graphic_custom.grapic_data_struct.layer=1;//图层数
             custom_grapic_draw.graphic_custom.grapic_data_struct.color=1;//颜色
             custom_grapic_draw.graphic_custom.grapic_data_struct.start_angle=30;
-            custom_grapic_draw.graphic_custom.grapic_data_struct.end_angle=10;
+            custom_grapic_draw.graphic_custom.grapic_data_struct.end_angle=100;
             custom_grapic_draw.graphic_custom.grapic_data_struct.width=3;
-            custom_grapic_draw.graphic_custom.grapic_data_struct.start_x=SCREEN_LENGTH/2;
-            custom_grapic_draw.graphic_custom.grapic_data_struct.start_y=SCREEN_WIDTH/2 +200;
-       }
+            custom_grapic_draw.graphic_custom.grapic_data_struct.start_x=SCREEN_LENGTH/2 +100;
+            custom_grapic_draw.graphic_custom.grapic_data_struct.start_y=SCREEN_WIDTH/2;
+
+
+            // For graphing diagrams ----------------------------
+
+            // custom_grapic_draw.graphic_custom.grapic_data_struct[0].graphic_name[0] = 97;
+            // custom_grapic_draw.graphic_custom.grapic_data_struct[0].graphic_name[1] = 97;
+            // custom_grapic_draw.graphic_custom.grapic_data_struct[0].graphic_name[2] = 0;//图形名
+            // //上面三个字节代表的是图形名，用于图形索引，可自行定义
+            // custom_grapic_draw.graphic_custom.grapic_data_struct[0].operate_tpye=1;//图形操作，0：空操作；1：增加；2：修改；3：删除；
+            // custom_grapic_draw.graphic_custom.grapic_data_struct[0].graphic_tpye=0;//图形类型，0为直线，其他的查看用户手册
+            // custom_grapic_draw.graphic_custom.grapic_data_struct[0].layer=1;//图层数
+            // custom_grapic_draw.graphic_custom.grapic_data_struct[0].color=1;//颜色
+            // custom_grapic_draw.graphic_custom.grapic_data_struct[0].start_angle=0;
+            // custom_grapic_draw.graphic_custom.grapic_data_struct[0].end_angle=0;
+            // custom_grapic_draw.graphic_custom.grapic_data_struct[0].width=2;
+            // custom_grapic_draw.graphic_custom.grapic_data_struct[0].start_x=SCREEN_LENGTH/2;
+            // custom_grapic_draw.graphic_custom.grapic_data_struct[0].start_y=SCREEN_WIDTH/2;
+            // custom_grapic_draw.graphic_custom.grapic_data_struct[0].end_x=SCREEN_LENGTH/2 +200;
+            // custom_grapic_draw.graphic_custom.grapic_data_struct[0].end_y=SCREEN_WIDTH/2 +200;
+            // custom_grapic_draw.graphic_custom.grapic_data_struct[0].radius=1;
+        }
     }
 
     int loop=0;
     while(1){
-        determine_ID();
-        custom_grapic_draw.sender_ID = get_robot_id();//发送者ID，机器人对应ID
-        custom_grapic_draw.receiver_ID = Judge_SelfClient_ID;//接收者ID，操作手客户端ID
-        
         if(referee.readable()){
             JudgeSystem_USART_Receive_DMA(&referee);
             Judge_GetMessage(JUDGESYSTEM_PACKSIZE);
@@ -93,9 +115,10 @@ static void refereeThread(){
                 }
                 printf("robot hp: %d  ", ext_game_robot_state.data.remain_HP);
                 printf("max hp: %d  ", ext_game_robot_state.data.max_HP);
-                printf("angle: %d  ", (int)ext_game_robot_pos.data.yaw); // float
+                printf("angle: %f  ", ext_game_robot_pos.data.yaw);
+                // cout << "angle: "<< ext_game_robot_pos.data.yaw;
                 
-                printf("power: %d  ", (int)ext_power_heat_data.data.chassis_power); // float
+                printf("power: %f  ", ext_power_heat_data.data.chassis_power);
                 printf("current: %d  ", ext_power_heat_data.data.chassis_current);
                 printf("volt: %d \n", ext_power_heat_data.data.chassis_volt);
 
@@ -114,10 +137,8 @@ static void refereeThread(){
             // RobotStatus_LEDYellow(&referee);
             // RobotStatus_LEDYellow(&pc);
             // Show_CrossHair(&referee);
-            if(loop % 10==0){ // send only every 10 iterations
-                referee_data_pack_handle(0xA5,0x0301,(uint8_t *)&custom_grapic_draw,sizeof(custom_grapic_draw),&referee);
-            }
-
+            referee_data_pack_handle(0xA5,0x0301,(uint8_t *)&custom_grapic_draw,sizeof(custom_grapic_draw),&referee);
+            
             // printf("write!");
             // pc.write("hello",5);
         }
