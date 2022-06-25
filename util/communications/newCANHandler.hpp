@@ -56,6 +56,7 @@ class NewCANHandler{
         * 
         */
         bool getFeedback(int *id, uint8_t bytes[]){
+            bool gotMsg = false;
             rxMsg.clear();
             rxMsg.len = 8;
             while (can.read(rxMsg)) {
@@ -69,10 +70,10 @@ class NewCANHandler{
                 for(int i = 0;  i < 8; i ++){
                     rxMsg >> bytes[i]; //Extract information from rxMsg and store it into the bytes array
                 }
-                return true;
+                gotMsg = true;
                 //printf("Motor 0x%x:\tAngle (0,8191):%d\tSpeed  ( RPM ):%d\tTorque ( CUR ):%d\tTemperature(C):%d \n",rxMsg.id,feedback[motorID][0],feedback[motorID][1],feedback[motorID][2],feedback[motorID][3]);
             }
-            return false;
+            return gotMsg;
             //CAN Recieving from feedback IDs
         }
 
@@ -121,8 +122,8 @@ class NewCANHandler{
                 errorCount = 0;
             }
 
-            if (errorCount > 100000){
-                printf("Transmission error in rawSend()\n");
+            if (errorCount > 1000){
+                printf("[CAN Connection Issues SEND]\n");
             }
             //printMsg(txMsg);
             return isWrite;

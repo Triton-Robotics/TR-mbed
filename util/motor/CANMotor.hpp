@@ -222,9 +222,9 @@ class CANMotor{
         static void printChunk(NewCANHandler::CANBus bus, short sendID, motorDataType data = POWEROUT){
             printf("Bus:");
             if(bus == NewCANHandler::CANBUS_1)
-                printf("BUS_1");
+                printf("BUS_1 |");
             else if(bus == NewCANHandler::CANBUS_2)
-                printf("BUS_2");
+                printf("BUS_2 |");
             printf(" sendID:0x%x ",sendIDs[sendID]);
             for(int i = 0; i < 4; i ++){
                 if(motorsExist[bus][sendID][i])

@@ -41,18 +41,21 @@ int main()
     // LB.setSpeedPID(1.75, 0.351, 5.63);
     // RF.setSpeedPID(2.744, 0.285, 4.192); //ziegler calculate with a p of 2742 
     // RB.setSpeedPID(2.572, 0.113, 1.723);
-    //LF.setSpeedPID(1.129, 0.292, 1.938);
+    // LF.setSpeedPID(1.129, 0.292, 1.938);
     pitch.setPositionPID(0,0,0);
+    LF.outCap = 16000;   
+    RF.outCap = 16000;
+    LB.outCap = 16000;
+    RB.outCap = 16000;
 
     while (true) {
 
-        LF.outCap = 16000;   
-        RF.outCap = 16000;
-        LB.outCap = 16000;
-        RB.outCap = 16000;
-        
-
-        if(rS == 1){ // All non-serializer motors activated
+        if(rS == 2){ //disable all the non-serializer components
+            LF.setPower(0);RF.setPower(0);LB.setPower(0);RB.setPower(0);
+            yaw.setPower(0); pitch.setPower(0);
+            CANMotor::printChunk(NewCANHandler::CANBUS_1, 0);
+            //remotePrint();
+        }else if(rS == 1){ // All non-serializer motors activated
             int LFa = lY + lX, RFa = lY - lX, LBa = lY - lX, RBa = lY + lX;
             LF.setSpeed(LFa * multiplier);
             RF.setSpeed(-RFa*multiplier);
@@ -68,10 +71,6 @@ int main()
             // yaw.setPower(rX * 4);
             
 
-        }else if(rS == 2){ //disable all the non-serializer components
-            LF.setPower(0);RF.setPower(0);LB.setPower(0);RB.setPower(0);
-            yaw.setPower(0); pitch.setPower(0);
-            //remotePrint();
         }else if(rS == 3 && 0){ // beyblade mode
             
         }
