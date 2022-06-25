@@ -29,10 +29,13 @@ inline void printFloat(float input, int decimals, bool newline = 0) {
     printf("%d", int(input));
     printf(".");
     input = input - int(input);
+    for (int i = 0; i < decimals; i++) {
+        input*=10;
+        printf("%d",(int)input);
+        input = input - int(input); 
+    }
     if (newline)
-        printf("%d\n", int(input * (pow(10, decimals))));
-    else 
-        printf("%d", int(input * (pow(10, decimals))));
+        printf("\n");
 } 
 
 inline void int16ToBitArray(int n, int binaryNum[])
