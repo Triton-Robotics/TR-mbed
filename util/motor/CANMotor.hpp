@@ -61,7 +61,7 @@ enum motorType {
 
 
 double defaultGimblyPosSettings[5] = {10.88,1.2,18.9,8000,500}; 
-double defautlGimblySpeedSettings[5] = {0.13, 8.8, 0, 7500, 1000};
+double defautlGimblySpeedSettings[5] = {0.13, 8.8, 0, 25000, 1000};
 double defautM3508PosSettings[5] = {.48, 0.0137, 4.2, 3000, 300};
 double defautM3508SpeedSettings[5] = {1.79, 0.27, 10.57, 15000, 500};
 
