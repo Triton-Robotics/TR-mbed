@@ -21,7 +21,7 @@
 #define canmotor_hpp
 
 static int sendIDs[3] = {0x200,0x1FF,0x2FF}; //IDs to send data
-static Thread motorFeedbackThread(osPriorityRealtime); //threading for Motor::tick()
+static Thread motorFeedbackThread(osPriorityAboveNormal); //threading for Motor::tick()
 static Thread motorSendThread(osPriorityNormal); //threading for Motor::tick()
 
 enum errorCodes{

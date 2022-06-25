@@ -94,8 +94,6 @@ class DJIRemote : SerialCommunication {
 
             int16ToBitArray((int)mymessage[20], keyboardData);
 
-            
-
             for (int i = 0; i < 15; i++) 
                 keyboardkeys[i].update(keyboardData[15-i]);
             
@@ -174,7 +172,7 @@ class DJIRemote : SerialCommunication {
         return data[7 + button];
     }
 
-    bool getMouseButtonTogStatae(mouse button) {
+    bool getMouseButtonTogState(mouse button) {
         return Mousebuttons[button-3].getToggle();
     }
 

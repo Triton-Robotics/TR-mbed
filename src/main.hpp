@@ -101,36 +101,36 @@ static void refereeThread(){
         if(referee.readable()){
             JudgeSystem_USART_Receive_DMA(&referee);
             Judge_GetMessage(JUDGESYSTEM_PACKSIZE);
-            /**
-            if(loop % 10==0 ){ // print out only every 10 iterations
-                string id="robot id: " + to_string(get_robot_id()) + "  ";
-                //string hp="robot hp: " + to_string(get_remain_hp() ) +"  ";
+            
+        //     if(loop % 10==0){ // print out only every 10 iterations
+        //         string id="robot id: " + to_string(get_robot_id()) + "  ";
+        //         //string hp="robot hp: " + to_string(get_remain_hp() ) +"  ";
 
-                cout << id;
-                if(is_red_or_blue()){
-                    cout<<"RED  ";
-                }
-                else{
-                    cout<<"BLUE  ";
-                }
-                printf("robot hp: %d  ", ext_game_robot_state.data.remain_HP);
-                printf("max hp: %d  ", ext_game_robot_state.data.max_HP);
-                printf("angle: %f  ", ext_game_robot_pos.data.yaw);
-                // cout << "angle: "<< ext_game_robot_pos.data.yaw;
+        //         cout << id;
+        //         if(is_red_or_blue()){
+        //             cout<<"RED  ";
+        //         }
+        //         else{
+        //             cout<<"BLUE  ";
+        //         }
+        //         printf("robot hp: %d  ", ext_game_robot_state.data.remain_HP);
+        //         printf("max hp: %d  ", ext_game_robot_state.data.max_HP);
+        //         printf("angle: %f  ", ext_game_robot_pos.data.yaw);
+        //         // cout << "angle: "<< ext_game_robot_pos.data.yaw;
                 
-                printf("power: %f  ", ext_power_heat_data.data.chassis_power);
-                printf("current: %d  ", ext_power_heat_data.data.chassis_current);
-                printf("volt: %d \n", ext_power_heat_data.data.chassis_volt);
+        //         printf("power: %f  ", ext_power_heat_data.data.chassis_power);
+        //         printf("current: %d  ", ext_power_heat_data.data.chassis_current);
+        //         printf("volt: %d \n", ext_power_heat_data.data.chassis_volt);
 
-                // pc.write(&id, id.length());
-                // pc.write(&hp, hp.length());
-            }
-            **/
-        }
-        else{
-            if(loop % 10==0){ // print out only every 10 iterations
-                printf("REFEREE - Not readable!\n");
-            }
+        //         // pc.write(&id, id.length());
+        //         // pc.write(&hp, hp.length());
+        //     }
+            
+        // }
+        // else{
+        //     if(loop % 10==0){ // print out only every 10 iterations
+        //         printf("REFEREE - Not readable!\n");
+        //     }
         }
 
         if(referee.writable()){
@@ -186,6 +186,6 @@ static void remotePrint(){
 
 //CANHandler canPorts(PA_11,PA_12,PB_12,PB_13);
 
-Thread threadingRemote(osPriorityHigh);
-Thread threadingReferee(osPriorityNormal);
+Thread threadingRemote(osPriorityNormal);
+Thread threadingReferee(osPriorityBelowNormal);
 Thread threadingPrint(osPriorityBelowNormal);
