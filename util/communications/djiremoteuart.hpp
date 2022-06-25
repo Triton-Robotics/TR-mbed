@@ -168,8 +168,8 @@ class DJIRemote : SerialCommunication {
         return data[switchie+5];
     }
 
-    int getMouseData(mouse button) {
-        return data[7 + button];
+    int getMouseData(mouse dataElement) {
+        return data[7 + dataElement];
     }
 
     bool getMouseButtonTogState(mouse button) {

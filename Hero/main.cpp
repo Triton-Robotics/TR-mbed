@@ -13,9 +13,12 @@ float beybladespeedmult = 1;
 
 CANMotor yaw(5, NewCANHandler::CANBUS_1, M3508);
 CANMotor pitch(6, NewCANHandler::CANBUS_1, GIMBLY);
-int pitchval = 0;
+int pitchValue = 0;
+int yawValue = 0;
 #define LOWERBOUND 1000
 #define UPPERBOUND 2000
+#define LEFTBOUND -1000
+#define RIGHTBOUND 1000
 
 CANMotor indexer(7, NewCANHandler::CANBUS_1, GIMBLY);
 int indexJamTime = 0;
@@ -49,23 +52,35 @@ int main()
         RF.outCap = 16000;
         LB.outCap = 16000;
         RB.outCap = 16000;
+        int keyFwd = (myremote.getKeyState(W) - myremote.getKeyState(S)) * 1000;
+        int keyTurn = (myremote.getKeyState(A) - myremote.getKeyState(D)) * -1000;
+        int keyStrafe = (myremote.getKeyState(Q) - myremote.getKeyState(E)) * -1000;
         
 
         if(rS == 1){ // All non-serializer motors activated
-            int LFa = lY + lX + Wh, RFa = lY - lX - Wh, LBa = lY - lX + Wh, RBa = lY + lX - Wh;
+            int LFa = keyFwd + keyStrafe + keyTurn, RFa = keyFwd - keyStrafe - keyTurn, LBa = keyFwd - keyStrafe + keyTurn, RBa = keyFwd + keyStrafe - keyTurn;
             LF.setSpeed(LFa * multiplier);
             RF.setSpeed(-RFa*multiplier);
             LB.setSpeed(LBa*multiplier);
             RB.setSpeed(-RBa*multiplier);
             
-            if (pitchval < LOWERBOUND) // lowerbound
-                pitchval = LOWERBOUND;
-            if (pitchval > UPPERBOUND) //upperbound
-                pitchval = UPPERBOUND;
-            pitchval += (int)myremote.getStickData(RIGHTJOYY, 0, 3);
-            pitch.setPosition(pitchval);
-            printf("YAW:%d\tPITCH:%d\n",rX/10,pitchval);
-            yaw.setSpeed(rX);
+            pitchValue += myremote.getMouseData(SPEEDY);
+            yawValue += myremote.getMouseData(SPEEDX);
+
+            if (pitchValue < LOWERBOUND) // lowerbound
+                pitchValue = LOWERBOUND;
+            if (pitchValue > UPPERBOUND) //upperbound
+                pitchValue = UPPERBOUND;
+            if (yawValue < LEFTBOUND) // lowerbound
+                yawValue = LEFTBOUND;
+            if (yawValue > RIGHTBOUND) //upperbound
+                yawValue = RIGHTBOUND;
+            
+            pitch.setPosition(pitchValue);
+            yaw.setPosition(yawValue);
+            printf("YAW:%d\tD_YAW:%d\tPITCH:%d\tD_PITCH:%d\n",yaw.getData(MULTI),myremote.getMouseData(SPEEDX),pitch.getData(MULTI),pitchval);
+            //yaw.setSpeed(myremote.getMouseData(SPEEDX) * 15);
+            
             
 
         }else if(rS == 2){ //disable all the non-serializer components
