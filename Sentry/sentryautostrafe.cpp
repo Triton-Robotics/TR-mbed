@@ -1,6 +1,8 @@
 #include "../src/main.hpp"
 #include <cstdlib>
 
+// sentry only from 1230 - 1830
+
 CANMotor chassis1(3,NewCANHandler::CANBUS_1,M3508);
 CANMotor chassis2(4,NewCANHandler::CANBUS_1,M3508);
 
@@ -9,10 +11,17 @@ PWMMotor rightFlywheelTop(PA_6);
 PWMMotor leftFlywheelBot(PB_6);
 PWMMotor rightFlywheelBot(PA_7);
 
+CANMotor yaw(3,NewCANHandler::CANBUS_1,GM6020);
+CANMotor pitch(6,NewCANHandler::CANBUS_1,GM6020);
+
 int main()
 {
     threadingRemote.start(&remoteThread);
     CANMotor::setCANHandlers(&canHandler1,&canHandler2);
+
+    pitch.setPositionPID(0.0302, 0.0001, 1.9307);
+    pitch.setPositionOutputCap(30000);
+    pitch.setPositionIntegralCap(10000);
     
     unsigned long cT;
     while (true) {

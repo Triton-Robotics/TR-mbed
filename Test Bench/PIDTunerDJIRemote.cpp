@@ -8,17 +8,17 @@ PWMMotor rightFlywheelBot(PA_7);
 
 // Either MULTITURNANGLE or VELOCITY 
 
-#define motorID 6
+#define motorID 3
 #define motorType GM6020
 #define MOTORMODE MULTITURNANGLE
 #define outputCap 30000
-#define integralCap 100000
+#define integralCap 10000
 #define feedForwardVal 0 //useful for overcoming gravity
 
 PWMMotor LFLYWHEEL(D11);
 PWMMotor RFLYWHEEL(D12);
 
-int posMotorCommands[] = {1000,1500,2000};
+int posMotorCommands[] = {4000,5000,6000};
 int speedMotorCommands[] = {0,45*19,90*19};
 
 CANMotor testMotor(motorID, NewCANHandler::CANBUS_1, motorType);
@@ -56,12 +56,12 @@ void printInfo() {
         }
         else if (rS == 2) {
             for (int i = 0; i< 3; i++) {
-                printf("%d", (int)(PIDvals[i]*1000));
+                printf("%d", (int)(PIDvals[i]*10000));
                 //printFloat(PIDvals[i], 3);
                 printf("\t");
             }
             if (MOTORMODE == MULTITURNANGLE) 
-                printf("Des: %d \t Act: %d\t", testMotor.getValue(), testMotor.getData(MULTITURNANGLE));
+                printf("Des: %d \t Act: %d\t Pwr: %d", testMotor.getValue(), testMotor.getData(MULTITURNANGLE), testMotor.getPowerOut());
             if (MOTORMODE == VELOCITY)
                 printf("Des: %d \t Act: %d\t", testMotor.getValue(), testMotor.getData(VELOCITY));
             //printf("Pwr: %d", testMotor.getPowerOut());
@@ -83,9 +83,6 @@ int main(void) {
     if (integralCap != 0)
         testMotor.setPositionIntegralCap(integralCap);
 
-    testMotor.outCap = 30000;
-    testMotor.pidPosition.setOutputCap(30000);
-
     int count = 0;
 
 
@@ -101,7 +98,7 @@ int main(void) {
         printInfo();
 
         PIDvals[0] += myremote.getStickData(LEFTJOYX, 0, .01);
-        PIDvals[1] -= myremote.getStickData(WHEEL, 0, 0.001);
+        PIDvals[1] -= myremote.getStickData(WHEEL, 0, 0.0001);
         PIDvals[2] += myremote.getStickData(RIGHTJOYX, 0, .01);
 
         for (int i = 0; i < 3; i++) 
