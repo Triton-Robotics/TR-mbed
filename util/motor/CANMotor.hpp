@@ -126,6 +126,7 @@ class CANMotor{
         int outCap = 16000;
 
         bool useAbsEncoder = 0;
+        bool justPosError = 0;
         static bool sendDebug;
         static bool feedbackDebug;
 
@@ -315,10 +316,14 @@ class CANMotor{
             }else if(mode == SPD){
                 powerOut = pidSpeed.calculate(value, getData(VELOCITY), time - lastTime);
             }else if(mode == POS){
-                if (!useAbsEncoder)
-                    powerOut = pidSpeed.calculate(pidPosition.calculate(value, getData(MULTITURNANGLE), time - lastTime), getData(VELOCITY), time - lastTime);
-                else
-                    powerOut = pidSpeed.calculate(pidPosition.calculate(value, getData(ANGLE), time - lastTime), getData(VELOCITY), time - lastTime);
+                if (!justPosError) {
+                    if (!useAbsEncoder) {
+                        powerOut = pidSpeed.calculate(pidPosition.calculate(value, getData(MULTITURNANGLE), time - lastTime), getData(VELOCITY), time - lastTime);
+                    } else
+                        powerOut = pidSpeed.calculate(pidPosition.calculate(value, getData(ANGLE), time - lastTime), getData(VELOCITY), time - lastTime);
+                } else {
+                    powerOut = pidPosition.calculate(value, getData(MULTITURNANGLE), time - lastTime);
+                }
             }else if(mode == OFF){
                 powerOut = 0;
             }else if(mode == ERR){
