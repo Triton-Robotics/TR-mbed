@@ -22,6 +22,9 @@ int main()
     pitch.setPositionPID(0.0302, 0.0001, 1.9307);
     pitch.setPositionOutputCap(30000);
     pitch.setPositionIntegralCap(10000);
+
+    yaw.setPositionPID(1,1,1);
+    yaw.justPosError = 1;
     
     unsigned long cT;
     while (true) {

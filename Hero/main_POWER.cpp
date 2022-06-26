@@ -1,8 +1,6 @@
 #include "../src/main.hpp"
 #include <cstdlib>
 
-#define PI 3.14159265
-
 CANMotor LF(4,NewCANHandler::CANBUS_1,M3508); 
 CANMotor RF(2,NewCANHandler::CANBUS_1,M3508); 
 CANMotor LB(1,NewCANHandler::CANBUS_1,M3508); 
@@ -34,14 +32,14 @@ int main()
 
     while (true) {
         if(rS == 1){
-            int LFa = lY + lX + Wh, RFa = lY - lX - Wh, LBa = lY - lX + Wh, RBa = lY + lX - Wh;
+            int LFa = lY + lX + rX, RFa = lY - lX - rX, LBa = lY - lX + rX, RBa = lY + lX - rX;
             LF.setPower(LFa*multiplier);
             RF.setPower(-RFa*multiplier);
             LB.setPower(LBa*multiplier);
             RB.setPower(-RBa*multiplier);
 
-            pitch.setPower(rY * -20);
-            printf("pitch%d\n",pitch.getData(MULTI));
+            printf("%d\n", rY * -15);
+            pitch.setPower(rY * -15);
         }else{
             LF.setPower(0);RF.setPower(0);LB.setPower(0);RB.setPower(0);
             pitch.setPower(0);
