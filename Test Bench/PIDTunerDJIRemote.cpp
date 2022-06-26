@@ -1,18 +1,18 @@
 #include "mbed.h"
 #include "../src/main.hpp"
 
-// PWMMotor leftFlywheelTop(PA_5);
-// PWMMotor rightFlywheelTop(PA_6);
-// PWMMotor leftFlywheelBot(PB_6);
-// PWMMotor rightFlywheelBot(PA_7);
+PWMMotor leftFlywheelTop(PA_5);
+PWMMotor rightFlywheelTop(PA_6);
+PWMMotor leftFlywheelBot(PB_6);
+PWMMotor rightFlywheelBot(PA_7);
 
 // Either MULTITURNANGLE or VELOCITY 
 
 #define motorID 6
 #define motorType GM6020
 #define MOTORMODE MULTITURNANGLE
-#define outputCap 0
-#define integralCap 0
+#define outputCap 30000
+#define integralCap 100000
 #define feedForwardVal 0 //useful for overcoming gravity
 
 PWMMotor LFLYWHEEL(D11);
@@ -23,7 +23,7 @@ int speedMotorCommands[] = {0,45*19,90*19};
 
 CANMotor testMotor(motorID, NewCANHandler::CANBUS_1, motorType);
 
-float PIDvals[] = {2, 0, 0};
+float PIDvals[] = {0, 0, 0};
 
 void updateTestMotorCommand() {
     if (lS == 1) { 
@@ -61,9 +61,9 @@ void printInfo() {
                 printf("\t");
             }
             if (MOTORMODE == MULTITURNANGLE) 
-                printf("Des: %d \t Act: %d", testMotor.getValue(), testMotor.getData(MULTITURNANGLE));
+                printf("Des: %d \t Act: %d\t", testMotor.getValue(), testMotor.getData(MULTITURNANGLE));
             if (MOTORMODE == VELOCITY)
-                printf("Des: %d \t Act: %d", testMotor.getValue(), testMotor.getData(VELOCITY));
+                printf("Des: %d \t Act: %d\t", testMotor.getValue(), testMotor.getData(VELOCITY));
             //printf("Pwr: %d", testMotor.getPowerOut());
         }
         else {
@@ -101,7 +101,7 @@ int main(void) {
         printInfo();
 
         PIDvals[0] += myremote.getStickData(LEFTJOYX, 0, .01);
-        //PIDvals[1] -= myremote.getStickData(WHEEL, 0, 0.001);
+        PIDvals[1] -= myremote.getStickData(WHEEL, 0, 0.001);
         PIDvals[2] += myremote.getStickData(RIGHTJOYX, 0, .01);
 
         for (int i = 0; i < 3; i++) 
