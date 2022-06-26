@@ -34,7 +34,7 @@ void setFlyWheelPwr(int pwrL, int pwrR) {
 int main()
 {
     threadingRemote.start(&remoteThread);
-    threadingReferee.start(&refereeThread);
+    //threadingReferee.start(&refereeThread);
     CANMotor::setCANHandlers(&canHandler1,&canHandler2);
 
     // LB.setSpeedPID(1.75, 0.351, 5.63);
@@ -43,10 +43,10 @@ int main()
     LF.setSpeedPID(1.129, 0.292, 1.938);
     //pitch.setPositionPID(.017,.001,.044);
     pitch.useAbsEncoder = 1;
-    yaw.setSpeedPID(1.531,0,0); //.6*1.531 1.2*1.531/.234 0.075*1.531*.234
+    //yaw.setSpeedPID(1.531,0,0); //.6*1.531 1.2*1.531/.234 0.075*1.531*.234
     //pitch.setSpeedPID(int speed)
     //pitch.pidPosition.feedForward = -20000;
-    pitch.setPositionPID(0.02,0,0);
+    pitch.setPositionPID(0.04,0,0);
     //pitch.pidPosition.setOutputCap(-15000);
     //pitch.pidSpeed.feedForward = 3000;
     //indexer.setSpeedPID(0.014, 0.001, 0.046);
@@ -57,20 +57,20 @@ int main()
         RF.outCap = 16000;
         LB.outCap = 16000;
         RB.outCap = 16000;
-        int keyFwd = (myremote.getKeyState(W) - myremote.getKeyState(S)) * 1000;
-        int keyTurn = (myremote.getKeyState(A) - myremote.getKeyState(D)) * -1000;
-        int keyStrafe = (myremote.getKeyState(Q) - myremote.getKeyState(E)) * -1000;
+        // int keyFwd = (myremote.getKeyState(W) - myremote.getKeyState(S)) * 1000;
+        // int keyTurn = (myremote.getKeyState(A) - myremote.getKeyState(D)) * -1000;
+        // int keyStrafe = (myremote.getKeyState(Q) - myremote.getKeyState(E)) * -1000;
         
-
+        ThisThread::sleep_for(2ms);
         if(rS == 1){ // All non-serializer motors activated
-            int LFa = keyFwd + keyStrafe + keyTurn, RFa = keyFwd - keyStrafe - keyTurn, LBa = keyFwd - keyStrafe + keyTurn, RBa = keyFwd + keyStrafe - keyTurn;
-            LF.setSpeed(LFa * multiplier);
+            int LFa = lY + lX + Wh, RFa = lY - lX - Wh, LBa = lY - lX + Wh, RBa = lY + lX - Wh;
+            LF.setSpeed(LFa*multiplier);
             RF.setSpeed(-RFa*multiplier);
             LB.setSpeed(LBa*multiplier);
             RB.setSpeed(-RBa*multiplier);
             
-            pitchValue += myremote.getMouseData(SPEEDY) * 100;
-            yawValue += myremote.getMouseData(SPEEDX);
+            pitchValue += myremote.getMouseData(SPEEDY) * 200;
+            //yawValue += myremote.getMouseData(SPEEDX);
 
             if (pitchValue < LOWERBOUND) // lowerbound
                 pitchValue = LOWERBOUND;
@@ -85,30 +85,33 @@ int main()
             // yaw.setPosition(yawValue);
             printf("PITCH:%d\tD_PITCH:%d\n",pitch.getData(MULTI),pitchValue);
             //yaw.setSpeed(myremote.getMouseData(SPEEDX) * 15);
-            yaw.setSpeed(myremote.getMouseData(SPEEDX) * -70);
+            //yaw.setSpeed(myremote.getMouseData(SPEEDX) * -70);
             //pitch.setSpeed(myremote.getMouseData(SPEEDY) * 750);
-            pitch.setPower(myremote.getMouseData(SPEEDY) * 200);
+            pitch.setPosition(1450 + lY * 3/4);
+
             
 
         }else if(rS == 2){ //disable all the non-serializer components
             LF.setPower(0);RF.setPower(0);LB.setPower(0);RB.setPower(0);
-            yaw.setPower(0); pitch.setPower(0);
+            pitch.setPower(0); //yaw.setPower(0); 
         }else if(rS == 3){ // beyblade mod
             LF.setPower(0);RF.setPower(0);LB.setPower(0);RB.setPower(0);
-            yaw.setPower(0); pitch.setPower(0);
-            if(ext_power_heat_data.data.chassis_power != 0)
-                printf("CHASSIS POWER:%d\n",int(ext_power_heat_data.data.chassis_power));
+            pitch.setPower(0); //yaw.setPower(0); 
+            // if(ext_power_heat_data.data.shooter_id1_42mm_cooling_heat != 0)
+            //     printf("HEAT:%d\n",ext_power_heat_data.data.shooter_id1_42mm_cooling_heat);
+            // if(ext_power_heat_data.data.chassis_power != 0)
+            //     printf("CHASSIS POWER:%d\n",int(ext_power_heat_data.data.chassis_power));
         }
 
         bool strawberryJam = false;
 
-        if (lS == 1) {
-            indexer.setSpeed(rY*5);
+        if (lS == 3) {
+            indexer.setPower(rY*5);
             setFlyWheelPwr(40,40);
         } else if(lS == 2){ //disable serializer
             indexer.setPower(0);
             setFlyWheelPwr(0,0);
-        }else if(lS == 3){
+        }else if(lS == 1){
             setFlyWheelPwr(60,60);
             if(abs(indexer.getData(TORQUE)) > 1000 & abs(indexer.getData(VELOCITY)) < 20){ //intial jam detection
                 if (lastJam == 0) {
