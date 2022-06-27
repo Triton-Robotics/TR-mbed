@@ -4,8 +4,9 @@
 #define PI 3.14159265
 
 CANMotor LF(4,NewCANHandler::CANBUS_1,M3508); CANMotor RF(2,NewCANHandler::CANBUS_1,M3508); CANMotor LB(1,NewCANHandler::CANBUS_1,M3508); CANMotor RB(3,NewCANHandler::CANBUS_1,M3508);
-float multiplier = 3;
-
+float speedmultiplier = 3;
+float powmultiplier = 2;
+float translationalmultiplier = 3;
 float beybladespeedmult = 1;
 
 CANMotor yaw(5, NewCANHandler::CANBUS_1, GIMBLY);
@@ -51,19 +52,25 @@ int main()
         
 
         if(rS == 1){ // All non-serializer motors activated
-            int LFa = lY + lX + rX, RFa = lY - lX - rX, LBa = lY - lX + rX, RBa = lY + lX - rX;
-            LF.setSpeed(LFa * multiplier);
-            RF.setSpeed(-RFa*multiplier);
-            LB.setSpeed(LBa*multiplier);
-            RB.setSpeed(-RBa*multiplier);
+            int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
+            // LF.setSpeed(LFa * speedmultiplier);
+            // RF.setSpeed(-RFa* speedmultiplier);
+            // LB.setSpeed(LBa* speedmultiplier);
+            // RB.setSpeed(-RBa* speedmultiplier);
             
-            if (pitchval < LOWERBOUND) // lowerbound
-                pitchval = LOWERBOUND;
-            if (pitchval > UPPERBOUND) //upperbound
-                pitchval = UPPERBOUND;
-            pitchval += (int)myremote.getStickData(RIGHTJOYY, 0, 3);
+
+            // if (pitchval < LOWERBOUND) // lowerbound
+            //     pitchval = LOWERBOUND;
+            // if (pitchval > UPPERBOUND) //upperbound
+            //     pitchval = UPPERBOUND;
+            // pitchval += (int)myremote.getStickData(RIGHTJOYY, 0, 3);
             // pitch.setPosition(pitchval);
-            pitch.setPower(rY*3);
+            LF.setPower(LFa * powmultiplier * 1.5);
+            RF.setPower(-RFa * powmultiplier * 1.5);
+            LB.setPower(LBa * powmultiplier);
+            RB.setPower(-RBa * powmultiplier);
+            
+            pitch.setPower(rY*5);
             //yaw.setSpeed(rX/100);
             
 
