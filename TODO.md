@@ -20,6 +20,8 @@
 
 - *move CANBus enum to outside and change all robot code so we dont keep having to do NewCanHandler::CANBus_1*
 
+- Make CANMotor class faster.
+
 - Add referee system into code
   
   - *Recalibrate flywheels when ammo booster goes from off to on*
