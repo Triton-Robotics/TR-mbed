@@ -189,3 +189,4 @@ static void remotePrint(){
 Thread threadingRemote(osPriorityNormal);
 //Thread threadingReferee(osPriorityLow);
 Thread threadingPrint(osPriorityBelowNormal);
+Thread threadingLogger(osPriorityLow);

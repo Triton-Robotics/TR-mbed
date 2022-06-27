@@ -200,14 +200,6 @@ class CANMotor{
             //     printf("ERROR. IT IS HIGHLY DISCOURAGED OF YOU TO USE CAN BUSSES 1-4 FOR THE GM6020s. YOU WILL HAVE ERRORS.\n YOU DUMB BITCH WHY WOULD YOU (WHO IS LIKELY ME) DO THIS I HAVENT CODED THIS IN DONT MAKE ME CODE THIS IN PLEASE\n");
             if (canID > 8 || canID < 1)
                 printf("[ERROR] The canID [%d] not within correct bounds\n", canID);
-            
-            // for(int  i = 0 ; i < 3; i ++){
-            //     for(int j = 0; j < 4; j ++){
-            //         printf("%d ",allMotors[0][i][j]->motorNumber);
-            //     }
-            //     printf("\n");
-            // }
-            // printf("\n---------\n");
 
             powerOut = 0;
         }
@@ -239,38 +231,12 @@ class CANMotor{
             printf("\n");
         }
 
-        // static void setCANHandlers(PinName can1Tx, PinName can1Rx, PinName can2Tx, PinName can2Rx){
-        //     canHandlers[0].updateCANs(PinName canRx, PinName canTx);
-        //     canHandlers[1]* = &can2;
-        //     for(int i = 0; i < 3; i ++){
-        //         for(int j = 0; j < 4; j++){
-        //             for(int k = 0; k < 2; k++){
-        //                 CANMotor m;
-        //                 allMotors[k][i][j] = &m;
-        //             }
-        //         }
-        //     }
-        // }
-
         static void setCANHandlers(NewCANHandler* bus_1, NewCANHandler* bus_2, bool thread = true){
             canHandlers[0] = bus_1;
             canHandlers[1] = bus_2;
             if(thread){
-                //motorupdatethread.start(tickThread);
                 motorSendThread.start(sendThread);
                 motorFeedbackThread.start(feedbackThread);
-
-                // canHandlers[0]->attach(&getFeedback);
-                // canHandlers[1]->attach(&getFeedback);
-
-                // CAN *can1, *can2;
-                // canHandlers[0]->getCAN(can1);
-                // canHandlers[1]->getCAN(can2);
-                // can1->attach(&getFeedback);
-                // can2->attach(&getFeedback);
-
-                // canHandlers[0]->can.attach(&getFeedback);
-                // canHandlers[1]->can.attach(&getFeedback);
             }
         }
 
