@@ -24,7 +24,8 @@ int main()
     LB.outCap = 16000;
     RB.outCap = 16000;
 
-    int multiplier = 1;
+    float multiplier = 3;
+    float mecanummul = 1.5;
     int indexJamTime = 0;
     int lastJam = 0;
 
@@ -32,13 +33,12 @@ int main()
 
     while (true) {
         if(rS == 1){
-            int LFa = lY + lX + rX, RFa = lY - lX - rX, LBa = lY - lX + rX, RBa = lY + lX - rX;
+            int LFa = lY + lX*mecanummul + rX, RFa = lY - lX*mecanummul - rX, LBa = lY - lX*mecanummul + rX, RBa = lY + lX*mecanummul - rX;
             LF.setPower(LFa*multiplier);
             RF.setPower(-RFa*multiplier);
             LB.setPower(LBa*multiplier);
             RB.setPower(-RBa*multiplier);
 
-            printf("%d\n", rY * -15);
             pitch.setPower(rY * -15);
         }else{
             LF.setPower(0);RF.setPower(0);LB.setPower(0);RB.setPower(0);
@@ -59,12 +59,12 @@ int main()
             if(lastJam && us_ticker_read() / 1000 - indexJamTime > 750){ // If jam for more than 250ms then reverse
                 strawberryJam = true;
             }else
-                indexer.setSpeed(2500); // No Jam, regular state
+                indexer.setSpeed(700); // No Jam, regular state
             if(strawberryJam && us_ticker_read() / 1000 - indexJamTime < 1500){
-                indexer.setPower(15000); 
+                indexer.setPower(30000); 
                 printf("Shoving...%d\n",us_ticker_read() / 1000 - indexJamTime);
             }if(strawberryJam && us_ticker_read() / 1000 - indexJamTime < 2250){
-                indexer.setPower(-7500); 
+                indexer.setPower(-15000); 
                 printf("Reversing...%d\n",us_ticker_read() / 1000 - indexJamTime);
             }else if(strawberryJam && us_ticker_read() / 1000 - indexJamTime > 2250){
                 strawberryJam = false;

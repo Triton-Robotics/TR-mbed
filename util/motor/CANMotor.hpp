@@ -232,13 +232,54 @@ class CANMotor{
             printf("\n");
         }
 
+<<<<<<< Updated upstream
         static void setCANHandlers(NewCANHandler* bus_1, NewCANHandler* bus_2, bool thread = true){
             canHandlers[0] = bus_1;
             canHandlers[1] = bus_2;
             if(thread){
+=======
+        // static void setCANHandlers(PinName can1Tx, PinName can1Rx, PinName can2Tx, PinName can2Rx){
+        //     canHandlers[0].updateCANs(PinName canRx, PinName canTx);
+        //     canHandlers[1]* = &can2;
+        //     for(int i = 0; i < 3; i ++){
+        //         for(int j = 0; j < 4; j++){
+        //             for(int k = 0; k < 2; k++){
+        //                 CANMotor m;
+        //                 allMotors[k][i][j] = &m;
+        //             }
+        //         }
+        //     }
+        // }
+
+        static void setCANHandlers(NewCANHandler* bus_1, NewCANHandler* bus_2, bool threadSend = true, bool threadFeedback = true){
+            canHandlers[0] = bus_1;
+            canHandlers[1] = bus_2;
+            // if(thread){
+            //     //motorupdatethread.start(tickThread);
+            //     motorSendThread.start(sendThread);
+            //     motorFeedbackThread.start(feedbackThread);
+
+            //     // canHandlers[0]->attach(&getFeedback);
+            //     // canHandlers[1]->attach(&getFeedback);
+
+            //     // CAN *can1, *can2;
+            //     // canHandlers[0]->getCAN(can1);
+            //     // canHandlers[1]->getCAN(can2);
+            //     // can1->attach(&getFeedback);
+            //     // can2->attach(&getFeedback);
+
+            //     // canHandlers[0]->can.attach(&getFeedback);
+            //     // canHandlers[1]->can.attach(&getFeedback);
+            // }
+            if(threadSend)
+>>>>>>> Stashed changes
                 motorSendThread.start(sendThread);
+            if(threadFeedback)
                 motorFeedbackThread.start(feedbackThread);
+<<<<<<< Updated upstream
             }
+=======
+>>>>>>> Stashed changes
         }
 
         void setValue(int val){

@@ -187,6 +187,6 @@ static void remotePrint(){
 //CANHandler canPorts(PA_11,PA_12,PB_12,PB_13);
 
 Thread threadingRemote(osPriorityNormal);
-//Thread threadingReferee(osPriorityLow);
+Thread threadingReferee(osPriorityLow);
 Thread threadingPrint(osPriorityBelowNormal);
 Thread threadingLogger(osPriorityLow);
