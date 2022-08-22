@@ -31,6 +31,12 @@
   - *Recalibrate flywheels when ammo booster goes from off to on*
   
   - *Add heat/chassis power and somehow limit shots so that we dont go over the limits*
+    
+    - Multiple options:
+    
+    - Fast so heat goes up, then slow so it goes down again
+    
+    - operator control until heat gets to 80%, then do active heatlimiting to keep same heat
   
   - *add constants for heat/chassis power depending on level*
     

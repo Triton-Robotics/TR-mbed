@@ -12,19 +12,8 @@ Blinking Red Light - Not enough voltage
 
 ICODE - 
 
+Icode - restart computer
 
+no serial - restart mbed
 
-
-
-
-Icode - restart computr
-
-
-
-no serial -restart mbed
-
-no remote -flip wires
-
-
-
-
+no remote - flip wires

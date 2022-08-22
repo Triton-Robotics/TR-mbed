@@ -156,18 +156,13 @@ You can also reset the multiTurnAngle with zeroPos
 
 `void zeroPos()`
 
-
-
 # Debugging
 
 There are some options to be had for debugging data, such as:
 
-
 `static void printChunk(CANHandler::CANBus bus, short sendID)`
 
 Which will print the set of four motors in that chunk.
-
-
 
 `void printAllMotorData()`
 
