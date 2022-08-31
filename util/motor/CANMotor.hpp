@@ -232,12 +232,6 @@ class CANMotor{
             printf("\n");
         }
 
-<<<<<<< Updated upstream
-        static void setCANHandlers(NewCANHandler* bus_1, NewCANHandler* bus_2, bool thread = true){
-            canHandlers[0] = bus_1;
-            canHandlers[1] = bus_2;
-            if(thread){
-=======
         // static void setCANHandlers(PinName can1Tx, PinName can1Rx, PinName can2Tx, PinName can2Rx){
         //     canHandlers[0].updateCANs(PinName canRx, PinName canTx);
         //     canHandlers[1]* = &can2;
@@ -272,14 +266,9 @@ class CANMotor{
             //     // canHandlers[1]->can.attach(&getFeedback);
             // }
             if(threadSend)
->>>>>>> Stashed changes
                 motorSendThread.start(sendThread);
             if(threadFeedback)
                 motorFeedbackThread.start(feedbackThread);
-<<<<<<< Updated upstream
-            }
-=======
->>>>>>> Stashed changes
         }
 
         void setValue(int val){

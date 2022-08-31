@@ -4,7 +4,7 @@
 DigitalOut clawPin(PA_13);
 //DigitalOut rfidPin(PA_14);
 
-//NewChassisSubsystem chassis(4,3,1,2, NewCANHandler::CANBUS_1, C620);
+NewChassisSubsystem chassis(4,3,1,2, NewCANHandler::CANBUS_1, C620);
 
 // CANMotor gimbalX(3,CANHandler::CANBUS_1,M3508);
 // CANMotor gimbalY(6,CANHandler::CANBUS_1,GM6020);

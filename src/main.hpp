@@ -176,6 +176,27 @@ static void remoteThread(){
     }
 }
 
+static void remoteRead(){
+    while(1){
+        myremote.remoteUpdate();
+        lX = myremote.getStickData(LEFTJOYX,0,1000);
+        lY = myremote.getStickData(LEFTJOYY,0,1000);
+        rX = myremote.getStickData(RIGHTJOYX,0,1000);
+        rY = myremote.getStickData(RIGHTJOYY,0,1000);
+        Wh = myremote.getStickData(WHEEL,0,1000);
+        lS = myremote.getSwitchData(LSWITCH);
+        rS = myremote.getSwitchData(RSWITCH);
+        if(lX > 1000 || lX < 1000)
+            lX = 0;
+        if(rX > 1000 || rX < 1000)
+            rX = 0;
+        if(lY > 1000 || lY < 1000)
+            lY = 0;
+        if(rY > 1000 || rY < 1000)
+            rY = 0;
+    }
+}
+
 static void remotePrint(){
     // for (int i = 0; i < 7; i++)
     //     printf("%d\t", dats[i]);
