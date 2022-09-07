@@ -469,6 +469,8 @@ class CANMotor{
                 ThisThread::sleep_for(1ms);
             }
         }
+
+        
         
 
         /**
@@ -476,14 +478,20 @@ class CANMotor{
         */
         static void sendThread() {
             while (true) {
-                for(int i = 0; i < 3; i ++)
-                    sendOneID(NewCANHandler::CANBUS_1,i,sendDebug);
-                if(sendDebug) printf("\n");
-                for(int i = 0; i < 3; i ++)
-                    sendOneID(NewCANHandler::CANBUS_2,i,sendDebug);
-                if(sendDebug) printf("\n");
+                sendValues();
                 ThisThread::sleep_for(1ms);
             }
+        }
+
+
+        //TODO: MAKE THIS MORE EFFICIENT BY LIMITING ADDRESSES TO ONLY THOSE THAT HOLD MOTORS
+        static void sendValues() {
+            for(int i = 0; i < 3; i ++)
+                sendOneID(NewCANHandler::CANBUS_1,i,sendDebug);
+            if(sendDebug) printf("\n");
+            for(int i = 0; i < 3; i ++)
+                sendOneID(NewCANHandler::CANBUS_2,i,sendDebug);
+            if(sendDebug) printf("\n");
         }
 
         static void tick(bool debug = false, bool printFeedback = false){

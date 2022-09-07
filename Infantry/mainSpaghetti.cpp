@@ -36,6 +36,7 @@ int main()
 {
     
     //threadingReferee.start(&refereeThread);
+
     CANMotor::setCANHandlers(&canHandler1,&canHandler2, false, false);
 
     LB.setSpeedPID(1.75, 0.351, 5.63);
@@ -48,97 +49,62 @@ int main()
     indexer.setSpeedPID(0.014, 0.001, 0.046);
     indexer.setSpeedIntegralCap(500000);
 
+    LF.outCap = 16000;   
+    RF.outCap = 16000;
+    LB.outCap = 16000;
+    RB.outCap = 16000;
+
+    unsigned long loopTimer = us_ticker_read() / 1000;
+
     while (true) {
 
         remoteRead();
 
-        LF.outCap = 16000;   
-        RF.outCap = 16000;
-        LB.outCap = 16000;
-        RB.outCap = 16000;
-        
+        unsigned long timeStart = us_ticker_read() / 1000;
+        if(timeStart - loopTimer > 10){
+            loopTimer = timeStart;
+            if(rS == 1){ // All non-serializer motors activated
+                int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
 
-        if(rS == 1){ // All non-serializer motors activated
-            int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
-            // LF.setSpeed(LFa * speedmultiplier);
-            // RF.setSpeed(-RFa* speedmultiplier);
-            // LB.setSpeed(LBa* speedmultiplier);
-            // RB.setSpeed(-RBa* speedmultiplier);
-            
-
-            // if (pitchval < LOWERBOUND) // lowerbound
-            //     pitchval = LOWERBOUND;
-            // if (pitchval > UPPERBOUND) //upperbound
-            //     pitchval = UPPERBOUND;
-            // pitchval += (int)myremote.getStickData(RIGHTJOYY, 0, 3);
-            // pitch.setPosition(pitchval);
-            LF.setPower(LFa * powmultiplier * 1.5);
-            RF.setPower(-RFa * powmultiplier * 1.5);
-            LB.setPower(LBa * powmultiplier);
-            RB.setPower(-RBa * powmultiplier);
-            
-            pitch.setPower(rY*9);
-            //yaw.setSpeed(rX/100);
-            
-
-        }else if(rS == 2){ //disable all the non-serializer components
-            LF.setPower(0);RF.setPower(0);LB.setPower(0);RB.setPower(0);
-            yaw.setPower(0); pitch.setPower(0);
-        }else if(rS == 3){ // beyblade mode
-            // double angle = yaw.getData(ANGLE) / 8192.0 * PI * 2;
-            // angle -= PI/4;
-            
-            // int beybladespeedmult = 2;
-
-            // float raw_x = lX * beybladespeedmult;
-            // float raw_y = lY * beybladespeedmult;
-
-            // float x = (float) (raw_x * cos(angle) - raw_y * sin(angle));
-            // float y = (float) (raw_x * sin(angle) + raw_y * cos(angle));
-
-            // int beyblade_rotation = 2000;
-            // LF.setSpeed(x + y + beyblade_rotation);
-            // RF.setSpeed(x - y + beyblade_rotation);
-            // LB.setSpeed(-x + y + beyblade_rotation);
-            // RB.setSpeed(-x - y + beyblade_rotation);
-            // yaw.setSpeed(20);
-        }
-
-        if (lS == 3) {
-            indexer.setPower(-5000);
-            
-        }else if(lS == 2){ //disable serializer
-            indexer.setPower(0);
-            setFlyWheelPwr(0);
-        }else if(lS == 1){
-            setFlyWheelPwr(40);
-            cT = us_ticker_read()/1000;
-            totalTime = forwardTime + reverseTime;
-
-            if (cT % totalTime > 0 && cT % totalTime < forwardTime) {
-                indexer.setPower(-2000); // shoot
-            }
-            else {
-                indexer.setPower(800); //unjam
-            }
-                // if(abs(indexer.getData(TORQUE)) > 500 & abs(indexer.getData(VELOCITY)) < 50){ //intial jam detection
-                //     if (lastJam == 0) {
-                //         indexJamTime = us_ticker_read() /1000; // start clock
-                //         //indexer.setPower(-7000);
-                //         lastJam = 1;
-                //         printf("jam detected!\n");
-                //     }
-                // }
-                // else 
-                //     lastJam = 0;
+                LF.setPower(LFa * powmultiplier * 1.5);
+                RF.setPower(-RFa * powmultiplier * 1.5);
+                LB.setPower(LBa * powmultiplier);
+                RB.setPower(-RBa * powmultiplier);
                 
-                // if(lastJam && us_ticker_read() / 1000 - indexJamTime > 75){ // If jam for more than 75ms then reverse
-                //     indexer.setPower(10000); 
-                //     printf("Unjamming...\n");
-                // }else
-                //     indexer.setSpeed(-75*36); // No Jam, regular state
-        }
+                pitch.setPower(rY*9);
+                //yaw.setSpeed(rX/100);
+                
 
+            }else if(rS == 2){ //disable all the non-serializer components
+                LF.setPower(0);RF.setPower(0);LB.setPower(0);RB.setPower(0);
+                yaw.setPower(0); pitch.setPower(0);
+            }else if(rS == 3){ // beyblade mode
+                LF.setPower(0);RF.setPower(0);LB.setPower(0);RB.setPower(0);
+                yaw.setPower(0); pitch.setPower(0);
+            }
+
+            if (lS == 3) {
+                indexer.setPower(-5000);
+                
+            }else if(lS == 2){ //disable serializer
+                indexer.setPower(0);
+                setFlyWheelPwr(0);
+            }else if(lS == 1){
+                setFlyWheelPwr(40);
+                cT = us_ticker_read()/1000;
+                totalTime = forwardTime + reverseTime;
+
+                if (cT % totalTime > 0 && cT % totalTime < forwardTime) {
+                    indexer.setPower(-2000); // shoot
+                }
+                else {
+                    indexer.setPower(800); //unjam
+                }
+            }
+            CANMotor::sendValues();
+        }
+        unsigned long timeEnd = us_ticker_read() / 1000;
+        CANMotor::getFeedback();
         ThisThread::sleep_for(2ms);
     }
 }
