@@ -63,6 +63,7 @@ int main()
         unsigned long timeStart = us_ticker_read() / 1000;
         if(timeStart - loopTimer > 10){
             loopTimer = timeStart;
+            
             if(rS == 1){ // All non-serializer motors activated
                 int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
 
@@ -105,7 +106,7 @@ int main()
         }
         unsigned long timeEnd = us_ticker_read() / 1000;
         CANMotor::getFeedback();
-        ThisThread::sleep_for(2ms);
+        ThisThread::sleep_for(1ms);
     }
 }
 

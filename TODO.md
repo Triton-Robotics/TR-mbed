@@ -46,6 +46,8 @@
 
 - *Tune PIDs*
 
+- Make sendValues more efficient by limiting what addresses it sends to based on what motors exist.
+
 ## LOW PRIORITY
 
 - *Write alternate debug scripts*
