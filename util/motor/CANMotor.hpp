@@ -497,12 +497,7 @@ class CANMotor{
         static void tick(bool debug = false, bool printFeedback = false){
             getFeedback();
             //updateMultiTurnPosition();
-            for(int i = 0; i < 3; i ++)
-                sendOneID(NewCANHandler::CANBUS_1,i,debug);
-            if(debug) printf("\n");
-            for(int i = 0; i < 3; i ++)
-                sendOneID(NewCANHandler::CANBUS_2,i,debug);
-            if(debug) printf("\n");
+            sendValues();
         }
 
 };
