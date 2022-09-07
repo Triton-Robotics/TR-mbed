@@ -438,8 +438,11 @@ class CANMotor{
                             allMotors[i][mNum/4][mNum%4]->printAllMotorData();
                         allMotors[i][mNum/4][mNum%4]->timeSinceLastFeedback = us_ticker_read() / 1000 - allMotors[i][mNum/4][mNum%4]->timeOfLastFeedback;
                         allMotors[i][mNum/4][mNum%4]->timeOfLastFeedback = us_ticker_read() / 1000;
+                        if(allMotors[i][mNum/4][mNum%4]->motorData[TEMPERATURE] > 40){
+                            printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS %d DEGREES CELSIUS\n",msgID,allMotors[i][mNum/4][mNum%4]->motorData[TEMPERATURE]);
+                        }
                     }else{
-                        //printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS NOT INITIALIZED.. WHY\n",msgID);
+                        printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS NOT INITIALIZED.. WHY\n",msgID);
                     }
                 }
             }
