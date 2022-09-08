@@ -63,7 +63,7 @@ int main()
         unsigned long timeStart = us_ticker_read() / 1000;
         if(timeStart - loopTimer > 10){
             loopTimer = timeStart;
-            
+
             if(rS == 1){ // All non-serializer motors activated
                 int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
 
@@ -85,7 +85,7 @@ int main()
             }
 
             if (lS == 3) {
-                indexer.setPower(-5000);
+                indexer.setPower(5000);
                 
             }else if(lS == 2){ //disable serializer
                 indexer.setPower(0);
@@ -96,10 +96,10 @@ int main()
                 totalTime = forwardTime + reverseTime;
 
                 if (cT % totalTime > 0 && cT % totalTime < forwardTime) {
-                    indexer.setPower(-2000); // shoot
+                    indexer.setPower(2000); // shoot
                 }
                 else {
-                    indexer.setPower(800); //unjam
+                    indexer.setPower(-800); //unjam
                 }
             }
             CANMotor::sendValues();
