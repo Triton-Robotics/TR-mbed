@@ -22,6 +22,8 @@
 
 - *Accurate MULTITURN on M3508 (Maybe run it through a speed pid so its slow)*
 
+- Swap the current timing system (Kinda bootleg) with a callback set up with a timer. Ace says he knows a specific class that allows for this.
+
 - Make CANMotor class faster.
 
 - ***Write Good Robot Code*** *Code for all robots that uses Speed PID and REF Code*
