@@ -67,8 +67,8 @@ int main()
             if(rS == 1){ // All non-serializer motors activated
                 int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
 
-                LF.setPower(LFa * powmultiplier * 1.5);
-                RF.setPower(-RFa * powmultiplier * 1.5);
+                LF.setPower(LFa * powmultiplier);
+                RF.setPower(-RFa * powmultiplier);
                 LB.setPower(LBa * powmultiplier);
                 RB.setPower(-RBa * powmultiplier);
                 
@@ -85,7 +85,7 @@ int main()
             }
 
             if (lS == 3) {
-                indexer.setPower(5000);
+                indexer.setPower(400);
                 
             }else if(lS == 2){ //disable serializer
                 indexer.setPower(0);

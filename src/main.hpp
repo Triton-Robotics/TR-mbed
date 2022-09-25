@@ -176,8 +176,8 @@ static void remoteThread(){
     }
 }
 
-static void remoteRead(){
-    while(1){
+static void remoteRead(){ // for threadless
+    //while(1){
         myremote.remoteUpdate();
         lX = myremote.getStickData(LEFTJOYX,0,1000);
         lY = myremote.getStickData(LEFTJOYY,0,1000);
@@ -186,15 +186,17 @@ static void remoteRead(){
         Wh = myremote.getStickData(WHEEL,0,1000);
         lS = myremote.getSwitchData(LSWITCH);
         rS = myremote.getSwitchData(RSWITCH);
-        if(lX > 1000 || lX < 1000)
+        if(lX > 1000 || lX < -1000)
             lX = 0;
-        if(rX > 1000 || rX < 1000)
+        if(rX > 1000 || rX < -1000)
             rX = 0;
-        if(lY > 1000 || lY < 1000)
+        if(lY > 1000 || lY < -1000)
             lY = 0;
-        if(rY > 1000 || rY < 1000)
+        if(rY > 1000 || rY < -1000)
             rY = 0;
-    }
+
+        printf("remote: %d, %d, %d, %d \n", lX, lY, rX, rY);
+    //}
 }
 
 static void remotePrint(){

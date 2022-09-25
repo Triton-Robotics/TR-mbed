@@ -429,6 +429,13 @@ class CANMotor{
                 // printf("canhandler id is%d\n",canHandlers[i]);
                 if(canHandlers[i]->getFeedback(&msgID,recievedBytes)) {
                     int mNum = msgID - 0x201;
+                    // Debugging motorsExist array
+                    // for(int o = 0; o < 3; o++){
+                    //     for(int p = 0; p < 4; p++){
+                    //         printf("%d ",motorsExist[i][o][p]);
+                    //     }
+                    //     printf("\n");
+                    // }
                     if(motorsExist[i][mNum/4][mNum%4]){
                         allMotors[i][mNum/4][mNum%4]->motorData[ANGLE] = (recievedBytes[0]<<8) | recievedBytes[1];
                         allMotors[i][mNum/4][mNum%4]->motorData[VELOCITY] = (recievedBytes[2]<<8) | recievedBytes[3];
@@ -442,7 +449,7 @@ class CANMotor{
                             printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS %d DEGREES CELSIUS\n",msgID,allMotors[i][mNum/4][mNum%4]->motorData[TEMPERATURE]);
                         }
                     }else{
-                        printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS NOT INITIALIZED.. WHY\n",msgID);
+                        // printf("[WARNING] YOU HAVE A MOTOR [0x%x] {%d}{%d} ATTACHED THAT IS NOT INITIALIZED.. WHY: \n",msgID,mNum/4,mNum%4);
                     }
                 }
             }
