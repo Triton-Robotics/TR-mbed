@@ -21,8 +21,7 @@ int maxspeed = 500;
 
 int main()
 {
-    threadingRemote.start(&remoteThread);
-    CANMotor::setCANHandlers(&canHandler1,&canHandler2);
+    CANMotor::setCANHandlers(&canHandler1,&canHandler2, false, false);
     //Motor::setCANHandler(&canPorts);
     //chassis1.pidSpeed.setPID(.1, 0, 0);
     //chassis1.pidPosition.setPID(.08,0,0.0125);

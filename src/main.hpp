@@ -154,49 +154,23 @@ static void refereeThread(){
     }
 }
 
-static void remoteThread(){
-    while(1){
-        myremote.remoteUpdate();
-        lX = myremote.getStickData(LEFTJOYX,0,1000);
-        lY = myremote.getStickData(LEFTJOYY,0,1000);
-        rX = myremote.getStickData(RIGHTJOYX,0,1000);
-        rY = myremote.getStickData(RIGHTJOYY,0,1000);
-        Wh = myremote.getStickData(WHEEL,0,1000);
-        lS = myremote.getSwitchData(LSWITCH);
-        rS = myremote.getSwitchData(RSWITCH);
-        ThisThread::sleep_for(1ms);
-        if(lX > 1000 || lX < 1000)
-            lX = 0;
-        if(rX > 1000 || rX < 1000)
-            rX = 0;
-        if(lY > 1000 || lY < 1000)
-            lY = 0;
-        if(rY > 1000 || rY < 1000)
-            rY = 0;
-    }
-}
-
 static void remoteRead(){ // for threadless
-    //while(1){
-        myremote.remoteUpdate();
-        lX = myremote.getStickData(LEFTJOYX,0,1000);
-        lY = myremote.getStickData(LEFTJOYY,0,1000);
-        rX = myremote.getStickData(RIGHTJOYX,0,1000);
-        rY = myremote.getStickData(RIGHTJOYY,0,1000);
-        Wh = myremote.getStickData(WHEEL,0,1000);
-        lS = myremote.getSwitchData(LSWITCH);
-        rS = myremote.getSwitchData(RSWITCH);
-        if(lX > 1000 || lX < -1000)
-            lX = 0;
-        if(rX > 1000 || rX < -1000)
-            rX = 0;
-        if(lY > 1000 || lY < -1000)
-            lY = 0;
-        if(rY > 1000 || rY < -1000)
-            rY = 0;
-
-        printf("remote: %d, %d, %d, %d \n", lX, lY, rX, rY);
-    //}
+    myremote.remoteUpdate();
+    lX = myremote.getStickData(LEFTJOYX,0,1000);
+    lY = myremote.getStickData(LEFTJOYY,0,1000);
+    rX = myremote.getStickData(RIGHTJOYX,0,1000);
+    rY = myremote.getStickData(RIGHTJOYY,0,1000);
+    Wh = myremote.getStickData(WHEEL,0,1000);
+    lS = myremote.getSwitchData(LSWITCH);
+    rS = myremote.getSwitchData(RSWITCH);
+    if(lX > 1000 || lX < -1000)
+        lX = 0;
+    if(rX > 1000 || rX < -1000)
+        rX = 0;
+    if(lY > 1000 || lY < -1000)
+        lY = 0;
+    if(rY > 1000 || rY < -1000)
+        rY = 0;
 }
 
 static void remotePrint(){
@@ -209,7 +183,7 @@ static void remotePrint(){
 
 //CANHandler canPorts(PA_11,PA_12,PB_12,PB_13);
 
-Thread threadingRemote(osPriorityNormal);
-Thread threadingReferee(osPriorityLow);
-Thread threadingPrint(osPriorityBelowNormal);
-Thread threadingLogger(osPriorityLow);
+//Thread threadingRemote(osPriorityNormal);
+//Thread threadingReferee(osPriorityLow);
+//Thread threadingPrint(osPriorityBelowNormal);
+//Thread threadingLogger(osPriorityLow);

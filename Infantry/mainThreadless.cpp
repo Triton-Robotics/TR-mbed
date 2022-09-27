@@ -3,11 +3,11 @@
 
 #define PI 3.14159265
 
-CANMotor LF(4,NewCANHandler::CANBUS_1,M3508); CANMotor RF(2,NewCANHandler::CANBUS_1,M3508); CANMotor LB(1,NewCANHandler::CANBUS_1,M3508); CANMotor RB(3,NewCANHandler::CANBUS_1,M3508);
-float speedmultiplier = 3;
-float powmultiplier = 2;
-float translationalmultiplier = 3;
-float beybladespeedmult = 1;
+CANMotor LF(4,NewCANHandler::CANBUS_1,M3508); 
+CANMotor RF(2,NewCANHandler::CANBUS_1,M3508); 
+CANMotor LB(1,NewCANHandler::CANBUS_1,M3508); 
+CANMotor RB(3,NewCANHandler::CANBUS_1,M3508);
+
 
 CANMotor yaw(5, NewCANHandler::CANBUS_1, GIMBLY);
 CANMotor pitch(6, NewCANHandler::CANBUS_1, GIMBLY);
@@ -34,8 +34,8 @@ void setFlyWheelPwr(int pwr) {
 
 int main()
 {
-    
-    //threadingReferee.start(&refereeThread);
+    float powmultiplier = 2;
+    float translationalmultiplier = 3;
 
     CANMotor::setCANHandlers(&canHandler1,&canHandler2, false, false);
 
