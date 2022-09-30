@@ -1,23 +1,22 @@
-// #include "mbed.h"
-// #include "../src/main.hpp"
+#include "../src/main.hpp"
+#include <cstdlib>
 
-// //CANMotor chassis1(6,NewCANHandler::CANBUS_1,GIMBLY);
+// sentry only from 1230 - 1830
 
-// int maxspeed = 10000;
+CANMotor chassis1(1,NewCANHandler::CANBUS_1,M3508);
 
-// int main()
-// {
-//     threadingRemote.start(&remoteThread);
-//     //CANMotor::setCANHandlers(&canHandler1,&canHandler2);
 
-//     while(1){
-//         if(myremote.getKeyState(A))
-//             printf("keyState:%d\ttoggleState:%d\n",myremote.getKeyState(A),myremote.getToggleState(A));
-//         //chassis2.setSpeed(lY);
-//         //CANMotor::tick();
-//         //remotePrint();
-//         //printf("actual: %d desired: %d\n", chassis1.getData(ANGLE), (int)myremote.getStickData(LEFTJOYX, 0, maxspeed));
+int main()
+{
+    CANMotor::setCANHandlers(&canHandler1,&canHandler2, false, false);
+    
+    unsigned long cT;
+    while (true) {
+        chassis1.setPower(500);
 
-//     }
+        CANMotor::getFeedback();
+        CANMotor::sendValues();
+        ThisThread::sleep_for(1ms);
+    }
+}
 
-// }

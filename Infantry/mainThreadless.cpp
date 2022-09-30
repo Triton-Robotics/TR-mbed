@@ -56,6 +56,11 @@ int main()
 
     unsigned long loopTimer = us_ticker_read() / 1000;
 
+    int indexJamTime = 0;
+    int lastJam = 0;
+
+    bool strawberryJam = false;
+
     while (true) {
 
         remoteRead();
@@ -86,21 +91,26 @@ int main()
 
             if (lS == 3) {
                 indexer.setPower(400);
+                setFlyWheelPwr(40);
                 
             }else if(lS == 2){ //disable serializer
                 indexer.setPower(0);
                 setFlyWheelPwr(0);
             }else if(lS == 1){
-                setFlyWheelPwr(40);
-                cT = us_ticker_read()/1000;
-                totalTime = forwardTime + reverseTime;
-
-                if (cT % totalTime > 0 && cT % totalTime < forwardTime) {
-                    indexer.setPower(2000); // shoot
+                printf("%d",indexer.getData(TORQUE));
+                if(abs(indexer.getData(TORQUE)) > 500 & abs(indexer.getData(VELOCITY)) < 20){ //jam
+                    indexJamTime = us_ticker_read() /1000;
                 }
-                else {
-                    indexer.setPower(-800); //unjam
+                if(us_ticker_read() / 1000 - indexJamTime < 250){
+                    indexer.setPower(-5000); //jam
+                    printf("JAMMMMM- ");
+                }else if(us_ticker_read() / 1000 - indexJamTime < 500){
+                    indexer.setPower(5000); //jam
+                    printf("POWER FORWARD- ");
+                }else{
+                    indexer.setPower(1200);   
                 }
+                LFLYWHEEL.set(40); RFLYWHEEL.set(40);
             }
             CANMotor::sendValues();
         }
