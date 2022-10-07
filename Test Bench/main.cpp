@@ -13,42 +13,21 @@ CANMotor gimbly9(5,NewCANHandler::CANBUS_1,GIMBLY);
 CANMotor gimbly10(6,NewCANHandler::CANBUS_1,GIMBLY);
 CANMotor gimbly11(7,NewCANHandler::CANBUS_1,GIMBLY);
 
-
 int main()
 {
     CANMotor::setCANHandlers(&canHandler1,&canHandler2, false, false);
-    
-    unsigned long loopTimer;
+
     while (true) {
 
         remoteRead();
 
-        unsigned long timeStart = us_ticker_read() / 1000;
-        if(timeStart - loopTimer > 10){
-            if(lS == 2){
-                m3508_1.setSpeed(500);
-                m3508_2.setSpeed(500);
-                m3508_3.setSpeed(500);
-                m3508_4.setSpeed(500);
-                m3508_5.setSpeed(500);
-                gimbly8.setSpeed(500);
-                gimbly9.setSpeed(500);
-                gimbly10.setSpeed(500);
-                gimbly11.setSpeed(500);
-            }else{
-                m3508_1.setPower(0);
-                m3508_2.setPower(0);
-                m3508_3.setPower(0);
-                m3508_4.setPower(0);
-                m3508_5.setPower(0);
-                gimbly8.setPower(0);
-                gimbly9.setPower(0);
-                gimbly10.setPower(0);
-                gimbly11.setPower(0);
-            }
-            CANMotor::sendValues();
+        if(lS == 2){
+            gimbly9.setSpeed(300);
+        }else{
+            gimbly9.setPower(0);
         }
-        unsigned long timeEnd = us_ticker_read() / 1000;
+        CANMotor::sendValues();
+        
         CANMotor::getFeedback();
         ThisThread::sleep_for(1ms);
     }
