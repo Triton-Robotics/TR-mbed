@@ -297,6 +297,10 @@ class CANMotor{
             setOutput();
         }
 
+        void operator=(int value){
+            setValue(value);
+        }
+
         void setPositionPID(float kP, float kI, float kD) {pidPosition.setPID(kP, kI, kD);}
         void setPositionIntegralCap(double cap){pidPosition.setIntegralCap(cap);}
         void setPositionOutputCap(double cap){pidPosition.setOutputCap(cap);}
@@ -345,6 +349,10 @@ class CANMotor{
             else if(data == MULTITURNANGLE) 
                 return multiTurn;
             return 0;
+        }
+
+        int operator>>(motorDataType data){
+            return getData(data);
         }
 
         void printAllMotorData() {

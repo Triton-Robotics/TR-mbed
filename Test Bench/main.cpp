@@ -13,10 +13,54 @@ CANMotor gimbly9(5,NewCANHandler::CANBUS_1,GIMBLY);
 CANMotor gimbly10(6,NewCANHandler::CANBUS_1,GIMBLY);
 CANMotor gimbly11(7,NewCANHandler::CANBUS_1,GIMBLY);
 
+CANMotor getMotor(int i){
+    switch (i) {
+    
+    case 1:
+        return m3508_1;
+        break;
+    case 2:
+        return m3508_2;
+        break;
+    case 3:
+        return m3508_3;
+        break;
+    case 4:
+        return m3508_4;
+        break;
+    case 5:
+        return m3508_5;
+        break;
+    case 6:
+        return m3508_1;
+        break;
+    case 7:
+        return m3508_1;
+        break;
+    case 8:
+        return gimbly8;
+        break;
+    case 9:
+        return gimbly9;
+        break;
+    case 10:
+        return gimbly10;
+        break;
+    case 11:
+        return gimbly11;
+        break;
+    default:
+        return m3508_1;
+        break;
+    }
+}
+
 int main()
 {
     CANMotor::setCANHandlers(&canHandler1,&canHandler2, false, false);
 
+    int numMotor = 0;
+    int stateLS = 0;
     while (true) {
 
         remoteRead();
@@ -26,6 +70,11 @@ int main()
         }else{
             gimbly9.setPower(0);
         }
+
+        gimbly9>>VELOCITY;
+
+        m3508_1 = 100;
+
         CANMotor::sendValues();
         
         CANMotor::getFeedback();

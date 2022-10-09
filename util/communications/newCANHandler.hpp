@@ -85,10 +85,6 @@ class NewCANHandler{
         static void printMsg(CANMessage& msg)
         {
             printf(" ID = 0x%.3x\t", msg.id);
-            //printf("  Type    = %d\r\n", msg.type);
-            //printf("  Format  = %d\r\n", msg.format);
-            //printf("  Length  = %d\r\n", msg.len);
-            //printf("  Data    =");
             for (int i = 0; i < msg.len; i++)
                 printf(" 0x%.2X", msg.data[i]);
             printf("\n");
