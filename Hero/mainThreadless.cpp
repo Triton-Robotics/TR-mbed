@@ -54,6 +54,9 @@ int main()
             }
 
             if(lS == 3){
+                ///////////////////////////////////////////
+                /// THEO SECTION OF CODE
+                ///////////////////////////////////////////
                 if(abs(indexer.getData(TORQUE)) > 1000 & abs(indexer.getData(VELOCITY)) < 20){ //intial jam detection
                     if (lastJam == 0) {
                         indexJamTime = us_ticker_read() /1000; // start clock

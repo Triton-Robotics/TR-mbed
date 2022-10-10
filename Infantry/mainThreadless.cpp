@@ -97,6 +97,9 @@ int main()
                 indexer.setPower(0);
                 setFlyWheelPwr(0);
             }else if(lS == 1){
+                ///////////////////////////////////////////
+                /// THEO SECTION OF CODE
+                ///////////////////////////////////////////
                 printf("%d",indexer.getData(TORQUE));
                 if(abs(indexer.getData(TORQUE)) > 500 & abs(indexer.getData(VELOCITY)) < 20){ //jam
                     indexJamTime = us_ticker_read() /1000;
