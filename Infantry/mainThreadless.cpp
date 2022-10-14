@@ -46,7 +46,7 @@ int main()
     pitch.setPositionPID(.017,.001,.044);
     pitch.useAbsEncoder = 1;
     yaw.setSpeedPID(78.181, 7.303, 1.227);
-    indexer.setSpeedPID(0.014, 0.001, 0.046);
+    indexer.setSpeedPID(0.34, 0.002, 0.166);
     indexer.setSpeedIntegralCap(500000);
 
     LF.outCap = 16000;   
