@@ -63,17 +63,23 @@ int main()
     int stateLS = 0;
     while (true) {
 
+        
+
         remoteRead();
 
-        if(lS == 2){
+        if(lS == 1){
             gimbly9.setSpeed(300);
+            
         }else{
             gimbly9.setPower(0);
         }
+        if(rS == 2){
+            oled.writeChar('a');
+        }
+        else
+            oled.writeString(0, 0, "Hello World ! 1234567890 abcdefghijklmnopqrstuvwxyz");
 
-        gimbly9>>VELOCITY;
-
-        m3508_1 = 100;
+        //m3508_1 = 100;
 
         CANMotor::sendValues();
         

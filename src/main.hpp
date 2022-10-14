@@ -10,8 +10,13 @@
 #include "../util/communications/SerialCommunication.hpp"
 #include "../util/motor/CANMotor.hpp"
 #include "../util/communications/ref_serial.cpp"
+#include "../util/communications/oled/SSD1308.cpp"
 
+#define OLED_SDA                  PB_9
+#define OLED_SCL                  PB_8
+I2C i2c(OLED_SDA, OLED_SCL);
 
+SSD1308 oled(&i2c, 0x78);
 
 //#include "robots/include/infantry.hpp"
 
