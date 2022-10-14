@@ -90,7 +90,8 @@ int main()
             }
 
             if (lS == 3) {
-                indexer.setPower(400);
+                //indexer.setPower(1200);
+                indexer.setSpeed(-4500);
                 setFlyWheelPwr(40);
                 
             }else if(lS == 2){ //disable serializer
@@ -100,18 +101,19 @@ int main()
                 ///////////////////////////////////////////
                 /// THEO SECTION OF CODE
                 ///////////////////////////////////////////
-                printf("%d",indexer.getData(TORQUE));
-                if(abs(indexer.getData(TORQUE)) > 500 & abs(indexer.getData(VELOCITY)) < 20){ //jam
+                printf("TORQ:%d VEL:%d\n",indexer.getData(TORQUE), indexer.getData(VELOCITY));
+                if(abs(indexer.getData(TORQUE)) > 100 & abs(indexer.getData(VELOCITY)) < 20){ //jam
                     indexJamTime = us_ticker_read() /1000;
                 }
-                if(us_ticker_read() / 1000 - indexJamTime < 250){
-                    indexer.setPower(-5000); //jam
+                if(us_ticker_read() / 1000 - indexJamTime < 1000){
+                    indexer.setPower(14000); //jam
                     printf("JAMMMMM- ");
-                }else if(us_ticker_read() / 1000 - indexJamTime < 500){
-                    indexer.setPower(5000); //jam
+                }else if(us_ticker_read() / 1000 - indexJamTime < 1500){
+                    indexer.setPower(-9000); //jam
                     printf("POWER FORWARD- ");
                 }else{
-                    indexer.setPower(1200);   
+                    //indexer.setPower(-900);   
+                    indexer.setSpeed(-4500);
                 }
                 LFLYWHEEL.set(40); RFLYWHEEL.set(40);
             }

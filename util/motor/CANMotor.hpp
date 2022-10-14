@@ -193,7 +193,7 @@ class CANMotor{
             }else{
                 CANMotor mot(true);
                 allMotors[bus][motorNumber/4][motorNumber%4] = &mot;
-                printf("[ERROR] THERES A CONFLICT ON BUS [%d] ID [%d]. YOU WILL HAVE ERRORS.\n YOU DUMB BITCH WHY WOULD YOU (WHO IS LIKELY ME) DO THIS. FIX YOUR MOTOR IDS YOU IDIOT.\n",motorNumber/4, motorNumber%4);
+                printf("[ERROR] THERES A CONFLICT ON BUS [%d] ID [%d]. YOU WILL HAVE ERRORS.\n",motorNumber/4, motorNumber%4);
             }
             
 
