@@ -63,7 +63,7 @@ int main()
     int stateLS = 0;
     while (true) {
 
-        
+        printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
 
         remoteRead();
 
@@ -85,6 +85,7 @@ int main()
         
         CANMotor::getFeedback();
         ThisThread::sleep_for(1ms);
+        
     }
 }
 
