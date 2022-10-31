@@ -36,7 +36,7 @@ int main()
 {
     float speedmultiplier = 3;
     float powmultiplier = 2;
-    float translationalmultiplier = 3;
+    float translationalmultiplier = 1.5; // was 3
     float beybladespeedmult = 1;
 
     CANMotor::setCANHandlers(&canHandler1,&canHandler2, false, false);
@@ -51,10 +51,10 @@ int main()
     indexer.setSpeedPID(0.34, 0.002, 0.166);
     indexer.setSpeedIntegralCap(500000);
 
-    LF.outCap = 16000;   
-    RF.outCap = 16000;
-    LB.outCap = 16000;
-    RB.outCap = 16000;
+    LF.outCap = 2000;   
+    RF.outCap = 2000;
+    LB.outCap = 2000;
+    RB.outCap = 2000;
 
     unsigned long loopTimer = us_ticker_read() / 1000;
 
@@ -62,6 +62,7 @@ int main()
     int lastJam = 0;
 
     bool strawberryJam = false;
+    int refLoop=0;
 
     while (true) {
 
@@ -69,6 +70,11 @@ int main()
 
         unsigned long timeStart = us_ticker_read() / 1000;
         if(timeStart - loopTimer > 10){
+            refLoop++;
+            if(refLoop == 10){
+                refereeThread();
+                refLoop = 0;
+            }
             loopTimer = timeStart;
 
             if(rS == 1){ // All non-serializer motors activated

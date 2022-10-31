@@ -1,8 +1,9 @@
+#ifndef _REFEREE_HPP
+#define _REFEREE_HPP
+
 #include "mbed.h"
 #include "crc.cpp"
 
-#ifndef referee_hpp
-#define referee_hpp
 class Referee {
 public:
     Referee(PinName pin_tx, PinName pin_rx);
@@ -506,12 +507,20 @@ typedef  struct __packed
   uint16_t data_cmd_id;
   uint16_t sender_ID;
   uint16_t receiver_ID;
-//   ext_client_custom_graphic_seven_t graphic_custom; // ADDED
-    ext_client_custom_character_t graphic_custom; // ADDED
-}ext_student_interactive_header_data_t;
+  ext_client_custom_graphic_seven_t graphic_custom; // ADDED
+}ext_student_interactive_header_data_graphic_t;
+
+// my copy
+typedef  struct __packed
+{
+  uint16_t data_cmd_id;
+  uint16_t sender_ID;
+  uint16_t receiver_ID;
+  ext_client_custom_character_t graphic_custom; // ADDED
+}ext_student_interactive_header_data_character_t;
 
 /* data */
-typedef __packed struct
+typedef  struct __packed
 {
 	uint8_t data[20];//数据段n小于113
 }robot_interactive_data_t;
@@ -524,11 +533,20 @@ typedef __packed struct
 */
 
 /* 客户端删除图形 机器人间通信：0x0301 */
-typedef __packed struct
+typedef  struct __packed
 {
   uint8_t operate_tpye; 
   uint8_t layer; 
 }ext_client_custom_graphic_delete_t;
+
+// my copy
+typedef  struct __packed
+{
+  uint16_t data_cmd_id;
+  uint16_t sender_ID;
+  uint16_t receiver_ID;
+  ext_client_custom_graphic_delete_t graphic_custom; // ADDED
+}ext_student_interactive_header_data_delete_t;
 
 // /* 图形数据 */
 // typedef __packed struct
@@ -564,31 +582,31 @@ typedef  struct __packed
 }ClientData_struct_t;
 
 /* 客户端绘制一个图形 机器人间通信：0x0301 */
-typedef __packed struct
+typedef  struct __packed
 {
   graphic_data_struct_t grapic_data_struct;
 }ext_client_custom_graphic_single_t;
 
 /* 客户端绘制二个图形 机器人间通信：0x0301 */
-typedef __packed struct
+typedef  struct __packed
 {
   graphic_data_struct_t grapic_data_struct[2];
 }ext_client_custom_graphic_double_t;
 
 /* 客户端绘制五个图形 机器人间通信：0x0301 */
-typedef __packed struct
+typedef  struct __packed
 {
   graphic_data_struct_t grapic_data_struct[5];
 }ext_client_custom_graphic_five_t;
 
 /* 客户端绘制七个图形 机器人间通信：0x0301 */
-// typedef __packed struct
+// typedef  struct __packed
 // {
 //   graphic_data_struct_t grapic_data_struct[7];
 // }ext_client_custom_graphic_seven_t;
 
 /* 客户端绘制字符 机器人间通信：0x0301 */
-// typedef __packed struct
+// typedef  struct __packed
 // {
 //   graphic_data_struct_t grapic_data_struct;
 //   char data[30];
@@ -596,37 +614,37 @@ typedef __packed struct
 
 // ------------------- Line 1330
 
-/*机器人交互信息：0x0301*/
-typedef __packed struct
-{
-	xFrameHeader   							txFrameHeader;//帧头
-	uint16_t								CmdID;//命令码
-	ext_student_interactive_header_data_t   dataFrameHeader;//数据段头结构
-	robot_interactive_data_t  	 			interactData;//数据段
-	uint16_t		 						FrameTail;//帧尾
-}ext_CommunatianData_t;
+// /*机器人交互信息：0x0301*/
+// typedef __packed struct
+// {
+// 	xFrameHeader   							txFrameHeader;//帧头
+// 	uint16_t								CmdID;//命令码
+// 	ext_student_interactive_header_data_t   dataFrameHeader;//数据段头结构
+// 	robot_interactive_data_t  	 			interactData;//数据段
+// 	uint16_t		 						FrameTail;//帧尾
+// }ext_CommunatianData_t;
 
-//帧头  命令码   数据段头结构  数据段   帧尾
+// //帧头  命令码   数据段头结构  数据段   帧尾
 
-/*客户端结构体*/
-//上传客户端
-typedef __packed struct
-{
-	xFrameHeader   							txFrameHeader;//帧头
-	uint16_t		 						CmdID;//命令码
-	ext_student_interactive_header_data_t   dataFrameHeader;//数据段头结构
-	graphic_data_struct_t cilentData[7];//数据段
-	uint16_t		 						FrameTail;//帧尾
-}ext_SendClientData_t;
+// /*客户端结构体*/
+// //上传客户端
+// typedef __packed struct
+// {
+// 	xFrameHeader   							txFrameHeader;//帧头
+// 	uint16_t		 						CmdID;//命令码
+// 	ext_student_interactive_header_data_t   dataFrameHeader;//数据段头结构
+// 	graphic_data_struct_t cilentData[7];//数据段
+// 	uint16_t		 						FrameTail;//帧尾
+// }ext_SendClientData_t;
 
-typedef __packed struct
-{
-	xFrameHeader   							txFrameHeader;//帧头
-	uint16_t		 						CmdID;//命令码
-	ext_student_interactive_header_data_t   dataFrameHeader;//数据段头结构
-	graphic_data_struct_t cilentData[5];//数据段
-	uint16_t		 						FrameTail;//帧尾
-}ext_ShowCrossHair_t;
+// typedef __packed struct
+// {
+// 	xFrameHeader   							txFrameHeader;//帧头
+// 	uint16_t		 						CmdID;//命令码
+// 	ext_student_interactive_header_data_t   dataFrameHeader;//数据段头结构
+// 	graphic_data_struct_t cilentData[5];//数据段
+// 	uint16_t		 						FrameTail;//帧尾
+// }ext_ShowCrossHair_t;
 
 
 // ------------------------------
@@ -661,20 +679,12 @@ extern ext_game_robot_pos_t  ext_game_robot_pos;
 
 
 // ------------------------------
-// MY PART
+// MY PART (function headers)
 
 _Bool is_red_or_blue(void);
 uint8_t get_robot_id(void);
 uint8_t get_remain_hp(void);
 void Show_CrossHair(BufferedSerial* b);
-
-typedef __packed struct
-{
-    float data1;
-    float data2;
-    float data3;
-    uint8_t masks;
-} client_custom_data_t;
 
 void referee_data_pack_handle(uint8_t sof,uint16_t cmd_id, uint8_t *p_data, uint16_t len, BufferedSerial* b);
 
