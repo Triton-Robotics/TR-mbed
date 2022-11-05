@@ -34,8 +34,10 @@ void setFlyWheelPwr(int pwr) {
 
 int main()
 {
+    float speedmultiplier = 3;
     float powmultiplier = 2;
     float translationalmultiplier = 3;
+    float beybladespeedmult = 1;
 
     CANMotor::setCANHandlers(&canHandler1,&canHandler2, false, false);
 
@@ -71,11 +73,15 @@ int main()
 
             if(rS == 1){ // All non-serializer motors activated
                 int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
+                LF.setSpeed(LFa * speedmultiplier);
+                RF.setSpeed(-RFa * speedmultiplier);
+                LB.setSpeed(LBa * speedmultiplier);
+                RB.setSpeed(-RBa * speedmultiplier);
 
-                LF.setPower(LFa * powmultiplier);
-                RF.setPower(-RFa * powmultiplier);
-                LB.setPower(LBa * powmultiplier);
-                RB.setPower(-RBa * powmultiplier);
+                // LF.setPower(LFa * powmultiplier);
+                // RF.setPower(-RFa * powmultiplier);
+                // LB.setPower(LBa * powmultiplier);
+                // RB.setPower(-RBa * powmultiplier);
                 
                 pitch.setPower(rY*9);
                 //yaw.setSpeed(rX/100);
