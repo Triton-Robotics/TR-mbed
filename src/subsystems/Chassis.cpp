@@ -106,5 +106,7 @@ CANMotor Chassis::getMotor(int index) {
             return LB;
         case 3:
             return RB;
+        default:
+            return LF;
     }
 }
