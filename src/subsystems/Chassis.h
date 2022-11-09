@@ -1,9 +1,18 @@
 #include "../../util/motor/CANMotor.hpp"
 
+#ifndef Chassis_h
+#define Chassis_h
 class Chassis {
+    public:
+        Chassis();
+        void periodic();
+
+        void driveXYR(double yVelocityRPM, double xVelocityRPM, double rotationVelocityRPM);
+        void driveAngle(double angleRadians, double speedRPM, double rotationVelcotiyRPM);
+        CANMotor getMotor(int index);
+
     private:
         CANMotor LF, RF, LB, RB;
-        CANMotor motors[4];
 
         double rpmToTicksPerSecond(double RPM);
         double ticksPerSecondToRPM(double ticksPerSecond);
@@ -12,14 +21,6 @@ class Chassis {
 
         void setMotorPower(int index, double power);
         void setMotorSpeedRPM(int index, double speed);
-        void setMotorSpeedInchesPerSecond(int index, double speed);
-
-    public:
-        Chassis();
-        void periodic();
-        void tankDrive(double leftVelocityRPM, double rightVelocityRPM);
-        void drive1(double yVelocityRPM, double xVelocityRPM, double rotationVelocityRPM);
-        void drive2(double angleRadians, double speedRPM, double rotationVelcotiyRPM);
-        CANMotor getMotor(int index);
-
+        void setMotorSpeedTicksPerSecond(int index, double speed);
 };
+#endif
