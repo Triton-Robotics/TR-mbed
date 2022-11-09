@@ -5,13 +5,9 @@
 #define CAN_BUS_TYPE NewCANHandler::CANBUS_1
 #define MOTOR_TYPE M3508
 
-#define kP 1
-#define kI 0
-#define kD 0
-
-#define WHEEL_RADIUS_INCHES 6
-#define HALF_TRACK_WIDTH_INCHES 12
-#define HALF_TRACK_LENGTH_INCHE 12
+double getAngleRadians() {
+    return PI / 2.0;
+}
 
 Chassis::Chassis() : LF(4, CAN_BUS_TYPE, MOTOR_TYPE), RF(1, CAN_BUS_TYPE, MOTOR_TYPE), 
     LB(2, CAN_BUS_TYPE, MOTOR_TYPE), RB(3, CAN_BUS_TYPE, MOTOR_TYPE) {
@@ -23,14 +19,6 @@ Chassis::Chassis() : LF(4, CAN_BUS_TYPE, MOTOR_TYPE), RF(1, CAN_BUS_TYPE, MOTOR_
     RF.setSpeedPID(0.9, 0.25, 0);
     LB.setSpeedPID(0.9, 0.2, 0);
     RB.setSpeedPID(0.8, 0.3, 0);
-    // LF.setSpeedPID(.743, 0.204, 0.284);
-    // RF.setSpeedPID(1.073, 0.556, 0);
-    // LB.setSpeedPID(1.75, 0.351, 5.63);
-    // RB.setSpeedPID(1.081, 0.247, 0.386);
-}
-
-void Chassis::periodic() {
-    CANMotor::tick();
 }
 
 double Chassis::rpmToTicksPerSecond(double RPM) {
@@ -39,14 +27,6 @@ double Chassis::rpmToTicksPerSecond(double RPM) {
 
 double Chassis::ticksPerSecondToRPM(double ticksPerSecond) {
     return ticksPerSecond * 60 / (8096.0 * 19.0);
-}
-
-double Chassis::rpmToInchesPerSecond(double RPM) {
-    return RPM * 2 * PI * WHEEL_RADIUS_INCHES / 60.0;
-}
-
-double Chassis::inchesPerSecondToRPM(double inchesPerSecond) {
-    return inchesPerSecond / (2.0 * PI * WHEEL_RADIUS_INCHES) * 60;
 }
 
 void Chassis::setMotorPower(int index, double power) {
@@ -89,19 +69,25 @@ void Chassis::setMotorSpeedRPM(int index, double speed) {
 
 // Math comes from this paper: https://research.ijcaonline.org/volume113/number3/pxc3901586.pdf
 void Chassis::driveXYR(double xVelocityRPM, double yVelocityRPM, double rotationVelocityRPM) {
-    double angularComponent = rotationVelocityRPM;//(HALF_TRACK_LENGTH_INCHE + HALF_TRACK_WIDTH_INCHES) * rotationVelocityRPM;
     setMotorSpeedRPM(0, 
-        (xVelocityRPM + yVelocityRPM + angularComponent)
+        (xVelocityRPM + yVelocityRPM + rotationVelocityRPM)
     );
     setMotorSpeedRPM(1, 
-        (xVelocityRPM - yVelocityRPM + angularComponent)
+        (xVelocityRPM - yVelocityRPM + rotationVelocityRPM)
     );
     setMotorSpeedRPM(2, 
-        (-xVelocityRPM + yVelocityRPM + angularComponent)
+        (-xVelocityRPM + yVelocityRPM + rotationVelocityRPM)
     );
     setMotorSpeedRPM(3, 
-        (-xVelocityRPM - yVelocityRPM + angularComponent)
+        (-xVelocityRPM - yVelocityRPM + rotationVelocityRPM)
     );
+}
+
+void Chassis::driveFieldRelative(double xVelocityRPM, double yVelocityRPM, double rotationVelocityRPM) {
+    double angleRadians = getAngleRadians();
+    double robotRelativeXVelocity = xVelocityRPM * cos(angleRadians) - yVelocityRPM * sin(angleRadians);
+    double robotRelativeYVelocity = xVelocityRPM * sin(angleRadians) + yVelocityRPM * cos(angleRadians);
+    driveXYR(robotRelativeXVelocity, robotRelativeYVelocity, rotationVelocityRPM);
 }
 
 void Chassis::driveAngle(double angleRadians, double speedRPM, double rotationVelocityRPM) {
