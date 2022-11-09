@@ -13,6 +13,7 @@
 #include "../util/communications/SerialCommunication.hpp"
 #include "../util/motor/CANMotor.hpp"
 #include "../util/communications/ref_serial.cpp"
+#include "../util/communications/ref_ui.cpp"
 #include "../util/communications/oled/SSD1308.cpp"
 
 #define OLED_SDA                  PB_9
@@ -23,13 +24,10 @@ SSD1308 oled(&i2c, 0x78);
 
 //#include "robots/include/infantry.hpp"
 
-// Screen resolution of your Robomaster Client
-#define SCREEN_LENGTH 1920
-#define SCREEN_WIDTH 1080
 
 static DJIRemote myremote(PA_0, PA_1);
 static BufferedSerial referee(PC_10, PC_11, 115200); // Nucleo board: top left male pins. 
-static int enablePrintRefData = 0;
+static bool enablePrintRefData = 0;
 
 NewCANHandler canHandler1(PA_11,PA_12);
 NewCANHandler canHandler2(PB_12,PB_13);
@@ -94,56 +92,56 @@ void refereeThread(){
             // RobotStatus_LEDYellow(&pc);
             // Show_CrossHair(&referee);
 
-            // delete drawing
-            ext_student_interactive_header_data_delete_t custom_delete_draw;
-            {
-                custom_delete_draw.data_cmd_id=0x0100;		
-                custom_delete_draw.sender_ID=get_robot_id();//发送者ID，机器人对应ID
-                custom_delete_draw.receiver_ID=get_robot_id()+0x0100;//接收者ID，操作手客户端ID
-                {
-                    custom_delete_draw.graphic_custom.operate_tpye = 1;
-                    custom_delete_draw.graphic_custom.layer = 5;
-                }
-            }
+            // // delete drawing
+            // ext_student_interactive_header_data_delete_t custom_delete_draw;
+            // {
+            //     custom_delete_draw.data_cmd_id=0x0100;		
+            //     custom_delete_draw.sender_ID=get_robot_id();//发送者ID，机器人对应ID
+            //     custom_delete_draw.receiver_ID=get_robot_id()+0x0100;//接收者ID，操作手客户端ID
+            //     {
+            //         custom_delete_draw.graphic_custom.operate_tpye = 1;
+            //         custom_delete_draw.graphic_custom.layer = 5;
+            //     }
+            // }
 
-            // draw text
-            ext_student_interactive_header_data_character_t custom_character_draw;
-            {            
-                custom_character_draw.data_cmd_id=0x0110;//绘制七个图形（内容ID，查询裁判系统手册）//0104 for 7 diagrams, 0110 for drawing text		
-                custom_character_draw.sender_ID=get_robot_id();//发送者ID，机器人对应ID
-                custom_character_draw.receiver_ID=get_robot_id()+0x0100;//接收者ID，操作手客户端ID
-                //自定义图像数据
-                {
-                    // For drawing text ------------------
+            // // draw text
+            // ext_student_interactive_header_data_character_t custom_character_draw;
+            // {            
+            //     custom_character_draw.data_cmd_id=0x0110;//绘制七个图形（内容ID，查询裁判系统手册）//0104 for 7 diagrams, 0110 for drawing text		
+            //     custom_character_draw.sender_ID=get_robot_id();//发送者ID，机器人对应ID
+            //     custom_character_draw.receiver_ID=get_robot_id()+0x0100;//接收者ID，操作手客户端ID
+            //     //自定义图像数据
+            //     {
+            //         // For drawing text ------------------
 
-                    //char c[] = "hello";
-                    string c = "power: " + to_string((int)ext_power_heat_data.data.chassis_power);
-                    // if(loop>50){
-                    //     strcpy(c,"byebye");
-                    // }
-                    for(int i=0; i<c.length(); i++){
-                        custom_character_draw.graphic_custom.data[i]=c[i];
-                    }
-                    for(int i=c.length(); i<30; i++){ // have to fill in the rest of the char array
-                        custom_character_draw.graphic_custom.data[i]=' ';
-                    }
+            //         //char c[] = "hello";
+            //         string c = "power: " + to_string((int)ext_power_heat_data.data.chassis_power);
+            //         // if(loop>50){
+            //         //     strcpy(c,"byebye");
+            //         // }
+            //         for(int i=0; i<c.length(); i++){
+            //             custom_character_draw.graphic_custom.data[i]=c[i];
+            //         }
+            //         for(int i=c.length(); i<30; i++){ // have to fill in the rest of the char array
+            //             custom_character_draw.graphic_custom.data[i]=' ';
+            //         }
 
-                    custom_character_draw.graphic_custom.grapic_data_struct.graphic_name[0] = 97;
-                    // custom_character_draw.graphic_custom.grapic_data_struct.graphic_name[1] = 98;
-                    // custom_character_draw.graphic_custom.grapic_data_struct.graphic_name[2] = 99;//图形名
-                    //上面三个字节代表的是图形名，用于图形索引，可自行定义
-                    custom_character_draw.graphic_custom.grapic_data_struct.operate_tpye=1;//图形操作，0：空操作；1：增加；2：修改；3：删除；
-                    custom_character_draw.graphic_custom.grapic_data_struct.graphic_tpye=7;//图形类型，0为直线，其他的查看用户手册
-                    custom_character_draw.graphic_custom.grapic_data_struct.layer=5;//图层数
-                    custom_character_draw.graphic_custom.grapic_data_struct.color=1;//颜色
-                    custom_character_draw.graphic_custom.grapic_data_struct.start_angle=20;
-                    custom_character_draw.graphic_custom.grapic_data_struct.end_angle=10;
-                    custom_character_draw.graphic_custom.grapic_data_struct.width=2;
-                    custom_character_draw.graphic_custom.grapic_data_struct.start_x=SCREEN_LENGTH/2 +100;//10
-                    custom_character_draw.graphic_custom.grapic_data_struct.start_y=SCREEN_WIDTH/2 +100;
+            //         custom_character_draw.graphic_custom.grapic_data_struct.graphic_name[0] = 97;
+            //         // custom_character_draw.graphic_custom.grapic_data_struct.graphic_name[1] = 98;
+            //         // custom_character_draw.graphic_custom.grapic_data_struct.graphic_name[2] = 99;//图形名
+            //         //上面三个字节代表的是图形名，用于图形索引，可自行定义
+            //         custom_character_draw.graphic_custom.grapic_data_struct.operate_tpye=1;//图形操作，0：空操作；1：增加；2：修改；3：删除；
+            //         custom_character_draw.graphic_custom.grapic_data_struct.graphic_tpye=7;//图形类型，0为直线，其他的查看用户手册
+            //         custom_character_draw.graphic_custom.grapic_data_struct.layer=5;//图层数
+            //         custom_character_draw.graphic_custom.grapic_data_struct.color=1;//颜色
+            //         custom_character_draw.graphic_custom.grapic_data_struct.start_angle=20;
+            //         custom_character_draw.graphic_custom.grapic_data_struct.end_angle=10;
+            //         custom_character_draw.graphic_custom.grapic_data_struct.width=2;
+            //         custom_character_draw.graphic_custom.grapic_data_struct.start_x=SCREEN_LENGTH/2 +100;//10
+            //         custom_character_draw.graphic_custom.grapic_data_struct.start_y=SCREEN_WIDTH/2 +100;
 
-                }
-            }
+            //     }
+            // }
 
             // For graphing diagrams ----------------------------
             ext_student_interactive_header_data_graphic_t custom_graphic_draw;	//自定义图像
@@ -199,11 +197,13 @@ void refereeThread(){
                 }        
             }
 
-            // if(loop % 20==0){ // send only every second
-                referee_data_pack_handle(0xA5,0x0301,(uint8_t *)&custom_delete_draw,sizeof(custom_delete_draw),&referee);
-                referee_data_pack_handle(0xA5,0x0301,(uint8_t *)&custom_character_draw,sizeof(custom_character_draw),&referee);
-                referee_data_pack_handle(0xA5,0x0301,(uint8_t *)&custom_graphic_draw,sizeof(custom_graphic_draw),&referee);
-            // }
+            // referee_data_pack_handle(0xA5,0x0301,(uint8_t *)&custom_delete_draw,sizeof(custom_delete_draw),&referee);
+            ui_delete_all(&referee);
+            // referee_data_pack_handle(0xA5,0x0301,(uint8_t *)&custom_character_draw,sizeof(custom_character_draw),&referee);
+            referee_data_pack_handle(0xA5,0x0301,(uint8_t *)&custom_graphic_draw,sizeof(custom_graphic_draw),&referee);
+
+            string powerStr = "power: " + to_string((int)ext_power_heat_data.data.chassis_power);
+            ui_graph_character(&referee, 1, powerStr, SCREEN_LENGTH/2 +100, SCREEN_WIDTH/2 +100, 99);
 
             // printf("write!");
             // pc.write("hello",5);

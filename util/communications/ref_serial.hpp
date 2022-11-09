@@ -468,36 +468,6 @@ typedef struct
 	uint8_t InfoUpdataFlag;
 }ext_dart_client_cmd_t;
 
-// --------------- THE FOLLOWING ARE MOVED FROM BELOW
-
-/* 图形数据 */
-typedef  struct __packed
-{ 
-uint8_t graphic_name[3]; 
-uint32_t operate_tpye:3; 
-uint32_t graphic_tpye:3; 
-uint32_t layer:4; 
-uint32_t color:4; 
-uint32_t start_angle:9;
-uint32_t end_angle:9;
-uint32_t width:10; 
-uint32_t start_x:11; 
-uint32_t start_y:11; 
-uint32_t radius:10; 
-uint32_t end_x:11; 
-uint32_t end_y:11; 
-} graphic_data_struct_t;
-
-typedef  struct __packed
-{
-  graphic_data_struct_t grapic_data_struct[7];
-}ext_client_custom_graphic_seven_t;
-
-typedef  struct __packed
-{
-  graphic_data_struct_t grapic_data_struct;
-  char data[30];
-}ext_client_custom_character_t;
 
 // ----------------------- Line 1163
 
@@ -507,17 +477,7 @@ typedef  struct __packed
   uint16_t data_cmd_id;
   uint16_t sender_ID;
   uint16_t receiver_ID;
-  ext_client_custom_graphic_seven_t graphic_custom; // ADDED
-}ext_student_interactive_header_data_graphic_t;
-
-// my copy
-typedef  struct __packed
-{
-  uint16_t data_cmd_id;
-  uint16_t sender_ID;
-  uint16_t receiver_ID;
-  ext_client_custom_character_t graphic_custom; // ADDED
-}ext_student_interactive_header_data_character_t;
+}ext_student_interactive_header_data_t;
 
 /* data */
 typedef  struct __packed
@@ -548,23 +508,23 @@ typedef  struct __packed
   ext_client_custom_graphic_delete_t graphic_custom; // ADDED
 }ext_student_interactive_header_data_delete_t;
 
-// /* 图形数据 */
-// typedef __packed struct
-// { 
-//   uint8_t graphic_name[3]; 
-//   uint32_t operate_tpye:3; 
-//   uint32_t graphic_tpye:3; 
-//   uint32_t layer:4; 
-//   uint32_t color:4; 
-//   uint32_t start_angle:9;
-//   uint32_t end_angle:9;
-//   uint32_t width:10; 
-//   uint32_t start_x:11; 
-//   uint32_t start_y:11; 
-//   uint32_t radius:10; 
-//   uint32_t end_x:11; 
-//   uint32_t end_y:11; 
-// }graphic_data_struct_t;
+/* 图形数据 */
+typedef  struct __packed
+{ 
+  uint8_t graphic_name[3]; 
+  uint32_t operate_tpye:3; 
+  uint32_t graphic_tpye:3; 
+  uint32_t layer:4; 
+  uint32_t color:4; 
+  uint32_t start_angle:9;
+  uint32_t end_angle:9;
+  uint32_t width:10; 
+  uint32_t start_x:11; 
+  uint32_t start_y:11; 
+  uint32_t radius:10; 
+  uint32_t end_x:11; 
+  uint32_t end_y:11; 
+}graphic_data_struct_t;
 
 typedef  struct __packed
 { 
@@ -600,17 +560,39 @@ typedef  struct __packed
 }ext_client_custom_graphic_five_t;
 
 /* 客户端绘制七个图形 机器人间通信：0x0301 */
-// typedef  struct __packed
-// {
-//   graphic_data_struct_t grapic_data_struct[7];
-// }ext_client_custom_graphic_seven_t;
+typedef  struct __packed
+{
+  graphic_data_struct_t grapic_data_struct[7];
+}ext_client_custom_graphic_seven_t;
 
 /* 客户端绘制字符 机器人间通信：0x0301 */
-// typedef  struct __packed
-// {
-//   graphic_data_struct_t grapic_data_struct;
-//   char data[30];
-// }ext_client_custom_character_t;
+typedef  struct __packed
+{
+  graphic_data_struct_t grapic_data_struct;
+  char data[30];
+}ext_client_custom_character_t;
+
+
+// MY ADDED STRUCTS ------------------
+
+/* ID: 0X0301          Byte: n       机器人间交互数据 */
+typedef  struct __packed
+{
+  uint16_t data_cmd_id;
+  uint16_t sender_ID;
+  uint16_t receiver_ID;
+  ext_client_custom_graphic_seven_t graphic_custom; // ADDED
+}ext_student_interactive_header_data_graphic_t;
+
+// my copy
+typedef  struct __packed
+{
+  uint16_t data_cmd_id;
+  uint16_t sender_ID;
+  uint16_t receiver_ID;
+  ext_client_custom_character_t graphic_custom; // ADDED
+}ext_student_interactive_header_data_character_t;
+
 
 // ------------------- Line 1330
 
@@ -656,24 +638,24 @@ void Judge_sendPC(BufferedSerial* b);
 void RobotStatus_LEDYellow(BufferedSerial* b);
 
 extern ext_game_status_t      ext_game_status;
-// extern ext_game_result_t     ext_game_result;
-// extern ext_game_robot_HP_t   ext_game_robot_HP;
-// extern ext_dart_status_t     ext_dart_status;
-// extern ext_ICRA_buff_debuff_zone_status_t    ext_ICRA_buff_debuff_zone_status;
-// extern ext_event_data_t ext_even_data;
-// extern ext_supply_projectile_action_t  ext_supply_projectile_action;
-// extern ext_referee_warning_t         ext_referee_warning;
-// extern ext_dart_remaining_time_t     ext_dart_remaining_time;
+extern ext_game_result_t     ext_game_result;
+extern ext_game_robot_HP_t   ext_game_robot_HP;
+extern ext_dart_status_t     ext_dart_status;
+extern ext_ICRA_buff_debuff_zone_status_t    ext_ICRA_buff_debuff_zone_status;
+extern ext_event_data_t ext_even_data;
+extern ext_supply_projectile_action_t  ext_supply_projectile_action;
+extern ext_referee_warning_t         ext_referee_warning;
+extern ext_dart_remaining_time_t     ext_dart_remaining_time;
 extern ext_game_robot_status_t  ext_game_robot_state;
 extern ext_power_heat_data_t  ext_power_heat_data;
 extern ext_game_robot_pos_t  ext_game_robot_pos;
-// extern ext_buff_t Buff;
-// extern aerial_robot_energy_t  aerial_robot_energy;
-// extern ext_robot_hurt_t  ext_robot_hurt;
-// extern ext_shoot_data_t  ext_shoot_data;
-// extern ext_bullet_remaining_t  ext_bullet_remaining;
-// extern ext_rfid_status_t        ext_rfid_status;
-// extern ext_dart_client_cmd_t   ext_dart_client_cmd;
+extern ext_buff_t Buff;
+extern aerial_robot_energy_t  aerial_robot_energy;
+extern ext_robot_hurt_t  ext_robot_hurt;
+extern ext_shoot_data_t  ext_shoot_data;
+extern ext_bullet_remaining_t  ext_bullet_remaining;
+extern ext_rfid_status_t        ext_rfid_status;
+extern ext_dart_client_cmd_t   ext_dart_client_cmd;
 
 // extern uint8_t JudgeSystem_rxBuff[JUDGESYSTEM_PACKSIZE];
 
@@ -684,7 +666,6 @@ extern ext_game_robot_pos_t  ext_game_robot_pos;
 _Bool is_red_or_blue(void);
 uint8_t get_robot_id(void);
 uint8_t get_remain_hp(void);
-void Show_CrossHair(BufferedSerial* b);
 
 void referee_data_pack_handle(uint8_t sof,uint16_t cmd_id, uint8_t *p_data, uint16_t len, BufferedSerial* b);
 
