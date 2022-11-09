@@ -1,0 +1,87 @@
+/* Bootloader */
+mbed-os/features/FEATURE_BOOTLOADER/*
+
+/* BLE */
+mbed-os/connectivity/drivers/ble/*
+mbed-os/connectivity/FEATURE_BLE/*
+
+/* Cellular */
+mbed-os/connectivity/cellular/*
+mbed-os/connectivity/drivers/cellular/*
+mbed-os/connectivity/netsocket/source/Cellular*.*
+
+/* Device Key */
+mbed-os/drivers/device_key/*
+
+/* Experimental /
+mbed-os/platform/FEATURE_EXPERIMENTAL_API/*
+
+/* FPGA */
+mbed-os/features/frameworks/COMPONENT_FPGA_CI_TEST_SHIELD/*
+
+/* Greentea client */
+mbed-os/features/frameworks/greentea-client/*
+
+/* LORAWAN */
+mbed-os/connectivity/drivers/lora/*
+mbed-os/connectivity/lorawan/*
+
+/* LWIP */
+mbed-os/connectivity/drivers/emac/*
+mbed-os/connectivity/lwipstack/*
+
+/* Mbed-client-cli */
+mbed-os/features/frameworks/mbed-client-cli/*
+
+/* MBED TLS */
+mbed-os/connectivity/drivers/mbedtls/*
+mbed-os/connectivity/mbedtls/*
+
+/* Nanostack */
+mbed-os/connectivity/drivers/emac/*
+mbed-os/connectivity/libraries/mbed-coap/*
+mbed-os/connectivity/libraries/nanostack-libservice/*
+mbed-os/connectivity/libraries/ppp/*
+mbed-os/connectivity/nanostack/*
+
+/* Netsocket */
+mbed-os/connectivity/drivers/emac/*
+mbed-os/connectivity/netsocket/*
+mbed-os/connectivity/libraries/mbed-coap/*
+mbed-os/connectivity/libraries/ppp/*
+
+/* NFC */
+mbed-os/connectivity/drivers/nfc/*
+mbed-os/connectivity/nfc/*
+
+/* RF */
+mbed-os/connectivity/drivers/802.15.4_RF/*
+
+/* Storage */
+mbed-os/storage/filesystem/*
+mbed-os/storage/kvstore/*
+mbed-os/storage/platform/*
+
+/* Tests */
+mbed-os/platform/tests/*
+mbed-os/TEST_APPS/*
+mbed-os/TESTS/*
+mbed-os/UNITTESTS/*
+
+/* Unity */
+mbed-os/features/frameworks/unity/*
+
+/* Utest */
+mbed-os/features/frameworks/utest/*
+
+/* USB */
+mbed-os/drivers/usb/source/*
+mbed-os/hal/usb/source/*
+mbed-os/hal/usb/TARGET_Templates/*
+
+/* WiFi */
+mbed-os/connectivity/drivers/wifi/*
+
+
+// added
+mbed-os/platform/randlib/*

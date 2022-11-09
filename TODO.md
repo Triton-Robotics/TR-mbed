@@ -72,6 +72,8 @@
 
 - *Add switch to the motor auto-ratio definitions instead of if-else*
 
+- Simple strafe-auto sentry to move around and beyblade - BEN
+
 ## NO PRIORITY
 
 - ***Store Match Footage for CV***

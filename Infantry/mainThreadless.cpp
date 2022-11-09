@@ -1,12 +1,15 @@
 #include "../src/main.hpp"
 #include <cstdlib>
+#include "../src/subsystems/Chassis.cpp"
 
 #define PI 3.14159265
 
-CANMotor LF(4,NewCANHandler::CANBUS_1,M3508); 
-CANMotor RF(2,NewCANHandler::CANBUS_1,M3508); 
-CANMotor LB(1,NewCANHandler::CANBUS_1,M3508); 
-CANMotor RB(3,NewCANHandler::CANBUS_1,M3508);
+// CANMotor LF(4,NewCANHandler::CANBUS_1,M3508); 
+// CANMotor RF(2,NewCANHandler::CANBUS_1,M3508); 
+// CANMotor LB(1,NewCANHandler::CANBUS_1,M3508); 
+// CANMotor RB(3,NewCANHandler::CANBUS_1,M3508);
+
+Chassis chassis;
 
 
 CANMotor yaw(5, NewCANHandler::CANBUS_1, GIMBLY);
@@ -41,20 +44,20 @@ int main()
 
     CANMotor::setCANHandlers(&canHandler1,&canHandler2, false, false);
 
-    LB.setSpeedPID(1.75, 0.351, 5.63);
-    RF.setSpeedPID(1.073, 0.556, 0);
-    RB.setSpeedPID(1.081, 0.247, 0.386);
-    LF.setSpeedPID(.743, 0.204, 0.284);
+    // LB.setSpeedPID(1.75, 0.351, 5.63);
+    // RF.setSpeedPID(1.073, 0.556, 0);
+    // RB.setSpeedPID(1.081, 0.247, 0.386);
+    // LF.setSpeedPID(.743, 0.204, 0.284);
     pitch.setPositionPID(.017,.001,.044);
     pitch.useAbsEncoder = 1;
     yaw.setSpeedPID(78.181, 7.303, 1.227);
     indexer.setSpeedPID(0.34, 0.002, 0.166);
     indexer.setSpeedIntegralCap(500000);
 
-    LF.outCap = 16000;   
-    RF.outCap = 16000;
-    LB.outCap = 16000;
-    RB.outCap = 16000;
+    // LF.outCap = 16000;   
+    // RF.outCap = 16000;
+    // LB.outCap = 16000;
+    // RB.outCap = 16000;
 
     unsigned long loopTimer = us_ticker_read() / 1000;
 
@@ -73,10 +76,11 @@ int main()
 
             if(rS == 1){ // All non-serializer motors activated
                 int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
-                LF.setSpeed(LFa * speedmultiplier);
-                RF.setSpeed(-RFa * speedmultiplier);
-                LB.setSpeed(LBa * speedmultiplier);
-                RB.setSpeed(-RBa * speedmultiplier);
+                chassis.driveFieldRelative(lX / 500.0, lY / 500.0, rX / 500.0);
+                // LF.setSpeed(LFa * speedmultiplier);
+                // RF.setSpeed(-RFa * speedmultiplier);
+                // LB.setSpeed(LBa * speedmultiplier);
+                // RB.setSpeed(-RBa * speedmultiplier);
 
                 // LF.setPower(LFa * powmultiplier);
                 // RF.setPower(-RFa * powmultiplier);
@@ -88,10 +92,10 @@ int main()
                 
 
             }else if(rS == 2){ //disable all the non-serializer components
-                LF.setPower(0);RF.setPower(0);LB.setPower(0);RB.setPower(0);
+                // LF.setPower(0);RF.setPower(0);LB.setPower(0);RB.setPower(0);
                 yaw.setPower(0); pitch.setPower(0);
             }else if(rS == 3){ // beyblade mode
-                LF.setPower(0);RF.setPower(0);LB.setPower(0);RB.setPower(0);
+                // LF.setPower(0);RF.setPower(0);LB.setPower(0);RB.setPower(0);
                 yaw.setPower(0); pitch.setPower(0);
             }
 
@@ -130,4 +134,3 @@ int main()
         ThisThread::sleep_for(1ms);
     }
 }
-

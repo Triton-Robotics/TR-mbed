@@ -1,3 +1,6 @@
+#ifndef _SPEED_TO_CURRENT_HPP
+#define _SPEED_TO_CURRENT_HPP
+
 #include "mbed.h"
 #include <cmath>
 
@@ -21,3 +24,5 @@ inline int M3508speedtocurrent(int desSpeed) {
         return desSpeed * 89.4056 * log(desSpeed) - desSpeed - 212.7353 * desSpeed;
     }    
 }
+
+#endif
