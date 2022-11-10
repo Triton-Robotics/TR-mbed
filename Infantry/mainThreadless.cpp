@@ -10,7 +10,7 @@
 // CANMotor RB(3,NewCANHandler::CANBUS_1,M3508);
 
 Chassis chassis;
-
+DigitalOut led(LED1);
 
 CANMotor yaw(5, NewCANHandler::CANBUS_1, GIMBLY);
 CANMotor pitch(6, NewCANHandler::CANBUS_1, GIMBLY);
@@ -54,6 +54,8 @@ int main()
     indexer.setSpeedPID(0.34, 0.002, 0.166);
     indexer.setSpeedIntegralCap(500000);
 
+    chassis.setBrakeMode(COAST);
+
     // LF.outCap = 16000;   
     // RF.outCap = 16000;
     // LB.outCap = 16000;
@@ -67,7 +69,7 @@ int main()
     bool strawberryJam = false;
 
     while (true) {
-
+        led = !led;
         remoteRead();
 
         unsigned long timeStart = us_ticker_read() / 1000;
@@ -76,7 +78,7 @@ int main()
 
             if(rS == 1){ // All non-serializer motors activated
                 int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
-                chassis.driveFieldRelative(lX / 500.0, lY / 500.0, rX / 500.0);
+                chassis.driveXYR(lX / 500.0, lY / 500.0, rX / 500.0);
                 // LF.setSpeed(LFa * speedmultiplier);
                 // RF.setSpeed(-RFa * speedmultiplier);
                 // LB.setSpeed(LBa * speedmultiplier);

@@ -2,6 +2,11 @@
 
 #ifndef Chassis_h
 #define Chassis_h
+enum BrakeMode {
+    BRAKE,
+    COAST
+};
+
 class Chassis {
     public:
         Chassis();
@@ -11,8 +16,12 @@ class Chassis {
         void driveAngle(double angleRadians, double speedRPM, double rotationVelcotiyRPM);
         CANMotor getMotor(int index);
 
+        BrakeMode getBrakeMode();
+        void setBrakeMode(BrakeMode brakeMode);
+
     private:
         CANMotor LF, RF, LB, RB;
+        BrakeMode brakeMode;
 
         double rpmToTicksPerSecond(double RPM);
         double ticksPerSecondToRPM(double ticksPerSecond);

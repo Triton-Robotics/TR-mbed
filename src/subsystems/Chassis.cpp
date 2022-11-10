@@ -4,6 +4,7 @@
 
 #define CAN_BUS_TYPE NewCANHandler::CANBUS_1
 #define MOTOR_TYPE M3508
+#define INPUT_THRESHOLD 0.01
 
 double getAngleRadians() {
     return PI / 2.0;
@@ -19,6 +20,7 @@ Chassis::Chassis() : LF(4, CAN_BUS_TYPE, MOTOR_TYPE), RF(1, CAN_BUS_TYPE, MOTOR_
     RF.setSpeedPID(0.9, 0.25, 0);
     LB.setSpeedPID(0.9, 0.2, 0);
     RB.setSpeedPID(0.8, 0.3, 0);
+    brakeMode = BRAKE;
 }
 
 double Chassis::rpmToTicksPerSecond(double RPM) {
@@ -47,6 +49,10 @@ void Chassis::setMotorPower(int index, double power) {
 }
 
 void Chassis::setMotorSpeedTicksPerSecond(int index, double speed) {
+    if (brakeMode == COAST && speed == 0) {
+        setMotorPower(index, 0);
+        return;
+    }
     switch (index) {
         case 0:
             LF.setSpeed(speed);
@@ -109,4 +115,13 @@ CANMotor Chassis::getMotor(int index) {
         default:
             return LF;
     }
+}
+
+
+BrakeMode Chassis::getBrakeMode() {
+    return brakeMode;
+}
+
+void Chassis::setBrakeMode(BrakeMode brakeMode) {
+    this->brakeMode = brakeMode;
 }
