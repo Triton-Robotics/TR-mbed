@@ -96,7 +96,7 @@ ext_dart_client_cmd_t ext_dart_client_cmd;
 // ext_MapCommunate_t MapCommunate;
 // ext_robot_command_t Robot_Command;
 
-
+uint8_t Robot_Commute[26];
 
 
 void Judge_GetMessage(uint16_t Data_Length)
@@ -297,15 +297,15 @@ void Judge_GetMessage(uint16_t Data_Length)
                 else
                     n++; //26
                 break;
-            // case Judge_Robot_Communicate: //机器人信息交互(还有一种写法就是直接case内容ID 不case命令码)
-            //     if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Robot_Commute))
-            //     {
-            //         memcpy(&Robot_Commute, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[26]));
-            //         n += JudgeLength_Robot_Commute;
-            //     }
-            //     else
-            //         n++;
-            //     break;
+            case Judge_Robot_Communicate: //机器人信息交互(还有一种写法就是直接case内容ID 不case命令码)
+                if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Robot_Commute))
+                {
+                    memcpy(&Robot_Commute, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[26]));
+                    n += JudgeLength_Robot_Commute;
+                }
+                else
+                    n++;
+                break;
             default:
                 n++;
                 break;

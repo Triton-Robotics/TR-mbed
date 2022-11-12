@@ -15,6 +15,7 @@
 #include "../util/communications/ref_serial.cpp"
 #include "../util/communications/ref_ui.cpp"
 #include "../util/communications/oled/SSD1308.cpp"
+#include <cstring>
 
 #define OLED_SDA                  PB_9
 #define OLED_SCL                  PB_8
@@ -207,6 +208,32 @@ void refereeThread(){
 
             // printf("write!");
             // pc.write("hello",5);
+            string angleStr = "angle: " + to_string((int)ext_game_robot_pos.data.yaw);
+            ui_graph_character(&referee, 1, angleStr, SCREEN_LENGTH/2 +100, SCREEN_WIDTH/2 +150, 10);
+
+            ext_student_interactive_header_data_robot_comm_t custom_comm;
+            {
+                custom_comm.data_cmd_id=0x0200;		
+                custom_comm.sender_ID=get_robot_id();//发送者ID，机器人对应ID
+                custom_comm.receiver_ID=101;//接收者ID，操作手客户端ID
+                {
+                    char toSend[] = "helloworld";
+
+                    if(rS==3){
+                        // custom_comm.data.data[0]='a';
+                        toSend[0] = 'g';
+                    }
+                    else{
+                    //     custom_comm.data.data[0]='b';
+                        toSend[0]='h';
+                    }
+                    // custom_comm.data.data[0]='t';
+                    // custom_comm.data.data[1]='r';
+                    memcpy(&custom_comm.data.data, toSend, sizeof(toSend));
+                }
+            }
+            referee_data_pack_handle(0xA5,0x0301,(uint8_t *)&custom_comm,sizeof(custom_comm),&referee);
+
         }
         else {
             printf("Not writable!\n"); // usually it is never not writable

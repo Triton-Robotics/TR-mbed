@@ -593,6 +593,14 @@ typedef  struct __packed
   ext_client_custom_character_t graphic_custom; // ADDED
 }ext_student_interactive_header_data_character_t;
 
+// my copy
+typedef  struct __packed
+{
+  uint16_t data_cmd_id;
+  uint16_t sender_ID;
+  uint16_t receiver_ID;
+  robot_interactive_data_t data; // ADDED
+}ext_student_interactive_header_data_robot_comm_t;
 
 // ------------------- Line 1330
 
