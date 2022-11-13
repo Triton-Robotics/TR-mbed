@@ -84,10 +84,15 @@
 
         unsigned long loopTimer = us_ticker_read() / 1000;
 
-        gimbly8.setPositionPID(1,0,0);
-        gimbly9.setPositionPID(1,0,0);
-        gimbly10.setPositionPID(1,0,0);
-        gimbly11.setPositionPID(1,0,0);
+        m3508_1.setSpeedPID(1.79, 0.0, 10.57);
+        m3508_2.setSpeedPID(1.79, 0.0, 10.57);
+        m3508_3.setSpeedPID(1.79, 0.0, 10.57);
+        m3508_4.setSpeedPID(1.79, 0.0, 10.57);
+        m3508_5.setSpeedPID(1.79, 0.0, 10.57);
+        gimbly8.setPositionPID(0.5,0,0);
+        gimbly9.setPositionPID(0.5,0,0);
+        gimbly10.setPositionPID(0.5,0,0);
+        gimbly11.setPositionPID(0.5,0,0);
 
         int countLoops = 0;
 
@@ -109,14 +114,14 @@
                     // sprintf(str, "%d:%d:%d:%d\n", m3508_2.getData(ANGLE),m3508_2.getData(VELOCITY),m3508_2.getData(TORQUE),m3508_2.getData(TEMPERATURE));
                     // printf(str);
                 }else if(lS == 1){
-                    //m3508_1.setSpeed(800 * (rS - 2));
-                    m3508_2.setSpeed(800 * (rS - 2));
-                    //m3508_3.setSpeed(800 * (rS - 2));
+                    m3508_1.setSpeed(800 * (rS - 2));
+                    m3508_2.setSpeed(1000 * (rS - 2));
+                    m3508_3.setSpeed(800 * (rS - 2));
                     m3508_4.setSpeed(800 * (rS - 2));
                     m2006_7.setSpeed(800 * (rS - 2));
                     gimbly8.setPosition(2000 * (rS - 2));
-                    //gimbly9.setPosition(2000 * (rS - 2));
-                    //gimbly10.setPosition(2000 * (rS - 2));
+                    gimbly9.setPosition(2000 * (rS - 2));
+                    gimbly10.setPosition(2000 * (rS - 2));
                     //gimbly11.setPosition(2000 * (rS - 2));
                     
                 }else if(lS == 3){
