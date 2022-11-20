@@ -9,7 +9,7 @@
 // CANMotor LB(1,NewCANHandler::CANBUS_1,M3508); 
 // CANMotor RB(3,NewCANHandler::CANBUS_1,M3508);
 
-Chassis chassis;
+Chassis chassis(1, 2, 3, 4);
 DigitalOut led(LED1);
 
 CANMotor yaw(5, NewCANHandler::CANBUS_1, GIMBLY);
@@ -48,8 +48,13 @@ int main()
     // RF.setSpeedPID(1.073, 0.556, 0);
     // RB.setSpeedPID(1.081, 0.247, 0.386);
     // LF.setSpeedPID(.743, 0.204, 0.284);
-    pitch.setPositionPID(.017,.001,.044);
+    pitch.setPositionPID(4, 0.35, 0.35);
+    pitch.setPositionIntegralCap(10000);
+
+
+    // pitch.setPositionPID(.017,.001,.044);
     pitch.useAbsEncoder = 1;
+    pitch.justPosError = 1;
     yaw.setSpeedPID(78.181, 7.303, 1.227);
     indexer.setSpeedPID(0.34, 0.002, 0.166);
     indexer.setSpeedIntegralCap(500000);
@@ -89,7 +94,8 @@ int main()
                 // LB.setPower(LBa * powmultiplier);
                 // RB.setPower(-RBa * powmultiplier);
                 
-                pitch.setPower(rY*9);
+                // pitch.setPower(rY*9);
+                pitch.setPosition((rY / 2) + 1500);
                 //yaw.setSpeed(rX/100);
                 
 

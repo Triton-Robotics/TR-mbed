@@ -52,7 +52,7 @@ class PID {
         float calculate(float desiredV, float actualV, float dt){
             float error = (desiredV - actualV);
             float PIDCalc = kP * error + kI * sumError + kD * ((double)(error - lastError)/dt);
-            sumError += error;
+            sumError += error * dt;
             lastError = error;
             
             if(integralCap != 0){

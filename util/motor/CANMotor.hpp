@@ -322,7 +322,11 @@ class CANMotor{
                     } else
                         powerOut = pidSpeed.calculate(pidPosition.calculate(value, getData(ANGLE), time - lastTime), getData(VELOCITY), time - lastTime);
                 } else {
-                    powerOut = pidPosition.calculate(value, getData(MULTITURNANGLE), time - lastTime);
+                    if (!useAbsEncoder) {
+                        powerOut = pidPosition.calculate(value, getData(MULTITURNANGLE), time - lastTime);
+                    } else {
+                        powerOut = pidPosition.calculate(value, getData(ANGLE), time - lastTime);
+                    }
                 }
             }else if(mode == OFF){
                 powerOut = 0;
