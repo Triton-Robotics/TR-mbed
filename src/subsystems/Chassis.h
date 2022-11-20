@@ -9,7 +9,7 @@ enum BrakeMode {
 
 class Chassis {
     public:
-        Chassis();
+        Chassis(short lfId, short rfId, short lbId, short rbId);
 
         void driveXYR(double yVelocityRPM, double xVelocityRPM, double rotationVelocityRPM);
         void driveFieldRelative(double yVelocityRPM, double xVelocityRPM, double rotationVelocityRPM);
