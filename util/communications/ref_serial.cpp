@@ -37,21 +37,6 @@ void JudgeSystem_USART_Receive_DMA(BufferedSerial* b) // modified
     b->read(JudgeSystem_rxBuff, JUDGESYSTEM_PACKSIZE);
 }
 
-uint16_t DMA_Counter;
-void JudgeSystem_Handler(UART_HandleTypeDef *huart) // not used
-{
-    __HAL_UART_CLEAR_IDLEFLAG(huart);
-    __HAL_DMA_DISABLE(huart->hdmarx);
-
-    DMA_Counter = __HAL_DMA_GET_COUNTER(huart->hdmarx);
-    Judge_GetMessage(JUDGESYSTEM_PACKSIZE - DMA_Counter);
-
-    __HAL_DMA_SET_COUNTER(huart->hdmarx, JUDGESYSTEM_PACKSIZE);
-    __HAL_DMA_ENABLE(huart->hdmarx);
-
-    //RM_Judge.InfoUpdateFrame++;
-}
-
 ext_game_status_t ext_game_status;
 ext_game_result_t ext_game_result;
 ext_game_robot_HP_t ext_game_robot_HP;
@@ -75,8 +60,8 @@ ext_dart_client_cmd_t ext_dart_client_cmd;
 // ext_CommunatianData_t CommuData; //队友通信信息
 // /*客户端定义*/
 // /*准心及指示灯*/
-ext_SendClientData_t ShowData; //客户端信息
-ext_ShowCrossHair_t Ex_ShowData;
+// ext_SendClientData_t ShowData; //客户端信息
+// ext_ShowCrossHair_t Ex_ShowData;
 // ext_DeleteClientData_t DeleteClient; //删除客户端
 // /*射速等级*/
 // ext_ShootLevelData_t ShowshootLv;
@@ -111,7 +96,7 @@ ext_ShowCrossHair_t Ex_ShowData;
 // ext_MapCommunate_t MapCommunate;
 // ext_robot_command_t Robot_Command;
 
-
+uint8_t Robot_Commute[26];
 
 
 void Judge_GetMessage(uint16_t Data_Length)
@@ -312,15 +297,15 @@ void Judge_GetMessage(uint16_t Data_Length)
                 else
                     n++; //26
                 break;
-            // case Judge_Robot_Communicate: //机器人信息交互(还有一种写法就是直接case内容ID 不case命令码)
-            //     if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Robot_Commute))
-            //     {
-            //         memcpy(&Robot_Commute, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[26]));
-            //         n += JudgeLength_Robot_Commute;
-            //     }
-            //     else
-            //         n++;
-            //     break;
+            case Judge_Robot_Communicate: //机器人信息交互(还有一种写法就是直接case内容ID 不case命令码)
+                if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Robot_Commute))
+                {
+                    memcpy(&Robot_Commute, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[26]));
+                    n += JudgeLength_Robot_Commute;
+                }
+                else
+                    n++;
+                break;
             default:
                 n++;
                 break;
@@ -345,11 +330,11 @@ _Bool is_red_or_blue(void)
 
     if (ext_game_robot_state.data.robot_id > 10)
     {
-        return 0; //蓝方
+        return 0; //蓝方 (blue)
     }
     else
     {
-        return 1; //红方
+        return 1; //红方 (red)
     }
 }
 
@@ -380,258 +365,6 @@ void determine_ID(void)
   */
 #define send_max_len 300 //200
 unsigned char CliendTxBuffer[send_max_len];
-/*显示准心*/
-void Standard_CrossHair(BufferedSerial* b)
-{
-    static uint8_t datalength;
-
-    ShowData.txFrameHeader.SOF = 0xA5;
-    ShowData.txFrameHeader.DataLength = sizeof(ext_student_interactive_header_data_t) + 7 * sizeof(ext_client_custom_graphic_single_t);
-    ShowData.txFrameHeader.Seq = 0;
-    memcpy(CliendTxBuffer, &ShowData.txFrameHeader, sizeof(xFrameHeader)); //写入帧头数据
-    Append_CRC8_Check_Sum(CliendTxBuffer, sizeof(xFrameHeader));           //写入帧头CRC8校验码
-
-    ShowData.CmdID = 0x0301; //机器人通信协议
-
-    determine_ID(); //判断发送者ID和其对应的客户端ID
-
-    //ID已经是自动读取的了
-    ShowData.dataFrameHeader.data_cmd_id = 0x0104;                           //客户端绘制一个图形
-    ShowData.dataFrameHeader.sender_ID = ext_game_robot_state.data.robot_id; //发送者ID
-    ShowData.dataFrameHeader.receiver_ID = Judge_SelfClient_ID;              //客户端ID
-
-    ShowData.cilentData[0].graphic_name[0] = 1;
-    ShowData.cilentData[0].graphic_tpye = 0;
-    ShowData.cilentData[0].operate_tpye = 1;
-    ShowData.cilentData[0].layer = 0;
-    ShowData.cilentData[0].color = 2;
-    ShowData.cilentData[0].start_angle = 0;
-    ShowData.cilentData[0].end_angle = 0;
-    ShowData.cilentData[0].width = 1;
-    ShowData.cilentData[0].start_x = 920; //原840
-    ShowData.cilentData[0].start_y = 680;
-    ShowData.cilentData[0].radius = 0;
-    ShowData.cilentData[0].end_x = 1000; //原1080
-    ShowData.cilentData[0].end_y = 680;
-
-    ShowData.cilentData[1].graphic_name[0] = 2;
-    ShowData.cilentData[1].graphic_tpye = 0;
-    ShowData.cilentData[1].operate_tpye = 1;
-    ShowData.cilentData[1].layer = 0;
-    ShowData.cilentData[1].color = 2;
-    ShowData.cilentData[1].start_angle = 0;
-    ShowData.cilentData[1].end_angle = 0;
-    ShowData.cilentData[1].width = 1;
-    ShowData.cilentData[1].start_x = 580; //原 860
-    ShowData.cilentData[1].start_y = 540; //原：560
-    ShowData.cilentData[1].radius = 0;
-    ShowData.cilentData[1].end_x = 1340; //原1060
-    ShowData.cilentData[1].end_y = 540;
-
-    ShowData.cilentData[2].graphic_name[0] = 3;
-    ShowData.cilentData[2].graphic_tpye = 0;
-    ShowData.cilentData[2].operate_tpye = 1;
-    ShowData.cilentData[2].layer = 0;
-    ShowData.cilentData[2].color = 2;
-    ShowData.cilentData[2].start_angle = 0;
-    ShowData.cilentData[2].end_angle = 0;
-    ShowData.cilentData[2].width = 1;
-    ShowData.cilentData[2].start_x = 880; //原890
-    ShowData.cilentData[2].start_y = 440;
-    ShowData.cilentData[2].radius = 0;
-    ShowData.cilentData[2].end_x = 1040; //原1030
-    ShowData.cilentData[2].end_y = 440;
-
-    ShowData.cilentData[3].graphic_name[0] = 4;
-    ShowData.cilentData[3].graphic_tpye = 0;
-    ShowData.cilentData[3].operate_tpye = 1;
-    ShowData.cilentData[3].layer = 0;
-    ShowData.cilentData[3].color = 2;
-    ShowData.cilentData[3].start_angle = 0;
-    ShowData.cilentData[3].end_angle = 0;
-    ShowData.cilentData[3].width = 1;
-    ShowData.cilentData[3].start_x = 960;
-    ShowData.cilentData[3].start_y = 700;
-    ShowData.cilentData[3].radius = 0;
-    ShowData.cilentData[3].end_x = 960;
-    ShowData.cilentData[3].end_y = 250;
-
-    //打包写入数据库
-    memcpy(CliendTxBuffer + 5,
-           (uint8_t *)&ShowData.CmdID,
-           (sizeof(ShowData.CmdID) + sizeof(ShowData.dataFrameHeader) + sizeof(ShowData.cilentData)));
-    Append_CRC16_Check_Sum(CliendTxBuffer, sizeof(ShowData)); //写入数据段CRC16校验码
-    datalength = sizeof(ShowData);
-    //HAL_UART_Transmit(&huart3, CliendTxBuffer, datalength, 0xFF);
-    b->write(CliendTxBuffer,datalength);
-}
-unsigned char CrossHairBuffer[90];
-void Ex_CrossHair(BufferedSerial* b)
-{
-    static uint8_t crosslength;
-
-    Ex_ShowData.txFrameHeader.SOF = 0xA5;
-    Ex_ShowData.txFrameHeader.DataLength = sizeof(ext_student_interactive_header_data_t) + 5 * sizeof(ext_client_custom_graphic_single_t);
-    Ex_ShowData.txFrameHeader.Seq = 0;
-    memcpy(CrossHairBuffer, &Ex_ShowData.txFrameHeader, sizeof(xFrameHeader)); //写入帧头数据
-    Append_CRC8_Check_Sum(CrossHairBuffer, sizeof(xFrameHeader));              //写入帧头CRC8校验码
-
-    Ex_ShowData.CmdID = 0x0301; //机器人通信协议
-
-    determine_ID(); //判断发送者ID和其对应的客户端ID
-
-    //ID已经是自动读取的了
-    Ex_ShowData.dataFrameHeader.data_cmd_id = 0x0103;                           //客户端绘制两个个图形
-    Ex_ShowData.dataFrameHeader.sender_ID = ext_game_robot_state.data.robot_id; //发送者ID
-    Ex_ShowData.dataFrameHeader.receiver_ID = Judge_SelfClient_ID;              //客户端ID
-
-    Ex_ShowData.cilentData[0].graphic_name[1] = 9;
-    Ex_ShowData.cilentData[0].graphic_tpye = 0;
-    Ex_ShowData.cilentData[0].operate_tpye = 1;
-    Ex_ShowData.cilentData[0].layer = 0;
-    Ex_ShowData.cilentData[0].color = 2;
-    Ex_ShowData.cilentData[0].start_angle = 0;
-    Ex_ShowData.cilentData[0].end_angle = 0;
-    Ex_ShowData.cilentData[0].width = 1;
-    Ex_ShowData.cilentData[0].start_x = 900; //原840
-    Ex_ShowData.cilentData[0].start_y = 400;
-    Ex_ShowData.cilentData[0].radius = 0;
-    Ex_ShowData.cilentData[0].end_x = 1020; //原1080
-    Ex_ShowData.cilentData[0].end_y = 400;
-
-    Ex_ShowData.cilentData[1].graphic_name[1] = 10;
-    Ex_ShowData.cilentData[1].graphic_tpye = 0;
-    Ex_ShowData.cilentData[1].operate_tpye = 1;
-    Ex_ShowData.cilentData[1].layer = 0;
-    Ex_ShowData.cilentData[1].color = 2;
-    Ex_ShowData.cilentData[1].start_angle = 0;
-    Ex_ShowData.cilentData[1].end_angle = 0;
-    Ex_ShowData.cilentData[1].width = 1;
-    Ex_ShowData.cilentData[1].start_x = 920; //原 860
-    Ex_ShowData.cilentData[1].start_y = 360; //原：560
-    Ex_ShowData.cilentData[1].radius = 0;
-    Ex_ShowData.cilentData[1].end_x = 1000; //原1060
-    Ex_ShowData.cilentData[1].end_y = 360;
-
-    Ex_ShowData.cilentData[2].graphic_name[1] = 11;
-    Ex_ShowData.cilentData[2].graphic_tpye = 0;
-    Ex_ShowData.cilentData[2].operate_tpye = 1;
-    Ex_ShowData.cilentData[2].layer = 0;
-    Ex_ShowData.cilentData[2].color = 2;
-    Ex_ShowData.cilentData[2].start_angle = 0;
-    Ex_ShowData.cilentData[2].end_angle = 0;
-    Ex_ShowData.cilentData[2].width = 1;
-    Ex_ShowData.cilentData[2].start_x = 940; //原 860
-    Ex_ShowData.cilentData[2].start_y = 310; //原：560
-    Ex_ShowData.cilentData[2].radius = 0;
-    Ex_ShowData.cilentData[2].end_x = 980; //原1060
-    Ex_ShowData.cilentData[2].end_y = 310;
-
-    Ex_ShowData.cilentData[2].graphic_name[1] = 10;
-    Ex_ShowData.cilentData[2].graphic_tpye = 0;
-    Ex_ShowData.cilentData[2].operate_tpye = 1;
-    Ex_ShowData.cilentData[2].layer = 0;
-    Ex_ShowData.cilentData[2].color = 2;
-    Ex_ShowData.cilentData[2].start_angle = 0;
-    Ex_ShowData.cilentData[2].end_angle = 0;
-    Ex_ShowData.cilentData[2].width = 1;
-    Ex_ShowData.cilentData[2].start_x = 945; //原 860
-    Ex_ShowData.cilentData[2].start_y = 280; //原：560
-    Ex_ShowData.cilentData[2].radius = 0;
-    Ex_ShowData.cilentData[2].end_x = 975; //原1060
-    Ex_ShowData.cilentData[2].end_y = 280;
-
-    //打包写入数据库
-    memcpy(CrossHairBuffer + 5,
-           (uint8_t *)&Ex_ShowData.CmdID,
-           (sizeof(Ex_ShowData.CmdID) + sizeof(Ex_ShowData.dataFrameHeader) + sizeof(Ex_ShowData.cilentData)));
-    Append_CRC16_Check_Sum(CrossHairBuffer, sizeof(Ex_ShowData)); //写入数据段CRC16校验码
-    crosslength = sizeof(Ex_ShowData);
-    //HAL_UART_Transmit(&huart3, CrossHairBuffer, crosslength, 0xFF);
-    b->write(CrossHairBuffer, crosslength);
-}
-void Show_CrossHair(BufferedSerial* b)
-{
-    Standard_CrossHair(b);
-    Ex_CrossHair(b);
-}
-
-
-void Judge_sendPC(BufferedSerial* b)
-{
-    static uint8_t datalength;
-
-    determine_ID(); //判断发送者ID和其对应的客户端ID
-
-    ShowData.txFrameHeader.SOF = 0xA5;
-    ShowData.txFrameHeader.DataLength = sizeof(ext_student_interactive_header_data_t) + sizeof(client_custom_data_t);
-    ShowData.txFrameHeader.Seq = 0;
-    memcpy(CliendTxBuffer, &ShowData.txFrameHeader, sizeof(xFrameHeader)); //写入帧头数据
-    Append_CRC8_Check_Sum(CliendTxBuffer, sizeof(xFrameHeader));           //写入帧头CRC8校验码
-
-    ShowData.CmdID = 0x0301;
-
-    ShowData.dataFrameHeader.data_cmd_id = 0xD180; //发给客户端的cmd,官方固定
-    //ID已经是自动读取的了
-    ShowData.dataFrameHeader.sender_ID = Judge_Self_ID;           //发送者的ID
-    ShowData.dataFrameHeader.receiver_ID = Judge_SelfClient_ID; //客户端的ID，只能为发送者机器人对应的客户端
-
-    /*- 自定义内容 -*/
-    //	ShowData.clientData.data1 = (float)Capvoltage_Percent();//电容剩余电量
-    //	ShowData.clientData.data2 = (float)Base_Angle_Measure();//吊射角度测
-    //	ShowData.clientData.data3 = GIMBAL_PITCH_Judge_Angle();//云台抬头角度
-
-    //打包写入数据段
-    memcpy(
-        CliendTxBuffer + 5,
-        (uint8_t *)&ShowData.CmdID,
-        (sizeof(ShowData.CmdID) + sizeof(ShowData.dataFrameHeader) + sizeof(ShowData.cilentData)));
-
-    Append_CRC16_Check_Sum(CliendTxBuffer, sizeof(ShowData)); //写入数据段CRC16校验码
-
-    datalength = sizeof(ShowData);
-
-    b->write(CliendTxBuffer, datalength);
-    //HAL_UART_Transmit(&huart3, CliendTxBuffer, datalength, 0xFF);
-}
-
-/*机器人状态指示*/
-uint8_t Status_Datalength = 0;
-void RobotStatus_LEDYellow(BufferedSerial* b)
-{
-    ShowData.txFrameHeader.SOF = 0xA5;
-    ShowData.txFrameHeader.DataLength = sizeof(ext_student_interactive_header_data_t) + 7 * sizeof(ext_client_custom_graphic_single_t);
-    ShowData.txFrameHeader.Seq = 0;
-    memcpy(CliendTxBuffer, &ShowData.txFrameHeader, sizeof(xFrameHeader)); //写入帧头数据
-    Append_CRC8_Check_Sum(CliendTxBuffer, sizeof(xFrameHeader));           //写入帧头CRC8校验码
-
-    ShowData.CmdID = 0x0301; //机器人通信协议
-
-    determine_ID(); //判断发送者ID和其对应的客户端ID
-    //ID已经是自动读取的了
-    ShowData.dataFrameHeader.data_cmd_id = 0x0104;
-    ShowData.dataFrameHeader.sender_ID = ext_game_robot_state.data.robot_id; //发送者ID
-    ShowData.dataFrameHeader.receiver_ID = Judge_SelfClient_ID;              //客户端ID
-
-    ShowData.cilentData[4].graphic_name[0] = 9;
-    ShowData.cilentData[4].graphic_tpye = 2;
-    ShowData.cilentData[4].operate_tpye = 1;
-    ShowData.cilentData[4].layer = 1;
-    ShowData.cilentData[4].color = 1;
-    ShowData.cilentData[4].width = 10;
-    ShowData.cilentData[4].start_x = 1900;
-    ShowData.cilentData[4].start_y = 800;
-    ShowData.cilentData[4].radius = 10;
-
-    memcpy(CliendTxBuffer + 5,
-           (uint8_t *)&ShowData.CmdID,
-           (sizeof(ShowData.CmdID) + sizeof(ShowData.dataFrameHeader) + sizeof(ShowData.cilentData)));
-    Append_CRC16_Check_Sum(CliendTxBuffer, sizeof(ShowData)); //写入数据段CRC16校验码
-    Status_Datalength = sizeof(ShowData);
-    //HAL_UART_Transmit(&huart3, CliendTxBuffer, Status_Datalength, 0xFF);
-    b->write(CliendTxBuffer, Status_Datalength);
-    //b->write(CliendTxBuffer, sizeof(CliendTxBuffer));
-}
 
 
 // MY PART -------------------------------------
