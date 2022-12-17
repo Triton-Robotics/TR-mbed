@@ -5,6 +5,10 @@
 ## HIGH PRIORITY
 
 - <mark>EMMA</mark> => ***MUTEX*** - Protect our threads.
+  
+  - Create a printf thread that doesn't interfere with anything else, lowest priority
+  
+  - Work with dexin to make ref thread
 
 - <mark>ANSHAL</mark> => **LAG** - Figure out what is causing the massive 30-45 second pre-code delay
   
