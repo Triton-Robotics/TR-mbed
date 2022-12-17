@@ -1,4 +1,5 @@
 #include "Chassis.h"
+#include "../../constants/Chassis.h"
 
 #define PI 3.14159265
 
@@ -10,25 +11,25 @@ double getAngleRadians() {
     return PI / 2.0;
 }
 
-Chassis::Chassis() : LF(4, CAN_BUS_TYPE, MOTOR_TYPE), RF(1, CAN_BUS_TYPE, MOTOR_TYPE), 
-    LB(2, CAN_BUS_TYPE, MOTOR_TYPE), RB(3, CAN_BUS_TYPE, MOTOR_TYPE) {
+Chassis::Chassis(short lfId, short rfId, short lbId, short rbId) : LF(lfId, CAN_BUS_TYPE, MOTOR_TYPE), RF(rfId, CAN_BUS_TYPE, MOTOR_TYPE), 
+    LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE) {
     LF.outCap = 16000;   
     RF.outCap = 16000;   
     LB.outCap = 16000;   
     RB.outCap = 16000;   
-    LF.setSpeedPID(0.8, 0.2, 0);
-    RF.setSpeedPID(0.9, 0.25, 0);
-    LB.setSpeedPID(0.9, 0.2, 0);
-    RB.setSpeedPID(0.8, 0.3, 0);
+    LF.setSpeedPID(1.5, 0, 0);
+    RF.setSpeedPID(1.5, 0, 0);
+    LB.setSpeedPID(1.5, 0, 0);
+    RB.setSpeedPID(1.5, 0, 0);
     brakeMode = BRAKE;
 }
 
 double Chassis::rpmToTicksPerSecond(double RPM) {
-    return RPM * 8096 * 19 / 60.0;
+    return RPM * TICKS_PER_ROTATION * M3508_GEAR_RATIO / SECONDS_PER_MINUTE;
 }
 
 double Chassis::ticksPerSecondToRPM(double ticksPerSecond) {
-    return ticksPerSecond * 60 / (8096.0 * 19.0);
+    return ticksPerSecond * SECONDS_PER_MINUTE / (TICKS_PER_ROTATION * M3508_GEAR_RATIO);
 }
 
 void Chassis::setMotorPower(int index, double power) {
