@@ -8,9 +8,9 @@ Remote::Remote(PinName dbus) : receiver(NC, dbus) {
     receiver.set_baud(115200);
     receiver.set_format(8, BufferedSerial::Even, 1);
     receiver.set_blocking(false);
-    receiver.set_flow_control(BufferedSerial::Disabled);
+    //receiver.set_flow_control(BufferedSerial::Disabled);
     readTimer.start();
-    printf("Remote created \n");
+    //printf("Remote created \n");
 }
 
 void Remote::initialize()
