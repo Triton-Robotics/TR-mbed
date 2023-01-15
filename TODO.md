@@ -2,6 +2,12 @@
 
 *Italics = New Recruit Work*
 
+## RECRUIT SHIT
+
+* Look at photo on phone, fill out
+
+* fix week 4 (URGENT)
+
 ## HIGH PRIORITY
 
 - <mark>EMMA</mark> => ***MUTEX*** - Protect our threads.
