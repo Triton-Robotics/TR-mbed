@@ -26,10 +26,18 @@ STLINK Error
 
 - Manually re-configure the device as NUCLEO F446RE
 
-ICODE - 
+Icode
 
-Icode - restart computer
+* Restart Computer
 
-no serial - restart mbed
+
+
+## Functionality Issues
+
+No Serial
+
+* Windows: Restart Mbed
+
+* All Platforms: Check if 5V wire from old devboard is attached. Often external power will prevent the nucleo from power cycling and stop comms.
 
 no remote - flip wires

@@ -42,9 +42,14 @@
   
   - According to Theo according to CU, the data only fucks up when the vertical sticks are used, so test that
 
-- <mark>GIO</mark> => ***IMU*** - Make it functional, make it efficient, minimal loss of position
+- <mark>GIO</mark> => ***IMU*** - Make it functional, minimal loss of position
+  
+  - Speed is an issue as always
 
-- <mark>TANIA</mark> => **IMU on Old Devboard** - Make it functional, and incorporate its sending of data into the existing remote code
+- <mark>TANIA</mark> => **IMU on Old Devboard** - Make it functional
+  
+  * incorporate its sending of data into the existing remote code
+  - Speed is an issue, make it quick
 
 - **Add referee system into code**
   
@@ -59,6 +64,10 @@
     - operator control until heat gets to 80%, then do active heatlimiting to keep same heat
   
   - <mark>JUSTIN</mark> => Chassis power limiting, don't lose health, requires ref system
+    
+    - Prevent us from overdoing our chassis limit
+    
+    - keep in mind we have about 40W of buffer, but try not to burn through that at all
   
   - *add constants for heat/chassis power depending on level*
     
@@ -68,7 +77,11 @@
 
 - Improve the functionality to **Detect CAN Lag** *(MAYBE RECRUIT??)*
 
-- <mark>GUAN</mark> => ***SD CARD OUTPUT*** - Log debug messages into an SD Card for viewing after match and for minimal delay, minimizing time lost is most important here.
+- **REMOVE THE DELAY IN PID CLASS**
+
+- ****<mark>GUAN</mark> => ***SD CARD OUTPUT*** - Log debug messages into an SD Card for viewing after match and for minimal delay
+  
+  - Minimizing time lost is most important here.
 
 - *Accurate MULTITURN on M3508 (Maybe run it through a speed pid so its slow)*
 
@@ -79,6 +92,8 @@
 - ***Write Good Robot Code*** *Code for all robots that uses Speed PID and REF Code*
 
 - <mark>BEN</mark> => *Tune PIDs*
+  
+  - Work with cv at some point probably? Depends on what CV needs
 
 - Make sendValues more efficient by limiting what addresses it sends to based on what motors exist.
 
@@ -90,7 +105,9 @@
   
   - *Hero serializer have accurate half rotation so you can control shooting (Theo's thing)*
 
-- <mark>DEXIN</mark> => ~~Make a class for Referee System (Help Dexin turn it into a class)~~ Make Referee system usable and quick
+- <mark>DEXIN</mark> => ~~Make a class for Referee System (Help Dexin turn it into a class)~~ Make Referee system usable and quick.
+  
+  - testing slow doesn't work, maybe threading (<mark>EMMA</mark>)
 
 - *Add class M3508, M2006, and GM6020 as extensions of CANMotor which reduces arguments by one (Get John or a new recruit some more experience with the CANMotor class)*
 
@@ -101,6 +118,10 @@
 - *Add switch to the motor auto-ratio definitions instead of if-else*
 
 - <mark>FUTURE BEN</mark> => Simple strafe-auto sentry to move around and beyblade
+  
+  - Bootleg lidar (multiple ultrasonics in a ring around the sentry) and high speed rotation at all times
+  
+  - requires mapping of the space with bootleg (or real) lidar
 
 ## NO PRIORITY
 
