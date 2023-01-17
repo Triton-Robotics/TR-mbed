@@ -1,6 +1,0 @@
-rm_pwm.c:11:6:pwm_imu_start	8	static
-rm_pwm.c:15:6:pwm_buzzer_start	8	static
-rm_pwm.c:19:6:set_pwm_imu	16	static
-rm_pwm.c:23:6:set_pwm_buzzer	16	static
-rm_pwm.c:26:6:pwm_flywheel_start	8	static
-rm_pwm.c:30:6:set_pwm_flywheel	16	static

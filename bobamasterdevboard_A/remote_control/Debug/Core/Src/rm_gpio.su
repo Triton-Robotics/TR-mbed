@@ -1,2 +1,0 @@
-rm_gpio.c:11:6:led_off	8	static
-rm_gpio.c:16:6:power_on	8	static
