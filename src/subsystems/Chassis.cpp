@@ -57,16 +57,16 @@ void Chassis::setMotorSpeedTicksPerSecond(int index, double speed) {
     }
     switch (index) {
         case 0:
-            LF.setSpeed(speed);
+            LF.setSpeed(speed * isInverted[0]);
             break;
         case 1:
-            RF.setSpeed(speed);
+            RF.setSpeed(speed * isInverted[1]);
             break;
         case 2:
-            LB.setSpeed(speed);
+            LB.setSpeed(speed * isInverted[2]);
             break;
         case 3:
-            RB.setSpeed(speed);
+            RB.setSpeed(speed * isInverted[3]);
             break;
     }
 }
