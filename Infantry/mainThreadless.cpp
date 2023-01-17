@@ -80,12 +80,15 @@ int main()
 
         unsigned long timeStart = us_ticker_read() / 1000;
         if(timeStart - loopTimer > 10){
+            loopTimer = timeStart;
+
             refLoop++;
             if(refLoop > 25){
-                // refereeThread();
+                refereeThread();
                 refLoop = 0;
+                led = ext_power_heat_data.data.shooter_id1_17mm_cooling_heat > 0;
+                printf("%d\n",ext_power_heat_data.data.shooter_id1_17mm_cooling_heat);
             }
-            loopTimer = timeStart;
 
             if(rS == 1){ // All non-serializer motors activated
                 int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;

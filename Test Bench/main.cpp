@@ -111,7 +111,7 @@ int main()
             //remote1.read();
             refLoop++;
             if(refLoop > 25){
-                // refereeThread();
+                refereeThread();
                 refLoop = 0;
             }
 
