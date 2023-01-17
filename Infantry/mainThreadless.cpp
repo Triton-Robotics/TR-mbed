@@ -55,7 +55,11 @@ int main()
     // pitch.setPositionPID(.017,.001,.044);
     pitch.useAbsEncoder = 1;
     pitch.justPosError = 1;
-    yaw.setSpeedPID(78.181, 7.303, 1.227);
+    // yaw.setSpeedPID(78.181, 7.303, 1.227);
+    yaw.setPositionPID(3.5, 0, 0.25);
+    yaw.setPositionIntegralCap(10000);
+    yaw.justPosError = 1;
+
     indexer.setSpeedPID(0.34, 0.002, 0.166);
     indexer.setSpeedIntegralCap(500000);
 
@@ -73,6 +77,8 @@ int main()
 
     bool strawberryJam = false;
     int refLoop=0;
+
+    int yawSetpoint = 0;
 
     while (true) {
         led = !led;
@@ -92,7 +98,7 @@ int main()
 
             if(rS == 1){ // All non-serializer motors activated
                 int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
-                chassis.driveXYR(lX / 500.0, lY / 500.0, rX / 500.0);
+                chassis.driveFieldRelative(lX / 500.0, lY / 500.0, 0);
                 // LF.setSpeed(LFa * speedmultiplier);
                 // RF.setSpeed(-RFa * speedmultiplier);
                 // LB.setSpeed(LBa * speedmultiplier);
@@ -105,7 +111,9 @@ int main()
                 
                 // pitch.setPower(rY*9);
                 pitch.setPosition((rY / 2) + 1500);
-                //yaw.setSpeed(rX/100);
+                // yaw.setSpeed(rX/100);
+                yawSetpoint -= rX / 10.0;
+                yaw.setPosition(yawSetpoint);
                 
 
             }else if(rS == 2){ //disable all the non-serializer components
