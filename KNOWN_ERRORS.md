@@ -30,7 +30,12 @@ Icode
 
 * Restart Computer
 
+`ERROR: Mbed OS was not found due to the following error: This MbedOS copy does not contain a targets.json file.  
+You may need to resolve the mbed-os.lib reference. You can do this by performing a 'deploy'.`
 
+* Delete the files mbed-os.lib, mbed_app.json and the folder mbed-os. Save your main code (it will be overwritten), and then type in mbed-tools new . (inside of the docker environment).
+
+* It will re-install mbed-os, and then you can paste your main code back in.
 
 ## Functionality Issues
 
