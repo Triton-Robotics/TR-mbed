@@ -1,4 +1,0 @@
-rm_can.c:15:6:can_filter_init	48	static
-rm_can.c:39:6:can_transmit	64	static
-rm_can.c:65:6:HAL_CAN_RxFifo0MsgPendingCallback	56	static
-rm_can.c:75:6:get_motor_measure	16	static

@@ -54,8 +54,10 @@
   
   - Kalman it together with the IMU to get a stable output
 
-- <mark>TANIA</mark> => **IMU on Old Devboard** - Make it functional, and incorporate its sending of data into the existing remote code
   - Speed is an issue, make it quick
+  * incorporate its sending of data into the existing remote code
+  
+- <mark>TANIA</mark> => **IMU on Old Devboard** - Make it functional
 
 - **Add referee system into code**
   
