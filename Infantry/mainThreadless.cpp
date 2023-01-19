@@ -114,10 +114,10 @@ int main()
                 
 
             }else if(rS == 2){ //disable all the non-serializer components
-                // LF.setPower(0);RF.setPower(0);LB.setPower(0);RB.setPower(0);
+                chassis.driveFieldRelative(0,0,0);
                 yaw.setPower(0); pitch.setPower(0);
             }else if(rS == 3){ // beyblade mode
-                // LF.setPower(0);RF.setPower(0);LB.setPower(0);RB.setPower(0);
+                chassis.driveFieldRelative(0,0,0);
                 yaw.setPower(0); pitch.setPower(0);
             }
 
