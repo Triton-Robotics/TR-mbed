@@ -1,4 +1,5 @@
 #include "../src/main.hpp"
+#include "../util/imu/BNO055.cpp"
 #include <cstdlib>
 //#include "../util/communications/DJIRemote.cpp"
 
@@ -13,6 +14,12 @@
 
 //I2C gI2C(PB_9,PB_8);
 //Adafruit_SSD1306_I2c gOled2(gI2C,PA_13);
+
+I2C    i2c(PB_9, PB_8);                // SDA, SCL
+BNO055 imu(i2c, PA_8);
+
+BNO055_ID_INF_TypeDef bno055_id_inf;
+BNO055_EULER_TypeDef  euler_angles;
 
 // sentry only from 1230 - 1830
 
@@ -84,18 +91,28 @@ int main()
 
     unsigned long loopTimer = us_ticker_read() / 1000;
 
-    m3508_1.setSpeedPID(1.79, 0.0, 10.57);
-    m3508_2.setSpeedPID(1.79, 0.0, 10.57);
-    m3508_3.setSpeedPID(1.79, 0.0, 10.57);
-    m3508_4.setSpeedPID(1.79, 0.0, 10.57);
-    m3508_5.setSpeedPID(1.79, 0.0, 10.57);
-    gimbly8.setPositionPID(0.5,0,0);
-    gimbly9.setPositionPID(0.5,0,0);
-    gimbly10.setPositionPID(0.5,0,0);
-    gimbly11.setPositionPID(0.5,0,0);
+    // m3508_1.setSpeedPID(1.79, 0.0, 10.57);
+    // m3508_2.setSpeedPID(1.79, 0.0, 10.57);
+    // m3508_3.setSpeedPID(1.79, 0.0, 10.57);
+    // m3508_4.setSpeedPID(1.79, 0.0, 10.57);
+    // m3508_5.setSpeedPID(1.79, 0.0, 10.57);
+    // gimbly8.setPositionPID(0.5,0,0);
+    // gimbly9.setPositionPID(0.5,0,0);
+    // gimbly10.setPositionPID(0.5,0,0);
+    // gimbly11.setPositionPID(0.5,0,0);
 
     int countLoops = 0;
     int refLoop=0;
+
+    printf("Bosch Sensortec BNO055 test program on " __DATE__ "/" __TIME__ "\n");
+
+     if (imu.chip_ready() == 0)
+         printf("Bosch BNO055 is NOT available!!\r\n");
+
+     imu.read_id_inf(&bno055_id_inf);
+     printf("CHIP:0x%02x, ACC:0x%02x, MAG:0x%02x, GYR:0x%02x, , SW:0x%04x, , BL:0x%02x\n",
+                bno055_id_inf.chip_id, bno055_id_inf.acc_id, bno055_id_inf.mag_id,
+                bno055_id_inf.gyr_id, bno055_id_inf.sw_rev_id, bno055_id_inf.bootldr_rev_id);
 
     while (true) {
         unsigned long timeStart = us_ticker_read() / 1000;
@@ -113,45 +130,49 @@ int main()
             if(refLoop > 25){
                 // refereeThread();
                 refLoop = 0;
+                //imu.get_euler_angles(&euler_angles);
+                //ThisThread::sleep_for(400ms);
             }
 
-            if(lS == 4){
-                // char str[80];
-                // sprintf(str, "%d:%d:%d:%d\n", m3508_2.getData(ANGLE),m3508_2.getData(VELOCITY),m3508_2.getData(TORQUE),m3508_2.getData(TEMPERATURE));
-                // printf(str);
-            }else if(lS == 1){
-                // m3508_1.setSpeed(800 * (rS - 2));
-                // m3508_2.setSpeed(1000 * (rS - 2));
-                // m3508_3.setSpeed(800 * (rS - 2));
-                // m3508_4.setSpeed(800 * (rS - 2));
-                // m2006_7.setSpeed(800 * (rS - 2));
-                gimbly8.setPosition(2000 * (rS - 2));
-                gimbly9.setPosition(2000 * (rS - 2));
-                gimbly10.setPosition(2000 * (rS - 2));
-                //gimbly11.setPosition(2000 * (rS - 2));
+            printf("Heading:%d [deg], Roll:%d [deg], Pitch:%d [deg]\n", (int)euler_angles.h, (int)euler_angles.r, (int)euler_angles.p);
+
+            // if(lS == 4){
+            //     // char str[80];
+            //     // sprintf(str, "%d:%d:%d:%d\n", m3508_2.getData(ANGLE),m3508_2.getData(VELOCITY),m3508_2.getData(TORQUE),m3508_2.getData(TEMPERATURE));
+            //     // printf(str);
+            // }else if(lS == 1){
+            //     // m3508_1.setSpeed(800 * (rS - 2));
+            //     // m3508_2.setSpeed(1000 * (rS - 2));
+            //     // m3508_3.setSpeed(800 * (rS - 2));
+            //     // m3508_4.setSpeed(800 * (rS - 2));
+            //     // m2006_7.setSpeed(800 * (rS - 2));
+            //     gimbly8.setPosition(2000 * (rS - 2));
+            //     gimbly9.setPosition(2000 * (rS - 2));
+            //     gimbly10.setPosition(2000 * (rS - 2));
+            //     //gimbly11.setPosition(2000 * (rS - 2));
                 
-            }else if(lS == 3){
-                // printf("print:%s<\n",Robot_Commute);
-                m3508_1.setPower(0);
-                m3508_2.setPower(0);
-                m3508_3.setPower(0);
-                m3508_4.setPower(0);
-                m2006_7.setPower(0);
-                gimbly8.setPower(0);
-                gimbly9.setPower(0);
-                gimbly10.setPower(0);
-                //gimbly11.setPower(0);
-            }else{
-                m3508_1.setPower(0);
-                m3508_2.setPower(0);
-                m3508_3.setPower(0);
-                m3508_4.setPower(0);
-                m2006_7.setPower(0);
-                gimbly8.setPower(0);
-                gimbly9.setPower(0);
-                gimbly10.setPower(0);
-                //gimbly11.setPower(0);
-            }
+            // }else if(lS == 3){
+            //     // printf("print:%s<\n",Robot_Commute);
+            //     m3508_1.setPower(0);
+            //     m3508_2.setPower(0);
+            //     m3508_3.setPower(0);
+            //     m3508_4.setPower(0);
+            //     m2006_7.setPower(0);
+            //     gimbly8.setPower(0);
+            //     gimbly9.setPower(0);
+            //     gimbly10.setPower(0);
+            //     //gimbly11.setPower(0);
+            // }else{
+            //     m3508_1.setPower(0);
+            //     m3508_2.setPower(0);
+            //     m3508_3.setPower(0);
+            //     m3508_4.setPower(0);
+            //     m2006_7.setPower(0);
+            //     gimbly8.setPower(0);
+            //     gimbly9.setPower(0);
+            //     gimbly10.setPower(0);
+            //     //gimbly11.setPower(0);
+            // }
             //gimbly9.setPower(1000);
             // if(remote1.getSwitch(Remote::Switch::LEFT_SWITCH)  == Remote::SwitchState::MID){
             //     printf("YEETUS\n");
@@ -167,6 +188,9 @@ int main()
 
             CANMotor::sendValues();
         }
+
+        imu.get_euler_angles(&euler_angles);
+
         unsigned long timeEnd = us_ticker_read() / 1000;
         CANMotor::getFeedback();
         ThisThread::sleep_for(1ms);

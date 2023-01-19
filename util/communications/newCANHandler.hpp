@@ -119,7 +119,7 @@ class NewCANHandler{
             }
 
             if (errorCount > 1000){
-                printf("[CAN Connection Issues SEND]\n");
+                //printf("[CAN Connection Issues SEND]\n");
             }
             //printMsg(txMsg);
             return isWrite;
