@@ -4,6 +4,9 @@
 
 #define PI 3.14159265
 
+#define LOWERBOUND 1000
+#define UPPERBOUND 2000
+
 // CANMotor LF(4,NewCANHandler::CANBUS_1,M3508); 
 // CANMotor RF(2,NewCANHandler::CANBUS_1,M3508); 
 // CANMotor LB(1,NewCANHandler::CANBUS_1,M3508); 
@@ -14,21 +17,13 @@ DigitalOut led(LED1);
 
 CANMotor yaw(5, NewCANHandler::CANBUS_1, GIMBLY);
 CANMotor pitch(6, NewCANHandler::CANBUS_1, GIMBLY);
-int pitchval = 0;
-#define LOWERBOUND 1000
-#define UPPERBOUND 2000
 
 CANMotor indexer(7, NewCANHandler::CANBUS_1, C610);
-int indexJamTime = 0;
-int lastJam = 0;
-
-unsigned long cT = 0;
-unsigned long forwardTime = 250;
-unsigned long reverseTime = 300;
-unsigned long totalTime;
 
 PWMMotor RFLYWHEEL(D12); PWMMotor LFLYWHEEL(D11);
 PWMMotor flyWheelMotors[] = {RFLYWHEEL, LFLYWHEEL};
+
+int indexJamTime = 0;
 
 void setFlyWheelPwr(int pwr) {
     for (int i = 0; i < 2; i++)
@@ -51,11 +46,9 @@ int main()
     pitch.setPositionPID(4, 0.35, 0.35);
     pitch.setPositionIntegralCap(10000);
 
-
-    // pitch.setPositionPID(.017,.001,.044);
     pitch.useAbsEncoder = 1;
     pitch.justPosError = 1;
-    // yaw.setSpeedPID(78.181, 7.303, 1.227);
+
     yaw.setPositionPID(3.5, 0, 0.25);
     yaw.setPositionIntegralCap(10000);
     yaw.justPosError = 1;
@@ -65,48 +58,43 @@ int main()
 
     chassis.setBrakeMode(COAST);
 
-    // LF.outCap = 16000;   
-    // RF.outCap = 16000;
-    // LB.outCap = 16000;
-    // RB.outCap = 16000;
-
     unsigned long loopTimer = us_ticker_read() / 1000;
 
     int indexJamTime = 0;
-    int lastJam = 0;
 
     bool strawberryJam = false;
     int refLoop=0;
 
     int yawSetpoint = 0;
 
+    CANMotor::getFeedback();
+    yawSetpoint = yaw.getData(ANGLE);
+
+    chassis.isInverted[0] = -1;
+    chassis.isInverted[3] = -1;
+
     while (true) {
         led = !led;
         remoteRead();
 
+        
+
         unsigned long timeStart = us_ticker_read() / 1000;
-        if(timeStart - loopTimer > 10){
-            refLoop++;
-            if(refLoop > 25){
-                // refereeThread();
-                refLoop = 0;
-            }
+        if(timeStart - loopTimer > 25){
             loopTimer = timeStart;
+
+            // refLoop++;
+            // if(refLoop > 25){
+            //     //refereeThread();
+            //     refLoop = 0;
+            //     //led = ext_power_heat_data.data.chassis_power > 0;
+            //     //printf("%d\n",ext_power_heat_data.data.chassis_power);
+            // }
 
             if(rS == 1){ // All non-serializer motors activated
                 int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
                 chassis.driveFieldRelative(lX / 500.0, lY / 500.0, 0);
-                // LF.setSpeed(LFa * speedmultiplier);
-                // RF.setSpeed(-RFa * speedmultiplier);
-                // LB.setSpeed(LBa * speedmultiplier);
-                // RB.setSpeed(-RBa * speedmultiplier);
-
-                // LF.setPower(LFa * powmultiplier);
-                // RF.setPower(-RFa * powmultiplier);
-                // LB.setPower(LBa * powmultiplier);
-                // RB.setPower(-RBa * powmultiplier);
                 
-                // pitch.setPower(rY*9);
                 pitch.setPosition((rY / 2) + 1500);
                 // yaw.setSpeed(rX/100);
                 yawSetpoint -= rX / 10.0;
@@ -114,10 +102,10 @@ int main()
                 
 
             }else if(rS == 2){ //disable all the non-serializer components
-                chassis.driveFieldRelative(0,0,0);
+                chassis.driveXYR(0,0,0);
                 yaw.setPower(0); pitch.setPower(0);
             }else if(rS == 3){ // beyblade mode
-                chassis.driveFieldRelative(0,0,0);
+                chassis.driveXYR(0,0,0);
                 yaw.setPower(0); pitch.setPower(0);
             }
 
@@ -133,16 +121,16 @@ int main()
                 ///////////////////////////////////////////
                 /// THEO SECTION OF CODE
                 ///////////////////////////////////////////
-                printf("TORQ:%d VEL:%d\n",indexer.getData(TORQUE), indexer.getData(VELOCITY));
+                //printf("TORQ:%d VEL:%d\n",indexer.getData(TORQUE), indexer.getData(VELOCITY));
                 if(abs(indexer.getData(TORQUE)) > 100 & abs(indexer.getData(VELOCITY)) < 20){ //jam
                     indexJamTime = us_ticker_read() /1000;
                 }
                 if(us_ticker_read() / 1000 - indexJamTime < 1000){
                     indexer.setPower(14000); //jam
-                    printf("JAMMMMM- ");
+                    //printf("JAMMMMM- ");
                 }else if(us_ticker_read() / 1000 - indexJamTime < 1500){
                     indexer.setPower(-9000); //jam
-                    printf("POWER FORWARD- ");
+                    //printf("POWER FORWARD- ");
                 }else{
                     //indexer.setPower(-900);   
                     indexer.setSpeed(-4500);

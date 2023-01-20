@@ -22,6 +22,7 @@ Chassis::Chassis(short lfId, short rfId, short lbId, short rbId) : LF(lfId, CAN_
     LB.setSpeedPID(1.5, 0, 0);
     RB.setSpeedPID(1.5, 0, 0);
     brakeMode = BRAKE;
+    isInverted[0] = 1; isInverted[1] = 1; isInverted[2] = 1; isInverted[3] = 1;
 }
 
 double Chassis::rpmToTicksPerSecond(double RPM) {
@@ -35,16 +36,16 @@ double Chassis::ticksPerSecondToRPM(double ticksPerSecond) {
 void Chassis::setMotorPower(int index, double power) {
     switch (index) {
         case 0:
-            LF.setPower(power);
+            LF.setPower(power * isInverted[0]);
             break;
         case 1:
-            RF.setPower(power);
+            RF.setPower(power * isInverted[1]);
             break;
         case 2:
-            LB.setPower(power);
+            LB.setPower(power * isInverted[2]);
             break;
         case 3:
-            RB.setPower(power);
+            RB.setPower(power * isInverted[3]);
             break;
     }
 }
@@ -56,16 +57,16 @@ void Chassis::setMotorSpeedTicksPerSecond(int index, double speed) {
     }
     switch (index) {
         case 0:
-            LF.setSpeed(speed);
+            LF.setSpeed(speed * isInverted[0]);
             break;
         case 1:
-            RF.setSpeed(speed);
+            RF.setSpeed(speed * isInverted[1]);
             break;
         case 2:
-            LB.setSpeed(speed);
+            LB.setSpeed(speed * isInverted[2]);
             break;
         case 3:
-            RB.setSpeed(speed);
+            RB.setSpeed(speed * isInverted[3]);
             break;
     }
 }

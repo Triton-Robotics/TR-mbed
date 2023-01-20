@@ -21,6 +21,8 @@
   - Iteratively test each include
   
   - try just making blinky with all the tr includes
+  
+  - OLED Library + I2C constructors were the main issue
 
 - **Fix CAN lag** - (Realtime? change ref to idle and lower priorities for the rest)
   
@@ -46,10 +48,16 @@
   
   - Speed is an issue as always
 
-- <mark>TANIA</mark> => **IMU on Old Devboard** - Make it functional
+- <mark>BEN</mark> => **Kalman Filter** - Look into what a Kalman Filter is and implement it into our code to stabilize our IMU data so it can be more effectively used for Beyblade
   
-  * incorporate its sending of data into the existing remote code
+  - Get data from the four wheel encoders as to robot acceleration, rotation (probably noisy)
+  
+  - Kalman it together with the IMU to get a stable output
+
   - Speed is an issue, make it quick
+  * incorporate its sending of data into the existing remote code
+  
+- <mark>TANIA</mark> => **IMU on Old Devboard** - Make it functional
 
 - **Add referee system into code**
   
@@ -91,8 +99,7 @@
 
 - ***Write Good Robot Code*** *Code for all robots that uses Speed PID and REF Code*
 
-- <mark>BEN</mark> => *Tune PIDs*
-  
+- *Tune PIDs*
   - Work with cv at some point probably? Depends on what CV needs
 
 - Make sendValues more efficient by limiting what addresses it sends to based on what motors exist.
@@ -105,8 +112,11 @@
   
   - *Hero serializer have accurate half rotation so you can control shooting (Theo's thing)*
 
-- <mark>DEXIN</mark> => ~~Make a class for Referee System (Help Dexin turn it into a class)~~ Make Referee system usable and quick.
+- <mark>DEXIN</mark> => ~~Make a class for Referee System (Help Dexin turn it into a class)~~ Make Referee system usable and quick
   
+  - It seems? that referee doesn't affect speed a lot, if at all, the issue with ref is that it interferes with can sending. 
+  
+  - However the symptoms could be laggy can sending/recieving or very small timing issues which manifest in a similar way.
   - testing slow doesn't work, maybe threading (<mark>EMMA</mark>)
 
 - *Add class M3508, M2006, and GM6020 as extensions of CANMotor which reduces arguments by one (Get John or a new recruit some more experience with the CANMotor class)*

@@ -20,6 +20,8 @@ class Chassis {
         BrakeMode getBrakeMode();
         void setBrakeMode(BrakeMode brakeMode);
 
+        int8_t isInverted[4];
+
     private:
         CANMotor LF, RF, LB, RB;
         BrakeMode brakeMode;
