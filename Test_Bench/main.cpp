@@ -73,7 +73,7 @@ CANMotor getMotor(int i){
     }
 }
 
-void getAnglesFromQuat(int &yaw, int &pitch, int &roll){
+void getAnglesFromQuat(double &yaw, double &pitch, double &roll){
 
     imu.get_quaternion(&quat);
     double yy = quat.y * quat.y;        // 2 Uses below
@@ -92,10 +92,9 @@ void getAnglesFromQuat(int &yaw, int &pitch, int &roll){
 int main(){
 
     imu.change_fusion_mode(MODE_NDOF);
-
     CANMotor::setCANHandlers(&canHandler1,&canHandler2, false, false);
 
-    int yaw, pitch, roll;
+    double yaw, pitch, roll;
     int countLoops = 0, refLoop = 0;
     unsigned long loopTimer = us_ticker_read() / 1000;
 
@@ -111,9 +110,10 @@ int main(){
 
     while (true) {
         unsigned long timeStart = us_ticker_read() / 1000;
-        imu.get_euler_angles(&euler_angles);
+
+        getAnglesFromQuat(yaw, pitch, roll);
+        //imu.get_euler_angles(&euler_angles);
         //imu.get_quaternion(&quat);
-        //getAnglesFromQuat(yaw, pitch, roll);
 
         if(timeStart - loopTimer > 25){
             loopTimer = timeStart;
@@ -126,11 +126,10 @@ int main(){
             if(refLoop > 25)
                 refLoop = 0;
 
-
-
-            printf("Heading:%d [deg], Roll:%d [deg], Pitch:%d [deg]\n", (int)euler_angles.h, (int)euler_angles.r, (int)euler_angles.p);
-            //printf("Heading:%d [deg], Roll:%d [deg], Pitch:%d [deg]\n", yaw, roll, pitch);
+            printf("Heading:%d [deg], Roll:%d [deg], Pitch:%d [deg]\n", (int)yaw, (int)roll,(int)pitch);
+            //printf("Heading:%d [deg], Roll:%d [deg], Pitch:%d [deg]\n", (int)euler_angles.h, (int)euler_angles.r, (int)euler_angles.p);
             //printf("Quaternion Y:%d [deg], X:%d [deg], Z:%d [deg], W:%d [deg]\n", (int)quat.y, (int)quat.x, (int)quat.z, (int)quat.w);
+
             CANMotor::sendValues();
         }
 
