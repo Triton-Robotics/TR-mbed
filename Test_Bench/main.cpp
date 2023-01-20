@@ -33,43 +33,43 @@ DigitalIn button(BUTTON1);
 
 CANMotor getMotor(int i){
     switch (i) {
-        
+
         case 1:
             return m3508_1;
-            
+
         case 2:
             return m3508_2;
-            
+
         case 3:
             return m3508_3;
-            
+
         case 4:
             return m3508_4;
-            
+
         case 5:
             return m3508_5;
-            
+
         case 6:
             return m3508_1;
-            
+
         case 7:
             return m3508_1;
-            
+
         case 8:
             return gimbly8;
-            
+
         case 9:
             return gimbly9;
-            
+
         case 10:
             return gimbly10;
-            
+
         case 11:
             return gimbly11;
-            
+
         default:
             return m3508_1;
-            
+
     }
 }
 
@@ -91,7 +91,7 @@ void getAnglesFromQuat(double &yaw, double &pitch, double &roll){
 
 int main(){
 
-    imu.change_fusion_mode(MODE_NDOF);
+    imu.change_fusion_mode(MODE_IMU);
     CANMotor::setCANHandlers(&canHandler1,&canHandler2, false, false);
 
     double yaw, pitch, roll;
@@ -100,13 +100,13 @@ int main(){
 
     printf("Bosch Sensortec BNO055 test program on " __DATE__ "/" __TIME__ "\n");
 
-     if (imu.chip_ready() == 0)
-         printf("Bosch BNO055 is NOT available!!\r\n");
+    if (imu.chip_ready() == 0)
+        printf("Bosch BNO055 is NOT available!!\r\n");
 
-     imu.read_id_inf(&bno055_id_inf);
-     printf("CHIP:0x%02x, ACC:0x%02x, MAG:0x%02x, GYR:0x%02x, , SW:0x%04x, , BL:0x%02x\n",
-                bno055_id_inf.chip_id, bno055_id_inf.acc_id, bno055_id_inf.mag_id,
-                bno055_id_inf.gyr_id, bno055_id_inf.sw_rev_id, bno055_id_inf.bootldr_rev_id);
+    imu.read_id_inf(&bno055_id_inf);
+    printf("CHIP:0x%02x, ACC:0x%02x, MAG:0x%02x, GYR:0x%02x, , SW:0x%04x, , BL:0x%02x\n",
+           bno055_id_inf.chip_id, bno055_id_inf.acc_id, bno055_id_inf.mag_id,
+           bno055_id_inf.gyr_id, bno055_id_inf.sw_rev_id, bno055_id_inf.bootldr_rev_id);
 
     while (true) {
         unsigned long timeStart = us_ticker_read() / 1000;
@@ -137,7 +137,6 @@ int main(){
         CANMotor::getFeedback();
         ThisThread::sleep_for(1ms);
         countLoops ++;
-        
+
     }
 }
-
