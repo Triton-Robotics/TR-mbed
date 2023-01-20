@@ -8,7 +8,7 @@
 #define INPUT_THRESHOLD 0.01
 
 double getAngleRadians() {
-    return PI / 2.0;
+    return 0;
 }
 
 Chassis::Chassis(short lfId, short rfId, short lbId, short rbId) : LF(lfId, CAN_BUS_TYPE, MOTOR_TYPE), RF(rfId, CAN_BUS_TYPE, MOTOR_TYPE), 
@@ -91,11 +91,19 @@ void Chassis::driveXYR(double xVelocityRPM, double yVelocityRPM, double rotation
 }
 
 void Chassis::driveFieldRelative(double xVelocityRPM, double yVelocityRPM, double rotationVelocityRPM) {
-    double angleRadians = getAngleRadians();
-    double robotRelativeXVelocity = xVelocityRPM * cos(angleRadians) - yVelocityRPM * sin(angleRadians);
-    double robotRelativeYVelocity = xVelocityRPM * sin(angleRadians) + yVelocityRPM * cos(angleRadians);
+    double robotHeading = getAngleRadians();
+    driveOffsetAngle(xVelocityRPM, yVelocityRPM, rotationVelocityRPM, -robotHeading);
+}
+
+/**
+ * Drives the Chassis, compensating by a certain angle (angleOffset)
+*/
+void Chassis::driveOffsetAngle(double xVelocityRPM, double yVelocityRPM, double rotationVelocityRPM, double angleOffset) {
+    double robotRelativeXVelocity = xVelocityRPM * cos(angleOffset) + yVelocityRPM * sin(angleOffset);
+    double robotRelativeYVelocity = - xVelocityRPM * sin(angleOffset) + yVelocityRPM * cos(angleOffset);
     driveXYR(robotRelativeXVelocity, robotRelativeYVelocity, rotationVelocityRPM);
 }
+
 
 void Chassis::driveAngle(double angleRadians, double speedRPM, double rotationVelocityRPM) {
     double vY = speedRPM * cos(angleRadians);

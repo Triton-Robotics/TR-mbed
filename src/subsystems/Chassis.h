@@ -13,6 +13,7 @@ class Chassis {
 
         void driveXYR(double yVelocityRPM, double xVelocityRPM, double rotationVelocityRPM);
         void driveFieldRelative(double yVelocityRPM, double xVelocityRPM, double rotationVelocityRPM);
+        void driveOffsetAngle(double yVelocityRPM, double xVelocityRPM, double rotationVelocityRPM, double angleOffset);
         void driveAngle(double angleRadians, double speedRPM, double rotationVelcotiyRPM);
         CANMotor getMotor(int index);
 
