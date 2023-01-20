@@ -27,8 +27,7 @@ void getAnglesFromQuat(double &yaw, double &pitch, double &roll){
 
 int main(){
 
-    imu.change_fusion_mode(MODE_NDOF);
-
+    imu.change_fusion_mode(MODE_IMU);
     double yaw, pitch, roll;
 
     printf("Bosch Sensortec BNO055 test program on " __DATE__ "/" __TIME__ "\n");
