@@ -87,15 +87,16 @@ void BNO055::get_quaternion(BNO055_QUATERNION_TypeDef *result)
     dt[0] = BNO055_QUATERNION_W_LSB;
     _i2c.write(chip_addr, dt, 1, true);
     _i2c.read(chip_addr, dt, 8, false);
-    w = (dt[1] << 8 | dt[0]);
-    x = (dt[3] << 8 | dt[2]);
-    y = (dt[5] << 8 | dt[4]);
-    z = (dt[7] << 8 | dt[6]);
+    w = dt[1] << 8 | dt[0];
+    x = dt[3] << 8 | dt[2];
+    y = dt[5] << 8 | dt[4];
+    z = dt[7] << 8 | dt[6];
 
-    result->w = double(w) / 16384.0f;
-    result->x = double(x) / 16384.0f;
-    result->y = double(y) / 16384.0f;
-    result->z = double(z) / 16384.0f;
+    result->w = (double)w / 16384.0f;
+    result->x = (double)x / 16384.0f;
+    result->y = (double)y / 16384.0f;
+    result->z = (double)z / 16384.0f;
+
 }
 
 void BNO055::get_linear_accel(BNO055_VECTOR_TypeDef *result)
