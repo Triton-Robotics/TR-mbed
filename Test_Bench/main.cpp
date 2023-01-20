@@ -126,7 +126,7 @@ int main(){
             if(refLoop > 25)
                 refLoop = 0;
 
-            printf("Heading:%d [deg], Roll:%d [deg], Pitch:%d [deg]\n", (int)yaw, (int)roll,(int)pitch);
+            printf("Heading:%d [deg], Roll:%d [deg], Pitch:%d [deg]\n", (int)yaw, (int)roll, (int)pitch);
             //printf("Heading:%d [deg], Roll:%d [deg], Pitch:%d [deg]\n", (int)euler_angles.h, (int)euler_angles.r, (int)euler_angles.p);
             //printf("Quaternion Y:%d [deg], X:%d [deg], Z:%d [deg], W:%d [deg]\n", (int)quat.y, (int)quat.x, (int)quat.z, (int)quat.w);
 
