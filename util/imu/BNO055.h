@@ -20,10 +20,16 @@
  *  http://microcontrollershop.com/product_info.php?products_id=7140&osCsid=10645k86db2crld4tfi0vol5g5
  */
 
+/*
+ * This library has been modified. Original can be found here: https://os.mbed.com/users/kenjiArai/code/BNO055_fusion/
+ */
+
 #ifndef BNO055_H
 #define BNO055_H
 
 #include "mbed.h"
+
+#define PI 3.14159265
 
 //  BNO055
 //  7bit address = 0b010100x(0x28 or 0x29 depends on COM3)
@@ -78,6 +84,12 @@ typedef struct {
     double z;
     double w;
 } BNO055_QUATERNION_TypeDef;
+
+typedef struct{
+    double yaw;
+    double roll;
+    double pitch;
+} BNO055_ANGULAR_POSITION_typedef;
 
 typedef struct {
     double x;

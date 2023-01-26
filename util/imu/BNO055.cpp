@@ -10,14 +10,13 @@
  *      Revised: August    23rd, 2017
  */
 
+/*
+ * This library has been modified. Original can be found here: https://os.mbed.com/users/kenjiArai/code/BNO055_fusion/
+ */
+
 #include "mbed.h"
 #include "BNO055.h"
 
-
-
-#if     MBED_MAJOR_VERSION != 6
-#error "Running on Unknown OS"
-#endif
 
 BNO055::BNO055 (PinName p_sda, PinName p_scl, PinName p_reset, uint8_t addr, uint8_t mode):
     _i2c_p(new I2C(p_sda, p_scl)), _i2c(*_i2c_p), _res(p_reset)
