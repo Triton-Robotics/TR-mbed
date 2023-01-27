@@ -21,7 +21,7 @@
  */
 
 /*
- * This library has been modified. Original can be found here: https://os.mbed.com/users/kenjiArai/code/BNO055_fusion/
+ * This library has been modified. Original can be found here: https://os.mbed.com/users/AlexanderLill/code/BNO055_fusion/
  */
 
 #ifndef BNO055_H
@@ -174,6 +174,11 @@ public:
      */
     void get_quaternion(BNO055_QUATERNION_TypeDef *qua);
 
+    /** Get Angular position from quaternion
+     *  @param double type of 3D data address
+     */
+    void get_angular_position_quat(BNO055_ANGULAR_POSITION_typedef *an_pos);
+
     /** Get Linear accel data
      * @param double type of 3D data address
      */
@@ -229,6 +234,12 @@ public:
       * @return OK = 1, NG = 0;
       */
     uint8_t chip_ready(void);
+
+    /** Calibrate IMU
+      * @param none
+      * @return none
+      */
+    void calibrate(void);
 
     /** Read calibration status
       * @param none

@@ -11,13 +11,16 @@
  */
 
 /*
- * This library has been modified. Original can be found here: https://os.mbed.com/users/kenjiArai/code/BNO055_fusion/
+ * This library has been modified. Original can be found here: https://os.mbed.com/users/AlexanderLill/code/BNO055_fusion/
  */
 
 #include "mbed.h"
 #include "BNO055.h"
 
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "UnusedParameter"
+#pragma ide diagnostic ignored "UnusedLocalVariable"
 BNO055::BNO055 (PinName p_sda, PinName p_scl, PinName p_reset, uint8_t addr, uint8_t mode):
     _i2c_p(new I2C(p_sda, p_scl)), _i2c(*_i2c_p), _res(p_reset)
 {
@@ -95,6 +98,17 @@ void BNO055::get_quaternion(BNO055_QUATERNION_TypeDef *result)
     result->x = (double)x / 16384.0f;
     result->y = (double)y / 16384.0f;
     result->z = (double)z / 16384.0f;
+
+}
+
+void BNO055::get_angular_position_quat(BNO055_ANGULAR_POSITION_typedef *result){
+
+    BNO055_QUATERNION_TypeDef q;
+    get_quaternion(&q);
+
+    result -> roll  = atan2(2 * (q.w * q.x + q.y * q.z), 1 - 2 * (q.x * q.x + q.y * q.y)) * 180 / PI;
+    result -> pitch = asin(2 * q.w * q.y - q.x * q.z) * 180 / PI;
+    result -> yaw   = atan2(2 * (q.w * q.z + q.x * q.y), 1 - 2 * (q.y * q.y + q.z * q.z)) * 180 / PI;
 
 }
 
@@ -220,11 +234,12 @@ void BNO055::get_chip_temperature(BNO055_TEMPERATURE_TypeDef *result)
     _i2c.write(chip_addr, dt, 1, true);
     _i2c.read(chip_addr, dt, 1, false);
 
-    if (use_celsius_result) {
-        result->acc_chip = (int8_t)dt[0];
-    } else {
-        result->acc_chip = (int8_t)dt[0] * 2;
-    }
+    if (use_celsius_result)
+        result -> acc_chip = (int8_t)dt[0];
+
+    else
+        result -> acc_chip = (int8_t)dt[0] * 2;
+
 
     dt[0] = BNO055_TEMP_SOURCE;
     dt[1] = 1;
@@ -234,11 +249,11 @@ void BNO055::get_chip_temperature(BNO055_TEMPERATURE_TypeDef *result)
     _i2c.write(chip_addr, dt, 1, true);
     _i2c.read(chip_addr, dt, 1, false);
 
-    if (use_celsius_result) {
-        result->gyr_chip = (int8_t)dt[0];
-    } else {
-        result->gyr_chip = (int8_t)dt[0] * 2;
-    }
+    if (use_celsius_result)
+        result -> gyr_chip = (int8_t)dt[0];
+
+    else
+        result -> gyr_chip = (int8_t)dt[0] * 2;
 }
 
 /////////////// Initialize ////////////////////////////////
@@ -416,6 +431,88 @@ uint8_t BNO055::chip_ready(void)
     return 0;
 }
 
+/////////////// Calibrate IMU  ////////////////////
+void BNO055::calibrate()
+{
+    uint8_t d;
+    BNO055_VECTOR_TypeDef      gravity;
+
+    printf("------ Enter BNO055 Manual Calibration Mode ------\r\n");
+
+    //---------- Gyroscope Caliblation -----------------------------------------
+    // (a) Place the device in a single stable position for a period of
+    //     few seconds to allow the gyroscope to calibrate
+
+    printf("Step1) Please wait few seconds\r\n");
+    t.start();
+
+    while (t.elapsed_time().count() / 1000000 < 10) {
+        d = read_calib_status();
+        printf("Calb dat = 0x%x target  = 0x30(at least)\r\n", d);
+        if ((d & 0x30) == 0x30) {
+            break;
+        }
+        ThisThread::sleep_for(1s);
+    }
+
+    printf("-> Step1) is done\r\n\r\n");
+
+    //---------- Magnetometer Caliblation --------------------------------------
+    // (a) Make some random movements (for example: writing the number ‘8’
+    //     on air) until the CALIB_STAT register indicates fully calibrated.
+    // (b) It takes more calibration movements to get the magnetometer
+    //     calibrated than in the NDOF mode.
+
+    printf("Step2) random moving (try to change the BNO055 axis)\r\n");
+    t.start();
+
+    while (t.elapsed_time().count() / 1000000 < 30) {
+        d = read_calib_status();
+        printf("Calb dat = 0x%x target  = 0x33(at least)\r\n", d);
+        if ((d & 0x03) == 0x03) {
+            break;
+        }
+        ThisThread::sleep_for(1s);
+    }
+
+    printf("-> Step2) is done\r\n\r\n");
+
+    //---------- Magnetometer Caliblation --------------------------------------
+    // a) Place the device in 6 different stable positions for a period of
+    //    few seconds to allow the accelerometer to calibrate.
+    // b) Make sure that there is slow movement between 2 stable positions
+    //    The 6 stable positions could be in any direction, but make sure that
+    //    the device is lying at least once perpendicular to the x, y and z axis
+
+    printf("Step3) Change rotation each X,Y,Z axis KEEP SLOWLY!!");
+    printf(" Each 90deg stay a 5 sec and set at least 6 position.\r\n");
+    printf(" e.g. (1)ACC:X0,Y0,Z-9,(2)ACC:X9,Y0,Z0,(3)ACC:X0,Y0,Z9,");
+    printf("(4)ACC:X-9,Y0,Z0,(5)ACC:X0,Y-9,Z0,(6)ACC:X0,Y9,Z0,\r\n");
+    printf(" If you will give up, hit any key.\r\n");
+    t.stop();
+
+
+    while (true) {
+        d = read_calib_status();
+        get_gravity(&gravity);
+        printf(
+                "Calb dat = 0x%x target  = 0xff ACC:X %d, Y %d, Z %d\r\n",
+                d, (int)gravity.x, (int)gravity.y, (int)gravity.z
+        );
+        if (d == 0xff)
+            break;
+
+        ThisThread::sleep_for(1s);
+    }
+    if (read_calib_status() == 0xff)
+        printf("-> All of Calibration steps are done successfully!\r\n\r\n");
+
+    else
+        printf("-> Calibration steps are suspended!\r\n\r\n");
+
+    t.stop();
+}
+
 /////////////// Read Calibration status  //////////////////
 uint8_t BNO055::read_calib_status(void)
 {
@@ -576,3 +673,5 @@ uint8_t BNO055::write_reg1(uint8_t addr, uint8_t data)
     change_fusion_mode(current_mode);
     return d;
 }
+
+#pragma clang diagnostic pop
