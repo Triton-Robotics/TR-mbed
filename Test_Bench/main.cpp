@@ -10,39 +10,21 @@
  *      Revised: August     5th, 2020
  */
 
-//  Include --------------------------------------------------------------------
 #include    "mbed.h"
 #include    "../util/imu/BNO055.h"
 #include    "../util/imu/BNO055.cpp"
 
-//  Definition -----------------------------------------------------------------
 #define NUM_LOOP    100
 
 I2C    i2c(PB_9, PB_8);                // SDA, SCL
-BNO055 imu(i2c, PA_8);
+BNO055 imu(i2c, PA_8, MODE_IMU);
 
-Timer t;
-
-//  RAM ------------------------------------------------------------------------
 BNO055_ID_INF_TypeDef       bno055_id_inf;
 BNO055_EULER_TypeDef        euler_angles;
 BNO055_QUATERNION_TypeDef   quaternion;
 BNO055_VECTOR_TypeDef      linear_acc;
 BNO055_VECTOR_TypeDef      gravity;
 BNO055_TEMPERATURE_TypeDef  chip_temp;
-
-//  ROM / Constant data --------------------------------------------------------
-
-//  Function prototypes --------------------------------------------------------
-
-//------------------------------------------------------------------------------
-//  Control Program
-//------------------------------------------------------------------------------
-// Calibration
-//  Please refer
-//      BNO055 Data sheet 3.10 Calibration & 3.6.4 Sensor calibration data
-
-
 
 int main()
 {

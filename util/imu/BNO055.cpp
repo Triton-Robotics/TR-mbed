@@ -17,10 +17,10 @@
 #include "mbed.h"
 #include "BNO055.h"
 
-
-#pragma clang diagnostic push
+#pragma clang diagnostic push55
 #pragma ide diagnostic ignored "UnusedParameter"
 #pragma ide diagnostic ignored "UnusedLocalVariable"
+
 BNO055::BNO055 (PinName p_sda, PinName p_scl, PinName p_reset, uint8_t addr, uint8_t mode):
     _i2c_p(new I2C(p_sda, p_scl)), _i2c(*_i2c_p), _res(p_reset)
 {
@@ -48,11 +48,11 @@ BNO055::BNO055 (I2C& p_i2c, PinName p_reset, uint8_t addr, uint8_t mode) :
     initialize ();
 }
 
-BNO055::BNO055 (I2C& p_i2c, PinName p_reset) :
+BNO055::BNO055 (I2C& p_i2c, PinName p_reset, unit8_t mode) :
     _i2c(p_i2c), _res(p_reset)
 {
     chip_addr = BNO055_G_CHIP_ADDR;
-    chip_mode = MODE_NDOF;
+    chip_mode = mode;
     initialize_reset_pin();
     initialize ();
 }
