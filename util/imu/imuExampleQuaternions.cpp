@@ -4,16 +4,15 @@
 #include "BNO055.cpp"
 
 I2C    i2c(PB_9, PB_8);                // SDA, SCL
-BNO055 imu(i2c, PA_8);
+BNO055 imu(i2c, PA_8, MODE_IMU);
 
 BNO055_ID_INF_TypeDef bno055_id_inf;
-BNO055_QUATERNION_TypeDef   quat;
+BNO055_QUATERNION_TypeDef       quat;
 BNO055_ANGULAR_POSITION_typedef p;
 
 int main(){
 
-    imu.change_fusion_mode(MODE_IMU);
-    double yaw, pitch, roll;
+    imu.set_mounting_position(MT_P1);
 
     printf("Bosch Sensortec BNO055 test program on " __DATE__ "/" __TIME__ "\n");
 
