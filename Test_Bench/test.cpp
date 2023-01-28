@@ -88,7 +88,7 @@ int main()
         if(timeStart - loopTimer > 10){
             refLoop++;
             if(refLoop > 25){
-                refereeThread();
+                // refereeThread();
                 refLoop = 0;
             }
             loopTimer = timeStart;
