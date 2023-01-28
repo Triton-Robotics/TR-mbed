@@ -515,3 +515,4 @@ private:
 #define GYRO_ANY_MOTION_SET     0x1f
 
 #endif      // BNO055_H
+
