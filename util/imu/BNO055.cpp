@@ -17,7 +17,7 @@
 #include "mbed.h"
 #include "BNO055.h"
 
-#pragma clang diagnostic push55
+#pragma clang diagnostic push
 #pragma ide diagnostic ignored "UnusedParameter"
 #pragma ide diagnostic ignored "UnusedLocalVariable"
 

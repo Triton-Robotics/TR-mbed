@@ -21,7 +21,7 @@ BNO055 imu(i2c, PA_8, MODE_IMU);
 
 BNO055_ID_INF_TypeDef       bno055_id_inf;
 BNO055_EULER_TypeDef        euler_angles;
-BNO055_QUATERNION_TypeDef   quaternion;
+BNO055_ANGULAR_POSITION_typedef p;
 BNO055_VECTOR_TypeDef      linear_acc;
 BNO055_VECTOR_TypeDef      gravity;
 BNO055_TEMPERATURE_TypeDef  chip_temp;
@@ -35,7 +35,7 @@ int main()
     printf(
             "Bosch Sensortec BNO055 test program on " __DATE__ "/" __TIME__ "\r\n"
     );
-    // Is BNO055 avairable?
+    // Is BNO055 available?
     if (imu.chip_ready() == 0) {
         do {
             printf("Bosch BNO055 is NOT avirable!!\r\n Reset\r\n");
@@ -69,22 +69,21 @@ int main()
 
     while(true) {
         imu.get_euler_angles(&euler_angles);
-        printf("[E],Y,%d,R,%d,P,%d,",
-               (int)euler_angles.h, (int)euler_angles.r, (int)euler_angles.p);
-        imu.get_quaternion(&quaternion);
-        printf("[Q],W,%d,X,%d,Y,%d,Z,%d,",
-               (int)quaternion.w, (int)quaternion.x, (int)quaternion.y, (int)quaternion.z);
+        printf("[E],Y,%d,R,%d,P,%d,", (int)euler_angles.h, (int)euler_angles.r, (int)euler_angles.p);
+
+        imu.get_angular_position_quat(&p);
+        printf("[A],Y,%d,R,%d,P,%d,", (int)p.yaw, (int)p.roll, (int)p.pitch);
+
         imu.get_linear_accel(&linear_acc);
-        printf("[L],X,%d,Y,%d,Z,%d,",
-               (int)linear_acc.x, (int)linear_acc.y, (int)linear_acc.z);
+        printf("[L],X,%d,Y,%d,Z,%d,", (int)linear_acc.x, (int)linear_acc.y, (int)linear_acc.z);
+
         imu.get_gravity(&gravity);
-        printf("[G],X,%d,Y,%d,Z,%d,",
-               (int)gravity.x, (int)gravity.y, (int)gravity.z);
+        printf("[G],X,%d,Y,%d,Z,%d,", (int)gravity.x, (int)gravity.y, (int)gravity.z);
+
         imu.get_chip_temperature(&chip_temp);
-        printf("[T],%+d,%+d,",
-               (int)chip_temp.acc_chip, (int)chip_temp.gyr_chip);
-        printf("[S],0x%x,[M],%d\r\n",
-               imu.read_calib_status(), (uint32_t)t.elapsed_time().count());
+        printf("[T],%+d,%+d,", (int)chip_temp.acc_chip, (int)chip_temp.gyr_chip);
+
+        printf("[S],0x%x,[M],%d\r\n", imu.read_calib_status(), (uint32_t)t.elapsed_time().count());
     }
 }
 
