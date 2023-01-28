@@ -11,8 +11,8 @@
  */
 
 #include    "mbed.h"
-#include    "../util/imu/BNO055.h"
-#include    "../util/imu/BNO055.cpp"
+#include    "BNO055.h"
+#include    "BNO055.cpp"
 
 
 I2C    i2c(PB_9, PB_8);                // SDA, SCL
