@@ -1,85 +1,156 @@
-/*
- * mbed Application program for the mbed Nucleo series
- *  BNO055 Intelligent 9-axis absolute orientation sensor
- *  by Bosch Sensortec
- *
- * Copyright (c) 2015,'17,'20 Kenji Arai / JH1PJL
- *  http://www7b.biglobe.ne.jp/~kenjia/
- *  https://os.mbed.com/users/kenjiArai/
- *      Created: March     30th, 2015
- *      Revised: August     5th, 2020
- */
+#include "../src/main.hpp"
+#include <cstdlib>
+#include "../src/subsystems/Chassis.cpp"
 
-#include    "mbed.h"
-#include    "../util/imu/BNO055.h"
-#include    "../util/imu/BNO055.cpp"
+#define PI 3.14159265
 
+// CANMotor LF(4,NewCANHandler::CANBUS_1,M3508);
+// CANMotor RF(2,NewCANHandler::CANBUS_1,M3508);
+// CANMotor LB(1,NewCANHandler::CANBUS_1,M3508);
+// CANMotor RB(3,NewCANHandler::CANBUS_1,M3508);
 
-I2C    i2c(PB_9, PB_8);                // SDA, SCL
-BNO055 imu(i2c, PA_8, MODE_NDOF);
+Chassis chassis(1, 2, 3, 4);
+DigitalOut led(LED1);
 
-BNO055_ID_INF_TypeDef       bno055_id_inf;
-BNO055_EULER_TypeDef        euler_angles;
-BNO055_ANGULAR_POSITION_typedef p;
-BNO055_VECTOR_TypeDef      linear_acc;
-BNO055_VECTOR_TypeDef      gravity;
-BNO055_TEMPERATURE_TypeDef  chip_temp;
+CANMotor yaw(5, NewCANHandler::CANBUS_2, GIMBLY);
+CANMotor pitch(6, NewCANHandler::CANBUS_2, GIMBLY);
+int pitchval = 0;
+#define LOWERBOUND 1000
+#define UPPERBOUND 2000
+
+CANMotor indexer(7, NewCANHandler::CANBUS_1, C610);
+int indexJamTime = 0;
+int lastJam = 0;
+
+unsigned long cT = 0;
+unsigned long forwardTime = 250;
+unsigned long reverseTime = 300;
+unsigned long totalTime;
+
+PWMMotor RFLYWHEEL(D12); PWMMotor LFLYWHEEL(D11);
+PWMMotor flyWheelMotors[] = {RFLYWHEEL, LFLYWHEEL};
+
+void setFlyWheelPwr(int pwr) {
+    for (int i = 0; i < 2; i++)
+        flyWheelMotors[i].set(pwr);
+}
 
 int main()
 {
+    float speedmultiplier = 3;
+    float powmultiplier = 2;
+    float translationalmultiplier = 1.5; // was 3
+    float beybladespeedmult = 1;
 
-    imu.set_mounting_position(MT_P1);
-    printf(
-            "Bosch Sensortec BNO055 test program on " __DATE__ "/" __TIME__ "\r\n"
-    );
-    // Is BNO055 available?
-    if (imu.chip_ready() == 0) {
-        do {
-            printf("Bosch BNO055 is NOT avirable!!\r\n Reset\r\n");
-            ThisThread::sleep_for(100ms);
-            ThisThread::sleep_for(20ms);
-        } while(imu.reset());
-    }
+    CANMotor::setCANHandlers(&canHandler1,&canHandler2, false, false);
 
-    printf("Bosch BNO055 is available now!!\r\n");
-    printf("AXIS_REMAP_CONFIG:0x%02x, AXIS_REMAP_SIGN:0x%02x\r\n",
-           imu.read_reg0(BNO055_AXIS_MAP_CONFIG),
-           imu.read_reg0(BNO055_AXIS_MAP_SIGN)
-    );
+    // LB.setSpeedPID(1.75, 0.351, 5.63);
+    // RF.setSpeedPID(1.073, 0.556, 0);
+    // RB.setSpeedPID(1.081, 0.247, 0.386);
+    // LF.setSpeedPID(.743, 0.204, 0.284);
+    pitch.setPositionPID(3.5, 0, 0.25);
+    pitch.setPositionIntegralCap(10000);
 
-    imu.read_id_inf(&bno055_id_inf);
-    printf("CHIP ID:0x%02x, ACC ID:0x%02x, MAG ID:0x%02x, GYR ID:0x%02x, ",
-           bno055_id_inf.chip_id, bno055_id_inf.acc_id,
-           bno055_id_inf.mag_id, bno055_id_inf.gyr_id
-    );
 
-    printf("SW REV:0x%04x, BL REV:0x%02x\r\n",
-           bno055_id_inf.sw_rev_id, bno055_id_inf.bootldr_rev_id);
-    ThisThread::sleep_for(3000ms);
+    // pitch.setPositionPID(.017,.001,.044);
+    //pitch.useAbsEncoder = 1;
+    pitch.justPosError = 1;
+    // yaw.setSpeedPID(78.181, 7.303, 1.227);
+    yaw.setPositionPID(3.5, 0, 0.25);
+    yaw.setPositionIntegralCap(10000);
+    yaw.justPosError = 1;
 
-    imu.calibrate();
+    indexer.setSpeedPID(0.34, 0.002, 0.166);
+    indexer.setSpeedIntegralCap(500000);
 
-    printf("[E]:Euler Angles[deg],[Q]:Quaternion[],[L]:Linear accel[m/s*s],");
-    printf("[G]:Gravity vector[m/s*s],[T]:Chip temperature,Acc,Gyr[degC]");
-    printf(",[S]:Status,[M]:time[mS]\r\n");
-    t.start();
+    chassis.setBrakeMode(COAST);
 
-    while(true) {
-        imu.get_euler_angles(&euler_angles);
-        printf("[E],Y,%d,R,%d,P,%d,", (int)euler_angles.h, (int)euler_angles.r, (int)euler_angles.p);
+    // LF.outCap = 16000;
+    // RF.outCap = 16000;
+    // LB.outCap = 16000;
+    // RB.outCap = 16000;
 
-        imu.get_angular_position_quat(&p);
-        printf("[A],Y,%d,R,%d,P,%d,", (int)p.yaw, (int)p.roll, (int)p.pitch);
+    unsigned long loopTimer = us_ticker_read() / 1000;
 
-        imu.get_linear_accel(&linear_acc);
-        printf("[L],X,%d,Y,%d,Z,%d,", (int)linear_acc.x, (int)linear_acc.y, (int)linear_acc.z);
+    int indexJamTime = 0;
+    int lastJam = 0;
 
-        imu.get_gravity(&gravity);
-        printf("[G],X,%d,Y,%d,Z,%d,", (int)gravity.x, (int)gravity.y, (int)gravity.z);
+    bool strawberryJam = false;
+    int refLoop=0;
 
-        imu.get_chip_temperature(&chip_temp);
-        printf("[T],%+d,%+d,", (int)chip_temp.acc_chip, (int)chip_temp.gyr_chip);
+    int yawSetpoint = 0;
 
-        printf("[S],0x%x,[M],%d\r\n", imu.read_calib_status(), (uint32_t)t.elapsed_time().count());
+    while (true) {
+        led = !led;
+        remoteRead();
+
+        unsigned long timeStart = us_ticker_read() / 1000;
+        if(timeStart - loopTimer > 10){
+            refLoop++;
+            if(refLoop > 25){
+                // refereeThread();
+                refLoop = 0;
+            }
+            loopTimer = timeStart;
+
+            if(rS == 1){ // All non-serializer motors activated
+                int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
+                chassis.driveFieldRelative(lX / 500.0, lY / 500.0, 0);
+                // LF.setSpeed(LFa * speedmultiplier);
+                // RF.setSpeed(-RFa * speedmultiplier);
+                // LB.setSpeed(LBa * speedmultiplier);
+                // RB.setSpeed(-RBa * speedmultiplier);
+
+                // LF.setPower(LFa * powmultiplier);
+                // RF.setPower(-RFa * powmultiplier);
+                // LB.setPower(LBa * powmultiplier);
+                // RB.setPower(-RBa * powmultiplier);
+
+                // pitch.setPower(rY*9);
+                yaw.setPosition(5 * rX);
+                pitch.setPosition(5 * rY);
+
+
+            }else if(rS == 2){ //disable all the non-serializer components
+                // LF.setPower(0);RF.setPower(0);LB.setPower(0);RB.setPower(0);
+                yaw.setPower(0); pitch.setPower(0);
+            }else if(rS == 3){ // beyblade mode
+                // LF.setPower(0);RF.setPower(0);LB.setPower(0);RB.setPower(0);
+                yaw.setPower(0); pitch.setPower(0);
+            }
+
+            if (lS == 3) {
+                //indexer.setPower(1200);
+                indexer.setSpeed(-4500);
+                setFlyWheelPwr(40);
+
+            }else if(lS == 2){ //disable serializer
+                indexer.setPower(0);
+                setFlyWheelPwr(0);
+            }else if(lS == 1){
+                ///////////////////////////////////////////
+                /// THEO SECTION OF CODE
+                ///////////////////////////////////////////
+                printf("TORQ:%d VEL:%d\n",indexer.getData(TORQUE), indexer.getData(VELOCITY));
+                if(abs(indexer.getData(TORQUE)) > 100 & abs(indexer.getData(VELOCITY)) < 20){ //jam
+                    indexJamTime = us_ticker_read() /1000;
+                }
+                if(us_ticker_read() / 1000 - indexJamTime < 1000){
+                    indexer.setPower(14000); //jam
+                    printf("JAMMMMM- ");
+                }else if(us_ticker_read() / 1000 - indexJamTime < 1500){
+                    indexer.setPower(-9000); //jam
+                    printf("POWER FORWARD- ");
+                }else{
+                    //indexer.setPower(-900);
+                    indexer.setSpeed(-4500);
+                }
+                LFLYWHEEL.set(40); RFLYWHEEL.set(40);
+            }
+            CANMotor::sendValues();
+        }
+        unsigned long timeEnd = us_ticker_read() / 1000;
+        CANMotor::getFeedback();
+        ThisThread::sleep_for(1ms);
     }
 }
