@@ -8,22 +8,7 @@ BNO055 imu(i2c, PA_8);
 
 BNO055_ID_INF_TypeDef bno055_id_inf;
 BNO055_QUATERNION_TypeDef   quat;
-
-void getAnglesFromQuat(double &yaw, double &pitch, double &roll){
-
-    imu.get_quaternion(&quat);
-    double yy = quat.y * quat.y;        // 2 Uses below
-
-    roll = atan2(2 * (quat.w * quat.x + quat.y * quat.z), 1 - 2*(quat.x * quat.x + yy));
-    pitch = asin(2 * quat.w * quat.y - quat.x * quat.z);
-    yaw = atan2(2 * (quat.w * quat.z + quat.x * quat.y), 1 - 2*(yy+quat.z * quat.z));
-
-    /*  Convert Radians to Degrees */
-    roll    *= 57.2958;
-    pitch   *= 57.2958;
-    yaw     *= 57.2958;
-
-}
+BNO055_ANGULAR_POSITION_typedef p;
 
 int main(){
 
@@ -41,8 +26,8 @@ int main(){
            bno055_id_inf.gyr_id, bno055_id_inf.sw_rev_id, bno055_id_inf.bootldr_rev_id);
 
     while (true) {
-        getAnglesFromQuat(yaw, pitch, roll);
-        printf("Heading:%d [deg], Roll:%d [deg], Pitch:%d [deg]\n", (int)yaw, (int)roll, (int)pitch);
+        imu.get_angular_position_quat(&p);
+        printf("Heading:%d [deg], Roll:%d [deg], Pitch:%d [deg]\n", (int)p.yaw, (int)p.roll, (int)p.pitch);
 
         ThisThread::sleep_for(100ms);
     }
