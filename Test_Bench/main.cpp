@@ -14,10 +14,9 @@
 #include    "../util/imu/BNO055.h"
 #include    "../util/imu/BNO055.cpp"
 
-#define NUM_LOOP    100
 
 I2C    i2c(PB_9, PB_8);                // SDA, SCL
-BNO055 imu(i2c, PA_8, MODE_IMU);
+BNO055 imu(i2c, PA_8, MODE_NDOF);
 
 BNO055_ID_INF_TypeDef       bno055_id_inf;
 BNO055_EULER_TypeDef        euler_angles;
@@ -29,8 +28,6 @@ BNO055_TEMPERATURE_TypeDef  chip_temp;
 int main()
 {
 
-    imu.change_fusion_mode(MODE_IMU);
-    imu.calibrate();
     imu.set_mounting_position(MT_P1);
     printf(
             "Bosch Sensortec BNO055 test program on " __DATE__ "/" __TIME__ "\r\n"
@@ -60,7 +57,7 @@ int main()
            bno055_id_inf.sw_rev_id, bno055_id_inf.bootldr_rev_id);
     ThisThread::sleep_for(3000ms);
 
-    bno055_calbration();
+    imu.calibrate();
 
     printf("[E]:Euler Angles[deg],[Q]:Quaternion[],[L]:Linear accel[m/s*s],");
     printf("[G]:Gravity vector[m/s*s],[T]:Chip temperature,Acc,Gyr[degC]");
@@ -86,80 +83,3 @@ int main()
         printf("[S],0x%x,[M],%d\r\n", imu.read_calib_status(), (uint32_t)t.elapsed_time().count());
     }
 }
-
-
-// Diffrent output format as for your reference
-#if 0
-int main()
-{
-    uint8_t i;
-
-    printf(
-        "Bosch Sensortec BNO055 test program on " __DATE__ "/" __TIME__ "\r\n"
-    );
-    // Is BNO055 avairable?
-    if (imu.chip_ready() == 0) {
-        do {
-            printf("Bosch BNO055 is NOT avirable!!\r\n");
-            ThisThread::sleep_for(100ms);
-            ThisThread::sleep_for(20ms);
-        } while(imu.reset());
-    }
-    imu.set_mounting_position(MT_P6);
-    printf("AXIS_REMAP_CONFIG:0x%02x, AXIS_REMAP_SIGN:0x%02x\r\n",
-           imu.read_reg0(BNO055_AXIS_MAP_CONFIG),
-           imu.read_reg0(BNO055_AXIS_MAP_SIGN)
-          );
-    imu.read_id_inf(&bno055_id_inf);
-    printf("CHIP:0x%02x, ACC:0x%02x, MAG:0x%02x,",
-           bno055_id_inf.chip_id, bno055_id_inf.acc_id, bno055_id_inf.mag_id
-          );
-    printf("GYR:0x%02x, , SW:0x%04x, , BL:0x%02x\r\n",
-           bno055_id_inf.gyr_id, bno055_id_inf.sw_rev_id,
-           bno055_id_inf.bootldr_rev_id
-          );
-    while(true) {
-        printf("Euler Angles data\r\n");
-        for (i = 0; i < NUM_LOOP; i++) {
-            imu.get_Euler_Angles(&euler_angles);
-            printf("Heading:%+6.1f [deg], Roll:%+6.1f [deg],",
-                   euler_angles.h, euler_angles.r,);
-            printf(" Pich:%+6.1f [deg], #%02d\r\n",
-                   euler_angles.p, i);
-            ThisThread::sleep_for(500ms);
-        }
-        printf("Quaternion data\r\n");
-        for (i = 0; i < NUM_LOOP; i++) {
-            imu.get_quaternion(&quaternion);
-            printf("W:%d, X:%d, Y:%d, Z:%d, #%02d\r\n",
-                   quaternion.w, quaternion.x, quaternion.y, quaternion.z, i);
-            ThisThread::sleep_for(500ms);
-        }
-        printf("Linear accel data\r\n");
-        for (i = 0; i < NUM_LOOP; i++) {
-            imu.get_linear_accel(&linear_acc);
-            printf(
-                "X:%+6.1f[m/s*s], Y:%+6.1f[m/s*s], Z:%+6.1f[m/s*s], #%02d\r\n",
-                linear_acc.x, linear_acc.y, linear_acc.z, i
-            );
-            ThisThread::sleep_for(500ms);
-        }
-        printf("Gravity vector data\r\n");
-        for (i = 0; i < NUM_LOOP; i++) {
-            imu.get_gravity(&gravity);
-            printf(
-                "X:%+6.1f[m/s*s], Y:%+6.1f[m/s*s], Z:%+6.1f[m/s*s], #%02d\r\n",
-                gravity.x, gravity.y, gravity.z, i
-            );
-            ThisThread::sleep_for(500ms);
-        }
-        printf("Chip temperature data\r\n");
-        for (i = 0; i < (NUM_LOOP / 4); i++) {
-            imu.get_chip_temperature(&chip_temp);
-            printf("Acc chip:%+d [degC], Gyr chip:%+d [degC], #%02d\r\n",
-                   chip_temp.acc_chip, chip_temp.gyr_chip, i);
-            ThisThread::sleep_for(500ms);
-        }
-    }
-}
-#endif

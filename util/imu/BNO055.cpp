@@ -48,7 +48,7 @@ BNO055::BNO055 (I2C& p_i2c, PinName p_reset, uint8_t addr, uint8_t mode) :
     initialize ();
 }
 
-BNO055::BNO055 (I2C& p_i2c, PinName p_reset, unit8_t mode) :
+BNO055::BNO055 (I2C& p_i2c, PinName p_reset, uint8_t mode) :
     _i2c(p_i2c), _res(p_reset)
 {
     chip_addr = BNO055_G_CHIP_ADDR;
@@ -259,19 +259,20 @@ void BNO055::get_chip_temperature(BNO055_TEMPERATURE_TypeDef *result)
 /////////////// Initialize ////////////////////////////////
 void BNO055::initialize (void)
 {
-#if defined(TARGET_STM32L152RE)
-    _i2c.frequency(100000);
-#else
     _i2c.frequency(400000);
-#endif
+
     page_flag = 0xff;
     select_page(0);
+
     // Check Acc & Mag & Gyro are available of not
     get_id();
+
     // Set initial data
     set_initial_dt_to_regs();
+
     // Unit selection
     unit_selection();
+
     // Set fusion mode
     change_fusion_mode(chip_mode);
 }
@@ -435,6 +436,7 @@ uint8_t BNO055::chip_ready(void)
 void BNO055::calibrate()
 {
     uint8_t d;
+    Timer t;
     BNO055_VECTOR_TypeDef      gravity;
 
     printf("------ Enter BNO055 Manual Calibration Mode ------\r\n");

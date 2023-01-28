@@ -162,7 +162,7 @@ public:
       * @param I2C previous definition
       * @param Other parameters are set default data
       */
-    BNO055(I2C& p_i2c, PinName p_reset);
+    BNO055(I2C& p_i2c, PinName p_reset, uint8_t mode);
 
     /** Get Euler Angles
      * @param double type of 3D data address
