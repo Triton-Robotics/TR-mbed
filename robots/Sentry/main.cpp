@@ -2,7 +2,7 @@
 // Created by ankit on 1/30/23.
 //
 #include <algorithms/PID.h>
-#include <motor/CANMotor.hpp>
+#include <motor/DJIMotor.h>
 int main(){
 
     DigitalOut led(LED1);
