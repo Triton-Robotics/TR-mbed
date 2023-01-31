@@ -2,7 +2,7 @@
 .mbed
 projectfiles
 *.py*
-.idea
+.idea/
 
 BUILD
 mbed-os/

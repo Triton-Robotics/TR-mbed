@@ -1,6 +1,7 @@
 ## Prerequisites
 
-Assuming Ubuntu:
+The following setup guide is written assuming Ubuntu and CLion as the IDE. This setup guide is applicable to other 
+operating systems and IDEs, but may take additional setup.
 
 ```shell
 sudo apt install \
@@ -13,6 +14,11 @@ sudo apt install \
 Use pip to install `mbed`:
 ```shell
 pip install mbed-tools
+```
+
+In `~/.bash_profile`, append the following to enable `mbed-tools` via command line:
+```shell
+export PATH="${PATH}:/home/${USER}/.local/bin"
 ```
 
 Extra dependencies for compiling micro-ros (Optional):
@@ -55,10 +61,17 @@ mbed-tools configure -m NUCLEO_F446RE -t GCC_ARM
 ![img.png](.assets/img3.png)
 
 6. Build the desired target using your IDE or via CLI:
+   
+   Note: You may have to modify the number after the `-j` argument to the number of processes your CPU can handle.
+   This can be found via the `nproc` command.
+
 ```shell
-cd cmake_build/NUCLEO_F446RE/develop/GCC_ARM && cmake .
-cd <project root dir> && cmake --build cmake_build/NUCLEO_F446RE/develop/GCC_ARM --target TR-Sentry -j 12
+cmake -S . -B cmake_build/NUCLEO_F446RE/develop/GCC_ARM -GNinja
+
+cmake --build cmake_build/NUCLEO_F446RE/develop/GCC_ARM --target TR-Sentry -j 12
 ```
+
+Viable targets for build are: `TR-Engineer`, `TR-Infantry`, `TR-Sentry`, `TR-Hero`, and `TR-TestBench`
 
 7. Locate the generated binary:
 
@@ -69,5 +82,6 @@ cd <project root dir> && cmake --build cmake_build/NUCLEO_F446RE/develop/GCC_ARM
 
 ```shell
 cp cmake_build/NUCLEO_F446RE/develop/GCC_ARM/robots/Sentry/TR_Sentry.bin /run/media/<user>/NOD_F446RE/
+
 mbed-tools sterm
 ```
