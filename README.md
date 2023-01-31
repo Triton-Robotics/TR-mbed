@@ -1,3 +1,5 @@
+![img.png](.assets/tr_banner.png) ![img.png](.assets/tr_text.png)
+
 ## Prerequisites
 
 The following setup guide is written assuming Ubuntu and CLion as the IDE. This setup guide is applicable to other 
