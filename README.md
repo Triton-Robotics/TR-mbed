@@ -47,9 +47,11 @@ mbed-tools configure -m NUCLEO_F446RE -t GCC_ARM
 ![img.png](.assets/img.png)
 
 4. Upon opening the project, ensure the `CMake` directory is set to the following:
+
 ![img.png](.assets/img2.png)
 
 5. Ensure the desired robot is selected in your IDE:
+
 ![img.png](.assets/img3.png)
 
 6. Build the desired target using your IDE or via CLI:

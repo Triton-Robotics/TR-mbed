@@ -1,5 +1,5 @@
 add_subdirectory(Engineer EXCLUDE_FROM_ALL)
-add_subdirectory(Hero EXCLUDE_FROM_ALL)
 add_subdirectory(Infantry EXCLUDE_FROM_ALL)
 add_subdirectory(Sentry EXCLUDE_FROM_ALL)
+add_subdirectory(Hero EXCLUDE_FROM_ALL)
 add_subdirectory(Test-Bench EXCLUDE_FROM_ALL)
