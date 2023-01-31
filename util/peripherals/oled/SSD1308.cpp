@@ -42,7 +42,7 @@ THE SOFTWARE.
 ================================================================================
 */
 #include "mbed.h"
-#include "SSD1308.hpp"
+#include "SSD1308.h"
 
 //#include "font_3x5.h"
 //#include "font_5x7.h"

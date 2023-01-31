@@ -1,3 +1,12 @@
 project(TR-algorithms)
 
-add_executable(${PROJECT_NAME} pid.hpp speedtocurrent.hpp)
+set(HEADER_FILES
+        PID.h
+        speedtocurrent.hpp
+)
+
+set(SRC_FILES
+        PID.cpp
+)
+
+add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SRC_FILES})

@@ -1,6 +1,6 @@
-#include "../communications/SerialCommunication.hpp"
-#include "../helperFunctions.hpp"
-#include "../buttonanalyzer.hpp"
+#include "communications/SerialCommunication.hpp"
+#include "helperFunctions.hpp"
+#include "buttonanalyzer.hpp"
 #include <iostream>
 using namespace std;
 /**

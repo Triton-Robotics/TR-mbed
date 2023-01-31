@@ -1,8 +1,8 @@
 #include "mbed.h"
-#include "../algorithms/pid.hpp"
-#include "../communications/newCANHandler.hpp"
-#include "../helperFunctions.hpp"
-#include "../algorithms/speedtocurrent.hpp"
+#include "algorithms/PID.h"
+#include "communications/newCANHandler.hpp"
+#include "helperFunctions.hpp"
+#include "algorithms/speedtocurrent.hpp"
 #include <cmath>
 //#include "../communications/canHandler.hpp"
 //TR-mbed6/util/communications/causeSpaghettiComesOnceInALifetime.hpp

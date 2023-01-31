@@ -1,7 +1,7 @@
 //
 // Created by ankit on 1/30/23.
 //
-#include <algorithms/pid.hpp>
+#include <algorithms/PID.h>
 #include <motor/CANMotor.hpp>
 int main(){
 

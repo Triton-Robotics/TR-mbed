@@ -11,9 +11,14 @@ sudo apt install \
   ninja-build
 ```
 
-Use pip to install `mbed`:
+Use pip to install `mbed` and various dependencies:
 ```shell
-pip install mbed-tools
+pip install \
+  mbed-tools \
+  prettytable \
+  future \
+  jinja2 \
+  intelhex
 ```
 
 In `~/.bash_profile`, append the following to enable `mbed-tools` via command line:
@@ -81,7 +86,7 @@ Viable targets for build are: `TR-Engineer`, `TR-Infantry`, `TR-Sentry`, `TR-Her
 8. Copy the binary to the target device and open a terminal:
 
 ```shell
-cp cmake_build/NUCLEO_F446RE/develop/GCC_ARM/robots/Sentry/TR_Sentry.bin /run/media/<user>/NOD_F446RE/
+cp cmake_build/NUCLEO_F446RE/develop/GCC_ARM/robots/Sentry/TR_Sentry.bin /media/${USER}/NOD_F446RE/
 
 mbed-tools sterm
 ```
