@@ -1,4 +1,4 @@
-![img.png](.assets/tr_banner.png) ![img.png](.assets/tr_text.png)
+![img.png](.assets/tr_banner.png)
 
 ## Prerequisites
 
