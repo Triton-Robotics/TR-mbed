@@ -1,0 +1,171 @@
+//
+// Created by ankit on 1/31/23.
+//
+
+#ifndef TR_EMBEDDED_DJIMOTOR_H
+#define TR_EMBEDDED_DJIMOTOR_H
+
+#define CAN_HANDLER_NUMBER 2 //Number of can handlers
+
+#include "mbed.h"
+#include "algorithms/PID.h"
+#include "communications/newCANHandler.h"
+#include "helperFunctions.hpp"
+#include "algorithms/speedtocurrent.hpp"
+#include <cmath>
+
+static int sendIDs[3] = {0x200,0x1FF,0x2FF}; //IDs to send data
+static Thread motorFeedbackThread(osPriorityAboveNormal); //threading for Motor::tick()
+static Thread motorSendThread(osPriorityNormal); //threading for Motor::tick()
+
+enum errorCodes{
+    NO_ERROR,
+    MOTOR_CONFLICT,
+    MOTOR_DISABLED,
+    OUTSIDE_OF_BOUNDS,
+};
+
+enum motorDataType {
+    ANGLE = 0,
+    VELOCITY = 1,
+    TORQUE = 2,
+    TEMPERATURE = 3,
+    MULTITURNANGLE = 4,
+    MULTI  = 4,
+    POWEROUT = 5,
+};
+
+
+enum motorType {
+    NONE = 0,
+    STANDARD = 1, //identifier for all motors that use the standard can protocol, used by the C610 and C620
+
+    C610 = 4,
+    M2006 = 4,
+
+    C620 = 3,
+    M3508 = 3,
+    //keep in mind that in the constructor, this is only used to
+    //set the default pid values and gear ratio. The motortype will
+    //be changed to STANDARD, because thats what the code uses.
+
+    GIMBLY = 2, //Gimblyyyyyyyyyy
+    GM6020 = 2
+};
+
+
+class DJIMotor {
+
+private:
+    double defaultGimblyPosSettings[5] = {10.88,1.2,18.9,8000,500};
+    double defautlGimblySpeedSettings[5] = {0.13, 8.8, 0, 25000, 1000};
+    double defautM3508PosSettings[5] = {.48, 0.0137, 4.2, 3000, 300};
+    double defautM3508SpeedSettings[5] = {1.79, 0.27, 10.57, 15000, 500};
+
+    enum motorMoveMode{
+        OFF = 0,
+        POS = 1,
+        SPD = 2,
+        POW = 3,
+        ERR = 4
+    };
+
+    static DJIMotor* allMotors[CAN_HANDLER_NUMBER][3][4];
+
+    //static int y;
+
+    //CANMotor* CANMotor::allMotors[];
+
+    static NewCANHandler* canHandlers[CAN_HANDLER_NUMBER];
+    //static NewCANHandler canHandlers[CAN_HANDLER_NUMBER];
+
+    static bool motorsExist[CAN_HANDLER_NUMBER][3][4];
+
+    short motorNumber; //the number of motor this is, canID - 1, because canID is 1-8, arrays are 0-7
+
+    int gearRatio = 1; //the gear ratio of the motor to encoder
+
+    NewCANHandler::CANBus canBus = NewCANHandler::NOBUS; //the CANBus this motor is on
+
+    motorType type = NONE; //mode of the motor
+
+    motorMoveMode mode = OFF; //mode of the motor
+
+    unsigned long timeOfLastFeedback = 0;
+    unsigned long timeOfLastPID = 0;
+
+public:
+    unsigned long timeSinceLastFeedback = 0;
+
+    int maxSpeed = 8723;
+
+    int bounds[2] = {0,0};
+
+    //angle | velocity | torque | temperature
+    int16_t motorData[4] = {0,0,0,0};
+    int multiTurn = 0;
+    int lastMotorAngle = 0;
+
+    PID pidSpeed;
+    PID pidPosition;
+
+    int value = 0;
+    int16_t powerOut;
+
+    bool conflict; //check for a conflict when running motors
+
+    unsigned long lastTime = 0;
+
+    int outCap = 16000;
+
+    bool useAbsEncoder = 0;
+    bool justPosError = 0;
+    static bool sendDebug;
+    static bool feedbackDebug;
+
+    // user methods
+    DJIMotor(bool isErroneousMotor = false);
+    DJIMotor(short canID, NewCANHandler::CANBus bus, motorType mType = STANDARD);
+    ~DJIMotor();
+
+    static void printChunk(NewCANHandler::CANBus bus, short sendID, motorDataType data = POWEROUT);
+    static void setCANHandlers(NewCANHandler* bus_1, NewCANHandler* bus_2, bool threadSend = true, bool threadFeedback = true);
+    static void updateMultiTurnPosition();
+    static void sendOneID(NewCANHandler::CANBus bus, short sendIDindex, bool debug = false);
+    static void getFeedback();
+
+    static void tickThread();
+    static void feedbackThread();
+    static void sendThread();
+    static void sendValues();
+    static void tick(bool debug = false, bool printFeedback = false);
+
+    int getValue();
+    int getPowerOut();
+    int getData(motorDataType data);
+
+    void setValue(int val);
+    void setOutput();
+    void setPower(int power);
+    void setSpeed(int speed);
+    void setPosition(int position);
+    void zeroPos();
+
+    void printAllMotorData();
+
+    void operator=(int value);
+    int operator>>(motorDataType data);
+
+
+    inline void setPositionPID(float kP, float kI, float kD)    { pidPosition.setPID(kP, kI, kD); }
+    inline void setPositionIntegralCap(double cap)              { pidPosition.setIntegralCap(cap); }
+    inline void setPositionOutputCap(double cap)                { pidPosition.setOutputCap(cap); }
+
+    inline void setSpeedPID(float kP, float kI, float kD)       { pidSpeed.setPID(kP, kI, kD); }
+    inline void setSpeedIntegralCap(double cap)                 { pidSpeed.setIntegralCap(cap); }
+    inline void setSpeedOutputCap(double cap)                   { pidSpeed.setOutputCap(cap); }
+
+};
+
+
+#endif //TR_EMBEDDED_DJIMOTOR_H

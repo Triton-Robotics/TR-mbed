@@ -2,7 +2,7 @@
 #define _REFEREE_HPP
 
 #include "mbed.h"
-#include "crc.cpp"
+#include "crc.h"
 
 class Referee {
 public:

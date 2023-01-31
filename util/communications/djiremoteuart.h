@@ -1,4 +1,4 @@
-#include "communications/SerialCommunication.hpp"
+#include "communications/SerialCommunication.h"
 #include "helperFunctions.hpp"
 #include "buttonanalyzer.hpp"
 #include <iostream>

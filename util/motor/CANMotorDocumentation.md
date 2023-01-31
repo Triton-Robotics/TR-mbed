@@ -47,7 +47,7 @@ or you can just give it a power value:
 
 `void setPower(int value)`
 
-Finally, the most important part of using the CanMotor class is running CANMotor::tick(); to send all the motor values, get feedback values, and calculate multiTurn angle. 
+Finally, the most important part of using the CanMotor class is running DJIMotor::tick(); to send all the motor values, get feedback values, and calculate multiTurn angle. 
 
 However, if the threading is active, it will create a new thread for it, do not call it, or you will get a hard fault
 
@@ -71,12 +71,12 @@ Thread threadingRemote(osPriorityHigh);
 
 CANHandler canPorts(PA_11,PA_12,PB_12,PB_13);
 
-CANMotor standard(1,CANHandler::CANBUS_1,STANDARD);
-CANMotor gimbly(7,CANHandler::CANBUS_1,GIMBLY);
+DJIMotor standard(1,CANHandler::CANBUS_1,STANDARD);
+DJIMotor gimbly(7,CANHandler::CANBUS_1,GIMBLY);
 
 int main(){
     threadingRemote.start(&remoteThread);
-    CANMotor::setCANHandlers(&canHandler1,&canHandler2);
+    DJIMotor::setCANHandlers(&canHandler1,&canHandler2);
 
     gimbly.setPositionPID(5, 0, 10);
     standard.setSpeedPID(0.5, 0, 2);
@@ -90,7 +90,7 @@ int main(){
 
         gimbly.setPosition(val);
 
-        CANMotor::tick();
+        DJIMotor::tick();
 
         printf("Speed:%d\n",standard.getData(VELOCITY));
     }
@@ -109,18 +109,18 @@ To make the CanMotor class work, you need to attach two NewCANHandler objects to
 
 You do this with this function
 
-`CANMotor::setCANHandlers(&handler1, &handler2);`
+`DJIMotor::setCANHandlers(&handler1, &handler2);`
 
 Where each handler is a NewCANHandler object.
 
-## 2. CANMotor::tick()
+## 2. DJIMotor::tick()
 
-You need to have a `CANMotor::tick();` at the end of your loops, or on a scheduler to send all the motor values, as well as some other things.
+You need to have a `DJIMotor::tick();` at the end of your loops, or on a scheduler to send all the motor values, as well as some other things.
 
 IT IS VITAL THAT YOU CALL THIS AT THE END OF EACH LOOP
 
 ```cpp
-CANMotor::tick();
+DJIMotor::tick();
 ```
 
 However, normally this is automatically done by the setCANHandlers() function, unless you give it the option not to begin the thread.
@@ -135,7 +135,7 @@ Also keep in mind that the GM6020s can only operate on can IDs 1-7, so essential
 
 # Motor Feedback
 
-When you run `CANMotor::tick();`, the CANMotor class reads a message from both CAN busses and updates a collection of feedback data collected from all collected motors. You can get that data with the following getter:
+When you run `DJIMotor::tick();`, the DJIMotor class reads a message from both CAN busses and updates a collection of feedback data collected from all collected motors. You can get that data with the following getter:
 
 `int getData(motorDataType data)`
 

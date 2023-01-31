@@ -2,7 +2,7 @@
 #define _REF_UI_HPP
 
 #include "mbed.h"
-#include "ref_serial.hpp"
+#include "ref_serial.h"
 #include <string>
 
 // Screen resolution of your Robomaster Client

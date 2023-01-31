@@ -2,7 +2,7 @@
 // https://blog.csdn.net/zhang1079528541/article/details/115435696
 // https://www.its203.com/article/zhang1079528541/115435696?2022-04-05
 
-#include "crc.hpp"
+#include "crc.h"
 
 //帧头crc8校验：(假设帧头保存在数组frame_header[]里面)
 unsigned char frame_header[3];//4-Byte

@@ -1,11 +1,3 @@
-#include "mbed.h"
-#include "algorithms/PID.h"
-#include "communications/newCANHandler.hpp"
-#include "helperFunctions.hpp"
-#include "algorithms/speedtocurrent.hpp"
-#include <cmath>
-//#include "../communications/canHandler.hpp"
-//TR-mbed6/util/communications/causeSpaghettiComesOnceInALifetime.hpp
 
 ///////////////////////////////////////////////////////////////////////
 //  __  __           _      ___                 _        _   _   _ 
@@ -16,9 +8,19 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
-#define CAN_HANDLER_NUMBER 2 //Number of can handlers
 #ifndef canmotor_hpp
 #define canmotor_hpp
+
+#define CAN_HANDLER_NUMBER 2 //Number of can handlers
+
+#include "mbed.h"
+#include "algorithms/PID.h"
+#include "communications/newCANHandler.h"
+#include "helperFunctions.hpp"
+#include "algorithms/speedtocurrent.hpp"
+#include <cmath>
+//#include "../communications/canHandler.hpp"
+//TR-mbed6/util/communications/causeSpaghettiComesOnceInALifetime.hpp
 
 static int sendIDs[3] = {0x200,0x1FF,0x2FF}; //IDs to send data
 static Thread motorFeedbackThread(osPriorityAboveNormal); //threading for Motor::tick()
@@ -429,7 +431,7 @@ class CANMotor{
             if(/**canHandlers[bus] != 0**/canHandlers[bus]->exists == true){
                 canHandlers[bus]->rawSend(sendIDs[sendIDindex], bytes);
             }else{
-                printf("[ERROR] YOUR CANHANDLERS ARE NOT DEFINED YET. DO THIS BEFORE YOU CALL ANY MOTORS,\n USING [(CANMotor::setCANHandlers(PA_11,PA_12,PB_12,PB_13)], WHERE PA_11, PA_12 ARE TX, RX\n");
+                printf("[ERROR] YOUR CANHANDLERS ARE NOT DEFINED YET. DO THIS BEFORE YOU CALL ANY MOTORS,\n USING [(DJIMotor::setCANHandlers(PA_11,PA_12,PB_12,PB_13)], WHERE PA_11, PA_12 ARE TX, RX\n");
             }
         }
 

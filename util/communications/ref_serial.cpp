@@ -1,5 +1,5 @@
 
-#include "ref_serial.hpp"
+#include "ref_serial.h"
 
 // top part: I try to make this object-oriented, but then realized it would be quite complicated
 

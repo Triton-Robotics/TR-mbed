@@ -1,19 +1,20 @@
-project(TR-communications)
-
-add_executable(${PROJECT_NAME}
-        include/DJIRemote.hpp
+set(HEADER_FILES
         CANMsg.h
-        crc.hpp
-        crc.cpp
-        DJIRemote.cpp
-        djiremoteuart.hpp
-        newCANHandler.hpp
-        ref_serial.hpp
-        ref_serial.cpp
-        ref_ui.hpp
-        ref_ui.cpp
-        SerialCommunication.hpp
-        serialLogger.hpp
+        DJIRemote.h
+        crc.h
+        ref_serial.h
+        ref_ui.h
+        djiremoteuart.h
+        SerialCommunication.h
+        serialLogger.h
+        newCANHandler.h
 )
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(SRC_FILES
+        DJIRemote.cpp
+        crc.cpp
+        ref_serial.cpp
+        ref_ui.cpp
+)
+
+target_sources(${PROJECT_NAME} PUBLIC ${HEADER_FILES} ${SRC_FILES})

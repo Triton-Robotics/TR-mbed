@@ -1,4 +1,4 @@
-#include "include/DJIRemote.hpp"
+#include "DJIRemote.h"
 
 using namespace std::chrono;
 

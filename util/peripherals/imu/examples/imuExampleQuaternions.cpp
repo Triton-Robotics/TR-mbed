@@ -1,7 +1,6 @@
 #include <cstdlib>
 #include "mbed.h"
 #include "BNO055.h"
-#include "BNO055.cpp"
 
 I2C    i2c(PB_9, PB_8);                // SDA, SCL
 BNO055 imu(i2c, PA_8, MODE_IMU);
