@@ -1,14 +1,15 @@
-## git ignore shortcut folder
-*.lnk
-*.url
-mbed-os
 .build
 .mbed
 projectfiles
 *.py*
+
 BUILD
-run
+mbed-os/
+cmake_build
+.mbedbuild
 
-bobamasterdevboard_A/
-
-randomKalmanTesting/Kalman-and-Bayesian-Filters-in-Python
+micro-ros/include
+micro-ros/libmicroros.a
+micro-ros/micro_ros_dev
+micro-ros/micro_ros_src
+micro-ros/mbed_toolchain.cmake

@@ -1,76 +1,71 @@
-# MBED STUDIO Setup
+## Prerequisites
 
-## Basic Installation
+Assuming Ubuntu:
 
-- Click this link and install [Mbed STudio](https://os.mbed.com/studio/)
+```shell
+sudo apt install \
+  python3-dev \
+  python3-pip \
+  gcc-arm-none-eabi \
+  ninja-build
+```
 
-- Install Github Desktop [Github Desktop](https://desktop.github.com/)
+Use pip to install `mbed`:
+```shell
+pip install mbed-tools
+```
 
-- Open Github Desktop and clone this repo to any location using this link: https://github.com/ARMmbed/mbed-os.git
+Extra dependencies for compiling micro-ros (Optional):
+```shell
+pip install \
+  catkin_pkg \
+  lark-parser \
+  empy \
+  colcon-common-extensions
+```
+---
+## Setup
+1. Clone this repo:
+```shell
+git clone <add link here later>
+```
 
-## Cloning Triton Robotics Github Repo
+2. Initialize `mbed` project:
+```shell
+mbed-tools deploy
+```
 
-- Clone the [TR Github](https://github.com/Triton-Robotics/TR-mbed6) with Github Desktop and PUT IT IN THE MBED PROGRAMS FOLDER. It should look like this: "C:/Users/Mbed Programs/TR-mbed6" 
+3. Configure project for `CMake`:
+```shell
+mbed-tools configure -m NUCLEO_F446RE -t GCC_ARM
+```
 
-## Installing a Junction
-
-You need to create a **JUNCTION** in the TR-mbed6 folder to point to the mbed-os library. A junction is basically a glorified shortcut, except it is not the same thing.
-
-1. Install the [Link Shell Extension](https://download.cnet.com/Link-Shell-Extension-64-bit/3000-2248_4-75213087.html)
-
-2. Right click on the **mbed-os** folder that you cloned at the very beginning (Usually in Docuements/Github)
-
-3. Pick Link Source on the **mbed-os** folder
-
-4. Go inside **TR-mbed6** and right click, select **Drop As Junction**
-
-## OPTIONAL: Setting hotkeys for building/running
-
-Hitting the play button over and over again hurts fingies. Why not set a hotkey for it? 
-
-1) Press ctrl+alt+comma to open the shortcuts menu
-
-2) Search for "Run on device" 
-
-3) Set that hotkey to "ctrl+u" (LITERALLY TYPE THAT IN)
-
-4) Search for "Build"
-
-5) Set that hotkey to "ctrl+r" (LITERALLY TYPE THAT IN)
-
-**Your fingers will thank you later.......**
-
-# Blinky Demo
-
-Test upload code to verifiy correct installation to the STM32 Nucleo F446RE
-
-1) Open MBED Studio
-
-2) Go to file -> New Program
-
-3) A window like something below will pop up
+3. Open project by selecting the root `CMakeLists.txt` in your desired IDE.
    
-   1) Change example program to be an Empty MBED OS 6 Program   
-   
-   2) Program name: Blinky
-   
-   3) Click on "Link to an existing shared MBED OS instance". Select the MBED OS folder that you cloned (Documents/Github/mbed-os)
-   
-   4) Click Add program
-   
-   5) These are the steps you should take everytime you create a new, local program.
-   
-![](assets/2022-04-09-16-37-36-image.png)
+    Alternatively, skip to step 6 for CLI usage. 
 
-4) Open main.cpp under the Blinky program folder you just created
-![](assets/2022-04-09-16-42-55-image.png)
+![img.png](.assets/img.png)
 
-5) Type this code into main.cpp
-![](assets/2022-04-09-16-43-56-image.png)
+4. Upon opening the project, ensure the `CMake` directory is set to the following:
+![img.png](.assets/img2.png)
 
-6) Plug in to the Nucleo. Make sure Blinky is set to Active Program and that when you plugged into the Nucleo there is a little green USB Icon next to the name.
-![](assets/2022-04-09-16-46-26-image.png)
+5. Ensure the desired robot is selected in your IDE:
+![img.png](.assets/img3.png)
 
-7) Hit the play button to compile and upload to the board. It will take some time as this is the first time you are compiling the entire project
+6. Build the desired target using your IDE or via CLI:
+```shell
+cd cmake_build/NUCLEO_F446RE/develop/GCC_ARM && cmake .
+cd <project root dir> && cmake --build cmake_build/NUCLEO_F446RE/develop/GCC_ARM --target TR-Sentry -j 12
+```
 
-8) If you did everything right, the built-in LED should start blinking on the Nucleo!
+7. Locate the generated binary:
+
+    eg. The built binary for Sentry will be present in `cmake_build/NUCLEO_F446RE/develop/GCC_ARM/robots/Sentry/TR_Sentry.bin`
+
+
+8. Copy the binary to the target device and open a terminal:
+
+```shell
+cp cmake_build/NUCLEO_F446RE/develop/GCC_ARM/robots/Sentry/TR_Sentry.bin /run/media/<user>/NOD_F446RE/
+mbed-tools sterm
+```
