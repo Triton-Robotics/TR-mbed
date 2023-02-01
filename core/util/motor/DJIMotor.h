@@ -9,7 +9,7 @@
 
 #include "mbed.h"
 #include "algorithms/PID.h"
-#include "communications/newCANHandler.h"
+#include "communications/CANHandler.h"
 #include "helperFunctions.hpp"
 #include "algorithms/speedtocurrent.hpp"
 #include <cmath>
@@ -76,7 +76,7 @@ private:
 
     //CANMotor* CANMotor::allMotors[];
 
-    static NewCANHandler* canHandlers[CAN_HANDLER_NUMBER];
+    static CANHandler* canHandlers[CAN_HANDLER_NUMBER];
     //static NewCANHandler canHandlers[CAN_HANDLER_NUMBER];
 
     static bool motorsExist[CAN_HANDLER_NUMBER][3][4];
@@ -85,7 +85,7 @@ private:
 
     int gearRatio = 1; //the gear ratio of the motor to encoder
 
-    NewCANHandler::CANBus canBus = NewCANHandler::NOBUS; //the CANBus this motor is on
+    CANHandler::CANBus canBus = CANHandler::NOBUS; //the CANBus this motor is on
 
     motorType type = NONE; //mode of the motor
 
@@ -125,13 +125,13 @@ public:
 
     // user methods
     DJIMotor(bool isErroneousMotor = false);
-    DJIMotor(short canID, NewCANHandler::CANBus bus, motorType mType = STANDARD);
+    DJIMotor(short canID, CANHandler::CANBus bus, motorType mType = STANDARD);
     ~DJIMotor();
 
-    static void printChunk(NewCANHandler::CANBus bus, short sendID, motorDataType data = POWEROUT);
-    static void setCANHandlers(NewCANHandler* bus_1, NewCANHandler* bus_2, bool threadSend = true, bool threadFeedback = true);
+    static void printChunk(CANHandler::CANBus bus, short sendID, motorDataType data = POWEROUT);
+    static void setCANHandlers(CANHandler* bus_1, CANHandler* bus_2, bool threadSend = true, bool threadFeedback = true);
     static void updateMultiTurnPosition();
-    static void sendOneID(NewCANHandler::CANBus bus, short sendIDindex, bool debug = false);
+    static void sendOneID(CANHandler::CANBus bus, short sendIDindex, bool debug = false);
     static void getFeedback();
 
     static void tickThread();

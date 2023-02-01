@@ -5,7 +5,7 @@
 #define M3508_GEAR_RATIO 19.0
 #define PI 3.14159265
 
-#define CAN_BUS_TYPE NewCANHandler::CANBUS_1
+#define CAN_BUS_TYPE CANHandler::CANBUS_1
 #define MOTOR_TYPE M3508
 #define INPUT_THRESHOLD 0.01
 

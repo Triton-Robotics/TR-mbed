@@ -5,7 +5,7 @@
 #include "DJIMotor.h"
 
 DJIMotor* DJIMotor::allMotors[2][3][4];
-NewCANHandler* DJIMotor::canHandlers[2];
+CANHandler* DJIMotor::canHandlers[2];
 bool DJIMotor::motorsExist[2][3][4];
 bool DJIMotor::sendDebug = false;
 bool DJIMotor::feedbackDebug = false;
@@ -13,7 +13,7 @@ bool DJIMotor::feedbackDebug = false;
 DJIMotor::DJIMotor(bool isErroneousMotor){
 
     motorNumber = -1;
-    canBus = NewCANHandler::NOBUS;
+    canBus = CANHandler::NOBUS;
     gearRatio = 1;
     value = 0;
 
@@ -27,7 +27,7 @@ DJIMotor::DJIMotor(bool isErroneousMotor){
     powerOut = 0;
 }
 
-DJIMotor::DJIMotor(short canID, NewCANHandler::CANBus bus, motorType mType){
+DJIMotor::DJIMotor(short canID, CANHandler::CANBus bus, motorType mType){
 
     motorNumber = canID - 1;
     canBus = bus;
@@ -90,14 +90,14 @@ DJIMotor::~DJIMotor(){
     mode = OFF;
     motorsExist[canBus][motorNumber/4][motorNumber%4] = false;
     motorNumber = -1;
-    canBus = NewCANHandler::NOBUS;
+    canBus = CANHandler::NOBUS;
 }
 
-void DJIMotor::printChunk(NewCANHandler::CANBus bus, short sendID, motorDataType data){
+void DJIMotor::printChunk(CANHandler::CANBus bus, short sendID, motorDataType data){
     printf("Bus:");
-    if(bus == NewCANHandler::CANBUS_1)
+    if(bus == CANHandler::CANBUS_1)
         printf("BUS_1 |");
-    else if(bus == NewCANHandler::CANBUS_2)
+    else if(bus == CANHandler::CANBUS_2)
         printf("BUS_2 |");
     printf(" sendID:0x%x ",sendIDs[sendID]);
     for(int i = 0; i < 4; i ++){
@@ -125,7 +125,7 @@ void DJIMotor::printChunk(NewCANHandler::CANBus bus, short sendID, motorDataType
 //     }
 // }
 
-void DJIMotor::setCANHandlers(NewCANHandler* bus_1, NewCANHandler* bus_2, bool threadSend, bool threadFeedback){
+void DJIMotor::setCANHandlers(CANHandler* bus_1, CANHandler* bus_2, bool threadSend, bool threadFeedback){
     canHandlers[0] = bus_1;
     canHandlers[1] = bus_2;
     // if(thread){
@@ -273,7 +273,7 @@ void DJIMotor::updateMultiTurnPosition() {
     }
 }
 
-void DJIMotor::sendOneID(NewCANHandler::CANBus bus, short sendIDindex, bool debug){
+void DJIMotor::sendOneID(CANHandler::CANBus bus, short sendIDindex, bool debug){
     int8_t bytes[8]  = {0,0,0,0,0,0,0,0};
     if(debug) printf("0x%x:\t",sendIDs[sendIDindex]);
     for(int i = 0; i < 4; i++){
@@ -381,10 +381,10 @@ void DJIMotor::sendThread() {
 //TODO: MAKE THIS MORE EFFICIENT BY LIMITING ADDRESSES TO ONLY THOSE THAT HOLD MOTORS
 void DJIMotor::sendValues() {
     for(int i = 0; i < 3; i ++)
-        sendOneID(NewCANHandler::CANBUS_1,i,sendDebug);
+        sendOneID(CANHandler::CANBUS_1, i, sendDebug);
     if(sendDebug) printf("\n");
     for(int i = 0; i < 3; i ++)
-        sendOneID(NewCANHandler::CANBUS_2,i,sendDebug);
+        sendOneID(CANHandler::CANBUS_2, i, sendDebug);
     if(sendDebug) printf("\n");
 }
 

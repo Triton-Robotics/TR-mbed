@@ -6,7 +6,7 @@
 #define TR_EMBEDDED_CHASSIS_H
 
 #include <motor/DJIMotor.h>
-#include <communications/newCANHandler.h>
+#include <communications/CANHandler.h>
 
 
 class Chassis {

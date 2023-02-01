@@ -15,7 +15,7 @@
 #include "motor/PWMMotor.h"
 #include "motor/DJIMotor.h"
 
-#include "communications/newCANHandler.h"
+#include "communications/CANHandler.h"
 #include "communications/djiremoteuart.h"
 #include "communications/SerialCommunication.h"
 #include "communications/referee/ref_serial.h"
@@ -36,8 +36,8 @@ static DJIRemote myremote(PA_0, PA_1);
 static BufferedSerial referee(PC_10, PC_11, 115200); // Nucleo board: top left male pins.
 static bool enablePrintRefData = 0;
 
-NewCANHandler canHandler1(PA_11,PA_12);
-NewCANHandler canHandler2(PB_12,PB_13);
+CANHandler canHandler1(PA_11, PA_12);
+CANHandler canHandler2(PB_12, PB_13);
 
 static int lX = 0;
 static int lY = 0;

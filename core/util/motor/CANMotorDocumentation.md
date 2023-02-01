@@ -61,8 +61,8 @@ Example code with PID is:
 //IN main.hpp
 static DJIRemote myremote(PA_0, PA_1);
 
-NewCANHandler canHandler1(PA_11,PA_12);
-NewCANHandler canHandler2(PB_12,PB_13);
+CANHandler canHandler1(PA_11,PA_12);
+CANHandler canHandler2(PB_12,PB_13);
 
 CANHandler canPorts(PA_11,PA_12,PB_12,PB_13);
 
@@ -105,13 +105,13 @@ There are some things you need to make sure you have to make the motor class wor
 
 ## 1. Attach NewCANHandlers
 
-To make the CanMotor class work, you need to attach two NewCANHandler objects to it, which stores two can busses that we use to make the motors run.
+To make the CanMotor class work, you need to attach two CANHandler objects to it, which stores two can busses that we use to make the motors run.
 
 You do this with this function
 
 `DJIMotor::setCANHandlers(&handler1, &handler2);`
 
-Where each handler is a NewCANHandler object.
+Where each handler is a CANHandler object.
 
 ## 2. DJIMotor::tick()
 

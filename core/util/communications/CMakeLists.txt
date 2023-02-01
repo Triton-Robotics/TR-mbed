@@ -4,7 +4,7 @@ set(HEADER_FILES
         djiremoteuart.h
         SerialCommunication.h
         serialLogger.h
-        newCANHandler.h
+        CANHandler.h
 )
 
 set(SRC_FILES

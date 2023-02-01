@@ -15,7 +15,7 @@
 
 #define CAN_BAUD 1000000
 
-class NewCANHandler{
+class CANHandler{
     private:
         CANMsg txMsg; //Message object reused to send messages to motors
         CANMsg rxMsg; //Message object reused to recieve messages from motors
@@ -29,17 +29,15 @@ class NewCANHandler{
         bool exists = false;
         // Declaring CanHandler, can1, and can2
         
-        NewCANHandler():
+        CANHandler():
             can(PA_11,PA_12,CAN_BAUD)
             {exists = false;}
 
-        NewCANHandler(PinName canRx, PinName canTx):
+        CANHandler(PinName canRx, PinName canTx):
             can(canRx,canTx,CAN_BAUD)
             {exists = true;}
 
-        void attach	(Callback< void()> 	func,
-        CAN::IrqType 	type = CAN::IrqType::RxIrq 
-        ){
+        void attach	(Callback< void()> 	func, CAN::IrqType type = CAN::IrqType::RxIrq){
             can.attach(func,type);
         }
 

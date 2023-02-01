@@ -14,10 +14,10 @@
 Chassis chassis(1, 2, 3, 4);
 DigitalOut led(LED1);
 
-DJIMotor yaw(5, NewCANHandler::CANBUS_1, GIMBLY);
-DJIMotor pitch(6, NewCANHandler::CANBUS_1, GIMBLY);
+DJIMotor yaw(5, CANHandler::CANBUS_1, GIMBLY);
+DJIMotor pitch(6, CANHandler::CANBUS_1, GIMBLY);
 
-DJIMotor indexer(7, NewCANHandler::CANBUS_1, C610);
+DJIMotor indexer(7, CANHandler::CANBUS_1, C610);
 
 PWMMotor RFLYWHEEL(D12); PWMMotor LFLYWHEEL(D11);
 PWMMotor flyWheelMotors[] = {RFLYWHEEL, LFLYWHEEL};
