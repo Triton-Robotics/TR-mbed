@@ -1,11 +1,12 @@
 ## Prerequisites
 
-The following setup guide is written assuming Ubuntu and CLion as the IDE. This setup guide is applicable to other 
-operating systems and IDEs, but may take additional setup.
+The following setup guide is written assuming Ubuntu. This setup guide is applicable to other 
+operating systems, but may take additional setup (i.e. WSL for Windows, or HomeBrew for MacOS).
 
-*Note: Make sure CMake is updated on your machine*
 ```shell
 sudo apt install \
+  build-essential \
+  cmake \
   python3-dev \
   python3-pip \
   gcc-arm-none-eabi \
@@ -27,7 +28,7 @@ In `~/.bash_profile`, append the following to enable `mbed-tools` via command li
 export PATH="${PATH}:/home/${USER}/.local/bin"
 ```
 
-Extra dependencies for compiling micro-ros (Optional):
+Optional: Extra dependencies for compiling micro-ros:
 ```shell
 pip install \
   catkin_pkg \
@@ -52,41 +53,35 @@ mbed-tools deploy
 mbed-tools configure -m NUCLEO_F446RE -t GCC_ARM
 ```
 
-3. Open project by selecting the root `CMakeLists.txt` in your desired IDE.
-   
-    Alternatively, skip to step 6 for CLI usage. 
+**Optional: At this point, you may choose to diverge from the CLI setup guide and set up an IDE
+instead, such as [CLion](.readme/clion.md) or [VSCode](.readme/vscode.md).**
 
-![img.png](.assets/img.png)
-
-4. Upon opening the project, ensure the `CMake` directory is set to the following:
-
-![img.png](.assets/img2.png)
-
-5. Ensure the desired robot is selected in your IDE:
-
-![img.png](.assets/img3.png)
-
-6. Build the desired target using your IDE or via CLI:
-   
-   Note: You may have to modify the number after the `-j` argument to the number of processes your CPU can handle.
-   This can be found via the `nproc` command.
+4. Configure `CMake` project. This should only be done once per project, or after editing
+any `CMakeLists.txt`:
 
 ```shell
 cmake -S . -B cmake_build/NUCLEO_F446RE/develop/GCC_ARM -GNinja
+```
 
-cmake --build cmake_build/NUCLEO_F446RE/develop/GCC_ARM --target TR-Sentry -j 12
+5. Build the desired target using your IDE or via CLI:cd
+   
+   1. You may have to modify the number af   ter the `-j` argument to the number of processes your CPU can handle.
+   This can be found via the `nproc` command.
+
+```shell
+cmake --build cmake_build/NUCLEO_F446RE/develop/GCC_ARM --target TR-Sentry -j 16
 ```
 
 Viable targets for build are: `TR-Engineer`, `TR-Infantry`, `TR-Sentry`, `TR-Hero`, and `TR-TestBench`
 
-7. Locate the generated binary:
+6. Locate the generated binary:
 
     eg. The built binary for Sentry will be present in `cmake_build/NUCLEO_F446RE/develop/GCC_ARM/robots/Sentry/TR_Sentry.bin`
 
 
-8. Copy the binary to the target device and open a terminal:
+7. Copy the binary to the target device and open a terminal:
 
-*If you're running WSL, go to the [Appendix](#appendix-wsl-steps)*
+   Alternatively for flashing device in WSL, see the [Appendix](#appendix-wsl-steps)
 
 ```shell
 cp cmake_build/NUCLEO_F446RE/develop/GCC_ARM/robots/Sentry/TR_Sentry.bin /media/${USER}/NOD_F446RE/
@@ -133,5 +128,5 @@ openocd: "\x30\x36\x36\x46\x46\x46\x35\x35\x35\x30\x37\x31\x34\x39\x34\x38\x36\x
 ```
 7. Now we can flash the board. Use `sudo stlink-gui`, and select the bin file generated in `cmake_build/NUCLEO_F446RE/develop/GCC_ARM/robots/Sentry/TR_Sentry.bin` or similar depending on your target, hit connect, then flash.
 
-![What it should look like](./.assets/stlinkgui.png)
+![What it should look like](.readme/.assets/stlinkgui.png)
 ###
