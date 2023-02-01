@@ -24,8 +24,8 @@ add_subdirectory(${MBED_PATH})
 
 link_libraries(mbed-os)
 
-add_subdirectory(util)
-link_libraries(TR-util)
+add_subdirectory(core)
+link_libraries(TR-core)
 
 if (USE_MICRO_ROS)
     add_subdirectory(micro-ros)
