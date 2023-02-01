@@ -6,8 +6,8 @@
 //                        /_/        /___/                                                                                                             
 //
 ///////////////////////////////////////////////////////////////////////
-#ifndef newCanHandler_hpp
-#define newCanHandler_hpp
+#ifndef CANHandler_hpp
+#define CANHandler_hpp
 
 #include "mbed.h"
 #include "CANMsg.h"
