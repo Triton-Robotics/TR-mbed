@@ -43,9 +43,9 @@ pip install \
 git clone <add link here later>
 ```
 
-2. Initialize `mbed` project:
+2. Navigate to project root directory and initialize `mbed` project:
 ```shell
-mbed-tools deploy
+cd TR-mbed6 && mbed-tools deploy
 ```
 
 3. Configure project for `CMake`:
@@ -63,7 +63,7 @@ any `CMakeLists.txt`:
 cmake -S . -B cmake_build/NUCLEO_F446RE/develop/GCC_ARM -GNinja
 ```
 
-5. Build the desired target using your IDE or via CLI:cd
+5. Build the desired target using your IDE or via CLI:
    
    1. You may have to modify the number af   ter the `-j` argument to the number of processes your CPU can handle.
    This can be found via the `nproc` command.
