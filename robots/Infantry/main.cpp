@@ -11,18 +11,31 @@
 // CANMotor LB(1,NewCANHandler::CANBUS_1,M3508); 
 // CANMotor RB(3,NewCANHandler::CANBUS_1,M3508);
 
+I2C    i2c(PB_9, PB_8);                // SDA, SCL
+BNO055 imu(i2c, PA_8, MODE_IMU);
+BNO055_ID_INF_TypeDef bno055_id_inf;
+BNO055_ANGULAR_POSITION_typedef p;
+
 Chassis chassis(1, 2, 3, 4);
 DigitalOut led(LED1);
 
 DJIMotor yaw(5, CANHandler::CANBUS_1, GIMBLY);
 DJIMotor pitch(6, CANHandler::CANBUS_1, GIMBLY);
+int pitchval = 0;
+
+#define MAX_BEYBLADE_SPEED 1
 
 DJIMotor indexer(7, CANHandler::CANBUS_1, C610);
+int indexJamTime = 0;
+int lastJam = 0;
+
+unsigned long cT = 0;
+unsigned long forwardTime = 250;
+unsigned long reverseTime = 300;
+unsigned long totalTime;
 
 PWMMotor RFLYWHEEL(D12); PWMMotor LFLYWHEEL(D11);
 PWMMotor flyWheelMotors[] = {RFLYWHEEL, LFLYWHEEL};
-
-int indexJamTime = 0;
 
 void setFlyWheelPwr(int pwr) {
     for (int i = 0; i < 2; i++)
@@ -67,10 +80,8 @@ int main()
     int yawSetpoint = 0;
 
     DJIMotor::getFeedback();
-    yawSetpoint = yaw.getData(ANGLE);
-
-    chassis.isInverted[0] = -1;
-    chassis.isInverted[3] = -1;
+    double beybladeSpeed = 2;
+    bool beybladeIncreasing = true;
 
     while (true) {
         led = !led;
@@ -80,6 +91,8 @@ int main()
         unsigned long timeStart = us_ticker_read() / 1000;
         if(timeStart - loopTimer > 25){
             loopTimer = timeStart;
+
+            imu.get_angular_position_quat(&p);
 
             // refLoop++;
             // if(refLoop > 25){
@@ -91,7 +104,7 @@ int main()
 
             if(rS == 1){ // All non-serializer motors activated
                 int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
-                chassis.driveFieldRelative(lX / 500.0, lY / 500.0, 0);
+                chassis.driveOffsetAngle(lX / 500.0, lY / 500.0, rX / 500.0, p.yaw * PI / 180.0);
 
                 pitch.setPosition((rY / 2) + 1500);
                 // yaw.setSpeed(rX/100);
@@ -101,9 +114,22 @@ int main()
 
             }else if(rS == 2){ //disable all the non-serializer components
                 chassis.driveXYR(0,0,0);
-                yaw.setPower(0); pitch.setPower(0);
+                // yaw.setPower(0); pitch.setPower(0);
             }else if(rS == 3){ // beyblade mode
-                chassis.driveXYR(0,0,0);
+//                if (beybladeIncreasing) {
+//                    if (beybladeSpeed >= MAX_BEYBLADE_SPEED) {
+//                        beybladeIncreasing = false;
+//                    } else {
+//                        beybladeSpeed += 0.03;
+//                    }
+//                } else {
+//                    if (beybladeSpeed <= -MAX_BEYBLADE_SPEED) {
+//                        beybladeIncreasing = true;
+//                    } else {
+//                        beybladeSpeed -= 0.03;
+//                    }
+//                }
+                chassis.driveOffsetAngle(lX / 500.0, lY / 500.0, beybladeSpeed, p.yaw * PI / 180.0);
                 yaw.setPower(0); pitch.setPower(0);
             }
 
