@@ -81,15 +81,18 @@ Viable targets for build are: `TR-Engineer`, `TR-Infantry`, `TR-Sentry`, `TR-Her
 
 7. Copy the binary to the target device and open a terminal:
 
-   Alternatively for flashing device in WSL, see the [Appendix](#appendix-wsl-steps)
+   1. For flashing device in WSL, see the [Appendix](#appendix-wsl-steps)
 
 ```shell
 cp cmake_build/NUCLEO_F446RE/develop/GCC_ARM/robots/Sentry/TR_Sentry.bin /media/${USER}/NOD_F446RE/
 
 mbed-tools sterm
 ```
-
+---
 ## Appendix: WSL Steps
+
+Author: Michael Owens
+
 Flashing is where WSL begins to diverge from normal Linux. We have to pass through the USB device to WSL and then make sure we have the right installer.
 1. Follow [this guide](https://learn.microsoft.com/en-us/windows/wsl/connect-usb#attach-a-usb-device) to install `usbipd-win`
 2. Start windows powershell / windows terminal (not cmd, don't be cringe) and try running `usbipd list`. The output should look something like this:

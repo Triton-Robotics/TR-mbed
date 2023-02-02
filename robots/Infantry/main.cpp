@@ -109,7 +109,7 @@ int main()
 
             if (lS == 3) {
                 //indexer.setPower(1200);
-                indexer.setSpeed(-4500);
+                indexer.setSpeed(4500);
                 setFlyWheelPwr(40);
 
             }else if(lS == 2){ //disable serializer
@@ -124,14 +124,14 @@ int main()
                     indexJamTime = us_ticker_read() /1000;
                 }
                 if(us_ticker_read() / 1000 - indexJamTime < 1000){
-                    indexer.setPower(14000); //jam
+                    indexer.setPower(-14000); //jam
                     //printf("JAMMMMM- ");
                 }else if(us_ticker_read() / 1000 - indexJamTime < 1500){
-                    indexer.setPower(-9000); //jam
+                    indexer.setPower(9000); //jam
                     //printf("POWER FORWARD- ");
                 }else{
                     //indexer.setPower(-900);   
-                    indexer.setSpeed(-4500);
+                    indexer.setSpeed(4500);
                 }
                 LFLYWHEEL.set(40); RFLYWHEEL.set(40);
             }
