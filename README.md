@@ -40,12 +40,12 @@ pip install \
 ## Setup
 1. Clone this repo:
 ```shell
-git clone <add link here later>
+git clone https://github.com/Triton-Robotics/TR-mbed.git
 ```
 
 2. Navigate to project root directory and initialize `mbed` project:
 ```shell
-cd TR-mbed6 && mbed-tools deploy
+cd TR-mbed && mbed-tools deploy
 ```
 
 3. Configure project for `CMake`:
