@@ -24,12 +24,13 @@ add_subdirectory(${MBED_PATH})
 
 link_libraries(mbed-os)
 
-add_subdirectory(core)
-link_libraries(TR-core)
-
 if (USE_MICRO_ROS)
     add_subdirectory(micro-ros)
+    link_libraries(TR-jetson)
 endif()
+
+add_subdirectory(core)
+link_libraries(TR-core)
 
 add_subdirectory(robots)
 

@@ -3,11 +3,9 @@
 
 cmake_minimum_required(VERSION 3.19.0 FATAL_ERROR)
 
-set(APP_TARGET micro_ros_mbed)
+set(APP_TARGET TR-jetson)
 
-add_executable(${APP_TARGET})
-
-mbed_configure_app_target(${APP_TARGET})
+add_library(${APP_TARGET})
 
 include(ExternalProject)
 
@@ -34,13 +32,14 @@ project(${APP_TARGET})
 
 target_sources(${APP_TARGET}
         PUBLIC
-        tester.cpp
-        transports.cpp
-        )
+        jetson.h
+        jetson.cpp
+)
 
 add_dependencies(${APP_TARGET} libmicroros_project)
 
 target_include_directories(${APP_TARGET} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(${APP_TARGET} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 execute_process(
         COMMAND
@@ -56,12 +55,6 @@ foreach(pkg ${INCLUDE_ROS2_PACKAGES})
     target_include_directories(${APP_TARGET} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/${pkg})
 endforeach()
 
-target_link_libraries(${APP_TARGET}
-        PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/libmicroros.a
-        )
-
-mbed_set_post_build(${APP_TARGET})
 
 option(VERBOSE_BUILD "Have a verbose build process")
 if(VERBOSE_BUILD)

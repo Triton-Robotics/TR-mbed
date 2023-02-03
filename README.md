@@ -64,12 +64,9 @@ cmake -S . -B cmake_build/NUCLEO_F446RE/develop/GCC_ARM -GNinja
 ```
 
 5. Build the desired target using your IDE or via CLI:
-   
-   1. You may have to modify the number af   ter the `-j` argument to the number of processes your CPU can handle.
-   This can be found via the `nproc` command.
 
 ```shell
-cmake --build cmake_build/NUCLEO_F446RE/develop/GCC_ARM --target TR-Sentry -j 16
+cmake --build cmake_build/NUCLEO_F446RE/develop/GCC_ARM --target TR-Sentry -j $(nproc)
 ```
 
 Viable targets for build are: `TR-Engineer`, `TR-Infantry`, `TR-Sentry`, `TR-Hero`, and `TR-TestBench`
