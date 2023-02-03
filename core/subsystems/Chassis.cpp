@@ -91,7 +91,7 @@ void Chassis::driveXYR(double xVelocityRPM, double yVelocityRPM, double rotation
 
 void Chassis::driveFieldRelative(double xVelocityRPM, double yVelocityRPM, double rotationVelocityRPM) {
     double robotHeading = imuAngles.yaw * PI / 180.0;
-    driveOffsetAngle(xVelocityRPM, yVelocityRPM, rotationVelocityRPM, -robotHeading);
+    driveOffsetAngle(xVelocityRPM, yVelocityRPM, rotationVelocityRPM, robotHeading);
 }
 
 /**
@@ -161,5 +161,8 @@ void Chassis::initializeImu() {
 }
 
 void Chassis::readImu() {
+    if (!imu.chip_ready()) {
+        initializeImu();
+    }
     imu.get_angular_position_quat(&imuAngles);
 }
