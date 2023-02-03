@@ -28,6 +28,9 @@ unsigned long forwardTime = 250;
 unsigned long reverseTime = 300;
 unsigned long totalTime;
 
+bool sticksMoved = false;
+int prevRS = 0, prevLS = 0;
+
 PWMMotor RFLYWHEEL(D12); PWMMotor LFLYWHEEL(D11);
 PWMMotor flyWheelMotors[] = {RFLYWHEEL, LFLYWHEEL};
 
@@ -96,8 +99,16 @@ int main()
             //     //led = ext_power_heat_data.data.chassis_power > 0;
             //     //printf("%d\n",ext_power_heat_data.data.chassis_power);
             // }
-
-            if(rS == 1){ // All non-serializer motors activated
+//            printf("A %i B %i\n", rS, lS);
+            if (!sticksMoved) {
+                chassis.driveXYR(0,0,0);
+                if ((prevLS != 0 && lS != prevLS )|| (prevRS != 0 && rS != prevRS)) {
+                    sticksMoved = true;
+                } else {
+                    prevLS = lS;
+                    prevRS = rS;
+                }
+            } else if(rS == 1){ // All non-serializer motors activated
                 int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
                 chassis.driveFieldRelative(lX / 500.0, lY / 500.0, rX / 500.0);
 
