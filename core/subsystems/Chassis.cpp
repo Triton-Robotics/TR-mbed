@@ -9,12 +9,8 @@
 #define MOTOR_TYPE M3508
 #define INPUT_THRESHOLD 0.01
 
-double getAngleRadians() {
-    return 0;
-}
-
 Chassis::Chassis(short lfId, short rfId, short lbId, short rbId) : LF(lfId, CAN_BUS_TYPE, MOTOR_TYPE), RF(rfId, CAN_BUS_TYPE, MOTOR_TYPE),
-                                                                   LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE) {
+                                                                   LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE), i2c(I2C_SDA, I2C_SCL), imu(i2c, IMU_RESET, MODE_IMU){
     LF.outCap = 16000;
     RF.outCap = 16000;
     LB.outCap = 16000;
@@ -94,7 +90,7 @@ void Chassis::driveXYR(double xVelocityRPM, double yVelocityRPM, double rotation
 }
 
 void Chassis::driveFieldRelative(double xVelocityRPM, double yVelocityRPM, double rotationVelocityRPM) {
-    double robotHeading = getAngleRadians();
+    double robotHeading = imuAngles.yaw * PI / 180.0;
     driveOffsetAngle(xVelocityRPM, yVelocityRPM, rotationVelocityRPM, -robotHeading);
 }
 
@@ -112,6 +108,27 @@ void Chassis::driveAngle(double angleRadians, double speedRPM, double rotationVe
     double vY = speedRPM * cos(angleRadians);
     double vX = speedRPM * sin(angleRadians);
     driveXYR(vX, vY, rotationVelocityRPM);
+}
+
+void Chassis::beyblade(double xVelocityRPM, double yVelocityRPM, bool switchDirections) {
+    if (switchDirections) {
+        if (beybladeIncreasing) {
+            if (beybladeSpeed >= MAX_BEYBLADE_SPEED) {
+                beybladeIncreasing = false;
+            } else {
+                beybladeSpeed += 0.03;
+            }
+        } else {
+            if (beybladeSpeed <= -MAX_BEYBLADE_SPEED) {
+                beybladeIncreasing = true;
+            } else {
+                beybladeSpeed -= 0.03;
+            }
+        }
+    } else if (beybladeSpeed == 0) {
+        beybladeSpeed = MAX_BEYBLADE_SPEED;
+    }
+    driveFieldRelative(xVelocityRPM, yVelocityRPM, beybladeSpeed);
 }
 
 DJIMotor Chassis::getMotor(int index) {
@@ -136,4 +153,13 @@ Chassis::BrakeMode Chassis::getBrakeMode() {
 
 void Chassis::setBrakeMode(BrakeMode brakeMode) {
     this->brakeMode = brakeMode;
+}
+
+void Chassis::initializeImu() {
+    imu.set_mounting_position(MT_P1);
+    imu.read_id_inf(&bno055_id_inf);
+}
+
+void Chassis::readImu() {
+    imu.get_angular_position_quat(&imuAngles);
 }
