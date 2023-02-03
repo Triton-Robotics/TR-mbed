@@ -1,3 +1,12 @@
+```
+  __________                        __             __
+ /_  __/ __ \            ____ ___  / /_  ___  ____/ /
+  / / / /_/ /  ______   / __ `__ \/ __ \/ _ \/ __  / 
+ / / / _, _/  /_____/  / / / / / / /_/ /  __/ /_/ /  
+/_/ /_/ |_|           /_/ /_/ /_/_.___/\___/\__,_/   
+                                                     
+```
+
 ## Prerequisites
 
 The following setup guide is written assuming Ubuntu. This setup guide is applicable to other 
