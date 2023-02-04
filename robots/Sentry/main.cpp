@@ -10,5 +10,6 @@ int main(){
     while(true){
         led = !led;
         ThisThread::sleep_for(500ms);
+        printf("Hello blinky \n");
     }
 }

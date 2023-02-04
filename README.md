@@ -13,22 +13,23 @@ The following setup guide is written assuming Ubuntu. This setup guide is applic
 operating systems, but may take additional setup (i.e. WSL for Windows, or HomeBrew for MacOS).
 
 ```shell
-sudo apt install \
-  build-essential \
-  cmake \
-  python3-dev \
-  python3-pip \
+sudo apt install    \
+  build-essential   \
+  cmake             \
+  python3-dev       \
+  python3-pip       \
   gcc-arm-none-eabi \
+  openocd           \
   ninja-build
 ```
 
 Use pip to install `mbed` and various dependencies:
 ```shell
-pip install \
-  mbed-tools \
+pip install   \
+  mbed-tools  \
   prettytable \
-  future \
-  jinja2 \
+  future      \
+  jinja2      \
   intelhex
 ```
 
@@ -39,10 +40,10 @@ export PATH="${PATH}:/home/${USER}/.local/bin"
 
 Optional: Extra dependencies for compiling micro-ros:
 ```shell
-pip install \
-  catkin_pkg \
+pip install   \
+  catkin_pkg  \
   lark-parser \
-  empy \
+  empy        \
   colcon-common-extensions
 ```
 ---
@@ -63,7 +64,7 @@ mbed-tools configure -m NUCLEO_F446RE -t GCC_ARM
 ```
 
 **Optional: At this point, you may choose to diverge from the CLI setup guide and set up an IDE
-instead, such as [CLion](.readme/clion.md) or [VSCode](.readme/vscode.md).**
+instead. Check out the setup instructions for [CLion](.readme/clion.md) or [VSCode](.readme/vscode.md).**
 
 4. Configure `CMake` project. This should only be done once per project, or after editing
 any `CMakeLists.txt`:
@@ -80,19 +81,19 @@ cmake --build cmake_build/NUCLEO_F446RE/develop/GCC_ARM --target TR-Sentry -j $(
 
 Viable targets for build are: `TR-Engineer`, `TR-Infantry`, `TR-Sentry`, `TR-Hero`, and `TR-TestBench`
 
-6. Locate the generated binary:
+6. Locate the generated executable:
 
-    eg. The built binary for Sentry will be present in `cmake_build/NUCLEO_F446RE/develop/GCC_ARM/robots/Sentry/TR_Sentry.bin`
+    eg. The built executable for Sentry will be present in `cmake_build/NUCLEO_F446RE/develop/GCC_ARM/robots/Sentry/TR_Sentry.elf`
 
 
-7. Copy the binary to the target device and open a terminal:
+7. Flash the executable to the target device and open a serial terminal:
 
    1. For flashing device in WSL, see the [Appendix](#appendix-wsl-steps)
 
 ```shell
-cp cmake_build/NUCLEO_F446RE/develop/GCC_ARM/robots/Sentry/TR_Sentry.bin /media/${USER}/NOD_F446RE/
+openocd -f cfg/st_nucleo_f4.cfg -c "program cmake_build/NUCLEO_F446RE/develop/GCC_ARM/robots/Sentry/TR-Sentry.elf verify reset exit"
 
-mbed-tools sterm
+mbed-tools sterm -b 115200
 ```
 ---
 ## Appendix: WSL Steps

@@ -36,19 +36,15 @@ private:
 
 public:
 
-    struct Coordinate{
-        double x;
-        double y;
-    };
-
     enum TeamColor{
+        UNDEFINED,
         RED,
-        BLUE,
-        UNDEFINED
+        BLUE
     };
 
     enum CVDatatype{
-        DesiredCoordinate,
+        CoordinateX,
+        CoordinateY,
         TeamColor
     };
 
