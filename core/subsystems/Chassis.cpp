@@ -157,12 +157,8 @@ void Chassis::setBrakeMode(BrakeMode brakeMode) {
 
 void Chassis::initializeImu() {
     imu.set_mounting_position(MT_P1);
-    imu.read_id_inf(&bno055_id_inf);
 }
 
 void Chassis::readImu() {
-    if (!imu.chip_ready()) {
-        initializeImu();
-    }
     imu.get_angular_position_quat(&imuAngles);
 }

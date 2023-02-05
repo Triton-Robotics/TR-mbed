@@ -48,7 +48,6 @@ private:
     bool beybladeIncreasing;
     I2C i2c;
     BNO055 imu;
-    BNO055_ID_INF_TypeDef bno055_id_inf;
     BNO055_ANGULAR_POSITION_typedef imuAngles;
 
     double rpmToTicksPerSecond(double RPM);
