@@ -4,6 +4,8 @@
 
 #include "DJIMotor.h"
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "EndlessLoop"
 DJIMotor* DJIMotor::allMotors[2][3][4];
 CANHandler* DJIMotor::canHandlers[2];
 bool DJIMotor::motorsExist[2][3][4];
@@ -14,10 +16,7 @@ DJIMotor::DJIMotor(bool isErroneousMotor){
 
     motorNumber = -1;
     canBus = CANHandler::NOBUS;
-    gearRatio = 1;
     value = 0;
-
-    type = NONE;
     mode = OFF;
 
     conflict = isErroneousMotor;
@@ -31,14 +30,6 @@ DJIMotor::DJIMotor(short canID, CANHandler::CANBus bus, motorType mType){
 
     motorNumber = canID - 1;
     canBus = bus;
-    if(mType == GM6020)
-        gearRatio = 1;
-    else if(mType == M3508)
-        gearRatio = 19;
-    else if(mType == M2006)
-        gearRatio = 36;
-    else
-        gearRatio = 1;
     value = 0;
 
     type = mType;
@@ -67,18 +58,18 @@ DJIMotor::DJIMotor(short canID, CANHandler::CANBus bus, motorType mType){
 
     //printf("allMotors[bus][%d][%d]-> = %d\n",motorNumber/4,motorNumber%4, allMotors[bus][motorNumber/4][motorNumber%4]);
 
-    if(motorsExist[bus][motorNumber/4][motorNumber%4] == false /**allMotors[bus][motorNumber/4][motorNumber%4]->motorNumber == -1**/){
-        allMotors[bus][motorNumber/4][motorNumber%4] = this;
-        motorsExist[bus][motorNumber/4][motorNumber%4] = true;
+    if(!motorsExist[bus][motorNumber / 4][motorNumber % 4] /**allMotors[bus][motorNumber/4][motorNumber%4]->motorNumber == -1**/){
+        allMotors[bus][motorNumber / 4][motorNumber % 4] = this;
+        motorsExist[bus][motorNumber / 4][motorNumber % 4] = true;
     }else{
         DJIMotor mot(true);
-        allMotors[bus][motorNumber/4][motorNumber%4] = &mot;
+        allMotors[bus][motorNumber / 4][motorNumber % 4] = &mot;
         printf("[ERROR] THERES A CONFLICT ON BUS [%d] ID [%d]. YOU WILL HAVE ERRORS.\n",motorNumber/4, motorNumber%4);
     }
 
 
     // if(type == GM6020 && canID <= 4) // Check for them fucking gimblies
-    //     printf("ERROR. IT IS HIGHLY DISCOURAGED OF YOU TO USE CAN BUSSES 1-4 FOR THE GM6020s. YOU WILL HAVE ERRORS.\n YOU DUMB BITCH WHY WOULD YOU (WHO IS LIKELY ME) DO THIS I HAVENT CODED THIS IN DONT MAKE ME CODE THIS IN PLEASE\n");
+    //     printf("ERROR. IT IS HIGHLY DISCOURAGED OF YOU TO USE CAN BUSSES 1-4 FOR THE GM6020s. YOU WILL HAVE ERRORS.\n YOU DUMB BITCH WHY WOULD YOU (WHO IS LIKELY ME) DO THIS I HAVEN'T CODED THIS IN DON'T MAKE ME CODE THIS IN PLEASE\n");
     if (canID > 8 || canID < 1)
         printf("[ERROR] The canID [%d] not within correct bounds\n", canID);
 
@@ -86,31 +77,30 @@ DJIMotor::DJIMotor(short canID, CANHandler::CANBus bus, motorType mType){
 }
 
 DJIMotor::~DJIMotor(){
-    type = NONE;
     mode = OFF;
     motorsExist[canBus][motorNumber/4][motorNumber%4] = false;
     motorNumber = -1;
     canBus = CANHandler::NOBUS;
 }
 
-void DJIMotor::printChunk(CANHandler::CANBus bus, short sendID, motorDataType data){
-    printf("Bus:");
-    if(bus == CANHandler::CANBUS_1)
-        printf("BUS_1 |");
-    else if(bus == CANHandler::CANBUS_2)
-        printf("BUS_2 |");
-    printf(" sendID:0x%x ",sendIDs[sendID]);
-    for(int i = 0; i < 4; i ++){
-        if(motorsExist[bus][sendID][i])
-            if(data == POWEROUT)
-                printf("%d ",allMotors[bus][sendID][i]->powerOut);
-            else
-                printf("%d ",allMotors[bus][sendID][i]->getData(data));
-        else
-            printf("NA ");
-    }
-    printf("\n");
-}
+//void DJIMotor::printChunk(CANHandler::CANBus bus, short sendID, motorDataType data){
+//    printf("Bus:");
+//    if(bus == CANHandler::CANBUS_1)
+//        printf("BUS_1 |");
+//    else if(bus == CANHandler::CANBUS_2)
+//        printf("BUS_2 |");
+//    printf(" sendID:0x%x ",sendIDs[sendID]);
+//    for(int i = 0; i < 4; i ++){
+//        if(motorsExist[bus][sendID][i])
+//            if(data == POWEROUT)
+//                printf("%d ",allMotors[bus][sendID][i]->powerOut);
+//            else
+//                printf("%d ",allMotors[bus][sendID][i]->getData(data));
+//        else
+//            printf("NA ");
+//    }
+//    printf("\n");
+//}
 
 // static void DJIMotor::setCANHandlers(PinName can1Tx, PinName can1Rx, PinName can2Tx, PinName can2Rx){
 //     canHandlers[0].updateCANs(PinName canRx, PinName canTx);
@@ -155,10 +145,6 @@ void DJIMotor::setValue(int val){
     value = val;
 }
 
-int DJIMotor::getValue() {
-    return value;
-}
-
 void DJIMotor::setPower(int power){
     setValue(power);
     mode = POW;
@@ -184,9 +170,9 @@ void DJIMotor::operator=(int value){
 void DJIMotor::setOutput(){
     unsigned long time = us_ticker_read() / 1000;
     if(mode == POW){
-        powerOut = value;
+        powerOut = (int16_t)value;
     }else if(mode == SPD){
-        powerOut = pidSpeed.calculate(value, getData(VELOCITY), time - lastTime);
+        powerOut = (int16_t)pidSpeed.calculate(value, getData(VELOCITY), time - lastTime);
     }else if(mode == POS){
         if (!justPosError) {
             if (!useAbsEncoder) {
@@ -236,7 +222,7 @@ void DJIMotor::printAllMotorData() {
 }
 
 void DJIMotor::updateMultiTurnPosition() {
-    int Threshold = 3000; // From 0 - 8191
+    int Threshold = 3000; // From 0 to 8191
     int curAngle, lastAngle, deltaAngle, speed;
     DJIMotor *curMotor;
     for(int x = 0; x < CAN_HANDLER_NUMBER; x++){
@@ -380,16 +366,18 @@ void DJIMotor::sendThread() {
 
 //TODO: MAKE THIS MORE EFFICIENT BY LIMITING ADDRESSES TO ONLY THOSE THAT HOLD MOTORS
 void DJIMotor::sendValues() {
-    for(int i = 0; i < 3; i ++)
+    for(short i = 0; i < 3; i ++)
         sendOneID(CANHandler::CANBUS_1, i, sendDebug);
     if(sendDebug) printf("\n");
-    for(int i = 0; i < 3; i ++)
+    for(short i = 0; i < 3; i ++)
         sendOneID(CANHandler::CANBUS_2, i, sendDebug);
     if(sendDebug) printf("\n");
 }
 
-void DJIMotor::tick(bool debug, bool printFeedback){
+void DJIMotor::tick(){
     getFeedback();
     //updateMultiTurnPosition();
     sendValues();
 }
+#pragma clang diagnostic pop
+#pragma clang diagnostic pop
