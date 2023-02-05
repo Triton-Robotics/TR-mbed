@@ -22,12 +22,11 @@
 #define RCCHECK(fn) { rcl_ret_t temp_rc = fn; if((temp_rc != RCL_RET_OK)){printf("Failed status on line %d: %d. Aborting.\n",__LINE__,(int)temp_rc);while(1){};}}
 #define RCSOFTCHECK(fn) { rcl_ret_t temp_rc = fn; if((temp_rc != RCL_RET_OK)){printf("Failed status on line %d: %d. Continuing.\n",__LINE__,(int)temp_rc);}}
 
+
 class Jetson {
 
 private:
-    // --- micro-ROS Timing ---
 
-    static int clock_gettime(clockid_t unused, struct timespec *tp);
     static void on_rx_interrupt();
     static bool mbed_serial_open(struct uxrCustomTransport * transport);
     static bool mbed_serial_close(struct uxrCustomTransport * transport);

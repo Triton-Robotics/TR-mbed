@@ -4,8 +4,19 @@
 
 #include "jetson.h"
 
+// --- micro-ROS Timing ---
+extern "C" int clock_gettime(clockid_t unused, struct timespec *tp)
+{
+    (void)unused;
+    struct timeval tv;
+    gettimeofday(&tv, 0);
+    tp->tv_sec = tv.tv_sec;
+    tp->tv_nsec = tv.tv_usec * 1000;
+    return 0;
+}
+
 // --- micro-ROS Transports ---
-UnbufferedSerial serial_port(USBTX, USBRX);
+static UnbufferedSerial serial_port(USBTX, USBRX);
 Timer t;
 
 static uint8_t dma_buffer[UART_DMA_BUFFER_SIZE];
@@ -26,18 +37,7 @@ void timer_callback(rcl_timer_t * timer, int64_t last_call_time)
     RCLC_UNUSED(last_call_time);
     if (timer != nullptr) {
         RCSOFTCHECK(rcl_publish(&publisher, &msg, nullptr));
-        msg.data++;
     }
-}
-
-int Jetson::clock_gettime(clockid_t unused, struct timespec *tp)
-{
-    (void)unused;
-    struct timeval tv;
-    gettimeofday(&tv, 0);
-    tp->tv_sec = tv.tv_sec;
-    tp->tv_nsec = tv.tv_usec * 1000;
-    return 0;
 }
 
 
@@ -96,12 +96,15 @@ double Jetson::get(Jetson::CVDatatype type){
 }
 
 void Jetson::set(CVDatatype type, double val) {
-    
+    msg.data = val;
 }
 
+DigitalOut led(LED2);
 void Jetson::update() {
 
     if (!init){
+        printf("init!\n");
+
         rmw_uros_set_custom_transport(
                 true,
                 nullptr,
@@ -144,6 +147,8 @@ void Jetson::update() {
 
         init = true;
     }
+    led = !led;
+    printf("update!\n");
 
     rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100));
 }

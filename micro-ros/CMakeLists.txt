@@ -15,15 +15,15 @@ externalproject_add(libmicroros_project
         BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}
         CONFIGURE_COMMAND ""
         BUILD_COMMAND
-        make -f ${CMAKE_CURRENT_SOURCE_DIR}/libmicroros.mk
-        X_CC=${CMAKE_C_COMPILER}
-        X_AR=${CMAKE_AR}
-        X_STRIP=${CMAKE_STRIP}
-        X_CFLAGS=${CMAKE_C_FLAGS}
-        X_CXX=${CMAKE_CXX_COMPILER}
-        X_CXXFLAGS=${CMAKE_CXX_FLAGS}
-        BUILD_DIR=${CMAKE_BINARY_DIR}
-        EXTENSIONS_DIR=${CMAKE_CURRENT_SOURCE_DIR}
+            make -f ${CMAKE_CURRENT_SOURCE_DIR}/libmicroros.mk
+                X_CC=${CMAKE_C_COMPILER}
+                X_AR=${CMAKE_AR}
+                X_STRIP=${CMAKE_STRIP}
+                X_CFLAGS=${CMAKE_C_FLAGS}
+                X_CXX=${CMAKE_CXX_COMPILER}
+                X_CXXFLAGS=${CMAKE_CXX_FLAGS}
+                BUILD_DIR=${CMAKE_BINARY_DIR}
+                EXTENSIONS_DIR=${CMAKE_CURRENT_SOURCE_DIR}
         INSTALL_COMMAND ""
         BUILD_BYPRODUCTS ${CMAKE_CURRENT_SOURCE_DIR}/libmicroros.a
         )
@@ -31,7 +31,7 @@ externalproject_add(libmicroros_project
 project(${APP_TARGET})
 
 target_sources(${APP_TARGET}
-        PUBLIC
+        PRIVATE
         jetson.h
         jetson.cpp
 )
@@ -43,11 +43,11 @@ target_include_directories(${APP_TARGET} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 execute_process(
         COMMAND
-        make -f ${CMAKE_CURRENT_SOURCE_DIR}/libmicroros.mk get_package_names
+            make -f ${CMAKE_CURRENT_SOURCE_DIR}/libmicroros.mk get_package_names
         WORKING_DIRECTORY
-        ${CMAKE_CURRENT_SOURCE_DIR}
+            ${CMAKE_CURRENT_SOURCE_DIR}
         OUTPUT_VARIABLE
-        INCLUDE_ROS2_PACKAGES
+            INCLUDE_ROS2_PACKAGES
         OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
@@ -55,6 +55,10 @@ foreach(pkg ${INCLUDE_ROS2_PACKAGES})
     target_include_directories(${APP_TARGET} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/${pkg})
 endforeach()
 
+target_link_libraries(${APP_TARGET}
+        PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/libmicroros.a
+)
 
 option(VERBOSE_BUILD "Have a verbose build process")
 if(VERBOSE_BUILD)

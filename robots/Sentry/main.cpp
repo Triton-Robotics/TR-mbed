@@ -3,13 +3,16 @@
 //
 #include <algorithms/PID.h>
 #include <motor/DJIMotor.h>
+#include <jetson.h>
 
 int main(){
 
-    DigitalOut led(LED1);
+    int i = 0;
+
     while(true){
-        led = !led;
-        ThisThread::sleep_for(500ms);
-        printf("Hello blinky \n");
+        Jetson::set(Jetson::CVDatatype::TeamColor, i);
+        Jetson::update();
+        i++;
+        ThisThread::sleep_for(100ms);
     }
 }
