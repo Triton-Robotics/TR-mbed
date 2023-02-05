@@ -305,6 +305,8 @@ public:
       */
     bool use_celsius();
 
+    int cantReadDataCount;
+
 protected:
     void initialize(void);
     void initialize_reset_pin(void);

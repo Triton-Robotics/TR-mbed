@@ -39,8 +39,20 @@ void setFlyWheelPwr(int pwr) {
         flyWheelMotors[i].set(pwr);
 }
 
+Thread imuThread;
+
+void runImuThread() {
+    chassis.initializeImu();
+    while (true) {
+        chassis.readImu();
+        ThisThread::sleep_for(25);
+    }
+
+}
+
 int main()
 {
+    imuThread.start(runImuThread);
     float speedmultiplier = 3;
     float powmultiplier = 2;
     float translationalmultiplier = 1.5; // was 3
@@ -66,7 +78,6 @@ int main()
     indexer.setSpeedIntegralCap(500000);
 
     chassis.setBrakeMode(Chassis::COAST);
-    chassis.initializeImu();
 
     unsigned long loopTimer = us_ticker_read() / 1000;
 
@@ -89,8 +100,6 @@ int main()
         unsigned long timeStart = us_ticker_read() / 1000;
         if(timeStart - loopTimer > 25){
             loopTimer = timeStart;
-
-            chassis.readImu();
 
             // refLoop++;
             // if(refLoop > 25){

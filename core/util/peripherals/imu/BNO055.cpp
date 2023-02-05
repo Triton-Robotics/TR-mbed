@@ -83,22 +83,35 @@ void BNO055::get_euler_angles(BNO055_EULER_TypeDef *result)
 
 void BNO055::get_quaternion(BNO055_QUATERNION_TypeDef *result)
 {
+    if (cantReadDataCount > 0 && cantReadDataCount < 50) {
+        cantReadDataCount++;
+        return;
+    } else if (cantReadDataCount >= 50) {
+        cantReadDataCount = 1;
+    }
     int16_t w,x,y,z;
 
     select_page(0);
     dt[0] = BNO055_QUATERNION_W_LSB;
-    _i2c.write(chip_addr, dt, 1, true);
-    _i2c.read(chip_addr, dt, 8, false);
-    w = dt[1] << 8 | dt[0];
-    x = dt[3] << 8 | dt[2];
-    y = dt[5] << 8 | dt[4];
-    z = dt[7] << 8 | dt[6];
+    int writeResult = _i2c.write(chip_addr, dt, 1, true);
+    if (!writeResult)  {
+        if (cantReadDataCount > 0) {
+            reset();
+            cantReadDataCount = 0;
+        }
+        _i2c.read(chip_addr, dt, 8, false);
+        w = dt[1] << 8 | dt[0];
+        x = dt[3] << 8 | dt[2];
+        y = dt[5] << 8 | dt[4];
+        z = dt[7] << 8 | dt[6];
 
-    result->w = (double)w / 16384.0f;
-    result->x = (double)x / 16384.0f;
-    result->y = (double)y / 16384.0f;
-    result->z = (double)z / 16384.0f;
-
+        result->w = (double)w / 16384.0f;
+        result->x = (double)x / 16384.0f;
+        result->y = (double)y / 16384.0f;
+        result->z = (double)z / 16384.0f;
+    } else {
+        cantReadDataCount++;
+    }
 }
 
 void BNO055::get_angular_position_quat(BNO055_ANGULAR_POSITION_typedef *result){
