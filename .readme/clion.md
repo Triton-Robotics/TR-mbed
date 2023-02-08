@@ -44,6 +44,19 @@ Info : flash size = 512 kbytes
 shutdown command invoked
 ```
 
+If OpenOCD fails with the error `Error: libusb_open() failed with LIBUSB_ERROR_ACCESS`, you may need to add a `udev` rule
+to allow OpenOCD to access the ST-Link programmer:
+
+```shell
+cd /etc/udev/rules.d
+
+# Download openocd udev rules
+sudo wget https://raw.githubusercontent.com/openocd-org/openocd/master/contrib/60-openocd.rules
+
+# Reload udev rules
+sudo udevadm control --reload
+```
+
 8. Install the following plugin to view serial output:
 
 ![img.png](.assets/clion_8.png)
