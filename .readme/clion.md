@@ -27,11 +27,11 @@ targets by selecting multiple at a time:
 
 ![img.png](.assets/clion_6.png)
 
-4. Ensure the desired robot is selected in your IDE:
+6. Ensure the desired robot is selected in your IDE:
 
 ![img.png](.assets/clion_7.png)
 
-5. Build and run using your IDE. Ensure board is connected before running.
+7. Build and run using your IDE. Ensure board is connected before running.
 
    Expected output is similar to the following:
 ```
@@ -44,15 +44,15 @@ Info : flash size = 512 kbytes
 shutdown command invoked
 ```
 
-6. Install the following plugin to view serial output:
+8. Install the following plugin to view serial output:
 
 ![img.png](.assets/clion_8.png)
 
-7. Navigate to `Tools > Serial Port Monitor > Settings` and select the correct serial port and baud rate:
+9. Navigate to `Tools > Serial Port Monitor > Settings` and select the correct serial port and baud rate:
 
 ![img.png](.assets/clion_9.png)
 
-8. Open the serial port monitor by navigating to `Tools > Serial Port Monitor > /dev/ttyACM0` and observe the output.
-   1. You may have to disable the "Hex View" option for cleaner output:
+10. Open the serial port monitor by navigating to `Tools > Serial Port Monitor > /dev/ttyACM0` and observe the output.
+    1. You may have to disable the "Hex View" option for cleaner output:
 
 ![img.png](.assets/clion_10.png)
