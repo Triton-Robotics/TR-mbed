@@ -9,7 +9,7 @@
 
 ## Prerequisites
 
-The following setup guide is written assuming Ubuntu. This setup guide is applicable to other 
+The following setup guide is written assuming Ubuntu. This setup guide is applicable to other
 operating systems, but may take additional setup (i.e. WSL for Windows, or HomeBrew for MacOS).
 
 ```shell
@@ -58,22 +58,17 @@ git clone https://github.com/Triton-Robotics/TR-mbed.git
 cd TR-mbed && mbed-tools deploy
 ```
 
-3. Configure project for `CMake`:
-```shell
-mbed-tools configure -m NUCLEO_F446RE -t GCC_ARM
-```
-
 **Optional: At this point, you may choose to diverge from the CLI setup guide and set up an IDE
 instead. Check out the setup instructions for [CLion](.readme/clion.md) or [VSCode](.readme/vscode.md).**
 
-4. Configure `CMake` project. This should only be done once per project, or after editing
-any `CMakeLists.txt`:
+3. Configure `CMake` project. This should only be done once per project, or after editing
+   any `CMakeLists.txt`:
 
 ```shell
 cmake -S . -B cmake_build/NUCLEO_F446RE/develop/GCC_ARM -GNinja
 ```
 
-5. Build the desired target using your IDE or via CLI:
+4. Build the desired target using your IDE or via CLI:
 
 ```shell
 cmake --build cmake_build/NUCLEO_F446RE/develop/GCC_ARM --target TR-Sentry -j $(nproc)
@@ -81,12 +76,12 @@ cmake --build cmake_build/NUCLEO_F446RE/develop/GCC_ARM --target TR-Sentry -j $(
 
 Viable targets for build are: `TR-Engineer`, `TR-Infantry`, `TR-Sentry`, `TR-Hero`, and `TR-TestBench`
 
-6. Locate the generated executable:
+5. Locate the generated executable:
 
-    eg. The built executable for Sentry will be present in `cmake_build/NUCLEO_F446RE/develop/GCC_ARM/robots/Sentry/TR_Sentry.elf`
+   eg. The built executable for Sentry will be present in `cmake_build/NUCLEO_F446RE/develop/GCC_ARM/robots/Sentry/TR_Sentry.elf`
 
 
-7. Flash the executable to the target device and open a serial terminal:
+6. Flash the executable to the target device and open a serial terminal:
 
    1. For flashing device in WSL, see the [Appendix](#appendix-wsl-steps)
 
