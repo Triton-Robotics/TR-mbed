@@ -43,3 +43,16 @@ Info : flash size = 512 kbytes
 ...
 shutdown command invoked
 ```
+
+6. Install the following plugin to view serial output:
+
+![img.png](.assets/clion_8.png)
+
+7. Navigate to `Tools > Serial Port Monitor > Settings` and select the correct serial port and baud rate:
+
+![img.png](.assets/clion_9.png)
+
+8. Open the serial port monitor by navigating to `Tools > Serial Port Monitor > /dev/ttyACM0` and observe the output.
+   1. You may have to disable the "Hex View" option for cleaner output:
+
+![img.png](.assets/clion_10.png)

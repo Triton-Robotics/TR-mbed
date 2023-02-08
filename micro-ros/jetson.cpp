@@ -23,14 +23,14 @@ static uint8_t dma_buffer[UART_DMA_BUFFER_SIZE];
 static size_t dma_head = 0, dma_tail = 0;
 
 // --- micro-ROS App ---
-rcl_publisher_t publisher;
-std_msgs__msg__Int32 msg;
-std_msgs__msg__String str;
+static rcl_publisher_t publisher;
+static std_msgs__msg__Int32 msg;
+static std_msgs__msg__String str;
 
-rclc_executor_t executor;
-rcl_node_t node;
+static rclc_executor_t executor;
+static rcl_node_t node;
 
-bool init = false;
+static bool init = false;
 
 void timer_callback(rcl_timer_t * timer, int64_t last_call_time)
 {
@@ -91,6 +91,8 @@ size_t Jetson::mbed_serial_read(struct uxrCustomTransport* transport, uint8_t* b
     return wrote;
 }
 
+
+
 double Jetson::get(Jetson::CVDatatype type){
     return msg.data;
 }
@@ -98,57 +100,72 @@ double Jetson::get(Jetson::CVDatatype type){
 void Jetson::set(CVDatatype type, double val) {
     msg.data = val;
 }
+void Jetson::free() {
+    // free resources
+    RCCHECK(rcl_publisher_fini(&publisher, &node));
+    RCCHECK(rcl_node_fini(&node));
+}
+
 
 DigitalOut led(LED2);
-void Jetson::update() {
+Thread uros_thread;
 
-    if (!init){
-        printf("init!\n");
+void Jetson::init() {
+    rmw_uros_set_custom_transport(
+            true,
+            nullptr,
+            mbed_serial_open,
+            mbed_serial_close,
+            mbed_serial_write,
+            mbed_serial_read
+    );
 
-        rmw_uros_set_custom_transport(
-                true,
-                nullptr,
-                mbed_serial_open,
-                mbed_serial_close,
-                mbed_serial_write,
-                mbed_serial_read
-        );
+    rcl_allocator_t allocator = rcl_get_default_allocator();
+    rclc_support_t support;
 
-        rcl_allocator_t allocator = rcl_get_default_allocator();
-        rclc_support_t support;
-
-        // create init_options
-        RCCHECK(rclc_support_init(&support, 0, nullptr, &allocator));
-
-        // create node
-        RCCHECK(rclc_node_init_default(&node, "mbed_node", "", &support));
-
-        // create publisher
-        RCCHECK(rclc_publisher_init_default(
-                &publisher,
-                &node,
-                ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
-                "mbed_int32_publisher"));
-
-        // create timer,
-        rcl_timer_t timer;
-        const unsigned int timer_timeout = 1000;
-        RCCHECK(rclc_timer_init_default(
-                &timer,
-                &support,
-                RCL_MS_TO_NS(timer_timeout),
-                timer_callback));
-
-        // create executor
-        RCCHECK(rclc_executor_init(&executor, &support.context, 1, &allocator));
-        RCCHECK(rclc_executor_add_timer(&executor, &timer));
-
-        msg.data = 0;
-
-        init = true;
+    for (int i = 0; i < 4; i++){
+        led = !led;
+        ThisThread::sleep_for(250ms);
     }
-    led = !led;
-    printf("update!\n");
 
-    rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100));
+    // create init_options
+    RCCHECK(rclc_support_init(&support, 0, nullptr, &allocator));
+
+    for (int i = 0; i < 6   ; i++){
+        led = !led;
+        ThisThread::sleep_for(250ms);
+    }
+
+    // create node
+    RCCHECK(rclc_node_init_default(&node, "mbed_node", "", &support));
+
+    // create publisher
+    RCCHECK(rclc_publisher_init_default(
+            &publisher,
+            &node,
+            ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
+            "mbed_int32_publisher"));
+
+    // create timer,
+    rcl_timer_t timer;
+    const unsigned int timer_timeout = 1000;
+    RCCHECK(rclc_timer_init_default(
+            &timer,
+            &support,
+            RCL_MS_TO_NS(timer_timeout),
+            timer_callback));
+
+    // create executor
+    RCCHECK(rclc_executor_init(&executor, &support.context, 1, &allocator));
+    RCCHECK(rclc_executor_add_timer(&executor, &timer));
+
+    msg.data = 0;
+
+    uros_thread.set_priority(osPriorityNormal);
+
+    uros_thread.start([](){
+        led = !led;
+        rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100));
+        ThisThread::get_name();
+    });
 }

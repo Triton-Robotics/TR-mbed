@@ -33,6 +33,7 @@ private:
     static size_t mbed_serial_write(struct uxrCustomTransport* transport, const uint8_t * buf, size_t len, uint8_t * err);
     static size_t mbed_serial_read(struct uxrCustomTransport* transport, uint8_t* buf, size_t len, int timeout, uint8_t* err);
 
+
 public:
 
     enum TeamColor{
@@ -50,7 +51,9 @@ public:
     static void set(CVDatatype type, double val);
     static double get(CVDatatype type);
 
+    static void init();
     static void update();
+    static void free();
 
 };
 

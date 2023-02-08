@@ -91,7 +91,7 @@ Viable targets for build are: `TR-Engineer`, `TR-Infantry`, `TR-Sentry`, `TR-Her
    1. For flashing device in WSL, see the [Appendix](#appendix-wsl-steps)
 
 ```shell
-openocd -f cfg/st_nucleo_f4.cfg -c "program cmake_build/NUCLEO_F446RE/develop/GCC_ARM/robots/Sentry/TR-Sentry.elf verify reset exit"
+openocd -f board/st_nucleo_f4.cfg -c "program cmake_build/NUCLEO_F446RE/develop/GCC_ARM/robots/Sentry/TR-Sentry.elf verify reset exit"
 
 mbed-tools sterm -b 115200
 ```
