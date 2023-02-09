@@ -33,7 +33,7 @@ pip install   \
   intelhex
 ```
 
-In `~/.bash_profile`, append the following to enable `mbed-tools` via command line:
+In `~/.bashrc` (or `~/.bash_profile`), append the following to enable `mbed-tools` via command line:
 ```shell
 export PATH="${PATH}:/home/${USER}/.local/bin"
 ```
