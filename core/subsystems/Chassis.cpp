@@ -1,16 +1,16 @@
 #include "Chassis.h"
+#include <math.h>
 
 #define SECONDS_PER_MINUTE 60
 #define TICKS_PER_ROTATION 8096.0
 #define M3508_GEAR_RATIO 19.0
-#define PI 3.14159265
 
 #define CAN_BUS_TYPE CANHandler::CANBUS_1
 #define MOTOR_TYPE M3508
 #define INPUT_THRESHOLD 0.01
 
 Chassis::Chassis(short lfId, short rfId, short lbId, short rbId) : LF(lfId, CAN_BUS_TYPE, MOTOR_TYPE), RF(rfId, CAN_BUS_TYPE, MOTOR_TYPE),
-                                                                   LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE), i2c(I2C_SDA, I2C_SCL), imu(i2c, IMU_RESET, MODE_IMU){
+                                                                   LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE), i2c(I2C_SDA, I2C_SCL), imu(i2c, IMU_RESET, MODE_IMU), ukf() {
     LF.outCap = 16000;
     RF.outCap = 16000;
     LB.outCap = 16000;
@@ -75,6 +75,11 @@ void Chassis::setMotorSpeedRPM(int index, double speed) {
 
 // Math comes from this paper: https://research.ijcaonline.org/volume113/number3/pxc3901586.pdf
 void Chassis::driveXYR(double xVelocityRPM, double yVelocityRPM, double rotationVelocityRPM) {
+    double squareRoot = sqrt(xVelocityRPM * xVelocityRPM + yVelocityRPM * yVelocityRPM);
+    squareRoot *= 4;
+    if (squareRoot > 1) {
+        rotationVelocityRPM /= squareRoot;
+    }
     setMotorSpeedRPM(0,
                      (xVelocityRPM + yVelocityRPM + rotationVelocityRPM)
     );
@@ -161,4 +166,6 @@ void Chassis::initializeImu() {
 
 void Chassis::readImu() {
     imu.get_angular_position_quat(&imuAngles);
+
+    printf("Yaw: %i\n", (int) imuAngles.yaw);
 }

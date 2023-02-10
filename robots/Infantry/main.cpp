@@ -101,6 +101,8 @@ int main()
         if(timeStart - loopTimer > 25){
             loopTimer = timeStart;
 
+//            printf("RS: %i\n", rS);
+
             // refLoop++;
             // if(refLoop > 25){
             //     //refereeThread();
@@ -110,6 +112,7 @@ int main()
             // }
 //            printf("A %i B %i\n", rS, lS);
             if (!sticksMoved) {
+//                printf("NOT MOVED!\n");
                 chassis.driveXYR(0,0,0);
                 if ((prevLS != 0 && lS != prevLS )|| (prevRS != 0 && rS != prevRS)) {
                     sticksMoved = true;
@@ -119,6 +122,7 @@ int main()
                 }
             } else if(rS == 1){ // All non-serializer motors activated
                 int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
+//                printf("STICKS: %i %i %i\n", lX, lY, rX);
                 chassis.driveFieldRelative(lX / 500.0, lY / 500.0, rX / 500.0);
 
                 pitch.setPosition((rY / 2) + 1500);
@@ -131,7 +135,7 @@ int main()
                 chassis.driveXYR(0,0,0);
                 // yaw.setPower(0); pitch.setPower(0);
             }else if(rS == 3){ // beyblade mode
-                chassis.beyblade(lX / 500.0, lY / 500.0, true);
+                chassis.beyblade(lX / 500.0, lY / 500.0, false);
                 yaw.setPower(0); pitch.setPower(0);
             }
 
