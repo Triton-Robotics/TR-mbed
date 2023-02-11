@@ -13,13 +13,15 @@ The following setup guide is written assuming Ubuntu. This setup guide is applic
 operating systems, but may take additional setup (i.e. WSL for Windows, or HomeBrew for MacOS).
 
 ```shell
-sudo apt install    \
-  build-essential   \
-  cmake             \
-  python3-dev       \
-  python3-pip       \
-  gcc-arm-none-eabi \
-  openocd           \
+sudo apt install                  \
+  build-essential                 \
+  cmake                           \
+  python3-dev                     \
+  python3-pip                     \
+  gcc-arm-none-eabi               \
+  libnewlib-arm-none-eabi         \
+  libstdc++-arm-none-eabi-newlib  \
+  openocd                         \
   ninja-build
 ```
 

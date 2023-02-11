@@ -3,6 +3,7 @@
 projectfiles
 *.py*
 .idea/
+.vscode
 
 BUILD
 mbed-os/
