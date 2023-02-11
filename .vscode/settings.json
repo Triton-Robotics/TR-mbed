@@ -1,0 +1,8 @@
+{
+    "cmake.configureArgs": [
+        "-GNinja"
+    ],
+    "cmake.buildArgs": [
+        "-j 16"
+    ]
+}
