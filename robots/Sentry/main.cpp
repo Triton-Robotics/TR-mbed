@@ -1,13 +1,24 @@
 //
 // Created by ankit on 1/30/23.
 //
-#include <algorithms/PID.h>
-#include <motor/DJIMotor.h>
+#include <jetson.h>
+
 int main(){
 
-    DigitalOut led(LED1);
+    int i = 0;
+
+    DigitalIn button(BUTTON1);
+
+    Jetson::init();
+
     while(true){
-        led = !led;
-        ThisThread::sleep_for(500ms);
+
+        if (button){
+            i++;
+        }
+
+        Jetson::set(Jetson::CVDatatype::TeamColor, i);
     }
+
+    Jetson::free();
 }

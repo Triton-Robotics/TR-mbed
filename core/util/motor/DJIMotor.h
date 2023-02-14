@@ -57,10 +57,10 @@ enum motorType {
 class DJIMotor {
 
 private:
-    double defaultGimblyPosSettings[5] = {10.88,1.2,18.9,8000,500};
-    double defautlGimblySpeedSettings[5] = {0.13, 8.8, 0, 25000, 1000};
-    double defautM3508PosSettings[5] = {.48, 0.0137, 4.2, 3000, 300};
-    double defautM3508SpeedSettings[5] = {1.79, 0.27, 10.57, 15000, 500};
+    float defaultGimblyPosSettings[5] = {10.88,1.2,18.9,8000,500};
+    float defautlGimblySpeedSettings[5] = {0.13, 8.8, 0, 25000, 1000};
+    float defautM3508PosSettings[5] = {.48, 0.0137, 4.2, 3000, 300};
+    float defautM3508SpeedSettings[5] = {1.79, 0.27, 10.57, 15000, 500};
 
     enum motorMoveMode{
         OFF = 0,
@@ -112,7 +112,7 @@ public:
     int value = 0;
     int16_t powerOut;
 
-    bool conflict; //check for a conflict when running motors
+    bool conflict{}; //check for a conflict when running motors
 
     unsigned long lastTime = 0;
 
@@ -138,7 +138,7 @@ public:
     static void feedbackThread();
     static void sendThread();
     static void sendValues();
-    static void tick(bool debug = false, bool printFeedback = false);
+    static void tick();
 
     int getValue();
     int getPowerOut();

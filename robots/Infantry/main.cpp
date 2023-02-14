@@ -28,6 +28,9 @@ unsigned long forwardTime = 250;
 unsigned long reverseTime = 300;
 unsigned long totalTime;
 
+bool sticksMoved = false;
+int prevRS = 0, prevLS = 0;
+
 PWMMotor RFLYWHEEL(D12); PWMMotor LFLYWHEEL(D11);
 PWMMotor flyWheelMotors[] = {RFLYWHEEL, LFLYWHEEL};
 
@@ -36,8 +39,20 @@ void setFlyWheelPwr(int pwr) {
         flyWheelMotors[i].set(pwr);
 }
 
+Thread imuThread;
+
+void runImuThread() {
+    chassis.initializeImu();
+    while (true) {
+        chassis.readImu();
+        ThisThread::sleep_for(25);
+    }
+
+}
+
 int main()
 {
+    imuThread.start(runImuThread);
     float speedmultiplier = 3;
     float powmultiplier = 2;
     float translationalmultiplier = 1.5; // was 3
@@ -63,7 +78,6 @@ int main()
     indexer.setSpeedIntegralCap(500000);
 
     chassis.setBrakeMode(Chassis::COAST);
-    chassis.initializeImu();
 
     unsigned long loopTimer = us_ticker_read() / 1000;
 
@@ -87,8 +101,6 @@ int main()
         if(timeStart - loopTimer > 25){
             loopTimer = timeStart;
 
-            chassis.readImu();
-
             // refLoop++;
             // if(refLoop > 25){
             //     //refereeThread();
@@ -96,8 +108,16 @@ int main()
             //     //led = ext_power_heat_data.data.chassis_power > 0;
             //     //printf("%d\n",ext_power_heat_data.data.chassis_power);
             // }
-
-            if(rS == 1){ // All non-serializer motors activated
+//            printf("A %i B %i\n", rS, lS);
+            if (!sticksMoved) {
+                chassis.driveXYR(0,0,0);
+                if ((prevLS != 0 && lS != prevLS )|| (prevRS != 0 && rS != prevRS)) {
+                    sticksMoved = true;
+                } else {
+                    prevLS = lS;
+                    prevRS = rS;
+                }
+            } else if(rS == 1){ // All non-serializer motors activated
                 int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
                 chassis.driveFieldRelative(lX / 500.0, lY / 500.0, rX / 500.0);
 

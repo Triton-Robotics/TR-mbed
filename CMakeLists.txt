@@ -10,6 +10,12 @@ if (DISABLE_WARNINGS)
     add_compile_options(-w)
 endif()
 
+# Setup CMake for the target device
+execute_process(
+        COMMAND mbed-tools configure -m NUCLEO_F446RE -t GCC_ARM
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
 # mbed variables
 set(MBED_PATH ${CMAKE_CURRENT_SOURCE_DIR}/mbed-os CACHE INTERNAL "")
 set(MBED_CONFIG_PATH ${CMAKE_CURRENT_BINARY_DIR} CACHE INTERNAL "")
@@ -24,12 +30,13 @@ add_subdirectory(${MBED_PATH})
 
 link_libraries(mbed-os)
 
-add_subdirectory(core)
-link_libraries(TR-core)
-
 if (USE_MICRO_ROS)
     add_subdirectory(micro-ros)
+    link_libraries(TR-jetson)
 endif()
+
+add_subdirectory(core)
+link_libraries(TR-core)
 
 add_subdirectory(robots)
 

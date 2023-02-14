@@ -45,3 +45,25 @@ can handle, which can be found via the `nproc` command.
    You will be prompted to choose a target, as shown below:
 
 ![vscode_8.png](.assets/vscode_8.png)
+
+8. I have not found a good VSCode plugin to flash an STM32 board via `OpenOCD`. I encourage VSCode users to append the
+necessary instructions to this guide. For now, I recommend flashing the board via the command line:
+
+```shell
+openocd -f board/st_nucleo_f4.cfg -c "program cmake_build/NUCLEO_F446RE/develop/GCC_ARM/robots/Sentry/TR-Sentry.elf verify reset exit"
+
+mbed-tools sterm -b 115200
+```
+
+If OpenOCD fails with the error `Error: libusb_open() failed with LIBUSB_ERROR_ACCESS`, you may need to add a `udev` rule
+to allow OpenOCD to access the ST-Link programmer:
+
+```shell
+cd /etc/udev/rules.d
+
+# Download openocd udev rules
+sudo wget https://raw.githubusercontent.com/openocd-org/openocd/master/contrib/60-openocd.rules
+
+# Reload udev rules
+sudo udevadm control --reload
+```

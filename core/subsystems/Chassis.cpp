@@ -91,7 +91,7 @@ void Chassis::driveXYR(double xVelocityRPM, double yVelocityRPM, double rotation
 
 void Chassis::driveFieldRelative(double xVelocityRPM, double yVelocityRPM, double rotationVelocityRPM) {
     double robotHeading = imuAngles.yaw * PI / 180.0;
-    driveOffsetAngle(xVelocityRPM, yVelocityRPM, rotationVelocityRPM, -robotHeading);
+    driveOffsetAngle(xVelocityRPM, yVelocityRPM, rotationVelocityRPM, robotHeading);
 }
 
 /**
@@ -157,7 +157,6 @@ void Chassis::setBrakeMode(BrakeMode brakeMode) {
 
 void Chassis::initializeImu() {
     imu.set_mounting_position(MT_P1);
-    imu.read_id_inf(&bno055_id_inf);
 }
 
 void Chassis::readImu() {
