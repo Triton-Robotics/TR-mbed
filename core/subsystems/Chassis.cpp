@@ -1,16 +1,8 @@
 #include "Chassis.h"
 #include <math.h>
 
-#define SECONDS_PER_MINUTE 60
-#define TICKS_PER_ROTATION 8096.0
-#define M3508_GEAR_RATIO 19.0
-
-#define CAN_BUS_TYPE CANHandler::CANBUS_1
-#define MOTOR_TYPE M3508
-#define INPUT_THRESHOLD 0.01
-
 Chassis::Chassis(short lfId, short rfId, short lbId, short rbId) : LF(lfId, CAN_BUS_TYPE, MOTOR_TYPE), RF(rfId, CAN_BUS_TYPE, MOTOR_TYPE),
-                                                                   LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE), i2c(I2C_SDA, I2C_SCL), imu(i2c, IMU_RESET, MODE_IMU), ukf() {
+                                                                   LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE), i2c(I2C_SDA, I2C_SCL), imu(i2c, IMU_RESET, MODE_IMU), chassisKalman() {
     LF.outCap = 16000;
     RF.outCap = 16000;
     LB.outCap = 16000;
@@ -29,6 +21,11 @@ double Chassis::rpmToTicksPerSecond(double RPM) {
 
 double Chassis::ticksPerSecondToRPM(double ticksPerSecond) {
     return ticksPerSecond * SECONDS_PER_MINUTE / (TICKS_PER_ROTATION * M3508_GEAR_RATIO);
+}
+
+double Chassis::ticksPerSecondToInchesPerSecond(double ticksPerSecond) {
+    double result = ticksPerSecond / (TICKS_PER_ROTATION * M3508_GEAR_RATIO) * WHEEL_DIAMETER_INCHES * PI;
+    return result;
 }
 
 void Chassis::setMotorPower(int index, double power) {
@@ -71,6 +68,10 @@ void Chassis::setMotorSpeedTicksPerSecond(int index, double speed) {
 
 void Chassis::setMotorSpeedRPM(int index, double speed) {
     setMotorSpeedTicksPerSecond(index, rpmToTicksPerSecond(speed));
+}
+
+double Chassis::getMotorSpeedRPM(int index) {
+    return ticksPerSecondToRPM(getMotor(index).getData(VELOCITY));
 }
 
 // Math comes from this paper: https://research.ijcaonline.org/volume113/number3/pxc3901586.pdf
@@ -164,8 +165,42 @@ void Chassis::initializeImu() {
     imu.set_mounting_position(MT_P1);
 }
 
+void Chassis::periodic() {
+    double z[5] = {0, 0, 0, 0, 0};
+    z[0] = ticksPerSecondToInchesPerSecond(LF.getData(VELOCITY));
+    z[1] = ticksPerSecondToInchesPerSecond(RF.getData(VELOCITY));
+    z[2] = ticksPerSecondToInchesPerSecond(LB.getData(VELOCITY));
+    z[3] = ticksPerSecondToInchesPerSecond(RB.getData(VELOCITY));
+    z[4] = imuAngles.yaw;
+    int currTime = us_ticker_read() / 1000;
+    if (lastTimeMs != 0) {
+        chassisKalman.setDt((currTime - lastTimeMs) / 1000.0);
+    }
+    lastTimeMs = currTime;
+    chassisKalman.step(z);
+//    printf("TMP: %i\n", (int) (1000 * x));
+//    printf("Z: %i %i %i %i\n", (int) (100 * z[0]), (int) (100 * z[1]), (int) z[2], (int) z[3]);
+
+    printf("X pos: %i\n", (int) (1000 * chassisKalman.getX(0)));
+}
+
 void Chassis::readImu() {
     imu.get_angular_position_quat(&imuAngles);
+//    imuAngles.yaw += (rand() % 20 - 10);
 
-    printf("Yaw: %i\n", (int) imuAngles.yaw);
+//
+
+//    int currTime = us_ticker_read() / 1000;
+//    if (lastTimeMs != 0) {
+//        testAngle += LF.getData(VELOCITY) * (currTime - lastTimeMs) / ((double) TICKS_PER_ROTATION * M3508_GEAR_RATIO);
+//    }
+//    lastTimeMs = currTime;
+//
+//    printf("Dist: %i\n", (int) testAngle);
+
+//    BNO055_VECTOR_TypeDef imuGyro;
+//    imu.get_gyro(&imuGyro);
+//    printf("XYZ: %i\n", (int) imuGyro.x);
+
+//    printf("Measurement: %i Prediction: %i\n", (int) imuAngles.yaw, (int) imuKalman.getX(0));
 }

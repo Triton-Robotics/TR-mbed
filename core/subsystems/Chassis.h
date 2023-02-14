@@ -8,6 +8,7 @@
 #include <motor/DJIMotor.h>
 #include <communications/CANHandler.h>
 #include <peripherals/imu/BNO055.h>
+#include <subsystems/ChassisKalman.h>
 
 #define I2C_SDA PB_9
 #define I2C_SCL PB_8
@@ -38,6 +39,8 @@ public:
     void initializeImu();
     void readImu();
 
+    void periodic();
+
     int8_t isInverted[4];
 
 private:
@@ -52,10 +55,17 @@ private:
 
     double rpmToTicksPerSecond(double RPM);
     double ticksPerSecondToRPM(double ticksPerSecond);
+    double ticksPerSecondToInchesPerSecond(double ticksPerSecond);
 
     void setMotorPower(int index, double power);
     void setMotorSpeedRPM(int index, double speed);
     void setMotorSpeedTicksPerSecond(int index, double speed);
+
+    double getMotorSpeedRPM(int index);
+
+    ChassisKalman chassisKalman;
+    double testAngle;
+    int lastTimeMs;
 };
 
 #endif //TR_EMBEDDED_CHASSIS_H

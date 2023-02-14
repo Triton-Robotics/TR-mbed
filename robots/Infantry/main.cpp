@@ -124,7 +124,7 @@ int main()
                 int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
 //                printf("STICKS: %i %i %i\n", lX, lY, rX);
                 chassis.driveFieldRelative(lX / 500.0, lY / 500.0, rX / 500.0);
-
+//                chassis.periodic();
                 pitch.setPosition((rY / 2) + 1500);
                 // yaw.setSpeed(rX/100);
                 yawSetpoint -= rX / 10.0;
@@ -141,7 +141,7 @@ int main()
 
             if (lS == 3) {
                 //indexer.setPower(1200);
-                indexer.setSpeed(4500);
+                indexer.setSpeed(6500);
                 setFlyWheelPwr(40);
 
             }else if(lS == 2){ //disable serializer
@@ -156,14 +156,15 @@ int main()
                     indexJamTime = us_ticker_read() /1000;
                 }
                 if(us_ticker_read() / 1000 - indexJamTime < 1000){
-                    indexer.setPower(-14000); //jam
+                    indexer.setPower(-3000); //jam
                     //printf("JAMMMMM- ");
                 }else if(us_ticker_read() / 1000 - indexJamTime < 1500){
-                    indexer.setPower(9000); //jam
+//                    indexer.setPower(3000); //jam
+                  indexer.setPower(0);
                     //printf("POWER FORWARD- ");
                 }else{
                     //indexer.setPower(-900);   
-                    indexer.setSpeed(4500);
+                    indexer.setSpeed(6500);
                 }
                 LFLYWHEEL.set(40); RFLYWHEEL.set(40);
             }
