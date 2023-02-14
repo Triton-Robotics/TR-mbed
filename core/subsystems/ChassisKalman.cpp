@@ -8,12 +8,19 @@
 ChassisKalman::ChassisKalman() {        // Process noise
     this->dt = 0;
 
-    this->setQ(0, 0, 0.001);
-    this->setQ(1, 1, 0.001);
-    this->setQ(2, 2, 0.001);
-    this->setQ(3, 3, 0.001);
-    this->setQ(4, 4, 0.001);
-    this->setQ(5, 5, 0.001);
+    this->setP(0, 0, 0.01);
+    this->setP(1, 1, 0.01);
+    this->setP(2, 2, 0.01);
+    this->setP(3, 3, 0.01);
+    this->setP(4, 4, 0.01);
+    this->setP(5, 5, 0.01);
+
+    this->setQ(0, 0, 0.01);
+    this->setQ(1, 1, 0.01);
+    this->setQ(2, 2, 0.01);
+    this->setQ(3, 3, 0.01);
+    this->setQ(4, 4, 0.01);
+    this->setQ(5, 5, 0.01);
 
     // Measurement noise
     this->setR(0, 0, 1);
@@ -41,18 +48,20 @@ void ChassisKalman::model(double fx[Nsta], double F[Nsta][Nsta], double hx[Mobs]
     fx[4] = x[4] + dt * x[5];
     fx[5] = x[5];
     
-//    printf("X: %i %i %i %i %i\n", (int) (x[0] * 1000), (int) (x[1] * 1000), (int) (x[2] * 1000), (int) (x[3] * 1000), (int) (x[4] * 1000));
+//    printf("X: %i %i %i %i %i %i\n", (int) (x[0] * 1000), (int) (x[1] * 1000), (int) (x[2] * 1000), (int) (x[3] * 1000), (int) (x[4] * 1000), (int) (x[5] * 1000));
 
     // Jacobian of process model function
     F[0][0] = 1;
-    F[1][0] = dt;
+    F[0][1] = dt;
     F[1][1] = 1;
     F[2][2] = 1;
-    F[3][2] = dt;
+    F[2][3] = dt;
     F[3][3] = 1;
     F[4][4] = 1;
-    F[5][4] = dt;
+    F[4][5] = dt;
     F[5][5] = 1;
+
+//    printf("Prev states: %i %i %i %I %I\n", (int) x[4] * 10);
 
     double cosAngle = cos(x[4]);
     double sinAngle = sin(x[4]);

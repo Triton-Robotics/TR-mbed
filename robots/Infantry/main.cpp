@@ -124,7 +124,7 @@ int main()
                 int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
 //                printf("STICKS: %i %i %i\n", lX, lY, rX);
                 chassis.driveFieldRelative(lX / 500.0, lY / 500.0, rX / 500.0);
-//                chassis.periodic();
+                chassis.periodic();
                 pitch.setPosition((rY / 2) + 1500);
                 // yaw.setSpeed(rX/100);
                 yawSetpoint -= rX / 10.0;
