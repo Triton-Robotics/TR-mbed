@@ -71,6 +71,7 @@ private:
     };
 
     static DJIMotor* allMotors[CAN_HANDLER_NUMBER][3][4];
+    long int lastCalled[CAN_HANDLER_NUMBER][3][4] = {0};
 
     //static int y;
 
