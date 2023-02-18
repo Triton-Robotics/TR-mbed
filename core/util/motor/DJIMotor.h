@@ -72,7 +72,7 @@ private:
 
     static DJIMotor* allMotors  [CAN_HANDLER_NUMBER][3][4];
     static bool motorsExist     [CAN_HANDLER_NUMBER][3][4];
-    long int lastCalled         [CAN_HANDLER_NUMBER][3][4] = {0};
+    static long int lastCalled  [CAN_HANDLER_NUMBER][3][4];
 
 
 
@@ -124,6 +124,8 @@ public:
     static void sendOneID(CANHandler::CANBus bus, short sendIDindex, bool debug = false);
     static void getFeedback();
 
+    __attribute__((unused)) static bool checkConnection();
+
     static void tickThread();
     static void feedbackThread();
     static void sendThread();
@@ -131,7 +133,8 @@ public:
     static void tick();
 
     int getValue();
-    int getPowerOut();
+
+    __attribute__((unused)) int getPowerOut() const;
     int getData(motorDataType data);
 
     void setValue(int val);
@@ -139,7 +142,8 @@ public:
     void setPower(int power);
     void setSpeed(int speed);
     void setPosition(int position);
-    void zeroPos();
+
+    __attribute__((unused)) void zeroPos();
 
     void printAllMotorData();
 
