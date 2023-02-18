@@ -316,7 +316,7 @@ bool DJIMotor::checkConnection(){
         for(int r = 0; r < 3; r++)
             for(int c = 0; c < 4; c++)
                 if(motorsExist[bus][r][c])
-                    if(us_ticker_read() / 1000 - lastCalled[bus][r][c] > 1000)
+                    if(us_ticker_read() / 1000 - lastCalled[bus][r][c] > TIMEOUT_MS)
                         return false;
     return true;
 }

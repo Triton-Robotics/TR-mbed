@@ -1,11 +1,16 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "misc-unconventional-assign-operator"
 //
 // Created by ankit on 1/31/23.
 //
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
 #ifndef TR_EMBEDDED_DJIMOTOR_H
 #define TR_EMBEDDED_DJIMOTOR_H
 
-#define CAN_HANDLER_NUMBER 2 //Number of can handlers
+#define CAN_HANDLER_NUMBER 2            //Number of can handlers
+#define TIMEOUT_MS 1000                 //timeout for motor feedback
 
 #include "mbed.h"
 #include "algorithms/PID.h"
@@ -47,7 +52,7 @@ enum motorType {
     M3508 = 3,
     //keep in mind that in the constructor, this is only used to
     //set the default pid values and gear ratio. The motortype will
-    //be changed to STANDARD, because thats what the code uses.
+    //be changed to STANDARD, because that's what the code uses.
 
     GIMBLY = 2, //Gimblyyyyyyyyyy
     GM6020 = 2
@@ -114,11 +119,11 @@ public:
     static bool feedbackDebug;
 
     // user methods
-    DJIMotor(bool isErroneousMotor = false);
+    explicit DJIMotor(bool isErroneousMotor = false);
     DJIMotor(short canID, CANHandler::CANBus bus, motorType mType = STANDARD);
     ~DJIMotor();
 
-    static void printChunk(CANHandler::CANBus bus, short sendID, motorDataType data = POWEROUT);
+    // static void printChunk(CANHandler::CANBus bus, short sendID, motorDataType data = POWEROUT);
     static void setCANHandlers(CANHandler* bus_1, CANHandler* bus_2, bool threadSend = true, bool threadFeedback = true);
     static void updateMultiTurnPosition();
     static void sendOneID(CANHandler::CANBus bus, short sendIDindex, bool debug = false);
@@ -132,7 +137,7 @@ public:
     static void sendValues();
     static void tick();
 
-    int getValue();
+    //int getValue();
 
     __attribute__((unused)) int getPowerOut() const;
     int getData(motorDataType data);
@@ -150,16 +155,18 @@ public:
     void operator=(int value);
     int operator>>(motorDataType data);
 
-
     inline void setPositionPID(float kP, float kI, float kD)    { pidPosition.setPID(kP, kI, kD); }
-    inline void setPositionIntegralCap(double cap)              { pidPosition.setIntegralCap(cap); }
-    inline void setPositionOutputCap(double cap)                { pidPosition.setOutputCap(cap); }
+    inline void setPositionIntegralCap(double cap)              { pidPosition.setIntegralCap((float)cap); }
+    inline void setPositionOutputCap(double cap)                { pidPosition.setOutputCap((float)cap); }
 
     inline void setSpeedPID(float kP, float kI, float kD)       { pidSpeed.setPID(kP, kI, kD); }
-    inline void setSpeedIntegralCap(double cap)                 { pidSpeed.setIntegralCap(cap); }
-    inline void setSpeedOutputCap(double cap)                   { pidSpeed.setOutputCap(cap); }
+    inline void setSpeedIntegralCap(double cap)                 { pidSpeed.setIntegralCap((float)cap); }
+    inline void setSpeedOutputCap(double cap)                   { pidSpeed.setOutputCap((float)cap); }
 
 };
 
 
 #endif //TR_EMBEDDED_DJIMOTOR_H
+
+#pragma clang diagnostic pop
+#pragma clang diagnostic pop
