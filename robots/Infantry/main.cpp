@@ -1,4 +1,5 @@
 #include "main.h"
+#include "Infantry.h"
 #include <cstdlib>
 
 #define PI 3.14159265
@@ -137,7 +138,7 @@ int main()
 
             if (lS == 3) {
                 //indexer.setPower(1200);
-                indexer.setSpeed(4500);
+                indexer.setPower(16000);
                 setFlyWheelPwr(40);
 
             }else if(lS == 2){ //disable serializer
