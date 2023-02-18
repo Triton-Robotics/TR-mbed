@@ -30,9 +30,9 @@ DJIMotor::DJIMotor(short canID, CANHandler::CANBus bus, motorType mType){
 
     motorNumber = canID - 1;
     canBus = bus;
-    value = 0;
-
     type = mType;
+
+    value = 0;
 
     if(type == GM6020){
         motorNumber += 4;
@@ -43,6 +43,7 @@ DJIMotor::DJIMotor(short canID, CANHandler::CANBus bus, motorType mType){
         pidPosition.setPID(defaultGimblyPosSettings[0],defaultGimblyPosSettings[1],defaultGimblyPosSettings[2]);
         pidPosition.setOutputCap(defaultGimblyPosSettings[3]);
         pidPosition.setIntegralCap(defaultGimblyPosSettings[4]);
+
     }else if(type == M3508){
         pidSpeed.setPID(defautM3508SpeedSettings[0],defautM3508SpeedSettings[1],defautM3508SpeedSettings[2]);
         pidSpeed.setOutputCap(defautM3508SpeedSettings[3]);
@@ -53,18 +54,14 @@ DJIMotor::DJIMotor(short canID, CANHandler::CANBus bus, motorType mType){
         pidPosition.setIntegralCap(defautM3508PosSettings[4]);
     }
 
-    //printf("sendID:%d,0x%x\n",motorNumber/4,sendIDs[motorNumber/4]);
-    //printf("sendSlot:%d\n",motorNumber%4);
+    if(!motorsExist [bus][motorNumber / 4][motorNumber % 4]){
+        allMotors   [bus][motorNumber / 4][motorNumber % 4] = this;
+        motorsExist [bus][motorNumber / 4][motorNumber % 4] = true;
 
-    //printf("allMotors[bus][%d][%d]-> = %d\n",motorNumber/4,motorNumber%4, allMotors[bus][motorNumber/4][motorNumber%4]);
-
-    if(!motorsExist[bus][motorNumber / 4][motorNumber % 4] /**allMotors[bus][motorNumber/4][motorNumber%4]->motorNumber == -1**/){
-        allMotors[bus][motorNumber / 4][motorNumber % 4] = this;
-        motorsExist[bus][motorNumber / 4][motorNumber % 4] = true;
     }else{
         DJIMotor mot(true);
         allMotors[bus][motorNumber / 4][motorNumber % 4] = &mot;
-        printf("[ERROR] THERES A CONFLICT ON BUS [%d] ID [%d]. YOU WILL HAVE ERRORS.\n",motorNumber/4, motorNumber%4);
+        printf("[ERROR] THERES A CONFLICT ON BUS [%d] ID [%d]. YOU WILL HAVE ERRORS.\n", motorNumber/4, motorNumber%4);
     }
 
 
@@ -311,13 +308,16 @@ void DJIMotor::getFeedback(){
                 allMotors[i][mNum/4][mNum%4]->motorData[VELOCITY] = (recievedBytes[2]<<8) | recievedBytes[3];
                 allMotors[i][mNum/4][mNum%4]->motorData[TORQUE] = (recievedBytes[4]<<8) | recievedBytes[5];
                 allMotors[i][mNum/4][mNum%4]->motorData[TEMPERATURE] = ((int16_t) recievedBytes[6]);
+
                 if(feedbackDebug)
                     allMotors[i][mNum/4][mNum%4]->printAllMotorData();
+
                 allMotors[i][mNum/4][mNum%4]->timeSinceLastFeedback = us_ticker_read() / 1000 - allMotors[i][mNum/4][mNum%4]->timeOfLastFeedback;
                 allMotors[i][mNum/4][mNum%4]->timeOfLastFeedback = us_ticker_read() / 1000;
-                if(allMotors[i][mNum/4][mNum%4]->motorData[TEMPERATURE] > 40){
+
+                if(allMotors[i][mNum/4][mNum%4]->motorData[TEMPERATURE] > 40)
                     printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS %d DEGREES CELSIUS\n",msgID,allMotors[i][mNum/4][mNum%4]->motorData[TEMPERATURE]);
-                }
+
             }else{
                 // printf("[WARNING] YOU HAVE A MOTOR [0x%x] {%d}{%d} ATTACHED THAT IS NOT INITIALIZED.. WHY: \n",msgID,mNum/4,mNum%4);
             }

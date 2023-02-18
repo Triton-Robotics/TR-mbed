@@ -70,36 +70,27 @@ private:
         ERR = 4
     };
 
-    static DJIMotor* allMotors[CAN_HANDLER_NUMBER][3][4];
-    long int lastCalled[CAN_HANDLER_NUMBER][3][4] = {0};
+    static DJIMotor* allMotors  [CAN_HANDLER_NUMBER][3][4];
+    static bool motorsExist     [CAN_HANDLER_NUMBER][3][4];
+    long int lastCalled         [CAN_HANDLER_NUMBER][3][4] = {0};
 
-    //static int y;
 
-    //CANMotor* CANMotor::allMotors[];
 
     static CANHandler* canHandlers[CAN_HANDLER_NUMBER];
-    //static NewCANHandler canHandlers[CAN_HANDLER_NUMBER];
+    short motorNumber;                                          // canID - 1, because canID is 1-8, arrays are 0-7
+    int gearRatio = 1;                                          //the gear ratio of the motor to encoder
 
-    static bool motorsExist[CAN_HANDLER_NUMBER][3][4];
-
-    short motorNumber; //the number of motor this is, canID - 1, because canID is 1-8, arrays are 0-7
-
-    int gearRatio = 1; //the gear ratio of the motor to encoder
-
-    CANHandler::CANBus canBus = CANHandler::NOBUS; //the CANBus this motor is on
-
-    motorType type = NONE; //mode of the motor
-
-    motorMoveMode mode = OFF; //mode of the motor
+    CANHandler::CANBus canBus = CANHandler::NOBUS;              //the CANBus this motor is on
+    motorType type = NONE;                                      //mode of the motor
+    motorMoveMode mode = OFF;                                   //mode of the motor
 
     unsigned long timeOfLastFeedback = 0;
     unsigned long timeOfLastPID = 0;
 
 public:
+
     unsigned long timeSinceLastFeedback = 0;
-
     int maxSpeed = 8723;
-
     int bounds[2] = {0,0};
 
     //angle | velocity | torque | temperature
@@ -113,14 +104,12 @@ public:
     int value = 0;
     int16_t powerOut;
 
-    bool conflict{}; //check for a conflict when running motors
-
+    bool conflict{};                                            //check for a conflict when running motors
     unsigned long lastTime = 0;
-
     int outCap = 16000;
 
-    bool useAbsEncoder = 0;
-    bool justPosError = 0;
+    bool useAbsEncoder = false;
+    bool justPosError = false;
     static bool sendDebug;
     static bool feedbackDebug;
 
