@@ -10,7 +10,7 @@
 #define TR_EMBEDDED_DJIMOTOR_H
 
 #define CAN_HANDLER_NUMBER 2            //Number of can handlers
-#define TIMEOUT_MS 1000                 //timeout for motor feedback
+#define TIMEOUT_MS 400                  //timeout for motor feedback
 
 #include "mbed.h"
 #include "algorithms/PID.h"

@@ -11,8 +11,10 @@
 #include "DJIMotor.h"
 
 DJIMotor* DJIMotor::allMotors[2][3][4];
-CANHandler* DJIMotor::canHandlers[2];
 bool DJIMotor::motorsExist[2][3][4];
+long int DJIMotor::lastCalled [CAN_HANDLER_NUMBER][3][4];
+
+CANHandler* DJIMotor::canHandlers[2];
 bool DJIMotor::sendDebug = false;
 bool DJIMotor::feedbackDebug = false;
 
@@ -311,13 +313,16 @@ void DJIMotor::getFeedback(){
 }
 
 bool DJIMotor::checkConnection(){
-
     for(int bus = 0; bus < CAN_HANDLER_NUMBER; bus++)
-        for(int r = 0; r < 3; r++)
-            for(int c = 0; c < 4; c++)
-                if(motorsExist[bus][r][c])
-                    if(us_ticker_read() / 1000 - lastCalled[bus][r][c] > TIMEOUT_MS)
+        for(int c = 0; c < 4; c++)
+            for(int r = 0; r < 3; r++)
+                if(motorsExist[bus][r][c]) {
+                    if (us_ticker_read() / 1000 - lastCalled[bus][r][c] > TIMEOUT_MS) {
+                        printf("Motor %d on bus: %d lost connection\n", c + 4 * r + 1, bus + 1);
+                        printf("Motor[%d][%d][%d]\n", bus, r, c);
                         return false;
+                    }
+                }
     return true;
 }
 
