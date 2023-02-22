@@ -110,7 +110,7 @@ int main()
             // }
 //            printf("A %i B %i\n", rS, lS);
 
-            if(DJIMotor::checkConnection()) {
+            if(DJIMotor::checkConnection(true)) {
                 if (!sticksMoved) {
                     chassis.driveXYR(0, 0, 0);
                     if ((prevLS != 0 && lS != prevLS) || (prevRS != 0 && rS != prevRS)) {
