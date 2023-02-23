@@ -277,7 +277,7 @@ void DJIMotor::getFeedback(){
         uint8_t recievedBytes[8] = {0,0,0,0,0,0,0,0};
         int msgID;
 
-        if(canHandlers[i]->getFeedback(&msgID,recievedBytes)) {
+        while(canHandlers[i]->getFeedback(&msgID,recievedBytes)) {
             int mNum = msgID - 0x201;
 
             // Debugging motorsExist array

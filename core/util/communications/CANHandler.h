@@ -58,7 +58,7 @@ class CANHandler{
             bool gotMsg = false;
             rxMsg.clear();
             rxMsg.len = 8;
-            while (can.read(rxMsg)) {
+            if (can.read(rxMsg)) {
                 int err = can.rderror();
                 if (err){
                     printf("[%d CAN Read Errors]\n", err);
