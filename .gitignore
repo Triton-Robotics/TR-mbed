@@ -3,6 +3,7 @@
 projectfiles
 *.py*
 .idea/
+.vscode
 
 BUILD
 mbed-os/
@@ -14,3 +15,4 @@ micro-ros/libmicroros.a
 micro-ros/micro_ros_dev
 micro-ros/micro_ros_src
 micro-ros/mbed_toolchain.cmake
+docs/

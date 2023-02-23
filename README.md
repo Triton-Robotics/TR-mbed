@@ -1,10 +1,10 @@
 ```
-  __________                        __             __
- /_  __/ __ \            ____ ___  / /_  ___  ____/ /
-  / / / /_/ /  ______   / __ `__ \/ __ \/ _ \/ __  / 
- / / / _, _/  /_____/  / / / / / / /_/ /  __/ /_/ /  
-/_/ /_/ |_|           /_/ /_/ /_/_.___/\___/\__,_/   
-                                                     
+  __________                        __             __   __   ___   ____ ___  _____
+ /_  __/ __ \            ____ ___  / /_  ___  ____/ /  / /  |__ \ / __ \__ \|__  /
+  / / / /_/ /  ______   / __ `__ \/ __ \/ _ \/ __  /  / /   __/ // / / /_/ / /_ < 
+ / / / _, _/  /_____/  / / / / / / /_/ /  __/ /_/ /  / /   / __// /_/ / __/___/ / 
+/_/ /_/ |_|           /_/ /_/ /_/_.___/\___/\__,_/  / /   /____/\____/____/____/  
+                                                   /_/                            
 ```
 
 ## Prerequisites
@@ -13,13 +13,15 @@ The following setup guide is written assuming Ubuntu. This setup guide is applic
 operating systems, but may take additional setup (i.e. WSL for Windows, or HomeBrew for MacOS).
 
 ```shell
-sudo apt install    \
-  build-essential   \
-  cmake             \
-  python3-dev       \
-  python3-pip       \
-  gcc-arm-none-eabi \
-  openocd           \
+sudo apt install                  \
+  build-essential                 \
+  cmake                           \
+  python3-dev                     \
+  python3-pip                     \
+  gcc-arm-none-eabi               \
+  libnewlib-arm-none-eabi         \
+  libstdc++-arm-none-eabi-newlib  \
+  openocd                         \
   ninja-build
 ```
 
