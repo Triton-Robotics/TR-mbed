@@ -1,6 +1,6 @@
 project(TR-core)
 
-add_library(${PROJECT_NAME} subsystems/ChassisKalman.cpp subsystems/ChassisKalman.h)
+add_library(${PROJECT_NAME} subsystems/ChassisKalman.cpp subsystems/ChassisKalman.h util/algorithms/WheelKalman.cpp util/algorithms/WheelKalman.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}

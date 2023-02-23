@@ -2,7 +2,7 @@
 #include <math.h>
 
 Chassis::Chassis(short lfId, short rfId, short lbId, short rbId) : LF(lfId, CAN_BUS_TYPE, MOTOR_TYPE), RF(rfId, CAN_BUS_TYPE, MOTOR_TYPE),
-                                                                   LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE), i2c(I2C_SDA, I2C_SCL), imu(i2c, IMU_RESET, MODE_IMU), chassisKalman() {
+                                                                   LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE), i2c(I2C_SDA, I2C_SCL), imu(i2c, IMU_RESET, MODE_IMU), wheelKalman() {
     LF.outCap = 16000;
     RF.outCap = 16000;
     LB.outCap = 16000;
@@ -16,11 +16,11 @@ Chassis::Chassis(short lfId, short rfId, short lbId, short rbId) : LF(lfId, CAN_
 }
 
 double Chassis::rpmToTicksPerSecond(double RPM) {
-    return RPM * TICKS_PER_ROTATION * M3508_GEAR_RATIO / SECONDS_PER_MINUTE;
+    return RPM * TICKS_PER_ROTATION / (M3508_GEAR_RATIO * SECONDS_PER_MINUTE);
 }
 
 double Chassis::ticksPerSecondToRPM(double ticksPerSecond) {
-    return ticksPerSecond * SECONDS_PER_MINUTE / (TICKS_PER_ROTATION * M3508_GEAR_RATIO);
+    return ticksPerSecond * SECONDS_PER_MINUTE * M3508_GEAR_RATIO / TICKS_PER_ROTATION;
 }
 
 double Chassis::ticksPerSecondToInchesPerSecond(double ticksPerSecond) {
@@ -67,7 +67,7 @@ void Chassis::setMotorSpeedTicksPerSecond(int index, double speed) {
 }
 
 void Chassis::setMotorSpeedRPM(int index, double speed) {
-    setMotorSpeedTicksPerSecond(index, rpmToTicksPerSecond(speed));
+    setMotorSpeedTicksPerSecond(index, speed);
 }
 
 double Chassis::getMotorSpeedRPM(int index) {
@@ -166,22 +166,26 @@ void Chassis::initializeImu() {
 }
 
 void Chassis::periodic() {
-    double z[5] = {0, 0, 0, 0, 0};
-    z[0] = ticksPerSecondToInchesPerSecond(LF.getData(VELOCITY));
-    z[1] = ticksPerSecondToInchesPerSecond(RF.getData(VELOCITY));
-    z[2] = ticksPerSecondToInchesPerSecond(LB.getData(VELOCITY));
-    z[3] = ticksPerSecondToInchesPerSecond(RB.getData(VELOCITY));
-    z[4] = imuAngles.yaw;
+//    double z[5] = {0, 0, 0, 0, 0};
+//    z[0] = ticksPerSecondToInchesPerSecond(LF.getData(VELOCITY));
+//    z[1] = ticksPerSecondToInchesPerSecond(RF.getData(VELOCITY));
+//    z[2] = ticksPerSecondToInchesPerSecond(LB.getData(VELOCITY));
+//    z[3] = ticksPerSecondToInchesPerSecond(RB.getData(VELOCITY));
+//    z[4] = imuAngles.yaw;
+    double z[1] = { 0 };
+    z[0] = rpmToTicksPerSecond(LF.getData(VELOCITY));
     int currTime = us_ticker_read() / 1000;
     if (lastTimeMs != 0) {
-        chassisKalman.setDt((currTime - lastTimeMs) / 1000.0);
+        wheelKalman.setDt((currTime - lastTimeMs) / 1000.0);
     }
     lastTimeMs = currTime;
-    chassisKalman.step(z);
+    wheelKalman.step(z);
 //    printf("TMP: %i\n", (int) (1000 * x));
 //    printf("Z: %i %i %i %i\n", (int) (100 * z[0]), (int) (100 * z[1]), (int) z[2], (int) z[3]);
 
-    printf("X pos: %i\n", (int) (1000 * chassisKalman.getX(0)));
+    printf("Kalman pos: %i\n", (int) wheelKalman.getX(0));
+    printf("Kalman velo: %i\n", (int) wheelKalman.getX(1));
+    printf("Multiturn: %i\n", (int) (LF.getData(MULTITURNANGLE) / M3508_GEAR_RATIO));
 }
 
 void Chassis::readImu() {
