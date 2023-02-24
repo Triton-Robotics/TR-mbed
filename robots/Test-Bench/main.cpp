@@ -12,14 +12,14 @@ DigitalOut led(LED1);
 void printCode(){
     while(1){
         MUTEX.lock();
-        printf("hi \n");
-        ThisThread::sleep_for(1s);
+        printf("%d\n",m3508_1.getData(TORQUE));
+        ThisThread::sleep_for(1);
         MUTEX.unlock();
     }
 }
 
 int main() 
-{   
+{  
     DJIMotor::setCANHandlers(&canHandler1,&canHandler2, false, false);
 
     Thread_print_code.start(printCode); 
@@ -35,13 +35,16 @@ int main()
 
             led = !led;
             remoteRead();
-            m3508_1.setPower(1000);
+
+            m3508_1.setPower(500);
             DJIMotor::sendValues();
         }
         unsigned long timeEnd = us_ticker_read() / 1000;
         DJIMotor::getFeedback();
-        ThisThread::sleep_for(1s);
+        ThisThread::sleep_for(1);
         countLoops ++;
         MUTEX.unlock();
+        
     }
 }
+
