@@ -96,82 +96,12 @@ int main()
         led = !led;
         remoteRead();
 
+        m3058_1
 
         unsigned long timeStart = us_ticker_read() / 1000;
         if(timeStart - loopTimer > 25){
             loopTimer = timeStart;
 
-            // refLoop++;
-            // if(refLoop > 25){
-            //     //refereeThread();
-            //     refLoop = 0;
-            //     //led = ext_power_heat_data.data.chassis_power > 0;
-            //     //printf("%d\n",ext_power_heat_data.data.chassis_power);
-            // }
-//            printf("A %i B %i\n", rS, lS);
-
-            if(DJIMotor::checkConnection(true)) {
-                if (!sticksMoved) {
-                    chassis.driveXYR(0, 0, 0);
-                    if ((prevLS != 0 && lS != prevLS) || (prevRS != 0 && rS != prevRS)) {
-                        sticksMoved = true;
-                    } else {
-                        prevLS = lS;
-                        prevRS = rS;
-                    }
-                } else if (rS == 1) { // All non-serializer motors activated
-                    int LFa = lY + lX * translationalmultiplier + rX, RFa =
-                            lY - lX * translationalmultiplier - rX, LBa = lY - lX * translationalmultiplier + rX, RBa =
-                            lY + lX * translationalmultiplier - rX;
-                    chassis.driveFieldRelative(lX / 500.0, lY / 500.0, rX / 500.0);
-
-//                    pitch.setPosition((rY / 2) + 1500);
-                    // yaw.setSpeed(rX/100);
-                    yawSetpoint -= rX / 10.0;
-//                    yaw.setPosition(yawSetpoint);
-
-
-                } else if (rS == 2) { //disable all the non-serializer components
-                    chassis.driveXYR(0, 0, 0);
-                    // yaw.setPower(0); pitch.setPower(0);
-                } else if (rS == 3) { // beyblade mode
-                    chassis.beyblade(lX / 500.0, lY / 500.0, true);
-//                    yaw.setPower(0);
-//                    pitch.setPower(0);
-                }
-
-                if (lS == 3) {
-                    //indexer.setPower(1200);
-                    indexer.setSpeed(4500);
-                    setFlyWheelPwr(40);
-
-                } else if (lS == 2) { //disable serializer
-                    indexer.setPower(0);
-                    setFlyWheelPwr(0);
-                } else if (lS == 1) {
-                    ///////////////////////////////////////////
-                    /// THEO SECTION OF CODE
-                    ///////////////////////////////////////////
-                    //printf("TORQ:%d VEL:%d\n",indexer.getData(TORQUE), indexer.getData(VELOCITY));
-                    if (abs(indexer.getData(TORQUE)) > 100 & abs(indexer.getData(VELOCITY)) < 20) { //jam
-                        indexJamTime = us_ticker_read() / 1000;
-                    }
-                    if (us_ticker_read() / 1000 - indexJamTime < 1000) {
-                        indexer.setPower(-14000); //jam
-                        //printf("JAMMMMM- ");
-                    } else if (us_ticker_read() / 1000 - indexJamTime < 1500) {
-                        indexer.setPower(9000); //jam
-                        //printf("POWER FORWARD- ");
-                    } else {
-                        //indexer.setPower(-900);
-                        indexer.setSpeed(4500);
-                    }
-                    LFLYWHEEL.set(40);
-                    RFLYWHEEL.set(40);
-                }
-
-            }else
-                chassis.driveXYR(0, 0, 0);
 
             DJIMotor::sendValues();
         }
