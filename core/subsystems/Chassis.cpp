@@ -2,7 +2,7 @@
 #include <math.h>
 
 Chassis::Chassis(short lfId, short rfId, short lbId, short rbId) : LF(lfId, CAN_BUS_TYPE, MOTOR_TYPE), RF(rfId, CAN_BUS_TYPE, MOTOR_TYPE),
-                                                                   LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE), i2c(I2C_SDA, I2C_SCL), imu(i2c, IMU_RESET, MODE_IMU), wheelKalman() {
+                                                                   LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE), i2c(I2C_SDA, I2C_SCL), imu(i2c, IMU_RESET, MODE_IMU), chassisKalman() {
     LF.outCap = 16000;
     RF.outCap = 16000;
     LB.outCap = 16000;
@@ -26,6 +26,10 @@ double Chassis::ticksPerSecondToRPM(double ticksPerSecond) {
 double Chassis::ticksPerSecondToInchesPerSecond(double ticksPerSecond) {
     double result = ticksPerSecond / (TICKS_PER_ROTATION * M3508_GEAR_RATIO) * WHEEL_DIAMETER_INCHES * PI;
     return result;
+}
+
+double Chassis::rpmToInchesPerSecond(double RPM) {
+    return RPM / (M3508_GEAR_RATIO * SECONDS_PER_MINUTE) * WHEEL_DIAMETER_INCHES * PI;
 }
 
 void Chassis::setMotorPower(int index, double power) {
@@ -166,26 +170,65 @@ void Chassis::initializeImu() {
 }
 
 void Chassis::periodic() {
-//    double z[5] = {0, 0, 0, 0, 0};
-//    z[0] = ticksPerSecondToInchesPerSecond(LF.getData(VELOCITY));
-//    z[1] = ticksPerSecondToInchesPerSecond(RF.getData(VELOCITY));
-//    z[2] = ticksPerSecondToInchesPerSecond(LB.getData(VELOCITY));
-//    z[3] = ticksPerSecondToInchesPerSecond(RB.getData(VELOCITY));
-//    z[4] = imuAngles.yaw;
-    double z[1] = { 0 };
-    z[0] = rpmToTicksPerSecond(LF.getData(VELOCITY));
-    int currTime = us_ticker_read() / 1000;
+    double z[5] = {0, 0, 0, 0, 0};
+    z[0] = rpmToInchesPerSecond(LF.getData(VELOCITY));
+    z[1] = rpmToInchesPerSecond(RF.getData(VELOCITY));
+    z[2] = rpmToInchesPerSecond(LB.getData(VELOCITY));
+    z[3] = rpmToInchesPerSecond(RB.getData(VELOCITY));
+    z[4] = imuAngles.yaw;
+//    double z[2] = { 0, 0 };
+//    double angle = wheelKalman.getX(0);
+//    z[1] = rpmToTicksPerSecond(LF.getData(VELOCITY)) * M3508_GEAR_RATIO;
+//    double measured = LF.getData(ANGLE);
+//    int MODULUS = 8192;
+//    z[0] = (measured + angle - ((int) angle) % MODULUS);
+  int currTime = us_ticker_read() / 1000;
     if (lastTimeMs != 0) {
-        wheelKalman.setDt((currTime - lastTimeMs) / 1000.0);
+        chassisKalman.setDt((currTime - lastTimeMs) / 1000.0);
     }
     lastTimeMs = currTime;
-    wheelKalman.step(z);
-//    printf("TMP: %i\n", (int) (1000 * x));
-//    printf("Z: %i %i %i %i\n", (int) (100 * z[0]), (int) (100 * z[1]), (int) z[2], (int) z[3]);
+    int power =  LF.getPowerOut() - 300;
+    chassisKalman.step(z);
 
-    printf("Kalman pos: %i\n", (int) wheelKalman.getX(0));
-    printf("Kalman velo: %i\n", (int) wheelKalman.getX(1));
-    printf("Multiturn: %i\n", (int) (LF.getData(MULTITURNANGLE) / M3508_GEAR_RATIO));
+//    int diff = (int) (z[1] - prevVel);
+//    if (diff != 0) {
+//        printf("%i\t%i\n",  LF.getPowerOut(), (int) (z[1] - prevVel));
+//    }
+//    prevVel = z[1];
+//printf("Power: %i\n", LF.getPowerOut());
+
+
+//    if (testDataIndex == 300) {
+//
+//    } else {
+//        testData[testDataIndex][0] = us_ticker_read() / 1000;
+//        testData[testDataIndex][1] = (int) (wheelKalman.getX(0) / M3508_GEAR_RATIO);
+//        testData[testDataIndex][2] = (int) (LF.getData(MULTITURNANGLE) / M3508_GEAR_RATIO);
+//        testData[testDataIndex][3] = (int) (z[1] / M3508_GEAR_RATIO);
+//        testDataIndex++;
+//    }
+
+    printf("%i\t%i\n", (int) z[2], (int) z[0]);
+
+
+//    printf("%i\t%i\n", (int) (wheelKalman.getX(0) / M3508_GEAR_RATIO), (int) (z[0] / M3508_GEAR_RATIO));
+//    printf("%i\t%i\n", (int) (wheelKalman.getX(1)), (int) ((z[1])));
+
+//    printf("Delta angle over delta t: %i\n", (int) ((LF.getData(ANGLE) - prevVel) / wheelKalman.dt));
+//    prevVel = measured;
+    //    printf("Measured: %i \t Estimate: %i\n", (int) measured, (int) (angle / M3508_GEAR_RATIO));
+//    printf("Velo measure: %i   estimate: %i\n", (int) z[1], (int) wheelKalman.getX(1));
+    //    printf("Kalman accel: %i\n", (int) wheelKalman.getX(1));
+//    printf("Multiturn: %i\n", (int) (LF.getData(MULTITURNANGLE) / M3508_GEAR_RATIO));
+//printf("TORQUE: %i\n", (int) LF.getData(TORQUE));
+//int torque = (int) LF.getData(TORQUE);
+//int result[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+//int16ToBitArray(torque, result);
+//printArray(result, 16);
+//printf("%i\t%i\n", (int) LF.getPowerOut(), torque);
+//for (int i = 0; i < 10; i++) {
+//    printf("Bit %i: %i\n", i, (torque >> i) % 2);
+//}
 }
 
 void Chassis::readImu() {

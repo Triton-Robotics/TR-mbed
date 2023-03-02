@@ -10,10 +10,18 @@ WheelKalman::WheelKalman() {
     this->setP(0, 0, 0.1);
     this->setP(1, 1, 0.1);
 
-    this->setQ(0, 0, 0.1);
-    this->setQ(1, 1, 0.1);
+    this->setQ(0, 0, 1);
+    this->setQ(1, 1, 1);
 
-    this->setR(0, 0, 1);
+
+    this->setR(0, 0, 4);
+//    this->setR(0, 1, 10);
+//    this->setR(1, 0, 10);
+    this->setR(1, 1, 4);
+
+    this->u[0] = 0;
+    this->B[0][0] = 0;
+    this->B[1][0] = 10;
 }
 
 void WheelKalman::setDt(double dt) {
@@ -24,6 +32,12 @@ void WheelKalman::model(double fx[Nsta], double F[Nsta][Nsta], double hx[Mobs], 
     // Process model/state transition function (previous states to current states)
     fx[0] = x[0] + dt * x[1];
     fx[1] = x[1];
+
+    for (int i = 0; i < Nsta; i++) {
+        for (int j = 0; j < ControlInputs; j++) {
+            fx[i] += B[i][j] * u[j];
+        }
+    }
 
 //    printf("DT: %i\n", (int) (1000 * dt));
 //    printf("X: %i %i\n", (int) (x[0]), (int) (x[1]));
@@ -36,9 +50,11 @@ void WheelKalman::model(double fx[Nsta], double F[Nsta][Nsta], double hx[Mobs], 
 //    printf("Prev states: %i %i %i %I %I\n", (int) x[4] * 10);
 
     // Measurement function
-    hx[0] = x[1];
+    hx[0] = x[0];
+    hx[1] = x[1];
 //    printf("H: %i %i %i %i\n", (int) (hx[0] * 1000), (int) (hx[1] * 1000), (int) (hx[2] * 1000), (int) (hx[3] * 1000), (int) (hx[4] * 1000));
 
     // Jacobian of measurement function
-    H[0][1] = 1;
+    H[0][0] = 1;
+    H[1][1] = 1;
 }

@@ -8,8 +8,8 @@
 #include <motor/DJIMotor.h>
 #include <communications/CANHandler.h>
 #include <peripherals/imu/BNO055.h>
-//#include <subsystems/ChassisKalman.h>
-#include <algorithms/WheelKalman.h>
+#include <subsystems/ChassisKalman.h>
+//#include <algorithms/WheelKalman.h>
 
 #define CAN_BUS_TYPE CANHandler::CANBUS_1
 #define MOTOR_TYPE M3508
@@ -48,6 +48,11 @@ public:
 
     int8_t isInverted[4];
 
+    double prevVel;
+
+    int testData[300][4];
+    int testDataIndex = 0;
+
 private:
     DJIMotor LF, RF, LB, RB;
     BrakeMode brakeMode;
@@ -61,6 +66,7 @@ private:
     double rpmToTicksPerSecond(double RPM);
     double ticksPerSecondToRPM(double ticksPerSecond);
     double ticksPerSecondToInchesPerSecond(double ticksPerSecond);
+    double rpmToInchesPerSecond(double RPM);
 
     void setMotorPower(int index, double power);
     void setMotorSpeedRPM(int index, double speed);
@@ -68,8 +74,8 @@ private:
 
     double getMotorSpeedRPM(int index);
 
-//    ChassisKalman chassisKalman;
-    WheelKalman wheelKalman;
+    ChassisKalman chassisKalman;
+//    WheelKalman wheelKalman;
     double testAngle;
     int lastTimeMs;
 };

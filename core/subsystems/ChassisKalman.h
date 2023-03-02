@@ -11,10 +11,11 @@
 #include <TinyEKF.h>
 #include <cmath>
 
+#define PI 3.14159265
 #define SECONDS_PER_MINUTE 60
 #define TICKS_PER_ROTATION 8192.0
 #define M3508_GEAR_RATIO 19.0
-#define WHEEL_DIAMETER_INCHES 5.0
+#define WHEEL_DIAMETER_INCHES 4.5
 #define TRACK_WIDTH_INCHES 18.0
 
 
@@ -45,6 +46,7 @@ public:
 
 protected:
     double pythag(double dx, double dy);
+    double degreesToRadians(double degrees);
 
     void model(double fx[Nsta], double F[Nsta][Nsta], double hx[Mobs], double H[Mobs][Nsta]) override;
 };

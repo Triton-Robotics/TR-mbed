@@ -50,9 +50,9 @@ inline void int16ToBitArray(int n, int binaryNum[])
         // printf("\n");
     }
 
-inline void printArray(int16_t array[], int length){
+inline void printArray(int array[], int length){
     for(int i = 0; i < length; i ++){
-        printf("%d\t",array[i]);
+        printf("%d ",array[i]);
     }
     printf("\n");
 }

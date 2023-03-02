@@ -5,8 +5,9 @@
 #ifndef TR_EMBEDDED_WHEELKALMAN_H
 #define TR_EMBEDDED_WHEELKALMAN_H
 
-#define Nsta 2 // 2 states: rotational pose and rotational velocity
-#define Mobs 1 // 1 measurement: velocity
+#define Nsta 2 // 3 states: rotational angle and velocity
+#define Mobs 2 // 2 measurements: rotational angle and velocity
+#define ControlInputs 1 // 1 control input: power sent to motor
 
 #include <TinyEKF.h>
 #include <cmath>
@@ -26,8 +27,11 @@ public:
     void setDt(double dt);
 
     double dt;
+    double u[ControlInputs];
 
 protected:
+    double B[Nsta][ControlInputs];
+
     void model(double fx[Nsta], double F[Nsta][Nsta], double hx[Mobs], double H[Mobs][Nsta]) override;
 };
 

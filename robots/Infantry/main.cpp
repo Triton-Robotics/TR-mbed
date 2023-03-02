@@ -124,8 +124,24 @@ int main()
             } else if(rS == 1){ // All non-serializer motors activated
                 int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
 //                printf("STICKS: %i %i %i\n", lX, lY, rX);
-                chassis.driveFieldRelative(lX * 5.0, lY * 5.0, rX * 5.0);
-                chassis.periodic();
+//                if (chassis.testDataIndex < 300) {
+                    chassis.driveFieldRelative(lX * 5.0, lY * 5.0, rX * 5.0);
+                    chassis.periodic();
+//                } else {
+//                    chassis.driveXYR(0, 0, 0);
+//                        printf("ESTIMATE VS TIME:\n");
+//                        for (auto & i : chassis.testData) {
+//                            printf("%i\t%i\n", i[0], i[1]);
+//                        }
+//                        printf("\n\n\nMULTITURN VS TIME:\n");
+//                        for (auto & i : chassis.testData) {
+//                            printf("%i\t%i\n", i[0], i[2]);
+//                        }
+//                        printf("\n\n\nVELOCITY VS TIME::\n");
+//                        for (auto & i : chassis.testData) {
+//                            printf("%i\t%i\n", i[0], i[3]);
+//                        }
+//                }
                 pitch.setPosition((rY / 2) + 1500);
                 // yaw.setSpeed(rX/100);
                 yawSetpoint -= rX / 10.0;

@@ -23,12 +23,11 @@ ChassisKalman::ChassisKalman() {        // Process noise
     this->setQ(5, 5, 0.01);
 
     // Measurement noise
-    this->setR(0, 0, 1);
-    this->setR(1, 1, 1);
-    this->setR(2, 2, 1);
-    this->setR(3, 3, 1);
-    this->setR(4, 4, 1);
-
+    this->setR(0, 0, 0.05);
+    this->setR(1, 1, 0.05);
+    this->setR(2, 2, 0.05);
+    this->setR(3, 3, 0.05);
+    this->setR(4, 4, 0.05);
 }
 
 void ChassisKalman::setDt(double dt) {
@@ -37,6 +36,10 @@ void ChassisKalman::setDt(double dt) {
 
 double ChassisKalman::pythag(double dx, double dy) {
     return sqrt(dx * dx + dy * dy);
+}
+
+double ChassisKalman::degreesToRadians(double degrees) {
+    return degrees * PI / 180.0;
 }
 
 void ChassisKalman::model(double fx[Nsta], double F[Nsta][Nsta], double hx[Mobs], double H[Mobs][Nsta]) {
@@ -63,8 +66,8 @@ void ChassisKalman::model(double fx[Nsta], double F[Nsta][Nsta], double hx[Mobs]
 
 //    printf("Prev states: %i %i %i %I %I\n", (int) x[4] * 10);
 
-    double cosAngle = cos(x[4]);
-    double sinAngle = sin(x[4]);
+    double cosAngle = cos(degreesToRadians(x[4]));
+    double sinAngle = sin(degreesToRadians(x[4]));
     double robotRelativeXVel = x[1] * cosAngle + x[3] * sinAngle;
     double robotRelativeYVel = -x[1] * sinAngle + x[3] * cosAngle;
     double rotationVel = x[5] * TRACK_WIDTH_INCHES / 2.0;
@@ -78,24 +81,24 @@ void ChassisKalman::model(double fx[Nsta], double F[Nsta][Nsta], double hx[Mobs]
 //    printf("H: %i %i %i %i\n", (int) (hx[0] * 1000), (int) (hx[1] * 1000), (int) (hx[2] * 1000), (int) (hx[3] * 1000), (int) (hx[4] * 1000));
 
     // Jacobian of measurement function
-    H[0][1] = cosAngle - sinAngle;
-    H[0][3] = cosAngle + sinAngle;
-    H[0][4] = (x[3] - x[1]) * cosAngle - (x[1] + x[3]) * sinAngle;
+    H[0][1] = (cosAngle - sinAngle);
+    H[0][3] = (cosAngle + sinAngle);
+    H[0][4] = (x[3] - x[1]) * degreesToRadians(cosAngle) - (x[1] + x[3]) * degreesToRadians(sinAngle);
     H[0][5] = TRACK_WIDTH_INCHES / 2.0;
 
-    H[1][1] = cosAngle + sinAngle;
-    H[1][3] = sinAngle - cosAngle;
-    H[1][4] = (x[1] + x[3]) * cosAngle + (x[3] - x[1]) * sinAngle;
+    H[1][1] = (cosAngle + sinAngle);
+    H[1][3] = (sinAngle - cosAngle);
+    H[1][4] = (x[1] + x[3]) * degreesToRadians(cosAngle) + (x[3] - x[1]) * degreesToRadians(sinAngle);
     H[1][5] = TRACK_WIDTH_INCHES / 2.0;
 
-    H[2][1] = -cosAngle - sinAngle;
-    H[2][3] = cosAngle - sinAngle;
-    H[2][4] = -(x[1] + x[3]) * cosAngle + (x[1] - x[3]) * sinAngle;
+    H[2][1] = (-cosAngle - sinAngle);
+    H[2][3] = (cosAngle - sinAngle);
+    H[2][4] = -(x[1] + x[3]) * degreesToRadians(cosAngle) + (x[1] - x[3]) * degreesToRadians(sinAngle);
     H[2][5] = TRACK_WIDTH_INCHES / 2.0;
 
-    H[3][1] = sinAngle - cosAngle;
-    H[3][3] = -cosAngle - sinAngle;
-    H[3][4] = (x[1] - x[3]) * cosAngle + (x[1] + x[3]) * sinAngle;
+    H[3][1] = (sinAngle - cosAngle);
+    H[3][3] = (-cosAngle - sinAngle);
+    H[3][4] = (x[1] - x[3]) * degreesToRadians(cosAngle) + (x[1] + x[3]) * degreesToRadians(sinAngle);
     H[3][5] = TRACK_WIDTH_INCHES / 2.0;
 
     H[4][4] = 1;
