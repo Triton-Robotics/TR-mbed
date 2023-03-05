@@ -7,21 +7,21 @@
 WheelKalman::WheelKalman() {
     this->dt = 0;
 
-    this->setP(0, 0, 0.1);
-    this->setP(1, 1, 0.1);
+    this->setP(0, 0, 1000);
+    this->setP(1, 1, 1000);
 
-    this->setQ(0, 0, 1);
-    this->setQ(1, 1, 1);
+    this->setQ(0, 0, 1000);
+    this->setQ(1, 1, 1000);
 
 
-    this->setR(0, 0, 4);
+    this->setR(0, 0, 100);
 //    this->setR(0, 1, 10);
 //    this->setR(1, 0, 10);
-    this->setR(1, 1, 4);
+    this->setR(1, 1, 500);
 
-    this->u[0] = 0;
-    this->B[0][0] = 0;
-    this->B[1][0] = 10;
+//    this->u[0] = 0;
+//    this->B[0][0] = 0;
+//    this->B[1][0] = 10;
 }
 
 void WheelKalman::setDt(double dt) {

@@ -138,6 +138,11 @@ void DJIMotor::operator=(int value){
     setValue(value);
 }
 
+
+double DJIMotor::rpmToTicksPerSecond(double RPM) {
+    return RPM * TICKS_PER_ROTATION / (M3508_GEAR_RATIO * SECONDS_PER_MINUTE);
+}
+
 void DJIMotor::setOutput(){
     unsigned long time = us_ticker_read() / 1000;
 
@@ -148,7 +153,23 @@ void DJIMotor::setOutput(){
         powerOut = (int16_t)pidSpeed.calculate((float)value, (float)getData(VELOCITY), float(time - lastTime));
 
     else if(mode == POS)
-        if(!justPosError)
+        if (useKalmanForPID) {
+            double z[2] = {0, 0};
+            double angle = kalman.getX(0);
+            z[1] = rpmToTicksPerSecond(getData(VELOCITY)) * M3508_GEAR_RATIO;
+            double measured = getData(ANGLE);
+            int MODULUS = 8192;
+            z[0] = (measured + angle - ((int) angle) % MODULUS);
+            kalman.setDt((time - lastTime) / 1000.0);
+            kalman.step(z);
+            double newAngle = kalman.getX(0);
+//            printf("%i  %i  %i\n", (int) newAngle, (int) value, (int) z[1]);
+            powerOut = (int16_t) pidPosition.calculate((float) value, (float) getData(MULTITURNANGLE),
+                                                       (float) (time - lastTime));
+//            printf("power: %i\n", (int) powerOut);
+            printf("%i\t%i\t%i\t%i\n", (int) newAngle, (int) value, (int) z[1], (int) powerOut);
+        }
+        else if(!justPosError)
             if(!useAbsEncoder)
                 powerOut = (int16_t)pidSpeed.calculate(pidPosition.calculate((float)value, (float)getData(MULTITURNANGLE), (float)(time - lastTime)), (float)getData(VELOCITY), (float)(time - lastTime));
             else
