@@ -40,7 +40,7 @@ inline void printFloat(float input, int decimals, bool newline = 0) {
 
 inline void int16ToBitArray(int n, int binaryNum[])
     {
-        for (int i = 0; i < 16; ++i) {      
+        for (int i = 0; i < 16; ++i) {
             binaryNum[15-i] = (n >> i) & 1;
         }
 
@@ -71,6 +71,12 @@ inline void printArray(uint8_t array[], int length){
     printf("\n");
 }
 
+inline void printArray(int array[], int length){
+    for(int i = 0; i < length; i ++){
+        printf("%d\t",array[i]);
+    }
+    printf("\n");
+}
 
 
 

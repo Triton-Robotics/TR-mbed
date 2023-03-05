@@ -32,12 +32,12 @@ void Remote::read()
     // Read next byte if available and more needed for the current packet
     while (receiver.read(&data, 1) && currentBufferIndex < REMOTE_BUF_LEN)
     {   
-        //printf("%x \t", data);
+        printf("%x \t", data);
         rxBuffer[currentBufferIndex] = data;
         currentBufferIndex++;
         lastRead = duration_cast<milliseconds>(readTimer.elapsed_time()).count();
     }
-    //printf("\n");
+    printf("\n");
     // Check read timeout
     if (duration_cast<milliseconds>(readTimer.elapsed_time()).count() - lastRead > REMOTE_READ_TIMEOUT)
     {
@@ -67,6 +67,22 @@ float Remote::getChannel(Channel ch) const
             return remote.leftHorizontal / STICK_MAX_VALUE;
         case Channel::LEFT_VERTICAL:
             return remote.leftVertical / STICK_MAX_VALUE;
+    }
+    return 0;
+}
+
+int16_t Remote::getChannelInt(Channel ch) const
+{
+    switch (ch)
+    {
+        case Channel::RIGHT_HORIZONTAL:
+            return remote.rightHorizontal;
+        case Channel::RIGHT_VERTICAL:
+            return remote.rightVertical;
+        case Channel::LEFT_HORIZONTAL:
+            return remote.leftHorizontal;
+        case Channel::LEFT_VERTICAL:
+            return remote.leftVertical;
     }
     return 0;
 }

@@ -78,7 +78,7 @@
   - According to Theo according to CU, the data only fucks up when the vertical sticks are used, so test that
   - New error, not data at all. Tried 2 boards, 3 circuits, 2 recivers, 2 remote controls. None works.
   - 02/22: Tried analog V read, reads "nan"
-  - This is crazy...
+  - 03/04: Finally data is varing (Used 5V now); Raw data from remote looks stayble (Anshal), will look at DJIRemote.cpp to change formula
 
 - <mark>GIO</mark> => ***IMU*** - Make it functional, make it efficient, minimal loss of position
 

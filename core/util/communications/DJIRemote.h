@@ -88,6 +88,8 @@ public:
      */
     float getChannel(Channel ch) const;
 
+    int16_t getChannelInt(Channel ch) const;
+
     /**
      * @return The state of the given switch.
      */
