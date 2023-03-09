@@ -32,7 +32,7 @@ void Remote::read()
     // Read next byte if available and more needed for the current packet
     while (receiver.read(&data, 1) && currentBufferIndex < REMOTE_BUF_LEN)
     {   
-        printf("%x \t", data);
+        //printf("%x \t", data);
         rxBuffer[currentBufferIndex] = data;
         currentBufferIndex++;
         lastRead = duration_cast<milliseconds>(readTimer.elapsed_time()).count();
@@ -120,16 +120,16 @@ void Remote::parseBuffer()
     remote.rightHorizontal = (rxBuffer[0] | rxBuffer[1] << 8) & 0x07FF;
     remote.rightHorizontal -= 1024;
     remote.rightVertical = (rxBuffer[1] >> 3 | rxBuffer[2] << 5) & 0x07FF;
-    remote.rightVertical -= 1024;
+    remote.rightVertical -= 1;
     remote.leftHorizontal = (rxBuffer[2] >> 6 | rxBuffer[3] << 2 | rxBuffer[4] << 10) & 0x07FF;
-    remote.leftHorizontal -= 1024;
+    remote.leftHorizontal -= 1025;
     remote.leftVertical = (rxBuffer[4] >> 1 | rxBuffer[5] << 7) & 0x07FF;
-    remote.leftVertical -= 1024;
+    //remote.leftVertical -= 1024;
 
     //printf("%d \t", (rxBuffer[14] >> 1 | rxBuffer[15] << 7) & 0x07FF);
     //printf("\n");
-    //printf("%d\t %d\t %d\t %d\t", remote.rightHorizontal, remote.rightVertical, remote.leftHorizontal, remote.leftVertical);
-    //printf("\n");
+    printf("%d\t %d\t %d\t %d\t", remote.leftHorizontal, remote.leftVertical, remote.rightHorizontal, remote.rightVertical);
+    printf("\n");
     // the first 6 bytes refer to the remote channel values
 
     // switches on the dji remote - their input is registered
