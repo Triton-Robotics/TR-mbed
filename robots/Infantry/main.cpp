@@ -125,7 +125,8 @@ int main()
                 int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
 //                printf("STICKS: %i %i %i\n", lX, lY, rX);
 //                if (chassis.testDataIndex < 300) {
-                    chassis.driveFieldRelative(lX * 5.0, lY * 5.0, rX * 5.0);
+//                    chassis.driveFieldRelative(lX * 5.0, lY * 5.0, rX * 5.0);
+                    chassis.driveFieldRelative(0, 4096, 0);
                     chassis.periodic();
 //                } else {
 //                    chassis.driveXYR(0, 0, 0);
@@ -149,7 +150,8 @@ int main()
 
 
             }else if(rS == 2){ //disable all the non-serializer components
-                chassis.driveXYR(0,0,0);
+//                chassis.driveXYR(0,0,0);
+                chassis.driveFieldRelative(0, 0, 0);
                 // yaw.setPower(0); pitch.setPower(0);
             }else if(rS == 3){ // beyblade mode
                 chassis.beyblade(lX / 500.0, lY / 500.0, false);
@@ -160,7 +162,10 @@ int main()
                 //indexer.setPower(1200);
                 indexer.setPower(16000);
                 setFlyWheelPwr(40);
-
+//               if (timeStart / 100 == 0) {
+//                   printf("Angle: %i\n", (int) 0);
+                    chassis.printMotorAngle();
+//               }
             }else if(lS == 2){ //disable serializer
                 indexer.setPower(0);
                 setFlyWheelPwr(0);

@@ -10,24 +10,25 @@
 class PID {
 private:
     float kP;
-    float kI;
     float kD;
     float integralCap;
     float outputCap;
     float lastError = 0;
-    float sumError = 0;
 
 
 public:
     bool debug = false;
     float feedForward = 0;
 
+    float kI;
+    float sumError = 0;
+
     // Methods
 
     PID();
     PID(float p, float i, float d, float sumCap, float outCap);
 
-    float calculate(float desiredV, float actualV, float dt);
+    float calculate(float desiredV, float actualV, double dt);
 
     void setIntegralCap(float sumCap);
     void setOutputCap(float outCap);

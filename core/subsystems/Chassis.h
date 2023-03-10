@@ -8,8 +8,8 @@
 #include <motor/DJIMotor.h>
 #include <communications/CANHandler.h>
 #include <peripherals/imu/BNO055.h>
-#include <subsystems/ChassisKalman.h>
-//#include <algorithms/WheelKalman.h>
+//#include <subsystems/ChassisKalman.h>
+#include <algorithms/WheelKalman.h>
 
 #define CAN_BUS_TYPE CANHandler::CANBUS_1
 #define MOTOR_TYPE M3508
@@ -45,6 +45,7 @@ public:
     void readImu();
 
     void periodic();
+    void printMotorAngle();
 
     int8_t isInverted[4];
 
@@ -74,7 +75,7 @@ private:
 
     double getMotorSpeedRPM(int index);
 
-    ChassisKalman chassisKalman;
+//    ChassisKalman chassisKalman;
 //    WheelKalman wheelKalman;
     double testAngle;
     int lastTimeMs;

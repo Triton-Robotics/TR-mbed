@@ -7,17 +7,18 @@
 WheelKalman::WheelKalman() {
     this->dt = 0;
 
-    this->setP(0, 0, 1000);
-    this->setP(1, 1, 1000);
+    this->setP(0, 0, 5);
+    this->setP(1, 1, 5);
 
-    this->setQ(0, 0, 1000);
-    this->setQ(1, 1, 1000);
+    this->setQ(0, 0, 5);
+    this->setQ(1, 1, 5);
 
 
-    this->setR(0, 0, 100);
+    this->setR(0, 0, 2 );
 //    this->setR(0, 1, 10);
 //    this->setR(1, 0, 10);
-    this->setR(1, 1, 500);
+    this->setR(1, 1, 5);
+//    this->setR(2, 2, 1);
 
 //    this->u[0] = 0;
 //    this->B[0][0] = 0;
@@ -52,9 +53,11 @@ void WheelKalman::model(double fx[Nsta], double F[Nsta][Nsta], double hx[Mobs], 
     // Measurement function
     hx[0] = x[0];
     hx[1] = x[1];
+//    hx[2] = x[0];
 //    printf("H: %i %i %i %i\n", (int) (hx[0] * 1000), (int) (hx[1] * 1000), (int) (hx[2] * 1000), (int) (hx[3] * 1000), (int) (hx[4] * 1000));
 
     // Jacobian of measurement function
     H[0][0] = 1;
     H[1][1] = 1;
+//    H[2][0] = 1;
 }

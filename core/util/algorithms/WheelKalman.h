@@ -5,7 +5,7 @@
 #ifndef TR_EMBEDDED_WHEELKALMAN_H
 #define TR_EMBEDDED_WHEELKALMAN_H
 
-#define Nsta 2 // 3 states: rotational angle and velocity
+#define Nsta 2 // 2 states: rotational angle and velocity
 #define Mobs 2 // 2 measurements: rotational angle and velocity
 #define ControlInputs 1 // 1 control input: power sent to motor
 

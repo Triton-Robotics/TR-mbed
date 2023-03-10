@@ -2,12 +2,17 @@
 #include <math.h>
 
 Chassis::Chassis(short lfId, short rfId, short lbId, short rbId) : LF(lfId, CAN_BUS_TYPE, MOTOR_TYPE), RF(rfId, CAN_BUS_TYPE, MOTOR_TYPE),
-                                                                   LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE), i2c(I2C_SDA, I2C_SCL), imu(i2c, IMU_RESET, MODE_IMU), chassisKalman() {
+                                                                   LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE), i2c(I2C_SDA, I2C_SCL), imu(i2c, IMU_RESET, MODE_IMU) {
     LF.outCap = 16000;
     RF.outCap = 16000;
     LB.outCap = 16000;
     RB.outCap = 16000;
-    LF.setSpeedPID(1.5, 0, 0);
+//    LF.setSpeedPID(1.5, 0, 0);
+//    LF.printAngle = true;
+    LF.setPositionPID(0.25, 0, 0.35);
+    LF.pidPosition.setIntegralCap(30000);
+//    LF.useAbsEncoder = 0;
+    LF.useKalmanForPID = 1;
     RF.setSpeedPID(1.5, 0, 0);
     LB.setSpeedPID(1.5, 0, 0);
     RB.setSpeedPID(1.5, 0, 0);
@@ -81,7 +86,7 @@ double Chassis::getMotorSpeedRPM(int index) {
 // Math comes from this paper: https://research.ijcaonline.org/volume113/number3/pxc3901586.pdf
 void Chassis::driveXYR(double xVelocityRPM, double yVelocityRPM, double rotationVelocityRPM) {
     double squareRoot = sqrt(xVelocityRPM * xVelocityRPM + yVelocityRPM * yVelocityRPM);
-    squareRoot *= 4;
+    squareRoot /= 50;
     if (squareRoot > 1) {
         rotationVelocityRPM /= squareRoot;
     }
@@ -100,11 +105,17 @@ void Chassis::driveXYR(double xVelocityRPM, double yVelocityRPM, double rotation
 }
 
 void Chassis::driveFieldRelative(double xVelocityRPM, double yVelocityRPM, double rotationVelocityRPM) {
-    double robotHeading = imuAngles.yaw * PI / 180.0;
-    driveOffsetAngle(xVelocityRPM, yVelocityRPM, rotationVelocityRPM, robotHeading);
+//    double robotHeading = imuAngles.yaw * PI / 180.0;
+//    driveOffsetAngle(xVelocityRPM, yVelocityRPM, rotationVelocityRPM, robotHeading);
+    LF.setPosition((int) (yVelocityRPM));
+printf("%i\t%i\n", (int) LF.getData(MULTITURNANGLE), (int) LF.kalman.getX(0));
 }
 
-/**
+void Chassis::printMotorAngle() {
+    printf("Angle: %i\n", (int) LF.getData(MULTITURNANGLE));
+}
+
+/**`
  * Drives the Chassis, compensating by a certain angle (angleOffset)
 */
 void Chassis::driveOffsetAngle(double xVelocityRPM, double yVelocityRPM, double rotationVelocityRPM, double angleOffset) {
@@ -170,25 +181,26 @@ void Chassis::initializeImu() {
 }
 
 void Chassis::periodic() {
-    double z[5] = {0, 0, 0, 0, 0};
-    z[0] = rpmToInchesPerSecond(LF.getData(VELOCITY));
-    z[1] = rpmToInchesPerSecond(RF.getData(VELOCITY));
-    z[2] = rpmToInchesPerSecond(LB.getData(VELOCITY));
-    z[3] = rpmToInchesPerSecond(RB.getData(VELOCITY));
-    z[4] = imuAngles.yaw;
+//    printf("POW: %i\n", (int) LF.powerOut);
+//    double z[5] = {0, 0, 0, 0, 0};
+//    z[0] = rpmToInchesPerSecond(LF.getData(VELOCITY));
+//    z[1] = rpmToInchesPerSecond(RF.getData(VELOCITY));
+//    z[2] = rpmToInchesPerSecond(LB.getData(VELOCITY));
+//    z[3] = rpmToInchesPerSecond(RB.getData(VELOCITY));
+//    z[4] = imuAngles.yaw;
 //    double z[2] = { 0, 0 };
 //    double angle = wheelKalman.getX(0);
 //    z[1] = rpmToTicksPerSecond(LF.getData(VELOCITY)) * M3508_GEAR_RATIO;
 //    double measured = LF.getData(ANGLE);
 //    int MODULUS = 8192;
 //    z[0] = (measured + angle - ((int) angle) % MODULUS);
-  int currTime = us_ticker_read() / 1000;
-    if (lastTimeMs != 0) {
-        chassisKalman.setDt((currTime - lastTimeMs) / 1000.0);
-    }
-    lastTimeMs = currTime;
-    int power =  LF.getPowerOut() - 300;
-    chassisKalman.step(z);
+//  int currTime = us_ticker_read() / 1000;
+//    if (lastTimeMs != 0) {
+//        chassisKalman.setDt((currTime - lastTimeMs) / 1000.0);
+//    }
+//    lastTimeMs = currTime;
+//    int power =  LF.getPowerOut() - 300;
+//    chassisKalman.step(z);
 
 //    int diff = (int) (z[1] - prevVel);
 //    if (diff != 0) {
@@ -208,7 +220,7 @@ void Chassis::periodic() {
 //        testDataIndex++;
 //    }
 
-    printf("%i\t%i\n", (int) z[2], (int) z[0]);
+//    printf("%i\t%i\n", (int) z[2], (int) z[0]);
 
 
 //    printf("%i\t%i\n", (int) (wheelKalman.getX(0) / M3508_GEAR_RATIO), (int) (z[0] / M3508_GEAR_RATIO));

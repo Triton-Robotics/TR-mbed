@@ -117,6 +117,10 @@ public:
     bool useAbsEncoder = false;
     bool justPosError = false;
     bool useKalmanForPID = false;
+    bool useIntegrationForPID = false;
+    bool printAngle = false;
+    int integratedAngle = 0;
+    long lastIntegrationTime = -1;
     WheelKalman kalman;
     static bool sendDebug;
     static bool feedbackDebug;
