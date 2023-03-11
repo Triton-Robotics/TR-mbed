@@ -5,7 +5,7 @@ using namespace std::chrono;
 Remote::Remote(PinName dbus) : receiver(NC, dbus) {
 
     //printf("YEETUSdeletus\n");
-    receiver.set_baud(115200);
+    receiver.set_baud(100000);
     receiver.set_format(8, BufferedSerial::Even, 1);
     receiver.set_blocking(false);
     //receiver.set_flow_control(BufferedSerial::Disabled);
@@ -117,14 +117,14 @@ void Remote::parseBuffer()
 {
     // values implemented by shifting bits across based on the dr16
     // values documentation and code created last year
-    remote.rightHorizontal = (rxBuffer[0] | rxBuffer[1] << 8) & 0x07FF;
-    remote.rightHorizontal -= 1024;
-    remote.rightVertical = (rxBuffer[1] >> 3 | rxBuffer[2] << 5) & 0x07FF;
-    remote.rightVertical -= 1;
-    remote.leftHorizontal = (rxBuffer[2] >> 6 | rxBuffer[3] << 2 | rxBuffer[4] << 10) & 0x07FF;
-    remote.leftHorizontal -= 1025;
-    remote.leftVertical = (rxBuffer[4] >> 1 | rxBuffer[5] << 7) & 0x07FF;
-    //remote.leftVertical -= 1024;
+    remote.rightHorizontal = ((int16_t)rxBuffer[0] | (int16_t)rxBuffer[1] << 8) & 0x07FF;
+    remote.rightHorizontal -= 1023;
+    remote.rightVertical = ((int16_t)rxBuffer[1] >> 3 | (int16_t)rxBuffer[2] << 5) & 0x07FF;
+    remote.rightVertical -= 1024;
+    remote.leftHorizontal = ((int16_t)rxBuffer[2] >> 6 | (int16_t)rxBuffer[3] << 2 | (int16_t)rxBuffer[4] << 10) & 0x07FF;
+    remote.leftHorizontal -= 1024;
+    remote.leftVertical = ((int16_t)rxBuffer[4] >> 1 | (int16_t)rxBuffer[5] << 7) & 0x07FF;
+    remote.leftVertical -= 1024;
 
     //printf("%d \t", (rxBuffer[14] >> 1 | rxBuffer[15] << 7) & 0x07FF);
     //printf("\n");
