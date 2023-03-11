@@ -312,7 +312,7 @@ void DJIMotor::getFeedback(){
     updateMultiTurnPosition();
 }
 
-bool DJIMotor::checkConnection(bool debug){
+__attribute__((unused)) bool DJIMotor::checkConnection(bool debug){
     for(int bus = 0; bus < CAN_HANDLER_NUMBER; bus++)
         for(int c = 0; c < 4; c++)
             for(int r = 0; r < 3; r++)

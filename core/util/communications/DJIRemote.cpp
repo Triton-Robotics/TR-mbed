@@ -22,7 +22,7 @@ void Remote::read()
     
     // Read next byte if available and more needed for the current packet
     // Check disconnect timeout
-    if (duration_cast<milliseconds>(readTimer.elapsed_time()).count() - lastRead > REMOTE_DISCONNECT_TIMEOUT)
+    if ((duration_cast<milliseconds>(readTimer.elapsed_time()).count() - lastRead) > REMOTE_DISCONNECT_TIMEOUT)
     {
         printf("Remote disconnected \n");
         connected = false;  // Remote no longer connected
@@ -30,7 +30,7 @@ void Remote::read()
     }
     uint8_t data;  // Next byte to be read
     // Read next byte if available and more needed for the current packet
-    while (receiver.read(&data, 1) && currentBufferIndex < REMOTE_BUF_LEN)
+    while (receiver.read(&data, 1) && (currentBufferIndex < REMOTE_BUF_LEN))
     {   
         //printf("%x \t", data);
         rxBuffer[currentBufferIndex] = data;
@@ -39,7 +39,7 @@ void Remote::read()
     }
     printf("\n");
     // Check read timeout
-    if (duration_cast<milliseconds>(readTimer.elapsed_time()).count() - lastRead > REMOTE_READ_TIMEOUT)
+    if ((duration_cast<milliseconds>(readTimer.elapsed_time()).count() - lastRead) > REMOTE_READ_TIMEOUT)
     {
         clearRxBuffer();
     }
@@ -53,23 +53,24 @@ void Remote::read()
 
 }
 
-bool Remote::isConnected() const { return connected; }
+__attribute__((unused)) bool Remote::isConnected() const { return connected; }
 
 float Remote::getChannel(Channel ch) const
 {
     switch (ch)
     {
         case Channel::RIGHT_HORIZONTAL:
-            return remote.rightHorizontal / STICK_MAX_VALUE;
+            return float(remote.rightHorizontal) / STICK_MAX_VALUE;
         case Channel::RIGHT_VERTICAL:
-            return remote.rightVertical / STICK_MAX_VALUE;
+            return float(remote.rightVertical) / STICK_MAX_VALUE;
         case Channel::LEFT_HORIZONTAL:
-            return remote.leftHorizontal / STICK_MAX_VALUE;
+            return float(remote.leftHorizontal) / STICK_MAX_VALUE;
         case Channel::LEFT_VERTICAL:
-            return remote.leftVertical / STICK_MAX_VALUE;
+            return float(remote.leftVertical) / STICK_MAX_VALUE;
     }
     return 0;
 }
+
 
 int16_t Remote::getChannelInt(Channel ch) const
 {
@@ -85,6 +86,10 @@ int16_t Remote::getChannelInt(Channel ch) const
             return remote.leftVertical;
     }
     return 0;
+}
+
+void Remote::printAxisData() const{
+    printf("%d %d %d %d\n", getChannelInt(Remote::Channel::LEFT_HORIZONTAL), getChannelInt(Remote::Channel::LEFT_VERTICAL), getChannelInt(Remote::Channel::RIGHT_HORIZONTAL), getChannelInt(Remote::Channel::RIGHT_VERTICAL));
 }
 
 Remote::SwitchState Remote::getSwitch(Switch sw) const
@@ -117,19 +122,32 @@ void Remote::parseBuffer()
 {
     // values implemented by shifting bits across based on the dr16
     // values documentation and code created last year
-    remote.rightHorizontal = ((int16_t)rxBuffer[0] | (int16_t)rxBuffer[1] << 8) & 0x07FF;
-    remote.rightHorizontal -= 1023;
-    remote.rightVertical = ((int16_t)rxBuffer[1] >> 3 | (int16_t)rxBuffer[2] << 5) & 0x07FF;
+    remote.rightHorizontal = int16_t((rxBuffer[0] | rxBuffer[1] << 8) & 0x07FF);
+    remote.rightVertical = int16_t((rxBuffer[1] >> 3 | rxBuffer[2] << 5) & 0x07FF);
+    remote.leftHorizontal = int16_t((rxBuffer[2] >> 6 | rxBuffer[3] << 2 | rxBuffer[4] << 10) & 0x07FF);
+    remote.leftVertical = int16_t((rxBuffer[4] >> 1 | rxBuffer[5] << 7) & 0x07FF);
+
+    remote.rightHorizontal -= 1024;
     remote.rightVertical -= 1024;
-    remote.leftHorizontal = ((int16_t)rxBuffer[2] >> 6 | (int16_t)rxBuffer[3] << 2 | (int16_t)rxBuffer[4] << 10) & 0x07FF;
     remote.leftHorizontal -= 1024;
-    remote.leftVertical = ((int16_t)rxBuffer[4] >> 1 | (int16_t)rxBuffer[5] << 7) & 0x07FF;
     remote.leftVertical -= 1024;
+
+    remote.leftSwitch = SwitchState(((rxBuffer[5] >> 4) & 0x000C) >> 2);
+    remote.rightSwitch = SwitchState(((rxBuffer[5] >> 4) & 0x0003));
+
+    remote.mouse.x = int16_t((rxBuffer[6]) | (rxBuffer[7] << 8));
+    remote.mouse.y = int16_t((rxBuffer[8]) | (rxBuffer[9] << 8));
+    remote.mouse.z = int16_t((rxBuffer[10]) | (rxBuffer[11] << 8));
+
+    remote.mouse.l = rxBuffer[12];
+    remote.mouse.r = rxBuffer[13];
+
+    remote.key = (rxBuffer[14]);
 
     //printf("%d \t", (rxBuffer[14] >> 1 | rxBuffer[15] << 7) & 0x07FF);
     //printf("\n");
-    printf("%d\t %d\t %d\t %d\t", remote.leftHorizontal, remote.leftVertical, remote.rightHorizontal, remote.rightVertical);
-    printf("\n");
+    //printf("%d\t %d\t %d\t %d\t", remote.leftHorizontal, remote.leftVertical, remote.rightHorizontal, remote.rightVertical);
+    //printf("\n");
     // the first 6 bytes refer to the remote channel values
 
     // switches on the dji remote - their input is registered
@@ -221,8 +239,8 @@ void Remote::reset()
     remote.mouse.x = 0;
     remote.mouse.y = 0;
     remote.mouse.z = 0;
-    remote.mouse.l = 0;
-    remote.mouse.r = 0;
+    remote.mouse.l = false;
+    remote.mouse.r = false;
     remote.key = 0;
     remote.wheel = 0;
     clearRxBuffer();
