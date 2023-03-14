@@ -140,7 +140,8 @@ void DJIMotor::operator=(int value){
 
 
 double DJIMotor::rpmToTicksPerSecond(double RPM) {
-    return RPM * TICKS_PER_ROTATION / (M3508_GEAR_RATIO * SECONDS_PER_MINUTE);
+    return 0;
+//    return RPM * TICKS_PER_ROTATION / (M3508_GEAR_RATIO * SECONDS_PER_MINUTE);
 }
 
 void DJIMotor::setOutput(){
@@ -156,42 +157,42 @@ void DJIMotor::setOutput(){
 
     else if(mode == POS)
         if (useKalmanForPID) {
-            double z[2] = {0, 0};
-            double angle = kalman.getX(0);
-            z[1] = rpmToTicksPerSecond(getData(VELOCITY));
-            z[0] = getData(MULTITURNANGLE);
-            int MODULUS = 8192;
-//            int measured = getData(ANGLE);
-//            z[2] = (measured + angle - ((int) angle) % MODULUS);
-            kalman.setDt((time - lastTime) / 1000000.0);
-            kalman.step(z);
-//            double newAngle = kalman.getX(0) / 10000.0;
-            double newAngle = getData(MULTITURNANGLE) / 19.0;
-//            printf("Angle: %i Velo: %i\n", (int) newAngle, (int) z[1]);
-//            printf("%i  %i  %i\n", (int) newAngle, (int) value, (int) z[1]);
-//            powerOut = 0;
-//            pidPosition.debug = true;
-            powerOut = (int16_t) pidPosition.calculate((float) value, (float) newAngle,
-                                                       (double) (time - lastTime));
-
-            double velocityAbsValue = kalman.getX(1);
-            if (velocityAbsValue < 0) {
-                velocityAbsValue = -velocityAbsValue;
-            }
-
-            bool isMoving = velocityAbsValue >= 2000;
-
-//            printf("Is moving: %i\n", (int) isMoving);
-
-//            printf("VELO: %i\n", (int) z[1]);
-
-//            if (!isMoving) {
-//                powerOut += pidPosition.sumError * pidPosition.kI;
-//            } else {
-//                pidPosition.sumError = 0;
+//            double z[2] = {0, 0};
+//            double angle = kalman.getX(0);
+//            z[1] = rpmToTicksPerSecond(getData(VELOCITY));
+//            z[0] = getData(MULTITURNANGLE);
+//            int MODULUS = 8192;
+////            int measured = getData(ANGLE);
+////            z[2] = (measured + angle - ((int) angle) % MODULUS);
+//            kalman.setDt((time - lastTime) / 1000000.0);
+//            kalman.step(z);
+////            double newAngle = kalman.getX(0) / 10000.0;
+//            double newAngle = getData(MULTITURNANGLE) / 19.0;
+////            printf("Angle: %i Velo: %i\n", (int) newAngle, (int) z[1]);
+////            printf("%i  %i  %i\n", (int) newAngle, (int) value, (int) z[1]);
+////            powerOut = 0;
+////            pidPosition.debug = true;
+//            powerOut = (int16_t) pidPosition.calculate((float) value, (float) newAngle,
+//                                                       (double) (time - lastTime));
+//
+//            double velocityAbsValue = kalman.getX(1);
+//            if (velocityAbsValue < 0) {
+//                velocityAbsValue = -velocityAbsValue;
 //            }
-//            printf("power: %i\n", (int) powerOut);
-//            printf("%i\t%i\t%i\t%i\n", (int) newAngle, (int) value, (int) z[1], (int) powerOut);
+//
+//            bool isMoving = velocityAbsValue >= 2000;
+//
+////            printf("Is moving: %i\n", (int) isMoving);
+//
+////            printf("VELO: %i\n", (int) z[1]);
+//
+////            if (!isMoving) {
+////                powerOut += pidPosition.sumError * pidPosition.kI;
+////            } else {
+////                pidPosition.sumError = 0;
+////            }
+////            printf("power: %i\n", (int) powerOut);
+////            printf("%i\t%i\t%i\t%i\n", (int) newAngle, (int) value, (int) z[1], (int) powerOut);
         }
         else if(!justPosError)
             if(!useAbsEncoder)

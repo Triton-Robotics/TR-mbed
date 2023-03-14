@@ -8,19 +8,19 @@
 ChassisKalman::ChassisKalman() {        // Process noise
     this->dt = 0;
 
-    this->setP(0, 0, 0.01);
-    this->setP(1, 1, 0.01);
-    this->setP(2, 2, 0.01);
-    this->setP(3, 3, 0.01);
-    this->setP(4, 4, 0.01);
-    this->setP(5, 5, 0.01);
+    this->setP(0, 0, 0.1);
+    this->setP(1, 1, 0.1);
+    this->setP(2, 2, 0.1);
+    this->setP(3, 3, 0.1);
+    this->setP(4, 4, 0.1);
+    this->setP(5, 5, 0.1);
 
-    this->setQ(0, 0, 0.01);
-    this->setQ(1, 1, 0.01);
-    this->setQ(2, 2, 0.01);
-    this->setQ(3, 3, 0.01);
-    this->setQ(4, 4, 0.01);
-    this->setQ(5, 5, 0.01);
+    this->setQ(0, 0, 0.1);
+    this->setQ(1, 1, 0.1);
+    this->setQ(2, 2, 0.1);
+    this->setQ(3, 3, 0.1);
+    this->setQ(4, 4, 0.1);
+    this->setQ(5, 5, 0.1);
 
     // Measurement noise
     this->setR(0, 0, 0.05);
@@ -71,6 +71,8 @@ void ChassisKalman::model(double fx[Nsta], double F[Nsta][Nsta], double hx[Mobs]
     double robotRelativeXVel = x[1] * cosAngle + x[3] * sinAngle;
     double robotRelativeYVel = -x[1] * sinAngle + x[3] * cosAngle;
     double rotationVel = x[5] * TRACK_WIDTH_INCHES / 2.0;
+
+//    printf("Rotational: %i\n", (int) rotationVel);
 
     // Measurement function
     hx[0] = robotRelativeXVel + robotRelativeYVel + rotationVel;

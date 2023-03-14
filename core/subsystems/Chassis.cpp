@@ -2,15 +2,15 @@
 #include <math.h>
 
 Chassis::Chassis(short lfId, short rfId, short lbId, short rbId) : LF(lfId, CAN_BUS_TYPE, MOTOR_TYPE), RF(rfId, CAN_BUS_TYPE, MOTOR_TYPE),
-                                                                   LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE), i2c(I2C_SDA, I2C_SCL), imu(i2c, IMU_RESET, MODE_IMU) {
+                                                                   LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE), i2c(I2C_SDA, I2C_SCL), imu(i2c, IMU_RESET, MODE_IMU), chassisKalman() {
     LF.outCap = 16000;
     RF.outCap = 16000;
     LB.outCap = 16000;
     RB.outCap = 16000;
-//    LF.setSpeedPID(1.5, 0, 0);
+    LF.setSpeedPID(1.5, 0, 0);
 //    LF.printAngle = true;
-    LF.setPositionPID(0.25, 0, 0.35);
-    LF.pidPosition.setIntegralCap(30000);
+//    LF.setPositionPID(0.25, 0, 0.35);
+//    LF.pidPosition.setIntegralCap(30000);
 //    LF.useAbsEncoder = 0;
     LF.useKalmanForPID = 1;
     RF.setSpeedPID(1.5, 0, 0);
@@ -34,7 +34,7 @@ double Chassis::ticksPerSecondToInchesPerSecond(double ticksPerSecond) {
 }
 
 double Chassis::rpmToInchesPerSecond(double RPM) {
-    return RPM / (M3508_GEAR_RATIO * SECONDS_PER_MINUTE) * WHEEL_DIAMETER_INCHES * PI;
+    return RPM * 1.41 / (M3508_GEAR_RATIO * SECONDS_PER_MINUTE) * WHEEL_DIAMETER_INCHES * PI;
 }
 
 void Chassis::setMotorPower(int index, double power) {
@@ -105,10 +105,10 @@ void Chassis::driveXYR(double xVelocityRPM, double yVelocityRPM, double rotation
 }
 
 void Chassis::driveFieldRelative(double xVelocityRPM, double yVelocityRPM, double rotationVelocityRPM) {
-//    double robotHeading = imuAngles.yaw * PI / 180.0;
-//    driveOffsetAngle(xVelocityRPM, yVelocityRPM, rotationVelocityRPM, robotHeading);
-    LF.setPosition((int) (yVelocityRPM));
-printf("%i\t%i\n", (int) LF.getData(MULTITURNANGLE), (int) LF.kalman.getX(0));
+    double robotHeading = imuAngles.yaw * PI / 180.0;
+    driveOffsetAngle(xVelocityRPM, yVelocityRPM, rotationVelocityRPM, robotHeading);
+//    LF.setPosition((int) (yVelocityRPM));
+//printf("%i\t%i\n", (int) LF.getData(MULTITURNANGLE), (int) LF.kalman.getX(0));
 }
 
 void Chassis::printMotorAngle() {
@@ -182,25 +182,34 @@ void Chassis::initializeImu() {
 
 void Chassis::periodic() {
 //    printf("POW: %i\n", (int) LF.powerOut);
-//    double z[5] = {0, 0, 0, 0, 0};
-//    z[0] = rpmToInchesPerSecond(LF.getData(VELOCITY));
-//    z[1] = rpmToInchesPerSecond(RF.getData(VELOCITY));
-//    z[2] = rpmToInchesPerSecond(LB.getData(VELOCITY));
-//    z[3] = rpmToInchesPerSecond(RB.getData(VELOCITY));
-//    z[4] = imuAngles.yaw;
+    double z[5] = {0, 0, 0, 0, 0};
+    z[0] = rpmToInchesPerSecond(LF.getData(VELOCITY));
+    z[1] = rpmToInchesPerSecond(RF.getData(VELOCITY));
+    z[2] = rpmToInchesPerSecond(LB.getData(VELOCITY));
+    z[3] = rpmToInchesPerSecond(RB.getData(VELOCITY));
+
+//    printf("LF speed: %i\n", (int) (z[0] * 100));
+
+    z[4] = imuAngles.yaw;
+
+    int currTime = us_ticker_read();
+    if (lastTimeMs != 0) {
+        chassisKalman.setDt((currTime - lastTimeMs) / 1000000.0);
+    }
+    lastTimeMs = currTime;
+    chassisKalman.step(z);
+
+
+    printf("%i\t%i\t%i\n", (int) chassisKalman.getX(0), (int) chassisKalman.getX(2), (int) chassisKalman.getX(4));
+
+
 //    double z[2] = { 0, 0 };
 //    double angle = wheelKalman.getX(0);
 //    z[1] = rpmToTicksPerSecond(LF.getData(VELOCITY)) * M3508_GEAR_RATIO;
 //    double measured = LF.getData(ANGLE);
 //    int MODULUS = 8192;
 //    z[0] = (measured + angle - ((int) angle) % MODULUS);
-//  int currTime = us_ticker_read() / 1000;
-//    if (lastTimeMs != 0) {
-//        chassisKalman.setDt((currTime - lastTimeMs) / 1000.0);
-//    }
-//    lastTimeMs = currTime;
-//    int power =  LF.getPowerOut() - 300;
-//    chassisKalman.step(z);
+    int power =  LF.getPowerOut() - 300;
 
 //    int diff = (int) (z[1] - prevVel);
 //    if (diff != 0) {

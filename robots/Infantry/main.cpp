@@ -125,8 +125,8 @@ int main()
                 int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
 //                printf("STICKS: %i %i %i\n", lX, lY, rX);
 //                if (chassis.testDataIndex < 300) {
-//                    chassis.driveFieldRelative(lX * 5.0, lY * 5.0, rX * 5.0);
-                    chassis.driveFieldRelative(0, 4096, 0);
+                    chassis.driveFieldRelative(lX * 5.0, lY * 5.0, rX * 5.0);
+//                    chassis.driveFieldRelative(0, 4096, 0);
                     chassis.periodic();
 //                } else {
 //                    chassis.driveXYR(0, 0, 0);

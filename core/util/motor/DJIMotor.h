@@ -17,7 +17,7 @@
 #include "communications/CANHandler.h"
 #include "helperFunctions.hpp"
 #include "algorithms/speedtocurrent.hpp"
-#include "algorithms/WheelKalman.h"
+//#include "algorithms/WheelKalman.h"
 #include <cmath>
 
 static int sendIDs[3] = {0x200,0x1FF,0x2FF}; //IDs to send data
@@ -121,7 +121,7 @@ public:
     bool printAngle = false;
     int integratedAngle = 0;
     long lastIntegrationTime = -1;
-    WheelKalman kalman;
+//    WheelKalman kalman;
     static bool sendDebug;
     static bool feedbackDebug;
 
