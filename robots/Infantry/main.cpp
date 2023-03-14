@@ -1,7 +1,7 @@
 #include "main.h"
 #include "Infantry.h"
 #include <cstdlib>
-//#include <commands/RamseteCommand.h>
+#include <commands/RamseteCommand.h>
 
 #define PI 3.14159265
 
@@ -15,8 +15,8 @@
 
 
 Chassis chassis(1, 2, 3, 4);
-//RamseteCommand command(
-//        Pose2D(0, 0, 0), Pose2D(20, 0, 0), 2, &chassis);
+RamseteCommand command(
+        Pose2D(0, 0, 0), Pose2D(20, 0, 0), 2, &chassis);
 DigitalOut led(LED1);
 
 DJIMotor yaw(5, CANHandler::CANBUS_1, GIMBLY);
@@ -83,7 +83,7 @@ int main()
 
     chassis.setBrakeMode(Chassis::COAST);
 
-//    command.initialize();
+    command.initialize();
 
     unsigned long loopTimer = us_ticker_read() / 1000;
 
@@ -134,10 +134,10 @@ int main()
 //                    chassis.driveFieldRelative(0, 4096, 0);
                     chassis.periodic();
 
-//                    if (!command.isFinished()) {
-//                        printf("running command!\n");
-//                        command.execute();
-//                    }
+                    if (!command.isFinished()) {
+                        printf("running command!\n");
+                        command.execute();
+                    }
 
 //                } else {
 //                    chassis.driveXYR(0, 0, 0);

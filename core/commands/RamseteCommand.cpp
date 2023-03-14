@@ -21,6 +21,7 @@ void RamseteCommand::execute() {
     double curTime = us_ticker_read() / 1000000.0;
     double dt = curTime - prevTime;
     if (prevTime == -1) {
+        prevTime = curTime;
         return;
     }
 
@@ -30,14 +31,19 @@ void RamseteCommand::execute() {
     ChassisSpeeds desiredSpeeds = controller.calculate(
             curPose,
             desiredPose,
-            1,
-            1
+            10 * (endPose.x - curPose.x),
+            0
     );
+
+    printf("speeds: %i %i %i\n", (int) desiredSpeeds.x, (int) desiredSpeeds.y, (int) desiredSpeeds.rotation);
+
+    chassis->driveFieldRelative(desiredSpeeds);
 
     prevTime = curTime;
 }
 
 bool RamseteCommand::isFinished() {
-    double curTime = us_ticker_read() / 1000000.0;
-    return (curTime - startTime) >= durationSeconds;
+    return false;
+//    double curTime = us_ticker_read() / 1000000.0;
+//    return (curTime - startTime) >= durationSeconds;
 }
