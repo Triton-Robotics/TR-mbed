@@ -136,7 +136,7 @@ public:
     static void sendOneID(CANHandler::CANBus bus, short sendIDindex, bool debug = false);
     static void getFeedback();
 
-    __attribute__((unused)) static bool checkConnection(bool debug);
+    __attribute__((unused)) static bool checkConnection(bool debug = false);
 
     static void tickThread();
     static void feedbackThread();
