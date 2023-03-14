@@ -20,6 +20,7 @@ private:
 
 public:
     bool debug = false;
+    bool debugPIDterms = false;
     float feedForward = 0;
 
     // Methods
