@@ -121,28 +121,49 @@ int16_t Remote::getWheel() const { return remote.wheel; }
 void Remote::parseBuffer()
 {
     // values implemented by shifting bits across based on the dr16
-    // values documentation and code created last year
-    remote.rightHorizontal = int16_t((rxBuffer[0] | rxBuffer[1] << 8) & 0x07FF);
-    remote.rightVertical = int16_t((rxBuffer[1] >> 3 | rxBuffer[2] << 5) & 0x07FF);
-    remote.leftHorizontal = int16_t((rxBuffer[2] >> 6 | rxBuffer[3] << 2 | rxBuffer[4] << 10) & 0x07FF);
-    remote.leftVertical = int16_t((rxBuffer[4] >> 1 | rxBuffer[5] << 7) & 0x07FF);
+    // values documentation and code created last year\
 
-    remote.rightHorizontal -= 1024;
-    remote.rightVertical -= 1024;
-    remote.leftHorizontal -= 1024;
-    remote.leftVertical -= 1024;
+    int16_t potentialRX = int16_t((rxBuffer[0] | rxBuffer[1] << 8) & 0x07FF);
+    int16_t potentialRY = int16_t((rxBuffer[1] >> 3 | rxBuffer[2] << 5) & 0x07FF);
+    int16_t potentialLX = int16_t((rxBuffer[2] >> 6 | rxBuffer[3] << 2 | rxBuffer[4] << 10) & 0x07FF);
+    int16_t potentialLY = int16_t((rxBuffer[4] >> 1 | rxBuffer[5] << 7) & 0x07FF);
 
-    remote.leftSwitch = SwitchState(((rxBuffer[5] >> 4) & 0x000C) >> 2);
-    remote.rightSwitch = SwitchState(((rxBuffer[5] >> 4) & 0x0003));
+    if(
+        potentialRX-1024 < -660 || potentialRX-1024 > 660 ||
+        potentialRY-1024 < -660 || potentialRY-1024 > 660 ||
+        potentialLX-1024 < -660 || potentialLX-1024 > 660 ||
+        potentialLY-1024 < -660 || potentialLY-1024 > 660 || 0){
+        
+        badDataChainNumber += 1;
+        goodDataChainNumber = 0;
+    }else{
+        goodDataChainNumber += 1;
+        badDataChainNumber = 0;
 
-    remote.mouse.x = int16_t((rxBuffer[6]) | (rxBuffer[7] << 8));
-    remote.mouse.y = int16_t((rxBuffer[8]) | (rxBuffer[9] << 8));
-    remote.mouse.z = int16_t((rxBuffer[10]) | (rxBuffer[11] << 8));
+        remote.rightHorizontal = potentialRX;
+        remote.rightVertical = potentialRY;
+        remote.leftHorizontal = potentialLX;
+        remote.leftVertical = potentialLY;
 
-    remote.mouse.l = rxBuffer[12];
-    remote.mouse.r = rxBuffer[13];
+        remote.rightHorizontal -= 1024;
+        remote.rightVertical -= 1024;
+        remote.leftHorizontal -= 1024;
+        remote.leftVertical -= 1024;
 
-    remote.key = (rxBuffer[14]);
+        remote.leftSwitch = SwitchState(((rxBuffer[5] >> 4) & 0x000C) >> 2);
+        remote.rightSwitch = SwitchState(((rxBuffer[5] >> 4) & 0x0003));
+
+        remote.mouse.x = int16_t((rxBuffer[6]) | (rxBuffer[7] << 8));
+        remote.mouse.y = int16_t((rxBuffer[8]) | (rxBuffer[9] << 8));
+        remote.mouse.z = int16_t((rxBuffer[10]) | (rxBuffer[11] << 8));
+
+        remote.mouse.l = rxBuffer[12];
+        remote.mouse.r = rxBuffer[13];
+
+        remote.key = (rxBuffer[14]);
+    }
+
+    
 
     //printf("%d \t", (rxBuffer[14] >> 1 | rxBuffer[15] << 7) & 0x07FF);
     //printf("\n");

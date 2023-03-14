@@ -137,6 +137,9 @@ public:
      */
     uint32_t getUpdateCounter() const;
 
+    long badDataChainNumber = 0;
+    long goodDataChainNumber = 0;
+
 private:
 
     BufferedSerial receiver;
