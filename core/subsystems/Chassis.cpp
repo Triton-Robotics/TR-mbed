@@ -2,7 +2,7 @@
 #include <math.h>
 
 Chassis::Chassis(short lfId, short rfId, short lbId, short rbId) : LF(lfId, CAN_BUS_TYPE, MOTOR_TYPE), RF(rfId, CAN_BUS_TYPE, MOTOR_TYPE),
-                                                                   LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE), i2c(I2C_SDA, I2C_SCL), imu(i2c, IMU_RESET, MODE_IMU), chassisKalman() {
+LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE), i2c(I2C_SDA, I2C_SCL), imu(i2c, IMU_RESET, MODE_IMU), chassisKalman() {
     LF.outCap = 16000;
     RF.outCap = 16000;
     LB.outCap = 16000;
@@ -83,31 +83,22 @@ double Chassis::getMotorSpeedRPM(int index) {
     return ticksPerSecondToRPM(getMotor(index).getData(VELOCITY));
 }
 
-// Math comes from this paper: https://research.ijcaonline.org/volume113/number3/pxc3901586.pdf
-void Chassis::driveXYR(double xVelocityRPM, double yVelocityRPM, double rotationVelocityRPM) {
-    double squareRoot = sqrt(xVelocityRPM * xVelocityRPM + yVelocityRPM * yVelocityRPM);
-    squareRoot /= 50;
-    if (squareRoot > 1) {
-        rotationVelocityRPM /= squareRoot;
-    }
-    setMotorSpeedRPM(0,
-                     (xVelocityRPM + yVelocityRPM + rotationVelocityRPM)
-    );
-    setMotorSpeedRPM(1,
-                     (xVelocityRPM - yVelocityRPM + rotationVelocityRPM)
-    );
-    setMotorSpeedRPM(2,
-                     (-xVelocityRPM + yVelocityRPM + rotationVelocityRPM)
-    );
-    setMotorSpeedRPM(3,
-                     (-xVelocityRPM - yVelocityRPM + rotationVelocityRPM)
-    );
+void Chassis::driveMotors(WheelSpeeds speeds) {
+    setMotorSpeedRPM(0, speeds.LF);
+    setMotorSpeedRPM(1, speeds.RF);
+    setMotorSpeedRPM(2, speeds.LB);
+    setMotorSpeedRPM(3, speeds.RB);
 }
 
-void Chassis::driveFieldRelative(double xVelocityRPM, double yVelocityRPM, double rotationVelocityRPM) {
+// Math comes from this paper: https://research.ijcaonline.org/volume113/number3/pxc3901586.pdf
+void Chassis::driveXYR(ChassisSpeeds speeds) {
+    driveMotors(Chassis::chassisSpeedsToWheelSpeeds(speeds));
+}
+
+void Chassis::driveFieldRelative(ChassisSpeeds speeds) {
     double robotHeading = imuAngles.yaw * PI / 180.0;
-    driveOffsetAngle(xVelocityRPM, yVelocityRPM, rotationVelocityRPM, robotHeading);
-//    LF.setPosition((int) (yVelocityRPM));
+    driveOffsetAngle({speeds.x, speeds.y, speeds.rotation}, robotHeading);
+//    LF.setPosition((int) (speeds.y));
 //printf("%i\t%i\n", (int) LF.getData(MULTITURNANGLE), (int) LF.kalman.getX(0));
 }
 
@@ -118,17 +109,17 @@ void Chassis::printMotorAngle() {
 /**`
  * Drives the Chassis, compensating by a certain angle (angleOffset)
 */
-void Chassis::driveOffsetAngle(double xVelocityRPM, double yVelocityRPM, double rotationVelocityRPM, double angleOffset) {
-    double robotRelativeXVelocity = xVelocityRPM * cos(angleOffset) + yVelocityRPM * sin(angleOffset);
-    double robotRelativeYVelocity = - xVelocityRPM * sin(angleOffset) + yVelocityRPM * cos(angleOffset);
-    driveXYR(robotRelativeXVelocity, robotRelativeYVelocity, rotationVelocityRPM);
+void Chassis::driveOffsetAngle(ChassisSpeeds speeds, double angleOffset) {
+    double robotRelativeXVelocity = speeds.x * cos(angleOffset) + speeds.y * sin(angleOffset);
+    double robotRelativeYVelocity = - speeds.x * sin(angleOffset) + speeds.y * cos(angleOffset);
+    driveXYR({robotRelativeXVelocity, robotRelativeYVelocity, speeds.rotation});
 }
 
 
 void Chassis::driveAngle(double angleRadians, double speedRPM, double rotationVelocityRPM) {
     double vY = speedRPM * cos(angleRadians);
     double vX = speedRPM * sin(angleRadians);
-    driveXYR(vX, vY, rotationVelocityRPM);
+    driveXYR({vX, vY, rotationVelocityRPM});
 }
 
 void Chassis::beyblade(double xVelocityRPM, double yVelocityRPM, bool switchDirections) {
@@ -149,7 +140,11 @@ void Chassis::beyblade(double xVelocityRPM, double yVelocityRPM, bool switchDire
     } else if (beybladeSpeed == 0) {
         beybladeSpeed = MAX_BEYBLADE_SPEED;
     }
-    driveFieldRelative(xVelocityRPM, yVelocityRPM, beybladeSpeed);
+    driveFieldRelative({
+        xVelocityRPM,
+        yVelocityRPM,
+        beybladeSpeed
+    });
 }
 
 DJIMotor Chassis::getMotor(int index) {
@@ -167,6 +162,14 @@ DJIMotor Chassis::getMotor(int index) {
     }
 }
 
+WheelSpeeds Chassis::chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds) {
+    return {
+            chassisSpeeds.x + chassisSpeeds.y + chassisSpeeds.rotation,
+            chassisSpeeds.x - chassisSpeeds.y + chassisSpeeds.rotation,
+            -chassisSpeeds.x + chassisSpeeds.y + chassisSpeeds.rotation,
+            -chassisSpeeds.x - chassisSpeeds.y + chassisSpeeds.rotation
+    };
+}
 
 Chassis::BrakeMode Chassis::getBrakeMode() {
     return brakeMode;
@@ -200,8 +203,7 @@ void Chassis::periodic() {
     chassisKalman.step(z);
 
 
-    printf("%i\t%i\t%i\n", (int) chassisKalman.getX(0), (int) chassisKalman.getX(2), (int) chassisKalman.getX(4));
-
+//    printf("%i\t%i\t%i\n", (int) chassisKalman.getX(0), (int) chassisKalman.getX(2), (int) chassisKalman.getX(4));
 
 //    double z[2] = { 0, 0 };
 //    double angle = wheelKalman.getX(0);
@@ -271,4 +273,24 @@ void Chassis::readImu() {
 //    printf("XYZ: %i\n", (int) imuGyro.x);
 
 //    printf("Measurement: %i Prediction: %i\n", (int) imuAngles.yaw, (int) imuKalman.getX(0));
+}
+
+double Chassis::degreesToRadians(double degrees) {
+    return degrees * PI / 180.0;
+}
+
+Pose2D Chassis::getPose() {
+    return {
+        chassisKalman.getX(0),
+        chassisKalman.getX(2),
+        Chassis::degreesToRadians(chassisKalman.getX(4))
+    };
+}
+
+ChassisSpeeds Chassis::getSpeeds() {
+    return {
+        chassisKalman.getX(1),
+        chassisKalman.getX(3),
+        chassisKalman.getX(4)
+    };
 }

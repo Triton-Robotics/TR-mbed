@@ -10,6 +10,9 @@
 #include <peripherals/imu/BNO055.h>
 #include <subsystems/ChassisKalman.h>
 //#include <algorithms/WheelKalman.h>
+#include <algorithms/Pose2D.h>
+#include <algorithms/WheelSpeeds.h>
+#include <algorithms/ChassisSpeeds.h>
 
 #define CAN_BUS_TYPE CANHandler::CANBUS_1
 #define MOTOR_TYPE M3508
@@ -22,7 +25,6 @@
 #define MAX_BEYBLADE_SPEED 1.5
 #define BEYBLADE_ACCELERATION 0.05
 
-
 class Chassis {
 public:
     Chassis(short lfId, short rfId, short lbId, short rbId);
@@ -32,9 +34,10 @@ public:
         COAST
     };
 
-    void driveXYR(double yVelocityRPM, double xVelocityRPM, double rotationVelocityRPM);
-    void driveFieldRelative(double yVelocityRPM, double xVelocityRPM, double rotationVelocityRPM);
-    void driveOffsetAngle(double yVelocityRPM, double xVelocityRPM, double rotationVelocityRPM, double angleOffset);
+    void driveMotors(WheelSpeeds speeds);
+    void driveXYR(ChassisSpeeds speeds);
+    void driveFieldRelative(ChassisSpeeds speeds);
+    void driveOffsetAngle(ChassisSpeeds speeds, double angleOffset);
     void driveAngle(double angleRadians, double speedRPM, double rotationVelcotiyRPM);
     void beyblade(double xVelocityRPM, double yVelocityRPM, bool switchDirections);
     DJIMotor getMotor(int index);
@@ -46,6 +49,11 @@ public:
 
     void periodic();
     void printMotorAngle();
+
+    double degreesToRadians(double degrees);
+
+    Pose2D getPose();
+    ChassisSpeeds getSpeeds();
 
     int8_t isInverted[4];
 
@@ -68,6 +76,8 @@ private:
     double ticksPerSecondToRPM(double ticksPerSecond);
     double ticksPerSecondToInchesPerSecond(double ticksPerSecond);
     double rpmToInchesPerSecond(double RPM);
+
+    WheelSpeeds chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds);
 
     void setMotorPower(int index, double power);
     void setMotorSpeedRPM(int index, double speed);

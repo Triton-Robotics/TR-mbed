@@ -1,6 +1,7 @@
 #include "main.h"
 #include "Infantry.h"
 #include <cstdlib>
+//#include <commands/RamseteCommand.h>
 
 #define PI 3.14159265
 
@@ -14,6 +15,8 @@
 
 
 Chassis chassis(1, 2, 3, 4);
+//RamseteCommand command(
+//        Pose2D(0, 0, 0), Pose2D(20, 0, 0), 2, &chassis);
 DigitalOut led(LED1);
 
 DJIMotor yaw(5, CANHandler::CANBUS_1, GIMBLY);
@@ -80,6 +83,8 @@ int main()
 
     chassis.setBrakeMode(Chassis::COAST);
 
+//    command.initialize();
+
     unsigned long loopTimer = us_ticker_read() / 1000;
 
     int indexJamTime = 0;
@@ -102,7 +107,7 @@ int main()
         if(timeStart - loopTimer > 25){
             loopTimer = timeStart;
 
-//            printf("RS: %i\n", rS);
+            printf("RS: %i\n", rS);
 
             // refLoop++;
             // if(refLoop > 25){
@@ -114,7 +119,7 @@ int main()
 //            printf("A %i B %i\n", rS, lS);
             if (!sticksMoved) {
 //                printf("NOT MOVED!\n");
-                chassis.driveXYR(0,0,0);
+                chassis.driveXYR({0,0,0});
                 if ((prevLS != 0 && lS != prevLS )|| (prevRS != 0 && rS != prevRS)) {
                     sticksMoved = true;
                 } else {
@@ -125,9 +130,15 @@ int main()
                 int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
 //                printf("STICKS: %i %i %i\n", lX, lY, rX);
 //                if (chassis.testDataIndex < 300) {
-                    chassis.driveFieldRelative(lX * 5.0, lY * 5.0, rX * 5.0);
+//                    chassis.driveFieldRelative({lX * 5.0, lY * 5.0, rX * 5.0});
 //                    chassis.driveFieldRelative(0, 4096, 0);
                     chassis.periodic();
+
+//                    if (!command.isFinished()) {
+//                        printf("running command!\n");
+//                        command.execute();
+//                    }
+
 //                } else {
 //                    chassis.driveXYR(0, 0, 0);
 //                        printf("ESTIMATE VS TIME:\n");
@@ -151,7 +162,7 @@ int main()
 
             }else if(rS == 2){ //disable all the non-serializer components
 //                chassis.driveXYR(0,0,0);
-                chassis.driveFieldRelative(0, 0, 0);
+                chassis.driveFieldRelative({0, 0, 0});
                 // yaw.setPower(0); pitch.setPower(0);
             }else if(rS == 3){ // beyblade mode
                 chassis.beyblade(lX / 500.0, lY / 500.0, false);
