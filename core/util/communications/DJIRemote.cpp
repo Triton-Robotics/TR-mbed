@@ -143,26 +143,19 @@ void Remote::parseBuffer(){
         remote.leftSwitch = SwitchState(((rxBuffer[5] >> 4) & 0x000C) >> 2);
         remote.rightSwitch = SwitchState(((rxBuffer[5] >> 4) & 0x0003));
 
-        remote.mouse.x = int16_t((rxBuffer[6]) | (rxBuffer[7] << 8));
-        remote.mouse.y = int16_t((rxBuffer[8]) | (rxBuffer[9] << 8));
-        remote.mouse.z = int16_t((rxBuffer[10]) | (rxBuffer[11] << 8));
+        remote.mouse.x = ((int16_t)rxBuffer[6]) | ((int16_t)rxBuffer[7] << 8);
+        remote.mouse.y = ((int16_t)rxBuffer[8]) | ((int16_t)rxBuffer[9] << 8);
+        remote.mouse.z = ((int16_t)rxBuffer[10]) | ((int16_t)rxBuffer[11] << 8);
 
-        remote.mouse.l = rxBuffer[12];
-        remote.mouse.r = rxBuffer[13];
+        remote.mouse.l = static_cast<bool>rxBuffer[12];
+        remote.mouse.r = static_cast<bool>rxBuffer[13];
 
-        remote.key = (rxBuffer[14]);
+        remote.key = ((int16_t)rxBuffer[14])) | ((int16_t)rxBuffer[15] << 8);
+        remote.wheel = (((int16_t)rxBuffer[16]) | ((int16_t)rxBuffer[17] << 8)) - 1024;
 
-
-
-
-        //printf("%d \t", (rxBuffer[14] >> 1 | rxBuffer[15] << 7) & 0x07FF);
-        //printf("\n");
-        //printf("%d\t %d\t %d\t %d\t", remote.leftHorizontal, remote.leftVertical, remote.rightHorizontal, remote.rightVertical);
-        //printf("\n");
-        // the first 6 bytes refer to the remote channel values
 
         // switches on the dji remote - their input is registered
-        switch (((rxBuffer[5] >> 4) & 0x000C) >> 2) {
+        switch (remote.leftSwitch) {
             case 1:
                 remote.leftSwitch = SwitchState::UP;
                 break;
@@ -177,7 +170,7 @@ void Remote::parseBuffer(){
                 break;
         }
 
-        switch ((rxBuffer[5] >> 4) & 0x003) {
+        switch (remote.rightSwitch) {
             case 1:
                 remote.rightSwitch = SwitchState::UP;
                 break;
@@ -197,22 +190,10 @@ void Remote::parseBuffer(){
         // 660 is the max value from the remote, so gaining a higher
         // value would be impractical.
         // as such, the method returns null, exiting the method.
-        if ((abs(remote.rightHorizontal) > 660) || (abs(remote.rightVertical) > 660) ||
-            (abs(remote.leftHorizontal) > 660) || (abs(remote.leftVertical) > 660)) {
-            return;
-        }
-
-        // mouse input
-        remote.mouse.x = rxBuffer[6] | (rxBuffer[7] << 8);    // x axis
-        remote.mouse.y = rxBuffer[8] | (rxBuffer[9] << 8);    // y axis
-        remote.mouse.z = rxBuffer[10] | (rxBuffer[11] << 8);  // z axis
-        remote.mouse.l = static_cast<bool>(rxBuffer[12]);     // left button click
-        remote.mouse.r = static_cast<bool>(rxBuffer[13]);     // right button click
-
-        // keyboard capture
-        remote.key = rxBuffer[14] | rxBuffer[15] << 8;
-        // Remote wheel
-        remote.wheel = (rxBuffer[16] | rxBuffer[17] << 8) - 1024;
+//        if ((abs(remote.rightHorizontal) > 660) || (abs(remote.rightVertical) > 660) ||
+//            (abs(remote.leftHorizontal) > 660) || (abs(remote.leftVertical) > 660)) {
+//            return;
+//        }
 
         remote.updateCounter++;
     }
