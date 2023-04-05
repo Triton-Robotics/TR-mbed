@@ -92,6 +92,8 @@ public:
 
     void printAxisData() const;
 
+    void dumpInfo() const;
+
     /**
      * @return The state of the given switch.
      */

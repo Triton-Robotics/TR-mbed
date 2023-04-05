@@ -22,7 +22,8 @@ int main(){
             remote1.read();
             //led = !led;
 
-            remote1.printAxisData();
+            //remote1.printAxisData();
+            remote1.dumpInfo();
             //printf("%d\n", remote1.getSwitch(Remote::Switch::LEFT_SWITCH) );
 
         }
