@@ -1,4 +1,10 @@
 {
     "cmake.buildDirectory": "${workspaceFolder}/cmake_build/NUCLEO_F446RE/develop/GCC_ARM",
-    "cmake.configureOnOpen": false
+    "cmake.configureOnOpen": false,
+    "files.associations": {
+        "cstdlib": "cpp",
+        "string": "cpp",
+        "mstd_mutex": "cpp",
+        "mutex": "cpp"
+    }
 }

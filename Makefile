@@ -17,3 +17,4 @@ engineer:
 
 serial:
 	mbed-tools sterm -b 115200
+
