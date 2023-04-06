@@ -9,6 +9,10 @@
 #include <queue>
 
 
+static Mutex MUTEX;
+static Thread print_code_thread;
+static std::queue<char> buffer;
+
 TRMutex::TRMutex() {
     print_code_thread.start(loop);
     

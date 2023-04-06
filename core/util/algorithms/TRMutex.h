@@ -10,12 +10,6 @@
 
 class TRMutex {
 
-private:
-    static Mutex MUTEX;
-    static Thread print_code_thread;
-    static std::queue<char> buffer;
-
-
 public:
     TRMutex();
 
