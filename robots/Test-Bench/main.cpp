@@ -1,5 +1,32 @@
 #include "main.h"
 #include <cstdlib>
+#include "mbed.h"
+#include <cstdlib>
+// constructing queues
+#include <iostream>       // std::cout
+#include <list>           // std::list
+#include <queue>
+#ifndef TR_EMBEDDED_MUTEX_H
+#define TR_EMBEDDED_MUTEX_H
+class TRMutex {
+
+private:
+    static Mutex MUTEX;
+    static Thread print_code_thread;
+    static std::queue<char> buffer;
+
+
+public:
+    TRMutex();
+
+    string printMutex(string statement);
+
+    static void loop();
+
+};
+
+#endif //TR_EMBEDDED_MUTEX_H
+
 
 //--------------CLASS TESTER
 
@@ -34,7 +61,34 @@ int main() {
         //MUTEX.unlock();
         
     }
-}
+};
+
+// TRMutex::TRMutex() {
+//     print_code_thread.start(loop);
+    
+// }
+
+
+// string TRMutex::printMutex(string statement) {
+//     for (int i = 0; i < statement.length(); i++) {
+//         buffer.push(statement[i]);
+//     }
+    
+// }
+
+// void TRMutex::loop() {
+//     while (true) {
+//         MUTEX.lock();
+
+//         if (!buffer.empty()) {
+//             printf("%c", buffer.front());
+//             buffer.pop();
+//         }
+        
+//         ThisThread::sleep_for(1ms);
+//         MUTEX.unlock();
+//     }
+// }
 
 
 

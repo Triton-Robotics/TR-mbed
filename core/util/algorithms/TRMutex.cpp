@@ -1,3 +1,5 @@
+#ifndef TR_EMBEDDED_MUTEX_C
+#define TR_EMBEDDED_MUTEX_C
 #include "TRMutex.h"
 #include "mbed.h"
 #include <cstdlib>
@@ -34,4 +36,4 @@ void TRMutex::loop() {
     }
 }
 
-
+#endif //TR_EMBEDDED_MUTEX_C
