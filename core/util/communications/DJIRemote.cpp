@@ -147,15 +147,15 @@ void Remote::parseBuffer(){
         remote.mouse.y = ((int16_t)rxBuffer[8]) | ((int16_t)rxBuffer[9] << 8);
         remote.mouse.z = ((int16_t)rxBuffer[10]) | ((int16_t)rxBuffer[11] << 8);
 
-        remote.mouse.l = static_cast<bool>rxBuffer[12];
-        remote.mouse.r = static_cast<bool>rxBuffer[13];
+        remote.mouse.l = static_cast<bool>(rxBuffer[12]);
+        remote.mouse.r = static_cast<bool>(rxBuffer[13]);
 
-        remote.key = ((int16_t)rxBuffer[14])) | ((int16_t)rxBuffer[15] << 8);
+        remote.key = ((int16_t)rxBuffer[14]) | ((int16_t)rxBuffer[15] << 8);
         remote.wheel = (((int16_t)rxBuffer[16]) | ((int16_t)rxBuffer[17] << 8)) - 1024;
 
 
         // switches on the dji remote - their input is registered
-        switch (remote.leftSwitch) {
+        switch ((int)remote.leftSwitch) {
             case 1:
                 remote.leftSwitch = SwitchState::UP;
                 break;
@@ -170,7 +170,7 @@ void Remote::parseBuffer(){
                 break;
         }
 
-        switch (remote.rightSwitch) {
+        switch ((int)remote.rightSwitch) {
             case 1:
                 remote.rightSwitch = SwitchState::UP;
                 break;
