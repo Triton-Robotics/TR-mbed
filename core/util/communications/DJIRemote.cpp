@@ -123,7 +123,7 @@ bool Remote::keyPressed(Key key) const { return (remote.key & (1 << (uint8_t)key
 
 int16_t Remote::getWheel() const { return remote.wheel; }
 
-bool anyBadData(const uint8_t rxBuffer[]){
+bool anyOutOfRangeData(const uint8_t rxBuffer[]){
 
     int16_t rh = ((int16_t) rxBuffer[0] | ((int16_t) rxBuffer[1] << 8)) & 0x07FF;
     int16_t rv = (((int16_t) rxBuffer[1] >> 3) | ((int16_t) rxBuffer[2] << 5)) & 0x07FF;
@@ -132,9 +132,10 @@ bool anyBadData(const uint8_t rxBuffer[]){
 
     int16_t joysticks[4] = {rh, rv, lh, lv};
 
-    for(int16_t axis: joysticks)
-        if(abs(axis) > 660)
+    for(int16_t axis: joysticks) {
+        if (abs(axis - 1024) > 660)
             return true;
+    }
 
     return false;
 }
@@ -143,7 +144,7 @@ void Remote::parseBuffer(){
     // values implemented by shifting bits across based on the dr16
     // values documentation and code created last year
 
-    if(bool(SwitchState(((rxBuffer[5] >> 4) & 0x000C) >> 2)) && !anyBadData(rxBuffer)) {
+    if(bool(SwitchState(((rxBuffer[5] >> 4) & 0x000C) >> 2)) && !anyOutOfRangeData(rxBuffer)) {
 
         remote.rightHorizontal = ((int16_t) rxBuffer[0] | ((int16_t) rxBuffer[1] << 8)) & 0x07FF;
         remote.rightVertical = (((int16_t) rxBuffer[1] >> 3) | ((int16_t) rxBuffer[2] << 5)) & 0x07FF;
