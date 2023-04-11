@@ -15,10 +15,17 @@ ChassisSpeeds RamseteController::calculate(Pose2D currentPose, Pose2D desiredPos
 
     double k = 2.0 * zeta * sqrt(desiredAngularVelocity * desiredAngularVelocity + b * desiredLinearVelocity * desiredLinearVelocity);
 
+    double linearResult = desiredLinearVelocity * cos(poseError.angleRadians) + k * poseError.x;
+    if (linearResult > 1000) {
+        linearResult = 1000;
+    }
+    double angularResult = desiredAngularVelocity + k * poseError.angleRadians + b * desiredLinearVelocity * sinc(poseError.angleRadians) * poseError.y;
+    if (angularResult > 1000) {}
+    angularResult = 1000;
     return {
-        desiredLinearVelocity * cos(poseError.angleRadians) + k * poseError.x,
+        linearResult,
         0,
-        desiredAngularVelocity + k * poseError.angleRadians + b * desiredLinearVelocity * sinc(poseError.angleRadians) * poseError.y
+        angularResult
     };
 }
 
