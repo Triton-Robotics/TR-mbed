@@ -1,7 +1,7 @@
 #include "main.h"
 #include <cstdlib>
 
-PID pid(1, 0, 1, 0, 0);
+PID pid(0, 0, 0, 0, 0);
 
 DJIMotor m3058_1(1, CANHandler::CANBUS_1, M3508);
 DJIMotor m3058_2(2, CANHandler::CANBUS_1, M3508);
@@ -21,11 +21,15 @@ int main()
     bool beybladeIncreasing = true;
 
     //pid.debug = true;
-    pid.debugPIDterms = true;
+    //pid.debugPIDterms = true;
 
     int refLoop=0;
 
     unsigned long lastTime = 0;
+
+    double p = 12;
+    double i = 0;
+    double d = 0;
 
     while (true) {
         
@@ -37,38 +41,55 @@ int main()
 
             led = !led;
 
-            refLoop++;
-            if(refLoop > 1){
-                refereeThread();
-                refLoop = 0;
-            }
+            // refLoop++;
+            // if(refLoop > 15){
+            //     refereeThread();
+            //     refLoop = 0;
+            // }
+
+            refereeThread();
 
             double scale = 1;
 
-            double pos_scale = 1;
+            double ref_chassis_power = ext_power_heat_data.data.chassis_power;
+
+            switch (rS)
+            {
+            case 1:
+                p = p + rY/5000.0;
+                break;
+            case 2:
+                i = i + rY/10000.0;
+                break;
+            case 3:
+                d = d + rY/5000.0;
+                break;
+            default:
+                break;
+            }
+
+            pid.setPID(p, i, d);
+            
+            int16_t power = lY*5;
 
             unsigned long time = us_ticker_read() / 1000;
 
-            double ref_chassis_power = ext_power_heat_data.data.chassis_power;
-
-            scale = pid.calculate(12, ref_chassis_power, time - lastTime);
+            if (ref_chassis_power > 10) {
+                scale = abs(pid.calculate(12, ref_chassis_power, time - lastTime));
+                power /= scale;
+            }
 
             lastTime = time;
 
-            double convert;
+            if (power < 1500)
+                m3058_1.setPower(power);
+            else
+                m3058_1.setPower(1500);
 
-            if (scale < 0) {
-                // convert = scale * (20/16384);
-                // m3058_1.setPower((int16_t) (lY*5 + convert));
-                pos_scale = abs(scale);
-                m3058_1.setPower((int16_t) (lY*5 / pos_scale));
-            }
-            else {
-                m3058_1.setPower((int16_t) (lY*5));
-            }
+            printf("kp: %f\t ki: %f\t kd: %f\t scale: %f\t input: %d\t ref: %f\n", 
+                    pid.getkP(), pid.getkI(), pid.getkD(), scale, m3058_1.getData(POWEROUT), ref_chassis_power);
 
-            printf("scale: %f\t pos_scale: %f\t input: %d\t ref: %f\n", 
-                    scale, pos_scale, m3058_1.getData(POWEROUT), ref_chassis_power);
+            //printf("%d\t %d\t %f\t %f\t %f\t %f\n", m3058_1.getData(POWEROUT), 12, ref_chassis_power, pid.getkP(), pid.getkI(), pid.getkD());
 
             DJIMotor::sendValues();
         }
