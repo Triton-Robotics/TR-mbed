@@ -51,6 +51,7 @@ public:
     void printMotorAngle();
 
     double degreesToRadians(double degrees);
+    int getHeadingDegrees();
 
     Pose2D getPose();
     ChassisSpeeds getSpeeds();

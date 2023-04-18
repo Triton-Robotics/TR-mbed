@@ -3,6 +3,7 @@
 
 Chassis::Chassis(short lfId, short rfId, short lbId, short rbId) : LF(lfId, CAN_BUS_TYPE, MOTOR_TYPE), RF(rfId, CAN_BUS_TYPE, MOTOR_TYPE),
 LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE), i2c(I2C_SDA, I2C_SCL), imu(i2c, IMU_RESET, MODE_IMU), chassisKalman() {
+    printf("Chassis constructor start\n");
     LF.outCap = 16000;
     RF.outCap = 16000;
     LB.outCap = 16000;
@@ -18,6 +19,7 @@ LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE), i2c(I2C_
     RB.setSpeedPID(1.5, 0, 0);
     brakeMode = BRAKE;
     isInverted[0] = 1; isInverted[1] = 1; isInverted[2] = 1; isInverted[3] = 1;
+    printf("Chassis constructor end\n");
 }
 
 double Chassis::rpmToTicksPerSecond(double RPM) {
@@ -38,6 +40,8 @@ double Chassis::rpmToInchesPerSecond(double RPM) {
 }
 
 void Chassis::setMotorPower(int index, double power) {
+    if (power > 100) {}
+    power = 100;
     switch (index) {
         case 0:
             LF.setPower(power * isInverted[0]);
@@ -103,7 +107,10 @@ void Chassis::driveFieldRelative(ChassisSpeeds speeds) {
 }
 
 void Chassis::printMotorAngle() {
-    printf("Angle: %i\n", (int) LF.getData(MULTITURNANGLE));
+    printf("LF: %i\n", (int) LF.getData(MULTITURNANGLE));
+    printf("LB: %i\n", (int) LB.getData(MULTITURNANGLE));
+    printf("RF: %i\n", (int) RF.getData(MULTITURNANGLE));
+    printf("RB: %i\n", (int) RB.getData(MULTITURNANGLE));
 }
 
 /**`
@@ -184,6 +191,7 @@ void Chassis::initializeImu() {
 }
 
 void Chassis::periodic() {
+//    printMotorAngle();
 //    printf("POW: %i\n", (int) LF.powerOut);
     double z[5] = {0, 0, 0, 0, 0};
     z[0] = rpmToInchesPerSecond(LF.getData(VELOCITY));
@@ -191,9 +199,9 @@ void Chassis::periodic() {
     z[2] = rpmToInchesPerSecond(LB.getData(VELOCITY));
     z[3] = rpmToInchesPerSecond(RB.getData(VELOCITY));
 
-//    printf("LF speed: %i\n", (int) (z[0] * 100));
-
     z[4] = imuAngles.yaw;
+
+//    printf("Yaw: %i\n", (int) z[4]);
 
     int currTime = us_ticker_read();
     if (lastTimeMs != 0) {
@@ -255,7 +263,14 @@ void Chassis::periodic() {
 }
 
 void Chassis::readImu() {
+//    double lastAngle = imuAngles.yaw;
+//printf("Reading imu: \n");
     imu.get_angular_position_quat(&imuAngles);
+//    double curAngle = imuAngles.yaw;
+//    double deltaAngle = curAngle - lastAngle;
+//    if (deltaAngle < -300) {
+//        imuAngles.yaw += 360;
+//    }
 //    imuAngles.yaw += (rand() % 20 - 10);
 
 //
@@ -278,6 +293,11 @@ void Chassis::readImu() {
 double Chassis::degreesToRadians(double degrees) {
     return degrees * PI / 180.0;
 }
+
+int Chassis::getHeadingDegrees() {
+    return (int) imu.multiturnYaw;
+}
+
 
 Pose2D Chassis::getPose() {
     return {
