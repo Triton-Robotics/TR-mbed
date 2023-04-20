@@ -21,6 +21,10 @@ public:
 
     void println(char statement[]);
 
+//---- printf
+
+    void printff(const char* format, ...);
+
     static void loop();
 
 };

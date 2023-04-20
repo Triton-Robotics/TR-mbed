@@ -64,6 +64,7 @@ int main() {
             DJIMotor::sendValues();
             tester.print(m3508_1.getData(TORQUE));
             tester.println("hi");
+            tester.printff("ya[%d]\n", 5);
         }
         unsigned long timeEnd = us_ticker_read() / 1000;
         DJIMotor::getFeedback();

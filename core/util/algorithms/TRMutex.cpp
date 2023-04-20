@@ -28,6 +28,16 @@ void TRMutex::print(int integer) {
     print(temp);
 }
 
+void TRMutex::printff(const char* format, ...) {
+    char temp[50];
+    va_list args;
+    va_start (args, format);
+    vsnprintf (temp, 50, format, args);
+    print(temp);
+    va_end (args);
+    
+}
+
 //------println 
 
 //string/char inputs
