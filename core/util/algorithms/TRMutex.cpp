@@ -1,29 +1,22 @@
-#ifndef TR_EMBEDDED_MUTEX_C
-#define TR_EMBEDDED_MUTEX_C
 #include "TRMutex.h"
 #include "mbed.h"
 #include <cstdlib>
-// constructing queues
-#include <iostream>       // std::cout
-#include <list>           // std::list
 #include <queue>
 
-
 static Mutex MUTEX;
-static Thread print_code_thread;
 static std::queue<char> buffer;
+
 
 TRMutex::TRMutex() {
     print_code_thread.start(loop);
-    
 }
 
 
-string TRMutex::printMutex(string statement) {
-    for (int i = 0; i < statement.length(); i++) {
-        buffer.push(statement[i]);
-    }
-    
+void TRMutex::printMutex(char statement[]) {
+    int length = sizeof(statement)/sizeof(char);
+        for (int i = 0; i < length; i++) {
+            buffer.push(statement[i]);
+        }
 }
 
 void TRMutex::loop() {
@@ -34,10 +27,9 @@ void TRMutex::loop() {
             printf("%c", buffer.front());
             buffer.pop();
         }
-        
-        ThisThread::sleep_for(1ms);
         MUTEX.unlock();
+        ThisThread::sleep_for(1ms);
     }
 }
 
-#endif //TR_EMBEDDED_MUTEX_C
+

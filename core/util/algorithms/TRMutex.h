@@ -3,17 +3,16 @@
 
 #include "mbed.h"
 #include <cstdlib>
-// constructing queues
-#include <iostream>       // std::cout
-#include <list>           // std::list
 #include <queue>
 
 class TRMutex {
 
 public:
+    Thread print_code_thread;
+
     TRMutex();
 
-    string printMutex(string statement);
+    void printMutex(char statement[]);
 
     static void loop();
 

@@ -1,32 +1,39 @@
 #include "main.h"
 #include <cstdlib>
 #include "mbed.h"
-#include <cstdlib>
-// constructing queues
-#include <iostream>       // std::cout
-#include <list>           // std::list
 #include <queue>
-#ifndef TR_EMBEDDED_MUTEX_H
-#define TR_EMBEDDED_MUTEX_H
-class TRMutex {
+// //--------------TIMER
+// #include <chrono>
+// #include <thread>
+// #include <iostream>
 
-private:
-    static Mutex MUTEX;
-    static Thread print_code_thread;
-    static std::queue<char> buffer;
+// class Time
+// {
+//     // make things readable
+//     using clk = std::chrono::steady_clock;
 
+//     clk::time_point b; // begin
+//     clk::time_point e; // end
 
-public:
-    TRMutex();
+// public:
+//     void clear() { b = e = clk::now(); }
+//     void start() { b = clk::now(); }
+//     void stop() { e = clk::now(); }
 
-    string printMutex(string statement);
+//     friend std::ostream& operator<<(std::ostream& o, const Time& timer)
+//     {
+//         return o << timer.secs();
+//     }
 
-    static void loop();
-
-};
-
-#endif //TR_EMBEDDED_MUTEX_H
-
+//     // return time difference in seconds
+//     double secs() const
+//     {
+//         if(e <= b)
+//             return 0.0;
+//         auto d = std::chrono::duration_cast<std::chrono::microseconds>(e - b);
+//         return d.count() / 1000000.0;
+//     }
+// };
 
 //--------------CLASS TESTER
 
@@ -34,14 +41,17 @@ public:
  DigitalOut led(LED1); 
  TRMutex tester;
 
-int main() {  
+int main() {
+    //Time timer;
+    //int counter =0;
+
+    //timer.start();
     DJIMotor::setCANHandlers(&canHandler1,&canHandler2, false, false);
     unsigned long loopTimer = us_ticker_read() / 1000;
     int countLoops = 0;
     int refLoop=0;
 
     while (true) {
-        //MUTEX.lock();
 
         unsigned long timeStart = us_ticker_read() / 1000;
         if(timeStart - loopTimer > 25){
@@ -50,16 +60,21 @@ int main() {
             led = !led;
             remoteRead();
 
-            m3508_1.setPower(3000);
+            m3508_1.setPower(1000);
             DJIMotor::sendValues();
-            tester.printMutex("hi");
+            printf("%d\n",m3508_1.getData(TORQUE));
+            tester.printMutex("hi\n");
         }
         unsigned long timeEnd = us_ticker_read() / 1000;
         DJIMotor::getFeedback();
-        ThisThread::sleep_for(1);
+        ThisThread::sleep_for(1ms);
         countLoops ++;
-        //MUTEX.unlock();
-        
+        //counter++;
+
+        // if (counter == 10) {
+        //     timer.stop();
+        //     printf("%d", timer);
+        // }
     }
 };
 
