@@ -11,8 +11,15 @@ public:
     Thread print_code_thread;
 
     TRMutex();
+    
+    void print(int integer);
 
-    void printMutex(char statement[]);
+    void print(char statement[]);
+
+//---- println
+    void println(int integer);
+
+    void println(char statement[]);
 
     static void loop();
 
