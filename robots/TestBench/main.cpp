@@ -28,7 +28,7 @@ int main()
     unsigned long lastTime = 0;
 
     double p = 12;
-    double i = 0;
+    double i = 0.008;
     double d = 0;
 
     while (true) {
@@ -56,13 +56,13 @@ int main()
             switch (rS)
             {
             case 1:
-                p = p + rY/5000.0;
+                p = p + rY/10000.0;
                 break;
             case 2:
-                i = i + rY/10000.0;
+                i = i + rY/1000000.0;
                 break;
             case 3:
-                d = d + rY/5000.0;
+                d = d + rY/10000.0;
                 break;
             default:
                 break;

@@ -89,6 +89,38 @@ void Chassis::driveXYR(double xVelocityRPM, double yVelocityRPM, double rotation
     );
 }
 
+void Chassis::driveXYRPower(double ref_chassis_power, double lX, double lY, double rX, double time_diff) {
+    double scale = 1;
+
+    LF.outCap = 1500;
+    RF.outCap = 1500;
+    LB.outCap = 1500;
+    RB.outCap = 1500;
+
+    PID pid(12, 0.008, 0, 0, 0);
+
+    double power0 = lX + lY + rX;
+    double power1 = lX - lY + rX;
+    double power2 = 0 - lX + lY + rX;
+    double power3 = 0 - lX - lY + rX;
+
+    unsigned long time = us_ticker_read() / 1000;
+
+    scale = abs(pid.calculate(48, ref_chassis_power, time_diff));
+
+    if (ref_chassis_power > 40) {
+        power0 /= scale;
+        power1 /= scale;
+        power2 /= scale;
+        power3 /= scale;
+    }
+
+    setMotorPower(0, power0);
+    setMotorPower(1, power1);
+    setMotorPower(2, power2);
+    setMotorPower(3, power3);
+}
+
 void Chassis::driveFieldRelative(double xVelocityRPM, double yVelocityRPM, double rotationVelocityRPM) {
     double robotHeading = imuAngles.yaw * PI / 180.0;
     driveOffsetAngle(xVelocityRPM, yVelocityRPM, rotationVelocityRPM, robotHeading);

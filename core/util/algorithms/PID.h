@@ -34,9 +34,9 @@ public:
     void setOutputCap(float outCap);
     void setPID(float p, float i, float d);
 
-    int getkP();
-    int getkI();
-    int getkD();
+    float getkP();
+    float getkI();
+    float getkD();
 };
 
 

@@ -5,7 +5,7 @@
 #include "PID.h"
 
 PID::PID(){
-    kP = 1; kI = 0; kD = 0;
+    kP = 0; kI = 0; kD = 0;
     integralCap = 0;
     outputCap = 0;
     feedForward = 0;
@@ -94,14 +94,14 @@ void PID::setPID(float p, float i, float d){
     kP = p; kI = i; kD = d;
 }
 
-int PID::getkP(){
+float PID::getkP(){
     return kP;
 }
 
-int PID::getkI(){
+float PID::getkI(){
     return kI;
 }
 
-int PID::getkD(){
+float PID::getkD(){
     return kD;
 }

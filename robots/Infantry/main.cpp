@@ -93,6 +93,8 @@ int main()
     double beybladeSpeed = 2;
     bool beybladeIncreasing = true;
 
+    unsigned long lastTime = 0;
+
     while (true) {
         led = !led;
         remoteRead();
@@ -102,16 +104,15 @@ int main()
         if(timeStart - loopTimer > 25){
             loopTimer = timeStart;
 
-            // refLoop++;
-            // if(refLoop > 25){
-            //     //refereeThread();
-            //     refLoop = 0;
-            //     //led = ext_power_heat_data.data.chassis_power > 0;
-            //     //printf("%d\n",ext_power_heat_data.data.chassis_power);
-            // }
+            refLoop++;
+            if(refLoop > 1){
+                refereeThread();
+                refLoop = 0;
+                //led = ext_power_heat_data.data.chassis_power > 0;
+                //printf("%d\n",ext_power_heat_data.data.chassis_power);
+            }
 //            printf("A %i B %i\n", rS, lS);
             if (!sticksMoved) {
-                chassis.driveXYR(0,0,0);
                 if ((prevLS != 0 && lS != prevLS )|| (prevRS != 0 && rS != prevRS)) {
                     sticksMoved = true;
                 } else {
@@ -119,14 +120,24 @@ int main()
                     prevRS = rS;
                 }
             } else if(rS == 1){ // All non-serializer motors activated
-                int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
-                chassis.driveFieldRelative(lX / 500.0, lY / 500.0, rX / 500.0);
+                // int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
+                // chassis.driveFieldRelative(lX / 500.0, lY / 500.0, rX / 500.0);
 
-                pitch.setPosition((rY / 2) + 1500);
-                // yaw.setSpeed(rX/100);
-                yawSetpoint -= rX / 10.0;
-                yaw.setPosition(yawSetpoint);
+                // pitch.setPosition((rY / 2) + 1500);
+                // // yaw.setSpeed(rX/100);
+                // yawSetpoint -= rX / 10.0;
+                // yaw.setPosition(yawSetpoint);
 
+                double ref_chassis_power = ext_power_heat_data.data.chassis_power;
+
+                unsigned long time = us_ticker_read() / 1000;
+
+                chassis.driveXYRPower(ref_chassis_power, lX, lY, rX, time - lastTime);
+                //chassis.driveXYR(ref_chassis_power, lY*5, time - lastTime);
+    
+                lastTime = time;
+
+                printf("ref: %f\n", ref_chassis_power);
 
             }else if(rS == 2){ //disable all the non-serializer components
                 chassis.driveXYR(0,0,0);
