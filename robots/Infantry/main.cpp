@@ -26,7 +26,7 @@ DigitalOut led(LED1);
 
 
 DJIMotor yaw(5, CANHandler::CANBUS_1, GIMBLY);
-DJIMotor pitch(7, CANHandler::CANBUS_1, GIMBLY);
+DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY);
 int pitchval = 0;
 
 DJIMotor indexer(7, CANHandler::CANBUS_1, C610);
@@ -205,7 +205,7 @@ int main()
 //                printf("Setting power: %i\n", (int) pitch.powerOut);
                 // yaw.setSpeed(rX/100);
 //                yawSetpoint -= rX / 10.0;
-                yawSetpoint = -chassis.getHeadingDegrees() * 8192 / 360;
+                yawSetpoint = -chassis.getHeadingDegrees() * 8192 / 360 + yaw.getData(MULTITURNANGLE);
 //                printf("Setpoint: %i\n", yawSetpoint);
                 yaw.setPosition(yawSetpoint);
 
