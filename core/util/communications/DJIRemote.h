@@ -1,11 +1,13 @@
 #include "mbed.h"
 
-
+#ifndef DJI_REMOTE
+#define DJI_REMOTE
 /**
  * A unique UART handler that uses timing in leu of DBUS communication (mbed does not
  * support DBUS) to interact with the DR16 receiver.
  */
 class Remote
+
 {
 public:
     Remote(PinName dbus);
@@ -36,9 +38,9 @@ public:
     enum class SwitchState
     {
         UNKNOWN,
-        UP,
+        DOWN,
         MID,
-        DOWN
+        UP
     };
 
     /**
@@ -198,4 +200,5 @@ private:
     /// Resets the current remote info.
     void reset();
 };  // class Remote
+#endif
 

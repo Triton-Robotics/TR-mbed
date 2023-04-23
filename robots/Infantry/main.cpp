@@ -1,7 +1,8 @@
 #include "main.h"
 #include "Infantry.h"
-//#include <cstdlib>
 #include <commands/RamseteCommand.h>
+#include "communications/DJIRemote.h"
+#include "mbed.h"
 //#include " COMPONENT_SD/include/SD/SDBlockDevice.h"
 //#include "storage/blockdevice/COMPONENT_SD/include/SD/SDBlockDevice.h"
 //#include "SDBlockDevice.h"
@@ -14,15 +15,16 @@
 #define LOWERBOUND 1000
 #define UPPERBOUND 2000
 
-// CANMotor LF(4,NewCANHandler::CANBUS_1,M3508); 
-// CANMotor RF(2,NewCANHandler::CANBUS_1,M3508); 
-// CANMotor LB(1,NewCANHandler::CANBUS_1,M3508); 
+// CANMotor LF(4,NewCANHandler::CANBUS_1,M3508);
+// CANMotor RF(2,NewCANHandler::CANBUS_1,M3508);
+// CANMotor LB(1,NewCANHandler::CANBUS_1,M3508);
 // CANMotor RB(3,NewCANHandler::CANBUS_1,M3508);
 
 Chassis chassis(1, 2, 3, 4);
 RamseteCommand command(
         Pose2D(0, 0, 0), Pose2D(20, 20, 0), 2, &chassis);
 DigitalOut led(LED1);
+
 
 
 DJIMotor yaw(5, CANHandler::CANBUS_1, GIMBLY);
@@ -39,7 +41,8 @@ unsigned long reverseTime = 300;
 unsigned long totalTime;
 
 bool sticksMoved = false;
-int prevRS = 0, prevLS = 0;
+Remote::SwitchState prevRS = Remote::SwitchState::UNKNOWN;
+Remote::SwitchState prevLS = Remote::SwitchState::UNKNOWN;
 
 DJIMotor RFLYWHEEL(8, CANHandler::CANBUS_1, M3508);
 DJIMotor LFLYWHEEL(5, CANHandler::CANBUS_1, M3508);
@@ -125,12 +128,15 @@ int main()
 //    }
 
     while (true) {
-        remoteRead();
+
+        printf("Pitch angle: %i\n", (int) pitch.getData(ANGLE));
+        printf("Yaw motor angle: %i\n", (int) yaw.getData(MULTITURNANGLE));
+        chassis.printMotorAngle();
 
 //        printf("Pitch: %i\n", (int) pitch.getData((ANGLE)));
 //        printf("Yaw: %i\n", (int) yaw.getData((ANGLE)));
-        printf("Speed: %i  %i\n", (int) pitch.getData(VELOCITY), (int) yaw.getData(VELOCITY));
-        printf("Powerout: %i %i \n", (int) pitch.powerOut, (int) yaw.powerOut);
+//        printf("Speed: %i  %i\n", (int) pitch.getData(VELOCITY), (int) yaw.getData(VELOCITY));
+//        printf("Powerout: %i %i \n", (int) pitch.powerOut, (int) yaw.powerOut);
 
 //    if (0 != sd.init()) {
 //        printf("Init failed \n");
@@ -146,10 +152,18 @@ int main()
             led = !led;
             loopTimer = timeStart;
 
-            printf("RS: %i\n", rS);
+            remoteRead();
+
             chassis.periodic();
 //            printf("Time: %i\n", (int) (timeStart / 1000));
 
+            printf("Rs: %i\n", (int) rS);
+
+
+//            printf("Lx: %i\n", (int) lX);
+//            printf("Ly: %i\n", (int) lY);
+//            printf("Rx: %i\n", (int) rX);
+//            printf("Ry: %i\n", (int) rY);
 
             // refLoop++;
             // if(refLoop > 25){
@@ -162,17 +176,19 @@ int main()
             if (!sticksMoved) {
 //                printf("NOT MOVED!\n");
                 chassis.driveXYR({0,0,0});
-                if ((prevLS != 0 && lS != prevLS )|| (prevRS != 0 && rS != prevRS)) {
+                if ((prevLS != Remote::SwitchState::UNKNOWN && lS != prevLS )
+                || (prevRS != Remote::SwitchState::UNKNOWN  && rS != prevRS)) {
                     sticksMoved = true;
                 } else {
                     prevLS = lS;
                     prevRS = rS;
                 }
-            } else if(rS == 1){ // All non-serializer motors activated
+            } else if(rS == Remote::SwitchState::DOWN){ // All non-serializer motors activated
                 int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
 //                printf("STICKS: %i %i %i\n", lX, lY, rX);
 //                if (chassis.testDataIndex < 300) {
-                    chassis.driveFieldRelative({lX * 5.0, lY * 5.0, rX * 5.0});
+//                    chassis.driveFieldRelative({lX * 5.0, lY * 5.0, 0});
+                    chassis.driveTurretRelative({lX * 5.0, lY * 5.0, 0}, yaw.getData(MULTITURNANGLE) * 360.0 / 8192);
 //                    chassis.driveFieldRelative(0, 4096, 0);
                     chassis.periodic();
 
@@ -198,40 +214,44 @@ int main()
 //                }
 //                printf("Angle: %i\n", (int) pitch.getData(ANGLE));
                 pitch.setPosition((rY * 0.9) + 6400);
-                printf("Flywheel out: %i\n", (int) LFLYWHEEL.powerOut);
-                printf("Flywheel speed: %i\n", (int) LFLYWHEEL.getData(VELOCITY));
-                printf("Flywheel pos: %i\n", (int) LFLYWHEEL.getData(ANGLE));
+                printf("Pitch angle: %i\n", (int) pitch.getData(ANGLE));
+//                printf("Pitch power: %i\n", (int) pitch.powerOut);
+                printf("Yaw motor angle: %i\n", (int) yaw.getData(MULTITURNANGLE));
+//                printf("Yaw power: %i\n", (int) yawgetData(MULTI.powerOut);
+//                printf("Flywheel out: %i\n", (int) LFLYWHEEL.powerOut);
+//                printf("Flywheel speed: %i\n", (int) LFLYWHEEL.getData(VELOCITY));
+//                printf("Flywheel pos: %i\n", (int) LFLYWHEEL.getData(ANGLE));
 //                pitch.setPower((int) (rY * 3));
 //                printf("Setting power: %i\n", (int) pitch.powerOut);
                 // yaw.setSpeed(rX/100);
 //                yawSetpoint -= rX / 10.0;
-                yawSetpoint = -chassis.getHeadingDegrees() * 8192 / 360 + yaw.getData(MULTITURNANGLE);
-//                printf("Setpoint: %i\n", yawSetpoint);
+                yawSetpoint = -chassis.getHeadingDegrees() * 8192 / 360 + yaw.getData(MULTITURNANGLE) - 2 * rX;
                 yaw.setPosition(yawSetpoint);
 
-
-            }else if(rS == 2){ //disable all the non-serializer components
+            }else if(rS == Remote::SwitchState::MID){ //disable all the non-serializer components
 //                chassis.driveXYR(0,0,0);
                 chassis.driveFieldRelative({0, 0, 0});
-                // yaw.setPower(0); pitch.setPower(0);
-            }else if(rS == 3){ // beyblade mode
-                chassis.beyblade(lX / 500.0, lY / 500.0, false);
-                yaw.setPower(0); pitch.setPower(0);
+                 yaw.setPower(0); pitch.setPower(0);
+            }else if(rS == Remote::SwitchState::UNKNOWN ){ // beyblade mode
+                chassis.beyblade(lX * 5.0, lY * 5.0, yaw.getData(MULTITURNANGLE) * 360.0 / 8192, false);
+                yawSetpoint = -chassis.getHeadingDegrees() * 8192 / 360 + yaw.getData(MULTITURNANGLE) - 2 * rX;
+                yaw.setPosition(yawSetpoint);
+//                yaw.setPower(0); pitch.setPower(0);
             }
 
-            if (lS == 3) {
+            if (lS == Remote::SwitchState::UP) {
                 //indexer.setPower(1200);
                 indexer.setSpeed(2000);
-                printf("Indexer data: %i %i %i\n", (int) (indexer.powerOut), (int) (indexer.getData(ANGLE)), (int) indexer.getData(VELOCITY));
+//                printf("Indexer data: %i %i %i\n", (int) (indexer.powerOut), (int) (indexer.getData(ANGLE)), (int) indexer.getData(VELOCITY));
                 setFlyWheelSpeed(20000);
 //               if (timeStart / 100 == 0) {
 //                   printf("Angle: %i\n", (int) 0);
 //                    chassis.printMotorAngle();
 //               }
-            }else if(lS == 2){ //disable serializer
+            }else if(lS == Remote::SwitchState::MID){ //disable serializer
                 indexer.setPower(0);
                 setFlyWheelSpeed(0);
-            }else if(lS == 1){
+            }else if(lS == Remote::SwitchState::DOWN) {
                 setFlyWheelSpeed(0);
                 ///////////////////////////////////////////
                 /// THEO SECTION OF CODE

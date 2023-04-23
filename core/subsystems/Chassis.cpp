@@ -106,6 +106,13 @@ void Chassis::driveFieldRelative(ChassisSpeeds speeds) {
 //printf("%i\t%i\n", (int) LF.getData(MULTITURNANGLE), (int) LF.kalman.getX(0));
 }
 
+void Chassis::driveTurretRelative(ChassisSpeeds speeds, double turretAngleDegrees) {
+    double robotHeading = imuAngles.yaw * PI / 180.0;
+    printf("Turret angle: %i\n", (int) turretAngleDegrees);
+    driveOffsetAngle(speeds, -turretAngleDegrees * PI / 180.0);
+}
+
+
 void Chassis::printMotorAngle() {
     printf("LF: %i\n", (int) LF.getData(MULTITURNANGLE));
     printf("LB: %i\n", (int) LB.getData(MULTITURNANGLE));
@@ -129,7 +136,7 @@ void Chassis::driveAngle(double angleRadians, double speedRPM, double rotationVe
     driveXYR({vX, vY, rotationVelocityRPM});
 }
 
-void Chassis::beyblade(double xVelocityRPM, double yVelocityRPM, bool switchDirections) {
+void Chassis::beyblade(double xVelocityRPM, double yVelocityRPM, double turretAngleDegrees, bool switchDirections) {
     if (switchDirections) {
         if (beybladeIncreasing) {
             if (beybladeSpeed >= MAX_BEYBLADE_SPEED) {
@@ -147,11 +154,11 @@ void Chassis::beyblade(double xVelocityRPM, double yVelocityRPM, bool switchDire
     } else if (beybladeSpeed == 0) {
         beybladeSpeed = MAX_BEYBLADE_SPEED;
     }
-    driveFieldRelative({
+    driveTurretRelative({
         xVelocityRPM,
         yVelocityRPM,
         beybladeSpeed
-    });
+    }, turretAngleDegrees);
 }
 
 DJIMotor Chassis::getMotor(int index) {
@@ -201,7 +208,7 @@ void Chassis::periodic() {
 
     z[4] = imuAngles.yaw;
 
-//    printf("Yaw: %i\n", (int) z[4]);
+//    printf("Yaw (IMU): %i\n", (int) z[4]);
 
     int currTime = us_ticker_read();
     if (lastTimeMs != 0) {

@@ -22,7 +22,7 @@
 #define I2C_SCL PB_8
 #define IMU_RESET PA_8
 
-#define MAX_BEYBLADE_SPEED 1.5
+#define MAX_BEYBLADE_SPEED 1800
 #define BEYBLADE_ACCELERATION 0.05
 
 class Chassis {
@@ -37,9 +37,10 @@ public:
     void driveMotors(WheelSpeeds speeds);
     void driveXYR(ChassisSpeeds speeds);
     void driveFieldRelative(ChassisSpeeds speeds);
+    void driveTurretRelative(ChassisSpeeds speeds, double turretAngleDegrees);
     void driveOffsetAngle(ChassisSpeeds speeds, double angleOffset);
     void driveAngle(double angleRadians, double speedRPM, double rotationVelcotiyRPM);
-    void beyblade(double xVelocityRPM, double yVelocityRPM, bool switchDirections);
+    void beyblade(double xVelocityRPM, double yVelocityRPM, double turretAngleDegrees, bool switchDirections);
     DJIMotor getMotor(int index);
 
     BrakeMode getBrakeMode();
