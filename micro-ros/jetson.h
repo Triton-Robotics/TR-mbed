@@ -11,8 +11,11 @@
 
 #include <rcl/rcl.h>
 #include <rcl/error_handling.h>
-#include <std_msgs/msg/int32.h>
-#include <std_msgs/msg/string.h>
+#include <rosidl_runtime_c/message_type_support_struct.h>
+#include <rosidl_runtime_c/primitives_sequence_functions.h>
+
+#include <geometry_msgs/msg/transform.h>
+#include <geometry_msgs/msg/vector3_stamped.h>
 
 #include <rclc/rclc.h>
 #include <rclc/executor.h>
@@ -27,34 +30,36 @@ class Jetson {
 
 private:
 
+    // micro-ros transports
     static void on_rx_interrupt();
     static bool mbed_serial_open(struct uxrCustomTransport * transport);
     static bool mbed_serial_close(struct uxrCustomTransport * transport);
     static size_t mbed_serial_write(struct uxrCustomTransport* transport, const uint8_t * buf, size_t len, uint8_t * err);
     static size_t mbed_serial_read(struct uxrCustomTransport* transport, uint8_t* buf, size_t len, int timeout, uint8_t* err);
 
+    static void cv_callback(const void* msgin);
 
 public:
 
-    enum TeamColor{
-        UNDEFINED,
-        RED,
-        BLUE
-    };
+    // --- micro-ROS control scheme ---
+    inline static rclc_executor_t executor;
+    inline static rcl_allocator_t allocator = rcl_get_default_allocator();
+    inline static rclc_support_t support;
+    inline static rcl_timer_t timer;
 
-    enum CVDatatype{
-        CoordinateX,
-        CoordinateY,
-        TeamColor
-    };
+    // Node, publishers, and subscribers
+    inline static rcl_node_t node;
+    inline static rcl_publisher_t publisher;
+    inline static rcl_subscription_t subscriber;
 
-    static void set(CVDatatype type, double val);
-    static double get(CVDatatype type);
+    // Messages and datatypes
+    inline static geometry_msgs__msg__Transform odom;
+    inline static geometry_msgs__msg__Vector3Stamped cv;
 
+    // User methods to easily control Jetson
     static void init();
-    static void update();
     static void free();
-
+    static void update(time_t rel_time);
 };
 
 

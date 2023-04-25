@@ -2,23 +2,23 @@
 // Created by ankit on 1/30/23.
 //
 #include <jetson.h>
+#include <mbed.h>
 
 int main(){
 
-    int i = 0;
+    printf("Starting\n");
 
-    DigitalIn button(BUTTON1);
-
+    DigitalOut led(LED1);
     Jetson::init();
 
     while(true){
 
-        if (button){
-            i++;
-        }
-
-        Jetson::set(Jetson::CVDatatype::TeamColor, i);
+        Jetson::update(100);
+        Jetson::odom.translation.x += 0.1;
+        //printf("CV x %d\n", Jetson::cv.vector.x);
+        ThisThread::sleep_for(100ms);
+        led = !led;
     }
 
-    Jetson::free();
+    //Jetson::free();
 }
