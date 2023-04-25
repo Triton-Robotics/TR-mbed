@@ -3,7 +3,7 @@
 cmake_minimum_required(VERSION 3.19.0 FATAL_ERROR)
 
 # User variables, feel free to change as necessary
-set(USE_MICRO_ROS ON)
+set(USE_MICRO_ROS OFF)
 
 set(DISABLE_WARNINGS ON)
 if (DISABLE_WARNINGS)
