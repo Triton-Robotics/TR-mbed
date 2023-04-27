@@ -1,5 +1,5 @@
 Infantry:
-	cp ./cmake_build/NUCLEO_F446RE/develop/GCC_ARM/robots/Infantry/TR-Infantry.bin /media/ben332004/NODE_F446RE/
+	cp ./cmake_build/NUCLEO_F446RE/develop/GCC_ARM/robots/Infantry/TR-Infantry.bin /media/ben332004/NOD_F446RE/
 	#scp ./cmake_build/NUCLEO_F446RE/develop/GCC_ARM/robots/Infantry/TR-Infantry.bin pi@raspberrypi.local:/media/pi/NODE_F446RE/
 
 Sentry:
