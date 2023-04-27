@@ -1,5 +1,7 @@
 #include "main.h"
 #include "Infantry.h"
+#include <jetson.h>
+#include <cstdlib>
 #include <commands/RamseteCommand.h>
 #include "communications/DJIRemote.h"
 #include "mbed.h"
@@ -55,6 +57,16 @@ void setFlyWheelSpeed(int speed) {
 
 Thread imuThread;
 
+double getPitchAngle(geometry_msgs__msg__Vector3Stamped jetsonAngles) {
+    return asin(-jetsonAngles.vector.y);
+}
+
+double getYawAngle(geometry_msgs__msg__Vector3Stamped jetsonAngles) {
+    return atan2(jetsonAngles.vector.x, jetsonAngles.vector.z);
+}
+
+
+
 void runImuThread() {
     chassis.initializeImu();
     while (true) {
@@ -74,6 +86,8 @@ int main()
     float beybladespeedmult = 1;
 
     DJIMotor::setCANHandlers(&canHandler1,&canHandler2, false, false);
+
+    Jetson::init();
 
     // LB.setSpeedPID(1.75, 0.351, 5.63);
     // RF.setSpeedPID(1.073, 0.556, 0);
@@ -108,10 +122,13 @@ int main()
     int refLoop=0;
 
     int yawSetpoint = 0;
+    
 
     DJIMotor::getFeedback();
     double beybladeSpeed = 2;
     bool beybladeIncreasing = true;
+
+    int counter = 0;
 
 //    printf("Hello World!\n");
 //    DIR *dir;
@@ -151,6 +168,17 @@ int main()
         if(timeStart - loopTimer > 25){
             led = !led;
             loopTimer = timeStart;
+
+            if (counter >= 10) {
+                Jetson::update(timeStart - loopTimer);
+//        Jetson::odom.translation.x += 0.1;
+                printf("CV x %f\n", Jetson::cv.vector.x);
+                printf("CV y %f\n", Jetson::cv.vector.y);
+                counter = 0;
+            } else {
+                counter++;
+            }
+
 
             remoteRead();
 
@@ -192,6 +220,13 @@ int main()
 //                    chassis.driveFieldRelative(0, 4096, 0);
                     chassis.periodic();
 
+                pitch.setPosition(getPitchAngle(Jetson::cv) / PI * 4096 + 1500);
+//                pitch.setPosition((rY / 2) + 1500);
++
+//                 yaw.setSpeed(rX/100);
+                yawSetpoint += 2;//(180 * getYawAngle(Jetson::cv) / PI + yaw.getData(ANGLE));
+//                yawSetpoint -= rX / 10.0;
+//                yawSetpoint -= rX / 10.0;
 //                    if (!command.isFinished()) {
 //                        printf("running command!\n");
 //                        command.execute();
