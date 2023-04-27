@@ -4,6 +4,13 @@
 
 #include "jetson.h"
 
+// --- micro-ROS Transports ---
+static UnbufferedSerial serial_port(PC_12, PD_2);
+Timer t;
+
+static uint8_t dma_buffer[UART_DMA_BUFFER_SIZE];
+static size_t dma_head = 0, dma_tail = 0;
+
 // --- micro-ROS Timing ---
 extern "C" int clock_gettime(clockid_t unused, struct timespec *tp)
 {
@@ -13,31 +20,6 @@ extern "C" int clock_gettime(clockid_t unused, struct timespec *tp)
     tp->tv_sec = tv.tv_sec;
     tp->tv_nsec = tv.tv_usec * 1000;
     return 0;
-}
-
-// --- micro-ROS Transports ---
-static UnbufferedSerial serial_port(USBTX, USBRX);
-Timer t;
-
-static uint8_t dma_buffer[UART_DMA_BUFFER_SIZE];
-static size_t dma_head = 0, dma_tail = 0;
-
-// --- micro-ROS App ---
-static rcl_publisher_t publisher;
-static std_msgs__msg__Int32 msg;
-static std_msgs__msg__String str;
-
-static rclc_executor_t executor;
-static rcl_node_t node;
-
-static bool init = false;
-
-void timer_callback(rcl_timer_t * timer, int64_t last_call_time)
-{
-    RCLC_UNUSED(last_call_time);
-    if (timer != nullptr) {
-        RCSOFTCHECK(rcl_publish(&publisher, &msg, nullptr));
-    }
 }
 
 
@@ -91,26 +73,29 @@ size_t Jetson::mbed_serial_read(struct uxrCustomTransport* transport, uint8_t* b
     return wrote;
 }
 
-
-
-double Jetson::get(Jetson::CVDatatype type){
-    return msg.data;
-}
-
-void Jetson::set(CVDatatype type, double val) {
-    msg.data = val;
-}
 void Jetson::free() {
     // free resources
     RCCHECK(rcl_publisher_fini(&publisher, &node));
+    RCCHECK(rcl_subscription_fini(&subscriber, &node));
     RCCHECK(rcl_node_fini(&node));
 }
 
-
-DigitalOut led(LED2);
-Thread uros_thread;
-
 void Jetson::init() {
+
+    odom.translation.x = 0;
+    odom.translation.y = 0;
+    odom.translation.z = 0;
+    odom.rotation.x = 0;
+    odom.rotation.y = 0;
+    odom.rotation.z = 0;
+    odom.rotation.w = 1;
+
+    cv.header.stamp.nanosec = 0;
+    cv.header.stamp.sec = 0;
+    cv.vector.x = 0;
+    cv.vector.y = 0;
+    cv.vector.z = 0;
+
     rmw_uros_set_custom_transport(
             true,
             nullptr,
@@ -120,52 +105,55 @@ void Jetson::init() {
             mbed_serial_read
     );
 
-    rcl_allocator_t allocator = rcl_get_default_allocator();
-    rclc_support_t support;
-
-    for (int i = 0; i < 4; i++){
-        led = !led;
-        ThisThread::sleep_for(250ms);
-    }
-
     // create init_options
     RCCHECK(rclc_support_init(&support, 0, nullptr, &allocator));
 
-    for (int i = 0; i < 6   ; i++){
-        led = !led;
-        ThisThread::sleep_for(250ms);
-    }
-
     // create node
-    RCCHECK(rclc_node_init_default(&node, "mbed_node", "", &support));
+    RCCHECK(rclc_node_init_default(&node, "mbed", "", &support));
 
     // create publisher
     RCCHECK(rclc_publisher_init_default(
             &publisher,
             &node,
-            ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
-            "mbed_int32_publisher"));
+            ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Transform),
+            "odom"
+    ));
 
-    // create timer,
-    rcl_timer_t timer;
+    // create subscriber
+    RCCHECK(rclc_subscription_init_default(
+            &subscriber,
+            &node,
+            ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Vector3Stamped),
+            "gimbal_data"
+    ));
+
     const unsigned int timer_timeout = 1000;
     RCCHECK(rclc_timer_init_default(
             &timer,
             &support,
             RCL_MS_TO_NS(timer_timeout),
-            timer_callback));
+            [](rcl_timer_t * timer, int64_t last_call_time){
+                RCLC_UNUSED(last_call_time);
+                if (timer != nullptr) {
+                    RCSOFTCHECK(rcl_publish(&Jetson::publisher, &Jetson::odom, nullptr));
+                }
+            }
+    ));
+
 
     // create executor
-    RCCHECK(rclc_executor_init(&executor, &support.context, 1, &allocator));
+    RCCHECK(rclc_executor_init(&executor, &support.context, 2, &allocator));
     RCCHECK(rclc_executor_add_timer(&executor, &timer));
+    RCCHECK(rclc_executor_add_subscription(&executor, &subscriber, &cv, [](const void *msgin){
+        auto* msg = (const geometry_msgs__msg__Vector3Stamped * )msgin;
 
-    msg.data = 0;
+        Jetson::cv.vector.x = msg->vector.x;
+        Jetson::cv.vector.y = msg->vector.y;
+        Jetson::cv.vector.z = msg->vector.z;
+    }, ON_NEW_DATA));
+}
 
-    uros_thread.set_priority(osPriorityNormal);
+void Jetson::update(time_t rel_time) {
+    RCSOFTCHECK(rclc_executor_spin_some(&executor, RCL_MS_TO_NS(rel_time)));
 
-    uros_thread.start([](){
-        led = !led;
-        rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100));
-        ThisThread::get_name();
-    });
 }

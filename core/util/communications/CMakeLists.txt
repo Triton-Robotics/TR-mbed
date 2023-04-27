@@ -1,16 +1,5 @@
-set(HEADER_FILES
-        CANMsg.h
-        DJIRemote.h
-        djiremoteuart.h
-        SerialCommunication.h
-        serialLogger.h
-        CANHandler.h
-)
+file(GLOB SOURCES CONFIGURE_DEPENDS *.cpp *.h *.hpp)
 
-set(SRC_FILES
-        DJIRemote.cpp
-)
-
-target_sources(${PROJECT_NAME} PUBLIC ${HEADER_FILES} ${SRC_FILES})
+target_sources(${PROJECT_NAME} PUBLIC ${SOURCES})
 
 add_subdirectory(referee)

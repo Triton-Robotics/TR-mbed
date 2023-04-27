@@ -18,3 +18,5 @@ engineer:
 serial:
 	mbed-tools sterm -b 115200
 
+serial9600:
+	mbed-tools sterm

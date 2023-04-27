@@ -1,7 +1,6 @@
-target_sources(${PROJECT_NAME} PUBLIC
-        BNO055.h
-        BNO055.cpp
-)
+file(GLOB SOURCES CONFIGURE_DEPENDS *.cpp *.h *.hpp)
+
+target_sources(${PROJECT_NAME} PUBLIC ${SOURCES})
 
 add_subdirectory(examples EXCLUDE_FROM_ALL)
 
