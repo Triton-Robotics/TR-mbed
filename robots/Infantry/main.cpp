@@ -1,23 +1,36 @@
 #include "main.h"
 #include "Infantry.h"
+#include <jetson.h>
 #include <cstdlib>
+#include <commands/RamseteCommand.h>
+#include "communications/DJIRemote.h"
+#include "mbed.h"
+//#include " COMPONENT_SD/include/SD/SDBlockDevice.h"
+//#include "storage/blockdevice/COMPONENT_SD/include/SD/SDBlockDevice.h"
+//#include "SDBlockDevice.h"
+//#include "storage/blockdevice/COMPONENT_SD/source/SDBlockDevice.cpp"
+
+//SDBlockDevice sd(MBED_CONF_SD_SPI_MOSI, MBED_CONF_SD_SPI_MISO, MBED_CONF_SD_SPI_CLK, MBED_CONF_SD_SPI_CS);
 
 #define PI 3.14159265
 
 #define LOWERBOUND 1000
 #define UPPERBOUND 2000
 
-// CANMotor LF(4,NewCANHandler::CANBUS_1,M3508); 
-// CANMotor RF(2,NewCANHandler::CANBUS_1,M3508); 
-// CANMotor LB(1,NewCANHandler::CANBUS_1,M3508); 
+// CANMotor LF(4,NewCANHandler::CANBUS_1,M3508);
+// CANMotor RF(2,NewCANHandler::CANBUS_1,M3508);
+// CANMotor LB(1,NewCANHandler::CANBUS_1,M3508);
 // CANMotor RB(3,NewCANHandler::CANBUS_1,M3508);
 
-
 Chassis chassis(1, 2, 3, 4);
+RamseteCommand command(
+        Pose2D(0, 0, 0), Pose2D(20, 20, 0), 2, &chassis);
 DigitalOut led(LED1);
 
+
+
 DJIMotor yaw(5, CANHandler::CANBUS_1, GIMBLY);
-DJIMotor pitch(6, CANHandler::CANBUS_1, GIMBLY);
+DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY);
 int pitchval = 0;
 
 DJIMotor indexer(7, CANHandler::CANBUS_1, C610);
@@ -30,17 +43,29 @@ unsigned long reverseTime = 300;
 unsigned long totalTime;
 
 bool sticksMoved = false;
-int prevRS = 0, prevLS = 0;
+Remote::SwitchState prevRS = Remote::SwitchState::UNKNOWN;
+Remote::SwitchState prevLS = Remote::SwitchState::UNKNOWN;
 
-PWMMotor RFLYWHEEL(D12); PWMMotor LFLYWHEEL(D11);
-PWMMotor flyWheelMotors[] = {RFLYWHEEL, LFLYWHEEL};
+DJIMotor RFLYWHEEL(8, CANHandler::CANBUS_1, M3508);
+DJIMotor LFLYWHEEL(5, CANHandler::CANBUS_1, M3508);
+DJIMotor flyWheelMotors[] = {RFLYWHEEL, LFLYWHEEL};
 
-void setFlyWheelPwr(int pwr) {
-    for (int i = 0; i < 2; i++)
-        flyWheelMotors[i].set(pwr);
+void setFlyWheelSpeed(int speed) {
+        LFLYWHEEL.setSpeed(-speed);
+        RFLYWHEEL.setSpeed(speed);
 }
 
 Thread imuThread;
+
+double getPitchAngle(geometry_msgs__msg__Vector3Stamped jetsonAngles) {
+    return asin(-jetsonAngles.vector.y);
+}
+
+double getYawAngle(geometry_msgs__msg__Vector3Stamped jetsonAngles) {
+    return atan2(jetsonAngles.vector.x, jetsonAngles.vector.z);
+}
+
+
 
 void runImuThread() {
     chassis.initializeImu();
@@ -53,6 +78,7 @@ void runImuThread() {
 
 int main()
 {
+
     imuThread.start(runImuThread);
     float speedmultiplier = 3;
     float powmultiplier = 2;
@@ -61,24 +87,32 @@ int main()
 
     DJIMotor::setCANHandlers(&canHandler1,&canHandler2, false, false);
 
+    Jetson::init();
+
     // LB.setSpeedPID(1.75, 0.351, 5.63);
     // RF.setSpeedPID(1.073, 0.556, 0);
     // RB.setSpeedPID(1.081, 0.247, 0.386);
     // LF.setSpeedPID(.743, 0.204, 0.284);
-    pitch.setPositionPID(4, 0.35, 0.35);
+    pitch.setPositionPID(4.5, 0.35, 0.35);
+//    pitch.setPositionPID(0, 0, 0);
     pitch.setPositionIntegralCap(10000);
+    LFLYWHEEL.setSpeedPID(1, 0, 0);
+    RFLYWHEEL.setSpeedPID(1, 0, 0);
 
     pitch.useAbsEncoder = 1;
     pitch.justPosError = 1;
 
     yaw.setPositionPID(3.5, 0, 0.25);
     yaw.setPositionIntegralCap(10000);
+    yaw.useAbsEncoder = 0;
     yaw.justPosError = 1;
 
-    indexer.setSpeedPID(0.34, 0.002, 0.166);
+    indexer.setSpeedPID(1.94, 0.002, 0.166);
     indexer.setSpeedIntegralCap(500000);
 
     chassis.setBrakeMode(Chassis::COAST);
+
+    command.initialize();
 
     unsigned long loopTimer = us_ticker_read() / 1000;
 
@@ -88,6 +122,7 @@ int main()
     int refLoop=0;
 
     int yawSetpoint = 0;
+    
 
     DJIMotor::getFeedback();
     double beybladeSpeed = 2;
@@ -96,12 +131,28 @@ int main()
     unsigned long lastTime = 0;
 
     while (true) {
-        led = !led;
-        remoteRead();
 
+        printf("Pitch angle: %i\n", (int) pitch.getData(ANGLE));
+        printf("Yaw motor angle: %i\n", (int) yaw.getData(MULTITURNANGLE));
+        chassis.printMotorAngle();
+
+//        printf("Pitch: %i\n", (int) pitch.getData((ANGLE)));
+//        printf("Yaw: %i\n", (int) yaw.getData((ANGLE)));
+//        printf("Speed: %i  %i\n", (int) pitch.getData(VELOCITY), (int) yaw.getData(VELOCITY));
+//        printf("Powerout: %i %i \n", (int) pitch.powerOut, (int) yaw.powerOut);
+
+//    if (0 != sd.init()) {
+//        printf("Init failed \n");
+//    }
+//    printf("Reading size!\n");
+//    printf("sd size: %llu\n",         sd.size());
+//    printf("sd read size: %llu\n",    sd.get_read_size());
+//    printf("sd program size: %llu\n", sd.get_program_size());
+//    printf("sd erase size: %llu\n",   sd.get_erase_size());
 
         unsigned long timeStart = us_ticker_read() / 1000;
         if(timeStart - loopTimer > 25){
+            led = !led;
             loopTimer = timeStart;
 
             refLoop++;
@@ -149,15 +200,20 @@ int main()
                 yaw.setPower(0); pitch.setPower(0);
             }
 
-            if (lS == 3) {
+            if (lS == Remote::SwitchState::UP) {
                 //indexer.setPower(1200);
-                indexer.setPower(16000);
-                setFlyWheelPwr(40);
-
-            }else if(lS == 2){ //disable serializer
+                indexer.setSpeed(2000);
+//                printf("Indexer data: %i %i %i\n", (int) (indexer.powerOut), (int) (indexer.getData(ANGLE)), (int) indexer.getData(VELOCITY));
+                setFlyWheelSpeed(20000);
+//               if (timeStart / 100 == 0) {
+//                   printf("Angle: %i\n", (int) 0);
+//                    chassis.printMotorAngle();
+//               }
+            }else if(lS == Remote::SwitchState::MID){ //disable serializer
                 indexer.setPower(0);
-                setFlyWheelPwr(0);
-            }else if(lS == 1){
+                setFlyWheelSpeed(0);
+            }else if(lS == Remote::SwitchState::DOWN) {
+                setFlyWheelSpeed(0);
                 ///////////////////////////////////////////
                 /// THEO SECTION OF CODE
                 ///////////////////////////////////////////
@@ -166,16 +222,16 @@ int main()
                     indexJamTime = us_ticker_read() /1000;
                 }
                 if(us_ticker_read() / 1000 - indexJamTime < 1000){
-                    indexer.setPower(-14000); //jam
+                    indexer.setPower(-300); //jam
                     //printf("JAMMMMM- ");
                 }else if(us_ticker_read() / 1000 - indexJamTime < 1500){
-                    indexer.setPower(9000); //jam
+//                    indexer.setPower(3000); //jam
+                  indexer.setPower(0);
                     //printf("POWER FORWARD- ");
                 }else{
-                    //indexer.setPower(-900);   
-                    indexer.setSpeed(4500);
+                    //indexer.setPower(-900);
+                    indexer.setSpeed(650);
                 }
-                LFLYWHEEL.set(40); RFLYWHEEL.set(40);
             }
             DJIMotor::sendValues();
         }

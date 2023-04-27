@@ -122,7 +122,14 @@ void BNO055::get_angular_position_quat(BNO055_ANGULAR_POSITION_typedef *result){
     result -> roll  = atan2(2 * (q.w * q.x + q.y * q.z), 1 - 2 * (q.x * q.x + q.y * q.y)) * 180 / PI;
     result -> pitch = asin(2 * q.w * q.y - q.x * q.z) * 180 / PI;
     result -> yaw   = atan2(2 * (q.w * q.z + q.x * q.y), 1 - 2 * (q.y * q.y + q.z * q.z)) * 180 / PI;
-
+    double target = multiturnYaw - ((int) multiturnYaw) % 360 + (int) (result -> yaw) % 360;
+    if (target - multiturnYaw > 180) {
+        multiturnYaw = target - 360;
+    } else if (target - multiturnYaw < -180) {
+        multiturnYaw = target + 360;
+    } else {
+        multiturnYaw = target;
+    }
 }
 
 void BNO055::get_linear_accel(BNO055_VECTOR_TypeDef *result)

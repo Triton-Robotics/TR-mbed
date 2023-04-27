@@ -17,6 +17,7 @@
 #include "communications/CANHandler.h"
 #include "helperFunctions.hpp"
 #include "algorithms/speedtocurrent.hpp"
+//#include "algorithms/WheelKalman.h"
 #include <cmath>
 
 static int sendIDs[3] = {0x200,0x1FF,0x2FF}; //IDs to send data
@@ -115,6 +116,12 @@ public:
 
     bool useAbsEncoder = false;
     bool justPosError = false;
+    bool useKalmanForPID = false;
+    bool useIntegrationForPID = false;
+    bool printAngle = false;
+    int integratedAngle = 0;
+    long lastIntegrationTime = -1;
+//    WheelKalman kalman;
     static bool sendDebug;
     static bool feedbackDebug;
 
@@ -129,7 +136,7 @@ public:
     static void sendOneID(CANHandler::CANBus bus, short sendIDindex, bool debug = false);
     static void getFeedback();
 
-    __attribute__((unused)) static bool checkConnection(bool debug = false);
+    __attribute__((unused)) __attribute__((unused)) static bool checkConnection(bool debug);
 
     static void tickThread();
     static void feedbackThread();
@@ -147,6 +154,8 @@ public:
     void setPower(int power);
     void setSpeed(int speed);
     void setPosition(int position);
+
+    double rpmToTicksPerSecond(double RPM);
 
     __attribute__((unused)) void zeroPos();
 

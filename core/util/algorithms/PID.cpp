@@ -35,7 +35,10 @@ PID::PID(float p, float i, float d, float sumCap = 0, float outCap = 0){
          * @param actualV the actual value
          * @param dt the change in time
          */
-float PID::calculate(float desiredV, float actualV, float dt){
+float PID::calculate(float desiredV, float actualV, double dt){
+    dt /= 1000;
+//    printf("dt (ms): %i\n", (int) (1000 * dt));
+
     float error = (desiredV - actualV);
     float PIDCalc = kP * error + kI * sumError + kD * ((double)(error - lastError)/dt);
     

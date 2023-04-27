@@ -1,5 +1,7 @@
-#include "main.h"
-#include <cstdlib>
+#include "communications/DJIRemote.h"
+#include "motor/DJIMotor.h"
+#include "mbed.h"
+#include "helperFunctions.hpp"
 
 PID pid(0, 0, 0, 0, 0);
 
@@ -9,12 +11,14 @@ DJIMotor m3058_3(3, CANHandler::CANBUS_1, M3508);
 DJIMotor m3058_4(4, CANHandler::CANBUS_1, M3508);
 
 DigitalOut led(LED1);
+Remote remote1(PC_5);
 
 int main()
 {
     DJIMotor::setCANHandlers(&canHandler1,&canHandler2, false, false);
     
     unsigned long loopTimer = us_ticker_read() / 1000;
+    led = false;
 
     DJIMotor::getFeedback();
     double beybladeSpeed = 2;
@@ -94,7 +98,7 @@ int main()
             DJIMotor::sendValues();
         }
         unsigned long timeEnd = us_ticker_read() / 1000;
-        DJIMotor::getFeedback();
         ThisThread::sleep_for(1ms);
+
     }
 }

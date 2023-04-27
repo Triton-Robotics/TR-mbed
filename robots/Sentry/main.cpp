@@ -2,23 +2,25 @@
 // Created by ankit on 1/30/23.
 //
 #include <jetson.h>
+#include <mbed.h>
+
+#define CLOCK_CYCLE_LENGTH 100
 
 int main(){
 
-    int i = 0;
+    printf("Starting\n");
 
-    DigitalIn button(BUTTON1);
-
+    DigitalOut led(LED1);
     Jetson::init();
 
     while(true){
 
-        if (button){
-            i++;
-        }
-
-        Jetson::set(Jetson::CVDatatype::TeamColor, i);
+        Jetson::update(CLOCK_CYCLE_LENGTH);
+//        Jetson::odom.translation.x += 0.1;
+        printf("CV x %f\n", Jetson::cv.vector.x);
+        ThisThread::sleep_for(CLOCK_CYCLE_LENGTH);
+        led = !led;
     }
 
-    Jetson::free();
+    //Jetson::free();
 }
