@@ -15,7 +15,7 @@ int main(){
 
         Jetson::update(100);
         Jetson::odom.translation.x += 0.1;
-        //printf("CV x %d\n", Jetson::cv.vector.x);
+        printf("CV x %f\n", Jetson::cv.vector.x);
         ThisThread::sleep_for(100ms);
         led = !led;
     }

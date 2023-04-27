@@ -37,8 +37,6 @@ private:
     static size_t mbed_serial_write(struct uxrCustomTransport* transport, const uint8_t * buf, size_t len, uint8_t * err);
     static size_t mbed_serial_read(struct uxrCustomTransport* transport, uint8_t* buf, size_t len, int timeout, uint8_t* err);
 
-    static void cv_callback(const void* msgin);
-
 public:
 
     // --- micro-ROS control scheme ---

@@ -73,14 +73,6 @@ size_t Jetson::mbed_serial_read(struct uxrCustomTransport* transport, uint8_t* b
     return wrote;
 }
 
-void Jetson::cv_callback(const void *msgin) {
-    auto* msg = (const geometry_msgs__msg__Vector3Stamped * )msgin;
-
-    Jetson::cv.vector.x = msg->vector.x;
-    Jetson::cv.vector.y = msg->vector.y;
-    Jetson::cv.vector.z = msg->vector.z;
-}
-
 void Jetson::free() {
     // free resources
     RCCHECK(rcl_publisher_fini(&publisher, &node));
@@ -132,7 +124,7 @@ void Jetson::init() {
             &subscriber,
             &node,
             ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Vector3Stamped),
-            "cv"
+            "gimbal_data"
     ));
 
     const unsigned int timer_timeout = 1000;
@@ -152,7 +144,13 @@ void Jetson::init() {
     // create executor
     RCCHECK(rclc_executor_init(&executor, &support.context, 2, &allocator));
     RCCHECK(rclc_executor_add_timer(&executor, &timer));
-    RCCHECK(rclc_executor_add_subscription(&executor, &subscriber, &cv, &Jetson::cv_callback, ON_NEW_DATA));
+    RCCHECK(rclc_executor_add_subscription(&executor, &subscriber, &cv, [](const void *msgin){
+        auto* msg = (const geometry_msgs__msg__Vector3Stamped * )msgin;
+
+        Jetson::cv.vector.x = msg->vector.x;
+        Jetson::cv.vector.y = msg->vector.y;
+        Jetson::cv.vector.z = msg->vector.z;
+    }, ON_NEW_DATA));
 }
 
 void Jetson::update(time_t rel_time) {
