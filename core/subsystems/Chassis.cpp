@@ -92,33 +92,32 @@ void Chassis::driveXYR(double xVelocityRPM, double yVelocityRPM, double rotation
 void Chassis::driveXYRPower(double ref_chassis_power, double lX, double lY, double rX, double time_diff) {
     double scale = 1;
 
-    LF.outCap = 1500;
-    RF.outCap = 1500;
-    LB.outCap = 1500;
-    RB.outCap = 1500;
+    PID power_pid(12, 0.008, 0, 0, 0);
+    PID speed_pid_LF(1.79, 0.27, 10.57, 15000, 500);
+    PID speed_pid_RF(1.79, 0.27, 10.57, 15000, 500);
+    PID speed_pid_LB(1.79, 0.27, 10.57, 15000, 500);
+    PID speed_pid_RB(1.79, 0.27, 10.57, 15000, 500);
 
-    PID pid(12, 0.008, 0, 0, 0);
-
-    double power0 = lX + lY + rX;
-    double power1 = lX - lY + rX;
-    double power2 = 0 - lX + lY + rX;
-    double power3 = 0 - lX - lY + rX;
+    double powerLF = speed_pid_LF.calculate(lX + lY + rX, LF.getData(VELOCITY), time_diff);
+    double powerRF = speed_pid_RF.calculate(lX - lY + rX, RF.getData(VELOCITY), time_diff);
+    double powerLB = speed_pid_LB.calculate(0 - lX + lY + rX, LB.getData(VELOCITY), time_diff);
+    double powerRB = speed_pid_RB.calculate(0 - lX - lY + rX, RB.getData(VELOCITY), time_diff);
 
     unsigned long time = us_ticker_read() / 1000;
 
-    scale = abs(pid.calculate(48, ref_chassis_power, time_diff));
+    scale = abs(power_pid.calculate(48, ref_chassis_power, time_diff));
 
     if (ref_chassis_power > 40) {
-        power0 /= scale;
-        power1 /= scale;
-        power2 /= scale;
-        power3 /= scale;
+        powerLF /= scale;
+        powerRF /= scale;
+        powerLB /= scale;
+        powerRB /= scale;
     }
 
-    setMotorPower(0, power0);
-    setMotorPower(1, power1);
-    setMotorPower(2, power2);
-    setMotorPower(3, power3);
+    setMotorPower(0, powerLF);
+    setMotorPower(1, powerRF);
+    setMotorPower(2, powerLB);
+    setMotorPower(3, powerRB);
 }
 
 void Chassis::driveFieldRelative(double xVelocityRPM, double yVelocityRPM, double rotationVelocityRPM) {
@@ -135,6 +134,19 @@ void Chassis::driveOffsetAngle(double xVelocityRPM, double yVelocityRPM, double 
     driveXYR(robotRelativeXVelocity, robotRelativeYVelocity, rotationVelocityRPM);
 }
 
+void Chassis::driveFieldRelativePower(double ref_chassis_power, double time_diff, double xVelocityRPM, double yVelocityRPM, double rotationVelocityRPM) {
+    double robotHeading = imuAngles.yaw * PI / 180.0;
+    driveOffsetAnglePower(ref_chassis_power, time_diff, xVelocityRPM, yVelocityRPM, rotationVelocityRPM, robotHeading);
+}
+
+/**
+ * Drives the Chassis, compensating by a certain angle (angleOffset)
+*/
+void Chassis::driveOffsetAnglePower(double ref_chassis_power, double time_diff, double xVelocityRPM, double yVelocityRPM, double rotationVelocityRPM, double angleOffset) {
+    double robotRelativeXVelocity = xVelocityRPM * cos(angleOffset) + yVelocityRPM * sin(angleOffset);
+    double robotRelativeYVelocity = - xVelocityRPM * sin(angleOffset) + yVelocityRPM * cos(angleOffset);
+    driveXYRPower(ref_chassis_power, robotRelativeXVelocity, robotRelativeYVelocity, rotationVelocityRPM, time_diff);
+}
 
 void Chassis::driveAngle(double angleRadians, double speedRPM, double rotationVelocityRPM) {
     double vY = speedRPM * cos(angleRadians);

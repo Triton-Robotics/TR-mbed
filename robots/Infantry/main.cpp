@@ -121,7 +121,6 @@ int main()
                 }
             } else if(rS == 1){ // All non-serializer motors activated
                 // int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
-                // chassis.driveFieldRelative(lX / 500.0, lY / 500.0, rX / 500.0);
 
                 // pitch.setPosition((rY / 2) + 1500);
                 // // yaw.setSpeed(rX/100);
@@ -132,7 +131,10 @@ int main()
 
                 unsigned long time = us_ticker_read() / 1000;
 
-                chassis.driveXYRPower(ref_chassis_power, lX, lY, rX, time - lastTime);
+                chassis.driveFieldRelativePower(ref_chassis_power, time - lastTime, lX / 500.0, lY / 500.0, rX / 500.0);
+
+                //chassis.driveXYRPower(ref_chassis_power, lX, lY, rX, time - lastTime);
+                
                 //chassis.driveXYR(ref_chassis_power, lY*5, time - lastTime);
     
                 lastTime = time;
