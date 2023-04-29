@@ -18,6 +18,7 @@
 
 #include "communications/CANHandler.h"
 #include "communications/djiremoteuart.h"
+#include "communications/DJIRemote.h"
 #include "communications/SerialCommunication.h"
 #include "communications/referee/ref_serial.h"
 #include "communications/referee/ref_ui.h"
@@ -33,7 +34,8 @@
 //#include "robots/include/infantry.hpp"#include "communications/DJIRemote.h"
 
 
-static DJIRemote myremote(PA_0, PA_1);
+// static DJIRemote myremote(PA_0, PA_1);
+static Remote remote(PC_5);
 static BufferedSerial referee(PC_10, PC_11, 115200); // Nucleo board: top left male pins.
 static bool enablePrintRefData = 0;
 
@@ -255,14 +257,14 @@ void refereeThread(){
 }
 
 static void remoteRead(){ // for threadless
-    myremote.remoteUpdate();
-    lX = myremote.getStickData(LEFTJOYX,0,1000);
-    lY = myremote.getStickData(LEFTJOYY,0,1000);
-    rX = myremote.getStickData(RIGHTJOYX,0,1000);
-    rY = myremote.getStickData(RIGHTJOYY,0,1000);
-    Wh = myremote.getStickData(WHEEL,0,1000);
-    lS = myremote.getSwitchData(LSWITCH);
-    rS = myremote.getSwitchData(RSWITCH);
+    remote.read();
+    lX = remote.getChannelInt(Remote::Channel::LEFT_HORIZONTAL);
+    lY = remote.getChannelInt(Remote::Channel::LEFT_VERTICAL);
+    rX = remote.getChannelInt(Remote::Channel::RIGHT_HORIZONTAL);
+    rY = remote.getChannelInt(Remote::Channel::RIGHT_VERTICAL);
+    Wh = remote.getWheel();
+    lS = remote.getSwitch(Remote::Switch::LEFT_SWITCH);
+    rS = remote.getSwitch(Remote::Switch::RIGHT_SWITCH);
     if(lX > 1000 || lX < -1000)
         lX = 0;
     if(rX > 1000 || rX < -1000)
