@@ -93,7 +93,7 @@ int main()
     // RF.setSpeedPID(1.073, 0.556, 0);
     // RB.setSpeedPID(1.081, 0.247, 0.386);
     // LF.setSpeedPID(.743, 0.204, 0.284);
-    pitch.setPositionPID(4.5, 0.35, 0.35);
+    pitch.setPositionPID(4.2, 0.11, 0.42);
 //    pitch.setPositionPID(0, 0, 0);
     pitch.setPositionIntegralCap(10000);
     LFLYWHEEL.setSpeedPID(1, 0, 0);
@@ -146,9 +146,9 @@ int main()
 
     while (true) {
 
-        printf("Pitch angle: %i\n", (int) pitch.getData(ANGLE));
-        printf("Yaw motor angle: %i\n", (int) yaw.getData(MULTITURNANGLE));
-        chassis.printMotorAngle();
+//        printf("Pitch angle: %i\n", (int) pitch.getData(ANGLE));
+//        printf("Yaw motor angle: %i\n", (int) yaw.getData(MULTITURNANGLE));
+//        chassis.printMotorAngle();
 
 //        printf("Pitch: %i\n", (int) pitch.getData((ANGLE)));
 //        printf("Yaw: %i\n", (int) yaw.getData((ANGLE)));
@@ -185,7 +185,7 @@ int main()
             chassis.periodic();
 //            printf("Time: %i\n", (int) (timeStart / 1000));
 
-            printf("Rs: %i\n", (int) rS);
+//            printf("Rs: %i\n", (int) rS);
 
 
 //            printf("Lx: %i\n", (int) lX);
@@ -220,11 +220,17 @@ int main()
 //                    chassis.driveFieldRelative(0, 4096, 0);
                     chassis.periodic();
 
-                pitch.setPosition(getPitchAngle(Jetson::cv) / PI * 4096 + 1500);
+                    double setpoint = getPitchAngle(Jetson::cv) * 4096 / PI + 6715;
+//                    printf("Setpoint: %i\n", (int) setpoint);
+                    pitch.setPosition(setpoint);
+
 //                pitch.setPosition((rY / 2) + 1500);
-+
+
+
 //                 yaw.setSpeed(rX/100);
-                yawSetpoint += 2;//(180 * getYawAngle(Jetson::cv) / PI + yaw.getData(ANGLE));
+
+                yawSetpoint = (4096 * getYawAngle(Jetson::cv) / PI - yaw.getData(ANGLE));
+//                yawSetpoint = 0;
 //                yawSetpoint -= rX / 10.0;
 //                yawSetpoint -= rX / 10.0;
 //                    if (!command.isFinished()) {
@@ -248,10 +254,10 @@ int main()
 //                        }
 //                }
 //                printf("Angle: %i\n", (int) pitch.getData(ANGLE));
-                pitch.setPosition((rY * 0.9) + 6400);
-                printf("Pitch angle: %i\n", (int) pitch.getData(ANGLE));
+//                pitch.setPosition((rY * 0.9) + 6400);
+//                printf("Pitch angle: %i\n", (int) pitch.getData(ANGLE));
 //                printf("Pitch power: %i\n", (int) pitch.powerOut);
-                printf("Yaw motor angle: %i\n", (int) yaw.getData(MULTITURNANGLE));
+//                printf("Yaw motor angle: %i\n", (int) yaw.getData(MULTITURNANGLE));
 //                printf("Yaw power: %i\n", (int) yawgetData(MULTI.powerOut);
 //                printf("Flywheel out: %i\n", (int) LFLYWHEEL.powerOut);
 //                printf("Flywheel speed: %i\n", (int) LFLYWHEEL.getData(VELOCITY));
@@ -260,7 +266,7 @@ int main()
 //                printf("Setting power: %i\n", (int) pitch.powerOut);
                 // yaw.setSpeed(rX/100);
 //                yawSetpoint -= rX / 10.0;
-                yawSetpoint = -chassis.getHeadingDegrees() * 8192 / 360 + yaw.getData(MULTITURNANGLE) - 2 * rX;
+//                yawSetpoint = -chassis.getHeadingDegrees() * 8192 / 360 + yaw.getData(MULTITURNANGLE) - 2 * rX;
                 yaw.setPosition(yawSetpoint);
 
             }else if(rS == Remote::SwitchState::MID){ //disable all the non-serializer components

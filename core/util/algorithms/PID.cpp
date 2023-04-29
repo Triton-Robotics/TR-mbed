@@ -40,7 +40,7 @@ float PID::calculate(float desiredV, float actualV, double dt){
 //    printf("dt (ms): %i\n", (int) (1000 * dt));
 
     float error = (desiredV - actualV);
-    float PIDCalc = kP * error /*+ kI * sumError*/ + kD * ((double)(error - lastError)/dt);
+    float PIDCalc = kP * error + kI * sumError + kD * ((double)(error - lastError)/dt);
 //    if (error < 6 & error > -6) {
         sumError += error * dt;
 //    } else {
