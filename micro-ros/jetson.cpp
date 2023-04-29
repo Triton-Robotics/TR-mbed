@@ -75,9 +75,9 @@ size_t Jetson::mbed_serial_read(struct uxrCustomTransport* transport, uint8_t* b
 
 void Jetson::free() {
     // free resources
-    RCCHECK(rcl_publisher_fini(&publisher, &node));
-    RCCHECK(rcl_subscription_fini(&subscriber, &node));
-    RCCHECK(rcl_node_fini(&node));
+    RCSOFTCHECK(rcl_publisher_fini(&publisher, &node));
+    RCSOFTCHECK(rcl_subscription_fini(&subscriber, &node));
+    RCSOFTCHECK(rcl_node_fini(&node));
 }
 
 void Jetson::init() {
@@ -106,13 +106,13 @@ void Jetson::init() {
     );
 
     // create init_options
-    RCCHECK(rclc_support_init(&support, 0, nullptr, &allocator));
+    RCSOFTCHECK(rclc_support_init(&support, 0, nullptr, &allocator));
 
     // create node
-    RCCHECK(rclc_node_init_default(&node, "mbed", "", &support));
+    RCSOFTCHECK(rclc_node_init_default(&node, "mbed", "", &support));
 
     // create publisher
-    RCCHECK(rclc_publisher_init_default(
+    RCSOFTCHECK(rclc_publisher_init_default(
             &publisher,
             &node,
             ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Transform),
@@ -120,7 +120,7 @@ void Jetson::init() {
     ));
 
     // create subscriber
-    RCCHECK(rclc_subscription_init_default(
+    RCSOFTCHECK(rclc_subscription_init_default(
             &subscriber,
             &node,
             ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Vector3Stamped),
@@ -128,7 +128,7 @@ void Jetson::init() {
     ));
 
     const unsigned int timer_timeout = 1000;
-    RCCHECK(rclc_timer_init_default(
+    RCSOFTCHECK(rclc_timer_init_default(
             &timer,
             &support,
             RCL_MS_TO_NS(timer_timeout),
@@ -142,9 +142,9 @@ void Jetson::init() {
 
 
     // create executor
-    RCCHECK(rclc_executor_init(&executor, &support.context, 2, &allocator));
-    RCCHECK(rclc_executor_add_timer(&executor, &timer));
-    RCCHECK(rclc_executor_add_subscription(&executor, &subscriber, &cv, [](const void *msgin){
+    RCSOFTCHECK(rclc_executor_init(&executor, &support.context, 2, &allocator));
+    RCSOFTCHECK(rclc_executor_add_timer(&executor, &timer));
+    RCSOFTCHECK(rclc_executor_add_subscription(&executor, &subscriber, &cv, [](const void *msgin){
         auto* msg = (const geometry_msgs__msg__Vector3Stamped * )msgin;
 
         Jetson::cv.vector.x = msg->vector.x;
