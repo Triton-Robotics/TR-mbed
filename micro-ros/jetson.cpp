@@ -124,7 +124,7 @@ void Jetson::init() {
             &subscriber,
             &node,
             ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Vector3Stamped),
-            "gimbal_data"
+            "cv"
     ));
 
     const unsigned int timer_timeout = 1000;
