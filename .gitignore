@@ -16,3 +16,5 @@ micro-ros/micro_ros_dev
 micro-ros/micro_ros_src
 micro-ros/mbed_toolchain.cmake
 docs/
+
+.DS_STORE
