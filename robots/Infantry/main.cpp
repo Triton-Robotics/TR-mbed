@@ -30,7 +30,8 @@ unsigned long reverseTime = 300;
 unsigned long totalTime;
 
 bool sticksMoved = false;
-int prevRS = 0, prevLS = 0;
+Remote::SwitchState prevLS = Remote::SwitchState::UNKNOWN;
+Remote::SwitchState prevRS = Remote::SwitchState::UNKNOWN;
 
 PWMMotor RFLYWHEEL(D12); PWMMotor LFLYWHEEL(D11);
 PWMMotor flyWheelMotors[] = {RFLYWHEEL, LFLYWHEEL};
@@ -96,30 +97,33 @@ int main()
     unsigned long lastTime = 0;
 
     while (true) {
-        led = !led;
-        remoteRead();
+
+        // printf("RS: %i\n", (int) rS);
+        printf("STICKS: %i %i %i %i\n", rX, rY, lX, lY);
 
 
         unsigned long timeStart = us_ticker_read() / 1000;
         if(timeStart - loopTimer > 25){
             loopTimer = timeStart;
+            led = !led;
+            remoteRead();
 
             refLoop++;
             if(refLoop > 1){
-                refereeThread();
+                // refereeThread();
                 refLoop = 0;
                 //led = ext_power_heat_data.data.chassis_power > 0;
                 //printf("%d\n",ext_power_heat_data.data.chassis_power);
             }
 //            printf("A %i B %i\n", rS, lS);
             if (!sticksMoved) {
-                if ((prevLS != 0 && lS != prevLS )|| (prevRS != 0 && rS != prevRS)) {
+                if ((prevLS != Remote::SwitchState::UNKNOWN && lS != prevLS )|| (prevRS != Remote::SwitchState::UNKNOWN && rS != prevRS)) {
                     sticksMoved = true;
                 } else {
                     prevLS = lS;
                     prevRS = rS;
                 }
-            } else if(rS == 1){ // All non-serializer motors activated
+            } else if(rS == Remote::SwitchState::DOWN){ // All non-serializer motors activated
                 // int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
 
                 // pitch.setPosition((rY / 2) + 1500);
@@ -141,23 +145,23 @@ int main()
 
                 printf("ref: %f\n", ref_chassis_power);
 
-            }else if(rS == 2){ //disable all the non-serializer components
+            }else if(rS == Remote::SwitchState::MID){ //disable all the non-serializer components
                 chassis.driveXYR(0,0,0);
                 // yaw.setPower(0); pitch.setPower(0);
-            }else if(rS == 3){ // beyblade mode
+            }else if(rS == Remote::SwitchState::UP){ // beyblade mode
                 chassis.beyblade(lX / 500.0, lY / 500.0, true);
                 yaw.setPower(0); pitch.setPower(0);
             }
 
-            if (lS == 3) {
+            if (lS == Remote::SwitchState::UP) {
                 //indexer.setPower(1200);
                 indexer.setPower(16000);
                 setFlyWheelPwr(40);
 
-            }else if(lS == 2){ //disable serializer
+            }else if(lS == Remote::SwitchState::MID){ //disable serializer
                 indexer.setPower(0);
                 setFlyWheelPwr(0);
-            }else if(lS == 1){
+            }else if(lS == Remote::SwitchState::DOWN){
                 ///////////////////////////////////////////
                 /// THEO SECTION OF CODE
                 ///////////////////////////////////////////
