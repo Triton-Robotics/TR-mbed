@@ -98,8 +98,9 @@ int main()
 
     while (true) {
 
-        // printf("RS: %i\n", (int) rS);
-        printf("STICKS: %i %i %i %i\n", rX, rY, lX, lY);
+        printf("RS: %i\n", (int) rS);
+                printf("ref: %f\n", ext_power_heat_data.data.chassis_power);
+        // printf("STICKS: %i %i %i %i\n", rX, rY, lX, lY);
 
 
         unsigned long timeStart = us_ticker_read() / 1000;
@@ -134,10 +135,10 @@ int main()
                 double ref_chassis_power = ext_power_heat_data.data.chassis_power;
 
                 unsigned long time = us_ticker_read() / 1000;
-                //as
-                chassis.driveFieldRelativePower(ref_chassis_power, time - lastTime, lX / 500.0, lY / 500.0, rX / 500.0);
 
-                //chassis.driveXYRPower(ref_chassis_power, lX, lY, rX, time - lastTime);
+                // chassis.driveFieldRelativePower(ref_chassis_power, time - lastTime, lX / 500.0, lY / 500.0, rX / 500.0);
+
+                chassis.driveXYRPower(ref_chassis_power, 5 * lX, 5 * lY, 5 * rX, time - lastTime);
                 
                 //chassis.driveXYR(ref_chassis_power, lY*5, time - lastTime);
     

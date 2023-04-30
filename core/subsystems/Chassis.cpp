@@ -93,17 +93,14 @@ void Chassis::driveXYRPower(double ref_chassis_power, double lX, double lY, doub
     double scale = 1;
 
     PID power_pid(12, 0.008, 0, 0, 0);
-    PID speed_pid_LF(1.79, 0.27, 10.57, 15000, 500);
-    PID speed_pid_RF(1.79, 0.27, 10.57, 15000, 500);
-    PID speed_pid_LB(1.79, 0.27, 10.57, 15000, 500);
-    PID speed_pid_RB(1.79, 0.27, 10.57, 15000, 500);
-
-    double powerLF = speed_pid_LF.calculate(lX + lY + rX, LF.getData(VELOCITY), time_diff);
-    double powerRF = speed_pid_RF.calculate(lX - lY + rX, RF.getData(VELOCITY), time_diff);
-    double powerLB = speed_pid_LB.calculate(0 - lX + lY + rX, LB.getData(VELOCITY), time_diff);
-    double powerRB = speed_pid_RB.calculate(0 - lX - lY + rX, RB.getData(VELOCITY), time_diff);
+    double powerLF = LF.pidSpeed.calculate(lX + lY + rX, LF.getData(VELOCITY), time_diff);
+    double powerRF = RF.pidSpeed.calculate(lX - lY + rX, RF.getData(VELOCITY), time_diff);
+    double powerLB = LB.pidSpeed.calculate(0 - lX + lY + rX, LB.getData(VELOCITY), time_diff);
+    double powerRB = RB.pidSpeed.calculate(0 - lX - lY + rX, RB.getData(VELOCITY), time_diff);
 
     unsigned long time = us_ticker_read() / 1000;
+
+    printf("REF POWER: %i\n", (int) ref_chassis_power);
 
     scale = abs(power_pid.calculate(48, ref_chassis_power, time_diff));
 
