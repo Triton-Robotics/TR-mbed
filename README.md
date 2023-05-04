@@ -61,7 +61,7 @@ cd TR-mbed && mbed-tools deploy
 ```
 
 **Optional: At this point, you may choose to diverge from the CLI setup guide and set up an IDE
-instead. Check out the setup instructions for [CLion](.readme/clion.md) or [VSCode](.readme/vscode.md).**
+instead. Check out the setup instructions for [CLion](.md/clion.md) or [VSCode](.md/vscode.md).**
 
 3. Configure `CMake` project. This should only be done once per project, or after editing
    any `CMakeLists.txt`:
