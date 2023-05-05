@@ -1,0 +1,25 @@
+var searchData=
+[
+  ['get_5faccel_48',['get_accel',['../classBNO055.html#a31166955ddb1e5020bc288bcf76017d7',1,'BNO055']]],
+  ['get_5fangular_5fposition_5fquat_49',['get_angular_position_quat',['../classBNO055.html#a2b16e3dccba001191a3b03a76d2ecfc5',1,'BNO055']]],
+  ['get_5fchip_5ftemperature_50',['get_chip_temperature',['../classBNO055.html#a1e98e73f02495c032ecee5f5354d8c87',1,'BNO055']]],
+  ['get_5feuler_5fangles_51',['get_euler_angles',['../classBNO055.html#a0569c8614e86814f903e914963038315',1,'BNO055']]],
+  ['get_5fgravity_52',['get_gravity',['../classBNO055.html#a28ab8a7da73460f8ed9e2f028d3a4108',1,'BNO055']]],
+  ['get_5fgyro_53',['get_gyro',['../classBNO055.html#a2f659ee1316f2ce8e6bd379a2e66c684',1,'BNO055']]],
+  ['get_5flinear_5faccel_54',['get_linear_accel',['../classBNO055.html#afc63bdced04e2a9f65ea6a6d00f98187',1,'BNO055']]],
+  ['get_5fmag_55',['get_mag',['../classBNO055.html#afe1a70c3cd44482d3ecd828ece47d941',1,'BNO055']]],
+  ['get_5fquaternion_56',['get_quaternion',['../classBNO055.html#a31dc7d5a3db043d03eb203e91225ee34',1,'BNO055']]],
+  ['getbrakemode_57',['getBrakeMode',['../classChassis.html#a3eac84eb3b12b0cc60fc29cc547d5fe7',1,'Chassis']]],
+  ['getchannel_58',['getChannel',['../classRemote.html#ac6d107d7f8d9ffc9d882b77af7fb15ca',1,'Remote']]],
+  ['getfeedback_59',['getFeedback',['../classCANHandler.html#a0c910d17448a50c9912fae1415f79ef1',1,'CANHandler']]],
+  ['getmotor_60',['getMotor',['../classChassis.html#af20dd0af1bbc0b32597125dc826393c8',1,'Chassis']]],
+  ['getmousel_61',['getMouseL',['../classRemote.html#a8eed352a5638ea183317a4a479618bef',1,'Remote']]],
+  ['getmouser_62',['getMouseR',['../classRemote.html#aed082668b7076301499751e71657214a',1,'Remote']]],
+  ['getmousex_63',['getMouseX',['../classRemote.html#a78576f85d239c63887ee0b515c066912',1,'Remote']]],
+  ['getmousey_64',['getMouseY',['../classRemote.html#abef178b9009cad1bc69e0dd4d565d19c',1,'Remote']]],
+  ['getmousez_65',['getMouseZ',['../classRemote.html#a18755c249bf7a3b11b2a6b6d4b9d3218',1,'Remote']]],
+  ['getstickdata_66',['getStickData',['../classDJIRemote.html#a061ad52d47686ade670e24365521953b',1,'DJIRemote']]],
+  ['getswitch_67',['getSwitch',['../classRemote.html#aa0a6fb97ea858254e89f553e010c1b4e',1,'Remote']]],
+  ['getupdatecounter_68',['getUpdateCounter',['../classRemote.html#abb3d462dab9f4d0093883bb362305e6c',1,'Remote']]],
+  ['getwheel_69',['getWheel',['../classRemote.html#a0f1fd8cdfc6ac4037d008a6a3782322e',1,'Remote']]]
+];

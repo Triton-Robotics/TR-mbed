@@ -1,4 +1,0 @@
-add_subdirectory(algorithms)
-add_subdirectory(communications)
-add_subdirectory(peripherals)
-add_subdirectory(motor)
