@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['djimotor_183',['DJIMotor',['../classDJIMotor.html',1,'']]],
-  ['djiremote_184',['DJIRemote',['../classDJIRemote.html',1,'']]]
+  ['djimotor_184',['DJIMotor',['../classDJIMotor.html',1,'']]],
+  ['djiremote_185',['DJIRemote',['../classDJIRemote.html',1,'']]]
 ];
