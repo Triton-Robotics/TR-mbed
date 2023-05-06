@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['calculate_12',['calculate',['../classPID.html#a8c501a62399df36de281d370c465441f',1,'PID']]],
+  ['calculate_12',['calculate',['../classPID.html#a8c501a62399df36de281d370c465441f',1,'PID::calculate()'],['../classRamseteController.html#a262e5b13c23cad276ab9e0991d48088f',1,'RamseteController::calculate()']]],
   ['calibrate_13',['calibrate',['../classBNO055.html#a35195101876415477413c1ca0af48b07',1,'BNO055']]],
   ['canhandler_14',['CANHandler',['../classCANHandler.html',1,'']]],
   ['canmsg_15',['CANMsg',['../classCANMsg.html',1,'CANMsg'],['../classCANMsg.html#a2e19ae2a3e39908d407404c989cdc432',1,'CANMsg::CANMsg(int _id, CANFormat _format=CANStandard)'],['../classCANMsg.html#af843ce3b8b5889c427e6b8237542999d',1,'CANMsg::CANMsg(int _id, const char *_data, char _len=8, CANType _type=CANData, CANFormat _format=CANStandard)'],['../classCANMsg.html#af996bcbe3d52b8c90dd432d12294cf1c',1,'CANMsg::CANMsg()']]],
@@ -8,7 +8,7 @@ var searchData=
   ['channel_17',['Channel',['../classRemote.html#a0584fcca643d59d1b4d8b2624d2807eb',1,'Remote']]],
   ['chassis_18',['Chassis',['../classChassis.html',1,'Chassis'],['../classChassis.html#a20920c868942620d564786f648c5c736',1,'Chassis::Chassis()']]],
   ['chassiskalman_19',['ChassisKalman',['../classChassisKalman.html',1,'']]],
-  ['chassisspeeds_20',['ChassisSpeeds',['../classChassisSpeeds.html',1,'']]],
+  ['chassisspeeds_20',['ChassisSpeeds',['../classChassisSpeeds.html',1,'ChassisSpeeds'],['../classChassisSpeeds.html#a34737964ea81a6c28232bec779492406',1,'ChassisSpeeds::ChassisSpeeds()']]],
   ['chip_5fready_21',['chip_ready',['../classBNO055.html#a4367136d057891191d873107cd9a6c31',1,'BNO055']]],
   ['class_20constructor_3a_22',['Class Constructor:',['../md_core_util_motor_CANMotorDocumentation.html',1,'']]],
   ['clear_23',['clear',['../classCANMsg.html#a969dcb0af8e68883ab104249c8559146',1,'CANMsg']]],

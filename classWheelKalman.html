@@ -72,6 +72,8 @@ $(function() {
 <div class="title">WheelKalman Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="WheelKalman_8h_source.html">WheelKalman.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for WheelKalman:</div>
 <div class="dyncontent">
@@ -81,8 +83,9 @@ Inheritance diagram for WheelKalman:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ac20d698c2003c421e316038caae73fb5"><td class="memItemLeft" align="right" valign="top"><a id="ac20d698c2003c421e316038caae73fb5"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setDt</b> (double dt)</td></tr>
+<tr class="memitem:a13b949274ccccd72e48de14d9b8583c4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classWheelKalman.html#a13b949274ccccd72e48de14d9b8583c4">WheelKalman</a> ()</td></tr>
+<tr class="separator:a13b949274ccccd72e48de14d9b8583c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac20d698c2003c421e316038caae73fb5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classWheelKalman.html#ac20d698c2003c421e316038caae73fb5">setDt</a> (double dt)</td></tr>
 <tr class="separator:ac20d698c2003c421e316038caae73fb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
@@ -106,6 +109,52 @@ Protected Attributes</h2></td></tr>
 double&#160;</td><td class="memItemRight" valign="bottom"><b>B</b> [Nsta][ControlInputs]</td></tr>
 <tr class="separator:afe97527d10c88a38af02945b4024b127"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>The <a class="el" href="classWheelKalman.html">WheelKalman</a> class is a Kalman filter used to control a single wheel/motor. It uses an Extended Kalman Filter (EKF) to implement position control of the wheel. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a13b949274ccccd72e48de14d9b8583c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a13b949274ccccd72e48de14d9b8583c4">&#9670;&nbsp;</a></span>WheelKalman()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">WheelKalman::WheelKalman </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Creates a new <a class="el" href="classWheelKalman.html">WheelKalman</a> object </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="ac20d698c2003c421e316038caae73fb5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac20d698c2003c421e316038caae73fb5">&#9670;&nbsp;</a></span>setDt()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void WheelKalman::setDt </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>dt</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sets the dt (time delta) of the kalman filter, used to predict how much the position will change each timestep based on speed and dt </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dt</td><td>The time delta in milliseconds </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>core/util/algorithms/<a class="el" href="WheelKalman_8h_source.html">WheelKalman.h</a></li>
 <li>core/util/algorithms/WheelKalman.cpp</li>

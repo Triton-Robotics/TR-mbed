@@ -70,9 +70,13 @@ $(function() {
 <div class="title">PID Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="PID_8h_source.html">PID.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a0311b6f7de348499ce24e53ba353514a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a0311b6f7de348499ce24e53ba353514a">PID</a> ()</td></tr>
+<tr class="separator:a0311b6f7de348499ce24e53ba353514a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a12e94de8989b93f89fc9a58f56d61817"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a12e94de8989b93f89fc9a58f56d61817">PID</a> (float p, float i, float d, float sumCap, float outCap)</td></tr>
 <tr class="memdesc:a12e94de8989b93f89fc9a58f56d61817"><td class="mdescLeft">&#160;</td><td class="mdescRight">Simple <a class="el" href="classPID.html">PID</a> Constructor.  <a href="classPID.html#a12e94de8989b93f89fc9a58f56d61817">More...</a><br /></td></tr>
 <tr class="separator:a12e94de8989b93f89fc9a58f56d61817"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -88,14 +92,11 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ac6ca9c4c2850643db59f7ae453a02082"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#ac6ca9c4c2850643db59f7ae453a02082">setPID</a> (float p, float i, float d)</td></tr>
 <tr class="memdesc:ac6ca9c4c2850643db59f7ae453a02082"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the <a class="el" href="classPID.html">PID</a> values  <a href="classPID.html#ac6ca9c4c2850643db59f7ae453a02082">More...</a><br /></td></tr>
 <tr class="separator:ac6ca9c4c2850643db59f7ae453a02082"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aadc133e72aa4623c37344902a59ebf7f"><td class="memItemLeft" align="right" valign="top"><a id="aadc133e72aa4623c37344902a59ebf7f"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>getkP</b> ()</td></tr>
+<tr class="memitem:aadc133e72aa4623c37344902a59ebf7f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#aadc133e72aa4623c37344902a59ebf7f">getkP</a> ()</td></tr>
 <tr class="separator:aadc133e72aa4623c37344902a59ebf7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab81c763da2c71857a8d8cac61c22397d"><td class="memItemLeft" align="right" valign="top"><a id="ab81c763da2c71857a8d8cac61c22397d"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>getkI</b> ()</td></tr>
+<tr class="memitem:ab81c763da2c71857a8d8cac61c22397d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#ab81c763da2c71857a8d8cac61c22397d">getkI</a> ()</td></tr>
 <tr class="separator:ab81c763da2c71857a8d8cac61c22397d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aee23e1bd8ae861ddcf0e1ba4cb906b48"><td class="memItemLeft" align="right" valign="top"><a id="aee23e1bd8ae861ddcf0e1ba4cb906b48"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>getkD</b> ()</td></tr>
+<tr class="memitem:aee23e1bd8ae861ddcf0e1ba4cb906b48"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#aee23e1bd8ae861ddcf0e1ba4cb906b48">getkD</a> ()</td></tr>
 <tr class="separator:aee23e1bd8ae861ddcf0e1ba4cb906b48"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
@@ -113,9 +114,29 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>kI</b></td></tr>
 float&#160;</td><td class="memItemRight" valign="bottom"><b>sumError</b> = 0</td></tr>
 <tr class="separator:abcc8f2679433bd7d5d69bfa6e06d8eab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>The <a class="el" href="classPID.html">PID</a> class is used to implement <a class="el" href="classPID.html">PID</a> (proportional, integral, derivative) control of a motor. It is used by almost every motor on the robot, and supports both position and velocity control. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a0311b6f7de348499ce24e53ba353514a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0311b6f7de348499ce24e53ba353514a">&#9670;&nbsp;</a></span>PID() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">PID::PID </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Creates a new <a class="el" href="classPID.html">PID</a> object with the default control parameters </p>
+
+</div>
+</div>
 <a id="a12e94de8989b93f89fc9a58f56d61817"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a12e94de8989b93f89fc9a58f56d61817">&#9670;&nbsp;</a></span>PID()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a12e94de8989b93f89fc9a58f56d61817">&#9670;&nbsp;</a></span>PID() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -159,8 +180,13 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>sumError</b> = 0</td
 </div><div class="memdoc">
 
 <p>Simple <a class="el" href="classPID.html">PID</a> Constructor. </p>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>Creates a new <a class="el" href="classPID.html">PID</a> object with the given control parameters </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">p</td><td>The P (proportional) parameter </td></tr>
+    <tr><td class="paramname">i</td><td>The I (integral) parameter </td></tr>
+    <tr><td class="paramname">d</td><td>The D (derivative) parameter </td></tr>
+    <tr><td class="paramname">sumCap</td><td>The maximum integral that can be achieved, above which the integral will be capped </td></tr>
+    <tr><td class="paramname">outCap</td><td>The maximum output of the <a class="el" href="classPID.html">PID</a>, above which the output will be capped</td></tr>
     <tr><td class="paramname">p</td><td></td></tr>
     <tr><td class="paramname">i</td><td></td></tr>
     <tr><td class="paramname">d</td><td></td></tr>
@@ -206,6 +232,16 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>sumError</b> = 0</td
 </div><div class="memdoc">
 
 <p>calculate the <a class="el" href="classPID.html">PID</a> output </p>
+<p>Calculates an output power based on the current and desired measurement (speed/position)</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">desiredV</td><td>The desired speed/position </td></tr>
+    <tr><td class="paramname">actualV</td><td>The current speed/position </td></tr>
+    <tr><td class="paramname">dt</td><td>The time that has passed since the last calculation, in milliseconds </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The output control power</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">desiredV</td><td>the desired value </td></tr>
@@ -214,6 +250,60 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>sumError</b> = 0</td
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="aee23e1bd8ae861ddcf0e1ba4cb906b48"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aee23e1bd8ae861ddcf0e1ba4cb906b48">&#9670;&nbsp;</a></span>getkD()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int PID::getkD </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets the D (derivative) control parameter </p><dl class="section return"><dt>Returns</dt><dd>The D (derivative) control parameter </dd></dl>
+
+</div>
+</div>
+<a id="ab81c763da2c71857a8d8cac61c22397d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab81c763da2c71857a8d8cac61c22397d">&#9670;&nbsp;</a></span>getkI()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int PID::getkI </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets the I (integral) control parameter </p><dl class="section return"><dt>Returns</dt><dd>The I (integral) control parameter </dd></dl>
+
+</div>
+</div>
+<a id="aadc133e72aa4623c37344902a59ebf7f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aadc133e72aa4623c37344902a59ebf7f">&#9670;&nbsp;</a></span>getkP()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int PID::getkP </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets the P (proportional) control parameter </p><dl class="section return"><dt>Returns</dt><dd>The P (proportional) control parameter </dd></dl>
 
 </div>
 </div>
@@ -234,8 +324,9 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>sumError</b> = 0</td
 </div><div class="memdoc">
 
 <p>set the integral cap </p>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>Sets the integral cap </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">sumCap</td><td>The new integral cap</td></tr>
     <tr><td class="paramname">sumCap</td><td>the integral cap </td></tr>
   </table>
   </dd>
@@ -260,8 +351,9 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>sumError</b> = 0</td
 </div><div class="memdoc">
 
 <p>set the output cap </p>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>Sets the output cap </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">outCap</td><td>The new output cap</td></tr>
     <tr><td class="paramname">outCap</td><td>the output cap </td></tr>
   </table>
   </dd>
@@ -302,8 +394,11 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>sumError</b> = 0</td
 </div><div class="memdoc">
 
 <p>set the <a class="el" href="classPID.html">PID</a> values </p>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>Sets the P, I, and D control parameters </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">p</td><td>The new P (proportional) parameter </td></tr>
+    <tr><td class="paramname">i</td><td>The new I (integral) parameter </td></tr>
+    <tr><td class="paramname">d</td><td>The new D (derivative) parameter</td></tr>
     <tr><td class="paramname">p</td><td></td></tr>
     <tr><td class="paramname">i</td><td></td></tr>
     <tr><td class="paramname">d</td><td></td></tr>

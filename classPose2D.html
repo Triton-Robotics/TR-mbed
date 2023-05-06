@@ -70,17 +70,16 @@ $(function() {
 <div class="title">Pose2D Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="Pose2D_8h_source.html">Pose2D.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:acc57a58f994716a286d4d72b92b6b46d"><td class="memItemLeft" align="right" valign="top"><a id="acc57a58f994716a286d4d72b92b6b46d"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Pose2D</b> (double x, double y, double angleRadians)</td></tr>
+<tr class="memitem:acc57a58f994716a286d4d72b92b6b46d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPose2D.html#acc57a58f994716a286d4d72b92b6b46d">Pose2D</a> (double x, double y, double angleRadians)</td></tr>
 <tr class="separator:acc57a58f994716a286d4d72b92b6b46d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ef951a9736608496d23fccf4ee923f0"><td class="memItemLeft" align="right" valign="top"><a id="a6ef951a9736608496d23fccf4ee923f0"></a>
-<a class="el" href="classPose2D.html">Pose2D</a>&#160;</td><td class="memItemRight" valign="bottom"><b>minus</b> (<a class="el" href="classPose2D.html">Pose2D</a> other)</td></tr>
+<tr class="memitem:a6ef951a9736608496d23fccf4ee923f0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPose2D.html">Pose2D</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPose2D.html#a6ef951a9736608496d23fccf4ee923f0">minus</a> (<a class="el" href="classPose2D.html">Pose2D</a> other)</td></tr>
 <tr class="separator:a6ef951a9736608496d23fccf4ee923f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afdce710711a670037b8eb43639c08511"><td class="memItemLeft" align="right" valign="top"><a id="afdce710711a670037b8eb43639c08511"></a>
-<a class="el" href="classPose2D.html">Pose2D</a>&#160;</td><td class="memItemRight" valign="bottom"><b>interpolate</b> (<a class="el" href="classPose2D.html">Pose2D</a> other, double fractionThis)</td></tr>
+<tr class="memitem:afdce710711a670037b8eb43639c08511"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPose2D.html">Pose2D</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPose2D.html#afdce710711a670037b8eb43639c08511">interpolate</a> (<a class="el" href="classPose2D.html">Pose2D</a> other, double fractionThis)</td></tr>
 <tr class="separator:afdce710711a670037b8eb43639c08511"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
@@ -95,6 +94,115 @@ double&#160;</td><td class="memItemRight" valign="bottom"><b>y</b></td></tr>
 double&#160;</td><td class="memItemRight" valign="bottom"><b>angleRadians</b></td></tr>
 <tr class="separator:a01e4621df6667b3e1466fb8eb39634dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>The <a class="el" href="classPose2D.html">Pose2D</a> class represents a 2D position and orientation, including x and y coordinates and a heading. It is used to represent the <a class="el" href="classChassis.html">Chassis</a>'s position and heading. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="acc57a58f994716a286d4d72b92b6b46d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acc57a58f994716a286d4d72b92b6b46d">&#9670;&nbsp;</a></span>Pose2D()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Pose2D::Pose2D </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>angleRadians</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Creates a new <a class="el" href="classPose2D.html">Pose2D</a> object from the specified position and orientation</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>The x-coordinate of the position in meters </td></tr>
+    <tr><td class="paramname">y</td><td>The y-coordinate of the position in meters </td></tr>
+    <tr><td class="paramname">angleRadians</td><td>The CCW-positive angle in radians </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="afdce710711a670037b8eb43639c08511"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afdce710711a670037b8eb43639c08511">&#9670;&nbsp;</a></span>interpolate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classPose2D.html">Pose2D</a> Pose2D::interpolate </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classPose2D.html">Pose2D</a>&#160;</td>
+          <td class="paramname"><em>other</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>fractionThis</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Finds a new <a class="el" href="classPose2D.html">Pose2D</a> that is a specific fraction of the way between this <a class="el" href="classPose2D.html">Pose2D</a> and another. For example, if this <a class="el" href="classPose2D.html">Pose2D</a> is x = 1, y = 4, rotation = PI/2, and the other <a class="el" href="classPose2D.html">Pose2D</a> is x = 3, y = 3, rotation = PI/6, then interpolating with fractionThis = 1/4 would be x = 2.5, y = 3.25, rotation = PI/4.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>The <a class="el" href="classPose2D.html">Pose2D</a> to interpolate from </td></tr>
+    <tr><td class="paramname">fractionThis</td><td>What fraction (0 to 1) of the way from the other <a class="el" href="classPose2D.html">Pose2D</a> to this <a class="el" href="classPose2D.html">Pose2D</a>; 1 would just return this <a class="el" href="classPose2D.html">Pose2D</a>, and 0 would return the other <a class="el" href="classPose2D.html">Pose2D</a> </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The <a class="el" href="classPose2D.html">Pose2D</a> that is the specified fraction between this and the other <a class="el" href="classPose2D.html">Pose2D</a> </dd></dl>
+
+</div>
+</div>
+<a id="a6ef951a9736608496d23fccf4ee923f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ef951a9736608496d23fccf4ee923f0">&#9670;&nbsp;</a></span>minus()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classPose2D.html">Pose2D</a> Pose2D::minus </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classPose2D.html">Pose2D</a>&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Subtracts another position and orientation from this position and orientation </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>The <a class="el" href="classPose2D.html">Pose2D</a> to subtract </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A new <a class="el" href="classPose2D.html">Pose2D</a> representing the difference between this <a class="el" href="classPose2D.html">Pose2D</a> and the other Pose2d </dd></dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>core/util/algorithms/<a class="el" href="Pose2D_8h_source.html">Pose2D.h</a></li>
 <li>core/util/algorithms/Pose2D.cpp</li>

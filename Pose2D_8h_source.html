@@ -78,23 +78,26 @@ $(function() {
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#define TR_EMBEDDED_POSE2D_H</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
-<div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="classPose2D.html">    9</a></span>&#160;<span class="keyword">class </span><a class="code" href="classPose2D.html">Pose2D</a> {</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    <a class="code" href="classPose2D.html">Pose2D</a>(<span class="keywordtype">double</span> x, <span class="keywordtype">double</span> y, <span class="keywordtype">double</span> angleRadians);</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <a class="code" href="classPose2D.html">Pose2D</a> minus(<a class="code" href="classPose2D.html">Pose2D</a> other);</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <a class="code" href="classPose2D.html">Pose2D</a> interpolate(<a class="code" href="classPose2D.html">Pose2D</a> other, <span class="keywordtype">double</span> fractionThis);</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keywordtype">double</span> x;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keywordtype">double</span> y;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keywordtype">double</span> angleRadians;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;};</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#endif </span><span class="comment">//TR_EMBEDDED_POSE2D_H</span></div>
-<div class="ttc" id="aclassPose2D_html"><div class="ttname"><a href="classPose2D.html">Pose2D</a></div><div class="ttdef"><b>Definition:</b> Pose2D.h:9</div></div>
+<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="classPose2D.html">   13</a></span>&#160;<span class="keyword">class </span><a class="code" href="classPose2D.html">Pose2D</a> {</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <a class="code" href="classPose2D.html#acc57a58f994716a286d4d72b92b6b46d">Pose2D</a>(<span class="keywordtype">double</span> x, <span class="keywordtype">double</span> y, <span class="keywordtype">double</span> angleRadians);</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <a class="code" href="classPose2D.html">Pose2D</a> <a class="code" href="classPose2D.html#a6ef951a9736608496d23fccf4ee923f0">minus</a>(<a class="code" href="classPose2D.html">Pose2D</a> other);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <a class="code" href="classPose2D.html">Pose2D</a> <a class="code" href="classPose2D.html#afdce710711a670037b8eb43639c08511">interpolate</a>(<a class="code" href="classPose2D.html">Pose2D</a> other, <span class="keywordtype">double</span> fractionThis);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordtype">double</span> x;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordtype">double</span> y;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordtype">double</span> angleRadians;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;};</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">#endif </span><span class="comment">//TR_EMBEDDED_POSE2D_H</span></div>
+<div class="ttc" id="aclassPose2D_html"><div class="ttname"><a href="classPose2D.html">Pose2D</a></div><div class="ttdef"><b>Definition:</b> Pose2D.h:13</div></div>
+<div class="ttc" id="aclassPose2D_html_a6ef951a9736608496d23fccf4ee923f0"><div class="ttname"><a href="classPose2D.html#a6ef951a9736608496d23fccf4ee923f0">Pose2D::minus</a></div><div class="ttdeci">Pose2D minus(Pose2D other)</div><div class="ttdef"><b>Definition:</b> Pose2D.cpp:13</div></div>
+<div class="ttc" id="aclassPose2D_html_acc57a58f994716a286d4d72b92b6b46d"><div class="ttname"><a href="classPose2D.html#acc57a58f994716a286d4d72b92b6b46d">Pose2D::Pose2D</a></div><div class="ttdeci">Pose2D(double x, double y, double angleRadians)</div><div class="ttdef"><b>Definition:</b> Pose2D.cpp:7</div></div>
+<div class="ttc" id="aclassPose2D_html_afdce710711a670037b8eb43639c08511"><div class="ttname"><a href="classPose2D.html#afdce710711a670037b8eb43639c08511">Pose2D::interpolate</a></div><div class="ttdeci">Pose2D interpolate(Pose2D other, double fractionThis)</div><div class="ttdef"><b>Definition:</b> Pose2D.cpp:21</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
