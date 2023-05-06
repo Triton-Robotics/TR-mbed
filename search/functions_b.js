@@ -1,13 +1,13 @@
 var searchData=
 [
-  ['ramsetecontroller_284',['RamseteController',['../classRamseteController.html#a4c2d4220a6195837f72b2b3680465666',1,'RamseteController']]],
-  ['rawsend_285',['rawSend',['../classCANHandler.html#a18ede89e5acf269b1be91543ee77d282',1,'CANHandler']]],
-  ['read_286',['read',['../classRemote.html#ab8195af65d12a53d238f6714b46451e0',1,'Remote']]],
-  ['read_5fcalib_5fstatus_287',['read_calib_status',['../classBNO055.html#a1bb614e4dc2ab7f69bef4f2286986fab',1,'BNO055']]],
-  ['read_5fid_5finf_288',['read_id_inf',['../classBNO055.html#a61a2812efc810f7a24382a51f60074f4',1,'BNO055']]],
-  ['read_5freg0_289',['read_reg0',['../classBNO055.html#a4cff42d02e03ab614ae23f6ce621a19e',1,'BNO055']]],
-  ['read_5freg1_290',['read_reg1',['../classBNO055.html#a96c9b858c1d052af49fd1d9599883bbb',1,'BNO055']]],
-  ['readimu_291',['readImu',['../classChassis.html#aa89590e2e7f685d3da0523dd7958be3a',1,'Chassis']]],
-  ['remoteupdate_292',['remoteUpdate',['../classDJIRemote.html#ad055908317328a31ef1e47d39c1455e0',1,'DJIRemote']]],
-  ['reset_293',['reset',['../classBNO055.html#a759c0dd32e621ec19ea0035a83d61954',1,'BNO055']]]
+  ['pcread_283',['PCRead',['../classSerialCommunication.html#a2cea633b3ae3f88cb723dd08baf87d1a',1,'SerialCommunication']]],
+  ['periodic_284',['periodic',['../classChassis.html#a9089741a5e6f56bd0587b0d3a047d586',1,'Chassis']]],
+  ['pid_285',['PID',['../classPID.html#a0311b6f7de348499ce24e53ba353514a',1,'PID::PID()'],['../classPID.html#a12e94de8989b93f89fc9a58f56d61817',1,'PID::PID(float p, float i, float d, float sumCap, float outCap)']]],
+  ['pose2d_286',['Pose2D',['../classPose2D.html#acc57a58f994716a286d4d72b92b6b46d',1,'Pose2D']]],
+  ['print_287',['print',['../classTRMutex.html#addf0ca5ba29a29473ec13c71ad9aceee',1,'TRMutex::print(int integer)'],['../classTRMutex.html#a7a7e9f6365ac2c71091849045315e96e',1,'TRMutex::print(char statement[])']]],
+  ['printff_288',['printff',['../classTRMutex.html#a4840ea2ee7d090c9a83fd7bc3c15d7ac',1,'TRMutex']]],
+  ['println_289',['println',['../classTRMutex.html#a706daf469d9f285ebe9fd9aa3080ffa7',1,'TRMutex::println(int integer)'],['../classTRMutex.html#a0d5eb5e6ab3de28d9a24e6b3e03147c5',1,'TRMutex::println(char statement[])']]],
+  ['printmotorangle_290',['printMotorAngle',['../classChassis.html#ad69c0979ebc90e1f28baa21a59f8463d',1,'Chassis']]],
+  ['printmsg_291',['printMsg',['../classCANHandler.html#a487ccd57fdcb83924bcfb22d28d913f9',1,'CANHandler']]],
+  ['pwmmotor_292',['PWMMotor',['../classPWMMotor.html#a0904f3bd40949a923ed254c5a926cb04',1,'PWMMotor']]]
 ];
