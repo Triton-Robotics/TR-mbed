@@ -21,7 +21,7 @@ var searchData=
   ['setdisplaypower_130',['setDisplayPower',['../classSSD1308.html#ad5741719dcc68842952ee71d86d1bfe5',1,'SSD1308']]],
   ['setdisplayscroll_131',['setDisplayScroll',['../classSSD1308.html#a2a1cf7543a5180c526d5b72b66fd06c5',1,'SSD1308']]],
   ['setdisplaystartline_132',['setDisplayStartLine',['../classSSD1308.html#af1b1aece20277442505b1af2d72f0bad',1,'SSD1308']]],
-  ['setdt_133',['setDt',['../classWheelKalman.html#ac20d698c2003c421e316038caae73fb5',1,'WheelKalman']]],
+  ['setdt_133',['setDt',['../classWheelKalman.html#ac20d698c2003c421e316038caae73fb5',1,'WheelKalman::setDt()'],['../classChassisKalman.html#a5ef8459e1e50d9e993d4200f05b7fa39',1,'ChassisKalman::setDt()']]],
   ['setentiredisplay_134',['setEntireDisplay',['../classSSD1308.html#a129c3590364f6717c964b3664d81691d',1,'SSD1308']]],
   ['setentiredisplayon_135',['setEntireDisplayOn',['../classSSD1308.html#a78e74eba100eb95c47b8399333e5a200',1,'SSD1308']]],
   ['setentiredisplayram_136',['setEntireDisplayRAM',['../classSSD1308.html#a93cee3498f9cead66f92ecd5a47c6a59',1,'SSD1308']]],
