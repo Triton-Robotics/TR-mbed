@@ -19,11 +19,22 @@
 #define TRACK_WIDTH_INCHES 18.0
 
 
-
+/**
+ * The WheelKalman class is a Kalman filter used to control a single wheel/motor. It uses an Extended Kalman Filter (EKF)
+ * to implement position control of the wheel.
+ */
 class WheelKalman: public TinyEKF {
 public:
+    /**
+     * Creates a new WheelKalman object
+     */
     WheelKalman();
 
+    /**
+     * Sets the dt (time delta) of the kalman filter, used to predict how much the position will change each timestep
+     * based on speed and dt
+     * @param dt The time delta in milliseconds
+     */
     void setDt(double dt);
 
     double dt;
