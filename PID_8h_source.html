@@ -90,41 +90,42 @@ $(function() {
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordtype">bool</span> debug = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keywordtype">float</span> feedForward = 0;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keywordtype">float</span> kI;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordtype">float</span> sumError = 0;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <a class="code" href="classPID.html#a0311b6f7de348499ce24e53ba353514a">PID</a>();</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <a class="code" href="classPID.html#a0311b6f7de348499ce24e53ba353514a">PID</a>(<span class="keywordtype">float</span> p, <span class="keywordtype">float</span> i, <span class="keywordtype">float</span> d, <span class="keywordtype">float</span> sumCap, <span class="keywordtype">float</span> outCap);</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keywordtype">float</span> <a class="code" href="classPID.html#a8c501a62399df36de281d370c465441f">calculate</a>(<span class="keywordtype">float</span> desiredV, <span class="keywordtype">float</span> actualV, <span class="keywordtype">double</span> dt);</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classPID.html#ac7ee1c162a0a2b75d4d638ad6ed911da">setIntegralCap</a>(<span class="keywordtype">float</span> sumCap);</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classPID.html#a53169403b2a9bed490ed0346c4fff9ea">setOutputCap</a>(<span class="keywordtype">float</span> outCap);</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classPID.html#ac6ca9c4c2850643db59f7ae453a02082">setPID</a>(<span class="keywordtype">float</span> p, <span class="keywordtype">float</span> i, <span class="keywordtype">float</span> d);</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classPID.html#aadc133e72aa4623c37344902a59ebf7f">getkP</a>();</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classPID.html#ab81c763da2c71857a8d8cac61c22397d">getkI</a>();</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classPID.html#aee23e1bd8ae861ddcf0e1ba4cb906b48">getkD</a>();</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;};</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keywordtype">bool</span> debugPIDterms = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keywordtype">float</span> feedForward = 0;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordtype">float</span> kI;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keywordtype">float</span> sumError = 0;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <a class="code" href="classPID.html#a0311b6f7de348499ce24e53ba353514a">PID</a>();</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <a class="code" href="classPID.html#a0311b6f7de348499ce24e53ba353514a">PID</a>(<span class="keywordtype">float</span> p, <span class="keywordtype">float</span> i, <span class="keywordtype">float</span> d, <span class="keywordtype">float</span> sumCap, <span class="keywordtype">float</span> outCap);</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordtype">float</span> <a class="code" href="classPID.html#a8c501a62399df36de281d370c465441f">calculate</a>(<span class="keywordtype">float</span> desiredV, <span class="keywordtype">float</span> actualV, <span class="keywordtype">double</span> dt);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classPID.html#ac7ee1c162a0a2b75d4d638ad6ed911da">setIntegralCap</a>(<span class="keywordtype">float</span> sumCap);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classPID.html#a53169403b2a9bed490ed0346c4fff9ea">setOutputCap</a>(<span class="keywordtype">float</span> outCap);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classPID.html#ac6ca9c4c2850643db59f7ae453a02082">setPID</a>(<span class="keywordtype">float</span> p, <span class="keywordtype">float</span> i, <span class="keywordtype">float</span> d);</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keywordtype">float</span> <a class="code" href="classPID.html#abb689b7c5f50173fb6b02f440bed4bc1">getkP</a>();</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keywordtype">float</span> <a class="code" href="classPID.html#a273993d8372d809d2c3d89377ff658bb">getkI</a>();</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="keywordtype">float</span> <a class="code" href="classPID.html#aacaeb2fd6aa6efc215ffc4cb036d0cc1">getkD</a>();</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;};</div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="preprocessor">#endif </span><span class="comment">//TR_EMBEDDED_PID_H</span></div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="preprocessor">#endif </span><span class="comment">//TR_EMBEDDED_PID_H</span></div>
 <div class="ttc" id="aclassPID_html"><div class="ttname"><a href="classPID.html">PID</a></div><div class="ttdef"><b>Definition:</b> PID.h:14</div></div>
 <div class="ttc" id="aclassPID_html_a0311b6f7de348499ce24e53ba353514a"><div class="ttname"><a href="classPID.html#a0311b6f7de348499ce24e53ba353514a">PID::PID</a></div><div class="ttdeci">PID()</div><div class="ttdef"><b>Definition:</b> PID.cpp:7</div></div>
-<div class="ttc" id="aclassPID_html_a53169403b2a9bed490ed0346c4fff9ea"><div class="ttname"><a href="classPID.html#a53169403b2a9bed490ed0346c4fff9ea">PID::setOutputCap</a></div><div class="ttdeci">void setOutputCap(float outCap)</div><div class="ttdoc">set the output cap</div><div class="ttdef"><b>Definition:</b> PID.cpp:84</div></div>
+<div class="ttc" id="aclassPID_html_a273993d8372d809d2c3d89377ff658bb"><div class="ttname"><a href="classPID.html#a273993d8372d809d2c3d89377ff658bb">PID::getkI</a></div><div class="ttdeci">float getkI()</div><div class="ttdef"><b>Definition:</b> PID.cpp:101</div></div>
+<div class="ttc" id="aclassPID_html_a53169403b2a9bed490ed0346c4fff9ea"><div class="ttname"><a href="classPID.html#a53169403b2a9bed490ed0346c4fff9ea">PID::setOutputCap</a></div><div class="ttdeci">void setOutputCap(float outCap)</div><div class="ttdoc">set the output cap</div><div class="ttdef"><b>Definition:</b> PID.cpp:83</div></div>
 <div class="ttc" id="aclassPID_html_a8c501a62399df36de281d370c465441f"><div class="ttname"><a href="classPID.html#a8c501a62399df36de281d370c465441f">PID::calculate</a></div><div class="ttdeci">float calculate(float desiredV, float actualV, double dt)</div><div class="ttdoc">calculate the PID output</div><div class="ttdef"><b>Definition:</b> PID.cpp:38</div></div>
-<div class="ttc" id="aclassPID_html_aadc133e72aa4623c37344902a59ebf7f"><div class="ttname"><a href="classPID.html#aadc133e72aa4623c37344902a59ebf7f">PID::getkP</a></div><div class="ttdeci">int getkP()</div><div class="ttdef"><b>Definition:</b> PID.cpp:98</div></div>
-<div class="ttc" id="aclassPID_html_ab81c763da2c71857a8d8cac61c22397d"><div class="ttname"><a href="classPID.html#ab81c763da2c71857a8d8cac61c22397d">PID::getkI</a></div><div class="ttdeci">int getkI()</div><div class="ttdef"><b>Definition:</b> PID.cpp:102</div></div>
-<div class="ttc" id="aclassPID_html_ac6ca9c4c2850643db59f7ae453a02082"><div class="ttname"><a href="classPID.html#ac6ca9c4c2850643db59f7ae453a02082">PID::setPID</a></div><div class="ttdeci">void setPID(float p, float i, float d)</div><div class="ttdoc">set the PID values</div><div class="ttdef"><b>Definition:</b> PID.cpp:94</div></div>
-<div class="ttc" id="aclassPID_html_ac7ee1c162a0a2b75d4d638ad6ed911da"><div class="ttname"><a href="classPID.html#ac7ee1c162a0a2b75d4d638ad6ed911da">PID::setIntegralCap</a></div><div class="ttdeci">void setIntegralCap(float sumCap)</div><div class="ttdoc">set the integral cap</div><div class="ttdef"><b>Definition:</b> PID.cpp:76</div></div>
-<div class="ttc" id="aclassPID_html_aee23e1bd8ae861ddcf0e1ba4cb906b48"><div class="ttname"><a href="classPID.html#aee23e1bd8ae861ddcf0e1ba4cb906b48">PID::getkD</a></div><div class="ttdeci">int getkD()</div><div class="ttdef"><b>Definition:</b> PID.cpp:106</div></div>
+<div class="ttc" id="aclassPID_html_aacaeb2fd6aa6efc215ffc4cb036d0cc1"><div class="ttname"><a href="classPID.html#aacaeb2fd6aa6efc215ffc4cb036d0cc1">PID::getkD</a></div><div class="ttdeci">float getkD()</div><div class="ttdef"><b>Definition:</b> PID.cpp:105</div></div>
+<div class="ttc" id="aclassPID_html_abb689b7c5f50173fb6b02f440bed4bc1"><div class="ttname"><a href="classPID.html#abb689b7c5f50173fb6b02f440bed4bc1">PID::getkP</a></div><div class="ttdeci">float getkP()</div><div class="ttdef"><b>Definition:</b> PID.cpp:97</div></div>
+<div class="ttc" id="aclassPID_html_ac6ca9c4c2850643db59f7ae453a02082"><div class="ttname"><a href="classPID.html#ac6ca9c4c2850643db59f7ae453a02082">PID::setPID</a></div><div class="ttdeci">void setPID(float p, float i, float d)</div><div class="ttdoc">set the PID values</div><div class="ttdef"><b>Definition:</b> PID.cpp:93</div></div>
+<div class="ttc" id="aclassPID_html_ac7ee1c162a0a2b75d4d638ad6ed911da"><div class="ttname"><a href="classPID.html#ac7ee1c162a0a2b75d4d638ad6ed911da">PID::setIntegralCap</a></div><div class="ttdeci">void setIntegralCap(float sumCap)</div><div class="ttdoc">set the integral cap</div><div class="ttdef"><b>Definition:</b> PID.cpp:75</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

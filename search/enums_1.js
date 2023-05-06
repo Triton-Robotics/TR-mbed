@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['channel_346',['Channel',['../classRemote.html#a0584fcca643d59d1b4d8b2624d2807eb',1,'Remote']]]
+  ['channel_348',['Channel',['../classRemote.html#a0584fcca643d59d1b4d8b2624d2807eb',1,'Remote']]]
 ];

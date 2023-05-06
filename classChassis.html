@@ -95,7 +95,15 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ad39d1c1c41a0053331eff67b0f8db595"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a96455bb04cbf91df5f817b2a73843ff7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#a96455bb04cbf91df5f817b2a73843ff7">driveOffsetAngle</a> (<a class="el" href="classChassisSpeeds.html">ChassisSpeeds</a> speeds, double angleOffset)</td></tr>
 <tr class="separator:a96455bb04cbf91df5f817b2a73843ff7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7ee3c56828f6e161de5d145bed3e4d2f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#a7ee3c56828f6e161de5d145bed3e4d2f">driveAngle</a> (double angleRadians, double speedRPM, double rotationVelcotiyRPM)</td></tr>
+<tr class="memitem:a3740dfa7985ecf0b39dc7e64f494a56f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#a3740dfa7985ecf0b39dc7e64f494a56f">driveXYRPower</a> (double ref_chassis_power, double lX, double lY, double rX, double time_diff)</td></tr>
+<tr class="separator:a3740dfa7985ecf0b39dc7e64f494a56f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2fe11f1b1f43c966e4ed6b4ac3f4bc4e"><td class="memItemLeft" align="right" valign="top"><a id="a2fe11f1b1f43c966e4ed6b4ac3f4bc4e"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>driveFieldRelativePower</b> (double ref_chassis_power, double time_diff, double yVelocityRPM, double xVelocityRPM, double rotationVelocityRPM)</td></tr>
+<tr class="separator:a2fe11f1b1f43c966e4ed6b4ac3f4bc4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6b58477663ddb64f49dd5ca260a5eb3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#ae6b58477663ddb64f49dd5ca260a5eb3">driveOffsetAnglePower</a> (double ref_chassis_power, double time_diff, double yVelocityRPM, double xVelocityRPM, double rotationVelocityRPM, double angleOffset)</td></tr>
+<tr class="separator:ae6b58477663ddb64f49dd5ca260a5eb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ee3c56828f6e161de5d145bed3e4d2f"><td class="memItemLeft" align="right" valign="top"><a id="a7ee3c56828f6e161de5d145bed3e4d2f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>driveAngle</b> (double angleRadians, double speedRPM, double rotationVelcotiyRPM)</td></tr>
 <tr class="separator:a7ee3c56828f6e161de5d145bed3e4d2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaa1fe234c2c1498b12c9bc3262c8dd25"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#aaa1fe234c2c1498b12c9bc3262c8dd25">beyblade</a> (double xVelocityRPM, double yVelocityRPM, double turretAngleDegrees, bool switchDirections)</td></tr>
 <tr class="separator:aaa1fe234c2c1498b12c9bc3262c8dd25"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -282,49 +290,6 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>testDataIndex</b> = 0<
 
 </div>
 </div>
-<a id="a7ee3c56828f6e161de5d145bed3e4d2f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7ee3c56828f6e161de5d145bed3e4d2f">&#9670;&nbsp;</a></span>driveAngle()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Chassis::driveAngle </td>
-          <td>(</td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>angleRadians</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>speedRPM</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>rotationVelcotiyRPM</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>The driveAngle method is used to drive the chassis with an absolute angle.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">angleRadians</td><td>Robot angle in radians </td></tr>
-    <tr><td class="paramname">speedRPM</td><td>Speed in RPM </td></tr>
-    <tr><td class="paramname">rotationVelcotiyRPM</td><td>Robot rotation velocity in RPM </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a id="a22231af9f43825063ac800ae186b6970"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a22231af9f43825063ac800ae186b6970">&#9670;&nbsp;</a></span>driveFieldRelative()</h2>
 
@@ -411,6 +376,59 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>testDataIndex</b> = 0<
 
 </div>
 </div>
+<a id="ae6b58477663ddb64f49dd5ca260a5eb3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae6b58477663ddb64f49dd5ca260a5eb3">&#9670;&nbsp;</a></span>driveOffsetAnglePower()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Chassis::driveOffsetAnglePower </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>ref_chassis_power</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>time_diff</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>xVelocityRPM</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>yVelocityRPM</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>rotationVelocityRPM</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>angleOffset</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Drives the <a class="el" href="classChassis.html">Chassis</a>, compensating by a certain angle (angleOffset) </p>
+
+</div>
+</div>
 <a id="ad39d1c1c41a0053331eff67b0f8db595"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad39d1c1c41a0053331eff67b0f8db595">&#9670;&nbsp;</a></span>driveTurretRelative()</h2>
 
@@ -466,6 +484,61 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>testDataIndex</b> = 0<
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">speeds</td><td>The robot-relative speeds (x, y, and rotation) in RPM </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a3740dfa7985ecf0b39dc7e64f494a56f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3740dfa7985ecf0b39dc7e64f494a56f">&#9670;&nbsp;</a></span>driveXYRPower()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Chassis::driveXYRPower </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>ref_chassis_power</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>lX</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>lY</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>rX</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>time_diff</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>The driveAngle method is used to drive the chassis with an absolute angle.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">angleRadians</td><td>Robot angle in radians </td></tr>
+    <tr><td class="paramname">speedRPM</td><td>Speed in RPM </td></tr>
+    <tr><td class="paramname">rotationVelcotiyRPM</td><td>Robot rotation velocity in RPM </td></tr>
   </table>
   </dd>
 </dl>

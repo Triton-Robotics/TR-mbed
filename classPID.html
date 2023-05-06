@@ -92,18 +92,21 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ac6ca9c4c2850643db59f7ae453a02082"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#ac6ca9c4c2850643db59f7ae453a02082">setPID</a> (float p, float i, float d)</td></tr>
 <tr class="memdesc:ac6ca9c4c2850643db59f7ae453a02082"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the <a class="el" href="classPID.html">PID</a> values  <a href="classPID.html#ac6ca9c4c2850643db59f7ae453a02082">More...</a><br /></td></tr>
 <tr class="separator:ac6ca9c4c2850643db59f7ae453a02082"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aadc133e72aa4623c37344902a59ebf7f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#aadc133e72aa4623c37344902a59ebf7f">getkP</a> ()</td></tr>
-<tr class="separator:aadc133e72aa4623c37344902a59ebf7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab81c763da2c71857a8d8cac61c22397d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#ab81c763da2c71857a8d8cac61c22397d">getkI</a> ()</td></tr>
-<tr class="separator:ab81c763da2c71857a8d8cac61c22397d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aee23e1bd8ae861ddcf0e1ba4cb906b48"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#aee23e1bd8ae861ddcf0e1ba4cb906b48">getkD</a> ()</td></tr>
-<tr class="separator:aee23e1bd8ae861ddcf0e1ba4cb906b48"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb689b7c5f50173fb6b02f440bed4bc1"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#abb689b7c5f50173fb6b02f440bed4bc1">getkP</a> ()</td></tr>
+<tr class="separator:abb689b7c5f50173fb6b02f440bed4bc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a273993d8372d809d2c3d89377ff658bb"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a273993d8372d809d2c3d89377ff658bb">getkI</a> ()</td></tr>
+<tr class="separator:a273993d8372d809d2c3d89377ff658bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aacaeb2fd6aa6efc215ffc4cb036d0cc1"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#aacaeb2fd6aa6efc215ffc4cb036d0cc1">getkD</a> ()</td></tr>
+<tr class="separator:aacaeb2fd6aa6efc215ffc4cb036d0cc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:af366e4a87e653fba7b5ce615f55522b8"><td class="memItemLeft" align="right" valign="top"><a id="af366e4a87e653fba7b5ce615f55522b8"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>debug</b> = false</td></tr>
 <tr class="separator:af366e4a87e653fba7b5ce615f55522b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0ca4a071ebce923d0d3c6353248354e"><td class="memItemLeft" align="right" valign="top"><a id="ae0ca4a071ebce923d0d3c6353248354e"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>debugPIDterms</b> = false</td></tr>
+<tr class="separator:ae0ca4a071ebce923d0d3c6353248354e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62b8d72d1f225e7d57d5202568e0bde5"><td class="memItemLeft" align="right" valign="top"><a id="a62b8d72d1f225e7d57d5202568e0bde5"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><b>feedForward</b> = 0</td></tr>
 <tr class="separator:a62b8d72d1f225e7d57d5202568e0bde5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -253,14 +256,14 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>sumError</b> = 0</td
 
 </div>
 </div>
-<a id="aee23e1bd8ae861ddcf0e1ba4cb906b48"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aee23e1bd8ae861ddcf0e1ba4cb906b48">&#9670;&nbsp;</a></span>getkD()</h2>
+<a id="aacaeb2fd6aa6efc215ffc4cb036d0cc1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aacaeb2fd6aa6efc215ffc4cb036d0cc1">&#9670;&nbsp;</a></span>getkD()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int PID::getkD </td>
+          <td class="memname">float PID::getkD </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -271,14 +274,14 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>sumError</b> = 0</td
 
 </div>
 </div>
-<a id="ab81c763da2c71857a8d8cac61c22397d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab81c763da2c71857a8d8cac61c22397d">&#9670;&nbsp;</a></span>getkI()</h2>
+<a id="a273993d8372d809d2c3d89377ff658bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a273993d8372d809d2c3d89377ff658bb">&#9670;&nbsp;</a></span>getkI()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int PID::getkI </td>
+          <td class="memname">float PID::getkI </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -289,14 +292,14 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>sumError</b> = 0</td
 
 </div>
 </div>
-<a id="aadc133e72aa4623c37344902a59ebf7f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aadc133e72aa4623c37344902a59ebf7f">&#9670;&nbsp;</a></span>getkP()</h2>
+<a id="abb689b7c5f50173fb6b02f440bed4bc1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abb689b7c5f50173fb6b02f440bed4bc1">&#9670;&nbsp;</a></span>getkP()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int PID::getkP </td>
+          <td class="memname">float PID::getkP </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
