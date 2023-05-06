@@ -1,6 +1,8 @@
 var searchData=
 [
-  ['canhandler_158',['CANHandler',['../classCANHandler.html',1,'']]],
-  ['canmsg_159',['CANMsg',['../classCANMsg.html',1,'']]],
-  ['chassis_160',['Chassis',['../classChassis.html',1,'']]]
+  ['canhandler_172',['CANHandler',['../classCANHandler.html',1,'']]],
+  ['canmsg_173',['CANMsg',['../classCANMsg.html',1,'']]],
+  ['chassis_174',['Chassis',['../classChassis.html',1,'']]],
+  ['chassiskalman_175',['ChassisKalman',['../classChassisKalman.html',1,'']]],
+  ['chassisspeeds_176',['ChassisSpeeds',['../classChassisSpeeds.html',1,'']]]
 ];

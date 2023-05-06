@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['beyblade_189',['beyblade',['../classChassis.html#a310505c26f17d5ebeb20a774e865a128',1,'Chassis']]],
-  ['bno055_190',['BNO055',['../classBNO055.html#a8fdfa2f898db3860487363fd7215bd1b',1,'BNO055::BNO055(PinName p_sda, PinName p_scl, PinName p_reset, uint8_t addr, uint8_t mode)'],['../classBNO055.html#aedd757e9891dc800720e520cb6508d12',1,'BNO055::BNO055(PinName p_sda, PinName p_scl, PinName p_reset)'],['../classBNO055.html#ac470fa0d420c351e2f8701940af6a846',1,'BNO055::BNO055(I2C &amp;p_i2c, PinName p_reset, uint8_t addr, uint8_t mode)'],['../classBNO055.html#a9e682fcad0029405e964833cb1ebe29f',1,'BNO055::BNO055(I2C &amp;p_i2c, PinName p_reset, uint8_t mode)']]]
+  ['_5f_5fattribute_5f_5f_209',['__attribute__',['../classRemote.html#a4c64ca0c900cc124d18e700b2c0b774a',1,'Remote']]]
 ];

@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['pcread_235',['PCRead',['../classSerialCommunication.html#a2cea633b3ae3f88cb723dd08baf87d1a',1,'SerialCommunication']]],
-  ['pid_236',['PID',['../classPID.html#a12e94de8989b93f89fc9a58f56d61817',1,'PID']]],
-  ['printmsg_237',['printMsg',['../classCANHandler.html#a487ccd57fdcb83924bcfb22d28d913f9',1,'CANHandler']]],
-  ['pwmmotor_238',['PWMMotor',['../classPWMMotor.html#a0904f3bd40949a923ed254c5a926cb04',1,'PWMMotor']]]
+  ['operator_3c_3c_259',['operator&lt;&lt;',['../classCANMsg.html#ad460c51cb95bca77c602141f06c8a2a1',1,'CANMsg']]],
+  ['operator_3e_3e_260',['operator&gt;&gt;',['../classCANMsg.html#a04a37c4f8c5d7630b4a966f1f49713a3',1,'CANMsg']]]
 ];

@@ -81,9 +81,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad9c887b0c27db6eee2b491a2d8fa6bc1"><td class="memItemLeft" align="right" valign="top"><a id="ad9c887b0c27db6eee2b491a2d8fa6bc1"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>DJIMotor</b> (short canID, CANHandler::CANBus bus, motorType mType=STANDARD)</td></tr>
 <tr class="separator:ad9c887b0c27db6eee2b491a2d8fa6bc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4558797a47b632bd087692540145d51f"><td class="memItemLeft" align="right" valign="top"><a id="a4558797a47b632bd087692540145d51f"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>__attribute__</b> ((unused)) static bool checkConnection(bool debug</td></tr>
-<tr class="separator:a4558797a47b632bd087692540145d51f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c1d8d55e831acc23dabce213dad080d"><td class="memItemLeft" align="right" valign="top"><a id="a6c1d8d55e831acc23dabce213dad080d"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>__attribute__</b> ((unused)) __attribute__((unused)) static bool checkConnection(bool debug)</td></tr>
+<tr class="separator:a6c1d8d55e831acc23dabce213dad080d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af5d04b1288cd6da1e25538edcd4d351b"><td class="memItemLeft" align="right" valign="top"><a id="af5d04b1288cd6da1e25538edcd4d351b"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>__attribute__</b> ((unused)) int getPowerOut() const</td></tr>
 <tr class="separator:af5d04b1288cd6da1e25538edcd4d351b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -105,6 +105,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>setSpeed</b> (int spe
 <tr class="memitem:a1bed8e016bd6282794e375322a133a5e"><td class="memItemLeft" align="right" valign="top"><a id="a1bed8e016bd6282794e375322a133a5e"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setPosition</b> (int position)</td></tr>
 <tr class="separator:a1bed8e016bd6282794e375322a133a5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a9567db3491cb4b4fd4da438edc5d9b"><td class="memItemLeft" align="right" valign="top"><a id="a6a9567db3491cb4b4fd4da438edc5d9b"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>rpmToTicksPerSecond</b> (double RPM)</td></tr>
+<tr class="separator:a6a9567db3491cb4b4fd4da438edc5d9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa265d713bc37813f819418eb7783cc84"><td class="memItemLeft" align="right" valign="top"><a id="aa265d713bc37813f819418eb7783cc84"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>__attribute__</b> ((unused)) void zeroPos()</td></tr>
 <tr class="separator:aa265d713bc37813f819418eb7783cc84"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -215,6 +218,21 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>useAbsEncoder</b> = f
 <tr class="memitem:ab1a5e142528897c966d3e7d189d59afb"><td class="memItemLeft" align="right" valign="top"><a id="ab1a5e142528897c966d3e7d189d59afb"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>justPosError</b> = false</td></tr>
 <tr class="separator:ab1a5e142528897c966d3e7d189d59afb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa37f2bcbc3ca4080588bd0509f68db89"><td class="memItemLeft" align="right" valign="top"><a id="aa37f2bcbc3ca4080588bd0509f68db89"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>useKalmanForPID</b> = false</td></tr>
+<tr class="separator:aa37f2bcbc3ca4080588bd0509f68db89"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7dd82ffd0f909f4de9ef5faf48ba6ff"><td class="memItemLeft" align="right" valign="top"><a id="ae7dd82ffd0f909f4de9ef5faf48ba6ff"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>useIntegrationForPID</b> = false</td></tr>
+<tr class="separator:ae7dd82ffd0f909f4de9ef5faf48ba6ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a722b68762ff53f6102a6f64b5bc731cc"><td class="memItemLeft" align="right" valign="top"><a id="a722b68762ff53f6102a6f64b5bc731cc"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>printAngle</b> = false</td></tr>
+<tr class="separator:a722b68762ff53f6102a6f64b5bc731cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a6719e22b214516ea0114221ac273ea"><td class="memItemLeft" align="right" valign="top"><a id="a1a6719e22b214516ea0114221ac273ea"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>integratedAngle</b> = 0</td></tr>
+<tr class="separator:a1a6719e22b214516ea0114221ac273ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af87d41808cae9aadbf3f56ccd5a13b41"><td class="memItemLeft" align="right" valign="top"><a id="af87d41808cae9aadbf3f56ccd5a13b41"></a>
+long&#160;</td><td class="memItemRight" valign="bottom"><b>lastIntegrationTime</b> = -1</td></tr>
+<tr class="separator:af87d41808cae9aadbf3f56ccd5a13b41"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>

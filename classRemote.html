@@ -66,6 +66,7 @@ $(function() {
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classRemote-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">Remote Class Reference</div>  </div>
@@ -87,9 +88,9 @@ Public Types</h2></td></tr>
  }</td></tr>
 <tr class="separator:add727f68db8fff42e6f572b19008ec66"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:affd0b019d5483d546bc29b07447649bb"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRemote.html#affd0b019d5483d546bc29b07447649bb">SwitchState</a> { <b>UNKNOWN</b>
-, <b>UP</b>
-, <b>MID</b>
 , <b>DOWN</b>
+, <b>MID</b>
+, <b>UP</b>
  }</td></tr>
 <tr class="separator:affd0b019d5483d546bc29b07447649bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aed14f81cb3e89567535a07bb6a1b9d4f"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4f">Key</a> { <br />
@@ -125,12 +126,21 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a1a975e03f2c6bb770932ba18457822da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab8195af65d12a53d238f6714b46451e0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRemote.html#ab8195af65d12a53d238f6714b46451e0">read</a> ()</td></tr>
 <tr class="separator:ab8195af65d12a53d238f6714b46451e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a528599afad04ccf9315d12a934aeaeee"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRemote.html#a528599afad04ccf9315d12a934aeaeee">isConnected</a> () const</td></tr>
-<tr class="separator:a528599afad04ccf9315d12a934aeaeee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c64ca0c900cc124d18e700b2c0b774a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRemote.html#a4c64ca0c900cc124d18e700b2c0b774a">__attribute__</a> ((unused)) bool isConnected() const</td></tr>
+<tr class="separator:a4c64ca0c900cc124d18e700b2c0b774a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac6d107d7f8d9ffc9d882b77af7fb15ca"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRemote.html#ac6d107d7f8d9ffc9d882b77af7fb15ca">getChannel</a> (<a class="el" href="classRemote.html#a0584fcca643d59d1b4d8b2624d2807eb">Channel</a> ch) const</td></tr>
 <tr class="separator:ac6d107d7f8d9ffc9d882b77af7fb15ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa0a6fb97ea858254e89f553e010c1b4e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classRemote.html#affd0b019d5483d546bc29b07447649bb">SwitchState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRemote.html#aa0a6fb97ea858254e89f553e010c1b4e">getSwitch</a> (<a class="el" href="classRemote.html#add727f68db8fff42e6f572b19008ec66">Switch</a> sw) const</td></tr>
-<tr class="separator:aa0a6fb97ea858254e89f553e010c1b4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f893b0d8a54c44f1ea13e8ced570c19"><td class="memItemLeft" align="right" valign="top"><a id="a8f893b0d8a54c44f1ea13e8ced570c19"></a>
+int16_t&#160;</td><td class="memItemRight" valign="bottom"><b>getChannelInt</b> (<a class="el" href="classRemote.html#a0584fcca643d59d1b4d8b2624d2807eb">Channel</a> ch) const</td></tr>
+<tr class="separator:a8f893b0d8a54c44f1ea13e8ced570c19"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c15d86cf90cd288ecdcdc944ab87443"><td class="memItemLeft" align="right" valign="top"><a id="a0c15d86cf90cd288ecdcdc944ab87443"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>printAxisData</b> () const</td></tr>
+<tr class="separator:a0c15d86cf90cd288ecdcdc944ab87443"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab3e55d985b57ba798e757b24b8ed76de"><td class="memItemLeft" align="right" valign="top"><a id="ab3e55d985b57ba798e757b24b8ed76de"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>dumpInfo</b> () const</td></tr>
+<tr class="separator:ab3e55d985b57ba798e757b24b8ed76de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ec4426e84aea331fc20e91a832d215c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classRemote.html#affd0b019d5483d546bc29b07447649bb">SwitchState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRemote.html#a7ec4426e84aea331fc20e91a832d215c">getSwitch</a> (<a class="el" href="classRemote.html#add727f68db8fff42e6f572b19008ec66">Switch</a> sw) const</td></tr>
+<tr class="separator:a7ec4426e84aea331fc20e91a832d215c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a78576f85d239c63887ee0b515c066912"><td class="memItemLeft" align="right" valign="top">int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRemote.html#a78576f85d239c63887ee0b515c066912">getMouseX</a> () const</td></tr>
 <tr class="separator:a78576f85d239c63887ee0b515c066912"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abef178b9009cad1bc69e0dd4d565d19c"><td class="memItemLeft" align="right" valign="top">int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRemote.html#abef178b9009cad1bc69e0dd4d565d19c">getMouseY</a> () const</td></tr>
@@ -147,6 +157,15 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a0f1fd8cdfc6ac4037d008a6a3782322e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abb3d462dab9f4d0093883bb362305e6c"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRemote.html#abb3d462dab9f4d0093883bb362305e6c">getUpdateCounter</a> () const</td></tr>
 <tr class="separator:abb3d462dab9f4d0093883bb362305e6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a4da81903b311b6f779459f18a60b2538"><td class="memItemLeft" align="right" valign="top"><a id="a4da81903b311b6f779459f18a60b2538"></a>
+long&#160;</td><td class="memItemRight" valign="bottom"><b>badDataChainNumber</b> = 0</td></tr>
+<tr class="separator:a4da81903b311b6f779459f18a60b2538"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa67aa0e1bd7548e39f70481b395ed04a"><td class="memItemLeft" align="right" valign="top"><a id="aa67aa0e1bd7548e39f70481b395ed04a"></a>
+long&#160;</td><td class="memItemRight" valign="bottom"><b>goodDataChainNumber</b> = 0</td></tr>
+<tr class="separator:aa67aa0e1bd7548e39f70481b395ed04a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A unique UART handler that uses timing in leu of DBUS communication (mbed does not support DBUS) to interact with the DR16 receiver. </p>
@@ -244,6 +263,26 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a4c64ca0c900cc124d18e700b2c0b774a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4c64ca0c900cc124d18e700b2c0b774a">&#9670;&nbsp;</a></span>__attribute__()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Remote::__attribute__ </td>
+          <td>(</td>
+          <td class="paramtype">(unused)&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if the remote is connected, <code>false</code> otherwise. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>A timer is used to determine if the remote is disconnected, so expect a second or so of delay from disconnecting the remote to this function saying the remote is disconnected. </dd></dl>
+
+</div>
+</div>
 <a id="ac6d107d7f8d9ffc9d882b77af7fb15ca"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac6d107d7f8d9ffc9d882b77af7fb15ca">&#9670;&nbsp;</a></span>getChannel()</h2>
 
@@ -353,14 +392,14 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aa0a6fb97ea858254e89f553e010c1b4e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa0a6fb97ea858254e89f553e010c1b4e">&#9670;&nbsp;</a></span>getSwitch()</h2>
+<a id="a7ec4426e84aea331fc20e91a832d215c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ec4426e84aea331fc20e91a832d215c">&#9670;&nbsp;</a></span>getSwitch()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classRemote.html#affd0b019d5483d546bc29b07447649bb">Remote::SwitchState</a> Remote::getSwitch </td>
+          <td class="memname"><a class="el" href="classRemote.html#affd0b019d5483d546bc29b07447649bb">SwitchState</a> Remote::getSwitch </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classRemote.html#add727f68db8fff42e6f572b19008ec66">Switch</a>&#160;</td>
           <td class="paramname"><em>sw</em></td><td>)</td>
@@ -423,25 +462,6 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Enables and initializes <code>bound_ports::REMOTE_SERIAL_UART_PORT</code>. </p>
-
-</div>
-</div>
-<a id="a528599afad04ccf9315d12a934aeaeee"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a528599afad04ccf9315d12a934aeaeee">&#9670;&nbsp;</a></span>isConnected()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool Remote::isConnected </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd><code>true</code> if the remote is connected, <code>false</code> otherwise. </dd></dl>
-<dl class="section note"><dt>Note</dt><dd>A timer is used to determine if the remote is disconnected, so expect a second or so of delay from disconnecting the remote to this function saying the remote is disconnected. </dd></dl>
 
 </div>
 </div>

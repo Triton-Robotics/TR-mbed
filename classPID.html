@@ -76,9 +76,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a12e94de8989b93f89fc9a58f56d61817"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a12e94de8989b93f89fc9a58f56d61817">PID</a> (float p, float i, float d, float sumCap, float outCap)</td></tr>
 <tr class="memdesc:a12e94de8989b93f89fc9a58f56d61817"><td class="mdescLeft">&#160;</td><td class="mdescRight">Simple <a class="el" href="classPID.html">PID</a> Constructor.  <a href="classPID.html#a12e94de8989b93f89fc9a58f56d61817">More...</a><br /></td></tr>
 <tr class="separator:a12e94de8989b93f89fc9a58f56d61817"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa3448879cbcf0415bd4fba62aa887fe1"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#aa3448879cbcf0415bd4fba62aa887fe1">calculate</a> (float desiredV, float actualV, float dt)</td></tr>
-<tr class="memdesc:aa3448879cbcf0415bd4fba62aa887fe1"><td class="mdescLeft">&#160;</td><td class="mdescRight">calculate the <a class="el" href="classPID.html">PID</a> output  <a href="classPID.html#aa3448879cbcf0415bd4fba62aa887fe1">More...</a><br /></td></tr>
-<tr class="separator:aa3448879cbcf0415bd4fba62aa887fe1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c501a62399df36de281d370c465441f"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a8c501a62399df36de281d370c465441f">calculate</a> (float desiredV, float actualV, double dt)</td></tr>
+<tr class="memdesc:a8c501a62399df36de281d370c465441f"><td class="mdescLeft">&#160;</td><td class="mdescRight">calculate the <a class="el" href="classPID.html">PID</a> output  <a href="classPID.html#a8c501a62399df36de281d370c465441f">More...</a><br /></td></tr>
+<tr class="separator:a8c501a62399df36de281d370c465441f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac7ee1c162a0a2b75d4d638ad6ed911da"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#ac7ee1c162a0a2b75d4d638ad6ed911da">setIntegralCap</a> (float sumCap)</td></tr>
 <tr class="memdesc:ac7ee1c162a0a2b75d4d638ad6ed911da"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the integral cap  <a href="classPID.html#ac7ee1c162a0a2b75d4d638ad6ed911da">More...</a><br /></td></tr>
 <tr class="separator:ac7ee1c162a0a2b75d4d638ad6ed911da"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -106,6 +106,12 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>debug</b> = false</td
 <tr class="memitem:a62b8d72d1f225e7d57d5202568e0bde5"><td class="memItemLeft" align="right" valign="top"><a id="a62b8d72d1f225e7d57d5202568e0bde5"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><b>feedForward</b> = 0</td></tr>
 <tr class="separator:a62b8d72d1f225e7d57d5202568e0bde5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac686925341bcab06b11df109533b6807"><td class="memItemLeft" align="right" valign="top"><a id="ac686925341bcab06b11df109533b6807"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>kI</b></td></tr>
+<tr class="separator:ac686925341bcab06b11df109533b6807"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abcc8f2679433bd7d5d69bfa6e06d8eab"><td class="memItemLeft" align="right" valign="top"><a id="abcc8f2679433bd7d5d69bfa6e06d8eab"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>sumError</b> = 0</td></tr>
+<tr class="separator:abcc8f2679433bd7d5d69bfa6e06d8eab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a12e94de8989b93f89fc9a58f56d61817"></a>
@@ -167,8 +173,8 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>feedForward</b> = 0<
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="aa3448879cbcf0415bd4fba62aa887fe1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa3448879cbcf0415bd4fba62aa887fe1">&#9670;&nbsp;</a></span>calculate()</h2>
+<a id="a8c501a62399df36de281d370c465441f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8c501a62399df36de281d370c465441f">&#9670;&nbsp;</a></span>calculate()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -188,7 +194,7 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>feedForward</b> = 0<
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">float&#160;</td>
+          <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>dt</em>&#160;</td>
         </tr>
         <tr>

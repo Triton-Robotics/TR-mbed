@@ -89,167 +89,176 @@ $(function() {
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &quot;communications/CANHandler.h&quot;</span></div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &quot;helperFunctions.hpp&quot;</span></div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#include &quot;algorithms/speedtocurrent.hpp&quot;</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#include &lt;cmath&gt;</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">static</span> <span class="keywordtype">int</span> sendIDs[3] = {0x200,0x1FF,0x2FF}; <span class="comment">//IDs to send data</span></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">static</span> Thread motorFeedbackThread(osPriorityAboveNormal); <span class="comment">//threading for Motor::tick()</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">static</span> Thread motorSendThread(osPriorityNormal); <span class="comment">//threading for Motor::tick()</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">enum</span> errorCodes{</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    NO_ERROR,</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    MOTOR_CONFLICT,</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    MOTOR_DISABLED,</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    OUTSIDE_OF_BOUNDS,</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;};</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">enum</span> motorDataType {</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    ANGLE = 0,</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    VELOCITY = 1,</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    TORQUE = 2,</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    TEMPERATURE = 3,</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    MULTITURNANGLE = 4,</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    MULTI  = 4,</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    POWEROUT = 5,</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;};</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment">//#include &quot;algorithms/WheelKalman.h&quot;</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &lt;cmath&gt;</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">static</span> <span class="keywordtype">int</span> sendIDs[3] = {0x200,0x1FF,0x2FF}; <span class="comment">//IDs to send data</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">static</span> Thread motorFeedbackThread(osPriorityAboveNormal); <span class="comment">//threading for Motor::tick()</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">static</span> Thread motorSendThread(osPriorityNormal); <span class="comment">//threading for Motor::tick()</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">enum</span> errorCodes{</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    NO_ERROR,</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    MOTOR_CONFLICT,</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    MOTOR_DISABLED,</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    OUTSIDE_OF_BOUNDS,</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;};</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">enum</span> motorDataType {</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    ANGLE = 0,</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    VELOCITY = 1,</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    TORQUE = 2,</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    TEMPERATURE = 3,</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    MULTITURNANGLE = 4,</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    MULTI  = 4,</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    POWEROUT = 5,</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;};</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">enum</span> motorType {</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    NONE = 0,</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    STANDARD = 1, <span class="comment">//identifier for all motors that use the standard can protocol, used by the C610 and C620</span></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    C610 = 4,</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    M2006 = 4,</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    C620 = 3,</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    M3508 = 3,</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="comment">//keep in mind that in the constructor, this is only used to</span></div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="comment">//set the default pid values and gear ratio. The motortype will</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="comment">//be changed to STANDARD, because that&#39;s what the code uses.</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    GIMBLY = 2, <span class="comment">//Gimblyyyyyyyyyy</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    GM6020 = 2</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;};</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keyword">enum</span> motorType {</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    NONE = 0,</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    STANDARD = 1, <span class="comment">//identifier for all motors that use the standard can protocol, used by the C610 and C620</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    C610 = 4,</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    M2006 = 4,</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    C620 = 3,</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    M3508 = 3,</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="comment">//keep in mind that in the constructor, this is only used to</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="comment">//set the default pid values and gear ratio. The motortype will</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="comment">//be changed to STANDARD, because that&#39;s what the code uses.</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    GIMBLY = 2, <span class="comment">//Gimblyyyyyyyyyy</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    GM6020 = 2</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;};</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
-<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="classDJIMotor.html">   62</a></span>&#160;<span class="keyword">class </span><a class="code" href="classDJIMotor.html">DJIMotor</a> {</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keywordtype">float</span> defaultGimblyPosSettings[5] = {10.88,1.2,18.9,8000,500};</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keywordtype">float</span> defautlGimblySpeedSettings[5] = {0.13, 8.8, 0, 25000, 1000};</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordtype">float</span> defautM3508PosSettings[5] = {.48, 0.0137, 4.2, 3000, 300};</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keywordtype">float</span> defautM3508SpeedSettings[5] = {1.79, 0.27, 10.57, 15000, 500};</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keyword">enum</span> motorMoveMode{</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        OFF = 0,</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        POS = 1,</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        SPD = 2,</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        POW = 3,</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        ERR = 4</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    };</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <span class="keyword">static</span> <a class="code" href="classDJIMotor.html">DJIMotor</a>* allMotors  [CAN_HANDLER_NUMBER][3][4];</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> motorsExist     [CAN_HANDLER_NUMBER][3][4];</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">long</span> <span class="keywordtype">int</span> lastCalled  [CAN_HANDLER_NUMBER][3][4];</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="classDJIMotor.html">   63</a></span>&#160;<span class="keyword">class </span><a class="code" href="classDJIMotor.html">DJIMotor</a> {</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keywordtype">float</span> defaultGimblyPosSettings[5] = {10.88,1.2,18.9,8000,500};</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordtype">float</span> defautlGimblySpeedSettings[5] = {0.13, 8.8, 0, 25000, 1000};</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keywordtype">float</span> defautM3508PosSettings[5] = {.48, 0.0137, 4.2, 3000, 300};</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keywordtype">float</span> defautM3508SpeedSettings[5] = {1.79, 0.27, 10.57, 15000, 500};</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="keyword">enum</span> motorMoveMode{</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        OFF = 0,</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        POS = 1,</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        SPD = 2,</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        POW = 3,</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        ERR = 4</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    };</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="keyword">static</span> <a class="code" href="classDJIMotor.html">DJIMotor</a>* allMotors  [CAN_HANDLER_NUMBER][3][4];</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> motorsExist     [CAN_HANDLER_NUMBER][3][4];</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">long</span> <span class="keywordtype">int</span> lastCalled  [CAN_HANDLER_NUMBER][3][4];</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keyword">static</span> <a class="code" href="classCANHandler.html">CANHandler</a>* canHandlers[CAN_HANDLER_NUMBER];</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keywordtype">short</span> motorNumber;                                          <span class="comment">// canID - 1, because canID is 1-8, arrays are 0-7</span></div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keywordtype">int</span> gearRatio = 1;                                          <span class="comment">//the gear ratio of the motor to encoder</span></div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    CANHandler::CANBus canBus = CANHandler::NOBUS;              <span class="comment">//the CANBus this motor is on</span></div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    motorType type = NONE;                                      <span class="comment">//mode of the motor</span></div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    motorMoveMode mode = OFF;                                   <span class="comment">//mode of the motor</span></div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> timeOfLastFeedback = 0;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> timeOfLastPID = 0;</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> timeSinceLastFeedback = 0;</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="keywordtype">int</span> maxSpeed = 8723;</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="keywordtype">int</span> bounds[2] = {0,0};</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160; </div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="comment">//angle | velocity | torque | temperature</span></div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    int16_t motorData[4] = {0,0,0,0};</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="keywordtype">int</span> multiTurn = 0;</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="keywordtype">int</span> lastMotorAngle = 0;</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    <a class="code" href="classPID.html">PID</a> pidSpeed;</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <a class="code" href="classPID.html">PID</a> pidPosition;</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <span class="keywordtype">int</span> value = 0;</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    int16_t powerOut;</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; </div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <span class="keywordtype">bool</span> conflict{};                                            <span class="comment">//check for a conflict when running motors</span></div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> lastTime = 0;</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <span class="keywordtype">int</span> outCap = 16000;</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <span class="keywordtype">bool</span> useAbsEncoder = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <span class="keywordtype">bool</span> justPosError = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> sendDebug;</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> feedbackDebug;</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="comment">// user methods</span></div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classDJIMotor.html">DJIMotor</a>(<span class="keywordtype">bool</span> isErroneousMotor = <span class="keyword">false</span>);</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <a class="code" href="classDJIMotor.html">DJIMotor</a>(<span class="keywordtype">short</span> canID, CANHandler::CANBus bus, motorType mType = STANDARD);</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    ~<a class="code" href="classDJIMotor.html">DJIMotor</a>();</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160; </div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <span class="comment">// static void printChunk(CANHandler::CANBus bus, short sendID, motorDataType data = POWEROUT);</span></div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> setCANHandlers(<a class="code" href="classCANHandler.html">CANHandler</a>* bus_1, <a class="code" href="classCANHandler.html">CANHandler</a>* bus_2, <span class="keywordtype">bool</span> threadSend = <span class="keyword">true</span>, <span class="keywordtype">bool</span> threadFeedback = <span class="keyword">true</span>);</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> updateMultiTurnPosition();</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> sendOneID(CANHandler::CANBus bus, <span class="keywordtype">short</span> sendIDindex, <span class="keywordtype">bool</span> debug = <span class="keyword">false</span>);</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> getFeedback();</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160; </div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    __attribute__((unused)) <span class="keyword">static</span> <span class="keywordtype">bool</span> checkConnection(<span class="keywordtype">bool</span> debug = <span class="keyword">false</span>);</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160; </div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> tickThread();</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="classDJIMotor.html#a13bfd707f9c790420a18ccd33221a74d">feedbackThread</a>();</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="classDJIMotor.html#a8a6896be139a2a59e52dbd36b34a4d07">sendThread</a>();</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> sendValues();</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> tick();</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160; </div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    <span class="comment">//int getValue();</span></div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160; </div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    __attribute__((unused)) <span class="keywordtype">int</span> getPowerOut() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    <span class="keywordtype">int</span> getData(motorDataType data);</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160; </div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    <span class="keywordtype">void</span> setValue(<span class="keywordtype">int</span> val);</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    <span class="keywordtype">void</span> setOutput();</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    <span class="keywordtype">void</span> setPower(<span class="keywordtype">int</span> power);</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    <span class="keywordtype">void</span> setSpeed(<span class="keywordtype">int</span> speed);</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    <span class="keywordtype">void</span> setPosition(<span class="keywordtype">int</span> position);</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160; </div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    __attribute__((unused)) <span class="keywordtype">void</span> zeroPos();</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160; </div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    <span class="keywordtype">void</span> printAllMotorData();</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160; </div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    <span class="keywordtype">void</span> operator=(<span class="keywordtype">int</span> value);</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    <span class="keywordtype">int</span> operator&gt;&gt;(motorDataType data);</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keyword">static</span> <a class="code" href="classCANHandler.html">CANHandler</a>* canHandlers[CAN_HANDLER_NUMBER];</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keywordtype">short</span> motorNumber;                                          <span class="comment">// canID - 1, because canID is 1-8, arrays are 0-7</span></div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="keywordtype">int</span> gearRatio = 1;                                          <span class="comment">//the gear ratio of the motor to encoder</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    CANHandler::CANBus canBus = CANHandler::NOBUS;              <span class="comment">//the CANBus this motor is on</span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    motorType type = NONE;                                      <span class="comment">//mode of the motor</span></div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    motorMoveMode mode = OFF;                                   <span class="comment">//mode of the motor</span></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> timeOfLastFeedback = 0;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> timeOfLastPID = 0;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> timeSinceLastFeedback = 0;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="keywordtype">int</span> maxSpeed = 8723;</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keywordtype">int</span> bounds[2] = {0,0};</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="comment">//angle | velocity | torque | temperature</span></div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    int16_t motorData[4] = {0,0,0,0};</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="keywordtype">int</span> multiTurn = 0;</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keywordtype">int</span> lastMotorAngle = 0;</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <a class="code" href="classPID.html">PID</a> pidSpeed;</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <a class="code" href="classPID.html">PID</a> pidPosition;</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160; </div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <span class="keywordtype">int</span> value = 0;</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    int16_t powerOut;</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="keywordtype">bool</span> conflict{};                                            <span class="comment">//check for a conflict when running motors</span></div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> lastTime = 0;</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <span class="keywordtype">int</span> outCap = 16000;</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <span class="keywordtype">bool</span> useAbsEncoder = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    <span class="keywordtype">bool</span> justPosError = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    <span class="keywordtype">bool</span> useKalmanForPID = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    <span class="keywordtype">bool</span> useIntegrationForPID = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keywordtype">bool</span> printAngle = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    <span class="keywordtype">int</span> integratedAngle = 0;</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <span class="keywordtype">long</span> lastIntegrationTime = -1;</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;<span class="comment">//    WheelKalman kalman;</span></div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> sendDebug;</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> feedbackDebug;</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160; </div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <span class="comment">// user methods</span></div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classDJIMotor.html">DJIMotor</a>(<span class="keywordtype">bool</span> isErroneousMotor = <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    <a class="code" href="classDJIMotor.html">DJIMotor</a>(<span class="keywordtype">short</span> canID, CANHandler::CANBus bus, motorType mType = STANDARD);</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    ~<a class="code" href="classDJIMotor.html">DJIMotor</a>();</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160; </div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    <span class="comment">// static void printChunk(CANHandler::CANBus bus, short sendID, motorDataType data = POWEROUT);</span></div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> setCANHandlers(<a class="code" href="classCANHandler.html">CANHandler</a>* bus_1, <a class="code" href="classCANHandler.html">CANHandler</a>* bus_2, <span class="keywordtype">bool</span> threadSend = <span class="keyword">true</span>, <span class="keywordtype">bool</span> threadFeedback = <span class="keyword">true</span>);</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> updateMultiTurnPosition();</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> sendOneID(CANHandler::CANBus bus, <span class="keywordtype">short</span> sendIDindex, <span class="keywordtype">bool</span> debug = <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> getFeedback();</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160; </div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;    __attribute__((unused)) __attribute__((unused)) <span class="keyword">static</span> <span class="keywordtype">bool</span> checkConnection(<span class="keywordtype">bool</span> debug);</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160; </div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> tickThread();</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="classDJIMotor.html#a13bfd707f9c790420a18ccd33221a74d">feedbackThread</a>();</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="classDJIMotor.html#a8a6896be139a2a59e52dbd36b34a4d07">sendThread</a>();</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> sendValues();</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> tick();</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160; </div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    <span class="comment">//int getValue();</span></div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160; </div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    __attribute__((unused)) <span class="keywordtype">int</span> getPowerOut() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    <span class="keywordtype">int</span> getData(motorDataType data);</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160; </div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    <span class="keywordtype">void</span> setValue(<span class="keywordtype">int</span> val);</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    <span class="keywordtype">void</span> setOutput();</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    <span class="keywordtype">void</span> setPower(<span class="keywordtype">int</span> power);</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    <span class="keywordtype">void</span> setSpeed(<span class="keywordtype">int</span> speed);</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    <span class="keywordtype">void</span> setPosition(<span class="keywordtype">int</span> position);</div>
 <div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160; </div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">void</span> setPositionPID(<span class="keywordtype">float</span> kP, <span class="keywordtype">float</span> kI, <span class="keywordtype">float</span> kD)    { pidPosition.<a class="code" href="classPID.html#ac6ca9c4c2850643db59f7ae453a02082">setPID</a>(kP, kI, kD); }</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">void</span> setPositionIntegralCap(<span class="keywordtype">double</span> cap)              { pidPosition.<a class="code" href="classPID.html#ac7ee1c162a0a2b75d4d638ad6ed911da">setIntegralCap</a>((<span class="keywordtype">float</span>)cap); }</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">void</span> setPositionOutputCap(<span class="keywordtype">double</span> cap)                { pidPosition.<a class="code" href="classPID.html#a53169403b2a9bed490ed0346c4fff9ea">setOutputCap</a>((<span class="keywordtype">float</span>)cap); }</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    <span class="keywordtype">double</span> rpmToTicksPerSecond(<span class="keywordtype">double</span> RPM);</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160; </div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    __attribute__((unused)) <span class="keywordtype">void</span> zeroPos();</div>
 <div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160; </div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">void</span> setSpeedPID(<span class="keywordtype">float</span> kP, <span class="keywordtype">float</span> kI, <span class="keywordtype">float</span> kD)       { pidSpeed.<a class="code" href="classPID.html#ac6ca9c4c2850643db59f7ae453a02082">setPID</a>(kP, kI, kD); }</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">void</span> setSpeedIntegralCap(<span class="keywordtype">double</span> cap)                 { pidSpeed.<a class="code" href="classPID.html#ac7ee1c162a0a2b75d4d638ad6ed911da">setIntegralCap</a>((<span class="keywordtype">float</span>)cap); }</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">void</span> setSpeedOutputCap(<span class="keywordtype">double</span> cap)                   { pidSpeed.<a class="code" href="classPID.html#a53169403b2a9bed490ed0346c4fff9ea">setOutputCap</a>((<span class="keywordtype">float</span>)cap); }</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160; </div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;};</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160; </div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160; </div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;<span class="preprocessor">#endif </span><span class="comment">//TR_EMBEDDED_DJIMOTOR_H</span></div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    <span class="keywordtype">void</span> printAllMotorData();</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160; </div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    <span class="keywordtype">void</span> operator=(<span class="keywordtype">int</span> value);</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    <span class="keywordtype">int</span> operator&gt;&gt;(motorDataType data);</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160; </div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">void</span> setPositionPID(<span class="keywordtype">float</span> kP, <span class="keywordtype">float</span> kI, <span class="keywordtype">float</span> kD)    { pidPosition.<a class="code" href="classPID.html#ac6ca9c4c2850643db59f7ae453a02082">setPID</a>(kP, kI, kD); }</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">void</span> setPositionIntegralCap(<span class="keywordtype">double</span> cap)              { pidPosition.<a class="code" href="classPID.html#ac7ee1c162a0a2b75d4d638ad6ed911da">setIntegralCap</a>((<span class="keywordtype">float</span>)cap); }</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">void</span> setPositionOutputCap(<span class="keywordtype">double</span> cap)                { pidPosition.<a class="code" href="classPID.html#a53169403b2a9bed490ed0346c4fff9ea">setOutputCap</a>((<span class="keywordtype">float</span>)cap); }</div>
 <div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160; </div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;<span class="preprocessor">#pragma clang diagnostic pop</span></div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;<span class="preprocessor">#pragma clang diagnostic pop</span></div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">void</span> setSpeedPID(<span class="keywordtype">float</span> kP, <span class="keywordtype">float</span> kI, <span class="keywordtype">float</span> kD)       { pidSpeed.<a class="code" href="classPID.html#ac6ca9c4c2850643db59f7ae453a02082">setPID</a>(kP, kI, kD); }</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">void</span> setSpeedIntegralCap(<span class="keywordtype">double</span> cap)                 { pidSpeed.<a class="code" href="classPID.html#ac7ee1c162a0a2b75d4d638ad6ed911da">setIntegralCap</a>((<span class="keywordtype">float</span>)cap); }</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">void</span> setSpeedOutputCap(<span class="keywordtype">double</span> cap)                   { pidSpeed.<a class="code" href="classPID.html#a53169403b2a9bed490ed0346c4fff9ea">setOutputCap</a>((<span class="keywordtype">float</span>)cap); }</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160; </div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;};</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160; </div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160; </div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;<span class="preprocessor">#endif </span><span class="comment">//TR_EMBEDDED_DJIMOTOR_H</span></div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160; </div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;<span class="preprocessor">#pragma clang diagnostic pop</span></div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;<span class="preprocessor">#pragma clang diagnostic pop</span></div>
 <div class="ttc" id="aclassCANHandler_html"><div class="ttname"><a href="classCANHandler.html">CANHandler</a></div><div class="ttdef"><b>Definition:</b> CANHandler.h:18</div></div>
-<div class="ttc" id="aclassDJIMotor_html"><div class="ttname"><a href="classDJIMotor.html">DJIMotor</a></div><div class="ttdef"><b>Definition:</b> DJIMotor.h:62</div></div>
-<div class="ttc" id="aclassDJIMotor_html_a13bfd707f9c790420a18ccd33221a74d"><div class="ttname"><a href="classDJIMotor.html#a13bfd707f9c790420a18ccd33221a74d">DJIMotor::feedbackThread</a></div><div class="ttdeci">static void feedbackThread()</div><div class="ttdoc">the thread that runs the ever-necessary Motor::tick()</div><div class="ttdef"><b>Definition:</b> DJIMotor.cpp:350</div></div>
-<div class="ttc" id="aclassDJIMotor_html_a8a6896be139a2a59e52dbd36b34a4d07"><div class="ttname"><a href="classDJIMotor.html#a8a6896be139a2a59e52dbd36b34a4d07">DJIMotor::sendThread</a></div><div class="ttdeci">static void sendThread()</div><div class="ttdoc">the thread that runs the ever-necessary Motor::tick()</div><div class="ttdef"><b>Definition:</b> DJIMotor.cpp:361</div></div>
+<div class="ttc" id="aclassDJIMotor_html"><div class="ttname"><a href="classDJIMotor.html">DJIMotor</a></div><div class="ttdef"><b>Definition:</b> DJIMotor.h:63</div></div>
+<div class="ttc" id="aclassDJIMotor_html_a13bfd707f9c790420a18ccd33221a74d"><div class="ttname"><a href="classDJIMotor.html#a13bfd707f9c790420a18ccd33221a74d">DJIMotor::feedbackThread</a></div><div class="ttdeci">static void feedbackThread()</div><div class="ttdoc">the thread that runs the ever-necessary Motor::tick()</div><div class="ttdef"><b>Definition:</b> DJIMotor.cpp:425</div></div>
+<div class="ttc" id="aclassDJIMotor_html_a8a6896be139a2a59e52dbd36b34a4d07"><div class="ttname"><a href="classDJIMotor.html#a8a6896be139a2a59e52dbd36b34a4d07">DJIMotor::sendThread</a></div><div class="ttdeci">static void sendThread()</div><div class="ttdoc">the thread that runs the ever-necessary Motor::tick()</div><div class="ttdef"><b>Definition:</b> DJIMotor.cpp:436</div></div>
 <div class="ttc" id="aclassPID_html"><div class="ttname"><a href="classPID.html">PID</a></div><div class="ttdef"><b>Definition:</b> PID.h:10</div></div>
-<div class="ttc" id="aclassPID_html_a53169403b2a9bed490ed0346c4fff9ea"><div class="ttname"><a href="classPID.html#a53169403b2a9bed490ed0346c4fff9ea">PID::setOutputCap</a></div><div class="ttdeci">void setOutputCap(float outCap)</div><div class="ttdoc">set the output cap</div><div class="ttdef"><b>Definition:</b> PID.cpp:77</div></div>
-<div class="ttc" id="aclassPID_html_ac6ca9c4c2850643db59f7ae453a02082"><div class="ttname"><a href="classPID.html#ac6ca9c4c2850643db59f7ae453a02082">PID::setPID</a></div><div class="ttdeci">void setPID(float p, float i, float d)</div><div class="ttdoc">set the PID values</div><div class="ttdef"><b>Definition:</b> PID.cpp:87</div></div>
-<div class="ttc" id="aclassPID_html_ac7ee1c162a0a2b75d4d638ad6ed911da"><div class="ttname"><a href="classPID.html#ac7ee1c162a0a2b75d4d638ad6ed911da">PID::setIntegralCap</a></div><div class="ttdeci">void setIntegralCap(float sumCap)</div><div class="ttdoc">set the integral cap</div><div class="ttdef"><b>Definition:</b> PID.cpp:69</div></div>
+<div class="ttc" id="aclassPID_html_a53169403b2a9bed490ed0346c4fff9ea"><div class="ttname"><a href="classPID.html#a53169403b2a9bed490ed0346c4fff9ea">PID::setOutputCap</a></div><div class="ttdeci">void setOutputCap(float outCap)</div><div class="ttdoc">set the output cap</div><div class="ttdef"><b>Definition:</b> PID.cpp:84</div></div>
+<div class="ttc" id="aclassPID_html_ac6ca9c4c2850643db59f7ae453a02082"><div class="ttname"><a href="classPID.html#ac6ca9c4c2850643db59f7ae453a02082">PID::setPID</a></div><div class="ttdeci">void setPID(float p, float i, float d)</div><div class="ttdoc">set the PID values</div><div class="ttdef"><b>Definition:</b> PID.cpp:94</div></div>
+<div class="ttc" id="aclassPID_html_ac7ee1c162a0a2b75d4d638ad6ed911da"><div class="ttname"><a href="classPID.html#ac7ee1c162a0a2b75d4d638ad6ed911da">PID::setIntegralCap</a></div><div class="ttdeci">void setIntegralCap(float sumCap)</div><div class="ttdoc">set the integral cap</div><div class="ttdef"><b>Definition:</b> PID.cpp:76</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

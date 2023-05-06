@@ -238,244 +238,246 @@ $(function() {
 <div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160; </div>
 <div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    <span class="keywordtype">int</span> cantReadDataCount;</div>
 <div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160; </div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;    <span class="keywordtype">void</span> initialize(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;    <span class="keywordtype">void</span> initialize_reset_pin(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;    <span class="keywordtype">void</span> get_id(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;    <span class="keywordtype">void</span> set_initial_dt_to_regs(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;    <span class="keywordtype">void</span> unit_selection(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;    uint8_t get_operating_mode(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;    uint8_t select_page(uint8_t page);</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160; </div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;    I2C *_i2c_p;</div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;    I2C &amp;_i2c;</div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;    DigitalOut _res;</div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160; </div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;    <span class="keywordtype">char</span>     dt[10];      <span class="comment">// working buffer</span></div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;    uint8_t  chip_addr;</div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    uint8_t  chip_mode;</div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;    uint8_t  ready_flag;</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;    uint8_t  page_flag;</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160; </div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;    uint8_t  chip_id;</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;    uint8_t  acc_id;</div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;    uint8_t  mag_id;</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;    uint8_t  gyr_id;</div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;    uint8_t  bootldr_rev_id;</div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;    uint16_t sw_rev_id;</div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160; </div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;    <span class="keywordtype">bool</span> unit_flag_is_set(uint8_t flag);</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;};</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160; </div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;<span class="comment">//---------------------------------------------------------</span></div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;<span class="comment">//----- Register&#39;s definition -----------------------------</span></div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;    <span class="keywordtype">double</span> multiturnYaw;</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160; </div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;    <span class="keywordtype">void</span> initialize(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;    <span class="keywordtype">void</span> initialize_reset_pin(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;    <span class="keywordtype">void</span> get_id(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;    <span class="keywordtype">void</span> set_initial_dt_to_regs(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;    <span class="keywordtype">void</span> unit_selection(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;    uint8_t get_operating_mode(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;    uint8_t select_page(uint8_t page);</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160; </div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;    I2C *_i2c_p;</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;    I2C &amp;_i2c;</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;    DigitalOut _res;</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160; </div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    <span class="keywordtype">char</span>     dt[10];      <span class="comment">// working buffer</span></div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;    uint8_t  chip_addr;</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;    uint8_t  chip_mode;</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;    uint8_t  ready_flag;</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;    uint8_t  page_flag;</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160; </div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;    uint8_t  chip_id;</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;    uint8_t  acc_id;</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;    uint8_t  mag_id;</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;    uint8_t  gyr_id;</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;    uint8_t  bootldr_rev_id;</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;    uint16_t sw_rev_id;</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160; </div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;    <span class="keywordtype">bool</span> unit_flag_is_set(uint8_t flag);</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;};</div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160; </div>
 <div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;<span class="comment">//---------------------------------------------------------</span></div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;<span class="comment">// Page id register definition</span></div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;<span class="preprocessor">#define BNO055_PAGE_ID          0x07</span></div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160; </div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;<span class="comment">//----- page0 ---------------------------------------------</span></div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;<span class="preprocessor">#define BNO055_CHIP_ID          0x00</span></div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;<span class="preprocessor">#define BNO055_ACCEL_REV_ID     0x01</span></div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;<span class="preprocessor">#define BNO055_MAG_REV_ID       0x02</span></div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;<span class="preprocessor">#define BNO055_GYRO_REV_ID      0x03</span></div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;<span class="preprocessor">#define BNO055_SW_REV_ID_LSB    0x04</span></div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;<span class="preprocessor">#define BNO055_SW_REV_ID_MSB    0x05</span></div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;<span class="preprocessor">#define BNO055_BL_REV_ID        0x06</span></div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160; </div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;<span class="comment">// Accel data register*/</span></div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;<span class="preprocessor">#define BNO055_ACC_X_LSB        0x08</span></div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;<span class="preprocessor">#define BNO055_ACC_X_MSB        0x09</span></div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;<span class="preprocessor">#define BNO055_ACC_Y_LSB        0x0a</span></div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;<span class="preprocessor">#define BNO055_ACC_Y_MSB        0x0b</span></div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;<span class="preprocessor">#define BNO055_ACC_Z_LSB        0x0c</span></div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;<span class="preprocessor">#define BNO055_ACC_Z_MSB        0x0d</span></div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160; </div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;<span class="comment">// Mag data register</span></div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;<span class="preprocessor">#define BNO055_MAG_X_LSB        0x0e</span></div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;<span class="preprocessor">#define BNO055_MAG_X_MSB        0x0f</span></div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;<span class="preprocessor">#define BNO055_MAG_Y_LSB        0x10</span></div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;<span class="preprocessor">#define BNO055_MAG_Y_MSB        0x11</span></div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;<span class="preprocessor">#define BNO055_MAG_Z_LSB        0x12</span></div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;<span class="preprocessor">#define BNO055_MAG_Z_MSB        0x13</span></div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160; </div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;<span class="comment">// Gyro data registers</span></div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;<span class="preprocessor">#define BNO055_GYR_X_LSB        0x14</span></div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;<span class="preprocessor">#define BNO055_GYR_X_MSB        0x15</span></div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;<span class="preprocessor">#define BNO055_GYR_Y_LSB        0x16</span></div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;<span class="preprocessor">#define BNO055_GYR_Y_MSB        0x17</span></div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;<span class="preprocessor">#define BNO055_GYR_Z_LSB        0x18</span></div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;<span class="preprocessor">#define BNO055_GYR_Z_MSB        0x19</span></div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160; </div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;<span class="comment">// Euler data registers</span></div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;<span class="preprocessor">#define BNO055_EULER_H_LSB      0x1a</span></div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;<span class="preprocessor">#define BNO055_EULER_H_MSB      0x1b</span></div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160; </div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;<span class="preprocessor">#define BNO055_EULER_R_LSB      0x1c</span></div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;<span class="preprocessor">#define BNO055_EULER_R_MSB      0x1d</span></div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160; </div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;<span class="preprocessor">#define BNO055_EULER_P_LSB      0x1e</span></div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;<span class="preprocessor">#define BNO055_EULER_P_MSB      0x1f</span></div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160; </div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;<span class="comment">// Quaternion data registers</span></div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;<span class="preprocessor">#define BNO055_QUATERNION_W_LSB 0x20</span></div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;<span class="preprocessor">#define BNO055_QUATERNION_W_MSB 0x21</span></div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;<span class="preprocessor">#define BNO055_QUATERNION_X_LSB 0x22</span></div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;<span class="preprocessor">#define BNO055_QUATERNION_X_MSB 0x23</span></div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;<span class="preprocessor">#define BNO055_QUATERNION_Y_LSB 0x24</span></div>
-<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;<span class="preprocessor">#define BNO055_QUATERNION_Y_MSB 0x25</span></div>
-<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;<span class="preprocessor">#define BNO055_QUATERNION_Z_LSB 0x26</span></div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;<span class="preprocessor">#define BNO055_QUATERNION_Z_MSB 0x27</span></div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160; </div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;<span class="comment">// Linear acceleration data registers</span></div>
-<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;<span class="preprocessor">#define BNO055_LINEAR_ACC_X_LSB 0x28</span></div>
-<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;<span class="preprocessor">#define BNO055_LINEAR_ACC_X_MSB 0x29</span></div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;<span class="preprocessor">#define BNO055_LINEAR_ACC_Y_LSB 0x2a</span></div>
-<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;<span class="preprocessor">#define BNO055_LINEAR_ACC_Y_MSB 0x2b</span></div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;<span class="preprocessor">#define BNO055_LINEAR_ACC_Z_LSB 0x2c</span></div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;<span class="preprocessor">#define BNO055_LINEAR_ACC_Z_MSB 0x2d</span></div>
-<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160; </div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;<span class="comment">// Gravity data registers</span></div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;<span class="preprocessor">#define BNO055_GRAVITY_X_LSB    0x2e</span></div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;<span class="preprocessor">#define BNO055_GRAVITY_X_MSB    0x2f</span></div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;<span class="preprocessor">#define BNO055_GRAVITY_Y_LSB    0x30</span></div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;<span class="preprocessor">#define BNO055_GRAVITY_Y_MSB    0x31</span></div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;<span class="preprocessor">#define BNO055_GRAVITY_Z_LSB    0x32</span></div>
-<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;<span class="preprocessor">#define BNO055_GRAVITY_Z_MSB    0x33</span></div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160; </div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;<span class="comment">// Temperature data register</span></div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;<span class="preprocessor">#define BNO055_TEMP             0x34</span></div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160; </div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;<span class="comment">// Status registers</span></div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;<span class="preprocessor">#define BNO055_CALIB_STAT       0x35</span></div>
-<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;<span class="preprocessor">#define BNO055_SELFTEST_RESULT  0x36</span></div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;<span class="preprocessor">#define BNO055_INTR_STAT        0x37</span></div>
-<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;<span class="preprocessor">#define BNO055_SYS_CLK_STAT     0x38</span></div>
-<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;<span class="preprocessor">#define BNO055_SYS_STAT         0x39</span></div>
-<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;<span class="preprocessor">#define BNO055_SYS_ERR          0x3a</span></div>
-<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160; </div>
-<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;<span class="comment">// Unit selection register</span></div>
-<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;<span class="preprocessor">#define BNO055_UNIT_SEL         0x3b</span></div>
-<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;<span class="preprocessor">#define BNO055_DATA_SELECT      0x3c</span></div>
-<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160; </div>
-<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;<span class="comment">// Mode registers</span></div>
-<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;<span class="preprocessor">#define BNO055_OPR_MODE         0x3d</span></div>
-<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;<span class="preprocessor">#define BNO055_PWR_MODE         0x3e</span></div>
-<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;<span class="preprocessor">#define BNO055_SYS_TRIGGER      0x3f</span></div>
-<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;<span class="preprocessor">#define BNO055_TEMP_SOURCE      0x40</span></div>
-<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160; </div>
-<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;<span class="comment">// Axis remap registers</span></div>
-<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;<span class="preprocessor">#define BNO055_AXIS_MAP_CONFIG  0x41</span></div>
-<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;<span class="preprocessor">#define BNO055_AXIS_MAP_SIGN    0x42</span></div>
-<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160; </div>
-<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;<span class="comment">// SIC registers</span></div>
-<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_0_LSB   0x43</span></div>
-<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_0_MSB   0x44</span></div>
-<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_1_LSB   0x45</span></div>
-<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_1_MSB   0x46</span></div>
-<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_2_LSB   0x47</span></div>
-<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_2_MSB   0x48</span></div>
-<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_3_LSB   0x49</span></div>
-<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_3_MSB   0x4a</span></div>
-<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_4_LSB   0x4b</span></div>
-<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_4_MSB   0x4c</span></div>
-<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_5_LSB   0x4d</span></div>
-<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_5_MSB   0x4e</span></div>
-<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_6_LSB   0x4f</span></div>
-<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_6_MSB   0x50</span></div>
-<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_7_LSB   0x51</span></div>
-<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_7_MSB   0x52</span></div>
-<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_8_LSB   0x53</span></div>
-<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_8_MSB   0x54</span></div>
-<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160; </div>
-<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;<span class="comment">// Accelerometer Offset registers</span></div>
-<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;<span class="preprocessor">#define ACCEL_OFFSET_X_LSB      0x55</span></div>
-<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;<span class="preprocessor">#define ACCEL_OFFSET_X_MSB      0x56</span></div>
-<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;<span class="preprocessor">#define ACCEL_OFFSET_Y_LSB      0x57</span></div>
-<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;<span class="preprocessor">#define ACCEL_OFFSET_Y_MSB      0x58</span></div>
-<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;<span class="preprocessor">#define ACCEL_OFFSET_Z_LSB      0x59</span></div>
-<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;<span class="preprocessor">#define ACCEL_OFFSET_Z_MSB      0x5a</span></div>
-<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160; </div>
-<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;<span class="comment">// Magnetometer Offset registers</span></div>
-<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;<span class="preprocessor">#define MAG_OFFSET_X_LSB        0x5b</span></div>
-<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;<span class="preprocessor">#define MAG_OFFSET_X_MSB        0x5c</span></div>
-<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;<span class="preprocessor">#define MAG_OFFSET_Y_LSB        0x5d</span></div>
-<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;<span class="preprocessor">#define MAG_OFFSET_Y_MSB        0x5e</span></div>
-<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;<span class="preprocessor">#define MAG_OFFSET_Z_LSB        0x5f</span></div>
-<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;<span class="preprocessor">#define MAG_OFFSET_Z_MSB        0x60</span></div>
-<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160; </div>
-<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;<span class="comment">// Gyroscope Offset registers</span></div>
-<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;<span class="preprocessor">#define GYRO_OFFSET_X_LSB       0x61</span></div>
-<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160;<span class="preprocessor">#define GYRO_OFFSET_X_MSB       0x62</span></div>
-<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;<span class="preprocessor">#define GYRO_OFFSET_Y_LSB       0x63</span></div>
-<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;<span class="preprocessor">#define GYRO_OFFSET_Y_MSB       0x64</span></div>
-<div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;<span class="preprocessor">#define GYRO_OFFSET_Z_LSB       0x65</span></div>
-<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;<span class="preprocessor">#define GYRO_OFFSET_Z_MSB       0x66</span></div>
-<div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160; </div>
-<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;<span class="comment">// Radius registers</span></div>
-<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160;<span class="preprocessor">#define ACCEL_RADIUS_LSB        0x67</span></div>
-<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;<span class="preprocessor">#define ACCEL_RADIUS_MSB        0x68</span></div>
-<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;<span class="preprocessor">#define MAG_RADIUS_LSB          0x69</span></div>
-<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;<span class="preprocessor">#define MAG_RADIUS_MSB          0x6a</span></div>
-<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160; </div>
-<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160;<span class="comment">//----- page1 ---------------------------------------------</span></div>
-<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160;<span class="comment">// Configuration registers</span></div>
-<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;<span class="preprocessor">#define ACCEL_CONFIG            0x08</span></div>
-<div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160;<span class="preprocessor">#define MAG_CONFIG              0x09</span></div>
-<div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160;<span class="preprocessor">#define GYRO_CONFIG             0x0a</span></div>
-<div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160;<span class="preprocessor">#define GYRO_MODE_CONFIG        0x0b</span></div>
-<div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;<span class="preprocessor">#define ACCEL_SLEEP_CONFIG      0x0c</span></div>
-<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;<span class="preprocessor">#define GYRO_SLEEP_CONFIG       0x0d</span></div>
-<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;<span class="preprocessor">#define MAG_SLEEP_CONFIG        0x0e</span></div>
-<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160; </div>
-<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;<span class="comment">// Interrupt registers</span></div>
-<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;<span class="preprocessor">#define INT_MASK                0x0f</span></div>
-<div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;<span class="preprocessor">#define INT                     0x10</span></div>
-<div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;<span class="preprocessor">#define ACCEL_ANY_MOTION_THRES  0x11</span></div>
-<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;<span class="preprocessor">#define ACCEL_INTR_SETTINGS     0x12</span></div>
-<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;<span class="preprocessor">#define ACCEL_HIGH_G_DURN       0x13</span></div>
-<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;<span class="preprocessor">#define ACCEL_HIGH_G_THRES      0x14</span></div>
-<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;<span class="preprocessor">#define ACCEL_NO_MOTION_THRES   0x15</span></div>
-<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;<span class="preprocessor">#define ACCEL_NO_MOTION_SET     0x16</span></div>
-<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;<span class="preprocessor">#define GYRO_INTR_SETING        0x17</span></div>
-<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;<span class="preprocessor">#define GYRO_HIGHRATE_X_SET     0x18</span></div>
-<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;<span class="preprocessor">#define GYRO_DURN_X             0x19</span></div>
-<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;<span class="preprocessor">#define GYRO_HIGHRATE_Y_SET     0x1a</span></div>
-<div class="line"><a name="l00513"></a><span class="lineno">  513</span>&#160;<span class="preprocessor">#define GYRO_DURN_Y             0x1b</span></div>
-<div class="line"><a name="l00514"></a><span class="lineno">  514</span>&#160;<span class="preprocessor">#define GYRO_HIGHRATE_Z_SET     0x1c</span></div>
-<div class="line"><a name="l00515"></a><span class="lineno">  515</span>&#160;<span class="preprocessor">#define GYRO_DURN_Z             0x1d</span></div>
-<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160;<span class="preprocessor">#define GYRO_ANY_MOTION_THRES   0x1e</span></div>
-<div class="line"><a name="l00517"></a><span class="lineno">  517</span>&#160;<span class="preprocessor">#define GYRO_ANY_MOTION_SET     0x1f</span></div>
-<div class="line"><a name="l00518"></a><span class="lineno">  518</span>&#160; </div>
-<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;<span class="preprocessor">#endif      </span><span class="comment">// BNO055_H</span></div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;<span class="comment">//----- Register&#39;s definition -----------------------------</span></div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;<span class="comment">//---------------------------------------------------------</span></div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;<span class="comment">// Page id register definition</span></div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;<span class="preprocessor">#define BNO055_PAGE_ID          0x07</span></div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160; </div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;<span class="comment">//----- page0 ---------------------------------------------</span></div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;<span class="preprocessor">#define BNO055_CHIP_ID          0x00</span></div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;<span class="preprocessor">#define BNO055_ACCEL_REV_ID     0x01</span></div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;<span class="preprocessor">#define BNO055_MAG_REV_ID       0x02</span></div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;<span class="preprocessor">#define BNO055_GYRO_REV_ID      0x03</span></div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;<span class="preprocessor">#define BNO055_SW_REV_ID_LSB    0x04</span></div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;<span class="preprocessor">#define BNO055_SW_REV_ID_MSB    0x05</span></div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;<span class="preprocessor">#define BNO055_BL_REV_ID        0x06</span></div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160; </div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;<span class="comment">// Accel data register*/</span></div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;<span class="preprocessor">#define BNO055_ACC_X_LSB        0x08</span></div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;<span class="preprocessor">#define BNO055_ACC_X_MSB        0x09</span></div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;<span class="preprocessor">#define BNO055_ACC_Y_LSB        0x0a</span></div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;<span class="preprocessor">#define BNO055_ACC_Y_MSB        0x0b</span></div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;<span class="preprocessor">#define BNO055_ACC_Z_LSB        0x0c</span></div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;<span class="preprocessor">#define BNO055_ACC_Z_MSB        0x0d</span></div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160; </div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;<span class="comment">// Mag data register</span></div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;<span class="preprocessor">#define BNO055_MAG_X_LSB        0x0e</span></div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;<span class="preprocessor">#define BNO055_MAG_X_MSB        0x0f</span></div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;<span class="preprocessor">#define BNO055_MAG_Y_LSB        0x10</span></div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;<span class="preprocessor">#define BNO055_MAG_Y_MSB        0x11</span></div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;<span class="preprocessor">#define BNO055_MAG_Z_LSB        0x12</span></div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;<span class="preprocessor">#define BNO055_MAG_Z_MSB        0x13</span></div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160; </div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;<span class="comment">// Gyro data registers</span></div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;<span class="preprocessor">#define BNO055_GYR_X_LSB        0x14</span></div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;<span class="preprocessor">#define BNO055_GYR_X_MSB        0x15</span></div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;<span class="preprocessor">#define BNO055_GYR_Y_LSB        0x16</span></div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;<span class="preprocessor">#define BNO055_GYR_Y_MSB        0x17</span></div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;<span class="preprocessor">#define BNO055_GYR_Z_LSB        0x18</span></div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;<span class="preprocessor">#define BNO055_GYR_Z_MSB        0x19</span></div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160; </div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;<span class="comment">// Euler data registers</span></div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;<span class="preprocessor">#define BNO055_EULER_H_LSB      0x1a</span></div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;<span class="preprocessor">#define BNO055_EULER_H_MSB      0x1b</span></div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160; </div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;<span class="preprocessor">#define BNO055_EULER_R_LSB      0x1c</span></div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;<span class="preprocessor">#define BNO055_EULER_R_MSB      0x1d</span></div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160; </div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;<span class="preprocessor">#define BNO055_EULER_P_LSB      0x1e</span></div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;<span class="preprocessor">#define BNO055_EULER_P_MSB      0x1f</span></div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160; </div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;<span class="comment">// Quaternion data registers</span></div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;<span class="preprocessor">#define BNO055_QUATERNION_W_LSB 0x20</span></div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;<span class="preprocessor">#define BNO055_QUATERNION_W_MSB 0x21</span></div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;<span class="preprocessor">#define BNO055_QUATERNION_X_LSB 0x22</span></div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;<span class="preprocessor">#define BNO055_QUATERNION_X_MSB 0x23</span></div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;<span class="preprocessor">#define BNO055_QUATERNION_Y_LSB 0x24</span></div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;<span class="preprocessor">#define BNO055_QUATERNION_Y_MSB 0x25</span></div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;<span class="preprocessor">#define BNO055_QUATERNION_Z_LSB 0x26</span></div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;<span class="preprocessor">#define BNO055_QUATERNION_Z_MSB 0x27</span></div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160; </div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;<span class="comment">// Linear acceleration data registers</span></div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;<span class="preprocessor">#define BNO055_LINEAR_ACC_X_LSB 0x28</span></div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;<span class="preprocessor">#define BNO055_LINEAR_ACC_X_MSB 0x29</span></div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;<span class="preprocessor">#define BNO055_LINEAR_ACC_Y_LSB 0x2a</span></div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;<span class="preprocessor">#define BNO055_LINEAR_ACC_Y_MSB 0x2b</span></div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;<span class="preprocessor">#define BNO055_LINEAR_ACC_Z_LSB 0x2c</span></div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;<span class="preprocessor">#define BNO055_LINEAR_ACC_Z_MSB 0x2d</span></div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160; </div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;<span class="comment">// Gravity data registers</span></div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;<span class="preprocessor">#define BNO055_GRAVITY_X_LSB    0x2e</span></div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;<span class="preprocessor">#define BNO055_GRAVITY_X_MSB    0x2f</span></div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;<span class="preprocessor">#define BNO055_GRAVITY_Y_LSB    0x30</span></div>
+<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;<span class="preprocessor">#define BNO055_GRAVITY_Y_MSB    0x31</span></div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;<span class="preprocessor">#define BNO055_GRAVITY_Z_LSB    0x32</span></div>
+<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;<span class="preprocessor">#define BNO055_GRAVITY_Z_MSB    0x33</span></div>
+<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160; </div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;<span class="comment">// Temperature data register</span></div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;<span class="preprocessor">#define BNO055_TEMP             0x34</span></div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160; </div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;<span class="comment">// Status registers</span></div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;<span class="preprocessor">#define BNO055_CALIB_STAT       0x35</span></div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;<span class="preprocessor">#define BNO055_SELFTEST_RESULT  0x36</span></div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;<span class="preprocessor">#define BNO055_INTR_STAT        0x37</span></div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;<span class="preprocessor">#define BNO055_SYS_CLK_STAT     0x38</span></div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;<span class="preprocessor">#define BNO055_SYS_STAT         0x39</span></div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;<span class="preprocessor">#define BNO055_SYS_ERR          0x3a</span></div>
+<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160; </div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;<span class="comment">// Unit selection register</span></div>
+<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;<span class="preprocessor">#define BNO055_UNIT_SEL         0x3b</span></div>
+<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;<span class="preprocessor">#define BNO055_DATA_SELECT      0x3c</span></div>
+<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160; </div>
+<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;<span class="comment">// Mode registers</span></div>
+<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;<span class="preprocessor">#define BNO055_OPR_MODE         0x3d</span></div>
+<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;<span class="preprocessor">#define BNO055_PWR_MODE         0x3e</span></div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;<span class="preprocessor">#define BNO055_SYS_TRIGGER      0x3f</span></div>
+<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;<span class="preprocessor">#define BNO055_TEMP_SOURCE      0x40</span></div>
+<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160; </div>
+<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;<span class="comment">// Axis remap registers</span></div>
+<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;<span class="preprocessor">#define BNO055_AXIS_MAP_CONFIG  0x41</span></div>
+<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;<span class="preprocessor">#define BNO055_AXIS_MAP_SIGN    0x42</span></div>
+<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160; </div>
+<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;<span class="comment">// SIC registers</span></div>
+<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_0_LSB   0x43</span></div>
+<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_0_MSB   0x44</span></div>
+<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_1_LSB   0x45</span></div>
+<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_1_MSB   0x46</span></div>
+<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_2_LSB   0x47</span></div>
+<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_2_MSB   0x48</span></div>
+<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_3_LSB   0x49</span></div>
+<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_3_MSB   0x4a</span></div>
+<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_4_LSB   0x4b</span></div>
+<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_4_MSB   0x4c</span></div>
+<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_5_LSB   0x4d</span></div>
+<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_5_MSB   0x4e</span></div>
+<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_6_LSB   0x4f</span></div>
+<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_6_MSB   0x50</span></div>
+<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_7_LSB   0x51</span></div>
+<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_7_MSB   0x52</span></div>
+<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_8_LSB   0x53</span></div>
+<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;<span class="preprocessor">#define BNO055_SIC_MTRX_8_MSB   0x54</span></div>
+<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160; </div>
+<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;<span class="comment">// Accelerometer Offset registers</span></div>
+<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;<span class="preprocessor">#define ACCEL_OFFSET_X_LSB      0x55</span></div>
+<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;<span class="preprocessor">#define ACCEL_OFFSET_X_MSB      0x56</span></div>
+<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;<span class="preprocessor">#define ACCEL_OFFSET_Y_LSB      0x57</span></div>
+<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;<span class="preprocessor">#define ACCEL_OFFSET_Y_MSB      0x58</span></div>
+<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;<span class="preprocessor">#define ACCEL_OFFSET_Z_LSB      0x59</span></div>
+<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;<span class="preprocessor">#define ACCEL_OFFSET_Z_MSB      0x5a</span></div>
+<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160; </div>
+<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;<span class="comment">// Magnetometer Offset registers</span></div>
+<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;<span class="preprocessor">#define MAG_OFFSET_X_LSB        0x5b</span></div>
+<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;<span class="preprocessor">#define MAG_OFFSET_X_MSB        0x5c</span></div>
+<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;<span class="preprocessor">#define MAG_OFFSET_Y_LSB        0x5d</span></div>
+<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;<span class="preprocessor">#define MAG_OFFSET_Y_MSB        0x5e</span></div>
+<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160;<span class="preprocessor">#define MAG_OFFSET_Z_LSB        0x5f</span></div>
+<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;<span class="preprocessor">#define MAG_OFFSET_Z_MSB        0x60</span></div>
+<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160; </div>
+<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160;<span class="comment">// Gyroscope Offset registers</span></div>
+<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;<span class="preprocessor">#define GYRO_OFFSET_X_LSB       0x61</span></div>
+<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;<span class="preprocessor">#define GYRO_OFFSET_X_MSB       0x62</span></div>
+<div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;<span class="preprocessor">#define GYRO_OFFSET_Y_LSB       0x63</span></div>
+<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;<span class="preprocessor">#define GYRO_OFFSET_Y_MSB       0x64</span></div>
+<div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160;<span class="preprocessor">#define GYRO_OFFSET_Z_LSB       0x65</span></div>
+<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;<span class="preprocessor">#define GYRO_OFFSET_Z_MSB       0x66</span></div>
+<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160; </div>
+<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;<span class="comment">// Radius registers</span></div>
+<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;<span class="preprocessor">#define ACCEL_RADIUS_LSB        0x67</span></div>
+<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;<span class="preprocessor">#define ACCEL_RADIUS_MSB        0x68</span></div>
+<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160;<span class="preprocessor">#define MAG_RADIUS_LSB          0x69</span></div>
+<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160;<span class="preprocessor">#define MAG_RADIUS_MSB          0x6a</span></div>
+<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160; </div>
+<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;<span class="comment">//----- page1 ---------------------------------------------</span></div>
+<div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160;<span class="comment">// Configuration registers</span></div>
+<div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160;<span class="preprocessor">#define ACCEL_CONFIG            0x08</span></div>
+<div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160;<span class="preprocessor">#define MAG_CONFIG              0x09</span></div>
+<div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;<span class="preprocessor">#define GYRO_CONFIG             0x0a</span></div>
+<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;<span class="preprocessor">#define GYRO_MODE_CONFIG        0x0b</span></div>
+<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;<span class="preprocessor">#define ACCEL_SLEEP_CONFIG      0x0c</span></div>
+<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160;<span class="preprocessor">#define GYRO_SLEEP_CONFIG       0x0d</span></div>
+<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;<span class="preprocessor">#define MAG_SLEEP_CONFIG        0x0e</span></div>
+<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160; </div>
+<div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;<span class="comment">// Interrupt registers</span></div>
+<div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;<span class="preprocessor">#define INT_MASK                0x0f</span></div>
+<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;<span class="preprocessor">#define INT                     0x10</span></div>
+<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;<span class="preprocessor">#define ACCEL_ANY_MOTION_THRES  0x11</span></div>
+<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;<span class="preprocessor">#define ACCEL_INTR_SETTINGS     0x12</span></div>
+<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;<span class="preprocessor">#define ACCEL_HIGH_G_DURN       0x13</span></div>
+<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;<span class="preprocessor">#define ACCEL_HIGH_G_THRES      0x14</span></div>
+<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;<span class="preprocessor">#define ACCEL_NO_MOTION_THRES   0x15</span></div>
+<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;<span class="preprocessor">#define ACCEL_NO_MOTION_SET     0x16</span></div>
+<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;<span class="preprocessor">#define GYRO_INTR_SETING        0x17</span></div>
+<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;<span class="preprocessor">#define GYRO_HIGHRATE_X_SET     0x18</span></div>
+<div class="line"><a name="l00513"></a><span class="lineno">  513</span>&#160;<span class="preprocessor">#define GYRO_DURN_X             0x19</span></div>
+<div class="line"><a name="l00514"></a><span class="lineno">  514</span>&#160;<span class="preprocessor">#define GYRO_HIGHRATE_Y_SET     0x1a</span></div>
+<div class="line"><a name="l00515"></a><span class="lineno">  515</span>&#160;<span class="preprocessor">#define GYRO_DURN_Y             0x1b</span></div>
+<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160;<span class="preprocessor">#define GYRO_HIGHRATE_Z_SET     0x1c</span></div>
+<div class="line"><a name="l00517"></a><span class="lineno">  517</span>&#160;<span class="preprocessor">#define GYRO_DURN_Z             0x1d</span></div>
+<div class="line"><a name="l00518"></a><span class="lineno">  518</span>&#160;<span class="preprocessor">#define GYRO_ANY_MOTION_THRES   0x1e</span></div>
+<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;<span class="preprocessor">#define GYRO_ANY_MOTION_SET     0x1f</span></div>
 <div class="line"><a name="l00520"></a><span class="lineno">  520</span>&#160; </div>
+<div class="line"><a name="l00521"></a><span class="lineno">  521</span>&#160;<span class="preprocessor">#endif      </span><span class="comment">// BNO055_H</span></div>
+<div class="line"><a name="l00522"></a><span class="lineno">  522</span>&#160; </div>
 <div class="ttc" id="aclassBNO055_html"><div class="ttname"><a href="classBNO055.html">BNO055</a></div><div class="ttdef"><b>Definition:</b> BNO055.h:141</div></div>
 <div class="ttc" id="aclassBNO055_html_a0569c8614e86814f903e914963038315"><div class="ttname"><a href="classBNO055.html#a0569c8614e86814f903e914963038315">BNO055::get_euler_angles</a></div><div class="ttdeci">void get_euler_angles(BNO055_EULER_TypeDef *el)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:61</div></div>
-<div class="ttc" id="aclassBNO055_html_a06468e20ab6978b8c4d13363958b2428"><div class="ttname"><a href="classBNO055.html#a06468e20ab6978b8c4d13363958b2428">BNO055::use_dps</a></div><div class="ttdeci">bool use_dps()</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:323</div></div>
-<div class="ttc" id="aclassBNO055_html_a1bb614e4dc2ab7f69bef4f2286986fab"><div class="ttname"><a href="classBNO055.html#a1bb614e4dc2ab7f69bef4f2286986fab">BNO055::read_calib_status</a></div><div class="ttdeci">uint8_t read_calib_status(void)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:532</div></div>
-<div class="ttc" id="aclassBNO055_html_a1e98e73f02495c032ecee5f5354d8c87"><div class="ttname"><a href="classBNO055.html#a1e98e73f02495c032ecee5f5354d8c87">BNO055::get_chip_temperature</a></div><div class="ttdeci">void get_chip_temperature(BNO055_TEMPERATURE_TypeDef *tmp)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:236</div></div>
-<div class="ttc" id="aclassBNO055_html_a28ab8a7da73460f8ed9e2f028d3a4108"><div class="ttname"><a href="classBNO055.html#a28ab8a7da73460f8ed9e2f028d3a4108">BNO055::get_gravity</a></div><div class="ttdeci">void get_gravity(BNO055_VECTOR_TypeDef *gr)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:151</div></div>
+<div class="ttc" id="aclassBNO055_html_a06468e20ab6978b8c4d13363958b2428"><div class="ttname"><a href="classBNO055.html#a06468e20ab6978b8c4d13363958b2428">BNO055::use_dps</a></div><div class="ttdeci">bool use_dps()</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:330</div></div>
+<div class="ttc" id="aclassBNO055_html_a1bb614e4dc2ab7f69bef4f2286986fab"><div class="ttname"><a href="classBNO055.html#a1bb614e4dc2ab7f69bef4f2286986fab">BNO055::read_calib_status</a></div><div class="ttdeci">uint8_t read_calib_status(void)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:539</div></div>
+<div class="ttc" id="aclassBNO055_html_a1e98e73f02495c032ecee5f5354d8c87"><div class="ttname"><a href="classBNO055.html#a1e98e73f02495c032ecee5f5354d8c87">BNO055::get_chip_temperature</a></div><div class="ttdeci">void get_chip_temperature(BNO055_TEMPERATURE_TypeDef *tmp)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:243</div></div>
+<div class="ttc" id="aclassBNO055_html_a28ab8a7da73460f8ed9e2f028d3a4108"><div class="ttname"><a href="classBNO055.html#a28ab8a7da73460f8ed9e2f028d3a4108">BNO055::get_gravity</a></div><div class="ttdeci">void get_gravity(BNO055_VECTOR_TypeDef *gr)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:158</div></div>
 <div class="ttc" id="aclassBNO055_html_a2b16e3dccba001191a3b03a76d2ecfc5"><div class="ttname"><a href="classBNO055.html#a2b16e3dccba001191a3b03a76d2ecfc5">BNO055::get_angular_position_quat</a></div><div class="ttdeci">void get_angular_position_quat(BNO055_ANGULAR_POSITION_typedef *an_pos)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:117</div></div>
-<div class="ttc" id="aclassBNO055_html_a2f659ee1316f2ce8e6bd379a2e66c684"><div class="ttname"><a href="classBNO055.html#a2f659ee1316f2ce8e6bd379a2e66c684">BNO055::get_gyro</a></div><div class="ttdeci">void get_gyro(BNO055_VECTOR_TypeDef *gr)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:214</div></div>
-<div class="ttc" id="aclassBNO055_html_a31166955ddb1e5020bc288bcf76017d7"><div class="ttname"><a href="classBNO055.html#a31166955ddb1e5020bc288bcf76017d7">BNO055::get_accel</a></div><div class="ttdeci">void get_accel(BNO055_VECTOR_TypeDef *la)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:191</div></div>
+<div class="ttc" id="aclassBNO055_html_a2f659ee1316f2ce8e6bd379a2e66c684"><div class="ttname"><a href="classBNO055.html#a2f659ee1316f2ce8e6bd379a2e66c684">BNO055::get_gyro</a></div><div class="ttdeci">void get_gyro(BNO055_VECTOR_TypeDef *gr)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:221</div></div>
+<div class="ttc" id="aclassBNO055_html_a31166955ddb1e5020bc288bcf76017d7"><div class="ttname"><a href="classBNO055.html#a31166955ddb1e5020bc288bcf76017d7">BNO055::get_accel</a></div><div class="ttdeci">void get_accel(BNO055_VECTOR_TypeDef *la)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:198</div></div>
 <div class="ttc" id="aclassBNO055_html_a31dc7d5a3db043d03eb203e91225ee34"><div class="ttname"><a href="classBNO055.html#a31dc7d5a3db043d03eb203e91225ee34">BNO055::get_quaternion</a></div><div class="ttdeci">void get_quaternion(BNO055_QUATERNION_TypeDef *qua)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:84</div></div>
-<div class="ttc" id="aclassBNO055_html_a325ee94cfe39a3fb1b0ae36d575ad938"><div class="ttname"><a href="classBNO055.html#a325ee94cfe39a3fb1b0ae36d575ad938">BNO055::write_reg0</a></div><div class="ttdeci">uint8_t write_reg0(uint8_t addr, uint8_t data)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:652</div></div>
-<div class="ttc" id="aclassBNO055_html_a34a045235dd5d7dc2f9d571dbd95a51c"><div class="ttname"><a href="classBNO055.html#a34a045235dd5d7dc2f9d571dbd95a51c">BNO055::frequency</a></div><div class="ttdeci">void frequency(int hz)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:637</div></div>
-<div class="ttc" id="aclassBNO055_html_a35195101876415477413c1ca0af48b07"><div class="ttname"><a href="classBNO055.html#a35195101876415477413c1ca0af48b07">BNO055::calibrate</a></div><div class="ttdeci">void calibrate(void)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:449</div></div>
-<div class="ttc" id="aclassBNO055_html_a3818cf3d06f5e3492dd31fffbfe2e5a9"><div class="ttname"><a href="classBNO055.html#a3818cf3d06f5e3492dd31fffbfe2e5a9">BNO055::change_fusion_mode</a></div><div class="ttdeci">void change_fusion_mode(uint8_t mode)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:542</div></div>
-<div class="ttc" id="aclassBNO055_html_a4367136d057891191d873107cd9a6c31"><div class="ttname"><a href="classBNO055.html#a4367136d057891191d873107cd9a6c31">BNO055::chip_ready</a></div><div class="ttdeci">uint8_t chip_ready(void)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:440</div></div>
-<div class="ttc" id="aclassBNO055_html_a45060130cb79550438a4ea7c29b0ef88"><div class="ttname"><a href="classBNO055.html#a45060130cb79550438a4ea7c29b0ef88">BNO055::write_reg1</a></div><div class="ttdeci">uint8_t write_reg1(uint8_t addr, uint8_t data)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:676</div></div>
-<div class="ttc" id="aclassBNO055_html_a4cff42d02e03ab614ae23f6ce621a19e"><div class="ttname"><a href="classBNO055.html#a4cff42d02e03ab614ae23f6ce621a19e">BNO055::read_reg0</a></div><div class="ttdeci">uint8_t read_reg0(uint8_t addr)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:643</div></div>
-<div class="ttc" id="aclassBNO055_html_a5a4db61ef267b92d2558a3075c4c3de2"><div class="ttname"><a href="classBNO055.html#a5a4db61ef267b92d2558a3075c4c3de2">BNO055::set_mounting_position</a></div><div class="ttdeci">void set_mounting_position(uint8_t position)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:586</div></div>
-<div class="ttc" id="aclassBNO055_html_a61a2812efc810f7a24382a51f60074f4"><div class="ttname"><a href="classBNO055.html#a61a2812efc810f7a24382a51f60074f4">BNO055::read_id_inf</a></div><div class="ttdeci">void read_id_inf(BNO055_ID_INF_TypeDef *id)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:429</div></div>
-<div class="ttc" id="aclassBNO055_html_a759c0dd32e621ec19ea0035a83d61954"><div class="ttname"><a href="classBNO055.html#a759c0dd32e621ec19ea0035a83d61954">BNO055::reset</a></div><div class="ttdeci">uint8_t reset(void)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:369</div></div>
-<div class="ttc" id="aclassBNO055_html_a7e9abb10d31dec78f0d6aae84a2d3dfb"><div class="ttname"><a href="classBNO055.html#a7e9abb10d31dec78f0d6aae84a2d3dfb">BNO055::use_degrees</a></div><div class="ttdeci">bool use_degrees()</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:307</div></div>
-<div class="ttc" id="aclassBNO055_html_a8b5648e70366a3eeb94f4529a550a4f3"><div class="ttname"><a href="classBNO055.html#a8b5648e70366a3eeb94f4529a550a4f3">BNO055::use_celsius</a></div><div class="ttdeci">bool use_celsius()</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:331</div></div>
-<div class="ttc" id="aclassBNO055_html_a8c4a62acd9d260dac947752212e40028"><div class="ttname"><a href="classBNO055.html#a8c4a62acd9d260dac947752212e40028">BNO055::use_mss</a></div><div class="ttdeci">bool use_mss()</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:315</div></div>
+<div class="ttc" id="aclassBNO055_html_a325ee94cfe39a3fb1b0ae36d575ad938"><div class="ttname"><a href="classBNO055.html#a325ee94cfe39a3fb1b0ae36d575ad938">BNO055::write_reg0</a></div><div class="ttdeci">uint8_t write_reg0(uint8_t addr, uint8_t data)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:659</div></div>
+<div class="ttc" id="aclassBNO055_html_a34a045235dd5d7dc2f9d571dbd95a51c"><div class="ttname"><a href="classBNO055.html#a34a045235dd5d7dc2f9d571dbd95a51c">BNO055::frequency</a></div><div class="ttdeci">void frequency(int hz)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:644</div></div>
+<div class="ttc" id="aclassBNO055_html_a35195101876415477413c1ca0af48b07"><div class="ttname"><a href="classBNO055.html#a35195101876415477413c1ca0af48b07">BNO055::calibrate</a></div><div class="ttdeci">void calibrate(void)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:456</div></div>
+<div class="ttc" id="aclassBNO055_html_a3818cf3d06f5e3492dd31fffbfe2e5a9"><div class="ttname"><a href="classBNO055.html#a3818cf3d06f5e3492dd31fffbfe2e5a9">BNO055::change_fusion_mode</a></div><div class="ttdeci">void change_fusion_mode(uint8_t mode)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:549</div></div>
+<div class="ttc" id="aclassBNO055_html_a4367136d057891191d873107cd9a6c31"><div class="ttname"><a href="classBNO055.html#a4367136d057891191d873107cd9a6c31">BNO055::chip_ready</a></div><div class="ttdeci">uint8_t chip_ready(void)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:447</div></div>
+<div class="ttc" id="aclassBNO055_html_a45060130cb79550438a4ea7c29b0ef88"><div class="ttname"><a href="classBNO055.html#a45060130cb79550438a4ea7c29b0ef88">BNO055::write_reg1</a></div><div class="ttdeci">uint8_t write_reg1(uint8_t addr, uint8_t data)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:683</div></div>
+<div class="ttc" id="aclassBNO055_html_a4cff42d02e03ab614ae23f6ce621a19e"><div class="ttname"><a href="classBNO055.html#a4cff42d02e03ab614ae23f6ce621a19e">BNO055::read_reg0</a></div><div class="ttdeci">uint8_t read_reg0(uint8_t addr)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:650</div></div>
+<div class="ttc" id="aclassBNO055_html_a5a4db61ef267b92d2558a3075c4c3de2"><div class="ttname"><a href="classBNO055.html#a5a4db61ef267b92d2558a3075c4c3de2">BNO055::set_mounting_position</a></div><div class="ttdeci">void set_mounting_position(uint8_t position)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:593</div></div>
+<div class="ttc" id="aclassBNO055_html_a61a2812efc810f7a24382a51f60074f4"><div class="ttname"><a href="classBNO055.html#a61a2812efc810f7a24382a51f60074f4">BNO055::read_id_inf</a></div><div class="ttdeci">void read_id_inf(BNO055_ID_INF_TypeDef *id)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:436</div></div>
+<div class="ttc" id="aclassBNO055_html_a759c0dd32e621ec19ea0035a83d61954"><div class="ttname"><a href="classBNO055.html#a759c0dd32e621ec19ea0035a83d61954">BNO055::reset</a></div><div class="ttdeci">uint8_t reset(void)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:376</div></div>
+<div class="ttc" id="aclassBNO055_html_a7e9abb10d31dec78f0d6aae84a2d3dfb"><div class="ttname"><a href="classBNO055.html#a7e9abb10d31dec78f0d6aae84a2d3dfb">BNO055::use_degrees</a></div><div class="ttdeci">bool use_degrees()</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:314</div></div>
+<div class="ttc" id="aclassBNO055_html_a8b5648e70366a3eeb94f4529a550a4f3"><div class="ttname"><a href="classBNO055.html#a8b5648e70366a3eeb94f4529a550a4f3">BNO055::use_celsius</a></div><div class="ttdeci">bool use_celsius()</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:338</div></div>
+<div class="ttc" id="aclassBNO055_html_a8c4a62acd9d260dac947752212e40028"><div class="ttname"><a href="classBNO055.html#a8c4a62acd9d260dac947752212e40028">BNO055::use_mss</a></div><div class="ttdeci">bool use_mss()</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:322</div></div>
 <div class="ttc" id="aclassBNO055_html_a8fdfa2f898db3860487363fd7215bd1b"><div class="ttname"><a href="classBNO055.html#a8fdfa2f898db3860487363fd7215bd1b">BNO055::BNO055</a></div><div class="ttdeci">BNO055(PinName p_sda, PinName p_scl, PinName p_reset, uint8_t addr, uint8_t mode)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:24</div></div>
-<div class="ttc" id="aclassBNO055_html_a96c9b858c1d052af49fd1d9599883bbb"><div class="ttname"><a href="classBNO055.html#a96c9b858c1d052af49fd1d9599883bbb">BNO055::read_reg1</a></div><div class="ttdeci">uint8_t read_reg1(uint8_t addr)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:667</div></div>
-<div class="ttc" id="aclassBNO055_html_afc63bdced04e2a9f65ea6a6d00f98187"><div class="ttname"><a href="classBNO055.html#afc63bdced04e2a9f65ea6a6d00f98187">BNO055::get_linear_accel</a></div><div class="ttdeci">void get_linear_accel(BNO055_VECTOR_TypeDef *la)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:128</div></div>
-<div class="ttc" id="aclassBNO055_html_afe1a70c3cd44482d3ecd828ece47d941"><div class="ttname"><a href="classBNO055.html#afe1a70c3cd44482d3ecd828ece47d941">BNO055::get_mag</a></div><div class="ttdeci">void get_mag(BNO055_VECTOR_TypeDef *qua)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:174</div></div>
+<div class="ttc" id="aclassBNO055_html_a96c9b858c1d052af49fd1d9599883bbb"><div class="ttname"><a href="classBNO055.html#a96c9b858c1d052af49fd1d9599883bbb">BNO055::read_reg1</a></div><div class="ttdeci">uint8_t read_reg1(uint8_t addr)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:674</div></div>
+<div class="ttc" id="aclassBNO055_html_afc63bdced04e2a9f65ea6a6d00f98187"><div class="ttname"><a href="classBNO055.html#afc63bdced04e2a9f65ea6a6d00f98187">BNO055::get_linear_accel</a></div><div class="ttdeci">void get_linear_accel(BNO055_VECTOR_TypeDef *la)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:135</div></div>
+<div class="ttc" id="aclassBNO055_html_afe1a70c3cd44482d3ecd828ece47d941"><div class="ttname"><a href="classBNO055.html#afe1a70c3cd44482d3ecd828ece47d941">BNO055::get_mag</a></div><div class="ttdeci">void get_mag(BNO055_VECTOR_TypeDef *qua)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:181</div></div>
 <div class="ttc" id="astructBNO055__ANGULAR__POSITION__typedef_html"><div class="ttname"><a href="structBNO055__ANGULAR__POSITION__typedef.html">BNO055_ANGULAR_POSITION_typedef</a></div><div class="ttdef"><b>Definition:</b> BNO055.h:88</div></div>
 <div class="ttc" id="astructBNO055__EULER__TypeDef_html"><div class="ttname"><a href="structBNO055__EULER__TypeDef.html">BNO055_EULER_TypeDef</a></div><div class="ttdef"><b>Definition:</b> BNO055.h:75</div></div>
 <div class="ttc" id="astructBNO055__ID__INF__TypeDef_html"><div class="ttname"><a href="structBNO055__ID__INF__TypeDef.html">BNO055_ID_INF_TypeDef</a></div><div class="ttdef"><b>Definition:</b> BNO055.h:66</div></div>

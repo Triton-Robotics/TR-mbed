@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['pid_182',['PID',['../classPID.html',1,'']]],
-  ['pwmmotor_183',['PWMMotor',['../classPWMMotor.html',1,'']]]
+  ['pid_198',['PID',['../classPID.html',1,'']]],
+  ['pose2d_199',['Pose2D',['../classPose2D.html',1,'']]],
+  ['pwmmotor_200',['PWMMotor',['../classPWMMotor.html',1,'']]]
 ];
