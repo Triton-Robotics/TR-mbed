@@ -91,8 +91,12 @@
   - New error, not data at all. Tried 2 boards, 3 circuits, 2 recivers, 2 remote controls. None works.
   
   - 02/22: Tried analog V read, reads "nan"
-  
-  - This is crazy...
+  - 03/04: Finally data is varing (Used 5V now); Raw data from remote looks stayble (Anshal), will look at DJIRemote.cpp to change formula
+  - 03/08: Zeroed starting state of all 4 axis.
+    - Found periodic pattern of wierd data every 7 iterations.
+      - But will have a long period of good data (189 iteration of all zero) after moving the sticks, then resume the wierd data
+      - ^[Occasionally unfortunately]
+    - Left horizontal axis data seems travels much faster than all other axis. Others are same speed.
 
 -  **IMU on Old Devboard** - Make it functional, and incorporate its sending of data into the existing remote code
 

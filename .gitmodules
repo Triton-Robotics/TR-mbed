@@ -1,0 +1,3 @@
+[submodule "libs/tinyekf"]
+	path = libs/tinyekf
+	url = https://github.com/simondlevy/TinyEKF.git

@@ -307,6 +307,8 @@ public:
 
     int cantReadDataCount;
 
+    double multiturnYaw;
+
 protected:
     void initialize(void);
     void initialize_reset_pin(void);
