@@ -15,9 +15,10 @@ TRMutex::TRMutex() {
 
 //string/char inputs
 void TRMutex::print(char statement[]) {
-    int length = sizeof(statement)/sizeof(char);
-        for (int i = 0; i < length; i++) {
+        int i=0;
+        while(statement[i] != '\0') {
             buffer.push(statement[i]);
+            i++;
         }
 }
 
@@ -42,12 +43,14 @@ void TRMutex::printff(const char* format, ...) {
 
 //string/char inputs
 void TRMutex::println(char statement[]) {
-    int length = sizeof(statement)/sizeof(char);
-        for (int i = 0; i < length; i++) {
-            buffer.push(statement[i]);
-        }
-        buffer.push('\n');
+    int i=0;
+    while(statement[i] != '\0') {
+        buffer.push(statement[i]);
+        i++;
+    }
+    buffer.push('\n');
 }
+
 
 //ints
 void TRMutex::println(int integer) {
@@ -59,13 +62,14 @@ void TRMutex::println(int integer) {
 
 void TRMutex::loop() {
     while (true) {
-        MUTEX.lock();
 
         if (!buffer.empty()) {
+            MUTEX.lock();
             printf("%c", buffer.front());
             buffer.pop();
+            MUTEX.unlock();
         }
-        MUTEX.unlock();
+        
         ThisThread::sleep_for(1ms);
     }
 }
