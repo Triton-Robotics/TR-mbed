@@ -5,7 +5,7 @@
 #include "PID.h"
 
 PID::PID(){
-    kP = 1; kI = 0; kD = 0;
+    kP = 0; kI = 0; kD = 0;
     integralCap = 0;
     outputCap = 0;
     feedForward = 0;
@@ -41,12 +41,14 @@ float PID::calculate(float desiredV, float actualV, double dt){
 
     float error = (desiredV - actualV);
     float PIDCalc = kP * error + kI * sumError + kD * ((double)(error - lastError)/dt);
-//    if (error < 6 & error > -6) {
-        sumError += error * dt;
-//    } else {
-//        sumError = 0;
-//    }
+    if(debugPIDterms)
+        printf("P: %f\t I: %f\t D: %f\t\n", error, sumError, (double)(error - lastError)/dt);
+    
+    sumError += error * dt;
     lastError = error;
+
+    if(debug)
+        printf("DES: %d\t ACT: %d\t PID: %d\t ERROR: %d\n",(int)desiredV, int(actualV), int(PIDCalc), int(error));
 
     if(integralCap != 0){
         //sumError = std::max(std::min(sumError,integralCap),-integralCap);
@@ -62,9 +64,6 @@ float PID::calculate(float desiredV, float actualV, double dt){
         else if(PIDCalc < -outputCap)
             PIDCalc = -outputCap;
     }
-//    ThisThread::sleep_for(1ms); //neccessary or else dt -> 0 and causes issues....
-    if(debug)
-        printf("DES: %d ACT: %d PID: %d\n",(int)desiredV, int(actualV), int(PIDCalc));
 
     return PIDCalc + feedForward;
 }
@@ -95,14 +94,14 @@ void PID::setPID(float p, float i, float d){
     kP = p; kI = i; kD = d;
 }
 
-int PID::getkP(){
+float PID::getkP(){
     return kP;
 }
 
-int PID::getkI(){
+float PID::getkI(){
     return kI;
 }
 
-int PID::getkD(){
+float PID::getkD(){
     return kD;
 }

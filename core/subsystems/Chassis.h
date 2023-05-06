@@ -95,6 +95,11 @@ public:
      * @param speedRPM Speed in RPM
      * @param rotationVelcotiyRPM Robot rotation velocity in RPM
      */
+
+    void driveXYRPower(double ref_chassis_power, double lX, double lY, double rX, double time_diff);
+    void driveFieldRelativePower(double ref_chassis_power, double time_diff, double yVelocityRPM, double xVelocityRPM, double rotationVelocityRPM);
+    void driveOffsetAnglePower(double ref_chassis_power, double time_diff, double yVelocityRPM, double xVelocityRPM, double rotationVelocityRPM, double angleOffset);
+
     void driveAngle(double angleRadians, double speedRPM, double rotationVelcotiyRPM);
 
     /**

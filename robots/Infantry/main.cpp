@@ -168,6 +168,8 @@ int main()
         if(timeStart - loopTimer > 25){
             led = !led;
             loopTimer = timeStart;
+            led = !led;
+            remoteRead();
 
 //            if (counter >= 10) {
 //                Jetson::update(timeStart - loopTimer);

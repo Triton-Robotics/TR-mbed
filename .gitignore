@@ -19,3 +19,5 @@ micro-ros/mbed_toolchain.cmake
 docs/
 docs/html
 docs/latex
+
+.DS_STORE

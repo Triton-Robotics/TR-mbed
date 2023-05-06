@@ -22,6 +22,7 @@ private:
 
 public:
     bool debug = false;
+    bool debugPIDterms = false;
     float feedForward = 0;
 
     float kI;
@@ -76,19 +77,19 @@ public:
      * Gets the P (proportional) control parameter
      * @return The P (proportional) control parameter
      */
-    int getkP();
+    float getkP();
 
     /**
      * Gets the I (integral) control parameter
      * @return The I (integral) control parameter
      */
-    int getkI();
+    float getkI();
 
     /**
      * Gets the D (derivative) control parameter
      * @return The D (derivative) control parameter
      */
-    int getkD();
+    float getkD();
 };
 
 
