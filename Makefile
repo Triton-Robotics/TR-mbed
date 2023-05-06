@@ -11,5 +11,9 @@ Engineer:
 Test-Bench:
 	#cp ./cmake_build/NUCLEO_F446RE/develop/GCC_ARM/robots/Test-Bench/TR-TestBench.bin /media/ben332004/NODE_F446RE/
 	scp ./cmake_build/NUCLEO_F446RE/develop/GCC_ARM/robots/Test-Bench/TR-TestBench.bin pi@raspberrypi.local:/media/pi/NOD_F446RE/
+test-bench:
+	sudo chmod a+rw /dev/ttyACM0
+	cp cmake_build/NUCLEO_F446RE/develop/GCC_ARM/robots/Test-Bench/TR-TestBench.bin /media/${USER}/NOD_F446RE
+	mbed-tools sterm -b 115200
 serial:
 	mbed-tools sterm --baudrate 112500
