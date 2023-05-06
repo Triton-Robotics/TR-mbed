@@ -1,6 +1,6 @@
 #include "main.h"
 #include "Infantry.h"
-#include <jetson.h>
+//#include <jetson.h>
 #include <cstdlib>
 #include <commands/RamseteCommand.h>
 #include "communications/DJIRemote.h"
@@ -57,13 +57,13 @@ void setFlyWheelSpeed(int speed) {
 
 Thread imuThread;
 
-double getPitchAngle(geometry_msgs__msg__Vector3Stamped jetsonAngles) {
-    return asin(-jetsonAngles.vector.y);
-}
-
-double getYawAngle(geometry_msgs__msg__Vector3Stamped jetsonAngles) {
-    return atan2(jetsonAngles.vector.x, jetsonAngles.vector.z);
-}
+//double getPitchAngle(geometry_msgs__msg__Vector3Stamped jetsonAngles) {
+//    return asin(-jetsonAngles.vector.y);
+//}
+//
+//double getYawAngle(geometry_msgs__msg__Vector3Stamped jetsonAngles) {
+//    return atan2(jetsonAngles.vector.x, jetsonAngles.vector.z);
+//}
 
 
 
@@ -87,7 +87,7 @@ int main()
 
     DJIMotor::setCANHandlers(&canHandler1,&canHandler2, false, false);
 
-    Jetson::init();
+//    Jetson::init();
 
     // LB.setSpeedPID(1.75, 0.351, 5.63);
     // RF.setSpeedPID(1.073, 0.556, 0);
@@ -148,7 +148,7 @@ int main()
 
 //        printf("Pitch angle: %i\n", (int) pitch.getData(ANGLE));
 //        printf("Yaw motor angle: %i\n", (int) yaw.getData(MULTITURNANGLE));
-//        chassis.printMotorAngle();
+        chassis.printMotorAngle();
 
 //        printf("Pitch: %i\n", (int) pitch.getData((ANGLE)));
 //        printf("Yaw: %i\n", (int) yaw.getData((ANGLE)));
@@ -169,15 +169,15 @@ int main()
             led = !led;
             loopTimer = timeStart;
 
-            if (counter >= 10) {
-                Jetson::update(timeStart - loopTimer);
-//        Jetson::odom.translation.x += 0.1;
-                printf("CV x %f\n", Jetson::cv.vector.x);
-                printf("CV y %f\n", Jetson::cv.vector.y);
-                counter = 0;
-            } else {
-                counter++;
-            }
+//            if (counter >= 10) {
+//                Jetson::update(timeStart - loopTimer);
+////        Jetson::odom.translation.x += 0.1;
+//                printf("CV x %f\n", Jetson::cv.vector.x);
+//                printf("CV y %f\n", Jetson::cv.vector.y);
+//                counter = 0;
+//            } else {
+//                counter++;
+//            }
 
 
             remoteRead();
@@ -220,16 +220,16 @@ int main()
 //                    chassis.driveFieldRelative(0, 4096, 0);
                     chassis.periodic();
 
-                    double setpoint = getPitchAngle(Jetson::cv) * 4096 / PI + 6715;
+//                    double setpoint = getPitchAngle(Jetson::cv) * 4096 / PI + 6715;
 //                    printf("Setpoint: %i\n", (int) setpoint);
-                    pitch.setPosition(setpoint);
+//                    pitch.setPosition(setpoint);
 
-//                pitch.setPosition((rY / 2) + 1500);
+                pitch.setPosition((rY / 2) + 1500);
 
 
 //                 yaw.setSpeed(rX/100);
 
-                yawSetpoint = (4096 * getYawAngle(Jetson::cv) / PI - yaw.getData(ANGLE));
+//                yawSetpoint = (4096 * getYawAngle(Jetson::cv) / PI - yaw.getData(ANGLE));
 //                yawSetpoint = 0;
 //                yawSetpoint -= rX / 10.0;
 //                yawSetpoint -= rX / 10.0;
@@ -273,7 +273,7 @@ int main()
 //                chassis.driveXYR(0,0,0);
                 chassis.driveFieldRelative({0, 0, 0});
                  yaw.setPower(0); pitch.setPower(0);
-            }else if(rS == Remote::SwitchState::UNKNOWN ){ // beyblade mode
+            }else if(rS == Remote::SwitchState::UP ){ // beyblade mode
                 chassis.beyblade(lX * 5.0, lY * 5.0, yaw.getData(MULTITURNANGLE) * 360.0 / 8192, false);
                 yawSetpoint = -chassis.getHeadingDegrees() * 8192 / 360 + yaw.getData(MULTITURNANGLE) - 2 * rX;
                 yaw.setPosition(yawSetpoint);

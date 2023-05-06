@@ -40,6 +40,11 @@ class ChassisKalman : public TinyEKF {
 public:
     ChassisKalman();
 
+    /**
+     * Sets the dt (delta time) used by the kalman filter to estimate how far the Chassis has traveled in a certain
+     * amount of time at a certain speed
+     * @param dt The delta time in milliseconds
+     */
     void setDt(double dt);
 
     double dt;
