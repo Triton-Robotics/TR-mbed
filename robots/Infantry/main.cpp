@@ -144,6 +144,8 @@ int main()
 //        printf("Cannot list files!\n");
 //    }
 
+unsigned long lastTime = 0;
+
     while (true) {
 
 //        printf("Pitch angle: %i\n", (int) pitch.getData(ANGLE));
@@ -218,9 +220,21 @@ int main()
 //                printf("STICKS: %i %i %i\n", lX, lY, rX);
 //                if (chassis.testDataIndex < 300) {
 //                    chassis.driveFieldRelative({lX * 5.0, lY * 5.0, 0});
-                    chassis.driveTurretRelative({lX * 5.0, lY * 5.0, 0}, yaw.getData(MULTITURNANGLE) * 360.0 / 8192);
+                    double ref_chassis_power = ext_power_heat_data.data.chassis_power;
+
+                    unsigned long time = us_ticker_read() / 1000;
+
+                    // chassis.driveTurretRelative({lX * 5.0, lY * 5.0, 0}, yaw.getData(MULTITURNANGLE) * 360.0 / 8192);
 //                    chassis.driveFieldRelative(0, 4096, 0);
+
                     chassis.periodic();
+
+                    chassis.driveXYRPower(ref_chassis_power, 5 * lX, 5 * lY, 5 * rX, time - lastTime);
+
+                    lastTime = time;
+
+                    printf("ref: %f\n", ref_chassis_power);
+
 
 //                    double setpoint = getPitchAngle(Jetson::cv) * 4096 / PI + 6715;
 //                    printf("Setpoint: %i\n", (int) setpoint);
