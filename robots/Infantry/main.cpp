@@ -150,7 +150,7 @@ unsigned long lastTime = 0;
 
 //        printf("Pitch angle: %i\n", (int) pitch.getData(ANGLE));
 //        printf("Yaw motor angle: %i\n", (int) yaw.getData(MULTITURNANGLE));
-        chassis.printMotorAngle();
+//        chassis.printMotorAngle();
 
 //        printf("Pitch: %i\n", (int) pitch.getData((ANGLE)));
 //        printf("Yaw: %i\n", (int) yaw.getData((ANGLE)));
@@ -170,7 +170,6 @@ unsigned long lastTime = 0;
         if(timeStart - loopTimer > 25){
             led = !led;
             loopTimer = timeStart;
-            led = !led;
             remoteRead();
 
 //            if (counter >= 10) {
@@ -184,12 +183,10 @@ unsigned long lastTime = 0;
 //            }
 
 
-            remoteRead();
-
             chassis.periodic();
 //            printf("Time: %i\n", (int) (timeStart / 1000));
 
-//            printf("Rs: %i\n", (int) rS);
+            printf("Rs: %i\n", (int) rS);
 
 
 //            printf("Lx: %i\n", (int) lX);
@@ -220,16 +217,16 @@ unsigned long lastTime = 0;
 //                printf("STICKS: %i %i %i\n", lX, lY, rX);
 //                if (chassis.testDataIndex < 300) {
 //                    chassis.driveFieldRelative({lX * 5.0, lY * 5.0, 0});
-                    double ref_chassis_power = ext_power_heat_data.data.chassis_power;
+//                    double ref_chassis_power = ext_power_heat_data.data.chassis_power;
+//
+//                    unsigned long time = us_ticker_read() / 1000;
 
-                    unsigned long time = us_ticker_read() / 1000;
-
-                    // chassis.driveTurretRelative({lX * 5.0, lY * 5.0, 0}, yaw.getData(MULTITURNANGLE) * 360.0 / 8192);
+                     chassis.driveTurretRelative({lX * 5.0, lY * 5.0, 0}, yaw.getData(MULTITURNANGLE) * 360.0 / 8192);
 //                    chassis.driveFieldRelative(0, 4096, 0);
 
                     chassis.periodic();
 
-                    chassis.driveXYRPower(ref_chassis_power, 5 * lX, 5 * lY, 5 * rX, time - lastTime);
+//                    chassis.driveXYRPower(ref_chassis_power, 5 * lX, 5 * lY, 5 * rX, time - lastTime);
 
                     lastTime = time;
 
