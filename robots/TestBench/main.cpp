@@ -1,57 +1,73 @@
 #include "main.h"
-#include <cstdlib>
+#include "mbed.h"
 
-//PID pid(0, 0, 0, 0, 0);
-
-// DJIMotor m3058_1(1, CANHandler::CANBUS_1, M3508);
-// DJIMotor m3058_2(2, CANHandler::CANBUS_1, M3508);
-// DJIMotor m3058_3(3, CANHandler::CANBUS_1, M3508);
-// DJIMotor m3058_4(4, CANHandler::CANBUS_1, M3508);
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "EndlessLoop"
 DJIMotor jaspdexer(7, CANHandler::CANBUS_1, GIMBLY);
-
 DigitalOut led(LED1);
+//AnalogIn kp(A0);
+//AnalogIn kI(A1);
+//AnalogIn kD(A2);
 
-int main()
-{
-    DJIMotor::setCANHandlers(&canHandler1,&canHandler2, false, false);
-    
+
+// Check lS moves from 2 to 3 when the switch is moved up
+
+int main(){
+
     unsigned long loopTimer = us_ticker_read() / 1000;
+    float pos = 85;
 
+    bool previousMid;
+    bool nowUp;
+    bool nowDown;
+
+    //remote.unfiltered = true;
+    jaspdexer.justPosError = true;
+    jaspdexer.setPositionOutputCap(30000);
+    jaspdexer.setSpeedOutputCap(50000);
+
+    DJIMotor::setCANHandlers(&canHandler1,&canHandler2, false, false);
     DJIMotor::getFeedback();
 
-    unsigned long lastTime = 0;
-
     while (true) {
-        
-        remoteRead();
-
         unsigned long timeStart = us_ticker_read() / 1000;
+
         if(timeStart - loopTimer > 25){
             loopTimer = timeStart;
 
+            previousMid = bool(remote.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID);
+            remoteRead();
+
+            nowUp = bool(remote.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP);
+            nowDown = bool(remote.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::DOWN);
+
             led = !led;
 
-            // refLoop++;
-            // if(refLoop > 15){
-            //     refereeThread();
-            //     refLoop = 0;
-            // }
+            if(rS == Remote::SwitchState::MID) {
+                if(previousMid && nowUp)
+                    pos += 8191.0 / 9;
 
-            refereeThread();
+                else if(previousMid && nowDown)
+                    pos -= 8191.0 / 9;
 
-            printf("lY %d lS %d dex %d\n",lY, lS, jaspdexer.getData(ANGLE));
+                jaspdexer.setPosition(int(pos));
+                printf("POS: %d\n", int(pos));
 
-            if(lS == 1)
-                jaspdexer.setSpeed(lY/20);
-            if(lS == 2)
+            }else if(rS == Remote::SwitchState::DOWN) {
+                pos = 85;
+                jaspdexer.setPosition(int(pos));
+                printf("POS: %d\n", int(pos));
+
+            }else
                 jaspdexer.setPower(0);
-            if(lS == 3)
-                jaspdexer.setPower(lY * 5);
+
+            printf("POSITION: %d\n\n", jaspdexer.getData(MULTITURNANGLE));
 
             DJIMotor::sendValues();
         }
-        unsigned long timeEnd = us_ticker_read() / 1000;
+
         DJIMotor::getFeedback();
         ThisThread::sleep_for(1ms);
     }
 }
+#pragma clang diagnostic pop

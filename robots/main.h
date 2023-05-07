@@ -265,6 +265,7 @@ static void remoteRead(){ // for threadless
     Wh = remote.getWheel();
     lS = remote.getSwitch(Remote::Switch::LEFT_SWITCH);
     rS = remote.getSwitch(Remote::Switch::RIGHT_SWITCH);
+
 }
 
 static void remotePrint(){
