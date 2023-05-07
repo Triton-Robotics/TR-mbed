@@ -12,6 +12,7 @@ class Remote
 public:
     Remote(PinName dbus);
 
+
     /**
      * Specifies a particular joystick.
      */
@@ -141,8 +142,11 @@ public:
      */
     uint32_t getUpdateCounter() const;
 
+    bool badData(const uint8_t rxBuffer[]);
+
     long badDataChainNumber = 0;
     long goodDataChainNumber = 0;
+    bool unfiltered = false;
 
 private:
 

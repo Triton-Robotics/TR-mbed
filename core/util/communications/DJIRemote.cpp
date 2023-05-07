@@ -37,7 +37,7 @@ void Remote::read()
         currentBufferIndex++;
         lastRead = duration_cast<milliseconds>(readTimer.elapsed_time()).count();
     }
-    printf("\n");
+    //printf("\n");
     // Check read timeout
     if ((duration_cast<milliseconds>(readTimer.elapsed_time()).count() - lastRead) > REMOTE_READ_TIMEOUT)
     {
@@ -93,7 +93,7 @@ void Remote::printAxisData() const{
 }
 
 void Remote::dumpInfo() const{
-    printf("%d %d %d %d %d %d", getChannelInt(Remote::Channel::LEFT_HORIZONTAL), getChannelInt(Remote::Channel::LEFT_VERTICAL), getChannelInt(Remote::Channel::RIGHT_HORIZONTAL), getChannelInt(Remote::Channel::RIGHT_VERTICAL),
+    printf("%d %d %d %d %d %d\n", getChannelInt(Remote::Channel::LEFT_HORIZONTAL), getChannelInt(Remote::Channel::LEFT_VERTICAL), getChannelInt(Remote::Channel::RIGHT_HORIZONTAL), getChannelInt(Remote::Channel::RIGHT_VERTICAL),
            getSwitch(Switch::LEFT_SWITCH), getSwitch(Switch::RIGHT_SWITCH));
 }
 
@@ -123,12 +123,19 @@ bool Remote::keyPressed(Key key) const { return (remote.key & (1 << (uint8_t)key
 
 int16_t Remote::getWheel() const { return remote.wheel; }
 
-bool anyOutOfRangeData(const uint8_t rxBuffer[]){
+bool Remote::badData(const uint8_t rxBuffer[]){
+
+    if(bool(SwitchState(((rxBuffer[5] >> 4) & 0x000C) >> 2)))
+        return false;
 
     int16_t rh = ((int16_t) rxBuffer[0] | ((int16_t) rxBuffer[1] << 8)) & 0x07FF;
     int16_t rv = (((int16_t) rxBuffer[1] >> 3) | ((int16_t) rxBuffer[2] << 5)) & 0x07FF;
     int16_t lh = (((int16_t) rxBuffer[2] >> 6) | ((int16_t) rxBuffer[3] << 2) | ((int16_t) rxBuffer[4] << 10)) & 0x07FF;
     int16_t lv = (((int16_t) rxBuffer[4] >> 1) | ((int16_t) rxBuffer[5] << 7)) & 0x07FF;
+
+    if(unfiltered)
+        printf("%d %d %d %d\n", rh, rv, lh, lv);
+
 
     int16_t joysticks[4] = {rh, rv, lh, lv};
 
@@ -144,7 +151,7 @@ void Remote::parseBuffer(){
     // values implemented by shifting bits across based on the dr16
     // values documentation and code created last year
 
-    if(bool(SwitchState(((rxBuffer[5] >> 4) & 0x000C) >> 2)) && !anyOutOfRangeData(rxBuffer)) {
+    if(!badData(rxBuffer)) {
 
         remote.rightHorizontal = ((int16_t) rxBuffer[0] | ((int16_t) rxBuffer[1] << 8)) & 0x07FF;
         remote.rightVertical = (((int16_t) rxBuffer[1] >> 3) | ((int16_t) rxBuffer[2] << 5)) & 0x07FF;
