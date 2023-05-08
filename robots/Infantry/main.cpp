@@ -228,9 +228,9 @@ unsigned long lastTime = 0;
 
 //                    chassis.driveXYRPower(ref_chassis_power, 5 * lX, 5 * lY, 5 * rX, time - lastTime);
 
-                    lastTime = time;
-
-                    printf("ref: %f\n", ref_chassis_power);
+//                    lastTime = time;
+//
+//                    printf("ref: %f\n", ref_chassis_power);
 
 
 //                    double setpoint = getPitchAngle(Jetson::cv) * 4096 / PI + 6715;
