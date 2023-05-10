@@ -34,6 +34,9 @@
 
 //#include "robots/include/infantry.hpp"#include "communications/DJIRemote.h"
 
+#define L25     PB_0
+#define L26     PC_1
+#define L27     PC_0
 
 static Remote remote(PC_5);
 //static BufferedSerial referee(PC_10, PC_11, 115200); // Nucleo board: top left male pins.
