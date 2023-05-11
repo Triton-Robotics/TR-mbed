@@ -125,24 +125,32 @@ int16_t Remote::getWheel() const { return remote.wheel; }
 
 bool Remote::badData(const uint8_t rxBuffer[]){
 
-    if(bool(SwitchState(((rxBuffer[5] >> 4) & 0x000C) >> 2)))
-        return false;
+    // if(bool(SwitchState(((rxBuffer[5] >> 4) & 0x000C) >> 2)))
+    //     return false;
+    short lSwitch = ((rxBuffer[5] >> 4) & 0x000C) >> 2;
+    short rSwitch = ((rxBuffer[5] >> 4) & 0x0003);
+
+    if(lSwitch < 1 || lSwitch > 3 || rSwitch < 1 || rSwitch > 3){
+        return true;
+    }
 
     int16_t rh = ((int16_t) rxBuffer[0] | ((int16_t) rxBuffer[1] << 8)) & 0x07FF;
     int16_t rv = (((int16_t) rxBuffer[1] >> 3) | ((int16_t) rxBuffer[2] << 5)) & 0x07FF;
     int16_t lh = (((int16_t) rxBuffer[2] >> 6) | ((int16_t) rxBuffer[3] << 2) | ((int16_t) rxBuffer[4] << 10)) & 0x07FF;
     int16_t lv = (((int16_t) rxBuffer[4] >> 1) | ((int16_t) rxBuffer[5] << 7)) & 0x07FF;
 
-    if(unfiltered)
+    if(true || unfiltered)
         printf("%d %d %d %d\n", rh, rv, lh, lv);
 
 
     int16_t joysticks[4] = {rh, rv, lh, lv};
 
     for(int16_t axis: joysticks) {
+        printf("{%d}\t",axis-1024);
         if (abs(axis - 1024) > 660)
             return true;
     }
+    printf("\n");
 
     return false;
 }
@@ -150,7 +158,7 @@ bool Remote::badData(const uint8_t rxBuffer[]){
 void Remote::parseBuffer(){
     // values implemented by shifting bits across based on the dr16
     // values documentation and code created last year
-
+    //printf("yeetus deletus\n");
     if(!badData(rxBuffer)) {
 
         remote.rightHorizontal = ((int16_t) rxBuffer[0] | ((int16_t) rxBuffer[1] << 8)) & 0x07FF;
