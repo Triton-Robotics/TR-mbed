@@ -38,7 +38,7 @@
 #define L26     PC_1
 #define L27     PC_0
 
-static Remote remote(PC_5);
+static Remote remote(PA_10);
 //static BufferedSerial referee(PC_10, PC_11, 115200); // Nucleo board: top left male pins.
 static bool enablePrintRefData = 0;
 

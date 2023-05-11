@@ -139,18 +139,18 @@ bool Remote::badData(const uint8_t rxBuffer[]){
     int16_t lh = (((int16_t) rxBuffer[2] >> 6) | ((int16_t) rxBuffer[3] << 2) | ((int16_t) rxBuffer[4] << 10)) & 0x07FF;
     int16_t lv = (((int16_t) rxBuffer[4] >> 1) | ((int16_t) rxBuffer[5] << 7)) & 0x07FF;
 
-    if(true || unfiltered)
+    if(unfiltered)
         printf("%d %d %d %d\n", rh, rv, lh, lv);
 
 
     int16_t joysticks[4] = {rh, rv, lh, lv};
 
     for(int16_t axis: joysticks) {
-        printf("{%d}\t",axis-1024);
+        //printf("{%d}\t",axis-1024);
         if (abs(axis - 1024) > 660)
             return true;
     }
-    printf("\n");
+    //printf("\n");
 
     return false;
 }
