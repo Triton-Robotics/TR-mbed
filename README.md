@@ -40,14 +40,6 @@ In `~/.bashrc` (or `~/.bash_profile`), append the following to enable `mbed-tool
 export PATH="${PATH}:/home/${USER}/.local/bin"
 ```
 
-Optional: Extra dependencies for compiling micro-ros:
-```shell
-pip install   \
-  catkin_pkg  \
-  lark-parser \
-  empy        \
-  colcon-common-extensions
-```
 ---
 ## Setup
 1. Clone this repo:
@@ -55,32 +47,26 @@ pip install   \
 git clone https://github.com/Triton-Robotics/TR-mbed.git
 ```
 
-2. Navigate to project root directory and initialize `mbed` project:
-```shell
-cd TR-mbed && mbed-tools deploy
-```
-
-**Optional: At this point, you may choose to diverge from the CLI setup guide and set up an IDE
-instead. Check out the setup instructions for [CLion](.md/clion.md) or [VSCode](.md/vscode.md).**
+### At this point, you may choose to diverge from the CLI setup guide and set up an IDE instead. Check out the setup instructions for [CLion](.md/clion.md) or [VSCode](.md/vscode.md).
 
 3. Configure `CMake` project. This should only be done once per project, or after editing
    any `CMakeLists.txt`:
 
 ```shell
-cmake -S . -B cmake_build/NUCLEO_F446RE/develop/GCC_ARM -GNinja
+cmake -S . -B cmake-build-debug -GNinja
 ```
 
 4. Build the desired target using your IDE or via CLI:
 
 ```shell
-cmake --build cmake_build/NUCLEO_F446RE/develop/GCC_ARM --target TR-Sentry -j $(nproc)
+cmake --build cmake-build-debug --target TR-TestBench -j $(nproc)
 ```
 
 Viable targets for build are: `TR-Engineer`, `TR-Infantry`, `TR-Sentry`, `TR-Hero`, and `TR-TestBench`
 
 5. Locate the generated executable:
 
-   eg. The built executable for Sentry will be present in `cmake_build/NUCLEO_F446RE/develop/GCC_ARM/robots/Sentry/TR_Sentry.elf`
+   eg. The built executable for TestBench will be present in `cmake-build-debug/robots/TestBench/TR-TestBench.elf`
 
 
 6. Flash the executable to the target device and open a serial terminal:
@@ -88,7 +74,7 @@ Viable targets for build are: `TR-Engineer`, `TR-Infantry`, `TR-Sentry`, `TR-Her
    1. For flashing device in WSL, see the [Appendix](#appendix-wsl-steps)
 
 ```shell
-openocd -f board/st_nucleo_f4.cfg -c "program cmake_build/NUCLEO_F446RE/develop/GCC_ARM/robots/Sentry/TR-Sentry.elf verify reset exit"
+openocd -f board/st_nucleo_f4.cfg -c "program cmake-build-debug/robots/TestBench/TR-TestBench.elf verify reset exit"
 
 mbed-tools sterm -b 115200
 ```
@@ -139,6 +125,6 @@ Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
 5. Flash the board with OpenOCD:
 
 ```shell
-sudo openocd -f board/st_nucleo_f4.cfg -c "program cmake_build/NUCLEO_F446RE/develop/GCC_ARM/robots/Sentry/TR-Sentry.elf verify reset exit"
+sudo openocd -f board/st_nucleo_f4.cfg -c "program cmake-build-debug/robots/Sentry/TR-TestBench.elf verify reset exit"
 ```
 ###

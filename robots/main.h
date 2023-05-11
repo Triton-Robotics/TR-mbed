@@ -7,7 +7,6 @@
 
 #include "mbed.h"
 
-#include "helperFunctions.hpp"
 #include "algorithms/PID.h"
 #include "peripherals/imu/BNO055.h"
 #include "peripherals/oled/SSD1308.h"
@@ -21,6 +20,7 @@
 #include "communications/SerialCommunication.h"
 #include "communications/referee/ref_serial.h"
 #include "communications/referee/ref_ui.h"
+#include "communications/Jetson.h"
 
 #include <cstring>
 
