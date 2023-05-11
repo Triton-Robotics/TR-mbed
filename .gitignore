@@ -8,13 +8,8 @@ projectfiles
 BUILD
 mbed-os/
 cmake_build
+cmake-build-debug
 .mbedbuild
-
-micro-ros/include
-micro-ros/libmicroros.a
-micro-ros/micro_ros_dev
-micro-ros/micro_ros_src
-micro-ros/mbed_toolchain.cmake
 
 docs/
 docs/html
