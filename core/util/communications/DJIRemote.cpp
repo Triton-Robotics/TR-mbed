@@ -13,12 +13,10 @@ Remote::Remote(PinName dbus) : receiver(NC, dbus) {
     //printf("Remote created \n");
 }
 
-void Remote::initialize()
-{
+void Remote::initialize(){
 }
 
-void Remote::read()
-{
+void Remote::read(){
     
     // Read next byte if available and more needed for the current packet
     // Check disconnect timeout
@@ -55,8 +53,7 @@ void Remote::read()
 
 __attribute__((unused)) bool Remote::isConnected() const { return connected; }
 
-float Remote::getChannel(Channel ch) const
-{
+float Remote::getChannel(Channel ch) const{
     switch (ch)
     {
         case Channel::RIGHT_HORIZONTAL:
@@ -71,21 +68,33 @@ float Remote::getChannel(Channel ch) const
     return 0;
 }
 
-
-int16_t Remote::getChannelInt(Channel ch) const
-{
-    switch (ch)
-    {
+int16_t Remote::getChannelInt(Channel ch) const{
+    switch (ch){
         case Channel::RIGHT_HORIZONTAL:
             return remote.rightHorizontal;
+
         case Channel::RIGHT_VERTICAL:
             return remote.rightVertical;
+
         case Channel::LEFT_HORIZONTAL:
             return remote.leftHorizontal;
+
         case Channel::LEFT_VERTICAL:
             return remote.leftVertical;
     }
     return 0;
+}
+
+Remote::SwitchState Remote::getSwitch(Switch sw) const{
+    switch (sw){
+        case Switch::LEFT_SWITCH:
+            return remote.leftSwitch;
+
+        case Switch::RIGHT_SWITCH:
+            return remote.rightSwitch;
+    }
+
+    return SwitchState::UNKNOWN;
 }
 
 void Remote::printAxisData() const{
@@ -95,18 +104,6 @@ void Remote::printAxisData() const{
 void Remote::dumpInfo() const{
     printf("%d %d %d %d %d %d\n", getChannelInt(Remote::Channel::LEFT_HORIZONTAL), getChannelInt(Remote::Channel::LEFT_VERTICAL), getChannelInt(Remote::Channel::RIGHT_HORIZONTAL), getChannelInt(Remote::Channel::RIGHT_VERTICAL),
            getSwitch(Switch::LEFT_SWITCH), getSwitch(Switch::RIGHT_SWITCH));
-}
-
-Remote::SwitchState Remote::getSwitch(Switch sw) const
-{
-    switch (sw)
-    {
-        case Switch::LEFT_SWITCH:
-            return remote.leftSwitch;
-        case Switch::RIGHT_SWITCH:
-            return remote.rightSwitch;
-    }
-    return SwitchState::UNKNOWN;
 }
 
 int16_t Remote::getMouseX() const { return remote.mouse.x; }
@@ -123,16 +120,44 @@ bool Remote::keyPressed(Key key) const { return (remote.key & (1 << (uint8_t)key
 
 int16_t Remote::getWheel() const { return remote.wheel; }
 
-bool Remote::badData(const uint8_t rxBuffer[]){
+void Remote::switchToState(RemoteInfo *remote){
 
-    // if(bool(SwitchState(((rxBuffer[5] >> 4) & 0x000C) >> 2)))
-    //     return false;
-    short lSwitch = ((rxBuffer[5] >> 4) & 0x000C) >> 2;
-    short rSwitch = ((rxBuffer[5] >> 4) & 0x0003);
-
-    if(lSwitch < 1 || lSwitch > 3 || rSwitch < 1 || rSwitch > 3){
-        return true;
+    switch ((int)remote -> leftSwitch) {
+        case 1:
+            remote -> leftSwitch = SwitchState::UP;
+            break;
+        case 3:
+            remote -> leftSwitch = SwitchState::MID;
+            break;
+        case 2:
+            remote -> leftSwitch = SwitchState::DOWN;
+            break;
+        default:
+            remote -> leftSwitch = SwitchState::UNKNOWN;
+            break;
     }
+
+    switch ((int)remote -> rightSwitch) {
+        case 1:
+            remote -> rightSwitch = SwitchState::UP;
+            break;
+        case 3:
+            remote -> rightSwitch = SwitchState::MID;
+            break;
+        case 2:
+            remote -> rightSwitch = SwitchState::DOWN;
+            break;
+        default:
+            remote -> rightSwitch = SwitchState::UNKNOWN;
+            break;
+    }
+
+}
+
+bool Remote::badData(const uint8_t rxBuffer[], RemoteInfo *remote){
+
+    SwitchState lSwitch = SwitchState(((rxBuffer[5] >> 4) & 0x000C) >> 2);
+    SwitchState rSwitch = SwitchState(((rxBuffer[5] >> 4) & 0x0003));
 
     int16_t rh = ((int16_t) rxBuffer[0] | ((int16_t) rxBuffer[1] << 8)) & 0x07FF;
     int16_t rv = (((int16_t) rxBuffer[1] >> 3) | ((int16_t) rxBuffer[2] << 5)) & 0x07FF;
@@ -140,17 +165,27 @@ bool Remote::badData(const uint8_t rxBuffer[]){
     int16_t lv = (((int16_t) rxBuffer[4] >> 1) | ((int16_t) rxBuffer[5] << 7)) & 0x07FF;
 
     if(unfiltered)
-        printf("%d %d %d %d\n", rh, rv, lh, lv);
+        printf("%d %d %d %d %d %d %d\n", rh, rv, lh, lv, getSwitch(lSwitch), getSwitch(rSwitch);
 
+    if(!(bool(SwitchState(lSwitch)) and bool(SwitchState(rSwitch))))
+        return true;
 
     int16_t joysticks[4] = {rh, rv, lh, lv};
 
     for(int16_t axis: joysticks) {
-        //printf("{%d}\t",axis-1024);
         if (abs(axis - 1024) > 660)
             return true;
     }
-    //printf("\n");
+
+    remote -> rightHorizontal = rh;
+    remote -> rightVertical = rv;
+    remote -> leftHorizontal = lh;
+    remote -> leftVertical = lv;
+
+    remote -> leftSwitch = lSwitch;
+    remote -> rightSwitch = rSwitch;
+
+    switchToState(remote);
 
     return false;
 }
@@ -158,21 +193,13 @@ bool Remote::badData(const uint8_t rxBuffer[]){
 void Remote::parseBuffer(){
     // values implemented by shifting bits across based on the dr16
     // values documentation and code created last year
-    //printf("yeetus deletus\n");
-    if(!badData(rxBuffer)) {
 
-        remote.rightHorizontal = ((int16_t) rxBuffer[0] | ((int16_t) rxBuffer[1] << 8)) & 0x07FF;
-        remote.rightVertical = (((int16_t) rxBuffer[1] >> 3) | ((int16_t) rxBuffer[2] << 5)) & 0x07FF;
-        remote.leftHorizontal = (((int16_t) rxBuffer[2] >> 6) | ((int16_t) rxBuffer[3] << 2) | ((int16_t) rxBuffer[4] << 10)) & 0x07FF;
-        remote.leftVertical = (((int16_t) rxBuffer[4] >> 1) | ((int16_t) rxBuffer[5] << 7)) & 0x07FF;
+    if(!badData(rxBuffer, &remote)) {
 
         remote.rightHorizontal -= 1024;
         remote.rightVertical -= 1024;
         remote.leftHorizontal -= 1024;
         remote.leftVertical -= 1024;
-
-        remote.leftSwitch = SwitchState(((rxBuffer[5] >> 4) & 0x000C) >> 2);
-        remote.rightSwitch = SwitchState(((rxBuffer[5] >> 4) & 0x0003));
 
         remote.mouse.x = ((int16_t)rxBuffer[6]) | ((int16_t)rxBuffer[7] << 8);
         remote.mouse.y = ((int16_t)rxBuffer[8]) | ((int16_t)rxBuffer[9] << 8);
@@ -186,45 +213,6 @@ void Remote::parseBuffer(){
 
 
         // switches on the dji remote - their input is registered
-        switch ((int)remote.leftSwitch) {
-            case 1:
-                remote.leftSwitch = SwitchState::UP;
-                break;
-            case 3:
-                remote.leftSwitch = SwitchState::MID;
-                break;
-            case 2:
-                remote.leftSwitch = SwitchState::DOWN;
-                break;
-            default:
-                remote.leftSwitch = SwitchState::UNKNOWN;
-                break;
-        }
-
-        switch ((int)remote.rightSwitch) {
-            case 1:
-                remote.rightSwitch = SwitchState::UP;
-                break;
-            case 3:
-                remote.rightSwitch = SwitchState::MID;
-                break;
-            case 2:
-                remote.rightSwitch = SwitchState::DOWN;
-                break;
-            default:
-                remote.rightSwitch = SwitchState::UNKNOWN;
-                break;
-        }
-
-        // remaining 12 bytes (based on the DBUS_BUF_LEN variable
-        // being 18) use mouse and keyboard data
-        // 660 is the max value from the remote, so gaining a higher
-        // value would be impractical.
-        // as such, the method returns null, exiting the method.
-//        if ((abs(remote.rightHorizontal) > 660) || (abs(remote.rightVertical) > 660) ||
-//            (abs(remote.leftHorizontal) > 660) || (abs(remote.leftVertical) > 660)) {
-//            return;
-//        }
 
         remote.updateCounter++;
     }
