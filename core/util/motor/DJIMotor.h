@@ -54,6 +54,7 @@ enum motorType {
     //keep in mind that in the constructor, this is only used to
     //set the default pid values and gear ratio. The motortype will
     //be changed to STANDARD, because that's what the code uses.
+    M3508_FLYWHEEL = 5,
 
     GIMBLY = 2, //Gimblyyyyyyyyyy
     GM6020 = 2
@@ -67,6 +68,7 @@ private:
     float defautlGimblySpeedSettings[5] = {0.13, 8.8, 0, 25000, 1000};
     float defautM3508PosSettings[5] = {.48, 0.0137, 4.2, 3000, 300};
     float defautM3508SpeedSettings[5] = {1.79, 0.27, 10.57, 15000, 500};
+    float defautM3508FlywheelSpeedSettings[5] = {2.013, 0.319, 20.084, 15000, 500};
 
     enum motorMoveMode{
         OFF = 0,
