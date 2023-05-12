@@ -154,10 +154,12 @@ void Remote::switchToState(RemoteInfo *remote){
 
 }
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "readability-convert-member-functions-to-static"
 bool Remote::badData(const uint8_t rxBuffer[], RemoteInfo *remote){
 
-    SwitchState lSwitch = SwitchState(((rxBuffer[5] >> 4) & 0x000C) >> 2);
-    SwitchState rSwitch = SwitchState(((rxBuffer[5] >> 4) & 0x0003));
+    auto lSwitch = SwitchState(((rxBuffer[5] >> 4) & 0x000C) >> 2);
+    auto rSwitch = SwitchState(((rxBuffer[5] >> 4) & 0x0003));
 
     int16_t rh = ((int16_t) rxBuffer[0] | ((int16_t) rxBuffer[1] << 8)) & 0x07FF;
     int16_t rv = (((int16_t) rxBuffer[1] >> 3) | ((int16_t) rxBuffer[2] << 5)) & 0x07FF;
@@ -165,7 +167,7 @@ bool Remote::badData(const uint8_t rxBuffer[], RemoteInfo *remote){
     int16_t lv = (((int16_t) rxBuffer[4] >> 1) | ((int16_t) rxBuffer[5] << 7)) & 0x07FF;
 
     if(unfiltered)
-        printf("%d %d %d %d %d %d %d\n", rh, rv, lh, lv, getSwitch(lSwitch), getSwitch(rSwitch);
+        printf("%d %d %d %d %d\n", rh, rv, lh, lv);
 
     if(!(bool(SwitchState(lSwitch)) and bool(SwitchState(rSwitch))))
         return true;
@@ -189,6 +191,7 @@ bool Remote::badData(const uint8_t rxBuffer[], RemoteInfo *remote){
 
     return false;
 }
+#pragma clang diagnostic pop
 
 void Remote::parseBuffer(){
     // values implemented by shifting bits across based on the dr16
