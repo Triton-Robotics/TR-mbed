@@ -75,7 +75,7 @@ $(function() {
 </li>
 <li>Converts string to an int</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md7"></a>
+<h1><a class="anchor" id="autotoc_md8"></a>
 Constructor</h1>
 <div class="fragment"><div class="line"><a class="code" href="classSerialCommunication.html">SerialCommunication</a>(PinName TX, PinName RX, <span class="keywordtype">int</span> baud)</div>
 <div class="ttc" id="aclassSerialCommunication_html"><div class="ttname"><a href="classSerialCommunication.html">SerialCommunication</a></div><div class="ttdef"><b>Definition:</b> SerialCommunication.h:8</div></div>
@@ -84,16 +84,16 @@ Constructor</h1>
 <p><b>baud</b> Baudrate, usually set to 9600</p>
 <p>For example you can use the Tx and Rx built into the mini-usb connecting to the pc.</p>
 <p><code><a class="el" href="classSerialCommunication.html">SerialCommunication</a> Serial(USBTX,&#160;USBRX, 9600)</code></p>
-<h1><a class="anchor" id="autotoc_md8"></a>
+<h1><a class="anchor" id="autotoc_md9"></a>
 Functions</h1>
-<h2><a class="anchor" id="autotoc_md9"></a>
+<h2><a class="anchor" id="autotoc_md10"></a>
 PCRead(char message[])</h2>
 <ul>
 <li>Takes in a <b>char array</b></li>
 <li>Handles the update() function automatically</li>
 <li>Returns true once backslash (\) is sent and updates the char message with text in the serial monitor</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md10"></a>
+<h3><a class="anchor" id="autotoc_md11"></a>
 update(char message[], int sizeOfMessage, int sleep_fordelay)</h3>
 <ul>
 <li>Takes in a <b>char array</b>, which is where the message will be stored into if there is new data in the Serial line.</li>
@@ -104,19 +104,19 @@ update(char message[], int sizeOfMessage, int sleep_fordelay)</h3>
 </li>
 <li>Returns <b>True</b> if there is new data and automatically populates <b>message</b> with this data.</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md11"></a>
+<h3><a class="anchor" id="autotoc_md12"></a>
 toNum(char message[])</h3>
 <ul>
 <li>Converts message array to an int (if valid)</li>
 <li>Returns <b>INT</b> if possible to convert, -999 if not possible (Since 0 = NULL)</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md12"></a>
+<h3><a class="anchor" id="autotoc_md13"></a>
 strCompare(char word1[], char word2[])</h3>
 <ul>
 <li>Compares two strings</li>
 <li>Returns <b>True</b> if they are the same</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md13"></a>
+<h1><a class="anchor" id="autotoc_md14"></a>
 Example</h1>
 <ul>
 <li>Make sure the Serial monitor is open. View -&gt; Serial Monitor</li>
@@ -144,8 +144,8 @@ Example</h1>
 <div class="line">    }</div>
 <div class="line"> </div>
 <div class="line">}</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md14"></a>
-autotoc_md14</h1>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md15"></a>
+autotoc_md15</h1>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 <!-- start footer part -->

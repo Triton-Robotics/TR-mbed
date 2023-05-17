@@ -67,18 +67,18 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p>Outputs the standard pulse widths (from 1ms to 2ms) for controlling most servos / brushless ESCs that use pwm to modulate the output command</p>
-<h1><a class="anchor" id="autotoc_md26"></a>
+<h1><a class="anchor" id="autotoc_md27"></a>
 Class Constructor:</h1>
 <div class="fragment"><div class="line"><a class="code" href="classPWMMotor.html">PWMMotor</a>(PinName pin, <span class="keywordtype">int</span> defaultVal)</div>
 <div class="ttc" id="aclassPWMMotor_html"><div class="ttname"><a href="classPWMMotor.html">PWMMotor</a></div><div class="ttdef"><b>Definition:</b> PWMMotor.h:10</div></div>
 </div><!-- fragment --><p><b>pin</b> : the pin the motor is on, Any PWM capable output pin. This will be the pin you plug the actual data signal. This is usually the white or yellow pin, and definitely not the pin that is black or red</p>
 <p><b>defaultVal</b> : integer PWM command from <b>0 - 180</b> sent to the pin on startup. Useful for Brushless ESCs where they require an "intialization" command equivalent to setting the throttle to zero.</p>
-<h1><a class="anchor" id="autotoc_md27"></a>
+<h1><a class="anchor" id="autotoc_md28"></a>
 Motor Movement</h1>
 <p>You can move a motor with this function:</p>
 <p><code>void&#160;set(int motorVal)</code></p>
 <p>This outputs PWM to the pin. motorVal can be a value from <b>0 - 180</b> and correlates from a pulse width of 1ms to 2ms.</p>
-<h1><a class="anchor" id="autotoc_md28"></a>
+<h1><a class="anchor" id="autotoc_md29"></a>
 Example</h1>
 <p>Intializes PWM pin D5 to control a PWM capable ESC. First sets an int 90 command on startup. Then waits 100ms and later sends a new command</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;mbed.h&quot;</span></div>
@@ -93,7 +93,7 @@ Example</h1>
 <div class="line">        brushlessmotor.set(10);</div>
 <div class="line">    }</div>
 <div class="line">}</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md29"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md30"></a>
 Important Note</h1>
 <p>Note that some servos/ESCs don't use a pulse-width from 1ms to 2ms (for some reason) even though the datasheet says it should. During Ming's testing, some servos required a value from -90 to 90 for their full range of motion or 0 - 230. Don't be afriad to go outside of the boundaries. </p>
 </div></div><!-- contents -->

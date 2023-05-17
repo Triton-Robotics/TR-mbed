@@ -85,26 +85,44 @@ Prerequisites</h2>
 <div class="line">  libstdc++-arm-none-eabi-newlib  \</div>
 <div class="line">  openocd                         \</div>
 <div class="line">  ninja-build</div>
-</div><!-- fragment --><p>Use pip to install <code>mbed</code> and various dependencies: </p><div class="fragment"><div class="line">pip install   \</div>
+</div><!-- fragment --><p>Use pip to install <code>mbed</code> and various dependencies:</p>
+<div class="fragment"><div class="line">pip install   \</div>
 <div class="line">  mbed-tools  \</div>
 <div class="line">  prettytable \</div>
 <div class="line">  future      \</div>
 <div class="line">  jinja2      \</div>
 <div class="line">  intelhex</div>
-</div><!-- fragment --><p>In <code>~/.bashrc</code> (or <code>~/.bash_profile</code>), append the following to enable <code>mbed-tools</code> via command line: </p><div class="fragment"><div class="line">export PATH=&quot;${PATH}:/home/${USER}/.local/bin&quot;</div>
-</div><!-- fragment --><p>Optional: Extra dependencies for compiling micro-ros: </p>
+</div><!-- fragment --><p>In <code>~/.bashrc</code> (or <code>~/.bash_profile</code>), append the following to enable <code>mbed-tools</code> via command line:</p>
+<div class="fragment"><div class="line">export PATH=&quot;${PATH}:/home/${USER}/.local/bin&quot;</div>
+</div><!-- fragment --><p>Optional: Extra dependencies for compiling micro-ros:</p>
+<div class="fragment"><div class="line">pip install   \</div>
+<div class="line">  catkin_pkg  \</div>
+<div class="line">  lark-parser \</div>
+<div class="line">  empy        \</div>
+<div class="line">  colcon-common-extensions</div>
+</div><!-- fragment --><p>Now you can skip to the Setup section.</p>
 <h2><a class="anchor" id="autotoc_md1"></a>
-@code{shell}</h2>
-<p>pip install \ catkin_pkg \ lark-parser \ empy \ colcon-common-extensions </p>
-<h2><a class="anchor" id="autotoc_md2"></a>
+Prerequisites [Windows]</h2>
+<p>This setup is for Windows.</p>
+<div class="fragment"><div class="line">winget install Kitware.CMake</div>
+<div class="line">winget install Python.Python.3.10</div>
+<div class="line">winget install Ninja-build.Ninja</div>
+<div class="line">winget install Arm.GnuArmEmbeddedToolchain</div>
+</div><!-- fragment --><p>Then we pip install the rest</p>
+<div class="fragment"><div class="line">pip install mbed-tools prettytable future jinja2 intelhex</div>
+</div><!-- fragment --><p>The rest of the setup is the same, follow below.</p>
+<hr  />
+<h2><a class="anchor" id="autotoc_md3"></a>
 Setup</h2>
 <ol type="1">
-<li>Clone this repo: <div class="fragment"><div class="line">git clone https://github.com/Triton-Robotics/TR-mbed.git</div>
-</div><!-- fragment --></li>
-<li>Navigate to project root directory and initialize <code>mbed</code> project: <div class="fragment"><div class="line">cd TR-mbed &amp;&amp; mbed-tools deploy</div>
-</div><!-- fragment --></li>
+<li>Clone this repo:</li>
 </ol>
-<p><b>Optional: At this point, you may choose to diverge from the CLI setup guide and set up an IDE instead. Check out the setup instructions for /home/runner/work/TR-mbed/TR-mbed/.md/clion.md "CLion" or /home/runner/work/TR-mbed/TR-mbed/.md/vscode.md "VSCode".</b></p>
+<div class="fragment"><div class="line">git clone https://github.com/Triton-Robotics/TR-mbed.git</div>
+</div><!-- fragment --><ol type="1">
+<li>Navigate to project root directory and initialize <code>mbed</code> project:</li>
+</ol>
+<div class="fragment"><div class="line">cd TR-mbed &amp;&amp; mbed-tools deploy</div>
+</div><!-- fragment --><p><b>Optional: At this point, you may choose to diverge from the CLI setup guide and set up an IDE instead. Check out the setup instructions for /home/runner/work/TR-mbed/TR-mbed/.md/clion.md "CLion" or /home/runner/work/TR-mbed/TR-mbed/.md/vscode.md "VSCode".</b></p>
 <ol type="1">
 <li>Configure <code>CMake</code> project. This should only be done once per project, or after editing any <code>CMakeLists.txt</code>:</li>
 </ol>
@@ -135,30 +153,35 @@ Setup</h2>
 <div class="line"># Reload udev rules</div>
 <div class="line">sudo udevadm control --reload</div>
 </div><!-- fragment --><hr  />
- <h2><a class="anchor" id="autotoc_md4"></a>
+<h2><a class="anchor" id="autotoc_md5"></a>
 Appendix: WSL Steps</h2>
 <p>Author: Michael Owens</p>
-<p>Flashing is where WSL begins to diverge from normal Linux. We have to pass through the USB device to WSL and then make sure we have the right installer.</p><ol type="1">
+<p>Flashing is where WSL begins to diverge from normal Linux. We have to pass through the USB device to WSL and then make sure we have the right installer.</p>
+<ol type="1">
 <li>Follow <a href="https://learn.microsoft.com/en-us/windows/wsl/connect-usb#attach-a-usb-device">this guide</a> to install <code>usbipd-win</code></li>
-<li>Start windows powershell / windows terminal (not cmd, don't be cringe) and try running <code>usbipd list</code>. The output should look something like this: <div class="fragment"><div class="line">PS C:\Users\legor&gt; usbipd list</div>
+<li>Start windows powershell / windows terminal (not cmd, don't be cringe) and try running <code>usbipd list</code>. The output should look something like this:</li>
+</ol>
+<div class="fragment"><div class="line">PS C:\Users\legor&gt; usbipd list</div>
 <div class="line">Connected:</div>
 <div class="line">BUSID  VID:PID    DEVICE                                                        STATE</div>
 <div class="line">2-3    0b05:19b6  USB Input Device                                              Not shared</div>
 <div class="line">3-2    0483:374b  ST-Link Debug, USB Mass Storage Device, USB Serial Device...  Attached</div>
 <div class="line">3-3    13d3:56eb  USB2.0 HD UVC WebCam, USB2.0 IR UVC WebCam, Camera DFU De...  Not shared</div>
 <div class="line">4-1    0489:e0e2  MediaTek Bluetooth Adapter                                    Not shared</div>
-</div><!-- fragment --></li>
+</div><!-- fragment --><ol type="1">
 <li>We can see here that the bus id of the st link programmer for the board is <code>3-2</code>, so we should run <code>usbipd wsl attach --busid 3-2</code> (replace the busid with yours)</li>
-<li>Finally, open your WSL shell. Run <code>lsusb</code>, the output should look like this, and now we know WSL has the device connected. <div class="fragment"><div class="line">ubuntu@my-pc:~/TR-mbed6$ lsusb</div>
+<li>Finally, open your WSL shell. Run <code>lsusb</code>, the output should look like this, and now we know WSL has the device connected.</li>
+</ol>
+<div class="fragment"><div class="line">ubuntu@my-pc:~/TR-mbed6$ lsusb</div>
 <div class="line">Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub</div>
 <div class="line">Bus 001 Device 003: ID 0483:374b STMicroelectronics ST-LINK/V2.1</div>
 <div class="line">Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub</div>
-</div><!-- fragment --></li>
+</div><!-- fragment --><ol type="1">
 <li>Flash the board with OpenOCD:</li>
 </ol>
 <div class="fragment"><div class="line">sudo openocd -f board/st_nucleo_f4.cfg -c &quot;program cmake_build/NUCLEO_F446RE/develop/GCC_ARM/robots/Sentry/TR-Sentry.elf verify reset exit&quot;</div>
-</div><!-- fragment --> <h3><a class="anchor" id="autotoc_md5"></a>
-autotoc_md5</h3>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md6"></a>
+autotoc_md6</h3>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->
