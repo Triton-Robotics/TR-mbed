@@ -25,7 +25,7 @@
 Chassis chassis(1, 2, 3, 4);
 RamseteCommand command(
         Pose2D(0, 0, 0), Pose2D(20, 20, 0), 2, &chassis);
-DigitalOut led(LED1);
+DigitalOut led(L25);
 
 
 
@@ -33,7 +33,7 @@ DJIMotor yaw(5, CANHandler::CANBUS_1, GIMBLY);
 DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY);
 int pitchval = 0;
 
-DJIMotor indexer(7, CANHandler::CANBUS_1, C610);
+DJIMotor indexer(7, CANHandler::CANBUS_2, C610);
 int indexJamTime = 0;
 int lastJam = 0;
 
@@ -42,12 +42,9 @@ unsigned long forwardTime = 250;
 unsigned long reverseTime = 300;
 unsigned long totalTime;
 
-bool sticksMoved = false;
-Remote::SwitchState prevRS = Remote::SwitchState::UNKNOWN;
-Remote::SwitchState prevLS = Remote::SwitchState::UNKNOWN;
 
-DJIMotor RFLYWHEEL(8, CANHandler::CANBUS_1, M3508);
-DJIMotor LFLYWHEEL(5, CANHandler::CANBUS_1, M3508);
+DJIMotor RFLYWHEEL(8, CANHandler::CANBUS_2, M3508);
+DJIMotor LFLYWHEEL(5, CANHandler::CANBUS_2, M3508);
 DJIMotor flyWheelMotors[] = {RFLYWHEEL, LFLYWHEEL};
 
 void setFlyWheelSpeed(int speed) {
@@ -93,7 +90,7 @@ int main()
     // RF.setSpeedPID(1.073, 0.556, 0);
     // RB.setSpeedPID(1.081, 0.247, 0.386);
     // LF.setSpeedPID(.743, 0.204, 0.284);
-    pitch.setPositionPID(4.2, 0.11, 0.42);
+    pitch.setPositionPID(5.3, 0.11, 0.42);
 //    pitch.setPositionPID(0, 0, 0);
     pitch.setPositionIntegralCap(10000);
     LFLYWHEEL.setSpeedPID(1, 0, 0);
@@ -102,7 +99,7 @@ int main()
     pitch.useAbsEncoder = 1;
     pitch.justPosError = 1;
 
-    yaw.setPositionPID(3.5, 0, 0.25);
+    yaw.setPositionPID(3.8, 0, 0.25);
     yaw.setPositionIntegralCap(10000);
     yaw.useAbsEncoder = 0;
     yaw.justPosError = 1;
@@ -186,8 +183,9 @@ unsigned long lastTime = 0;
             chassis.periodic();
 //            printf("Time: %i\n", (int) (timeStart / 1000));
 
-            printf("Rs: %i\n", (int) rS);
+//            printf("Rs: %i\n", (int) rS);
 
+            printf("YAW ANGLE: %i\n", (int) yaw.getData(ANGLE));
 
 //            printf("Lx: %i\n", (int) lX);
 //            printf("Ly: %i\n", (int) lY);
@@ -202,16 +200,8 @@ unsigned long lastTime = 0;
             //     //printf("%d\n",ext_power_heat_data.data.chassis_power);
             // }
 //            printf("A %i B %i\n", rS, lS);
-            if (!sticksMoved) {
-//                printf("NOT MOVED!\n");
+            if (!chassis.allMotorsConnected()) {
                 chassis.driveXYR({0,0,0});
-                if ((prevLS != Remote::SwitchState::UNKNOWN && lS != prevLS )
-                || (prevRS != Remote::SwitchState::UNKNOWN  && rS != prevRS)) {
-                    sticksMoved = true;
-                } else {
-                    prevLS = lS;
-                    prevRS = rS;
-                }
             } else if(rS == Remote::SwitchState::DOWN){ // All non-serializer motors activated
                 int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
 //                printf("STICKS: %i %i %i\n", lX, lY, rX);
@@ -237,7 +227,7 @@ unsigned long lastTime = 0;
 //                    printf("Setpoint: %i\n", (int) setpoint);
 //                    pitch.setPosition(setpoint);
 
-                pitch.setPosition((rY / 2) + 1500);
+                pitch.setPosition((rY / 1.5) + 6500);
 
 
 //                 yaw.setSpeed(rX/100);
@@ -278,9 +268,10 @@ unsigned long lastTime = 0;
 //                pitch.setPower((int) (rY * 3));
 //                printf("Setting power: %i\n", (int) pitch.powerOut);
                 // yaw.setSpeed(rX/100);
-//                yawSetpoint -= rX / 10.0;
-//                yawSetpoint = -chassis.getHeadingDegrees() * 8192 / 360 + yaw.getData(MULTITURNANGLE) - 2 * rX;
-                yaw.setPosition(yawSetpoint);
+                yawSetpoint += rX / 6.0;
+//                yawSetpoint =  - 3 * rX;
+                yaw.setPosition(-chassis.getHeadingDegrees() * 8192 / 360 + yaw.getData(MULTITURNANGLE) - yawSetpoint);
+//                yaw.setPosition(0);
 
             }else if(rS == Remote::SwitchState::MID){ //disable all the non-serializer components
 //                chassis.driveXYR(0,0,0);
@@ -288,8 +279,10 @@ unsigned long lastTime = 0;
                  yaw.setPower(0); pitch.setPower(0);
             }else if(rS == Remote::SwitchState::UP ){ // beyblade mode
                 chassis.beyblade(lX * 5.0, lY * 5.0, yaw.getData(MULTITURNANGLE) * 360.0 / 8192, false);
-                yawSetpoint = -chassis.getHeadingDegrees() * 8192 / 360 + yaw.getData(MULTITURNANGLE) - 2 * rX;
-                yaw.setPosition(yawSetpoint);
+                yawSetpoint += rX / 6.0;
+//                yawSetpoint =  - 3 * rX;
+                yaw.setPosition(-chassis.getHeadingDegrees() * 8192 / 360 + yaw.getData(MULTITURNANGLE) - yawSetpoint);
+//                yaw.setPosition(0);
 //                yaw.setPower(0); pitch.setPower(0);
             }
 

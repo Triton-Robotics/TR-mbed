@@ -139,6 +139,7 @@ public:
     static void getFeedback();
 
     __attribute__((unused)) __attribute__((unused)) static bool checkConnection(bool debug);
+    __attribute__((unused)) __attribute__((unused)) static bool isMotorConnected(short canID, CANHandler::CANBus bus, motorType mType);
 
     static void tickThread();
     static void feedbackThread();

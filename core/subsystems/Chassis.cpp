@@ -13,6 +13,11 @@ LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE), i2c(I2C_
 //    LF.setPositionPID(0.25, 0, 0.35);
 //    LF.pidPosition.setIntegralCap(30000);
 //    LF.useAbsEncoder = 0;
+
+    this->lfId= lfId;
+    this->rfId = rfId;
+    this->lbId  = lbId;
+    this->lbId = lbId;
     LF.useKalmanForPID = 1;
     RF.setSpeedPID(1.5, 0, 0);
     LB.setSpeedPID(1.5, 0, 0);
@@ -362,4 +367,15 @@ ChassisSpeeds Chassis::getSpeeds() {
         chassisKalman.getX(3),
         chassisKalman.getX(4)
     };
+}
+
+
+bool Chassis::allMotorsConnected() {
+    return (
+            (DJIMotor::isMotorConnected(lfId, CAN_BUS_TYPE, MOTOR_TYPE)) &&
+                    (DJIMotor::isMotorConnected(rfId, CAN_BUS_TYPE, MOTOR_TYPE)) &&
+                    (DJIMotor::isMotorConnected(lbId, CAN_BUS_TYPE, MOTOR_TYPE)) &&
+                    (DJIMotor::isMotorConnected(rbId, CAN_BUS_TYPE, MOTOR_TYPE))
+
+    );
 }

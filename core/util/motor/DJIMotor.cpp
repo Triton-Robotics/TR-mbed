@@ -395,6 +395,11 @@ void DJIMotor::getFeedback(){
     updateMultiTurnPosition();
 }
 
+__attribute__((unused)) bool DJIMotor::isMotorConnected(short canID, CANHandler::CANBus bus, motorType mType) {
+    return !motorsExist[bus][mType][canID] || us_ticker_read() / 1000 - lastCalled[bus][mType][canID] <= TIMEOUT_MS;
+}
+
+
 __attribute__((unused)) bool DJIMotor::checkConnection(bool debug){
     for(int bus = 0; bus < CAN_HANDLER_NUMBER; bus++)
         for(int c = 0; c < 4; c++)
