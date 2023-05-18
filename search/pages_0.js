@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['class_20constructor_3a_363',['Class Constructor:',['../md_core_util_motor_CANMotorDocumentation.html',1,'']]]
+  ['class_20constructor_3a_367',['Class Constructor:',['../md_core_util_motor_CANMotorDocumentation.html',1,'']]]
 ];
