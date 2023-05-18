@@ -6,6 +6,22 @@
 #include <queue>
 
 /**
+ * Priority levels. If indicator is on FATAL, will print statements only with FATAL indicator. 
+ * If indicator is on WARNING, will print statements with WARNING indicator or higher. 
+ * If indicator is on DEFAULT, will print statements with DEFAULT warning indicator or higher
+ * 
+ * Hierachy: FATAL --> WARNING --> DEFAULT
+ * 
+ * DEFAULT is the default mode.
+*/
+
+enum priorityLevels {
+    FATAL = 1,
+    WARNING = 2,
+    DEFAULT = 3,
+};
+
+/**
  * The TRMutex class defines the use of printing through Mutex and threading. This class contains 
  * methods that can be used in place of print statements for better efficiency.
 */
@@ -26,22 +42,6 @@ public:
     TRMutex(); 
 
     /**
-     * Priority levels. If indicator is on FATAL, will print statements only with FATAL indicator. 
-     * If indicator is on WARNING, will print statements with WARNING indicator or higher. 
-     * If indicator is on DEFAULT, will print statements with DEFAULT warning indicator or higher
-     * 
-     * Hierachy: FATAL --> WARNING --> DEFAULT
-     * 
-     * DEFAULT is the default mode.
-    */
-
-    enum priorityLevels {
-        FATAL = 1,
-        wARNING = 2,
-        DEFAULT = 3,
-    };
-
-    /**
      * int storing priorityIndicator
     */
 
@@ -59,7 +59,7 @@ public:
      * @param integer to print 
      * @param enum of print priority level
     */
-    void print(int integer, priorityLevels priority = DEFAULT);
+    void print(int integer, priorityLevels priority);
 
 
     /**
@@ -67,7 +67,7 @@ public:
      * @param string to print
      * @param enum of print priority level
     */
-    void print(char statement[], priorityLevels priority = DEFAULT);
+    void print(char statement[], priorityLevels priority);
 
     
     /**
@@ -75,7 +75,7 @@ public:
      * @param integer to print
      * @param enum of print priority level
     */
-    void println(int integer, priorityLevels priority = DEFAULT);
+    void println(int integer, priorityLevels priority);
 
 
     /**
@@ -83,7 +83,7 @@ public:
      * @param string to print
      * @param enum of print priority level
     */
-    void println(char statement[], priorityLevels priority = DEFAULT);
+    void println(char statement[], priorityLevels priority);
 
 
     /**
@@ -92,7 +92,7 @@ public:
      * @param enum of print priority level
      * @param arguments to be formatted  
     */
-    void printff(const char* format, priorityLevels priority = DEFAULT, ...);
+    void printff(const char* format, priorityLevels priority, ...);
 
 
     /**

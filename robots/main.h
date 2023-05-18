@@ -33,6 +33,45 @@
 
 //#include "robots/include/infantry.hpp"#include "communications/DJIRemote.h"
 
+TRMutex printer;
+
+void updatePriority(priorityLevels desiredLevel){
+    printer.updatePriority(desiredLevel);
+}
+
+void print(char statement[], priorityLevels priority = DEFAULT) {
+    printer.print(statement, priority);
+}
+
+void print(int integer, priorityLevels priority = DEFAULT) {
+    printer.print(integer, priority);
+}
+
+void printff(const char* format, ...) {
+    char temp[50];
+    va_list args;
+    va_start (args, format);
+    vsnprintf (temp, 50, format, args);
+    printer.print(temp, DEFAULT);
+    va_end (args);
+}
+
+void fprintff(priorityLevels priority, const char* format, ...) {
+    char temp[50];
+    va_list args;
+    va_start (args, format);
+    vsnprintf (temp, 50, format, args);
+    printer.print(temp, priority);
+    va_end (args);
+}
+
+void println(char statement[], priorityLevels priority = DEFAULT) {
+    printer.println(statement, priority);
+}
+
+void println(int integer, priorityLevels priority = DEFAULT) {
+    printer.println(integer, priority);
+}
 
 static DJIRemote myremote(PA_0, PA_1);
 static BufferedSerial referee(PC_10, PC_11, 115200); // Nucleo board: top left male pins.

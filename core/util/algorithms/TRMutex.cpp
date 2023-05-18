@@ -12,7 +12,7 @@ TRMutex::TRMutex() {
     priorityIndicator = DEFAULT;
 }
 
-void TRMutex::updatePriority(TRMutex::priorityLevels desiredLevel) {
+void TRMutex::updatePriority(priorityLevels desiredLevel) {
     priorityIndicator = desiredLevel;
 }
 
@@ -38,16 +38,17 @@ void TRMutex::print(int integer, priorityLevels priority) {
     }
 }
 
-void TRMutex::printff(const char* format, priorityLevels priority, ...) {
-    if (priority <= priorityIndicator) {
-        char temp[50];
-        va_list args;
-        va_start (args, format);
-        vsnprintf (temp, 50, format, args);
-        print(temp, priority);
-        va_end (args);
-    }
-}
+//duplicate from printff method in main.h
+// void TRMutex::printff(const char* format, priorityLevels priority, ...) {
+//     if (priority <= priorityIndicator) {
+//         char temp[50];
+//         va_list args;
+//         va_start (args, format);
+//         vsnprintf (temp, 50, format, args);
+//         print(temp, priority);
+//         va_end (args);
+//     }
+// }
 
 //------println 
 
