@@ -138,27 +138,73 @@ void DJIMotor::operator=(int value){
     setValue(value);
 }
 
+
+double DJIMotor::rpmToTicksPerSecond(double RPM) {
+    return 0;
+//    return RPM * TICKS_PER_ROTATION / (M3508_GEAR_RATIO * SECONDS_PER_MINUTE);
+}
+
 void DJIMotor::setOutput(){
-    unsigned long time = us_ticker_read() / 1000;
+    unsigned long time = us_ticker_read();
+//    printf("Time: %i\n", (int) time);
 
     if(mode == POW)
         powerOut = (int16_t)value;
 
-    else if(mode == SPD)
-        powerOut = (int16_t)pidSpeed.calculate((float)value, (float)getData(VELOCITY), float(time - lastTime));
+    else if(mode == SPD) {
+        powerOut = (int16_t) pidSpeed.calculate((float) value, (float) getData(VELOCITY), (double) (time - lastTime));
+    }
 
     else if(mode == POS)
-        if(!justPosError)
+        if (useKalmanForPID) {
+//            double z[2] = {0, 0};
+//            double angle = kalman.getX(0);
+//            z[1] = rpmToTicksPerSecond(getData(VELOCITY));
+//            z[0] = getData(MULTITURNANGLE);
+//            int MODULUS = 8192;
+////            int measured = getData(ANGLE);
+////            z[2] = (measured + angle - ((int) angle) % MODULUS);
+//            kalman.setDt((time - lastTime) / 1000000.0);
+//            kalman.step(z);
+////            double newAngle = kalman.getX(0) / 10000.0;
+//            double newAngle = getData(MULTITURNANGLE) / 19.0;
+////            printf("Angle: %i Velo: %i\n", (int) newAngle, (int) z[1]);
+////            printf("%i  %i  %i\n", (int) newAngle, (int) value, (int) z[1]);
+////            powerOut = 0;
+////            pidPosition.debug = true;
+//            powerOut = (int16_t) pidPosition.calculate((float) value, (float) newAngle,
+//                                                       (double) (time - lastTime));
+//
+//            double velocityAbsValue = kalman.getX(1);
+//            if (velocityAbsValue < 0) {
+//                velocityAbsValue = -velocityAbsValue;
+//            }
+//
+//            bool isMoving = velocityAbsValue >= 2000;
+//
+////            printf("Is moving: %i\n", (int) isMoving);
+//
+////            printf("VELO: %i\n", (int) z[1]);
+//
+////            if (!isMoving) {
+////                powerOut += pidPosition.sumError * pidPosition.kI;
+////            } else {
+////                pidPosition.sumError = 0;
+////            }
+////            printf("power: %i\n", (int) powerOut);
+////            printf("%i\t%i\t%i\t%i\n", (int) newAngle, (int) value, (int) z[1], (int) powerOut);
+        }
+        else if(!justPosError)
             if(!useAbsEncoder)
-                powerOut = (int16_t)pidSpeed.calculate(pidPosition.calculate((float)value, (float)getData(MULTITURNANGLE), (float)(time - lastTime)), (float)getData(VELOCITY), (float)(time - lastTime));
+                powerOut = (int16_t)pidSpeed.calculate(pidPosition.calculate((float)value, (float)getData(MULTITURNANGLE), (double)(time - lastTime)), (float)getData(VELOCITY), (float)(time - lastTime));
             else
-                powerOut = (int16_t)pidSpeed.calculate(pidPosition.calculate((float)value, (float)getData(ANGLE), (float)(time - lastTime)), (float)getData(VELOCITY), (float)(time - lastTime));
+                powerOut = (int16_t)pidSpeed.calculate(pidPosition.calculate((float)value, (float)getData(ANGLE), (double)(time - lastTime)), (float)getData(VELOCITY), (float)(time - lastTime));
 
         else
             if(!useAbsEncoder)
-                powerOut = (int16_t)pidPosition.calculate((float)value, (float)getData(MULTITURNANGLE), (float)(time - lastTime));
+                powerOut = (int16_t)pidPosition.calculate((float)value, (float)getData(MULTITURNANGLE), (double)(time - lastTime));
             else
-                powerOut = (int16_t)pidPosition.calculate((float)value, (float)getData(ANGLE), (float)(time - lastTime));
+                powerOut = (int16_t)pidPosition.calculate((float)value, (float)getData(ANGLE), (double)(time - lastTime));
 
     else if(mode == OFF)
         powerOut = 0;
@@ -173,6 +219,8 @@ void DJIMotor::setOutput(){
         powerOut = (int16_t) - outCap;
 
     lastTime = time;
+//    printf("Power out: %i\n", powerOut);
+//    ThisThread::sleep_for(1ms);
 }
 
 __attribute__((unused)) int DJIMotor::getPowerOut() const {
@@ -205,6 +253,8 @@ void DJIMotor::updateMultiTurnPosition() {
     int curAngle, lastAngle, deltaAngle, speed;
     DJIMotor *curMotor;
 
+    unsigned long time = us_ticker_read();
+
     for(int x = 0; x < CAN_HANDLER_NUMBER; x++)
         for (int y = 0; y < 3; y++)
             for (int z = 0; z < 4; z++)
@@ -215,7 +265,23 @@ void DJIMotor::updateMultiTurnPosition() {
                     lastAngle = curMotor->lastMotorAngle;
                     speed = curMotor->getData(VELOCITY);
                     deltaAngle = curAngle - lastAngle;
-
+                    double dt = 0;
+                    if (curMotor->lastIntegrationTime != -1) {
+                        dt = (double) (time - curMotor->lastIntegrationTime) / 1000.0;
+                    }
+                    curMotor->integratedAngle += (int) (speed * dt * 19 * 6 / 1000.0);
+                    int positiveDiff = curAngle - curMotor->integratedAngle % 8192;
+                    if (positiveDiff >= 0 && positiveDiff < 4096) {
+                        curMotor->integratedAngle += positiveDiff;
+                    } else if (positiveDiff < 0 && positiveDiff > -4096) {
+                        curMotor->integratedAngle += positiveDiff;
+                    } else if (positiveDiff >= 4096) {
+                        curMotor->integratedAngle += positiveDiff - 8192;
+                    } else if (positiveDiff <= -4096) {
+                        curMotor->integratedAngle += positiveDiff + 8192;
+                    } else {
+                        printf("Dont know what to do with this %i\n", positiveDiff);
+                    }
                     if (abs(speed) < 100)
                         if (curAngle > (8191 - Threshold) && lastAngle < Threshold)
                             curMotor->multiTurn -= deltaAngle - 8191;
@@ -225,16 +291,25 @@ void DJIMotor::updateMultiTurnPosition() {
                             curMotor->multiTurn += deltaAngle;
 
                     else
-                        if (speed < 0 && deltaAngle > 0)                                // neg skip
+                        if (speed < 0 && deltaAngle > 0)     {
+                            // neg skip
+//                            printf("positive overclock: %i\n", (int) speed);
                             curMotor->multiTurn += deltaAngle - 8191;
-                        else if (speed > 0 && deltaAngle < 0)                           // pos skip
+                        }
+                        else if (speed > 0 && deltaAngle < 0)     {
+//                            printf("negative overclock: %i\n", (int) speed);       // pos skip
                             curMotor->multiTurn += deltaAngle + 8191;
+                        }
                         else
                             curMotor->multiTurn += deltaAngle;
 
                     curMotor->lastMotorAngle = curAngle;
-                }
 
+                    curMotor->lastIntegrationTime = time;
+                    if (curMotor->printAngle) {
+                        printf("Integ multi: %i %i\n", curMotor->integratedAngle, curMotor->multiTurn);
+                    }
+                }
 }
 
 void DJIMotor::sendOneID(CANHandler::CANBus bus, short sendIDindex, bool debug){
@@ -277,7 +352,7 @@ void DJIMotor::getFeedback(){
         uint8_t recievedBytes[8] = {0,0,0,0,0,0,0,0};
         int msgID;
 
-        if(canHandlers[i]->getFeedback(&msgID,recievedBytes)) {
+        while(canHandlers[i]->getFeedback(&msgID,recievedBytes)) {
             int mNum = msgID - 0x201;
 
             // Debugging motorsExist array
@@ -312,7 +387,7 @@ void DJIMotor::getFeedback(){
     updateMultiTurnPosition();
 }
 
-bool DJIMotor::checkConnection(bool debug){
+__attribute__((unused)) bool DJIMotor::checkConnection(bool debug){
     for(int bus = 0; bus < CAN_HANDLER_NUMBER; bus++)
         for(int c = 0; c < 4; c++)
             for(int r = 0; r < 3; r++)

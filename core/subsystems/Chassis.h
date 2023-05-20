@@ -8,12 +8,21 @@
 #include <motor/DJIMotor.h>
 #include <communications/CANHandler.h>
 #include <peripherals/imu/BNO055.h>
+#include <subsystems/ChassisKalman.h>
+//#include <algorithms/WheelKalman.h>
+#include <algorithms/Pose2D.h>
+#include <algorithms/WheelSpeeds.h>
+#include <algorithms/ChassisSpeeds.h>
+
+#define CAN_BUS_TYPE CANHandler::CANBUS_1
+#define MOTOR_TYPE M3508
+#define INPUT_THRESHOLD 0.01
 
 #define I2C_SDA PB_9
 #define I2C_SCL PB_8
 #define IMU_RESET PA_8
 
-#define MAX_BEYBLADE_SPEED 1.5
+#define MAX_BEYBLADE_SPEED 1800
 #define BEYBLADE_ACCELERATION 0.05
 
 /**
@@ -44,32 +53,40 @@ public:
     };
 
     /**
+     * The driveMotors method drives each motor at a specific speed
+     * @param speeds The speeds in RPM to drive each motor at
+     */
+    void driveMotors(WheelSpeeds speeds);
+
+    /**
      * The driveXYR method is used to drive the chassis in a chassis relative manner.
      *
-     * @param yVelocityRPM Robot velocity in the y direction in RPM
-     * @param xVelocityRPM Robot velocity in the x direction in RPM
-     * @param rotationVelocityRPM robot rotation velocity in RPM
+     * @param speeds The robot-relative speeds (x, y, and rotation) in RPM
      */
-    void driveXYR(double yVelocityRPM, double xVelocityRPM, double rotationVelocityRPM);
+    void driveXYR(ChassisSpeeds speeds);
 
     /**
      * The driveFieldRelative method is used to drive the chassis in a field relative manner.
      *
-     * @param yVelocityRPM Robot velocity in the y direction in RPM
-     * @param xVelocityRPM Robot velocity in the x direction in RPM
-     * @param rotationVelocityRPM Robot rotation velocity in RPM
+     * @param speeds The field-relative speeds (x, y, and rotation) in RPM
      */
-    void driveFieldRelative(double yVelocityRPM, double xVelocityRPM, double rotationVelocityRPM);
+    void driveFieldRelative(ChassisSpeeds speeds);
+
+    /**
+     * The driveTurretRelative method is used to drive the chassis in a turret relative manner.
+     *
+     * @param speeds The turret-relative speeds (x, y, and rotation) in RPM
+     * @param turretAngleDegrees The CCW-positive angle of the turret in degrees
+     */
+    void driveTurretRelative(ChassisSpeeds speeds, double turretAngleDegrees);
 
     /**
      * The driveOffsetAngle method is used to drive the chassis with an offset angle.
      *
-     * @param yVelocityRPM Robot velocity in the y direction in RPM
-     * @param xVelocityRPM Robot velocity in the x direction in RPM
-     * @param rotationVelocityRPM Robot rotation velocity in RPM
+     * @param speeds The speeds (x, y, and rotation) in RPM
      * @param angleOffset The angle offset in radians
      */
-    void driveOffsetAngle(double yVelocityRPM, double xVelocityRPM, double rotationVelocityRPM, double angleOffset);
+    void driveOffsetAngle(ChassisSpeeds speeds, double angleOffset);
 
     /**
      * The driveAngle method is used to drive the chassis with an absolute angle.
@@ -78,6 +95,11 @@ public:
      * @param speedRPM Speed in RPM
      * @param rotationVelcotiyRPM Robot rotation velocity in RPM
      */
+
+    void driveXYRPower(double ref_chassis_power, double lX, double lY, double rX, double time_diff);
+    void driveFieldRelativePower(double ref_chassis_power, double time_diff, double yVelocityRPM, double xVelocityRPM, double rotationVelocityRPM);
+    void driveOffsetAnglePower(double ref_chassis_power, double time_diff, double yVelocityRPM, double xVelocityRPM, double rotationVelocityRPM, double angleOffset);
+
     void driveAngle(double angleRadians, double speedRPM, double rotationVelcotiyRPM);
 
     /**
@@ -85,9 +107,10 @@ public:
      *
      * @param xVelocityRPM The x velocity in RPM
      * @param yVelocityRPM The y velocity in RPM
+     * @param turretAngleDegrees The turret's angle in degrees, used to drive turret relative
      * @param switchDirections Whether or not to switch directions
      */
-    void beyblade(double xVelocityRPM, double yVelocityRPM, bool switchDirections);
+    void beyblade(double xVelocityRPM, double yVelocityRPM, double turretAngleDegrees, bool switchDirections);
 
     /**
      * A helper method to find a DJIMotor object from an index.
@@ -117,11 +140,50 @@ public:
     void initializeImu();
 
     /**
+     * A method that should be run every main loop to update the Chassis's estimated position
+     */
+    void periodic();
+
+    /**
+     * Prints the current angles of the Chassis's motors, used for debugging
+     */
+    void printMotorAngle();
+
+    /**
+     * Helper method to convert an angle from degrees to radians
+     * @param degrees An angle measurement in degrees
+     * @return The angle converted to radians
+     */
+    double degreesToRadians(double degrees);
+
+    /**
+     * Gets the IMU's current angle reading in degrees
+     * @return The IMU's current angle reading in degrees
+     */
+    int getHeadingDegrees();
+
+    /**
+     * Gets the chassis's current 2D position
+     * @return The chassis's current 2D position
+     */
+    Pose2D getPose();
+
+    /**
+     * Gets the chassis's current speeds
+     * @return The chassis's current speeds
+     */
+    ChassisSpeeds getSpeeds();
+    /**
      * A helper method to read/update the IMU.
      */
     void readImu();
-    
+
     int8_t isInverted[4];
+
+    double prevVel;
+
+    int testData[300][4];
+    int testDataIndex = 0;
 
 private:
     DJIMotor LF, RF, LB, RB;
@@ -135,10 +197,20 @@ private:
 
     double rpmToTicksPerSecond(double RPM);
     double ticksPerSecondToRPM(double ticksPerSecond);
+    double ticksPerSecondToInchesPerSecond(double ticksPerSecond);
+    double rpmToInchesPerSecond(double RPM);
+
+    WheelSpeeds chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds);
 
     void setMotorPower(int index, double power);
     void setMotorSpeedRPM(int index, double speed);
     void setMotorSpeedTicksPerSecond(int index, double speed);
+
+    double getMotorSpeedRPM(int index);
+
+    ChassisKalman chassisKalman;
+    double testAngle;
+    int lastTimeMs;
 };
 
 #endif //TR_EMBEDDED_CHASSIS_H

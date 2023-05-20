@@ -4,6 +4,7 @@ projectfiles
 *.py*
 .idea/
 .vscode
+venv
 
 BUILD
 mbed-os/
@@ -14,3 +15,5 @@ cmake-build-debug
 docs/
 docs/html
 docs/latex
+
+.DS_STORE

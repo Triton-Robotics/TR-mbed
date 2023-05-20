@@ -1,14 +1,17 @@
 #include "mbed.h"
 
-
+#ifndef DJI_REMOTE
+#define DJI_REMOTE
 /**
  * A unique UART handler that uses timing in leu of DBUS communication (mbed does not
  * support DBUS) to interact with the DR16 receiver.
  */
 class Remote
+
 {
 public:
     Remote(PinName dbus);
+
 
     /**
      * Specifies a particular joystick.
@@ -36,9 +39,9 @@ public:
     enum class SwitchState
     {
         UNKNOWN,
-        UP,
+        DOWN,
         MID,
-        DOWN
+        UP
     };
 
     /**
@@ -81,12 +84,18 @@ public:
      *      second or so of delay from disconnecting the remote to this function saying
      *      the remote is disconnected.
      */
-    bool isConnected() const;
+    __attribute__((unused)) bool isConnected() const;
 
     /**
      * @return The value of the given channel, between [-1, 1].
      */
     float getChannel(Channel ch) const;
+
+    int16_t getChannelInt(Channel ch) const;
+
+    void printAxisData() const;
+
+    void dumpInfo() const;
 
     /**
      * @return The state of the given switch.
@@ -133,6 +142,12 @@ public:
      */
     uint32_t getUpdateCounter() const;
 
+    bool badData(const uint8_t rxBuffer[]);
+
+    long badDataChainNumber = 0;
+    long goodDataChainNumber = 0;
+    bool unfiltered = false;
+
 private:
 
     BufferedSerial receiver;
@@ -140,7 +155,7 @@ private:
 
     static const int REMOTE_BUF_LEN = 18;              /// Length of the remote recieve buffer.
     static const int REMOTE_READ_TIMEOUT = 6;          /// Timeout delay between valid packets.
-    static const int REMOTE_DISCONNECT_TIMEOUT = 100;  /// Timeout delay for remote disconnect.
+    static const int REMOTE_DISCONNECT_TIMEOUT = 200;  /// Timeout delay for remote disconnect.
     static const int REMOTE_INT_PRI = 12;              /// Interrupt priority.
     static constexpr float STICK_MAX_VALUE = 660.0f;   /// Max value received by one of the sticks.
 
@@ -189,4 +204,5 @@ private:
     /// Resets the current remote info.
     void reset();
 };  // class Remote
+#endif
 

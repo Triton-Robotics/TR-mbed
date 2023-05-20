@@ -76,6 +76,8 @@ You may need to resolve the mbed-os.lib reference. You can do this by performing
 
 - It will re-install mbed-os, and then you can paste your main code back in.
 
+"No space left on device" - Repeatedly try resetting the nucleo with the reset button, and unplugging/replugging the cord to your computer, and it usually works after a few times of that.
+
 ## Functionality Issues
 
 No Serial
@@ -85,3 +87,4 @@ No Serial
 - All Platforms: Check if 5V wire from old devboard is attached. Often external power will prevent the nucleo from power cycling and stop comms.
 
 no remote - flip wires
+

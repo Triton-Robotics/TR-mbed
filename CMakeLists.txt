@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.19.0 FATAL_ERROR)
 
-
 # User variables, feel free to change as necessary
 set(MBED_PLATFORM NUCLEO_F446RE)
 set(MBED_TOOLCHAIN GCC_ARM)
