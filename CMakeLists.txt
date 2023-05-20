@@ -7,6 +7,7 @@ set(DISABLE_WARNINGS ON)
 
 # Check if mbed-os is downloaded, if not download it
 if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/mbed-os)
+    message("Beginning mbed-os download...")
     execute_process(
             COMMAND mbed-tools deploy
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
@@ -14,20 +15,25 @@ if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/mbed-os)
 endif ()
 
 # Setup CMake for the target device
-execute_process(
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        COMMAND mbed-tools configure -m ${MBED_PLATFORM} -t ${MBED_TOOLCHAIN}
-)
+if (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/mbed_config.cmake)
+    message("Configuring mbed-os for ${MBED_PLATFORM} with ${MBED_TOOLCHAIN}...")
 
-# Manually move mbed config output to user specified build directory
-# ??? This should be a CLI option for mbed-tools, smh
-execute_process(
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        COMMAND mv cmake_build/${MBED_PLATFORM}/develop/${MBED_TOOLCHAIN}/mbed_config.cmake ${CMAKE_CURRENT_BINARY_DIR}
-        COMMAND mv cmake_build/${MBED_PLATFORM}/develop/${MBED_TOOLCHAIN}/.mbedignore ${CMAKE_CURRENT_BINARY_DIR}
-)
-# Remove old build directory that mbed generates
-file(REMOVE_RECURSE ${CMAKE_CURRENT_SOURCE_DIR}/cmake_build)
+    execute_process(
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+            COMMAND mbed-tools configure -m ${MBED_PLATFORM} -t ${MBED_TOOLCHAIN}
+    )
+
+    # Manually move mbed config output to user specified build directory
+    # ??? This should be a CLI option for mbed-tools, smh
+    execute_process(
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+            COMMAND mv cmake_build/${MBED_PLATFORM}/develop/${MBED_TOOLCHAIN}/mbed_config.cmake ${CMAKE_CURRENT_BINARY_DIR}
+            COMMAND mv cmake_build/${MBED_PLATFORM}/develop/${MBED_TOOLCHAIN}/.mbedignore ${CMAKE_CURRENT_BINARY_DIR}
+    )
+    # Remove old build directory that mbed generates
+    file(REMOVE_RECURSE ${CMAKE_CURRENT_SOURCE_DIR}/cmake_build)
+endif ()
+
 
 # mbed variables
 set(MBED_PATH ${CMAKE_CURRENT_SOURCE_DIR}/mbed-os CACHE INTERNAL "")

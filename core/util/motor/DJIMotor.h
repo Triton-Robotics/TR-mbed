@@ -16,7 +16,6 @@
 #include "algorithms/PID.h"
 #include "communications/CANHandler.h"
 #include "helperFunctions.hpp"
-#include "algorithms/speedtocurrent.hpp"
 //#include "algorithms/WheelKalman.h"
 #include <cmath>
 

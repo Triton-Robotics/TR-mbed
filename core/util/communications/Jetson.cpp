@@ -50,12 +50,12 @@ void Jetson::read()
     // Read next byte if available and more needed for the current packet
 
     while (jetson.read(&data, 1) && currentBufferIndex < JETSON_BUF_LEN) {
-        printf("%x \t", data);
+        //printf("%x \t", data);
         rxBuffer[currentBufferIndex] = data;
         currentBufferIndex++;
         lastRead = std::chrono::duration_cast<std::chrono::milliseconds>(readTimer.elapsed_time()).count();
     }
-    printf("\n");
+    //printf("\n");
 
     // Check read timeout
     if (std::chrono::duration_cast<std::chrono::milliseconds>(readTimer.elapsed_time()).count() - lastRead > JETSON_READ_RATE) {
