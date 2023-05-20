@@ -7,6 +7,18 @@
                                                    /_/                            
 ```
 
+---
+
+| Table of Contents                   |
+|-------------------------------------|
+| [Prerequisites](#prerequisites)     |
+| [Setup](#setup)                     |
+| [Flashing](#flashing-stm32)         |
+| [Troubleshooting](#troubleshooting) |
+| [Documentation](#documentation)     |
+
+---
+
 ## Prerequisites
 
 **We strongly recommend using Linux (Ubuntu or any other flavor) for development.** If this is not possible,
@@ -66,15 +78,14 @@ openocd -f board/st_nucleo_f4.cfg -c "program cmake-build-debug/robots/TestBench
 mbed-tools sterm -b 115200
 ```
 
-If OpenOCD fails with the error `Error: libusb_open() failed with LIBUSB_ERROR_ACCESS`, you may need to add a `udev` rule
-to allow OpenOCD to access the ST-Link programmer:
+---
 
-```shell
-cd /etc/udev/rules.d
+## Troubleshooting
 
-# Download openocd udev rules
-sudo wget https://raw.githubusercontent.com/openocd-org/openocd/master/contrib/60-openocd.rules
+See the [Troubleshooting](.md/TROUBLESHOOTING.md) guide for common issues and solutions.
 
-# Reload udev rules
-sudo udevadm control --reload
-```
+--- 
+
+## Documentation
+
+See our [generated doxygen](https://triton-robotics.github.io/TR-mbed/).

@@ -15,7 +15,6 @@ sudo apt install                  \
   ninja-build
 ```
 
-
 ### mbed-tools & Dependencies
 ```shell
 pip install   \
