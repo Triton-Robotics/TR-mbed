@@ -72,7 +72,23 @@ $(function() {
 <div class="line"> / / / _, _/  /_____/  / / / / / / /_/ /  __/ /_/ /  / /   / __// /_/ / __/___/ / </div>
 <div class="line">/_/ /_/ |_|           /_/ /_/ /_/_.___/\___/\__,_/  / /   /____/\____/____/____/  </div>
 <div class="line">                                                   /_/                            </div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md0"></a>
+</div><!-- fragment --><hr  />
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Table of Contents    </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a href="#prerequisites">Prerequisites</a>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a href="#setup">Setup</a>    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a href="#flashing-stm32">Flashing</a>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a href="#troubleshooting">Troubleshooting</a>    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a href="#documentation">Documentation</a>   </td></tr>
+</table>
+<hr  />
+<h2><a class="anchor" id="autotoc_md2"></a>
 Prerequisites</h2>
 <p><b>We strongly recommend using Linux (Ubuntu or any other flavor) for development.</b> If this is not possible, we've created setup guides for the major operating systems below:</p>
 <ul>
@@ -82,7 +98,7 @@ Prerequisites</h2>
 <li>/home/runner/work/TR-mbed/TR-mbed/.md/os/macos.md "MacOS"</li>
 </ul>
 <hr  />
-<h2><a class="anchor" id="autotoc_md2"></a>
+<h2><a class="anchor" id="autotoc_md4"></a>
 Setup</h2>
 <ol type="1">
 <li>Clone this repo:</li>
@@ -101,7 +117,7 @@ Setup</h2>
 <div class="fragment"><div class="line">cmake --build cmake-build-debug --target TR-TestBench -j $(nproc)</div>
 </div><!-- fragment --><p>Viable targets for build are: <code>TR-Engineer</code>, <code>TR-Infantry</code>, <code>TR-Sentry</code>, <code>TR-Hero</code>, and <code>TR-TestBench</code></p>
 <hr  />
-<h2><a class="anchor" id="autotoc_md4"></a>
+<h2><a class="anchor" id="autotoc_md6"></a>
 Flashing STM32</h2>
 <ol type="1">
 <li><p class="startli">Locate the generated executable:</p>
@@ -117,15 +133,15 @@ Flashing STM32</h2>
 <li>View serial output:</li>
 </ol>
 <div class="fragment"><div class="line">mbed-tools sterm -b 115200</div>
-</div><!-- fragment --><p>If OpenOCD fails with the error <code>Error: libusb_open() failed with LIBUSB_ERROR_ACCESS</code>, you may need to add a <code>udev</code> rule to allow OpenOCD to access the ST-Link programmer:</p>
-<div class="fragment"><div class="line">cd /etc/udev/rules.d</div>
-<div class="line"> </div>
-<div class="line"># Download openocd udev rules</div>
-<div class="line">sudo wget https://raw.githubusercontent.com/openocd-org/openocd/master/contrib/60-openocd.rules</div>
-<div class="line"> </div>
-<div class="line"># Reload udev rules</div>
-<div class="line">sudo udevadm control --reload</div>
-</div><!-- fragment --> </div></div><!-- PageDoc -->
+</div><!-- fragment --><hr  />
+<h2><a class="anchor" id="autotoc_md8"></a>
+Troubleshooting</h2>
+<p>See the /home/runner/work/TR-mbed/TR-mbed/.md/TROUBLESHOOTING.md "Troubleshooting" guide for common issues and solutions.</p>
+<hr  />
+<h2><a class="anchor" id="autotoc_md10"></a>
+Documentation</h2>
+<p>See our <a href="https://triton-robotics.github.io/TR-mbed/">generated doxygen</a>. </p>
+</div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
