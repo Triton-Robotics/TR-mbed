@@ -18,7 +18,7 @@
 #define MOTOR_TYPE M3508
 #define INPUT_THRESHOLD 0.01
 
-#define I2C_SDA PB_9
+#define I2C_SDA PB_7
 #define I2C_SCL PB_8
 #define IMU_RESET PA_8
 
@@ -178,6 +178,8 @@ public:
      */
     void readImu();
 
+    bool allMotorsConnected();
+
     int8_t isInverted[4];
 
     double prevVel;
@@ -211,6 +213,11 @@ private:
     ChassisKalman chassisKalman;
     double testAngle;
     int lastTimeMs;
+
+    short lfId;
+    short rfId;
+    short lbId;
+    short rbId;
 };
 
 #endif //TR_EMBEDDED_CHASSIS_H

@@ -58,6 +58,14 @@ DJIMotor::DJIMotor(short canID, CANHandler::CANBus bus, motorType mType){
         pidPosition.setPID(defautM3508PosSettings[0],defautM3508PosSettings[1],defautM3508PosSettings[2]);
         pidPosition.setOutputCap(defautM3508PosSettings[3]);
         pidPosition.setIntegralCap(defautM3508PosSettings[4]);
+    }else if(type == M3508_FLYWHEEL){
+        pidSpeed.setPID(defautM3508FlywheelSpeedSettings[0],defautM3508FlywheelSpeedSettings[1],defautM3508FlywheelSpeedSettings[2]);
+        pidSpeed.setOutputCap(defautM3508FlywheelSpeedSettings[3]);
+        pidSpeed.setIntegralCap(defautM3508FlywheelSpeedSettings[4]);
+
+        pidPosition.setPID(defautM3508PosSettings[0],defautM3508PosSettings[1],defautM3508PosSettings[2]);
+        pidPosition.setOutputCap(defautM3508PosSettings[3]);
+        pidPosition.setIntegralCap(defautM3508PosSettings[4]);
     }
 
     if(!motorsExist [bus][motorNumber / 4][motorNumber % 4]){
@@ -386,6 +394,11 @@ void DJIMotor::getFeedback(){
     }
     updateMultiTurnPosition();
 }
+
+__attribute__((unused)) bool DJIMotor::isMotorConnected(short canID, CANHandler::CANBus bus, motorType mType) {
+    return !motorsExist[bus][mType][canID] || us_ticker_read() / 1000 - lastCalled[bus][mType][canID] <= TIMEOUT_MS;
+}
+
 
 __attribute__((unused)) bool DJIMotor::checkConnection(bool debug){
     for(int bus = 0; bus < CAN_HANDLER_NUMBER; bus++)

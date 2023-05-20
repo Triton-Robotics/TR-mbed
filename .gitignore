@@ -17,3 +17,4 @@ docs/html
 docs/latex
 
 .DS_STORE
+*.ps1

@@ -142,8 +142,6 @@ public:
      */
     uint32_t getUpdateCounter() const;
 
-    bool badData(const uint8_t rxBuffer[]);
-
     long badDataChainNumber = 0;
     long goodDataChainNumber = 0;
     bool unfiltered = false;
@@ -182,6 +180,10 @@ private:
     };
 
     RemoteInfo remote;
+
+    static void switchToState(RemoteInfo *remote);
+
+    bool badData(const uint8_t rxBuffer[], RemoteInfo *remote);
 
     /// Remote connection state.
     bool connected = false;
