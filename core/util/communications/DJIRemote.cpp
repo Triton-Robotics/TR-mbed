@@ -167,7 +167,7 @@ bool Remote::badData(const uint8_t rxBuffer[], RemoteInfo *remote){
     int16_t lv = (((int16_t) rxBuffer[4] >> 1) | ((int16_t) rxBuffer[5] << 7)) & 0x07FF;
 
     if(unfiltered)
-        printf("%d %d %d %d %d\n", rh, rv, lh, lv);
+        printf("%d %d %d %d\n", rh, rv, lh, lv);
 
     if(!(bool(SwitchState(lSwitch)) and bool(SwitchState(rSwitch))))
         return true;
