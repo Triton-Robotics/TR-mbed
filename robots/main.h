@@ -17,7 +17,6 @@
 #include "motor/DJIMotor.h"
 
 #include "communications/CANHandler.h"
-#include "communications/djiremoteuart.h"
 #include "communications/DJIRemote.h"
 #include "communications/SerialCommunication.h"
 #include "communications/referee/ref_serial.h"
