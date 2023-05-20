@@ -30,7 +30,7 @@ private:
 
     int currentBufferIndex = 0;
 
-    atomic<float> cvX = 0, cvY = 0, cvZ = 0;
+    atomic<float> cvX, cvY, cvZ;
 
     void parse();
     void clear();
@@ -56,7 +56,7 @@ public:
     void read();
     float get(cv axis);
 
-    atomic<JetsonStatus> status = DISCONNECTED;
+    atomic<JetsonStatus> status;
 };
 
 

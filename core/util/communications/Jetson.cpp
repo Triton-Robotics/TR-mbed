@@ -33,6 +33,9 @@ Jetson::Jetson(PinName tx, PinName rx) : jetson(tx, rx, 115200) {
     jetson.set_blocking(false);
     readTimer.start();
     printf("Jetson init\n");
+
+    cvX = 0; cvY = 0; cvZ = 0;
+    status = DISCONNECTED;
 }
 
 void Jetson::read()
