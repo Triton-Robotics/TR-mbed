@@ -74,35 +74,23 @@ $(function() {
 <div class="line">                                                   /_/                            </div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md0"></a>
 Prerequisites</h2>
-<p>The following setup guide is written assuming Ubuntu. This setup guide is applicable to other operating systems, but may take additional setup (i.e. WSL for Windows, or HomeBrew for MacOS).</p>
-<div class="fragment"><div class="line">sudo apt install                  \</div>
-<div class="line">  build-essential                 \</div>
-<div class="line">  cmake                           \</div>
-<div class="line">  python3-dev                     \</div>
-<div class="line">  python3-pip                     \</div>
-<div class="line">  gcc-arm-none-eabi               \</div>
-<div class="line">  libnewlib-arm-none-eabi         \</div>
-<div class="line">  libstdc++-arm-none-eabi-newlib  \</div>
-<div class="line">  openocd                         \</div>
-<div class="line">  ninja-build</div>
-</div><!-- fragment --><p>Use pip to install <code>mbed</code> and various dependencies:</p>
-<div class="fragment"><div class="line">pip install   \</div>
-<div class="line">  mbed-tools  \</div>
-<div class="line">  prettytable \</div>
-<div class="line">  future      \</div>
-<div class="line">  jinja2      \</div>
-<div class="line">  intelhex</div>
-</div><!-- fragment --><p>In <code>~/.bashrc</code> (or <code>~/.bash_profile</code>), append the following to enable <code>mbed-tools</code> via command line:</p>
-<div class="fragment"><div class="line">export PATH=&quot;${PATH}:/home/${USER}/.local/bin&quot;</div>
-</div><!-- fragment --><hr  />
- <h2><a class="anchor" id="autotoc_md2"></a>
+<p><b>We strongly recommend using Linux (Ubuntu or any other flavor) for development.</b> If this is not possible, we've created setup guides for the major operating systems below:</p>
+<ul>
+<li>/home/runner/work/TR-mbed/TR-mbed/.md/os/linux.md "Linux"</li>
+<li>/home/runner/work/TR-mbed/TR-mbed/.md/os/windows.md "Windows"</li>
+<li>/home/runner/work/TR-mbed/TR-mbed/.md/os/wsl.md "Windows Subsystem for Linux (WSL)"</li>
+<li>/home/runner/work/TR-mbed/TR-mbed/.md/os/macos.md "MacOS"</li>
+</ul>
+<hr  />
+<h2><a class="anchor" id="autotoc_md2"></a>
 Setup</h2>
 <ol type="1">
 <li>Clone this repo:</li>
 </ol>
 <div class="fragment"><div class="line">git clone https://github.com/Triton-Robotics/TR-mbed.git</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md3"></a>
-At this point, you may choose to diverge from the CLI setup guide and set up an IDE instead. Check out the setup instructions for @ref /home/runner/work/TR-mbed/TR-mbed/.md/clion.md "CLion" or @ref /home/runner/work/TR-mbed/TR-mbed/.md/vscode.md "VSCode".</h3>
+</div><!-- fragment --><blockquote class="doxtable">
+<p>At this point, you may choose to diverge from the CLI setup guide and set up an IDE instead. Check out the setup instructions for /home/runner/work/TR-mbed/TR-mbed/.md/ide/clion.md "CLion" or /home/runner/work/TR-mbed/TR-mbed/.md/ide/vscode.md "VSCode". </p>
+</blockquote>
 <ol type="1">
 <li>Configure <code>CMake</code> project. This should only be done once per project, or after editing any <code>CMakeLists.txt</code>:</li>
 </ol>
@@ -112,18 +100,23 @@ At this point, you may choose to diverge from the CLI setup guide and set up an 
 </ol>
 <div class="fragment"><div class="line">cmake --build cmake-build-debug --target TR-TestBench -j $(nproc)</div>
 </div><!-- fragment --><p>Viable targets for build are: <code>TR-Engineer</code>, <code>TR-Infantry</code>, <code>TR-Sentry</code>, <code>TR-Hero</code>, and <code>TR-TestBench</code></p>
+<hr  />
+<h2><a class="anchor" id="autotoc_md4"></a>
+Flashing STM32</h2>
 <ol type="1">
 <li><p class="startli">Locate the generated executable:</p>
 <p class="startli">eg. The built executable for TestBench will be present in <code>cmake-build-debug/robots/TestBench/TR-TestBench.elf</code></p>
 </li>
-<li>Flash the executable to the target device and open a serial terminal:<ol type="a">
-<li>For flashing device in WSL, see the <a href="#appendix-wsl-steps">Appendix</a></li>
-</ol>
-</li>
+<li>Flash the executable to the target device:</li>
 </ol>
 <div class="fragment"><div class="line">openocd -f board/st_nucleo_f4.cfg -c &quot;program cmake-build-debug/robots/TestBench/TR-TestBench.elf verify reset exit&quot;</div>
-<div class="line"> </div>
-<div class="line">mbed-tools sterm -b 115200</div>
+</div><!-- fragment --><blockquote class="doxtable">
+<p>For flashing device in WSL, see the <a href=".md/os/wsl.md#flashing-stm32">WSL guide</a>. </p>
+</blockquote>
+<ol type="1">
+<li>View serial output:</li>
+</ol>
+<div class="fragment"><div class="line">mbed-tools sterm -b 115200</div>
 </div><!-- fragment --><p>If OpenOCD fails with the error <code>Error: libusb_open() failed with LIBUSB_ERROR_ACCESS</code>, you may need to add a <code>udev</code> rule to allow OpenOCD to access the ST-Link programmer:</p>
 <div class="fragment"><div class="line">cd /etc/udev/rules.d</div>
 <div class="line"> </div>
@@ -132,37 +125,7 @@ At this point, you may choose to diverge from the CLI setup guide and set up an 
 <div class="line"> </div>
 <div class="line"># Reload udev rules</div>
 <div class="line">sudo udevadm control --reload</div>
-</div><!-- fragment --><hr  />
-<h2><a class="anchor" id="autotoc_md5"></a>
-Appendix: WSL Steps</h2>
-<p>Author: Michael Owens</p>
-<p>Flashing is where WSL begins to diverge from normal Linux. We have to pass through the USB device to WSL and then make sure we have the right installer.</p>
-<ol type="1">
-<li>Follow <a href="https://learn.microsoft.com/en-us/windows/wsl/connect-usb#attach-a-usb-device">this guide</a> to install <code>usbipd-win</code></li>
-<li>Start windows powershell / windows terminal (not cmd, don't be cringe) and try running <code>usbipd list</code>. The output should look something like this:</li>
-</ol>
-<div class="fragment"><div class="line">PS C:\Users\legor&gt; usbipd list</div>
-<div class="line">Connected:</div>
-<div class="line">BUSID  VID:PID    DEVICE                                                        STATE</div>
-<div class="line">2-3    0b05:19b6  USB Input Device                                              Not shared</div>
-<div class="line">3-2    0483:374b  ST-Link Debug, USB Mass Storage Device, USB Serial Device...  Attached</div>
-<div class="line">3-3    13d3:56eb  USB2.0 HD UVC WebCam, USB2.0 IR UVC WebCam, Camera DFU De...  Not shared</div>
-<div class="line">4-1    0489:e0e2  MediaTek Bluetooth Adapter                                    Not shared</div>
-</div><!-- fragment --><ol type="1">
-<li>We can see here that the bus id of the st link programmer for the board is <code>3-2</code>, so we should run <code>usbipd wsl attach --busid 3-2</code> (replace the busid with yours)</li>
-<li>Finally, open your WSL shell. Run <code>lsusb</code>, the output should look like this, and now we know WSL has the device connected.</li>
-</ol>
-<div class="fragment"><div class="line">ubuntu@my-pc:~/TR-mbed6$ lsusb</div>
-<div class="line">Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub</div>
-<div class="line">Bus 001 Device 003: ID 0483:374b STMicroelectronics ST-LINK/V2.1</div>
-<div class="line">Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub</div>
-</div><!-- fragment --><ol type="1">
-<li>Flash the board with OpenOCD:</li>
-</ol>
-<div class="fragment"><div class="line">sudo openocd -f board/st_nucleo_f4.cfg -c &quot;program cmake-build-debug/robots/Sentry/TR-TestBench.elf verify reset exit&quot;</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md6"></a>
-autotoc_md6</h3>
-</div></div><!-- PageDoc -->
+</div><!-- fragment --> </div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

@@ -2,12 +2,11 @@ var searchData=
 [
   ['degreestoradians_24',['degreesToRadians',['../classChassis.html#a8e2b350720dfa6897ef75f0e0e368436',1,'Chassis']]],
   ['djimotor_25',['DJIMotor',['../classDJIMotor.html',1,'']]],
-  ['djiremote_26',['DJIRemote',['../classDJIRemote.html',1,'DJIRemote'],['../classDJIRemote.html#aa603889aaa4550867b96fa12c02f10ce',1,'DJIRemote::DJIRemote()']]],
-  ['drivefieldrelative_27',['driveFieldRelative',['../classChassis.html#a22231af9f43825063ac800ae186b6970',1,'Chassis']]],
-  ['drivemotors_28',['driveMotors',['../classChassis.html#ac944a5794d05e1dbd57cfd6735ecdc60',1,'Chassis']]],
-  ['driveoffsetangle_29',['driveOffsetAngle',['../classChassis.html#a96455bb04cbf91df5f817b2a73843ff7',1,'Chassis']]],
-  ['driveoffsetanglepower_30',['driveOffsetAnglePower',['../classChassis.html#ae6b58477663ddb64f49dd5ca260a5eb3',1,'Chassis']]],
-  ['driveturretrelative_31',['driveTurretRelative',['../classChassis.html#ad39d1c1c41a0053331eff67b0f8db595',1,'Chassis']]],
-  ['drivexyr_32',['driveXYR',['../classChassis.html#a964c30630d2724e1e4f1774d0df305cc',1,'Chassis']]],
-  ['drivexyrpower_33',['driveXYRPower',['../classChassis.html#a3740dfa7985ecf0b39dc7e64f494a56f',1,'Chassis']]]
+  ['drivefieldrelative_26',['driveFieldRelative',['../classChassis.html#a22231af9f43825063ac800ae186b6970',1,'Chassis']]],
+  ['drivemotors_27',['driveMotors',['../classChassis.html#ac944a5794d05e1dbd57cfd6735ecdc60',1,'Chassis']]],
+  ['driveoffsetangle_28',['driveOffsetAngle',['../classChassis.html#a96455bb04cbf91df5f817b2a73843ff7',1,'Chassis']]],
+  ['driveoffsetanglepower_29',['driveOffsetAnglePower',['../classChassis.html#ae6b58477663ddb64f49dd5ca260a5eb3',1,'Chassis']]],
+  ['driveturretrelative_30',['driveTurretRelative',['../classChassis.html#ad39d1c1c41a0053331eff67b0f8db595',1,'Chassis']]],
+  ['drivexyr_31',['driveXYR',['../classChassis.html#a964c30630d2724e1e4f1774d0df305cc',1,'Chassis']]],
+  ['drivexyrpower_32',['driveXYRPower',['../classChassis.html#a3740dfa7985ecf0b39dc7e64f494a56f',1,'Chassis']]]
 ];
