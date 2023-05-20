@@ -63,59 +63,48 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
-<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
+<a href="#pub-types">Public Types</a> &#124;
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classJetson-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">Jetson Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
-Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a88fb4665341a792469c94071b326a358"><td class="memItemLeft" align="right" valign="top"><a id="a88fb4665341a792469c94071b326a358"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> ()</td></tr>
-<tr class="separator:a88fb4665341a792469c94071b326a358"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0a294d70b81d47e261cb563ea4b4fc3f"><td class="memItemLeft" align="right" valign="top"><a id="a0a294d70b81d47e261cb563ea4b4fc3f"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>free</b> ()</td></tr>
-<tr class="separator:a0a294d70b81d47e261cb563ea4b4fc3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa09cdf8d160b676e22b2372b92306b17"><td class="memItemLeft" align="right" valign="top"><a id="aa09cdf8d160b676e22b2372b92306b17"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>update</b> (time_t rel_time)</td></tr>
-<tr class="separator:aa09cdf8d160b676e22b2372b92306b17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:aa63103bffe77a5f527da3a3d8eb63627"><td class="memItemLeft" align="right" valign="top"><a id="aa63103bffe77a5f527da3a3d8eb63627"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>cv</b> { <b>X</b>
+, <b>Y</b>
+, <b>Z</b>
+ }</td></tr>
+<tr class="separator:aa63103bffe77a5f527da3a3d8eb63627"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0da6dd80b8c8c3af02585f4fdaf49c49"><td class="memItemLeft" align="right" valign="top"><a id="a0da6dd80b8c8c3af02585f4fdaf49c49"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>JetsonStatus</b> { <b>CONNECTED</b>
+, <b>DISCONNECTED</b>
+ }</td></tr>
+<tr class="separator:a0da6dd80b8c8c3af02585f4fdaf49c49"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
-Static Public Attributes</h2></td></tr>
-<tr class="memitem:a6334029a24a7d91d622bed08447e8a66"><td class="memItemLeft" align="right" valign="top"><a id="a6334029a24a7d91d622bed08447e8a66"></a>
-static rclc_executor_t&#160;</td><td class="memItemRight" valign="bottom"><b>executor</b></td></tr>
-<tr class="separator:a6334029a24a7d91d622bed08447e8a66"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6c3aa815f2339878940e9167014ed2e3"><td class="memItemLeft" align="right" valign="top"><a id="a6c3aa815f2339878940e9167014ed2e3"></a>
-static rcl_allocator_t&#160;</td><td class="memItemRight" valign="bottom"><b>allocator</b> = rcl_get_default_allocator()</td></tr>
-<tr class="separator:a6c3aa815f2339878940e9167014ed2e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1e05a8f9e02f9516a6b66eba28fd716a"><td class="memItemLeft" align="right" valign="top"><a id="a1e05a8f9e02f9516a6b66eba28fd716a"></a>
-static rclc_support_t&#160;</td><td class="memItemRight" valign="bottom"><b>support</b></td></tr>
-<tr class="separator:a1e05a8f9e02f9516a6b66eba28fd716a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9a4035474bbc1f0ac2be1a9a7e985759"><td class="memItemLeft" align="right" valign="top"><a id="a9a4035474bbc1f0ac2be1a9a7e985759"></a>
-static rcl_timer_t&#160;</td><td class="memItemRight" valign="bottom"><b>timer</b></td></tr>
-<tr class="separator:a9a4035474bbc1f0ac2be1a9a7e985759"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a38c6cbfaedcd470afe6db08eea0d35a9"><td class="memItemLeft" align="right" valign="top"><a id="a38c6cbfaedcd470afe6db08eea0d35a9"></a>
-static rcl_node_t&#160;</td><td class="memItemRight" valign="bottom"><b>node</b></td></tr>
-<tr class="separator:a38c6cbfaedcd470afe6db08eea0d35a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaf135f1e055e7c1bc3ed9b9cff87ab77"><td class="memItemLeft" align="right" valign="top"><a id="aaf135f1e055e7c1bc3ed9b9cff87ab77"></a>
-static rcl_publisher_t&#160;</td><td class="memItemRight" valign="bottom"><b>publisher</b></td></tr>
-<tr class="separator:aaf135f1e055e7c1bc3ed9b9cff87ab77"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa91d2252ebdd0cbca1477b5b19d6f09b"><td class="memItemLeft" align="right" valign="top"><a id="aa91d2252ebdd0cbca1477b5b19d6f09b"></a>
-static rcl_subscription_t&#160;</td><td class="memItemRight" valign="bottom"><b>subscriber</b></td></tr>
-<tr class="separator:aa91d2252ebdd0cbca1477b5b19d6f09b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a553d858c7269b56ce9ae02d3826327ba"><td class="memItemLeft" align="right" valign="top"><a id="a553d858c7269b56ce9ae02d3826327ba"></a>
-static geometry_msgs__msg__Transform&#160;</td><td class="memItemRight" valign="bottom"><b>odom</b></td></tr>
-<tr class="separator:a553d858c7269b56ce9ae02d3826327ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a760827e8278c5785c5a0609d0be6649f"><td class="memItemLeft" align="right" valign="top"><a id="a760827e8278c5785c5a0609d0be6649f"></a>
-static geometry_msgs__msg__Vector3Stamped&#160;</td><td class="memItemRight" valign="bottom"><b>cv</b></td></tr>
-<tr class="separator:a760827e8278c5785c5a0609d0be6649f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:abe5d566811d83f624969fe48a8547ecb"><td class="memItemLeft" align="right" valign="top"><a id="abe5d566811d83f624969fe48a8547ecb"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>Jetson</b> (PinName tx, PinName rx)</td></tr>
+<tr class="separator:abe5d566811d83f624969fe48a8547ecb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51812e5df0aa7ac64b30f2ade765dd63"><td class="memItemLeft" align="right" valign="top"><a id="a51812e5df0aa7ac64b30f2ade765dd63"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>read</b> ()</td></tr>
+<tr class="separator:a51812e5df0aa7ac64b30f2ade765dd63"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66d9a9d4e0d40cfbabd9f2029719d46f"><td class="memItemLeft" align="right" valign="top"><a id="a66d9a9d4e0d40cfbabd9f2029719d46f"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>get</b> (cv axis)</td></tr>
+<tr class="separator:a66d9a9d4e0d40cfbabd9f2029719d46f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a34374de51274d24eb8a7d7fa3f74c7ee"><td class="memItemLeft" align="right" valign="top"><a id="a34374de51274d24eb8a7d7fa3f74c7ee"></a>
+atomic&lt; JetsonStatus &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>status</b> = DISCONNECTED</td></tr>
+<tr class="separator:a34374de51274d24eb8a7d7fa3f74c7ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>micro-ros/<a class="el" href="jetson_8h_source.html">jetson.h</a></li>
-<li>micro-ros/jetson.cpp</li>
+<li>core/util/communications/<a class="el" href="Jetson_8h_source.html">Jetson.h</a></li>
+<li>core/util/communications/Jetson.cpp</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

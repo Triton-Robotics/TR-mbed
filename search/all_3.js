@@ -10,7 +10,6 @@ var searchData=
   ['chassiskalman_19',['ChassisKalman',['../classChassisKalman.html',1,'']]],
   ['chassisspeeds_20',['ChassisSpeeds',['../classChassisSpeeds.html',1,'ChassisSpeeds'],['../classChassisSpeeds.html#a34737964ea81a6c28232bec779492406',1,'ChassisSpeeds::ChassisSpeeds()']]],
   ['chip_5fready_21',['chip_ready',['../classBNO055.html#a4367136d057891191d873107cd9a6c31',1,'BNO055']]],
-  ['class_20constructor_3a_22',['Class Constructor:',['../md_core_util_motor_CANMotorDocumentation.html',1,'']]],
-  ['clear_23',['clear',['../classCANMsg.html#a969dcb0af8e68883ab104249c8559146',1,'CANMsg']]],
-  ['cleardisplay_24',['clearDisplay',['../classSSD1308.html#aced1bba3c22637bb8b189a8c4a7cce00',1,'SSD1308']]]
+  ['clear_22',['clear',['../classCANMsg.html#a969dcb0af8e68883ab104249c8559146',1,'CANMsg']]],
+  ['cleardisplay_23',['clearDisplay',['../classSSD1308.html#aced1bba3c22637bb8b189a8c4a7cce00',1,'SSD1308']]]
 ];
