@@ -384,7 +384,7 @@ void DJIMotor::getFeedback(){
                 allMotors [i][mNum/4][mNum%4] -> timeOfLastFeedback = us_ticker_read() / 1000;
                 lastCalled[i][mNum/4][mNum%4] = us_ticker_read() / 1000;
 
-                if(allMotors[i][mNum/4][mNum%4]->motorData[TEMPERATURE] > 40)
+                if(allMotors[i][mNum/4][mNum%4]->motorData[TEMPERATURE] > 70)
                     printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS %d DEGREES CELSIUS\n",msgID,allMotors[i][mNum/4][mNum%4]->motorData[TEMPERATURE]);
 
             }else{
