@@ -183,7 +183,7 @@ unsigned long lastTime = 0;
             chassis.periodic();
 //            printf("Time: %i\n", (int) (timeStart / 1000));
 
-//            printf("Rs: %i\n", (int) rS);
+            printf("Rs: %i\n", (int) rS);
 
             printf("YAW ANGLE: %i\n", (int) yaw.getData(ANGLE));
 
@@ -192,13 +192,13 @@ unsigned long lastTime = 0;
 //            printf("Rx: %i\n", (int) rX);
 //            printf("Ry: %i\n", (int) rY);
 
-            // refLoop++;
-            // if(refLoop > 25){
-            //     //refereeThread();
-            //     refLoop = 0;
-            //     //led = ext_power_heat_data.data.chassis_power > 0;
-            //     //printf("%d\n",ext_power_heat_data.data.chassis_power);
-            // }
+             refLoop++;
+             if(refLoop > 25){
+                 refereeThread();
+                 refLoop = 0;
+//                 led = ext_power_heat_data.data.chassis_power > 0;
+//                 printf("%d\n",ext_power_heat_data.data.chassis_power);
+             }
 //            printf("A %i B %i\n", rS, lS);
             if (!chassis.allMotorsConnected()) {
                 chassis.driveXYR({0,0,0});
@@ -207,7 +207,8 @@ unsigned long lastTime = 0;
 //                printf("STICKS: %i %i %i\n", lX, lY, rX);
 //                if (chassis.testDataIndex < 300) {
 //                    chassis.driveFieldRelative({lX * 5.0, lY * 5.0, 0});
-//                    double ref_chassis_power = ext_power_heat_data.data.chassis_power;
+                    double ref_chassis_power = ext_power_heat_data.data.chassis_power;
+                    printf("Ref power: %i\n", (int) ref_chassis_power);
 //
 //                    unsigned long time = us_ticker_read() / 1000;
 
