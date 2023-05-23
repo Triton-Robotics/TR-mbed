@@ -30,7 +30,7 @@ unsigned long reverseTime = 300;
 unsigned long totalTime;
 
 bool sticksMoved = false;
-int prevRS = 0, prevLS = 0;
+Remote::SwitchState prevRS = Remote::SwitchState::UNKNOWN, prevLS = Remote::SwitchState::UNKNOWN;
 
 // PWMMotor RFLYWHEEL(D12); PWMMotor LFLYWHEEL(D11);
 // PWMMotor flyWheelMotors[] = {RFLYWHEEL, LFLYWHEEL};
@@ -128,16 +128,16 @@ int main()
             //printf("stik %d swit %d\n", lY, lS);
 
             if (!sticksMoved) {
-                chassis.driveXYR(0,0,0);
-                if ((prevLS != 0 && lS != prevLS )|| (prevRS != 0 && rS != prevRS)) {
+                chassis.driveXYR({0,0,0});
+                if ((prevLS != Remote::SwitchState::UNKNOWN && lS != prevLS )|| (prevRS != Remote::SwitchState::UNKNOWN && rS != prevRS)) {
                     sticksMoved = true;
                 } else {
                     prevLS = lS;
                     prevRS = rS;
                 }
-            } else if(rS == 1){ // All non-serializer motors activated
+            } else if(rS == Remote::SwitchState::DOWN){ // All non-serializer motors activated
                 int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
-                chassis.driveFieldRelative(lX / 500.0, lY / 500.0, rX / 500.0);
+                chassis.driveFieldRelative({lX / 500.0, lY / 500.0, rX / 500.0});
 
                 pitch.setPosition((-rY / 2) + 5600);
                 // yaw.setSpeed(rX/100);
@@ -145,15 +145,15 @@ int main()
                 yaw.setPosition(yawSetpoint);
 
 
-            }else if(rS == 2){ //disable all the non-serializer components
-                chassis.driveXYR(0,0,0);
+            }else if(rS == Remote::SwitchState::MID){ //disable all the non-serializer components
+                chassis.driveXYR({0, 0, 0});
                 yaw.setPower(0); pitch.setPower(0);
-            }else if(rS == 3){ // beyblade mode
+            }else if(rS == Remote::SwitchState::UP){ // beyblade mode
                 // chassis.beyblade(lX / 500.0, lY / 500.0, true);
                 // yaw.setPower(0); pitch.setPower(0);
 
                 int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
-                chassis.driveFieldRelative(lX / 500.0, lY / 500.0, 0);
+                chassis.driveFieldRelative({lX / 500.0, lY / 500.0, 0});
 
                 //pitch.setPosition((rY / 2) + 5600);
                 pitch.setPower(-rY*5);
@@ -162,17 +162,17 @@ int main()
                 yaw.setPosition(yawSetpoint);
             }
 
-            if (lS == 3) {
+            if (lS == Remote::SwitchState::UP) {
                 //indexer.setPower(1200);
                 indexer.setSpeed(5 + rY/75);
                 //setFlyWheelPwr(80000);
                 LFLYWHEEL.setPower(-16384); RFLYWHEEL.setPower(16384);
-            }else if(lS == 2){ //disable serializer
+            }else if(lS == Remote::SwitchState::MID){ //disable serializer
                 //indexer.setSpeed(5);
                 indexer.setPower(rY*20);
                 //setFlyWheelPwr(60000);
                 LFLYWHEEL.setPower(-16384); RFLYWHEEL.setPower(16384);
-            }else if(lS == 1){
+            }else if(lS == Remote::SwitchState::DOWN){
                 ///////////////////////////////////////////
                 /// THEO SECTION OF CODE
                 ///////////////////////////////////////////
