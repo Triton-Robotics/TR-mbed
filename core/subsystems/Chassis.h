@@ -8,6 +8,7 @@
 #include <motor/DJIMotor.h>
 #include <communications/CANHandler.h>
 #include <peripherals/imu/BNO055.h>
+#include <peripherals/oled/SSD1308.h>
 #include <subsystems/ChassisKalman.h>
 //#include <algorithms/WheelKalman.h>
 #include <algorithms/Pose2D.h>
@@ -194,6 +195,7 @@ private:
     double beybladeSpeed;
     bool beybladeIncreasing;
     I2C i2c;
+    SSD1308 oled;
     BNO055 imu;
     BNO055_ANGULAR_POSITION_typedef imuAngles;
 

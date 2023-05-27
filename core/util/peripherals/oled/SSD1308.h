@@ -288,7 +288,7 @@ class SSD1308 : public mbed::Stream {
  *  @brief Start at current cursor location
  *  @param char chr character to write
 */ 
-    void writeChar(char chr);  
+    int writeChar(char chr);
     
 /** @brief Write large character (16x24 font)
  *  @param uint8_t row  row number    (0...MAX_ROW)
@@ -522,8 +522,8 @@ class SSD1308 : public mbed::Stream {
 /** @brief Write databyte to display
  *  @brief Start at current cursor location
  *  @param uint8_t data databyte to write
-*/  
-    void _sendData(uint8_t data);
+*/
+    bool _sendData(uint8_t data);
 
 /** @brief Write len bytes from buffer data to display, 
  *  @brief Start at current cursor location
