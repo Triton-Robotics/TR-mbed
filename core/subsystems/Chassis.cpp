@@ -45,8 +45,6 @@ double Chassis::rpmToInchesPerSecond(double RPM) {
 }
 
 void Chassis::setMotorPower(int index, double power) {
-    if (power > 100) {}
-    power = 100;
     switch (index) {
         case 0:
             LF.setPower(power * isInverted[0]);
