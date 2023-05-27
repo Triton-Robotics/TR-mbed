@@ -90,7 +90,7 @@ int main()
     // RF.setSpeedPID(1.073, 0.556, 0);
     // RB.setSpeedPID(1.081, 0.247, 0.386);
     // LF.setSpeedPID(.743, 0.204, 0.284);
-    pitch.setPositionPID(5.3, 0.11, 0.42);
+    pitch.setPositionPID(6.3, 0.11, 0.42);
 //    pitch.setPositionPID(0, 0, 0);
     pitch.setPositionIntegralCap(10000);
     LFLYWHEEL.setSpeedPID(1, 0, 0);
@@ -99,7 +99,7 @@ int main()
     pitch.useAbsEncoder = 1;
     pitch.justPosError = 1;
 
-    yaw.setPositionPID(3.8, 0, 0.25);
+    yaw.setPositionPID(4.6, 0, 0.5);
     yaw.setPositionIntegralCap(10000);
     yaw.useAbsEncoder = 0;
     yaw.justPosError = 1;
@@ -228,7 +228,7 @@ unsigned long lastTime = 0;
 //                    printf("Setpoint: %i\n", (int) setpoint);
 //                    pitch.setPosition(setpoint);
 
-                pitch.setPosition((rY / 1.5) + 6500);
+                pitch.setPosition((rY / 1.25) + 6500);
 
 
 //                 yaw.setSpeed(rX/100);
@@ -269,7 +269,7 @@ unsigned long lastTime = 0;
 //                pitch.setPower((int) (rY * 3));
 //                printf("Setting power: %i\n", (int) pitch.powerOut);
                 // yaw.setSpeed(rX/100);
-                yawSetpoint += rX / 6.0;
+                yawSetpoint += rX / 3.5;
 //                yawSetpoint =  - 3 * rX;
                 yaw.setPosition(-chassis.getHeadingDegrees() * 8192 / 360 + yaw.getData(MULTITURNANGLE) - yawSetpoint);
 //                yaw.setPosition(0);
