@@ -210,14 +210,14 @@ unsigned long lastTime = 0;
                     double ref_chassis_power = ext_power_heat_data.data.chassis_power;
                     printf("Ref power: %i\n", (int) ref_chassis_power);
 //
-//                    unsigned long time = us_ticker_read() / 1000;
+                    unsigned long time = us_ticker_read() / 1000;
 
-                     chassis.driveTurretRelative({lX * 5.0, lY * 5.0, 0}, yaw.getData(MULTITURNANGLE) * 360.0 / 8192);
+//                     chassis.driveTurretRelative({lX * 5.0, lY * 5.0, 0}, yaw.getData(MULTITURNANGLE) * 360.0 / 8192);
 //                    chassis.driveFieldRelative(0, 4096, 0);
 
                     chassis.periodic();
 
-//                    chassis.driveXYRPower(ref_chassis_power, 5 * lX, 5 * lY, 5 * rX, time - lastTime);
+                    chassis.driveXYRPower(ref_chassis_power, 5 * lX, 5 * lY, 0, time - lastTime);
 
 //                    lastTime = time;
 //
@@ -280,9 +280,9 @@ unsigned long lastTime = 0;
                  yaw.setPower(0); pitch.setPower(0);
             }else if(rS == Remote::SwitchState::UP ){ // beyblade mode
                 chassis.beyblade(lX * 5.0, lY * 5.0, yaw.getData(MULTITURNANGLE) * 360.0 / 8192, false);
-                yawSetpoint += rX / 6.0;
+                yawSetpoint += rX / 3.5;
 //                yawSetpoint =  - 3 * rX;
-                yaw.setPosition(-chassis.getHeadingDegrees() * 8192 / 360 + yaw.getData(MULTITURNANGLE) - yawSetpoint);
+                yaw.setPosition(chassis.getHeadingDegrees() * 8192 / 360 + yaw.getData(MULTITURNANGLE) - yawSetpoint);
 //                yaw.setPosition(0);
 //                yaw.setPower(0); pitch.setPower(0);
             }

@@ -113,10 +113,6 @@ void Chassis::driveXYRPower(double ref_chassis_power, double lX, double lY, doub
     double powerLB = LB.pidSpeed.calculate(0 - lX + lY + rX, LB.getData(VELOCITY), time_diff);
     double powerRB = RB.pidSpeed.calculate(0 - lX - lY + rX, RB.getData(VELOCITY), time_diff);
 
-    unsigned long time = us_ticker_read() / 1000;
-
-    printf("REF POWER: %i\n", (int) ref_chassis_power);
-
     scale = abs(power_pid.calculate(48, ref_chassis_power, time_diff));
 
     if (ref_chassis_power > 40) {
@@ -126,10 +122,10 @@ void Chassis::driveXYRPower(double ref_chassis_power, double lX, double lY, doub
         powerRB /= scale;
     }
 
-    setMotorPower(0, powerLF);
-    setMotorPower(1, powerRF);
-    setMotorPower(2, powerLB);
-    setMotorPower(3, powerRB);
+    LF.setPower(powerLF);
+    RF.setPower(powerRF);
+    LB.setPower(powerLB);
+    RB.setPower(powerRB);
 }
 
 
@@ -255,7 +251,7 @@ void Chassis::periodic() {
 
     z[4] = imuAngles.yaw;
 
-//    printf("Yaw (IMU): %i\n", (int) z[4]);
+    printf("Yaw (IMU): %i\n", (int) z[4]);
 
     int currTime = us_ticker_read();
     if (lastTimeMs != 0) {
