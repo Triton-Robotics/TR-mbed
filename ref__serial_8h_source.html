@@ -712,44 +712,49 @@ $(function() {
 <div class="line"><a name="l00640"></a><span class="lineno">  640</span>&#160;<span class="comment">// ------------------------------</span></div>
 <div class="line"><a name="l00641"></a><span class="lineno">  641</span>&#160;<span class="comment">// Extra stuff</span></div>
 <div class="line"><a name="l00642"></a><span class="lineno">  642</span>&#160; </div>
-<div class="line"><a name="l00643"></a><span class="lineno">  643</span>&#160;<span class="keywordtype">void</span> JudgeSystem_USART_Receive_DMA(BufferedSerial* b);</div>
-<div class="line"><a name="l00644"></a><span class="lineno">  644</span>&#160;<span class="keywordtype">void</span> Judge_GetMessage(uint16_t Data_Length);</div>
-<div class="line"><a name="l00645"></a><span class="lineno">  645</span>&#160;<span class="keywordtype">void</span> Judge_sendPC(BufferedSerial* b);</div>
-<div class="line"><a name="l00646"></a><span class="lineno">  646</span>&#160;<span class="keywordtype">void</span> RobotStatus_LEDYellow(BufferedSerial* b);</div>
-<div class="line"><a name="l00647"></a><span class="lineno">  647</span>&#160; </div>
-<div class="line"><a name="l00648"></a><span class="lineno">  648</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__game__status__t.html">ext_game_status_t</a>      ext_game_status;</div>
-<div class="line"><a name="l00649"></a><span class="lineno">  649</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__game__result__t.html">ext_game_result_t</a>     ext_game_result;</div>
-<div class="line"><a name="l00650"></a><span class="lineno">  650</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__game__robot__HP__t.html">ext_game_robot_HP_t</a>   ext_game_robot_HP;</div>
-<div class="line"><a name="l00651"></a><span class="lineno">  651</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__dart__status__t.html">ext_dart_status_t</a>     ext_dart_status;</div>
-<div class="line"><a name="l00652"></a><span class="lineno">  652</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__ICRA__buff__debuff__zone__status__t.html">ext_ICRA_buff_debuff_zone_status_t</a>    ext_ICRA_buff_debuff_zone_status;</div>
-<div class="line"><a name="l00653"></a><span class="lineno">  653</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__event__data__t.html">ext_event_data_t</a> ext_even_data;</div>
-<div class="line"><a name="l00654"></a><span class="lineno">  654</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__supply__projectile__action__t.html">ext_supply_projectile_action_t</a>  ext_supply_projectile_action;</div>
-<div class="line"><a name="l00655"></a><span class="lineno">  655</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__referee__warning__t.html">ext_referee_warning_t</a>         ext_referee_warning;</div>
-<div class="line"><a name="l00656"></a><span class="lineno">  656</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__dart__remaining__time__t.html">ext_dart_remaining_time_t</a>     ext_dart_remaining_time;</div>
-<div class="line"><a name="l00657"></a><span class="lineno">  657</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__game__robot__status__t.html">ext_game_robot_status_t</a>  ext_game_robot_state;</div>
-<div class="line"><a name="l00658"></a><span class="lineno">  658</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__power__heat__data__t.html">ext_power_heat_data_t</a>  ext_power_heat_data;</div>
-<div class="line"><a name="l00659"></a><span class="lineno">  659</span>&#160;<span class="keyword">extern</span> <a class="code" href="struct____packed.html">ext_game_robot_pos_t</a>  ext_game_robot_pos;</div>
-<div class="line"><a name="l00660"></a><span class="lineno">  660</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__buff__t.html">ext_buff_t</a> Buff;</div>
-<div class="line"><a name="l00661"></a><span class="lineno">  661</span>&#160;<span class="keyword">extern</span> <a class="code" href="structaerial__robot__energy__t.html">aerial_robot_energy_t</a>  aerial_robot_energy;</div>
-<div class="line"><a name="l00662"></a><span class="lineno">  662</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__robot__hurt__t.html">ext_robot_hurt_t</a>  ext_robot_hurt;</div>
-<div class="line"><a name="l00663"></a><span class="lineno">  663</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__shoot__data__t.html">ext_shoot_data_t</a>  ext_shoot_data;</div>
-<div class="line"><a name="l00664"></a><span class="lineno">  664</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__bullet__remaining__t.html">ext_bullet_remaining_t</a>  ext_bullet_remaining;</div>
-<div class="line"><a name="l00665"></a><span class="lineno">  665</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__rfid__status__t.html">ext_rfid_status_t</a>        ext_rfid_status;</div>
-<div class="line"><a name="l00666"></a><span class="lineno">  666</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__dart__client__cmd__t.html">ext_dart_client_cmd_t</a>   ext_dart_client_cmd;</div>
-<div class="line"><a name="l00667"></a><span class="lineno">  667</span>&#160; </div>
-<div class="line"><a name="l00668"></a><span class="lineno">  668</span>&#160;<span class="comment">// extern uint8_t JudgeSystem_rxBuff[JUDGESYSTEM_PACKSIZE];</span></div>
-<div class="line"><a name="l00669"></a><span class="lineno">  669</span>&#160; </div>
+<div class="line"><a name="l00646"></a><span class="lineno">  646</span>&#160;<span class="keywordtype">void</span> JudgeSystem_USART_Receive_DMA(BufferedSerial* b);</div>
+<div class="line"><a name="l00647"></a><span class="lineno">  647</span>&#160;<span class="keywordtype">void</span> Judge_GetMessage(uint16_t Data_Length);</div>
+<div class="line"><a name="l00648"></a><span class="lineno">  648</span>&#160;<span class="keywordtype">void</span> Judge_sendPC(BufferedSerial* b);</div>
+<div class="line"><a name="l00649"></a><span class="lineno">  649</span>&#160;<span class="keywordtype">void</span> RobotStatus_LEDYellow(BufferedSerial* b);</div>
+<div class="line"><a name="l00650"></a><span class="lineno">  650</span>&#160; </div>
+<div class="line"><a name="l00651"></a><span class="lineno">  651</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__game__status__t.html">ext_game_status_t</a>      ext_game_status;</div>
+<div class="line"><a name="l00652"></a><span class="lineno">  652</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__game__result__t.html">ext_game_result_t</a>     ext_game_result;</div>
+<div class="line"><a name="l00653"></a><span class="lineno">  653</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__game__robot__HP__t.html">ext_game_robot_HP_t</a>   ext_game_robot_HP;</div>
+<div class="line"><a name="l00654"></a><span class="lineno">  654</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__dart__status__t.html">ext_dart_status_t</a>     ext_dart_status;</div>
+<div class="line"><a name="l00655"></a><span class="lineno">  655</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__ICRA__buff__debuff__zone__status__t.html">ext_ICRA_buff_debuff_zone_status_t</a>    ext_ICRA_buff_debuff_zone_status;</div>
+<div class="line"><a name="l00656"></a><span class="lineno">  656</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__event__data__t.html">ext_event_data_t</a> ext_even_data;</div>
+<div class="line"><a name="l00657"></a><span class="lineno">  657</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__supply__projectile__action__t.html">ext_supply_projectile_action_t</a>  ext_supply_projectile_action;</div>
+<div class="line"><a name="l00658"></a><span class="lineno">  658</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__referee__warning__t.html">ext_referee_warning_t</a>         ext_referee_warning;</div>
+<div class="line"><a name="l00659"></a><span class="lineno">  659</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__dart__remaining__time__t.html">ext_dart_remaining_time_t</a>     ext_dart_remaining_time;</div>
+<div class="line"><a name="l00660"></a><span class="lineno">  660</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__game__robot__status__t.html">ext_game_robot_status_t</a>  ext_game_robot_state;</div>
+<div class="line"><a name="l00661"></a><span class="lineno">  661</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__power__heat__data__t.html">ext_power_heat_data_t</a>  ext_power_heat_data;</div>
+<div class="line"><a name="l00662"></a><span class="lineno">  662</span>&#160;<span class="keyword">extern</span> <a class="code" href="struct____packed.html">ext_game_robot_pos_t</a>  ext_game_robot_pos;</div>
+<div class="line"><a name="l00663"></a><span class="lineno">  663</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__buff__t.html">ext_buff_t</a> Buff;</div>
+<div class="line"><a name="l00664"></a><span class="lineno">  664</span>&#160;<span class="keyword">extern</span> <a class="code" href="structaerial__robot__energy__t.html">aerial_robot_energy_t</a>  aerial_robot_energy;</div>
+<div class="line"><a name="l00665"></a><span class="lineno">  665</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__robot__hurt__t.html">ext_robot_hurt_t</a>  ext_robot_hurt;</div>
+<div class="line"><a name="l00666"></a><span class="lineno">  666</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__shoot__data__t.html">ext_shoot_data_t</a>  ext_shoot_data;</div>
+<div class="line"><a name="l00667"></a><span class="lineno">  667</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__bullet__remaining__t.html">ext_bullet_remaining_t</a>  ext_bullet_remaining;</div>
+<div class="line"><a name="l00668"></a><span class="lineno">  668</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__rfid__status__t.html">ext_rfid_status_t</a>        ext_rfid_status;</div>
+<div class="line"><a name="l00669"></a><span class="lineno">  669</span>&#160;<span class="keyword">extern</span> <a class="code" href="structext__dart__client__cmd__t.html">ext_dart_client_cmd_t</a>   ext_dart_client_cmd;</div>
 <div class="line"><a name="l00670"></a><span class="lineno">  670</span>&#160; </div>
-<div class="line"><a name="l00671"></a><span class="lineno">  671</span>&#160;<span class="comment">// ------------------------------</span></div>
-<div class="line"><a name="l00672"></a><span class="lineno">  672</span>&#160;<span class="comment">// MY PART (function headers)</span></div>
+<div class="line"><a name="l00671"></a><span class="lineno">  671</span>&#160;<span class="comment">// extern uint8_t JudgeSystem_rxBuff[JUDGESYSTEM_PACKSIZE];</span></div>
+<div class="line"><a name="l00672"></a><span class="lineno">  672</span>&#160; </div>
 <div class="line"><a name="l00673"></a><span class="lineno">  673</span>&#160; </div>
-<div class="line"><a name="l00674"></a><span class="lineno">  674</span>&#160;_Bool is_red_or_blue(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00675"></a><span class="lineno">  675</span>&#160;uint8_t get_robot_id(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00676"></a><span class="lineno">  676</span>&#160;uint8_t get_remain_hp(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00677"></a><span class="lineno">  677</span>&#160; </div>
-<div class="line"><a name="l00678"></a><span class="lineno">  678</span>&#160;<span class="keywordtype">void</span> referee_data_pack_handle(uint8_t sof,uint16_t cmd_id, uint8_t *p_data, uint16_t len, BufferedSerial* b);</div>
+<div class="line"><a name="l00674"></a><span class="lineno">  674</span>&#160;<span class="comment">// ------------------------------</span></div>
+<div class="line"><a name="l00675"></a><span class="lineno">  675</span>&#160;<span class="comment">// MY PART (function headers)</span></div>
+<div class="line"><a name="l00676"></a><span class="lineno">  676</span>&#160; </div>
+<div class="line"><a name="l00677"></a><span class="lineno">  677</span>&#160;<span class="comment">// Return 1 if robot is in red team, 0 if blue.</span></div>
+<div class="line"><a name="l00678"></a><span class="lineno">  678</span>&#160;_Bool is_red_or_blue(<span class="keywordtype">void</span>);</div>
 <div class="line"><a name="l00679"></a><span class="lineno">  679</span>&#160; </div>
-<div class="line"><a name="l00680"></a><span class="lineno">  680</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00680"></a><span class="lineno">  680</span>&#160;<span class="comment">// Return robot ID.</span></div>
+<div class="line"><a name="l00681"></a><span class="lineno">  681</span>&#160;uint8_t get_robot_id(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00682"></a><span class="lineno">  682</span>&#160; </div>
+<div class="line"><a name="l00683"></a><span class="lineno">  683</span>&#160;<span class="comment">// Return robot remaining HP.</span></div>
+<div class="line"><a name="l00684"></a><span class="lineno">  684</span>&#160;uint8_t get_remain_hp(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00685"></a><span class="lineno">  685</span>&#160; </div>
+<div class="line"><a name="l00693"></a><span class="lineno">  693</span>&#160;<span class="keywordtype">void</span> referee_data_pack_handle(uint8_t sof,uint16_t cmd_id, uint8_t *p_data, uint16_t len, BufferedSerial* b);</div>
+<div class="line"><a name="l00694"></a><span class="lineno">  694</span>&#160; </div>
+<div class="line"><a name="l00695"></a><span class="lineno">  695</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aclassReferee_html"><div class="ttname"><a href="classReferee.html">Referee</a></div><div class="ttdef"><b>Definition:</b> ref_serial.h:7</div></div>
 <div class="ttc" id="astruct____packed_html"><div class="ttname"><a href="struct____packed.html">__packed</a></div><div class="ttdef"><b>Definition:</b> ref_serial.h:326</div></div>
 <div class="ttc" id="astructaerial__robot__energy__t_html"><div class="ttname"><a href="structaerial__robot__energy__t.html">aerial_robot_energy_t</a></div><div class="ttdef"><b>Definition:</b> ref_serial.h:359</div></div>
