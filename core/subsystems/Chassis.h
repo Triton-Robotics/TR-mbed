@@ -97,6 +97,7 @@ public:
      */
 
     void driveXYRPower(double ref_chassis_power, double lX, double lY, double rX, double time_diff);
+    void driveTurretRelativePower(ChassisSpeeds speeds, double turretAngleDegrees);
     void driveFieldRelativePower(double ref_chassis_power, double time_diff, double yVelocityRPM, double xVelocityRPM, double rotationVelocityRPM);
     void driveOffsetAnglePower(double ref_chassis_power, double time_diff, double yVelocityRPM, double xVelocityRPM, double rotationVelocityRPM, double angleOffset);
 
