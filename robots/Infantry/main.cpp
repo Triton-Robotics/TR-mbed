@@ -194,7 +194,7 @@ unsigned long lastTime = 0;
 
              refLoop++;
              if(refLoop > 5){
-                 refereeThread();
+                 refereeThread(&referee);
                  refLoop = 0;
 //                 led = ext_power_heat_data.data.chassis_power > 0;
 //                 printf("%d\n",ext_power_heat_data.data.chassis_power);
