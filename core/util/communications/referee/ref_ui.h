@@ -9,7 +9,7 @@
 #define SCREEN_LENGTH 1920
 #define SCREEN_WIDTH 1080
 
-void ui_graph_character(BufferedSerial* serial, int operation_type, string char_data, int x, int y, int name);
+void ui_graph_characters(BufferedSerial* serial, int operation_type, string str, int x, int y, int name);
 void ui_delete_all(BufferedSerial* serial);
 
 #endif

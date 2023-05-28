@@ -101,18 +101,30 @@ void refereeThread(BufferedSerial* referee){
                 custom_graphic_draw.graphic_custom.grapic_data_struct[2].end_x=SCREEN_LENGTH/2 +50;
                 custom_graphic_draw.graphic_custom.grapic_data_struct[2].end_y=SCREEN_WIDTH/2 -150;
             }
+            {
+                custom_graphic_draw.graphic_custom.grapic_data_struct[3].graphic_name[0] = 3;
+                custom_graphic_draw.graphic_custom.grapic_data_struct[3].operate_tpye=1;//图形操作，0：空操作；1：增加；2：修改；3：删除；
+                custom_graphic_draw.graphic_custom.grapic_data_struct[3].graphic_tpye=0;//图形类型，0为直线，其他的查看用户手册
+                custom_graphic_draw.graphic_custom.grapic_data_struct[3].layer=9;//图层数
+                custom_graphic_draw.graphic_custom.grapic_data_struct[3].color=1;//颜色
+                custom_graphic_draw.graphic_custom.grapic_data_struct[3].start_angle=0;
+                custom_graphic_draw.graphic_custom.grapic_data_struct[3].end_angle=0;
+                custom_graphic_draw.graphic_custom.grapic_data_struct[3].width=2;
+                custom_graphic_draw.graphic_custom.grapic_data_struct[3].start_x=SCREEN_LENGTH/2;
+                custom_graphic_draw.graphic_custom.grapic_data_struct[3].start_y=SCREEN_WIDTH/2 +100;
+                custom_graphic_draw.graphic_custom.grapic_data_struct[3].end_x=SCREEN_LENGTH/2;
+                custom_graphic_draw.graphic_custom.grapic_data_struct[3].end_y=SCREEN_WIDTH/2 -250;
+            }
         }
 
         ui_delete_all(referee);
         referee_data_pack_handle(0xA5,0x0301,(uint8_t *)&custom_graphic_draw,sizeof(custom_graphic_draw),referee);
 
         string powerStr = "power: " + to_string((int)ext_power_heat_data.data.chassis_power);
-        ui_graph_character(referee, 1, powerStr, SCREEN_LENGTH/2 +100, SCREEN_WIDTH/2 +100, 99);
+        ui_graph_characters(referee, 1, powerStr, SCREEN_LENGTH/2 +100, SCREEN_WIDTH/2 +100, 99);
 
-        // printf("write!");
-        // pc.write("hello",5);
         string angleStr = "angle: " + to_string((int)ext_game_robot_pos.data.yaw);
-        ui_graph_character(referee, 1, angleStr, SCREEN_LENGTH/2 +100, SCREEN_WIDTH/2 +150, 10);
+        ui_graph_characters(referee, 1, angleStr, SCREEN_LENGTH/2 +100, SCREEN_WIDTH/2 +150, 10);
 
         /* Robot communication to be worked on in the future */
         /*
