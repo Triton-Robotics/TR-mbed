@@ -2,6 +2,18 @@
 #include "mbed.h"
 
 #define dr (8191.0 / 9.0)
+#define smooth true
+
+/*
+ * if smooth is true, balls will smoothly come out of serializer with no double feed,
+ * but has a low chance of getting stuck around 1/50
+ *
+ * if smooth is false, balls will come out of serializer with a higher chance of double feed,
+ * but there is virtually no chance of balls getting stuck
+ *
+ * this setting is to be decided as we finish the feeding system
+ *
+ */
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "EndlessLoop"
@@ -65,8 +77,13 @@ int main(){
                 dp = desiredPosition - float(actualPosition);
                 p = 3000 * int(dp / dr + abs(dp) / dp);
                 p += t;
-                p += int(1 * (-pow((abs(dp) - dr/2 - 30) / 8.35, 2) + 3000) * abs(dp) / dp);
-                p -= int((pow((dr - abs(dp)) / dr, 3) * t) * (abs(dp) / dp));
+
+                if(smooth){
+                    p -= int((pow((dr - abs(dp)) / dr, 2.7) * t) * (abs(dp) / dp));
+                }else{
+                    p += int(1 * (-pow((abs(dp) - dr/2 - 30) / 8.35, 2) + 3000) * abs(dp) / dp);
+                    p -= int((pow((dr - abs(dp)) / dr, 3) * t) * (abs(dp) / dp));
+                }
 
                 if (abs(p) > 32760)
                     p = (abs(p) / p) * 32760;
