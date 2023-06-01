@@ -65,7 +65,8 @@ int main(){
                 dp = desiredPosition - float(actualPosition);
                 p = 3000 * int(dp / dr + abs(dp) / dp);
                 p += t;
-                p -= int((pow((dr - abs(dp)) / dr, 2.7) * t) * (abs(dp) / dp));
+                p += int(1 * (-pow((abs(dp) - dr/2 - 30) / 8.35, 2) + 3000) * abs(dp) / dp);
+                p -= int((pow((dr - abs(dp)) / dr, 3) * t) * (abs(dp) / dp));
 
                 if (abs(p) > 32760)
                     p = (abs(p) / p) * 32760;
