@@ -106,9 +106,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a98822bab8b46c18df2980f5330408a76"><td class="memItemLeft" align="right" valign="top"><a id="a98822bab8b46c18df2980f5330408a76"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setInverted</b> (bool inverted)</td></tr>
 <tr class="separator:a98822bab8b46c18df2980f5330408a76"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a39e417c3d22fa1de2a3801db8c9f4b2b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSSD1308.html#a39e417c3d22fa1de2a3801db8c9f4b2b">writeChar</a> (char chr)</td></tr>
-<tr class="memdesc:a39e417c3d22fa1de2a3801db8c9f4b2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write single character to the display using the 8x8 fontable.  <a href="classSSD1308.html#a39e417c3d22fa1de2a3801db8c9f4b2b">More...</a><br /></td></tr>
-<tr class="separator:a39e417c3d22fa1de2a3801db8c9f4b2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae736d6e0dd077985bbab27c477a30909"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSSD1308.html#ae736d6e0dd077985bbab27c477a30909">writeChar</a> (char chr)</td></tr>
+<tr class="memdesc:ae736d6e0dd077985bbab27c477a30909"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write single character to the display using the 8x8 fontable.  <a href="classSSD1308.html#ae736d6e0dd077985bbab27c477a30909">More...</a><br /></td></tr>
+<tr class="separator:ae736d6e0dd077985bbab27c477a30909"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9d3824306ada51c8ef6d11df2209d861"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSSD1308.html#a9d3824306ada51c8ef6d11df2209d861">writeBigChar</a> (uint8_t row, uint8_t col, char chr)</td></tr>
 <tr class="memdesc:a9d3824306ada51c8ef6d11df2209d861"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write large character (16x24 font)  <a href="classSSD1308.html#a9d3824306ada51c8ef6d11df2209d861">More...</a><br /></td></tr>
 <tr class="separator:a9d3824306ada51c8ef6d11df2209d861"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -249,33 +249,26 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>nop</b> ()</td></tr>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main() {</div>
 <div class="line">  pc.printf(<span class="stringliteral">&quot;OLED test start\r&quot;</span>);  </div>
-<div class="line">  oled.<a class="code" href="classSSD1308.html#a668eef7a824e2c460029b9ea105f59df">writeString</a>(0, 0, <span class="stringliteral">&quot;Hello World !&quot;</span>);</div>
+<div class="line">  oled.writeString(0, 0, <span class="stringliteral">&quot;Hello World !&quot;</span>);</div>
 <div class="line">  <span class="comment">//  oled.printf(&quot;Hello World !&quot;);</span></div>
 <div class="line"> </div>
-<div class="line">  oled.<a class="code" href="classSSD1308.html#a37cc717a9520a7a010b5394675384264">fillDisplay</a>(0xAA);</div>
-<div class="line">  oled.<a class="code" href="classSSD1308.html#a09a3059bf1ee44a40dd00e149ada9dcb">setDisplayOff</a>();</div>
+<div class="line">  oled.fillDisplay(0xAA);</div>
+<div class="line">  oled.setDisplayOff();</div>
 <div class="line">  wait(1);   </div>
-<div class="line">  oled.<a class="code" href="classSSD1308.html#a012ad102c95405e7f67f7f652879b3d2">setDisplayOn</a>();</div>
+<div class="line">  oled.setDisplayOn();</div>
 <div class="line"> </div>
-<div class="line">  oled.<a class="code" href="classSSD1308.html#aced1bba3c22637bb8b189a8c4a7cce00">clearDisplay</a>();</div>
-<div class="line">  oled.<a class="code" href="classSSD1308.html#a344c726bd881cc0c92701666dcaa694b">setDisplayInverse</a>();</div>
+<div class="line">  oled.<a class="code" href="classAdafruit__SSD1306.html#afe1e0f5efabd931aab7998275356744d">clearDisplay</a>();</div>
+<div class="line">  oled.setDisplayInverse();</div>
 <div class="line">  wait(0.5);</div>
-<div class="line">  oled.<a class="code" href="classSSD1308.html#a0460323484499c8f88ed32253f4b3bc9">setDisplayNormal</a>();                                         </div>
+<div class="line">  oled.setDisplayNormal();                                         </div>
 <div class="line"> </div>
-<div class="line">  oled.<a class="code" href="classSSD1308.html#a719e43402727ae1d298b633483242a65">writeBitmap</a>((uint8_t*) mbed_logo);</div>
+<div class="line">  oled.writeBitmap((uint8_t*) mbed_logo);</div>
 <div class="line"> </div>
 <div class="line">  pc.printf(<span class="stringliteral">&quot;OLED test done\r\n&quot;</span>);  </div>
 <div class="line">}</div>
+<div class="ttc" id="aclassAdafruit__SSD1306_html_afe1e0f5efabd931aab7998275356744d"><div class="ttname"><a href="classAdafruit__SSD1306.html#afe1e0f5efabd931aab7998275356744d">Adafruit_SSD1306::clearDisplay</a></div><div class="ttdeci">void clearDisplay(void)</div><div class="ttdoc">Clear the display buffer.</div><div class="ttdef"><b>Definition:</b> Adafruit_SSD1306.cpp:147</div></div>
 <div class="ttc" id="aclassSSD1308_html"><div class="ttname"><a href="classSSD1308.html">SSD1308</a></div><div class="ttdef"><b>Definition:</b> SSD1308.h:223</div></div>
-<div class="ttc" id="aclassSSD1308_html_a012ad102c95405e7f67f7f652879b3d2"><div class="ttname"><a href="classSSD1308.html#a012ad102c95405e7f67f7f652879b3d2">SSD1308::setDisplayOn</a></div><div class="ttdeci">void setDisplayOn()</div><div class="ttdoc">Enable Display.</div><div class="ttdef"><b>Definition:</b> SSD1308.cpp:834</div></div>
-<div class="ttc" id="aclassSSD1308_html_a0460323484499c8f88ed32253f4b3bc9"><div class="ttname"><a href="classSSD1308.html#a0460323484499c8f88ed32253f4b3bc9">SSD1308::setDisplayNormal</a></div><div class="ttdeci">void setDisplayNormal()</div><div class="ttdoc">Show White pixels on Black background.</div><div class="ttdef"><b>Definition:</b> SSD1308.cpp:857</div></div>
-<div class="ttc" id="aclassSSD1308_html_a09a3059bf1ee44a40dd00e149ada9dcb"><div class="ttname"><a href="classSSD1308.html#a09a3059bf1ee44a40dd00e149ada9dcb">SSD1308::setDisplayOff</a></div><div class="ttdeci">void setDisplayOff()</div><div class="ttdoc">Disable Display.</div><div class="ttdef"><b>Definition:</b> SSD1308.cpp:840</div></div>
-<div class="ttc" id="aclassSSD1308_html_a344c726bd881cc0c92701666dcaa694b"><div class="ttname"><a href="classSSD1308.html#a344c726bd881cc0c92701666dcaa694b">SSD1308::setDisplayInverse</a></div><div class="ttdeci">void setDisplayInverse()</div><div class="ttdoc">Show Black pixels on White background.</div><div class="ttdef"><b>Definition:</b> SSD1308.cpp:863</div></div>
-<div class="ttc" id="aclassSSD1308_html_a37cc717a9520a7a010b5394675384264"><div class="ttname"><a href="classSSD1308.html#a37cc717a9520a7a010b5394675384264">SSD1308::fillDisplay</a></div><div class="ttdeci">void fillDisplay(uint8_t pattern=0x00, uint8_t start_page=0, uint8_t end_page=MAX_PAGE, uint8_t start_col=0, uint8_t end_col=MAX_COL)</div><div class="ttdoc">fill the display</div><div class="ttdef"><b>Definition:</b> SSD1308.cpp:140</div></div>
-<div class="ttc" id="aclassSSD1308_html_a668eef7a824e2c460029b9ea105f59df"><div class="ttname"><a href="classSSD1308.html#a668eef7a824e2c460029b9ea105f59df">SSD1308::writeString</a></div><div class="ttdeci">void writeString(uint8_t row, uint8_t col, const char *txt)</div><div class="ttdoc">Write a string to the display using the 8x8 font.</div><div class="ttdef"><b>Definition:</b> SSD1308.cpp:443</div></div>
-<div class="ttc" id="aclassSSD1308_html_a719e43402727ae1d298b633483242a65"><div class="ttname"><a href="classSSD1308.html#a719e43402727ae1d298b633483242a65">SSD1308::writeBitmap</a></div><div class="ttdeci">void writeBitmap(uint8_t *data, uint8_t start_page=0, uint8_t end_page=MAX_PAGE, uint8_t start_col=0, uint8_t end_col=MAX_COL)</div><div class="ttdoc">write a bitmap to the display</div><div class="ttdef"><b>Definition:</b> SSD1308.cpp:196</div></div>
 <div class="ttc" id="aclassSSD1308_html_a9f6a8ffd2452acf066a88d2e2354f89e"><div class="ttname"><a href="classSSD1308.html#a9f6a8ffd2452acf066a88d2e2354f89e">SSD1308::SSD1308</a></div><div class="ttdeci">SSD1308(mbed::I2C *i2c, uint8_t address=SSD1308_DEF_SA)</div><div class="ttdoc">Constructor.</div><div class="ttdef"><b>Definition:</b> SSD1308.cpp:66</div></div>
-<div class="ttc" id="aclassSSD1308_html_aced1bba3c22637bb8b189a8c4a7cce00"><div class="ttname"><a href="classSSD1308.html#aced1bba3c22637bb8b189a8c4a7cce00">SSD1308::clearDisplay</a></div><div class="ttdeci">void clearDisplay()</div><div class="ttdoc">clear the display</div><div class="ttdef"><b>Definition:</b> SSD1308.cpp:91</div></div>
 </div><!-- fragment --> </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a9f6a8ffd2452acf066a88d2e2354f89e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9f6a8ffd2452acf066a88d2e2354f89e">&#9670;&nbsp;</a></span>SSD1308()</h2>
@@ -1004,14 +997,14 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>nop</b> ()</td></tr>
 
 </div>
 </div>
-<a id="a39e417c3d22fa1de2a3801db8c9f4b2b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a39e417c3d22fa1de2a3801db8c9f4b2b">&#9670;&nbsp;</a></span>writeChar()</h2>
+<a id="ae736d6e0dd077985bbab27c477a30909"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae736d6e0dd077985bbab27c477a30909">&#9670;&nbsp;</a></span>writeChar()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void SSD1308::writeChar </td>
+          <td class="memname">int SSD1308::writeChar </td>
           <td>(</td>
           <td class="paramtype">char&#160;</td>
           <td class="paramname"><em>chr</em></td><td>)</td>

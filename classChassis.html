@@ -83,8 +83,8 @@ Public Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a20920c868942620d564786f648c5c736"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#a20920c868942620d564786f648c5c736">Chassis</a> (short lfId, short rfId, short lbId, short rbId)</td></tr>
-<tr class="separator:a20920c868942620d564786f648c5c736"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab45e8f9442dd9b4a831d5d728260e863"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#ab45e8f9442dd9b4a831d5d728260e863">Chassis</a> (short lfId, short rfId, short lbId, short rbId, I2C *i2c)</td></tr>
+<tr class="separator:ab45e8f9442dd9b4a831d5d728260e863"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac944a5794d05e1dbd57cfd6735ecdc60"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#ac944a5794d05e1dbd57cfd6735ecdc60">driveMotors</a> (<a class="el" href="classWheelSpeeds.html">WheelSpeeds</a> speeds)</td></tr>
 <tr class="separator:ac944a5794d05e1dbd57cfd6735ecdc60"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a964c30630d2724e1e4f1774d0df305cc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#a964c30630d2724e1e4f1774d0df305cc">driveXYR</a> (<a class="el" href="classChassisSpeeds.html">ChassisSpeeds</a> speeds)</td></tr>
@@ -172,8 +172,8 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>testDataIndex</b> = 0<
 </div>
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a20920c868942620d564786f648c5c736"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a20920c868942620d564786f648c5c736">&#9670;&nbsp;</a></span>Chassis()</h2>
+<a id="ab45e8f9442dd9b4a831d5d728260e863"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab45e8f9442dd9b4a831d5d728260e863">&#9670;&nbsp;</a></span>Chassis()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -200,7 +200,13 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>testDataIndex</b> = 0<
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">short&#160;</td>
-          <td class="paramname"><em>rbId</em>&#160;</td>
+          <td class="paramname"><em>rbId</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">I2C *&#160;</td>
+          <td class="paramname"><em>i2c</em>&#160;</td>
         </tr>
         <tr>
           <td></td>

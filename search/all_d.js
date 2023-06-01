@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['operator_3c_3c_88',['operator&lt;&lt;',['../classCANMsg.html#ad460c51cb95bca77c602141f06c8a2a1',1,'CANMsg']]],
-  ['operator_3e_3e_89',['operator&gt;&gt;',['../classCANMsg.html#a04a37c4f8c5d7630b4a966f1f49713a3',1,'CANMsg']]]
+  ['minus_97',['minus',['../classPose2D.html#a6ef951a9736608496d23fccf4ee923f0',1,'Pose2D']]]
 ];

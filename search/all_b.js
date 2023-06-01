@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['logger_85',['Logger',['../classLogger.html',1,'']]],
-  ['loop_86',['loop',['../classTRMutex.html#a2407149a29f8539033950caedc1d39bc',1,'TRMutex']]]
+  ['key_93',['Key',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4f',1,'Remote']]],
+  ['keypressed_94',['keyPressed',['../classRemote.html#ab2d4f11023646780e61792a59347de10',1,'Remote']]]
 ];
