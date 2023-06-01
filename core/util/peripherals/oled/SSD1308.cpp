@@ -418,18 +418,21 @@ void SSD1308::writeLevelBar(uint8_t page, uint8_t col, int percentage) {
  *  @brief Start at current cursor location
  *  @param char chr character to write
 */
-void SSD1308::writeChar(char chr) {
+int SSD1308::writeChar(char chr) {
 
   const uint8_t char_index = chr - 0x20;
 
+  int result = 0;
+
   for (uint8_t i = 0; i < 8; i++) {
      if (_inverted) {
-       _sendData( ~font_8x8[char_index][i] );           
+         result += _sendData( ~font_8x8[char_index][i] );
      }
      else {
-       _sendData( font_8x8[char_index][i] );
+         result += _sendData( font_8x8[char_index][i] );
      }  
   }
+  return result;
 
 }
 
@@ -691,7 +694,7 @@ void SSD1308::_sendCommands(uint8_t len, uint8_t* commands) {
  *  @brief Start at current cursor location
  *  @param uint8_t data databyte to write
 */
-void SSD1308::_sendData(uint8_t data){
+bool SSD1308::_sendData(uint8_t data){
 
 #if (I2C_OPTIMIZE == 0)
 //I2C Blockwrite versions dont seem to work ?
@@ -701,7 +704,8 @@ void SSD1308::_sendData(uint8_t data){
     
   databytes[0] = DATA_MODE;
   databytes[1] = data;    
-  _i2c->write(_writeOpcode, databytes, 2);    // Write Data   
+  bool result =_i2c->write(_writeOpcode, databytes, 2);    // Write Data
+    return result;
 
 #else
   _i2c->start();

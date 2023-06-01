@@ -1,8 +1,8 @@
 #include "Chassis.h"
 #include <math.h>
 
-Chassis::Chassis(short lfId, short rfId, short lbId, short rbId) : LF(lfId, CAN_BUS_TYPE, MOTOR_TYPE), RF(rfId, CAN_BUS_TYPE, MOTOR_TYPE),
-LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE), i2c(I2C_SDA, I2C_SCL), imu(i2c, IMU_RESET, MODE_IMU), chassisKalman() {
+Chassis::Chassis(short lfId, short rfId, short lbId, short rbId, I2C *i2c) : LF(lfId, CAN_BUS_TYPE, MOTOR_TYPE), RF(rfId, CAN_BUS_TYPE, MOTOR_TYPE),
+LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE),  imu(*i2c, IMU_RESET, MODE_IMU), chassisKalman() {
     printf("Chassis constructor start\n");
     LF.outCap = 16000;
     RF.outCap = 16000;
