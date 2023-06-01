@@ -45,8 +45,6 @@ double Chassis::rpmToInchesPerSecond(double RPM) {
 }
 
 void Chassis::setMotorPower(int index, double power) {
-    if (power > 100) {}
-    power = 100;
     switch (index) {
         case 0:
             LF.setPower(power * isInverted[0]);
@@ -113,10 +111,6 @@ void Chassis::driveXYRPower(double ref_chassis_power, double lX, double lY, doub
     double powerLB = LB.pidSpeed.calculate(0 - lX + lY + rX, LB.getData(VELOCITY), time_diff);
     double powerRB = RB.pidSpeed.calculate(0 - lX - lY + rX, RB.getData(VELOCITY), time_diff);
 
-    unsigned long time = us_ticker_read() / 1000;
-
-    printf("REF POWER: %i\n", (int) ref_chassis_power);
-
     scale = abs(power_pid.calculate(48, ref_chassis_power, time_diff));
 
     if (ref_chassis_power > 40) {
@@ -126,10 +120,10 @@ void Chassis::driveXYRPower(double ref_chassis_power, double lX, double lY, doub
         powerRB /= scale;
     }
 
-    setMotorPower(0, powerLF);
-    setMotorPower(1, powerRF);
-    setMotorPower(2, powerLB);
-    setMotorPower(3, powerRB);
+    LF.setPower(powerLF);
+    RF.setPower(powerRF);
+    LB.setPower(powerLB);
+    RB.setPower(powerRB);
 }
 
 
@@ -163,14 +157,17 @@ void Chassis::driveOffsetAngle(ChassisSpeeds speeds, double angleOffset) {
     driveXYR({robotRelativeXVelocity, robotRelativeYVelocity, speeds.rotation});
 }
 
+void Chassis::driveTurretRelativePower(ChassisSpeeds speeds, double turretAngleDegrees) {
+    double robotHeading = imuAngles.yaw * PI / 180.0;
+//    printf("Turret angle: %i\n", (int) turretAngleDegrees);
+    driveOffsetAngle(speeds, -turretAngleDegrees * PI / 180.0);
+}
+
 void Chassis::driveFieldRelativePower(double ref_chassis_power, double time_diff, double xVelocityRPM, double yVelocityRPM, double rotationVelocityRPM) {
     double robotHeading = imuAngles.yaw * PI / 180.0;
     driveOffsetAnglePower(ref_chassis_power, time_diff, xVelocityRPM, yVelocityRPM, rotationVelocityRPM, robotHeading);
 }
 
-/**
- * Drives the Chassis, compensating by a certain angle (angleOffset)
-*/
 void Chassis::driveOffsetAnglePower(double ref_chassis_power, double time_diff, double xVelocityRPM, double yVelocityRPM, double rotationVelocityRPM, double angleOffset) {
     double robotRelativeXVelocity = xVelocityRPM * cos(angleOffset) + yVelocityRPM * sin(angleOffset);
     double robotRelativeYVelocity = - xVelocityRPM * sin(angleOffset) + yVelocityRPM * cos(angleOffset);
@@ -255,7 +252,7 @@ void Chassis::periodic() {
 
     z[4] = imuAngles.yaw;
 
-//    printf("Yaw (IMU): %i\n", (int) z[4]);
+    // printf("Yaw (IMU): %i\n", (int) z[4]);
 
     int currTime = us_ticker_read();
     if (lastTimeMs != 0) {

@@ -1,13 +1,3 @@
-set(HEADER_FILES
-        ref_serial.h
-        ref_ui.h
-        crc.h
-)
+file(GLOB SOURCES CONFIGURE_DEPENDS *.cpp *.h *.hpp)
 
-set(SRC_FILES
-        ref_serial.cpp
-        ref_ui.cpp
-        crc.cpp
-)
-
-target_sources(${PROJECT_NAME} PUBLIC ${HEADER_FILES} ${SRC_FILES})
+target_sources(${PROJECT_NAME} PUBLIC ${SOURCES})

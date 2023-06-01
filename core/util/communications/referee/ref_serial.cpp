@@ -423,15 +423,18 @@ void referee_data_pack_handle(uint8_t sof,uint16_t cmd_id, uint8_t *p_data, uint
 	/*****数据上传*****/
 	// USART_ClearFlag(UART4,USART_FLAG_TC);
     LL_USART_ClearFlag_TC(USART3);
+
+    /*
 	for(i=0;i<frame_length;i++)
 	{
-    
 	//   USART_SendData(UART4,tx_buff[i]);
-    LL_USART_TransmitData8(USART3, tx_buff[i]);                        //
+        LL_USART_TransmitData8(USART3, tx_buff[i]);                        //
     // HAL_UART_Transmit(huart4, tx_buff[i], sizeof(tx_buff[i]), 10);     
-    // b->write(tx_buff, frame_length);
 
 	//   while (USART_GetFlagStatus(UART4,USART_FLAG_TC) == RESET); //等待之前的字符发送完成
 		while(LL_USART_IsActiveFlag_TC(USART3) == RESET);
     }
+    */
+   
+    b->write(tx_buff, frame_length);
 }

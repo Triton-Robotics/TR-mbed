@@ -640,6 +640,9 @@ typedef  struct __packed
 // ------------------------------
 // Extra stuff
 
+/** @brief Receive data from the referee system serial port
+	@param b Serial object
+*/
 void JudgeSystem_USART_Receive_DMA(BufferedSerial* b);
 void Judge_GetMessage(uint16_t Data_Length);
 void Judge_sendPC(BufferedSerial* b);
@@ -671,10 +674,22 @@ extern ext_dart_client_cmd_t   ext_dart_client_cmd;
 // ------------------------------
 // MY PART (function headers)
 
+// Return 1 if robot is in red team, 0 if blue.
 _Bool is_red_or_blue(void);
+
+// Return robot ID.
 uint8_t get_robot_id(void);
+
+// Return robot remaining HP.
 uint8_t get_remain_hp(void);
 
+/** @brief Send data to the referee system serial port
+	@param sof SOF (0xA5)
+	@param cmd_id Command ID
+	@param p_data Pointer to data
+	@param len Length
+	@param b Serial object
+*/
 void referee_data_pack_handle(uint8_t sof,uint16_t cmd_id, uint8_t *p_data, uint16_t len, BufferedSerial* b);
 
 #endif

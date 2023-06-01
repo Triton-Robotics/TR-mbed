@@ -1,6 +1,5 @@
-// By: 水木皆Ming on CSDN
+// By: 水木皆Ming on CSDN & RoboMaster Referee System Serial Port Protocol Appendix
 // https://blog.csdn.net/zhang1079528541/article/details/115435696
-// https://www.its203.com/article/zhang1079528541/115435696?2022-04-05
 
 #include "crc.h"
 
