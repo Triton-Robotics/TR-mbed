@@ -33,6 +33,7 @@ int main(){
     float desiredPosition = float(int((actualPosition / dr)) * dr) + 200;
     int p;
     int t;
+    float dp;
 
     printf("------------------------------------\n");
     printf("[i] %d\n", int(actualPosition));
@@ -61,9 +62,10 @@ int main(){
                 else if(previousMid && nowDown)
                     desiredPosition -= dr;
 
-                p = 3000 * int(((desiredPosition - float(actualPosition)) / dr) + abs(desiredPosition - float(actualPosition)) / (desiredPosition - float(actualPosition)));
+                dp = desiredPosition - float(actualPosition);
+                p = 3000 * int(dp / dr + abs(dp) / dp);
                 p += t;
-                p -= int((pow((dr - abs(desiredPosition - float(actualPosition))) / dr, 2.7) * t) * abs(desiredPosition - float(actualPosition)) / (desiredPosition - float(actualPosition)));
+                p -= int((pow((dr - abs(dp)) / dr, 2.7) * t) * (abs(dp) / dp));
 
                 if (abs(p) > 32760)
                     p = (abs(p) / p) * 32760;
