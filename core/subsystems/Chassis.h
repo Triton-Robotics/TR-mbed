@@ -19,7 +19,7 @@
 #define MOTOR_TYPE M3508
 #define INPUT_THRESHOLD 0.01
 
-#define I2C_SDA PB_7
+#define I2C_SDA PB_9
 #define I2C_SCL PB_8
 #define IMU_RESET PA_8
 
@@ -43,7 +43,7 @@ public:
      * @param lbId Left back motor CAN ID
      * @param rbId Right back motor CAN ID
      */
-    Chassis(short lfId, short rfId, short lbId, short rbId);
+    Chassis(short lfId, short rfId, short lbId, short rbId, I2C *i2c);
 
     /**
      * The BrakeMode enum is used to set the brake mode of the chassis.
@@ -194,8 +194,6 @@ private:
 
     double beybladeSpeed;
     bool beybladeIncreasing;
-    I2C i2c;
-    SSD1308 oled;
     BNO055 imu;
     BNO055_ANGULAR_POSITION_typedef imuAngles;
 
