@@ -22,7 +22,8 @@
 // CANMotor LB(1,NewCANHandler::CANBUS_1,M3508);
 // CANMotor RB(3,NewCANHandler::CANBUS_1,M3508);
 
-Chassis chassis(1, 2, 3, 4);
+I2C i2c(I2C_SDA, I2C_SCL);
+Chassis chassis(1, 2, 3, 4, &i2c);
 RamseteCommand command(
         Pose2D(0, 0, 0), Pose2D(20, 20, 0), 2, &chassis);
 DigitalOut led(L25);
