@@ -1,16 +1,14 @@
 #include "main.h"
 #include "mbed.h"
 
+#define dr (8191.0 / 9.0)
+
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "EndlessLoop"
+
 DJIMotor jaspdexer(7, CANHandler::CANBUS_1, GIMBLY);
 DigitalOut led(LED1);
-//AnalogIn kp(A0);
-//AnalogIn kI(A1);
-//AnalogIn kD(A2);
 
-
-// Check lS moves from 2 to 3 when the switch is moved up
 
 int main(){
 
@@ -32,15 +30,13 @@ int main(){
     DJIMotor::getFeedback();
 
     int actualPosition = jaspdexer.getData(MULTITURNANGLE);
-    int s = 0;
-    float desiredPosition = float(int((actualPosition / (8191.0 / 9.0))) * (8191.0 / 9.0)) + 100;
+    float desiredPosition = float(int((actualPosition / dr)) * dr) + 200;
+    int p;
+    int t;
 
     printf("------------------------------------\n");
     printf("[i] %d\n", int(actualPosition));
     printf("[p] %d\n", int(desiredPosition));
-
-    //ThisThread::sleep_for(5000ms);
-
 
     while (true) {
         unsigned long timeStart = us_ticker_read() / 1000;
@@ -56,40 +52,38 @@ int main(){
 
             led = !led;
             actualPosition = jaspdexer.getData(MULTITURNANGLE);
+            t = jaspdexer.getData(TORQUE);
 
-            if(rS == Remote::SwitchState::UP) {
+            if(rS == Remote::SwitchState::DOWN) {
                 if(previousMid && nowUp)
-                    desiredPosition += 8191.0 / 9;
+                    desiredPosition += dr;
 
                 else if(previousMid && nowDown)
-                    desiredPosition -= 8191.0 / 9;
+                    desiredPosition -= dr;
 
-                jaspdexer.setPosition(int(desiredPosition));
+                p = 3000 * int(((desiredPosition - float(actualPosition)) / dr) + abs(desiredPosition - float(actualPosition)) / (desiredPosition - float(actualPosition)));
+                p += t;
+                p -= int((pow((dr - abs(desiredPosition - float(actualPosition))) / dr, 2.7) * t) * abs(desiredPosition - float(actualPosition)) / (desiredPosition - float(actualPosition)));
 
-            }else if(rS == Remote::SwitchState::DOWN) {
-                if(previousMid && nowUp)
-                    desiredPosition += 8191.0 / 9;
+                if (abs(p) > 32760)
+                    p = (abs(p) / p) * 32760;
 
-                else if(previousMid && nowDown)
-                    desiredPosition -= 8191.0 / 9;
-
-                s = 3000 * (int((desiredPosition - actualPosition) / (8191.0 / 9.0)) + 1);
-                if (s > 32760)
-                    s = 32760;
-
-                if(int(desiredPosition) > actualPosition)
-                    jaspdexer.setPower(s);
+                if(abs(int(desiredPosition) - actualPosition) > 50)
+                    jaspdexer.setPower(p);
 
                 else
                     jaspdexer.setPower(0);
 
-                printf("s %d\n", s);
+                printf("s %d\n", p);
+                printf("torque: %d\n", t);
 
             }else if(rS == Remote::SwitchState::MID) {
-                desiredPosition = float(int((actualPosition / (8191.0 / 9.0))) * (8191.0 / 9.0)) + 100;
+                desiredPosition = float(int((actualPosition / dr)) * dr) + 200;
                 jaspdexer.setPosition(int(desiredPosition));
                 jaspdexer.setPower(0);
-            }
+
+            }else
+                jaspdexer.setPower(0);
 
             printf("pos: %d\n", int(desiredPosition));
             printf("POSITION: %d\n\n", actualPosition);
