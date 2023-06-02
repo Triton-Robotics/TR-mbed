@@ -218,9 +218,10 @@ unsigned long lastTime = 0;
 
                     chassis.periodic();
 
-                    chassis.driveXYRPower(ref_chassis_power, 5 * lX, 5 * lY, 0, time - lastTime);
+                    int max_power = ext_game_robot_state.data.chassis_power_limit;
+                    chassis.driveXYRPower(ref_chassis_power, max_power, 5 * lX, 5 * lY, time - lastTime, false);
 
-//                    lastTime = time;
+                   lastTime = time;
 //
 //                    printf("ref: %f\n", ref_chassis_power);
 
@@ -278,17 +279,22 @@ unsigned long lastTime = 0;
             }else if(rS == Remote::SwitchState::MID){ //disable all the non-serializer components
 //                chassis.driveXYR(0,0,0);
                 chassis.driveFieldRelative({0, 0, 0});
-                 yaw.setPower(0); pitch.setPower(0);
+                yaw.setPower(0); 
+                pitch.setPower(0);
             }else if(rS == Remote::SwitchState::UP ){ // beyblade mode
-                chassis.beyblade(lX * 5.0, lY * 5.0, yaw.getData(MULTITURNANGLE) * 360.0 / 8192 + 90, false);
+                double ref_chassis_power = ext_power_heat_data.data.chassis_power;
+                // printf("Ref power: %i\n", (int) ref_chassis_power);
+                unsigned long time = us_ticker_read() / 1000;
+                int max_power = ext_game_robot_state.data.chassis_power_limit;
+                chassis.driveXYRPower(ref_chassis_power, max_power, 5 * lX, 5 * lY, time - lastTime, true);
+                lastTime = time;
+                //chassis.beyblade(lX * 5.0, lY * 5.0, yaw.getData(MULTITURNANGLE) * 360.0 / 8192 + 90, false);
                 pitch.setPosition((rY / 1.25) + 6500);
                 yawSetpoint += rX / 3.5;
 //                yawSetpoint =  - 3 * rX;
                 yaw.setPosition(-chassis.getHeadingDegrees() * 8192 / 360 + yaw.getData(MULTITURNANGLE) - yawSetpoint);
 //                yaw.setPosition(0);
 //                yaw.setPower(0); pitch.setPower(0);
-                double ref_chassis_power = ext_power_heat_data.data.chassis_power;
-                printf("Ref power: %i\n", (int) ref_chassis_power);
             }
 
             if (lS == Remote::SwitchState::UP) {
