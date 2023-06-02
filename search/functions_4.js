@@ -9,5 +9,5 @@ var searchData=
   ['driveoffsetangle_258',['driveOffsetAngle',['../classChassis.html#a96455bb04cbf91df5f817b2a73843ff7',1,'Chassis']]],
   ['driveturretrelative_259',['driveTurretRelative',['../classChassis.html#ad39d1c1c41a0053331eff67b0f8db595',1,'Chassis']]],
   ['drivexyr_260',['driveXYR',['../classChassis.html#a964c30630d2724e1e4f1774d0df305cc',1,'Chassis']]],
-  ['drivexyrpower_261',['driveXYRPower',['../classChassis.html#a3740dfa7985ecf0b39dc7e64f494a56f',1,'Chassis']]]
+  ['drivexyrpower_261',['driveXYRPower',['../classChassis.html#a58f76ea47ac6616659f6e42323c606f2',1,'Chassis']]]
 ];
