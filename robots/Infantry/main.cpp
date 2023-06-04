@@ -3,6 +3,7 @@
 //#include <jetson.h>
 #include <cstdlib>
 #include <commands/RamseteCommand.h>
+#include <iostream>
 #include "communications/DJIRemote.h"
 #include "mbed.h"
 //#include " COMPONENT_SD/include/SD/SDBlockDevice.h"
@@ -194,8 +195,9 @@ unsigned long lastTime = 0;
 //            printf("Ry: %i\n", (int) rY);
 
              refLoop++;
-             if(refLoop > 5){
+             if(refLoop >= 25){
                  refereeThread(&referee);
+                 //printf("thread\n");
                  refLoop = 0;
 //                 led = ext_power_heat_data.data.chassis_power > 0;
 //                 printf("%d\n",ext_power_heat_data.data.chassis_power);
@@ -298,16 +300,32 @@ unsigned long lastTime = 0;
             }
 
             if (lS == Remote::SwitchState::UP) {
-                //indexer.setPower(1200);
-                indexer.setSpeed(2000);
-//                printf("Indexer data: %i %i %i\n", (int) (indexer.powerOut), (int) (indexer.getData(ANGLE)), (int) indexer.getData(VELOCITY));
-                setFlyWheelSpeed(20000);
 
+                // Getting referee barrel temperature
                 uint16_t ref_chassis_temp1 = ext_power_heat_data.data.shooter_id1_17mm_cooling_heat;
-                //uint16_t ref_chassis_temp2 = ext_power_heat_data.data.shooter_id1_17mm_cooling_heat;
-                printf("Ref temperature of barrel 1 is: %f -----\n", (float) ref_chassis_temp1);
-                //printf("Ref temperature of barrel 2 is: %f\n", ref_chassis_temp2);
+                    // std::cout << ref_chassis_temp1 << endl;
+                    printf("Ref temperature of barrel 1 is: %i\n", (int) ref_chassis_temp1);
 
+                // Stop shooting based on Infantry's level
+                int heatMax = ext_game_robot_state.data.shooter_id1_17mm_cooling_limit;
+                    printf("Maximum barrel temperature currently is: %i\n", (int) heatMax);
+
+                // cooling rate
+                int coolrate = ext_game_robot_state.data.shooter_id1_17mm_cooling_rate;
+
+                if (us_ticker_read() - timeStart > 1)
+                    ref_chassis_temp1 = ref_chassis_temp1 - coolrate / 10;
+
+                if (ref_chassis_temp1 < heatMax) {
+                    //indexer.setPower(1200);
+                    indexer.setSpeed(2000);
+                    // printf("Indexer data: %i %i %i\n", (int) (indexer.powerOut), (int) (indexer.getData(ANGLE)), (int) indexer.getData(VELOCITY));
+                    setFlyWheelSpeed(20000);
+                }
+                else {
+                    indexer.setSpeed(0);
+                    setFlyWheelSpeed(0);
+                }
 
 //               if (timeStart / 100 == 0) {
 //                   printf("Angle: %i\n", (int) 0);
