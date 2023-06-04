@@ -302,6 +302,13 @@ unsigned long lastTime = 0;
                 indexer.setSpeed(2000);
 //                printf("Indexer data: %i %i %i\n", (int) (indexer.powerOut), (int) (indexer.getData(ANGLE)), (int) indexer.getData(VELOCITY));
                 setFlyWheelSpeed(20000);
+
+                uint16_t ref_chassis_temp1 = ext_power_heat_data.data.shooter_id1_17mm_cooling_heat;
+                //uint16_t ref_chassis_temp2 = ext_power_heat_data.data.shooter_id1_17mm_cooling_heat;
+                printf("Ref temperature of barrel 1 is: %f -----\n", (float) ref_chassis_temp1);
+                //printf("Ref temperature of barrel 2 is: %f\n", ref_chassis_temp2);
+
+
 //               if (timeStart / 100 == 0) {
 //                   printf("Angle: %i\n", (int) 0);
 //                    chassis.printMotorAngle();
