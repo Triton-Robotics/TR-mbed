@@ -1,51 +1,91 @@
 
-#include <communications/Jetson.h>
 #include <mbed.h>
 #include <main.h>
 #include "peripherals/oled/Adafruit_SSD1306.h"
 
-#define CLOCK_CYCLE_LENGTH 25
-
-Jetson jetson(PC_12, PD_2);
-
 Thread cv;
 
+DJIMotor yaw1(5, CANHandler::CANBUS_1, GIMBLY);
+DJIMotor yaw2(7, CANHandler::CANBUS_1, GIMBLY);
+DJIMotor pitch(6, CANHandler::CANBUS_2, GIMBLY);
+//DJIMotor indexer(7, CANHandler::CANBUS_2, C610);
+
 I2C i2c(I2C_SDA, I2C_SCL);
+Chassis chassis(1, 2, 3, 4, &i2c);
 Adafruit_SSD1306_I2c oled(i2c, LED1);
 
+DJIMotor RTOPFLYWHEEL(1, CANHandler::CANBUS_2, M3508);
+DJIMotor LTOPFLYWHEEL(2, CANHandler::CANBUS_2, M3508);
+DJIMotor RBOTTOMFLYWHEEL(5, CANHandler::CANBUS_2, M3508);
+DJIMotor LBOTTOMFLYWHEEL(6, CANHandler::CANBUS_2, M3508);\
+
+void setFlyWheelSpeed(int speed) {
+    LTOPFLYWHEEL.setSpeed(-speed);
+    LBOTTOMFLYWHEEL.setSpeed(speed);
+    RTOPFLYWHEEL.setSpeed(speed);
+    RBOTTOMFLYWHEEL.setSpeed(-speed);
+}
+
 int main(){
+    int yawSetpoint = 0;
 
-//    printf("Starting\n");
+    pitch.pidPosition.feedForward = 1900;
 
-//    cv.start([](){
-//        while(true){
-//            jetson.read();
-//        }
-//    });
+    pitch.setPositionPID(6.3, 0.2, 0.5);
+    pitch.setPositionIntegralCap(10000);
+    pitch.useAbsEncoder = 1;
+    pitch.justPosError = 1;
+
+    yaw1.setPositionPID(5.5, 0.2, 0.4);
+    yaw1.setPositionIntegralCap(10000);
+    yaw1.useAbsEncoder = 0;
+    yaw1.justPosError = 1;
+    yaw1.pidPosition.setOutputCap(100000);
+    yaw1.outCap = 32000;
+
+//    indexer.setSpeedPID(1.94, 0.002, 0.166);
+//    indexer.setSpeedIntegralCap(500000);
+
+    LTOPFLYWHEEL.setSpeedPID(1, 0, 0);
+    RBOTTOMFLYWHEEL.setSpeedPID(1, 0, 0);
+    RTOPFLYWHEEL.setSpeedPID(1, 0, 0);
+    RBOTTOMFLYWHEEL.setSpeedPID(1, 0, 0);
 
     DigitalOut led(LED1);
 
+    DJIMotor::setCANHandlers(&canHandler1,&canHandler2, false, false);
+    DJIMotor::getFeedback();
+
     while(true){
         led = !led;
-//        printf("Data: %f, %f, %f\n", jetson.get(Jetson::cv::X), jetson.get(Jetson::cv::Y), jetson.get(Jetson::cv::Z));
 
-//        double ref_chassis_power = ext_power_heat_data.data.chassis_power;
+//        double ref_chassis_power = ext_power_heat_data.data.chass
+//                yawSetpoint =  - 3 * rX;is_power;
 //        printf("Ref power: %i\n", (int) (ref_chassis_power * 100));
 //
-//        remoteRead();
-//        printf("RS: %i\n", rS);
+        remoteRead();
+        pitch.setPosition((rY / 2) + 7000);
+        chassis.driveTurretRelative({lX * 5.0, lY * 5.0, 0}, 0);
 
-//    oled.fillDisplay();
-//    oled.writeString(1, 1, "THIS IS A LARGE STRING\n");
-//    oled.clearDisplay();
-//    printf("Write result: %i\n", oled.writeChar('t'));
-//    oled.clearDisplay();
-        oled.clearDisplay();
-        oled.writeChar(('j'));
-        oled.display();
+//        if (rX >= 0) {
+//            yawSetpoint = 0;
+//        } else {
+//            yawSetpoint = -2500;
+//        }
+        yawSetpoint -= rX / 4.5;
+        yaw1.setPosition(-yawSetpoint);
+        yaw2.setPower(yaw1.powerOut);
 
-
-
-        ThisThread::sleep_for(CLOCK_CYCLE_LENGTH);
+        if (lS == Remote::SwitchState::UP) {
+//            indexer.setSpeed(-2000);
+//            indexer.setPower(0);
+            setFlyWheelSpeed(8000);
+        } else { //disable serializer
+//            indexer.setPower(0);
+            setFlyWheelSpeed(0);
+        }
+        DJIMotor::sendValues();
+        DJIMotor::getFeedback();
+        ThisThread::sleep_for(1ms);
     }
 }
