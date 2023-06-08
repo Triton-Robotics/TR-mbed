@@ -3,12 +3,10 @@
 #include <main.h>
 #include "peripherals/oled/Adafruit_SSD1306.h"
 
-Thread cv;
-
 DJIMotor yaw1(5, CANHandler::CANBUS_1, GIMBLY);
 DJIMotor yaw2(7, CANHandler::CANBUS_1, GIMBLY);
 DJIMotor pitch(6, CANHandler::CANBUS_2, GIMBLY);
-//DJIMotor indexer(7, CANHandler::CANBUS_2, C610);
+DJIMotor indexer(7, CANHandler::CANBUS_2, C610);
 
 I2C i2c(I2C_SDA, I2C_SCL);
 Chassis chassis(1, 2, 3, 4, &i2c);
@@ -43,8 +41,8 @@ int main(){
     yaw1.pidPosition.setOutputCap(100000);
     yaw1.outCap = 32000;
 
-//    indexer.setSpeedPID(1.94, 0.002, 0.166);
-//    indexer.setSpeedIntegralCap(500000);
+    indexer.setSpeedPID(1.94, 0.002, 0.166);
+    indexer.setSpeedIntegralCap(500000);
 
     LTOPFLYWHEEL.setSpeedPID(1, 0, 0);
     RBOTTOMFLYWHEEL.setSpeedPID(1, 0, 0);
@@ -56,35 +54,43 @@ int main(){
     DJIMotor::setCANHandlers(&canHandler1,&canHandler2, false, false);
     DJIMotor::getFeedback();
 
+    unsigned long loopTimer = us_ticker_read() / 1000;
+
     while(true){
+
+        unsigned long timeStart = us_ticker_read() / 1000;
         led = !led;
+        if(timeStart - loopTimer > 25) {
+            loopTimer = timeStart;
 
 //        double ref_chassis_power = ext_power_heat_data.data.chass
 //                yawSetpoint =  - 3 * rX;is_power;
 //        printf("Ref power: %i\n", (int) (ref_chassis_power * 100));
 //
-        remoteRead();
-        pitch.setPosition((rY / 2) + 7000);
-        chassis.driveTurretRelative({lX * 5.0, lY * 5.0, 0}, 0);
+            remoteRead();
+            printf("RS: %i\n", rS);
+            pitch.setPosition((rY / 2) + 7000);
+            chassis.driveTurretRelative({lX * 5.0, lY * 5.0, 0}, 0);
 
 //        if (rX >= 0) {
 //            yawSetpoint = 0;
 //        } else {
 //            yawSetpoint = -2500;
 //        }
-        yawSetpoint -= rX / 4.5;
-        yaw1.setPosition(-yawSetpoint);
-        yaw2.setPower(yaw1.powerOut);
+            yawSetpoint -= rX / 4.5;
+            yaw1.setPosition(-yawSetpoint);
+            yaw2.setPower(yaw1.powerOut);
 
-        if (lS == Remote::SwitchState::UP) {
+            if (lS == Remote::SwitchState::UP) {
 //            indexer.setSpeed(-2000);
 //            indexer.setPower(0);
-            setFlyWheelSpeed(8000);
-        } else { //disable serializer
+                setFlyWheelSpeed(8000);
+            } else { //disable serializer
 //            indexer.setPower(0);
-            setFlyWheelSpeed(0);
+                setFlyWheelSpeed(0);
+            }
+            DJIMotor::sendValues();
         }
-        DJIMotor::sendValues();
         DJIMotor::getFeedback();
         ThisThread::sleep_for(1ms);
     }
