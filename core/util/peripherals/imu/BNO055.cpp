@@ -94,7 +94,7 @@ void BNO055::get_quaternion(BNO055_QUATERNION_TypeDef *result)
     select_page(0);
     dt[0] = BNO055_QUATERNION_W_LSB;
     int writeResult = _i2c.write(chip_addr, dt, 1, true);
-    printf("IMU Write result: %i\n", writeResult);
+//    printf("IMU Write result: %i\n", writeResult);
     if (!writeResult)  {
         if (cantReadDataCount > 0) {
             reset();

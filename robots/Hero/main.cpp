@@ -170,12 +170,20 @@ int main()
 
             if (lS == Remote::SwitchState::UP) {
                 //indexer.setPower(1200);
-                indexer.setPower(20000);
+                if (rY < 200 && rY > -200) {
+                    indexer.setPower(0);
+                } else {
+                    indexer.setPower(rY * 32);
+                }
 //                setFlyWheelPwr(80000);
                 LFLYWHEEL.setPower(-16384); RFLYWHEEL.setPower(16384);
             }else if(lS == Remote::SwitchState::MID){ //disable serializer
                 //indexer.setSpeed(5);
-                indexer.setPower(20000);
+                if (rY < 200 && rY > -200) {
+                    indexer.setPower(0);
+                } else {
+                    indexer.setPower(rY * 32);
+                }
 //                setFlyWheelPwr(60000);
                 LFLYWHEEL.setPower(-16384); RFLYWHEEL.setPower(16384);
             }else if(lS == Remote::SwitchState::DOWN){
