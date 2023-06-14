@@ -13,7 +13,8 @@
 // CANMotor RB(3,NewCANHandler::CANBUS_1,M3508);
 
 
-Chassis chassis(1, 2, 3, 4);
+I2C i2c(I2C_SDA, I2C_SCL);
+Chassis chassis(1, 2, 3, 4, &i2c);
 DigitalOut led(LED1);
 
 DJIMotor yaw(5, CANHandler::CANBUS_1, GIMBLY);
@@ -35,8 +36,8 @@ Remote::SwitchState prevRS = Remote::SwitchState::UNKNOWN, prevLS = Remote::Swit
 // PWMMotor RFLYWHEEL(D12); PWMMotor LFLYWHEEL(D11);
 // PWMMotor flyWheelMotors[] = {RFLYWHEEL, LFLYWHEEL};
 
-DJIMotor RFLYWHEEL(6, CANHandler::CANBUS_1,M3508);
-DJIMotor LFLYWHEEL(5, CANHandler::CANBUS_1,M3508);
+DJIMotor RFLYWHEEL(8, CANHandler::CANBUS_2,M3508);
+DJIMotor LFLYWHEEL(5, CANHandler::CANBUS_2,M3508);
 
 void setFlyWheelPwr(int pwr) {
     // for (int i = 0; i < 2; i++)
@@ -86,8 +87,15 @@ int main()
     yaw.justPosError = 1;
 
     //indexer.setSpeedPID(0.34, 0.002, 0.166);
-    indexer.setSpeedIntegralCap(50000);
+//    indexer.setSpeedIntegralCap(50000);
 
+    indexer.justPosError = true;
+    indexer.setPositionOutputCap(100000);
+    indexer.setSpeedOutputCap(1000000);
+    indexer.setPositionIntegralCap(100000);
+    indexer.setSpeedIntegralCap(100000);
+    indexer.outCap = 100000;
+    
     LFLYWHEEL.outCap = 16384;
     RFLYWHEEL.outCap = 16384;
 
@@ -110,7 +118,6 @@ int main()
         led = !led;
         remoteRead();
 
-
         unsigned long timeStart = us_ticker_read() / 1000;
         if(timeStart - loopTimer > 25){
             loopTimer = timeStart;
@@ -121,7 +128,6 @@ int main()
             //     refLoop = 0;
             //     //led = ext_power_heat_data.data.chassis_power > 0;
             //     //printf("%d\n",ext_power_heat_data.data.chassis_power);
-                printf("L%d:%d R%d:%d\n", LFLYWHEEL.getData(VELOCITY), LFLYWHEEL.getData(POWEROUT),RFLYWHEEL.getData(VELOCITY),RFLYWHEEL.getData(POWEROUT));
             }
 //            printf("A %i B %i\n", rS, lS);
 
@@ -164,13 +170,13 @@ int main()
 
             if (lS == Remote::SwitchState::UP) {
                 //indexer.setPower(1200);
-                indexer.setSpeed(5 + rY/75);
-                //setFlyWheelPwr(80000);
+                indexer.setPower(20000);
+//                setFlyWheelPwr(80000);
                 LFLYWHEEL.setPower(-16384); RFLYWHEEL.setPower(16384);
             }else if(lS == Remote::SwitchState::MID){ //disable serializer
                 //indexer.setSpeed(5);
-                indexer.setPower(rY*20);
-                //setFlyWheelPwr(60000);
+                indexer.setPower(20000);
+//                setFlyWheelPwr(60000);
                 LFLYWHEEL.setPower(-16384); RFLYWHEEL.setPower(16384);
             }else if(lS == Remote::SwitchState::DOWN){
                 ///////////////////////////////////////////
