@@ -19,7 +19,6 @@ private:
     float outputCap;
     float lastError = 0;
 
-
 public:
     bool debug = false;
     bool debugPIDterms = false;
@@ -27,6 +26,11 @@ public:
 
     float kI;
     float sumError = 0;
+
+    int d10xMultiplier = 0;
+    int slopeCarry = 5;
+    int carryCount = 0;
+    double prevRealError = 0;
 
     /**
      * Creates a new PID object with the default control parameters

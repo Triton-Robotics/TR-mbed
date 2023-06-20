@@ -3,6 +3,7 @@
 //
 
 #include "PID.h"
+#include <math.h>
 
 PID::PID(){
     kP = 0; kI = 0; kD = 0;
@@ -40,10 +41,20 @@ float PID::calculate(float desiredV, float actualV, double dt){
 //    printf("dt (ms): %i\n", (int) (1000 * dt));
 
     float error = (desiredV - actualV);
-    float PIDCalc = kP * error + kI * sumError + kD * ((double)(error - lastError)/dt);
+
+    if(lastError == error && carryCount < slopeCarry){
+        carryCount ++;
+    }else{
+        prevRealError = lastError;
+        carryCount = 0;
+    }
+
+    float PIDCalc = kP * error + kI * sumError + kD * ((double)(error - prevRealError) * (pow(10,d10xMultiplier)/dt));
     if(debugPIDterms)
-        printf("P: %f\t I: %f\t D: %f\t\n", error, sumError, (double)(error - lastError)/dt);
+        printf("P: %f\t I: %f\t D: %f\t\n", kP * error, kI * sumError, kD * ((double)(error - lastError) * (pow(10,d10xMultiplier)/dt)));
     
+    //printf("dd[%f]\n",((double)(error - lastError)));
+
     sumError += error * dt;
     lastError = error;
 
@@ -64,6 +75,8 @@ float PID::calculate(float desiredV, float actualV, double dt){
         else if(PIDCalc < -outputCap)
             PIDCalc = -outputCap;
     }
+
+    
 
     return PIDCalc + feedForward;
 }
