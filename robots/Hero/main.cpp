@@ -1,7 +1,7 @@
 #include "main.h"
-#include "Hero.h"
-#include <cstdlib>
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "EndlessLoop"
 #define PI 3.14159265
 
 #define LOWERBOUND 1000
@@ -33,9 +33,6 @@ unsigned long totalTime;
 bool sticksMoved = false;
 Remote::SwitchState prevRS = Remote::SwitchState::UNKNOWN, prevLS = Remote::SwitchState::UNKNOWN;
 
-// PWMMotor RFLYWHEEL(D12); PWMMotor LFLYWHEEL(D11);
-// PWMMotor flyWheelMotors[] = {RFLYWHEEL, LFLYWHEEL};
-
 DJIMotor RFLYWHEEL(8, CANHandler::CANBUS_2,M3508);
 DJIMotor LFLYWHEEL(5, CANHandler::CANBUS_2,M3508);
 
@@ -51,43 +48,36 @@ void setFlyWheelPwr(int pwr) {
 
 Thread imuThread;
 
-void runImuThread() {
+[[noreturn]] void runImuThread() {
     chassis.initializeImu();
     while (true) {
         chassis.readImu();
         ThisThread::sleep_for(25);
     }
-
 }
 
 int main()
 {
     imuThread.start(runImuThread);
-    float speedmultiplier = 3;
-    float powmultiplier = 2;
-    float translationalmultiplier = 1.5; // was 3
-    float beybladespeedmult = 1;
+    float speedMultiplier = 3;
+    float powMultiplier = 2;
+    float translationalMultiplier = 1.5; // was 3
+    float beybladeSpeedMult = 1;
 
     DJIMotor::setCANHandlers(&canHandler1,&canHandler2, false, false);
 
-    // LB.setSpeedPID(1.75, 0.351, 5.63);
-    // RF.setSpeedPID(1.073, 0.556, 0);
-    // RB.setSpeedPID(1.081, 0.247, 0.386);
-    // LF.setSpeedPID(.743, 0.204, 0.284);
     pitch.setPositionPID(4, 0.85, 0.15);
     pitch.pidPosition.setIntegralCap(3000);
     //pitch.setPositionPID(4, 0.35, 0.35);
     pitch.setPositionIntegralCap(10000);
 
-    pitch.useAbsEncoder = 1;
-    pitch.justPosError = 1;
+    pitch.useAbsEncoder = true;
+    pitch.justPosError = true;
 
     yaw.setPositionPID(3.5, 0, 0.25);
     yaw.setPositionIntegralCap(10000);
-    yaw.justPosError = 1;
+    yaw.justPosError = true;
 
-    //indexer.setSpeedPID(0.34, 0.002, 0.166);
-//    indexer.setSpeedIntegralCap(50000);
 
     indexer.justPosError = true;
     indexer.setPositionOutputCap(100000);
@@ -108,7 +98,7 @@ int main()
     bool strawberryJam = false;
     int refLoop=0;
 
-    int yawSetpoint = 0;
+    int yawSetPoint = 0;
 
     DJIMotor::getFeedback();
     double beybladeSpeed = 2;
@@ -123,32 +113,23 @@ int main()
             loopTimer = timeStart;
 
             refLoop++;
-            if(refLoop > 50){
-            //     //refereeThread(&referee);
-            //     refLoop = 0;
-            //     //led = ext_power_heat_data.data.chassis_power > 0;
-            //     //printf("%d\n",ext_power_heat_data.data.chassis_power);
-            }
-//            printf("A %i B %i\n", rS, lS);
-
-            //printf("stik %d swit %d\n", lY, lS);
 
             if (!sticksMoved) {
                 chassis.driveXYR({0,0,0});
-                if ((prevLS != Remote::SwitchState::UNKNOWN && lS != prevLS )|| (prevRS != Remote::SwitchState::UNKNOWN && rS != prevRS)) {
+                if ((prevLS != Remote::SwitchState::UNKNOWN && lS != prevLS ) || (prevRS != Remote::SwitchState::UNKNOWN && rS != prevRS)) {
                     sticksMoved = true;
                 } else {
                     prevLS = lS;
                     prevRS = rS;
                 }
             } else if(rS == Remote::SwitchState::DOWN){ // All non-serializer motors activated
-                int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
+                int LFa = lY + lX * translationalMultiplier + rX, RFa = lY - lX * translationalMultiplier - rX, LBa = lY - lX * translationalMultiplier + rX, RBa = lY + lX * translationalMultiplier - rX;
                 chassis.driveFieldRelative({lX / 500.0, lY / 500.0, rX / 500.0});
 
                 pitch.setPosition((-rY / 2) + 5600);
                 // yaw.setSpeed(rX/100);
-                yawSetpoint -= rX / 10.0;
-                yaw.setPosition(yawSetpoint);
+                yawSetPoint -= rX / 10.0;
+                yaw.setPosition(yawSetPoint);
 
 
             }else if(rS == Remote::SwitchState::MID){ //disable all the non-serializer components
@@ -158,14 +139,14 @@ int main()
                 // chassis.beyblade(lX / 500.0, lY / 500.0, true);
                 // yaw.setPower(0); pitch.setPower(0);
 
-                int LFa = lY + lX*translationalmultiplier + rX, RFa = lY - lX*translationalmultiplier - rX, LBa = lY - lX*translationalmultiplier + rX, RBa = lY + lX*translationalmultiplier - rX;
+                int LFa = lY + lX * translationalMultiplier + rX, RFa = lY - lX * translationalMultiplier - rX, LBa = lY - lX * translationalMultiplier + rX, RBa = lY + lX * translationalMultiplier - rX;
                 chassis.driveFieldRelative({lX / 500.0, lY / 500.0, 0});
 
                 //pitch.setPosition((rY / 2) + 5600);
                 pitch.setPower(-rY*5);
                 // yaw.setSpeed(rX/100);
-                yawSetpoint -= rX / 5.0;
-                yaw.setPosition(yawSetpoint);
+                yawSetPoint -= rX / 5.0;
+                yaw.setPosition(yawSetPoint);
             }
 
             if (lS == Remote::SwitchState::UP) {
@@ -214,3 +195,17 @@ int main()
         ThisThread::sleep_for(1ms);
     }
 }
+
+
+
+//if(refLoop > 50){
+//            //     //refereeThread(&referee);
+//            //     refLoop = 0;
+//            //     //led = ext_power_heat_data.data.chassis_power > 0;
+//            //     //printf("%d\n",ext_power_heat_data.data.chassis_power);
+//            }
+////            printf("A %i B %i\n", rS, lS);
+//
+//            //printf("stik %d swit %d\n", lY, lS);
+
+#pragma clang diagnostic pop

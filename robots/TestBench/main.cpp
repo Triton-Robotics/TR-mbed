@@ -2,7 +2,7 @@
 #include "mbed.h"
 
 #define dr (8191.0 / 9.0)
-#define smooth true
+#define smooth false
 
 /*
  * if smooth is true, balls will smoothly come out of serializer with no double feed,
@@ -18,7 +18,7 @@
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "EndlessLoop"
 
-DJIMotor jaspdexer(7, CANHandler::CANBUS_1, GIMBLY);
+DJIMotor indexer(7, CANHandler::CANBUS_1, GIMBLY);
 DigitalOut led(LED1);
 
 
@@ -30,18 +30,18 @@ int main(){
     bool nowDown;
 
     //remote.unfiltered = true;
-    jaspdexer.justPosError = true;
-    jaspdexer.setPositionOutputCap(100000);
-    jaspdexer.setSpeedOutputCap(1000000);
-    jaspdexer.setPositionIntegralCap(100000);
-    jaspdexer.setSpeedIntegralCap(100000);
-    jaspdexer.outCap = 100000;
+    indexer.justPosError = true;
+    indexer.setPositionOutputCap(100000);
+    indexer.setSpeedOutputCap(1000000);
+    indexer.setPositionIntegralCap(100000);
+    indexer.setSpeedIntegralCap(100000);
+    indexer.outCap = 100000;
 
     DJIMotor::setCANHandlers(&canHandler1,&canHandler2, false, false);
     DJIMotor::sendValues();
     DJIMotor::getFeedback();
 
-    int actualPosition = jaspdexer.getData(MULTITURNANGLE);
+    int actualPosition = indexer.getData(MULTITURNANGLE);
     float desiredPosition = float(int((actualPosition / dr)) * dr) + 200;
     int p;
     int t;
@@ -64,8 +64,8 @@ int main(){
             nowDown = bool(remote.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::DOWN);
 
             led = !led;
-            actualPosition = jaspdexer.getData(MULTITURNANGLE);
-            t = jaspdexer.getData(TORQUE);
+            actualPosition = indexer.getData(MULTITURNANGLE);
+            t = indexer.getData(TORQUE);
 
             if(rS == Remote::SwitchState::DOWN) {
                 if(previousMid && nowUp)
@@ -89,21 +89,21 @@ int main(){
                     p = (abs(p) / p) * 32760;
 
                 if(abs(int(desiredPosition) - actualPosition) > 50)
-                    jaspdexer.setPower(p);
+                    indexer.setPower(p);
 
                 else
-                    jaspdexer.setPower(0);
+                    indexer.setPower(0);
 
                 printf("s %d\n", p);
                 printf("torque: %d\n", t);
 
             }else if(rS == Remote::SwitchState::MID) {
                 desiredPosition = float(int((actualPosition / dr)) * dr) + 200;
-                jaspdexer.setPosition(int(desiredPosition));
-                jaspdexer.setPower(0);
+                indexer.setPosition(int(desiredPosition));
+                indexer.setPower(0);
 
             }else
-                jaspdexer.setPower(0);
+                indexer.setPower(0);
 
             printf("pos: %d\n", int(desiredPosition));
             printf("POSITION: %d\n\n", actualPosition);
