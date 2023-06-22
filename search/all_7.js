@@ -11,7 +11,7 @@ var searchData=
   ['get_5fquaternion_68',['get_quaternion',['../classBNO055.html#a31dc7d5a3db043d03eb203e91225ee34',1,'BNO055']]],
   ['getbrakemode_69',['getBrakeMode',['../classChassis.html#a3eac84eb3b12b0cc60fc29cc547d5fe7',1,'Chassis']]],
   ['getchannel_70',['getChannel',['../classRemote.html#ac6d107d7f8d9ffc9d882b77af7fb15ca',1,'Remote']]],
-  ['getfeedback_71',['getFeedback',['../classCANHandler.html#a0c910d17448a50c9912fae1415f79ef1',1,'CANHandler']]],
+  ['getfeedback_71',['getFeedback',['../classCANHandler.html#ac88d0c1dfff2021f2095d73fa8c6f6e3',1,'CANHandler']]],
   ['getheadingdegrees_72',['getHeadingDegrees',['../classChassis.html#a2153238f20030935c86ca21593db91ce',1,'Chassis']]],
   ['getkd_73',['getkD',['../classPID.html#aacaeb2fd6aa6efc215ffc4cb036d0cc1',1,'PID']]],
   ['getki_74',['getkI',['../classPID.html#a273993d8372d809d2c3d89377ff658bb',1,'PID']]],
