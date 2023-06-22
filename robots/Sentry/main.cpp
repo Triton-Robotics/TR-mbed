@@ -30,7 +30,7 @@ int main(){
 
     pitch.pidPosition.feedForward = 1900;
 
-    pitch.setPositionPID(21.3, 0.3, 15.5);
+    pitch.setPositionPID(24.3, 0.3, 35.5);
     pitch.setPositionIntegralCap(10000);
     pitch.setPositionOutputCap(20000);
     pitch.useAbsEncoder = 1;
@@ -76,19 +76,27 @@ int main(){
             //printff("Pitch:%d PWR: %d\n",pitch.getData(ANGLE),pitch.getData(POWEROUT));
             //printff("M2:%d %d\n",chassis.getMotor(1)>>VELOCITY,chassis.getMotor(1)>>POWEROUT);
             //chassis.printMotorAngle();
-            
-            chassis.driveTurretRelative({lX * 5.0, lY * 5.0, 0}, 0);
 
-            if(rS == Remote::SwitchState::UP){
+            //printff("%d\n",Wh);
+            
+            int bb = 0;
+
+            if(!(rS == Remote::SwitchState::MID)){
                 yawSetpoint -= rX / 4.5;
                 yaw1.setPosition(-yawSetpoint);
                 pitch.setPosition((2*rY / 3) + 6700);
                 yaw2.setPower(yaw1.powerOut);
+                bb = 2000;
             }else{
                 yaw1.setPower(0);
                 yaw2.setPower(0);
                 pitch.setPower(0);
             }
+            if(rS == Remote::SwitchState::DOWN){
+                bb = 0;
+            }
+
+            chassis.driveTurretRelative({-lX * 5.0, -lY * 5.0, bb},  -yaw1.getData(MULTITURNANGLE) * 360.0 / 8192 + 90);
 
             if (lS == Remote::SwitchState::UP) {
 //              indexerL.setSpeed(-2000);
