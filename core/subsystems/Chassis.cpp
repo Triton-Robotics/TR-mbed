@@ -147,6 +147,12 @@ void Chassis::driveTurretRelative(ChassisSpeeds speeds, double turretAngleDegree
     driveOffsetAngle(speeds, -turretAngleDegrees * PI / 180.0);
 }
 
+void Chassis::driveTurretRelativePower(double ref_chassis_power, double max_power, ChassisSpeeds speeds, double turretAngleDegrees) {
+    double robotHeading = imuAngles.yaw * PI / 180.0;
+//    printf("Turret angle: %i\n", (int) turretAngleDegrees);
+    driveOffsetAngle(speeds, -turretAngleDegrees * PI / 180.0);
+}
+
 
 void Chassis::printMotorAngle() {
     printf("LF: %i\n", (int) LF.getData(MULTITURNANGLE));
@@ -162,6 +168,12 @@ void Chassis::driveOffsetAngle(ChassisSpeeds speeds, double angleOffset) {
     double robotRelativeXVelocity = speeds.x * cos(angleOffset) + speeds.y * sin(angleOffset);
     double robotRelativeYVelocity = - speeds.x * sin(angleOffset) + speeds.y * cos(angleOffset);
     driveXYR({robotRelativeXVelocity, robotRelativeYVelocity, speeds.rotation});
+}
+
+void Chassis::driveOffsetAnglePower(double ref_chassis_power, double max_power, ChassisSpeeds speeds, double angleOffset) {
+    double robotRelativeXVelocity = speeds.x * cos(angleOffset) + speeds.y * sin(angleOffset);
+    double robotRelativeYVelocity = - speeds.x * sin(angleOffset) + speeds.y * cos(angleOffset);
+    driveXYRPower(ref_chassis_power, max_power, robotRelativeXVelocity, robotRelativeYVelocity, speeds.rotation);
 }
 
 void Chassis::driveAngle(double angleRadians, double speedRPM, double rotationVelocityRPM) {

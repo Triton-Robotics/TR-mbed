@@ -19,7 +19,7 @@
 #define MOTOR_TYPE M3508
 #define INPUT_THRESHOLD 0.01
 
-#define I2C_SDA PB_9
+#define I2C_SDA PB_7
 #define I2C_SCL PB_8
 #define IMU_RESET PA_8
 
@@ -66,6 +66,12 @@ public:
      */
     void driveXYR(ChassisSpeeds speeds);
 
+    void driveXYRPower(double ref_chassis_power, double max_power, double lX, double lY, double time_diff, bool beyblading = false);
+    
+    void driveOffsetAnglePower(double ref_chassis_power, double max_power, ChassisSpeeds speeds, double angleOffset);
+    
+    void driveTurretRelativePower(double ref_chassis_power, double max_power, ChassisSpeeds speeds, double turretAngleDegrees);
+
     /**
      * The driveFieldRelative method is used to drive the chassis in a field relative manner.
      *
@@ -96,12 +102,6 @@ public:
      * @param speedRPM Speed in RPM
      * @param rotationVelcotiyRPM Robot rotation velocity in RPM
      */
-
-    void driveXYRPower(double ref_chassis_power, double max_power, double lX, double lY, double time_diff, bool beyblading);
-    // void driveTurretRelativePower(ChassisSpeeds speeds, double turretAngleDegrees);
-    // void driveFieldRelativePower(double ref_chassis_power, double time_diff, double yVelocityRPM, double xVelocityRPM, double rotationVelocityRPM);
-    // void driveOffsetAnglePower(double ref_chassis_power, double time_diff, double yVelocityRPM, double xVelocityRPM, double rotationVelocityRPM, double angleOffset);
-
     void driveAngle(double angleRadians, double speedRPM, double rotationVelcotiyRPM);
 
     /**
