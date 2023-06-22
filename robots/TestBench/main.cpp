@@ -121,7 +121,7 @@
 #include "mbed.h"
 
 #define dr (8191.0 / 9.0)
-#define smooth true
+#define smooth false
 
 /*
  * if smooth is true, balls will smoothly come out of serializer with no double feed,
@@ -137,8 +137,13 @@
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "EndlessLoop"
 
+<<<<<<< HEAD
 DJIMotor pitch(6, CANHandler::CANBUS_2, GIMBLY);
 DigitalOut led(L26);
+=======
+DJIMotor indexer(7, CANHandler::CANBUS_1, GIMBLY);
+DigitalOut led(LED1);
+>>>>>>> main
 
 
 int main(){
@@ -149,6 +154,7 @@ int main(){
     bool nowDown;
 
     //remote.unfiltered = true;
+<<<<<<< HEAD
     pitch.pidPosition.feedForward = 1900;
 
     pitch.setPositionPID(21.3, 0.3, 0.5);
@@ -157,14 +163,30 @@ int main(){
     pitch.useAbsEncoder = 1;
     pitch.justPosError = 1;
     pitch.pidPosition.d10xMultiplier = 0;
+=======
+    indexer.justPosError = true;
+    indexer.setPositionOutputCap(100000);
+    indexer.setSpeedOutputCap(1000000);
+    indexer.setPositionIntegralCap(100000);
+    indexer.setSpeedIntegralCap(100000);
+    indexer.outCap = 100000;
+>>>>>>> main
 
     DJIMotor::setCANHandlers(&canHandler1,&canHandler2, false, false);
     DJIMotor::sendValues();
     DJIMotor::getFeedback();
 
+<<<<<<< HEAD
     double kP = 21.3;
     double kI = 0.3;
     double kD = 0.1;
+=======
+    int actualPosition = indexer.getData(MULTITURNANGLE);
+    float desiredPosition = float(int((actualPosition / dr)) * dr) + 200;
+    int p;
+    int t;
+    float dp;
+>>>>>>> main
 
     int internalTimer = 0;
 
@@ -174,8 +196,54 @@ int main(){
         if(timeStart - loopTimer > 25){
             loopTimer = timeStart;
             led = !led;
+<<<<<<< HEAD
 
             remoteRead();
+=======
+            actualPosition = indexer.getData(MULTITURNANGLE);
+            t = indexer.getData(TORQUE);
+
+            if(rS == Remote::SwitchState::DOWN) {
+                if(previousMid && nowUp)
+                    desiredPosition += dr;
+
+                else if(previousMid && nowDown)
+                    desiredPosition -= dr;
+
+                dp = desiredPosition - float(actualPosition);
+                p = 3000 * int(dp / dr + abs(dp) / dp);
+                p += t;
+
+                if(smooth){
+                    p -= int((pow((dr - abs(dp)) / dr, 2.7) * t) * (abs(dp) / dp));
+                }else{
+                    p += int(1 * (-pow((abs(dp) - dr/2 - 30) / 8.35, 2) + 3000) * abs(dp) / dp);
+                    p -= int((pow((dr - abs(dp)) / dr, 3) * t) * (abs(dp) / dp));
+                }
+
+                if (abs(p) > 32760)
+                    p = (abs(p) / p) * 32760;
+
+                if(abs(int(desiredPosition) - actualPosition) > 50)
+                    indexer.setPower(p);
+
+                else
+                    indexer.setPower(0);
+
+                printf("s %d\n", p);
+                printf("torque: %d\n", t);
+
+            }else if(rS == Remote::SwitchState::MID) {
+                desiredPosition = float(int((actualPosition / dr)) * dr) + 200;
+                indexer.setPosition(int(desiredPosition));
+                indexer.setPower(0);
+
+            }else
+                indexer.setPower(0);
+
+            printf("pos: %d\n", int(desiredPosition));
+            printf("POSITION: %d\n\n", actualPosition);
+>>>>>>> main
 
             pitch.setPositionPID(kP, kI, kD);
             pitch.setPosition(((int)lS - 2)*400 + 6800);

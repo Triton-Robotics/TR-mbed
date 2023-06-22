@@ -157,7 +157,7 @@ public:
     void setSpeed(int speed);
     void setPosition(int position);
 
-    double rpmToTicksPerSecond(double RPM);
+    __attribute__((unused)) static double rpmToTicksPerSecond(double RPM);
 
     __attribute__((unused)) void zeroPos();
 

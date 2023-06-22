@@ -147,7 +147,7 @@ void DJIMotor::operator=(int value){
 }
 
 
-double DJIMotor::rpmToTicksPerSecond(double RPM) {
+__attribute__((unused)) double DJIMotor::rpmToTicksPerSecond(double RPM) {
     return 0;
 //    return RPM * TICKS_PER_ROTATION / (M3508_GEAR_RATIO * SECONDS_PER_MINUTE);
 }
@@ -384,7 +384,7 @@ void DJIMotor::getFeedback(){
                 allMotors [i][mNum/4][mNum%4] -> timeOfLastFeedback = us_ticker_read() / 1000;
                 lastCalled[i][mNum/4][mNum%4] = us_ticker_read() / 1000;
 
-                if(allMotors[i][mNum/4][mNum%4]->motorData[TEMPERATURE] > 70)
+                if(allMotors[i][mNum/4][mNum%4]->motorData[TEMPERATURE] > 80)
                     printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS %d DEGREES CELSIUS\n",msgID,allMotors[i][mNum/4][mNum%4]->motorData[TEMPERATURE]);
 
             }else{
