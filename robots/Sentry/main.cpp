@@ -53,9 +53,12 @@ int main(){
     // RBOTTOMFLYWHEEL.setSpeedPID(1, 0, 0);
 
     DigitalOut led(L26);
+    DigitalOut led2(L27);
 
     DJIMotor::setCANHandlers(&canHandler1,&canHandler2, false, false);
     DJIMotor::getFeedback();
+
+    int refLoop = 0;
 
     unsigned long loopTimer = us_ticker_read() / 1000;
 
@@ -69,9 +72,20 @@ int main(){
             led = !led;
 //        double ref_chassis_power = ext_power_heat_data.data.chass
 //                yawSetpoint =  - 3 * rX;is_power;
-//        printf("Ref power: %i\n", (int) (ref_chassis_power * 100));
 //
             remoteRead();
+
+            refLoop++;
+            if (refLoop >= 5)
+            {
+                refereeThread(&referee);
+                // printf("thread\n");
+                refLoop = 0;
+                //                 led = ext_power_heat_data.data.chassis_power > 0;
+                //                 printf("%d\n",ext_power_heat_data.data.chassis_power);
+                led2 = !led2;
+            }
+
             //printf("RS: %i\n", rS);
             //printff("Pitch:%d PWR: %d\n",pitch.getData(ANGLE),pitch.getData(POWEROUT));
             //printff("M2:%d %d\n",chassis.getMotor(1)>>VELOCITY,chassis.getMotor(1)>>POWEROUT);
@@ -96,7 +110,12 @@ int main(){
                 bb = 0;
             }
 
-            chassis.driveTurretRelative({-lX * 5.0, -lY * 5.0, bb},  -yaw1.getData(MULTITURNANGLE) * 360.0 / 8192 + 90);
+            double ref_chassis_power = ext_power_heat_data.data.chassis_power;
+            int max_power = ext_game_robot_state.data.chassis_power_limit;
+
+            printff("Ref power: %i\n", (int) (ref_chassis_power * 100));
+
+            chassis.driveTurretRelativePower(ref_chassis_power, max_power,{-lX * 5.0, -lY * 5.0, bb},  -yaw1.getData(MULTITURNANGLE) * 360.0 / 8192 + 90);
 
             if (lS == Remote::SwitchState::UP) {
 //              indexerL.setSpeed(-2000);
