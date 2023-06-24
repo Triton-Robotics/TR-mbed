@@ -15,7 +15,8 @@
 
 I2C i2c(I2C_SDA, I2C_SCL);
 Chassis chassis(1, 2, 3, 4, &i2c);
-DigitalOut led(LED1);
+DigitalOut led(L26);
+DigitalOut led2(L27);
 
 DJIMotor yaw(5, CANHandler::CANBUS_1, GIMBLY);
 DJIMotor pitch(6, CANHandler::CANBUS_1, GIMBLY);
@@ -105,13 +106,25 @@ int main()
     bool beybladeIncreasing = true;
 
     while (true) {
-        led = !led;
+        
 
         unsigned long timeStart = us_ticker_read() / 1000;
         if(timeStart - loopTimer > 25){
             loopTimer = timeStart;
+            led = !led;
 
             refLoop++;
+
+            if (refLoop >= 5)
+            {
+                refereeThread(&referee);
+                // printf("thread\n");
+                refLoop = 0;
+                //                 led = ext_power_heat_data.data.chassis_power > 0;
+                //                 printf("%d\n",ext_power_heat_data.data.chassis_power);
+                led2 = !led2;
+            }
+
             remoteRead();
 
             if (!sticksMoved) {
