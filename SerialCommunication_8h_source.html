@@ -70,7 +70,7 @@ $(function() {
 <div class="title">SerialCommunication.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef SerialCommunication_hpp</span></div>
+<a href="SerialCommunication_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef SerialCommunication_hpp</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define SerialCommunication_hpp</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;mbed.h&quot;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;cctype&gt;</span></div>
@@ -137,7 +137,7 @@ $(function() {
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;            <span class="keywordflow">return</span> std::atoi(message);</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        }</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <span class="keywordtype">bool</span> strCompare(<span class="keywordtype">char</span> word1[], <span class="keywordtype">char</span> word2[]) {</div>
+<div class="line"><a name="l00091"></a><span class="lineno"><a class="line" href="classSerialCommunication.html#a8fa2324595f1439cba4d4dc469b9d506">   91</a></span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classSerialCommunication.html#a8fa2324595f1439cba4d4dc469b9d506">strCompare</a>(<span class="keywordtype">char</span> word1[], <span class="keywordtype">char</span> word2[]) {</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;            <span class="keywordtype">int</span> i = 0;</div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;            <span class="keywordflow">while</span> (word1[i++] != <span class="charliteral">&#39;\0&#39;</span>) {</div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;                <span class="keywordflow">if</span> (word1[i] != word2[i])</div>
@@ -153,6 +153,7 @@ $(function() {
 <div class="ttc" id="aclassSerialCommunication_html_a2655518d96d0f9b59bdc3398ac34bf21"><div class="ttname"><a href="classSerialCommunication.html#a2655518d96d0f9b59bdc3398ac34bf21">SerialCommunication::update</a></div><div class="ttdeci">bool update(char message[], int sizeOfMessage, int sleep_fordelay)</div><div class="ttdoc">Check for new data into Serial.</div><div class="ttdef"><b>Definition:</b> SerialCommunication.h:62</div></div>
 <div class="ttc" id="aclassSerialCommunication_html_a2cea633b3ae3f88cb723dd08baf87d1a"><div class="ttname"><a href="classSerialCommunication.html#a2cea633b3ae3f88cb723dd08baf87d1a">SerialCommunication::PCRead</a></div><div class="ttdeci">bool PCRead(char message[])</div><div class="ttdoc">Check for new input into Serial monitor.</div><div class="ttdef"><b>Definition:</b> SerialCommunication.h:29</div></div>
 <div class="ttc" id="aclassSerialCommunication_html_a865e5834845e3eb13862bdde71b14eaa"><div class="ttname"><a href="classSerialCommunication.html#a865e5834845e3eb13862bdde71b14eaa">SerialCommunication::SerialCommunication</a></div><div class="ttdeci">SerialCommunication(PinName TX, PinName RX, int baud)</div><div class="ttdoc">Construct a new Serial Communication Object.</div><div class="ttdef"><b>Definition:</b> SerialCommunication.h:20</div></div>
+<div class="ttc" id="aclassSerialCommunication_html_a8fa2324595f1439cba4d4dc469b9d506"><div class="ttname"><a href="classSerialCommunication.html#a8fa2324595f1439cba4d4dc469b9d506">SerialCommunication::strCompare</a></div><div class="ttdeci">bool strCompare(char word1[], char word2[])</div><div class="ttdef"><b>Definition:</b> SerialCommunication.h:91</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

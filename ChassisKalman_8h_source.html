@@ -70,46 +70,53 @@ $(function() {
 <div class="title">ChassisKalman.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">//</span></div>
+<a href="ChassisKalman_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">//</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">// Created by ben332004 on 2/11/23.</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">//</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#ifndef TR_EMBEDDED_CHASSISKALMAN_H</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#define TR_EMBEDDED_CHASSISKALMAN_H</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#define Nsta 6 </span><span class="comment">// 6 states: x, y, and rotation pos and velocity</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#define Mobs 5 </span><span class="comment">// 5 Measurements: velocity of each wheel, and IMU angle</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno"><a class="line" href="ChassisKalman_8h.html#a70b31cfe0717c959b5ecf757bd4adcf9">    8</a></span>&#160;<span class="preprocessor">#define Nsta 6 </span><span class="comment">// 6 states: x, y, and rotation pos and velocity</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="ChassisKalman_8h.html#afe2fd7d498bb68ad247cd176cca5b81b">    9</a></span>&#160;<span class="preprocessor">#define Mobs 5 </span><span class="comment">// 5 Measurements: velocity of each wheel, and IMU angle</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;algorithms/ekf/TinyEKF.h&gt;</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;cmath&gt;</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#define PI 3.14159265</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#define SECONDS_PER_MINUTE 60</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#define TICKS_PER_ROTATION 8192.0</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#define M3508_GEAR_RATIO 19.0</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#define WHEEL_DIAMETER_INCHES 4.615</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#define TRACK_WIDTH_INCHES 18.0</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="ChassisKalman_8h.html#a598a3330b3c21701223ee0ca14316eca">   14</a></span>&#160;<span class="preprocessor">#define PI 3.14159265</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="ChassisKalman_8h.html#ae5e089b553f791f79d02046ff63f3cdb">   15</a></span>&#160;<span class="preprocessor">#define SECONDS_PER_MINUTE 60</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="ChassisKalman_8h.html#af532bf6ece93ef5a2cb631a1dd2bbb84">   16</a></span>&#160;<span class="preprocessor">#define TICKS_PER_ROTATION 8192.0</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="ChassisKalman_8h.html#a2ab4c26eff539dd9388ebdff430ac349">   17</a></span>&#160;<span class="preprocessor">#define M3508_GEAR_RATIO 19.0</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="ChassisKalman_8h.html#a3084a93ecc85cbde5f2ae04db0930044">   18</a></span>&#160;<span class="preprocessor">#define WHEEL_DIAMETER_INCHES 4.615</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="ChassisKalman_8h.html#a1c00a849b02c2dd96e4726fcd5a9ceec">   19</a></span>&#160;<span class="preprocessor">#define TRACK_WIDTH_INCHES 18.0</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
 <div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="classChassisKalman.html">   39</a></span>&#160;<span class="keyword">class </span><a class="code" href="classChassisKalman.html">ChassisKalman</a> : <span class="keyword">public</span> TinyEKF {</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <a class="code" href="classChassisKalman.html">ChassisKalman</a>();</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <a class="code" href="classChassisKalman.html#a263e5f825f0f28009bd10123ed268b9a">ChassisKalman</a>();</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classChassisKalman.html#a5ef8459e1e50d9e993d4200f05b7fa39">setDt</a>(<span class="keywordtype">double</span> dt);</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classChassisKalman.html#a5ef8459e1e50d9e993d4200f05b7fa39">setDt</a>(<span class="keywordtype">double</span> <a class="code" href="classChassisKalman.html#a80a7e01c3e416fb724cdd5ed1f7e5956">dt</a>);</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keywordtype">double</span> dt;</div>
+<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="classChassisKalman.html#a80a7e01c3e416fb724cdd5ed1f7e5956">   50</a></span>&#160;    <span class="keywordtype">double</span> <a class="code" href="classChassisKalman.html#a80a7e01c3e416fb724cdd5ed1f7e5956">dt</a>;</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keywordtype">double</span> pythag(<span class="keywordtype">double</span> dx, <span class="keywordtype">double</span> dy);</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordtype">double</span> degreesToRadians(<span class="keywordtype">double</span> degrees);</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keywordtype">double</span> <a class="code" href="classChassisKalman.html#a3910b9e2213102e1e702624c38290dec">pythag</a>(<span class="keywordtype">double</span> dx, <span class="keywordtype">double</span> dy);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordtype">double</span> <a class="code" href="classChassisKalman.html#a9c9a1233c14c5010aca437b793805dcf">degreesToRadians</a>(<span class="keywordtype">double</span> degrees);</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keywordtype">void</span> model(<span class="keywordtype">double</span> fx[Nsta], <span class="keywordtype">double</span> F[Nsta][Nsta], <span class="keywordtype">double</span> hx[Mobs], <span class="keywordtype">double</span> H[Mobs][Nsta]) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classChassisKalman.html#af90d012edf93747fc914cd66a602e6e9">model</a>(<span class="keywordtype">double</span> fx[<a class="code" href="ChassisKalman_8h.html#a70b31cfe0717c959b5ecf757bd4adcf9">Nsta</a>], <span class="keywordtype">double</span> F[<a class="code" href="ChassisKalman_8h.html#a70b31cfe0717c959b5ecf757bd4adcf9">Nsta</a>][<a class="code" href="ChassisKalman_8h.html#a70b31cfe0717c959b5ecf757bd4adcf9">Nsta</a>], <span class="keywordtype">double</span> hx[<a class="code" href="ChassisKalman_8h.html#afe2fd7d498bb68ad247cd176cca5b81b">Mobs</a>], <span class="keywordtype">double</span> H[<a class="code" href="ChassisKalman_8h.html#afe2fd7d498bb68ad247cd176cca5b81b">Mobs</a>][<a class="code" href="ChassisKalman_8h.html#a70b31cfe0717c959b5ecf757bd4adcf9">Nsta</a>]) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;};</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor">#endif </span><span class="comment">//TR_EMBEDDED_CHASSISKALMAN_H</span></div>
+<div class="ttc" id="aChassisKalman_8h_html_a70b31cfe0717c959b5ecf757bd4adcf9"><div class="ttname"><a href="ChassisKalman_8h.html#a70b31cfe0717c959b5ecf757bd4adcf9">Nsta</a></div><div class="ttdeci">#define Nsta</div><div class="ttdef"><b>Definition:</b> ChassisKalman.h:8</div></div>
+<div class="ttc" id="aChassisKalman_8h_html_afe2fd7d498bb68ad247cd176cca5b81b"><div class="ttname"><a href="ChassisKalman_8h.html#afe2fd7d498bb68ad247cd176cca5b81b">Mobs</a></div><div class="ttdeci">#define Mobs</div><div class="ttdef"><b>Definition:</b> ChassisKalman.h:9</div></div>
 <div class="ttc" id="aclassChassisKalman_html"><div class="ttname"><a href="classChassisKalman.html">ChassisKalman</a></div><div class="ttdef"><b>Definition:</b> ChassisKalman.h:39</div></div>
+<div class="ttc" id="aclassChassisKalman_html_a263e5f825f0f28009bd10123ed268b9a"><div class="ttname"><a href="classChassisKalman.html#a263e5f825f0f28009bd10123ed268b9a">ChassisKalman::ChassisKalman</a></div><div class="ttdeci">ChassisKalman()</div><div class="ttdef"><b>Definition:</b> ChassisKalman.cpp:8</div></div>
+<div class="ttc" id="aclassChassisKalman_html_a3910b9e2213102e1e702624c38290dec"><div class="ttname"><a href="classChassisKalman.html#a3910b9e2213102e1e702624c38290dec">ChassisKalman::pythag</a></div><div class="ttdeci">double pythag(double dx, double dy)</div><div class="ttdef"><b>Definition:</b> ChassisKalman.cpp:37</div></div>
 <div class="ttc" id="aclassChassisKalman_html_a5ef8459e1e50d9e993d4200f05b7fa39"><div class="ttname"><a href="classChassisKalman.html#a5ef8459e1e50d9e993d4200f05b7fa39">ChassisKalman::setDt</a></div><div class="ttdeci">void setDt(double dt)</div><div class="ttdef"><b>Definition:</b> ChassisKalman.cpp:33</div></div>
+<div class="ttc" id="aclassChassisKalman_html_a80a7e01c3e416fb724cdd5ed1f7e5956"><div class="ttname"><a href="classChassisKalman.html#a80a7e01c3e416fb724cdd5ed1f7e5956">ChassisKalman::dt</a></div><div class="ttdeci">double dt</div><div class="ttdef"><b>Definition:</b> ChassisKalman.h:50</div></div>
+<div class="ttc" id="aclassChassisKalman_html_a9c9a1233c14c5010aca437b793805dcf"><div class="ttname"><a href="classChassisKalman.html#a9c9a1233c14c5010aca437b793805dcf">ChassisKalman::degreesToRadians</a></div><div class="ttdeci">double degreesToRadians(double degrees)</div><div class="ttdef"><b>Definition:</b> ChassisKalman.cpp:41</div></div>
+<div class="ttc" id="aclassChassisKalman_html_af90d012edf93747fc914cd66a602e6e9"><div class="ttname"><a href="classChassisKalman.html#af90d012edf93747fc914cd66a602e6e9">ChassisKalman::model</a></div><div class="ttdeci">void model(double fx[Nsta], double F[Nsta][Nsta], double hx[Mobs], double H[Mobs][Nsta]) override</div><div class="ttdef"><b>Definition:</b> ChassisKalman.cpp:45</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

@@ -70,47 +70,54 @@ $(function() {
 <div class="title">WheelKalman.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">//</span></div>
+<a href="WheelKalman_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">//</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">// Created by ben332004 on 2/22/23.</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">//</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#ifndef TR_EMBEDDED_WHEELKALMAN_H</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#define TR_EMBEDDED_WHEELKALMAN_H</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#define Nsta 2 </span><span class="comment">// 2 states: rotational angle and velocity</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#define Mobs 2 </span><span class="comment">// 2 measurements: rotational angle and velocity</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#define ControlInputs 1 </span><span class="comment">// 1 control input: power sent to motor</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno"><a class="line" href="WheelKalman_8h.html#a70b31cfe0717c959b5ecf757bd4adcf9">    8</a></span>&#160;<span class="preprocessor">#define Nsta 2 </span><span class="comment">// 2 states: rotational angle and velocity</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="WheelKalman_8h.html#afe2fd7d498bb68ad247cd176cca5b81b">    9</a></span>&#160;<span class="preprocessor">#define Mobs 2 </span><span class="comment">// 2 measurements: rotational angle and velocity</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno"><a class="line" href="WheelKalman_8h.html#ac96e5b7c10bc1fa53e18e8efc86392a1">   10</a></span>&#160;<span class="preprocessor">#define ControlInputs 1 </span><span class="comment">// 1 control input: power sent to motor</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;algorithms/ekf/TinyEKF.h&gt;</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;cmath&gt;</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#define SECONDS_PER_MINUTE 60</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#define TICKS_PER_ROTATION 8192.0</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#define M3508_GEAR_RATIO 19.0</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#define WHEEL_DIAMETER_INCHES 5.0</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#define TRACK_WIDTH_INCHES 18.0</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="WheelKalman_8h.html#ae5e089b553f791f79d02046ff63f3cdb">   15</a></span>&#160;<span class="preprocessor">#define SECONDS_PER_MINUTE 60</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="WheelKalman_8h.html#af532bf6ece93ef5a2cb631a1dd2bbb84">   16</a></span>&#160;<span class="preprocessor">#define TICKS_PER_ROTATION 8192.0</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="WheelKalman_8h.html#a2ab4c26eff539dd9388ebdff430ac349">   17</a></span>&#160;<span class="preprocessor">#define M3508_GEAR_RATIO 19.0</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="WheelKalman_8h.html#a3084a93ecc85cbde5f2ae04db0930044">   18</a></span>&#160;<span class="preprocessor">#define WHEEL_DIAMETER_INCHES 5.0</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="WheelKalman_8h.html#a1c00a849b02c2dd96e4726fcd5a9ceec">   19</a></span>&#160;<span class="preprocessor">#define TRACK_WIDTH_INCHES 18.0</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
 <div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classWheelKalman.html">   26</a></span>&#160;<span class="keyword">class </span><a class="code" href="classWheelKalman.html">WheelKalman</a>: <span class="keyword">public</span> TinyEKF {</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <a class="code" href="classWheelKalman.html#a13b949274ccccd72e48de14d9b8583c4">WheelKalman</a>();</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classWheelKalman.html#ac20d698c2003c421e316038caae73fb5">setDt</a>(<span class="keywordtype">double</span> dt);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classWheelKalman.html#ac20d698c2003c421e316038caae73fb5">setDt</a>(<span class="keywordtype">double</span> <a class="code" href="classWheelKalman.html#af5fb60ec5b998fe6d959641a24b4fd72">dt</a>);</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordtype">double</span> dt;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordtype">double</span> u[ControlInputs];</div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="classWheelKalman.html#af5fb60ec5b998fe6d959641a24b4fd72">   40</a></span>&#160;    <span class="keywordtype">double</span> <a class="code" href="classWheelKalman.html#af5fb60ec5b998fe6d959641a24b4fd72">dt</a>;</div>
+<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="classWheelKalman.html#a635d2b40830e1b90b237e96a1a6b28c0">   41</a></span>&#160;    <span class="keywordtype">double</span> <a class="code" href="classWheelKalman.html#a635d2b40830e1b90b237e96a1a6b28c0">u</a>[<a class="code" href="WheelKalman_8h.html#ac96e5b7c10bc1fa53e18e8efc86392a1">ControlInputs</a>];</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordtype">double</span> B[Nsta][ControlInputs];</div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="classWheelKalman.html#afe97527d10c88a38af02945b4024b127">   44</a></span>&#160;    <span class="keywordtype">double</span> <a class="code" href="classWheelKalman.html#afe97527d10c88a38af02945b4024b127">B</a>[<a class="code" href="WheelKalman_8h.html#a70b31cfe0717c959b5ecf757bd4adcf9">Nsta</a>][<a class="code" href="WheelKalman_8h.html#ac96e5b7c10bc1fa53e18e8efc86392a1">ControlInputs</a>];</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordtype">void</span> model(<span class="keywordtype">double</span> fx[Nsta], <span class="keywordtype">double</span> F[Nsta][Nsta], <span class="keywordtype">double</span> hx[Mobs], <span class="keywordtype">double</span> H[Mobs][Nsta]) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classWheelKalman.html#a56ded0fca693872890ed687502e74d2f">model</a>(<span class="keywordtype">double</span> fx[<a class="code" href="WheelKalman_8h.html#a70b31cfe0717c959b5ecf757bd4adcf9">Nsta</a>], <span class="keywordtype">double</span> F[<a class="code" href="WheelKalman_8h.html#a70b31cfe0717c959b5ecf757bd4adcf9">Nsta</a>][<a class="code" href="WheelKalman_8h.html#a70b31cfe0717c959b5ecf757bd4adcf9">Nsta</a>], <span class="keywordtype">double</span> hx[<a class="code" href="WheelKalman_8h.html#afe2fd7d498bb68ad247cd176cca5b81b">Mobs</a>], <span class="keywordtype">double</span> H[<a class="code" href="WheelKalman_8h.html#afe2fd7d498bb68ad247cd176cca5b81b">Mobs</a>][<a class="code" href="WheelKalman_8h.html#a70b31cfe0717c959b5ecf757bd4adcf9">Nsta</a>]) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;};</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">#endif </span><span class="comment">//TR_EMBEDDED_WHEELKALMAN_H</span></div>
+<div class="ttc" id="aWheelKalman_8h_html_a70b31cfe0717c959b5ecf757bd4adcf9"><div class="ttname"><a href="WheelKalman_8h.html#a70b31cfe0717c959b5ecf757bd4adcf9">Nsta</a></div><div class="ttdeci">#define Nsta</div><div class="ttdef"><b>Definition:</b> WheelKalman.h:8</div></div>
+<div class="ttc" id="aWheelKalman_8h_html_ac96e5b7c10bc1fa53e18e8efc86392a1"><div class="ttname"><a href="WheelKalman_8h.html#ac96e5b7c10bc1fa53e18e8efc86392a1">ControlInputs</a></div><div class="ttdeci">#define ControlInputs</div><div class="ttdef"><b>Definition:</b> WheelKalman.h:10</div></div>
+<div class="ttc" id="aWheelKalman_8h_html_afe2fd7d498bb68ad247cd176cca5b81b"><div class="ttname"><a href="WheelKalman_8h.html#afe2fd7d498bb68ad247cd176cca5b81b">Mobs</a></div><div class="ttdeci">#define Mobs</div><div class="ttdef"><b>Definition:</b> WheelKalman.h:9</div></div>
 <div class="ttc" id="aclassWheelKalman_html"><div class="ttname"><a href="classWheelKalman.html">WheelKalman</a></div><div class="ttdef"><b>Definition:</b> WheelKalman.h:26</div></div>
 <div class="ttc" id="aclassWheelKalman_html_a13b949274ccccd72e48de14d9b8583c4"><div class="ttname"><a href="classWheelKalman.html#a13b949274ccccd72e48de14d9b8583c4">WheelKalman::WheelKalman</a></div><div class="ttdeci">WheelKalman()</div><div class="ttdef"><b>Definition:</b> WheelKalman.cpp:7</div></div>
+<div class="ttc" id="aclassWheelKalman_html_a56ded0fca693872890ed687502e74d2f"><div class="ttname"><a href="classWheelKalman.html#a56ded0fca693872890ed687502e74d2f">WheelKalman::model</a></div><div class="ttdeci">void model(double fx[Nsta], double F[Nsta][Nsta], double hx[Mobs], double H[Mobs][Nsta]) override</div><div class="ttdef"><b>Definition:</b> WheelKalman.cpp:32</div></div>
+<div class="ttc" id="aclassWheelKalman_html_a635d2b40830e1b90b237e96a1a6b28c0"><div class="ttname"><a href="classWheelKalman.html#a635d2b40830e1b90b237e96a1a6b28c0">WheelKalman::u</a></div><div class="ttdeci">double u[ControlInputs]</div><div class="ttdef"><b>Definition:</b> WheelKalman.h:41</div></div>
 <div class="ttc" id="aclassWheelKalman_html_ac20d698c2003c421e316038caae73fb5"><div class="ttname"><a href="classWheelKalman.html#ac20d698c2003c421e316038caae73fb5">WheelKalman::setDt</a></div><div class="ttdeci">void setDt(double dt)</div><div class="ttdef"><b>Definition:</b> WheelKalman.cpp:28</div></div>
+<div class="ttc" id="aclassWheelKalman_html_af5fb60ec5b998fe6d959641a24b4fd72"><div class="ttname"><a href="classWheelKalman.html#af5fb60ec5b998fe6d959641a24b4fd72">WheelKalman::dt</a></div><div class="ttdeci">double dt</div><div class="ttdef"><b>Definition:</b> WheelKalman.h:40</div></div>
+<div class="ttc" id="aclassWheelKalman_html_afe97527d10c88a38af02945b4024b127"><div class="ttname"><a href="classWheelKalman.html#afe97527d10c88a38af02945b4024b127">WheelKalman::B</a></div><div class="ttdeci">double B[Nsta][ControlInputs]</div><div class="ttdef"><b>Definition:</b> WheelKalman.h:44</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

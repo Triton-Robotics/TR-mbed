@@ -72,32 +72,31 @@ $(function() {
 <div class="title">CANHandler Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="CANHandler_8h_source.html">CANHandler.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a2567dbcbebbef530cd8f295406b3902a"><td class="memItemLeft" align="right" valign="top"><a id="a2567dbcbebbef530cd8f295406b3902a"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>CANBus</b> { <b>CANBUS_1</b>
-, <b>CANBUS_2</b>
-, <b>NOBUS</b>
+<tr class="memitem:a2567dbcbebbef530cd8f295406b3902a"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902a">CANBus</a> { <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4">CANBUS_1</a>
+, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANBUS_2</a>
+, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aaf360888b91f7657f4c37db6101e69e09">NOBUS</a>
  }</td></tr>
 <tr class="separator:a2567dbcbebbef530cd8f295406b3902a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a7ae4877d6ba72b43694593b5de105d45"><td class="memItemLeft" align="right" valign="top"><a id="a7ae4877d6ba72b43694593b5de105d45"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>CANHandler</b> (PinName canRx, PinName canTx)</td></tr>
+<tr class="memitem:a9b8ed61c6dac73788e4091c12448c76e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCANHandler.html#a9b8ed61c6dac73788e4091c12448c76e">CANHandler</a> ()</td></tr>
+<tr class="separator:a9b8ed61c6dac73788e4091c12448c76e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ae4877d6ba72b43694593b5de105d45"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCANHandler.html#a7ae4877d6ba72b43694593b5de105d45">CANHandler</a> (PinName canRx, PinName canTx)</td></tr>
 <tr class="separator:a7ae4877d6ba72b43694593b5de105d45"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a415414f5289348a031d5436a13cb10f8"><td class="memItemLeft" align="right" valign="top"><a id="a415414f5289348a031d5436a13cb10f8"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>attach</b> (Callback&lt; void()&gt; func, CAN::IrqType type=CAN::IrqType::RxIrq)</td></tr>
+<tr class="memitem:a415414f5289348a031d5436a13cb10f8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCANHandler.html#a415414f5289348a031d5436a13cb10f8">attach</a> (Callback&lt; void()&gt; func, CAN::IrqType type=CAN::IrqType::RxIrq)</td></tr>
 <tr class="separator:a415414f5289348a031d5436a13cb10f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a423563c96d7a7da836a957c5b0c88745"><td class="memItemLeft" align="right" valign="top"><a id="a423563c96d7a7da836a957c5b0c88745"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>updateCANs</b> (PinName canRx, PinName canTx)</td></tr>
+<tr class="memitem:a423563c96d7a7da836a957c5b0c88745"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCANHandler.html#a423563c96d7a7da836a957c5b0c88745">updateCANs</a> (PinName canRx, PinName canTx)</td></tr>
 <tr class="separator:a423563c96d7a7da836a957c5b0c88745"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad251f7cdfa845ca9a90b81d2f5942050"><td class="memItemLeft" align="right" valign="top"><a id="ad251f7cdfa845ca9a90b81d2f5942050"></a>
-CAN *&#160;</td><td class="memItemRight" valign="bottom"><b>getCAN</b> ()</td></tr>
+<tr class="memitem:ad251f7cdfa845ca9a90b81d2f5942050"><td class="memItemLeft" align="right" valign="top">CAN *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCANHandler.html#ad251f7cdfa845ca9a90b81d2f5942050">getCAN</a> ()</td></tr>
 <tr class="separator:ad251f7cdfa845ca9a90b81d2f5942050"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac88d0c1dfff2021f2095d73fa8c6f6e3"><td class="memItemLeft" align="right" valign="top"><a id="ac88d0c1dfff2021f2095d73fa8c6f6e3"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCANHandler.html#ac88d0c1dfff2021f2095d73fa8c6f6e3">getFeedback</a> (int *id, uint8_t bytes[], int canbus)</td></tr>
-<tr class="memdesc:ac88d0c1dfff2021f2095d73fa8c6f6e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get feedback back from the motor. <br /></td></tr>
+<tr class="memitem:ac88d0c1dfff2021f2095d73fa8c6f6e3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCANHandler.html#ac88d0c1dfff2021f2095d73fa8c6f6e3">getFeedback</a> (int *id, uint8_t bytes[], int canbus)</td></tr>
+<tr class="memdesc:ac88d0c1dfff2021f2095d73fa8c6f6e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get feedback back from the motor.  <a href="classCANHandler.html#ac88d0c1dfff2021f2095d73fa8c6f6e3">More...</a><br /></td></tr>
 <tr class="separator:ac88d0c1dfff2021f2095d73fa8c6f6e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18ede89e5acf269b1be91543ee77d282"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCANHandler.html#a18ede89e5acf269b1be91543ee77d282">rawSend</a> (int id, int8_t bytes[])</td></tr>
 <tr class="memdesc:a18ede89e5acf269b1be91543ee77d282"><td class="mdescLeft">&#160;</td><td class="mdescRight">Raw sending of CAN Messages.  <a href="classCANHandler.html#a18ede89e5acf269b1be91543ee77d282">More...</a><br /></td></tr>
@@ -111,14 +110,199 @@ Static Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a12423ab918aeb90842412d988d7c14b5"><td class="memItemLeft" align="right" valign="top"><a id="a12423ab918aeb90842412d988d7c14b5"></a>
-CAN&#160;</td><td class="memItemRight" valign="bottom"><b>can</b></td></tr>
+<tr class="memitem:a12423ab918aeb90842412d988d7c14b5"><td class="memItemLeft" align="right" valign="top">CAN&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a></td></tr>
 <tr class="separator:a12423ab918aeb90842412d988d7c14b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afa15cc41e80357375d4dd9fa5b22e495"><td class="memItemLeft" align="right" valign="top"><a id="afa15cc41e80357375d4dd9fa5b22e495"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>exists</b> = false</td></tr>
+<tr class="memitem:afa15cc41e80357375d4dd9fa5b22e495"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCANHandler.html#afa15cc41e80357375d4dd9fa5b22e495">exists</a> = false</td></tr>
 <tr class="separator:afa15cc41e80357375d4dd9fa5b22e495"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Enumeration Documentation</h2>
+<a id="a2567dbcbebbef530cd8f295406b3902a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2567dbcbebbef530cd8f295406b3902a">&#9670;&nbsp;</a></span>CANBus</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902a">CANHandler::CANBus</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4"></a>CANBUS_1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14"></a>CANBUS_2&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a2567dbcbebbef530cd8f295406b3902aaf360888b91f7657f4c37db6101e69e09"></a>NOBUS&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a9b8ed61c6dac73788e4091c12448c76e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9b8ed61c6dac73788e4091c12448c76e">&#9670;&nbsp;</a></span>CANHandler() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">CANHandler::CANHandler </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7ae4877d6ba72b43694593b5de105d45"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ae4877d6ba72b43694593b5de105d45">&#9670;&nbsp;</a></span>CANHandler() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">CANHandler::CANHandler </td>
+          <td>(</td>
+          <td class="paramtype">PinName&#160;</td>
+          <td class="paramname"><em>canRx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">PinName&#160;</td>
+          <td class="paramname"><em>canTx</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a415414f5289348a031d5436a13cb10f8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a415414f5289348a031d5436a13cb10f8">&#9670;&nbsp;</a></span>attach()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CANHandler::attach </td>
+          <td>(</td>
+          <td class="paramtype">Callback&lt; void()&gt;&#160;</td>
+          <td class="paramname"><em>func</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">CAN::IrqType&#160;</td>
+          <td class="paramname"><em>type</em> = <code>CAN::IrqType::RxIrq</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad251f7cdfa845ca9a90b81d2f5942050"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad251f7cdfa845ca9a90b81d2f5942050">&#9670;&nbsp;</a></span>getCAN()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">CAN* CANHandler::getCAN </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac88d0c1dfff2021f2095d73fa8c6f6e3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac88d0c1dfff2021f2095d73fa8c6f6e3">&#9670;&nbsp;</a></span>getFeedback()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool CANHandler::getFeedback </td>
+          <td>(</td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>bytes</em>[], </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>canbus</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get feedback back from the motor. </p>
+
+</div>
+</div>
 <a id="a487ccd57fdcb83924bcfb22d28d913f9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a487ccd57fdcb83924bcfb22d28d913f9">&#9670;&nbsp;</a></span>printMsg()</h2>
 
@@ -196,6 +380,71 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>exists</b> = false</t
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a423563c96d7a7da836a957c5b0c88745"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a423563c96d7a7da836a957c5b0c88745">&#9670;&nbsp;</a></span>updateCANs()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CANHandler::updateCANs </td>
+          <td>(</td>
+          <td class="paramtype">PinName&#160;</td>
+          <td class="paramname"><em>canRx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">PinName&#160;</td>
+          <td class="paramname"><em>canTx</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a12423ab918aeb90842412d988d7c14b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a12423ab918aeb90842412d988d7c14b5">&#9670;&nbsp;</a></span>can</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">CAN CANHandler::can</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="afa15cc41e80357375d4dd9fa5b22e495"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afa15cc41e80357375d4dd9fa5b22e495">&#9670;&nbsp;</a></span>exists</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool CANHandler::exists = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>

@@ -72,189 +72,1277 @@ $(function() {
 <div class="title">DJIMotor Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="DJIMotor_8h_source.html">DJIMotor.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a40c2408b315b0ff17a5d2edb02a085ac"><td class="memItemLeft" align="right" valign="top"><a id="a40c2408b315b0ff17a5d2edb02a085ac"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>DJIMotor</b> (bool isErroneousMotor=false)</td></tr>
+<tr class="memitem:a40c2408b315b0ff17a5d2edb02a085ac"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a40c2408b315b0ff17a5d2edb02a085ac">DJIMotor</a> (bool isErroneousMotor=false)</td></tr>
 <tr class="separator:a40c2408b315b0ff17a5d2edb02a085ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad9c887b0c27db6eee2b491a2d8fa6bc1"><td class="memItemLeft" align="right" valign="top"><a id="ad9c887b0c27db6eee2b491a2d8fa6bc1"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>DJIMotor</b> (short canID, CANHandler::CANBus bus, motorType mType=STANDARD)</td></tr>
+<tr class="memitem:ad9c887b0c27db6eee2b491a2d8fa6bc1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#ad9c887b0c27db6eee2b491a2d8fa6bc1">DJIMotor</a> (short canID, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902a">CANHandler::CANBus</a> <a class="el" href="classDJIMotor.html#ae6910f2f904793babbe4afef765afea6">bus</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54">motorType</a> <a class="el" href="classDJIMotor.html#a2f04ea4e7fac38ff04298760d70d73bf">mType</a>=<a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a9de934790934fe831fe946c851e8338e">STANDARD</a>)</td></tr>
 <tr class="separator:ad9c887b0c27db6eee2b491a2d8fa6bc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6c1d8d55e831acc23dabce213dad080d"><td class="memItemLeft" align="right" valign="top"><a id="a6c1d8d55e831acc23dabce213dad080d"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>__attribute__</b> ((unused)) __attribute__((unused)) static bool checkConnection(bool debug)</td></tr>
+<tr class="memitem:ad921d2682aaecf47d29339b14f75f708"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#ad921d2682aaecf47d29339b14f75f708">~DJIMotor</a> ()</td></tr>
+<tr class="separator:ad921d2682aaecf47d29339b14f75f708"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c1d8d55e831acc23dabce213dad080d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a6c1d8d55e831acc23dabce213dad080d">__attribute__</a> ((unused)) __attribute__((unused)) static bool checkConnection(bool debug)</td></tr>
 <tr class="separator:a6c1d8d55e831acc23dabce213dad080d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aad1a0ac5667ebe27427d7bf87a408b5b"><td class="memItemLeft" align="right" valign="top"><a id="aad1a0ac5667ebe27427d7bf87a408b5b"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>__attribute__</b> ((unused)) __attribute__((unused)) static bool isMotorConnected(short canID</td></tr>
+<tr class="memitem:aad1a0ac5667ebe27427d7bf87a408b5b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#aad1a0ac5667ebe27427d7bf87a408b5b">__attribute__</a> ((unused)) __attribute__((unused)) static bool isMotorConnected(short canID</td></tr>
 <tr class="separator:aad1a0ac5667ebe27427d7bf87a408b5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af5d04b1288cd6da1e25538edcd4d351b"><td class="memItemLeft" align="right" valign="top"><a id="af5d04b1288cd6da1e25538edcd4d351b"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>__attribute__</b> ((unused)) int getPowerOut() const</td></tr>
+<tr class="memitem:af5d04b1288cd6da1e25538edcd4d351b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#af5d04b1288cd6da1e25538edcd4d351b">__attribute__</a> ((unused)) int getPowerOut() const</td></tr>
 <tr class="separator:af5d04b1288cd6da1e25538edcd4d351b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae4d6663a74cc9f37f06792ea4cbac9c3"><td class="memItemLeft" align="right" valign="top"><a id="ae4d6663a74cc9f37f06792ea4cbac9c3"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>getData</b> (motorDataType data)</td></tr>
+<tr class="memitem:ae4d6663a74cc9f37f06792ea4cbac9c3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#ae4d6663a74cc9f37f06792ea4cbac9c3">getData</a> (<a class="el" href="DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4">motorDataType</a> data)</td></tr>
 <tr class="separator:ae4d6663a74cc9f37f06792ea4cbac9c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab1dc329ff12b1182a2f09cd48f45ef55"><td class="memItemLeft" align="right" valign="top"><a id="ab1dc329ff12b1182a2f09cd48f45ef55"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setValue</b> (int val)</td></tr>
+<tr class="memitem:ab1dc329ff12b1182a2f09cd48f45ef55"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#ab1dc329ff12b1182a2f09cd48f45ef55">setValue</a> (int val)</td></tr>
 <tr class="separator:ab1dc329ff12b1182a2f09cd48f45ef55"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a81a26a2cf396c312de59b8cedcf822c4"><td class="memItemLeft" align="right" valign="top"><a id="a81a26a2cf396c312de59b8cedcf822c4"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setOutput</b> ()</td></tr>
+<tr class="memitem:a81a26a2cf396c312de59b8cedcf822c4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a81a26a2cf396c312de59b8cedcf822c4">setOutput</a> ()</td></tr>
 <tr class="separator:a81a26a2cf396c312de59b8cedcf822c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3bf18bbad498f5bfbb90be496e2d48da"><td class="memItemLeft" align="right" valign="top"><a id="a3bf18bbad498f5bfbb90be496e2d48da"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setPower</b> (int power)</td></tr>
+<tr class="memitem:a3bf18bbad498f5bfbb90be496e2d48da"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a3bf18bbad498f5bfbb90be496e2d48da">setPower</a> (int power)</td></tr>
 <tr class="separator:a3bf18bbad498f5bfbb90be496e2d48da"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77f4a67832fe92cc043f62cb35c7bd7f"><td class="memItemLeft" align="right" valign="top"><a id="a77f4a67832fe92cc043f62cb35c7bd7f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setSpeed</b> (int speed)</td></tr>
+<tr class="memitem:a77f4a67832fe92cc043f62cb35c7bd7f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a77f4a67832fe92cc043f62cb35c7bd7f">setSpeed</a> (int speed)</td></tr>
 <tr class="separator:a77f4a67832fe92cc043f62cb35c7bd7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1bed8e016bd6282794e375322a133a5e"><td class="memItemLeft" align="right" valign="top"><a id="a1bed8e016bd6282794e375322a133a5e"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setPosition</b> (int position)</td></tr>
+<tr class="memitem:a1bed8e016bd6282794e375322a133a5e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a1bed8e016bd6282794e375322a133a5e">setPosition</a> (int position)</td></tr>
 <tr class="separator:a1bed8e016bd6282794e375322a133a5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abc35e5bcdc7cf2af866bb0d1d348a8c4"><td class="memItemLeft" align="right" valign="top"><a id="abc35e5bcdc7cf2af866bb0d1d348a8c4"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>__attribute__</b> ((unused)) static double rpmToTicksPerSecond(double RPM)</td></tr>
+<tr class="memitem:abc35e5bcdc7cf2af866bb0d1d348a8c4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#abc35e5bcdc7cf2af866bb0d1d348a8c4">__attribute__</a> ((unused)) static double rpmToTicksPerSecond(double RPM)</td></tr>
 <tr class="separator:abc35e5bcdc7cf2af866bb0d1d348a8c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa265d713bc37813f819418eb7783cc84"><td class="memItemLeft" align="right" valign="top"><a id="aa265d713bc37813f819418eb7783cc84"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>__attribute__</b> ((unused)) void zeroPos()</td></tr>
+<tr class="memitem:aa265d713bc37813f819418eb7783cc84"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#aa265d713bc37813f819418eb7783cc84">__attribute__</a> ((unused)) void zeroPos()</td></tr>
 <tr class="separator:aa265d713bc37813f819418eb7783cc84"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a303d9c583a4f95e9bce5168172fb2e2d"><td class="memItemLeft" align="right" valign="top"><a id="a303d9c583a4f95e9bce5168172fb2e2d"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>printAllMotorData</b> ()</td></tr>
+<tr class="memitem:a303d9c583a4f95e9bce5168172fb2e2d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a303d9c583a4f95e9bce5168172fb2e2d">printAllMotorData</a> ()</td></tr>
 <tr class="separator:a303d9c583a4f95e9bce5168172fb2e2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a953b0d24e9504794d1c1c0cba36a256c"><td class="memItemLeft" align="right" valign="top"><a id="a953b0d24e9504794d1c1c0cba36a256c"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (int value)</td></tr>
+<tr class="memitem:a953b0d24e9504794d1c1c0cba36a256c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a953b0d24e9504794d1c1c0cba36a256c">operator=</a> (int <a class="el" href="classDJIMotor.html#a186904051041b642514cb9f0c025f1ae">value</a>)</td></tr>
 <tr class="separator:a953b0d24e9504794d1c1c0cba36a256c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3811a92a773ad69bf0f09f6022b095c9"><td class="memItemLeft" align="right" valign="top"><a id="a3811a92a773ad69bf0f09f6022b095c9"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>operator&gt;&gt;</b> (motorDataType data)</td></tr>
+<tr class="memitem:a3811a92a773ad69bf0f09f6022b095c9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a3811a92a773ad69bf0f09f6022b095c9">operator&gt;&gt;</a> (<a class="el" href="DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4">motorDataType</a> data)</td></tr>
 <tr class="separator:a3811a92a773ad69bf0f09f6022b095c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a390e9a5ba16a256ed74c370b9d1252f3"><td class="memItemLeft" align="right" valign="top"><a id="a390e9a5ba16a256ed74c370b9d1252f3"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setPositionPID</b> (float kP, float kI, float kD)</td></tr>
+<tr class="memitem:a390e9a5ba16a256ed74c370b9d1252f3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a390e9a5ba16a256ed74c370b9d1252f3">setPositionPID</a> (float kP, float kI, float kD)</td></tr>
 <tr class="separator:a390e9a5ba16a256ed74c370b9d1252f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abc59ef3c6bac6235a52bcf97de1afbc6"><td class="memItemLeft" align="right" valign="top"><a id="abc59ef3c6bac6235a52bcf97de1afbc6"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setPositionIntegralCap</b> (double cap)</td></tr>
+<tr class="memitem:abc59ef3c6bac6235a52bcf97de1afbc6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#abc59ef3c6bac6235a52bcf97de1afbc6">setPositionIntegralCap</a> (double cap)</td></tr>
 <tr class="separator:abc59ef3c6bac6235a52bcf97de1afbc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aca2b65fce761a1a5ae49b034d10e86f6"><td class="memItemLeft" align="right" valign="top"><a id="aca2b65fce761a1a5ae49b034d10e86f6"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setPositionOutputCap</b> (double cap)</td></tr>
+<tr class="memitem:aca2b65fce761a1a5ae49b034d10e86f6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#aca2b65fce761a1a5ae49b034d10e86f6">setPositionOutputCap</a> (double cap)</td></tr>
 <tr class="separator:aca2b65fce761a1a5ae49b034d10e86f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae5d2425a25d202013e4867bac242d712"><td class="memItemLeft" align="right" valign="top"><a id="ae5d2425a25d202013e4867bac242d712"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setSpeedPID</b> (float kP, float kI, float kD)</td></tr>
+<tr class="memitem:ae5d2425a25d202013e4867bac242d712"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#ae5d2425a25d202013e4867bac242d712">setSpeedPID</a> (float kP, float kI, float kD)</td></tr>
 <tr class="separator:ae5d2425a25d202013e4867bac242d712"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a52cb939650f8dab27642688bd46ac574"><td class="memItemLeft" align="right" valign="top"><a id="a52cb939650f8dab27642688bd46ac574"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setSpeedIntegralCap</b> (double cap)</td></tr>
+<tr class="memitem:a52cb939650f8dab27642688bd46ac574"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a52cb939650f8dab27642688bd46ac574">setSpeedIntegralCap</a> (double cap)</td></tr>
 <tr class="separator:a52cb939650f8dab27642688bd46ac574"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2ac7fba32e99d7f4d3b5361e7db8aa41"><td class="memItemLeft" align="right" valign="top"><a id="a2ac7fba32e99d7f4d3b5361e7db8aa41"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setSpeedOutputCap</b> (double cap)</td></tr>
+<tr class="memitem:a2ac7fba32e99d7f4d3b5361e7db8aa41"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a2ac7fba32e99d7f4d3b5361e7db8aa41">setSpeedOutputCap</a> (double cap)</td></tr>
 <tr class="separator:a2ac7fba32e99d7f4d3b5361e7db8aa41"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:aee36a8b4c297251e2e4ae591a1178513"><td class="memItemLeft" align="right" valign="top"><a id="aee36a8b4c297251e2e4ae591a1178513"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>setCANHandlers</b> (<a class="el" href="classCANHandler.html">CANHandler</a> *bus_1, <a class="el" href="classCANHandler.html">CANHandler</a> *bus_2, bool threadSend=true, bool threadFeedback=true)</td></tr>
+<tr class="memitem:aee36a8b4c297251e2e4ae591a1178513"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#aee36a8b4c297251e2e4ae591a1178513">setCANHandlers</a> (<a class="el" href="classCANHandler.html">CANHandler</a> *bus_1, <a class="el" href="classCANHandler.html">CANHandler</a> *bus_2, bool threadSend=true, bool threadFeedback=true)</td></tr>
 <tr class="separator:aee36a8b4c297251e2e4ae591a1178513"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a693ed44d5c0e9d66e52c87f3d9827c7f"><td class="memItemLeft" align="right" valign="top"><a id="a693ed44d5c0e9d66e52c87f3d9827c7f"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>updateMultiTurnPosition</b> ()</td></tr>
+<tr class="memitem:a693ed44d5c0e9d66e52c87f3d9827c7f"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a693ed44d5c0e9d66e52c87f3d9827c7f">updateMultiTurnPosition</a> ()</td></tr>
 <tr class="separator:a693ed44d5c0e9d66e52c87f3d9827c7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab596b7ab7a6296329095139dc53f630f"><td class="memItemLeft" align="right" valign="top"><a id="ab596b7ab7a6296329095139dc53f630f"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>sendOneID</b> (CANHandler::CANBus bus, short sendIDindex, bool debug=false)</td></tr>
+<tr class="memitem:ab596b7ab7a6296329095139dc53f630f"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#ab596b7ab7a6296329095139dc53f630f">sendOneID</a> (<a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902a">CANHandler::CANBus</a> <a class="el" href="classDJIMotor.html#ae6910f2f904793babbe4afef765afea6">bus</a>, short sendIDindex, bool debug=false)</td></tr>
 <tr class="separator:ab596b7ab7a6296329095139dc53f630f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5c398502c5abe1485158f816fb62ddc6"><td class="memItemLeft" align="right" valign="top"><a id="a5c398502c5abe1485158f816fb62ddc6"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>getFeedback</b> ()</td></tr>
+<tr class="memitem:a5c398502c5abe1485158f816fb62ddc6"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a5c398502c5abe1485158f816fb62ddc6">getFeedback</a> ()</td></tr>
 <tr class="separator:a5c398502c5abe1485158f816fb62ddc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8f64bc2d4648b7a3508e530985b26b7e"><td class="memItemLeft" align="right" valign="top"><a id="a8f64bc2d4648b7a3508e530985b26b7e"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>tickThread</b> ()</td></tr>
+<tr class="memitem:a8f64bc2d4648b7a3508e530985b26b7e"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a8f64bc2d4648b7a3508e530985b26b7e">tickThread</a> ()</td></tr>
 <tr class="separator:a8f64bc2d4648b7a3508e530985b26b7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a13bfd707f9c790420a18ccd33221a74d"><td class="memItemLeft" align="right" valign="top"><a id="a13bfd707f9c790420a18ccd33221a74d"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a13bfd707f9c790420a18ccd33221a74d">feedbackThread</a> ()</td></tr>
-<tr class="memdesc:a13bfd707f9c790420a18ccd33221a74d"><td class="mdescLeft">&#160;</td><td class="mdescRight">the thread that runs the ever-necessary Motor::tick() <br /></td></tr>
+<tr class="memitem:a13bfd707f9c790420a18ccd33221a74d"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a13bfd707f9c790420a18ccd33221a74d">feedbackThread</a> ()</td></tr>
+<tr class="memdesc:a13bfd707f9c790420a18ccd33221a74d"><td class="mdescLeft">&#160;</td><td class="mdescRight">the thread that runs the ever-necessary Motor::tick()  <a href="classDJIMotor.html#a13bfd707f9c790420a18ccd33221a74d">More...</a><br /></td></tr>
 <tr class="separator:a13bfd707f9c790420a18ccd33221a74d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8a6896be139a2a59e52dbd36b34a4d07"><td class="memItemLeft" align="right" valign="top"><a id="a8a6896be139a2a59e52dbd36b34a4d07"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a8a6896be139a2a59e52dbd36b34a4d07">sendThread</a> ()</td></tr>
-<tr class="memdesc:a8a6896be139a2a59e52dbd36b34a4d07"><td class="mdescLeft">&#160;</td><td class="mdescRight">the thread that runs the ever-necessary Motor::tick() <br /></td></tr>
+<tr class="memitem:a8a6896be139a2a59e52dbd36b34a4d07"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a8a6896be139a2a59e52dbd36b34a4d07">sendThread</a> ()</td></tr>
+<tr class="memdesc:a8a6896be139a2a59e52dbd36b34a4d07"><td class="mdescLeft">&#160;</td><td class="mdescRight">the thread that runs the ever-necessary Motor::tick()  <a href="classDJIMotor.html#a8a6896be139a2a59e52dbd36b34a4d07">More...</a><br /></td></tr>
 <tr class="separator:a8a6896be139a2a59e52dbd36b34a4d07"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a139083dd1821bb81a1848f7001a9dc2d"><td class="memItemLeft" align="right" valign="top"><a id="a139083dd1821bb81a1848f7001a9dc2d"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>sendValues</b> ()</td></tr>
+<tr class="memitem:a139083dd1821bb81a1848f7001a9dc2d"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a139083dd1821bb81a1848f7001a9dc2d">sendValues</a> ()</td></tr>
 <tr class="separator:a139083dd1821bb81a1848f7001a9dc2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adffff2089806c76cac3980b7eacb1930"><td class="memItemLeft" align="right" valign="top"><a id="adffff2089806c76cac3980b7eacb1930"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>tick</b> ()</td></tr>
+<tr class="memitem:adffff2089806c76cac3980b7eacb1930"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#adffff2089806c76cac3980b7eacb1930">tick</a> ()</td></tr>
 <tr class="separator:adffff2089806c76cac3980b7eacb1930"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:aab080f976750241cac388566d2c9aa71"><td class="memItemLeft" align="right" valign="top"><a id="aab080f976750241cac388566d2c9aa71"></a>
-unsigned long&#160;</td><td class="memItemRight" valign="bottom"><b>timeSinceLastFeedback</b> = 0</td></tr>
+<tr class="memitem:aab080f976750241cac388566d2c9aa71"><td class="memItemLeft" align="right" valign="top">unsigned long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#aab080f976750241cac388566d2c9aa71">timeSinceLastFeedback</a> = 0</td></tr>
 <tr class="separator:aab080f976750241cac388566d2c9aa71"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0f76fba64922e0aea3aaf4dc3a417111"><td class="memItemLeft" align="right" valign="top"><a id="a0f76fba64922e0aea3aaf4dc3a417111"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>maxSpeed</b> = 8723</td></tr>
+<tr class="memitem:a0f76fba64922e0aea3aaf4dc3a417111"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a0f76fba64922e0aea3aaf4dc3a417111">maxSpeed</a> = 8723</td></tr>
 <tr class="separator:a0f76fba64922e0aea3aaf4dc3a417111"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a58dcf74d423eaa6e60e087cf1ea56426"><td class="memItemLeft" align="right" valign="top"><a id="a58dcf74d423eaa6e60e087cf1ea56426"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>bounds</b> [2] = {0,0}</td></tr>
+<tr class="memitem:a58dcf74d423eaa6e60e087cf1ea56426"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a58dcf74d423eaa6e60e087cf1ea56426">bounds</a> [2] = {0,0}</td></tr>
 <tr class="separator:a58dcf74d423eaa6e60e087cf1ea56426"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac8dabf5aeb9f7777c0f4dc9e8adfb24b"><td class="memItemLeft" align="right" valign="top"><a id="ac8dabf5aeb9f7777c0f4dc9e8adfb24b"></a>
-int16_t&#160;</td><td class="memItemRight" valign="bottom"><b>motorData</b> [4] = {0,0,0,0}</td></tr>
+<tr class="memitem:ac8dabf5aeb9f7777c0f4dc9e8adfb24b"><td class="memItemLeft" align="right" valign="top">int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#ac8dabf5aeb9f7777c0f4dc9e8adfb24b">motorData</a> [4] = {0,0,0,0}</td></tr>
 <tr class="separator:ac8dabf5aeb9f7777c0f4dc9e8adfb24b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6c02fbe9de17133a2f5d0004676a247f"><td class="memItemLeft" align="right" valign="top"><a id="a6c02fbe9de17133a2f5d0004676a247f"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>multiTurn</b> = 0</td></tr>
+<tr class="memitem:a6c02fbe9de17133a2f5d0004676a247f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a6c02fbe9de17133a2f5d0004676a247f">multiTurn</a> = 0</td></tr>
 <tr class="separator:a6c02fbe9de17133a2f5d0004676a247f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaf2e6d94d6261825def4306f47e4eba9"><td class="memItemLeft" align="right" valign="top"><a id="aaf2e6d94d6261825def4306f47e4eba9"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>lastMotorAngle</b> = 0</td></tr>
+<tr class="memitem:aaf2e6d94d6261825def4306f47e4eba9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#aaf2e6d94d6261825def4306f47e4eba9">lastMotorAngle</a> = 0</td></tr>
 <tr class="separator:aaf2e6d94d6261825def4306f47e4eba9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8cc310c5708fb1eb837c2064cdd0cbc8"><td class="memItemLeft" align="right" valign="top"><a id="a8cc310c5708fb1eb837c2064cdd0cbc8"></a>
-<a class="el" href="classPID.html">PID</a>&#160;</td><td class="memItemRight" valign="bottom"><b>pidSpeed</b></td></tr>
+<tr class="memitem:a8cc310c5708fb1eb837c2064cdd0cbc8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPID.html">PID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a8cc310c5708fb1eb837c2064cdd0cbc8">pidSpeed</a></td></tr>
 <tr class="separator:a8cc310c5708fb1eb837c2064cdd0cbc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c65dfbd935be4734c15fe7580d2cc53"><td class="memItemLeft" align="right" valign="top"><a id="a3c65dfbd935be4734c15fe7580d2cc53"></a>
-<a class="el" href="classPID.html">PID</a>&#160;</td><td class="memItemRight" valign="bottom"><b>pidPosition</b></td></tr>
+<tr class="memitem:a3c65dfbd935be4734c15fe7580d2cc53"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPID.html">PID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a3c65dfbd935be4734c15fe7580d2cc53">pidPosition</a></td></tr>
 <tr class="separator:a3c65dfbd935be4734c15fe7580d2cc53"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a186904051041b642514cb9f0c025f1ae"><td class="memItemLeft" align="right" valign="top"><a id="a186904051041b642514cb9f0c025f1ae"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>value</b> = 0</td></tr>
+<tr class="memitem:a186904051041b642514cb9f0c025f1ae"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a186904051041b642514cb9f0c025f1ae">value</a> = 0</td></tr>
 <tr class="separator:a186904051041b642514cb9f0c025f1ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3de5c2429ae817d55ee56aa33ecfe44a"><td class="memItemLeft" align="right" valign="top"><a id="a3de5c2429ae817d55ee56aa33ecfe44a"></a>
-int16_t&#160;</td><td class="memItemRight" valign="bottom"><b>powerOut</b></td></tr>
+<tr class="memitem:a3de5c2429ae817d55ee56aa33ecfe44a"><td class="memItemLeft" align="right" valign="top">int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a3de5c2429ae817d55ee56aa33ecfe44a">powerOut</a></td></tr>
 <tr class="separator:a3de5c2429ae817d55ee56aa33ecfe44a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac79b8cae6d88c152e80e71c9ee8e2e9d"><td class="memItemLeft" align="right" valign="top"><a id="ac79b8cae6d88c152e80e71c9ee8e2e9d"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>conflict</b> {}</td></tr>
+<tr class="memitem:ac79b8cae6d88c152e80e71c9ee8e2e9d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#ac79b8cae6d88c152e80e71c9ee8e2e9d">conflict</a> {}</td></tr>
 <tr class="separator:ac79b8cae6d88c152e80e71c9ee8e2e9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a522f9cc9c68130c7ccc618a5d80e06c8"><td class="memItemLeft" align="right" valign="top"><a id="a522f9cc9c68130c7ccc618a5d80e06c8"></a>
-unsigned long&#160;</td><td class="memItemRight" valign="bottom"><b>lastTime</b> = 0</td></tr>
+<tr class="memitem:a522f9cc9c68130c7ccc618a5d80e06c8"><td class="memItemLeft" align="right" valign="top">unsigned long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a522f9cc9c68130c7ccc618a5d80e06c8">lastTime</a> = 0</td></tr>
 <tr class="separator:a522f9cc9c68130c7ccc618a5d80e06c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56c9d6e5565556c1c135a063ecd5740d"><td class="memItemLeft" align="right" valign="top"><a id="a56c9d6e5565556c1c135a063ecd5740d"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>outCap</b> = 16000</td></tr>
+<tr class="memitem:a56c9d6e5565556c1c135a063ecd5740d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a56c9d6e5565556c1c135a063ecd5740d">outCap</a> = 16000</td></tr>
 <tr class="separator:a56c9d6e5565556c1c135a063ecd5740d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa9af1d0a5135cc17bb97a777ecf81137"><td class="memItemLeft" align="right" valign="top"><a id="aa9af1d0a5135cc17bb97a777ecf81137"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>useAbsEncoder</b> = false</td></tr>
+<tr class="memitem:aa9af1d0a5135cc17bb97a777ecf81137"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#aa9af1d0a5135cc17bb97a777ecf81137">useAbsEncoder</a> = false</td></tr>
 <tr class="separator:aa9af1d0a5135cc17bb97a777ecf81137"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab1a5e142528897c966d3e7d189d59afb"><td class="memItemLeft" align="right" valign="top"><a id="ab1a5e142528897c966d3e7d189d59afb"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>justPosError</b> = false</td></tr>
+<tr class="memitem:ab1a5e142528897c966d3e7d189d59afb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#ab1a5e142528897c966d3e7d189d59afb">justPosError</a> = false</td></tr>
 <tr class="separator:ab1a5e142528897c966d3e7d189d59afb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa37f2bcbc3ca4080588bd0509f68db89"><td class="memItemLeft" align="right" valign="top"><a id="aa37f2bcbc3ca4080588bd0509f68db89"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>useKalmanForPID</b> = false</td></tr>
+<tr class="memitem:aa37f2bcbc3ca4080588bd0509f68db89"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#aa37f2bcbc3ca4080588bd0509f68db89">useKalmanForPID</a> = false</td></tr>
 <tr class="separator:aa37f2bcbc3ca4080588bd0509f68db89"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae7dd82ffd0f909f4de9ef5faf48ba6ff"><td class="memItemLeft" align="right" valign="top"><a id="ae7dd82ffd0f909f4de9ef5faf48ba6ff"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>useIntegrationForPID</b> = false</td></tr>
+<tr class="memitem:ae7dd82ffd0f909f4de9ef5faf48ba6ff"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#ae7dd82ffd0f909f4de9ef5faf48ba6ff">useIntegrationForPID</a> = false</td></tr>
 <tr class="separator:ae7dd82ffd0f909f4de9ef5faf48ba6ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a722b68762ff53f6102a6f64b5bc731cc"><td class="memItemLeft" align="right" valign="top"><a id="a722b68762ff53f6102a6f64b5bc731cc"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>printAngle</b> = false</td></tr>
+<tr class="memitem:a722b68762ff53f6102a6f64b5bc731cc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a722b68762ff53f6102a6f64b5bc731cc">printAngle</a> = false</td></tr>
 <tr class="separator:a722b68762ff53f6102a6f64b5bc731cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1a6719e22b214516ea0114221ac273ea"><td class="memItemLeft" align="right" valign="top"><a id="a1a6719e22b214516ea0114221ac273ea"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>integratedAngle</b> = 0</td></tr>
+<tr class="memitem:a1a6719e22b214516ea0114221ac273ea"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a1a6719e22b214516ea0114221ac273ea">integratedAngle</a> = 0</td></tr>
 <tr class="separator:a1a6719e22b214516ea0114221ac273ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af87d41808cae9aadbf3f56ccd5a13b41"><td class="memItemLeft" align="right" valign="top"><a id="af87d41808cae9aadbf3f56ccd5a13b41"></a>
-long&#160;</td><td class="memItemRight" valign="bottom"><b>lastIntegrationTime</b> = -1</td></tr>
+<tr class="memitem:af87d41808cae9aadbf3f56ccd5a13b41"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#af87d41808cae9aadbf3f56ccd5a13b41">lastIntegrationTime</a> = -1</td></tr>
 <tr class="separator:af87d41808cae9aadbf3f56ccd5a13b41"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae6910f2f904793babbe4afef765afea6"><td class="memItemLeft" align="right" valign="top"><a id="ae6910f2f904793babbe4afef765afea6"></a>
-CANHandler::CANBus&#160;</td><td class="memItemRight" valign="bottom"><b>bus</b></td></tr>
+<tr class="memitem:ae6910f2f904793babbe4afef765afea6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902a">CANHandler::CANBus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#ae6910f2f904793babbe4afef765afea6">bus</a></td></tr>
 <tr class="separator:ae6910f2f904793babbe4afef765afea6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2f04ea4e7fac38ff04298760d70d73bf"><td class="memItemLeft" align="right" valign="top"><a id="a2f04ea4e7fac38ff04298760d70d73bf"></a>
-CANHandler::CANBus motorType&#160;</td><td class="memItemRight" valign="bottom"><b>mType</b></td></tr>
+<tr class="memitem:a2f04ea4e7fac38ff04298760d70d73bf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902a">CANHandler::CANBus</a> <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54">motorType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a2f04ea4e7fac38ff04298760d70d73bf">mType</a></td></tr>
 <tr class="separator:a2f04ea4e7fac38ff04298760d70d73bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
-<tr class="memitem:ace5b4ca5a2c95e68d601566c9c380b22"><td class="memItemLeft" align="right" valign="top"><a id="ace5b4ca5a2c95e68d601566c9c380b22"></a>
-static bool&#160;</td><td class="memItemRight" valign="bottom"><b>sendDebug</b> = false</td></tr>
+<tr class="memitem:ace5b4ca5a2c95e68d601566c9c380b22"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#ace5b4ca5a2c95e68d601566c9c380b22">sendDebug</a> = false</td></tr>
 <tr class="separator:ace5b4ca5a2c95e68d601566c9c380b22"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a57e60a4aa372f8f0852c206aa2b98da3"><td class="memItemLeft" align="right" valign="top"><a id="a57e60a4aa372f8f0852c206aa2b98da3"></a>
-static bool&#160;</td><td class="memItemRight" valign="bottom"><b>feedbackDebug</b> = false</td></tr>
+<tr class="memitem:a57e60a4aa372f8f0852c206aa2b98da3"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a57e60a4aa372f8f0852c206aa2b98da3">feedbackDebug</a> = false</td></tr>
 <tr class="separator:a57e60a4aa372f8f0852c206aa2b98da3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a40c2408b315b0ff17a5d2edb02a085ac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a40c2408b315b0ff17a5d2edb02a085ac">&#9670;&nbsp;</a></span>DJIMotor() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">DJIMotor::DJIMotor </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>isErroneousMotor</em> = <code>false</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad9c887b0c27db6eee2b491a2d8fa6bc1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad9c887b0c27db6eee2b491a2d8fa6bc1">&#9670;&nbsp;</a></span>DJIMotor() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">DJIMotor::DJIMotor </td>
+          <td>(</td>
+          <td class="paramtype">short&#160;</td>
+          <td class="paramname"><em>canID</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902a">CANHandler::CANBus</a>&#160;</td>
+          <td class="paramname"><em>bus</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54">motorType</a>&#160;</td>
+          <td class="paramname"><em>mType</em> = <code><a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a9de934790934fe831fe946c851e8338e">STANDARD</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad921d2682aaecf47d29339b14f75f708"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad921d2682aaecf47d29339b14f75f708">&#9670;&nbsp;</a></span>~DJIMotor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">DJIMotor::~DJIMotor </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a6c1d8d55e831acc23dabce213dad080d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c1d8d55e831acc23dabce213dad080d">&#9670;&nbsp;</a></span>__attribute__() <span class="overload">[1/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">DJIMotor::__attribute__ </td>
+          <td>(</td>
+          <td class="paramtype">(unused)&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aad1a0ac5667ebe27427d7bf87a408b5b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aad1a0ac5667ebe27427d7bf87a408b5b">&#9670;&nbsp;</a></span>__attribute__() <span class="overload">[2/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">DJIMotor::__attribute__ </td>
+          <td>(</td>
+          <td class="paramtype">(unused)&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af5d04b1288cd6da1e25538edcd4d351b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af5d04b1288cd6da1e25538edcd4d351b">&#9670;&nbsp;</a></span>__attribute__() <span class="overload">[3/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">DJIMotor::__attribute__ </td>
+          <td>(</td>
+          <td class="paramtype">(unused)&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abc35e5bcdc7cf2af866bb0d1d348a8c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc35e5bcdc7cf2af866bb0d1d348a8c4">&#9670;&nbsp;</a></span>__attribute__() <span class="overload">[4/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">DJIMotor::__attribute__ </td>
+          <td>(</td>
+          <td class="paramtype">(unused)&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa265d713bc37813f819418eb7783cc84"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa265d713bc37813f819418eb7783cc84">&#9670;&nbsp;</a></span>__attribute__() <span class="overload">[5/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">DJIMotor::__attribute__ </td>
+          <td>(</td>
+          <td class="paramtype">(unused)&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a13bfd707f9c790420a18ccd33221a74d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a13bfd707f9c790420a18ccd33221a74d">&#9670;&nbsp;</a></span>feedbackThread()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DJIMotor::feedbackThread </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>the thread that runs the ever-necessary Motor::tick() </p>
+
+</div>
+</div>
+<a id="ae4d6663a74cc9f37f06792ea4cbac9c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4d6663a74cc9f37f06792ea4cbac9c3">&#9670;&nbsp;</a></span>getData()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int DJIMotor::getData </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4">motorDataType</a>&#160;</td>
+          <td class="paramname"><em>data</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5c398502c5abe1485158f816fb62ddc6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5c398502c5abe1485158f816fb62ddc6">&#9670;&nbsp;</a></span>getFeedback()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DJIMotor::getFeedback </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a953b0d24e9504794d1c1c0cba36a256c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a953b0d24e9504794d1c1c0cba36a256c">&#9670;&nbsp;</a></span>operator=()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DJIMotor::operator= </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3811a92a773ad69bf0f09f6022b095c9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3811a92a773ad69bf0f09f6022b095c9">&#9670;&nbsp;</a></span>operator&gt;&gt;()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int DJIMotor::operator&gt;&gt; </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4">motorDataType</a>&#160;</td>
+          <td class="paramname"><em>data</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a303d9c583a4f95e9bce5168172fb2e2d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a303d9c583a4f95e9bce5168172fb2e2d">&#9670;&nbsp;</a></span>printAllMotorData()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DJIMotor::printAllMotorData </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab596b7ab7a6296329095139dc53f630f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab596b7ab7a6296329095139dc53f630f">&#9670;&nbsp;</a></span>sendOneID()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DJIMotor::sendOneID </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902a">CANHandler::CANBus</a>&#160;</td>
+          <td class="paramname"><em>bus</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">short&#160;</td>
+          <td class="paramname"><em>sendIDindex</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>debug</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8a6896be139a2a59e52dbd36b34a4d07"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a6896be139a2a59e52dbd36b34a4d07">&#9670;&nbsp;</a></span>sendThread()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DJIMotor::sendThread </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>the thread that runs the ever-necessary Motor::tick() </p>
+
+</div>
+</div>
+<a id="a139083dd1821bb81a1848f7001a9dc2d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a139083dd1821bb81a1848f7001a9dc2d">&#9670;&nbsp;</a></span>sendValues()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DJIMotor::sendValues </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aee36a8b4c297251e2e4ae591a1178513"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aee36a8b4c297251e2e4ae591a1178513">&#9670;&nbsp;</a></span>setCANHandlers()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DJIMotor::setCANHandlers </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classCANHandler.html">CANHandler</a> *&#160;</td>
+          <td class="paramname"><em>bus_1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classCANHandler.html">CANHandler</a> *&#160;</td>
+          <td class="paramname"><em>bus_2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>threadSend</em> = <code>true</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>threadFeedback</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a81a26a2cf396c312de59b8cedcf822c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a81a26a2cf396c312de59b8cedcf822c4">&#9670;&nbsp;</a></span>setOutput()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DJIMotor::setOutput </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1bed8e016bd6282794e375322a133a5e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1bed8e016bd6282794e375322a133a5e">&#9670;&nbsp;</a></span>setPosition()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DJIMotor::setPosition </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>position</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abc59ef3c6bac6235a52bcf97de1afbc6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc59ef3c6bac6235a52bcf97de1afbc6">&#9670;&nbsp;</a></span>setPositionIntegralCap()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DJIMotor::setPositionIntegralCap </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>cap</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aca2b65fce761a1a5ae49b034d10e86f6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca2b65fce761a1a5ae49b034d10e86f6">&#9670;&nbsp;</a></span>setPositionOutputCap()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DJIMotor::setPositionOutputCap </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>cap</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a390e9a5ba16a256ed74c370b9d1252f3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a390e9a5ba16a256ed74c370b9d1252f3">&#9670;&nbsp;</a></span>setPositionPID()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DJIMotor::setPositionPID </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>kP</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>kI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>kD</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3bf18bbad498f5bfbb90be496e2d48da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3bf18bbad498f5bfbb90be496e2d48da">&#9670;&nbsp;</a></span>setPower()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DJIMotor::setPower </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>power</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a77f4a67832fe92cc043f62cb35c7bd7f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a77f4a67832fe92cc043f62cb35c7bd7f">&#9670;&nbsp;</a></span>setSpeed()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DJIMotor::setSpeed </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>speed</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a52cb939650f8dab27642688bd46ac574"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a52cb939650f8dab27642688bd46ac574">&#9670;&nbsp;</a></span>setSpeedIntegralCap()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DJIMotor::setSpeedIntegralCap </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>cap</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2ac7fba32e99d7f4d3b5361e7db8aa41"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2ac7fba32e99d7f4d3b5361e7db8aa41">&#9670;&nbsp;</a></span>setSpeedOutputCap()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DJIMotor::setSpeedOutputCap </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>cap</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae5d2425a25d202013e4867bac242d712"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae5d2425a25d202013e4867bac242d712">&#9670;&nbsp;</a></span>setSpeedPID()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DJIMotor::setSpeedPID </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>kP</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>kI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>kD</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab1dc329ff12b1182a2f09cd48f45ef55"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1dc329ff12b1182a2f09cd48f45ef55">&#9670;&nbsp;</a></span>setValue()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DJIMotor::setValue </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>val</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="adffff2089806c76cac3980b7eacb1930"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adffff2089806c76cac3980b7eacb1930">&#9670;&nbsp;</a></span>tick()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DJIMotor::tick </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8f64bc2d4648b7a3508e530985b26b7e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f64bc2d4648b7a3508e530985b26b7e">&#9670;&nbsp;</a></span>tickThread()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void DJIMotor::tickThread </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a693ed44d5c0e9d66e52c87f3d9827c7f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a693ed44d5c0e9d66e52c87f3d9827c7f">&#9670;&nbsp;</a></span>updateMultiTurnPosition()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DJIMotor::updateMultiTurnPosition </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a58dcf74d423eaa6e60e087cf1ea56426"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a58dcf74d423eaa6e60e087cf1ea56426">&#9670;&nbsp;</a></span>bounds</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int DJIMotor::bounds[2] = {0,0}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae6910f2f904793babbe4afef765afea6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae6910f2f904793babbe4afef765afea6">&#9670;&nbsp;</a></span>bus</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902a">CANHandler::CANBus</a> DJIMotor::bus</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac79b8cae6d88c152e80e71c9ee8e2e9d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac79b8cae6d88c152e80e71c9ee8e2e9d">&#9670;&nbsp;</a></span>conflict</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool DJIMotor::conflict {}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a57e60a4aa372f8f0852c206aa2b98da3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a57e60a4aa372f8f0852c206aa2b98da3">&#9670;&nbsp;</a></span>feedbackDebug</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool DJIMotor::feedbackDebug = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1a6719e22b214516ea0114221ac273ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a6719e22b214516ea0114221ac273ea">&#9670;&nbsp;</a></span>integratedAngle</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int DJIMotor::integratedAngle = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab1a5e142528897c966d3e7d189d59afb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1a5e142528897c966d3e7d189d59afb">&#9670;&nbsp;</a></span>justPosError</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool DJIMotor::justPosError = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af87d41808cae9aadbf3f56ccd5a13b41"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af87d41808cae9aadbf3f56ccd5a13b41">&#9670;&nbsp;</a></span>lastIntegrationTime</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">long DJIMotor::lastIntegrationTime = -1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aaf2e6d94d6261825def4306f47e4eba9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaf2e6d94d6261825def4306f47e4eba9">&#9670;&nbsp;</a></span>lastMotorAngle</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int DJIMotor::lastMotorAngle = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a522f9cc9c68130c7ccc618a5d80e06c8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a522f9cc9c68130c7ccc618a5d80e06c8">&#9670;&nbsp;</a></span>lastTime</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned long DJIMotor::lastTime = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0f76fba64922e0aea3aaf4dc3a417111"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0f76fba64922e0aea3aaf4dc3a417111">&#9670;&nbsp;</a></span>maxSpeed</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int DJIMotor::maxSpeed = 8723</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac8dabf5aeb9f7777c0f4dc9e8adfb24b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac8dabf5aeb9f7777c0f4dc9e8adfb24b">&#9670;&nbsp;</a></span>motorData</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int16_t DJIMotor::motorData[4] = {0,0,0,0}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2f04ea4e7fac38ff04298760d70d73bf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2f04ea4e7fac38ff04298760d70d73bf">&#9670;&nbsp;</a></span>mType</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902a">CANHandler::CANBus</a> <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54">motorType</a> DJIMotor::mType</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6c02fbe9de17133a2f5d0004676a247f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c02fbe9de17133a2f5d0004676a247f">&#9670;&nbsp;</a></span>multiTurn</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int DJIMotor::multiTurn = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a56c9d6e5565556c1c135a063ecd5740d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a56c9d6e5565556c1c135a063ecd5740d">&#9670;&nbsp;</a></span>outCap</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int DJIMotor::outCap = 16000</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3c65dfbd935be4734c15fe7580d2cc53"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3c65dfbd935be4734c15fe7580d2cc53">&#9670;&nbsp;</a></span>pidPosition</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classPID.html">PID</a> DJIMotor::pidPosition</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8cc310c5708fb1eb837c2064cdd0cbc8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8cc310c5708fb1eb837c2064cdd0cbc8">&#9670;&nbsp;</a></span>pidSpeed</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classPID.html">PID</a> DJIMotor::pidSpeed</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3de5c2429ae817d55ee56aa33ecfe44a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3de5c2429ae817d55ee56aa33ecfe44a">&#9670;&nbsp;</a></span>powerOut</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int16_t DJIMotor::powerOut</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a722b68762ff53f6102a6f64b5bc731cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a722b68762ff53f6102a6f64b5bc731cc">&#9670;&nbsp;</a></span>printAngle</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool DJIMotor::printAngle = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ace5b4ca5a2c95e68d601566c9c380b22"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace5b4ca5a2c95e68d601566c9c380b22">&#9670;&nbsp;</a></span>sendDebug</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool DJIMotor::sendDebug = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aab080f976750241cac388566d2c9aa71"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab080f976750241cac388566d2c9aa71">&#9670;&nbsp;</a></span>timeSinceLastFeedback</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned long DJIMotor::timeSinceLastFeedback = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa9af1d0a5135cc17bb97a777ecf81137"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa9af1d0a5135cc17bb97a777ecf81137">&#9670;&nbsp;</a></span>useAbsEncoder</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool DJIMotor::useAbsEncoder = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae7dd82ffd0f909f4de9ef5faf48ba6ff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7dd82ffd0f909f4de9ef5faf48ba6ff">&#9670;&nbsp;</a></span>useIntegrationForPID</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool DJIMotor::useIntegrationForPID = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa37f2bcbc3ca4080588bd0509f68db89"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa37f2bcbc3ca4080588bd0509f68db89">&#9670;&nbsp;</a></span>useKalmanForPID</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool DJIMotor::useKalmanForPID = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a186904051041b642514cb9f0c025f1ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a186904051041b642514cb9f0c025f1ae">&#9670;&nbsp;</a></span>value</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int DJIMotor::value = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>core/util/motor/<a class="el" href="DJIMotor_8h_source.html">DJIMotor.h</a></li>
-<li>core/util/motor/DJIMotor.cpp</li>
+<li>core/util/motor/<a class="el" href="DJIMotor_8cpp.html">DJIMotor.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

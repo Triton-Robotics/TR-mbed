@@ -70,7 +70,7 @@ $(function() {
 <div class="title">CANHandler.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">//                        ____               __       __  __  _ _____                   ____               ____     ___   __   _ ___    __  _          </span></div>
+<a href="CANHandler_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">//                        ____               __       __  __  _ _____                   ____               ____     ___   __   _ ___    __  _          </span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">// _______ ___ _____ ___ / __/__  ___ ____ _/ /  ___ / /_/ /_(_) ___/__  __ _  ___ ___ / __ \___  _______ /  _/__  / _ | / /  (_) _/__ / /_(_)_ _  ___ </span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"></span><span class="comment">//\__/\_,_/\_,_/___/\__/___/ .__/\_,_/\_, /_//_/\__/\__/\__/_/\___/\___/_/_/_/\__/___/\____/_//_/\__/\__/___/_//_/_/ |_/____/_/_/ \__/\__/_/_/_/_/\__/ </span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment">//                        /_/        /___/                                                                                                             </span></div>
@@ -79,10 +79,10 @@ $(function() {
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#define CANHandler_hpp</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;mbed.h&quot;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;CANMsg.h&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="CANMsg_8h.html">CANMsg.h</a>&quot;</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#define CAN_BAUD 1000000</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="CANHandler_8h.html#a69dfbb25066d2af819d304ee84ed9935">   16</a></span>&#160;<span class="preprocessor">#define CAN_BAUD 1000000</span></div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
 <div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="classCANHandler.html">   18</a></span>&#160;<span class="keyword">class </span><a class="code" href="classCANHandler.html">CANHandler</a>{</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keyword">private</span>:</div>
@@ -91,43 +91,43 @@ $(function() {
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        </div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        </div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        CAN can;</div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">   25</a></span>&#160;        CAN <a class="code" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>;</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <span class="keyword">enum</span> CANBus {CANBUS_1, CANBUS_2, NOBUS};</div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902a">   27</a></span>&#160;        <span class="keyword">enum</span> <a class="code" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902a">CANBus</a> {<a class="code" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4">CANBUS_1</a>, <a class="code" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANBUS_2</a>, <a class="code" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aaf360888b91f7657f4c37db6101e69e09">NOBUS</a>};</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="keywordtype">bool</span> exists = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="classCANHandler.html#afa15cc41e80357375d4dd9fa5b22e495">   29</a></span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classCANHandler.html#afa15cc41e80357375d4dd9fa5b22e495">exists</a> = <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <span class="comment">// Declaring CanHandler, can1, and can2</span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        </div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <a class="code" href="classCANHandler.html">CANHandler</a>():</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;            can(PA_11,PA_12,CAN_BAUD)</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;            {exists = <span class="keyword">false</span>;}</div>
+<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="classCANHandler.html#a9b8ed61c6dac73788e4091c12448c76e">   32</a></span>&#160;        <a class="code" href="classCANHandler.html#a9b8ed61c6dac73788e4091c12448c76e">CANHandler</a>():</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;            <a class="code" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>(PA_11,PA_12,<a class="code" href="CANHandler_8h.html#a69dfbb25066d2af819d304ee84ed9935">CAN_BAUD</a>)</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;            {<a class="code" href="classCANHandler.html#afa15cc41e80357375d4dd9fa5b22e495">exists</a> = <span class="keyword">false</span>;}</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <a class="code" href="classCANHandler.html">CANHandler</a>(PinName canRx, PinName canTx):</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;            can(canRx,canTx,CAN_BAUD)</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;            {exists = <span class="keyword">true</span>;}</div>
+<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="classCANHandler.html#a7ae4877d6ba72b43694593b5de105d45">   36</a></span>&#160;        <a class="code" href="classCANHandler.html#a7ae4877d6ba72b43694593b5de105d45">CANHandler</a>(PinName canRx, PinName canTx):</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;            <a class="code" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>(canRx,canTx,<a class="code" href="CANHandler_8h.html#a69dfbb25066d2af819d304ee84ed9935">CAN_BAUD</a>)</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;            {<a class="code" href="classCANHandler.html#afa15cc41e80357375d4dd9fa5b22e495">exists</a> = <span class="keyword">true</span>;}</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keywordtype">void</span> attach (Callback&lt; <span class="keywordtype">void</span>()&gt;  func, CAN::IrqType type = CAN::IrqType::RxIrq){</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;            can.attach(func,type);</div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="classCANHandler.html#a415414f5289348a031d5436a13cb10f8">   40</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classCANHandler.html#a415414f5289348a031d5436a13cb10f8">attach</a> (Callback&lt; <span class="keywordtype">void</span>()&gt;  func, CAN::IrqType type = CAN::IrqType::RxIrq){</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;            <a class="code" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>.attach(func,type);</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        }</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordtype">void</span> updateCANs(PinName canRx, PinName canTx){</div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="classCANHandler.html#a423563c96d7a7da836a957c5b0c88745">   44</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classCANHandler.html#a423563c96d7a7da836a957c5b0c88745">updateCANs</a>(PinName canRx, PinName canTx){</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;            <span class="comment">//can = new CAN(canRx,canTx,1000000);</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;            CAN can(canRx,canTx,CAN_BAUD);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;            CAN <a class="code" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>(canRx,canTx,<a class="code" href="CANHandler_8h.html#a69dfbb25066d2af819d304ee84ed9935">CAN_BAUD</a>);</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        }</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        CAN* getCAN(){</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;            <span class="keywordflow">return</span> &amp;can;</div>
+<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="classCANHandler.html#ad251f7cdfa845ca9a90b81d2f5942050">   49</a></span>&#160;        CAN* <a class="code" href="classCANHandler.html#ad251f7cdfa845ca9a90b81d2f5942050">getCAN</a>(){</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;            <span class="keywordflow">return</span> &amp;<a class="code" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>;</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        }</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
 <div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="classCANHandler.html#ac88d0c1dfff2021f2095d73fa8c6f6e3">   57</a></span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classCANHandler.html#ac88d0c1dfff2021f2095d73fa8c6f6e3">getFeedback</a>(<span class="keywordtype">int</span> *<span class="keywordtype">id</span>, uint8_t bytes[], <span class="keywordtype">int</span> canbus){</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            <span class="keywordtype">bool</span> gotMsg = <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;            rxMsg.<a class="code" href="classCANMsg.html#a969dcb0af8e68883ab104249c8559146">clear</a>();</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;            rxMsg.len = 8;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;            <span class="keywordflow">if</span> (can.read(rxMsg)) {</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                <span class="keywordtype">int</span> err = can.rderror();</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;            <span class="keywordflow">if</span> (<a class="code" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>.read(rxMsg)) {</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                <span class="keywordtype">int</span> err = <a class="code" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>.rderror();</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                <span class="keywordflow">if</span> (err){</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                    printf(<span class="stringliteral">&quot;[%d CAN Read Errors] on CANBus_%d\n&quot;</span>, err, canbus + 1);</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                    can.reset();</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                    <a class="code" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>.reset();</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                }</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                *<span class="keywordtype">id</span> = rxMsg.id;</div>
@@ -160,11 +160,11 @@ $(function() {
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;            <span class="comment">//printMsg(txMsg);</span></div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160; </div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;            <span class="keywordtype">bool</span> isWrite = can.write(txMsg);</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;            <span class="keywordtype">bool</span> isWrite = <a class="code" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>.write(txMsg);</div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;            </div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;            <span class="keywordflow">if</span>(isWrite == 0) {</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;                errorCount++;</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;                can.reset();</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;                <a class="code" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>.reset();</div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;            }</div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;            <span class="keywordflow">else</span>{</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;                errorCount = 0;</div>
@@ -178,10 +178,23 @@ $(function() {
 <div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        }</div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;};</div>
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="aCANHandler_8h_html_a69dfbb25066d2af819d304ee84ed9935"><div class="ttname"><a href="CANHandler_8h.html#a69dfbb25066d2af819d304ee84ed9935">CAN_BAUD</a></div><div class="ttdeci">#define CAN_BAUD</div><div class="ttdoc">__/ _ / // (_-&lt;/ -_)\ \/ _ \/ _/ _ ‘/ _ \/ -_) __/ __/ / /__/ _ \/ ’ \/ -_|_-&lt;/ /_/ / _ \/ __/ -_)/ /...</div><div class="ttdef"><b>Definition:</b> CANHandler.h:16</div></div>
+<div class="ttc" id="aCANMsg_8h_html"><div class="ttname"><a href="CANMsg_8h.html">CANMsg.h</a></div></div>
 <div class="ttc" id="aclassCANHandler_html"><div class="ttname"><a href="classCANHandler.html">CANHandler</a></div><div class="ttdef"><b>Definition:</b> CANHandler.h:18</div></div>
+<div class="ttc" id="aclassCANHandler_html_a12423ab918aeb90842412d988d7c14b5"><div class="ttname"><a href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">CANHandler::can</a></div><div class="ttdeci">CAN can</div><div class="ttdef"><b>Definition:</b> CANHandler.h:25</div></div>
 <div class="ttc" id="aclassCANHandler_html_a18ede89e5acf269b1be91543ee77d282"><div class="ttname"><a href="classCANHandler.html#a18ede89e5acf269b1be91543ee77d282">CANHandler::rawSend</a></div><div class="ttdeci">bool rawSend(int id, int8_t bytes[])</div><div class="ttdoc">Raw sending of CAN Messages.</div><div class="ttdef"><b>Definition:</b> CANHandler.h:99</div></div>
+<div class="ttc" id="aclassCANHandler_html_a2567dbcbebbef530cd8f295406b3902a"><div class="ttname"><a href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902a">CANHandler::CANBus</a></div><div class="ttdeci">CANBus</div><div class="ttdef"><b>Definition:</b> CANHandler.h:27</div></div>
+<div class="ttc" id="aclassCANHandler_html_a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14"><div class="ttname"><a href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a></div><div class="ttdeci">@ CANBUS_2</div><div class="ttdef"><b>Definition:</b> CANHandler.h:27</div></div>
+<div class="ttc" id="aclassCANHandler_html_a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4"><div class="ttname"><a href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4">CANHandler::CANBUS_1</a></div><div class="ttdeci">@ CANBUS_1</div><div class="ttdef"><b>Definition:</b> CANHandler.h:27</div></div>
+<div class="ttc" id="aclassCANHandler_html_a2567dbcbebbef530cd8f295406b3902aaf360888b91f7657f4c37db6101e69e09"><div class="ttname"><a href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aaf360888b91f7657f4c37db6101e69e09">CANHandler::NOBUS</a></div><div class="ttdeci">@ NOBUS</div><div class="ttdef"><b>Definition:</b> CANHandler.h:27</div></div>
+<div class="ttc" id="aclassCANHandler_html_a415414f5289348a031d5436a13cb10f8"><div class="ttname"><a href="classCANHandler.html#a415414f5289348a031d5436a13cb10f8">CANHandler::attach</a></div><div class="ttdeci">void attach(Callback&lt; void()&gt; func, CAN::IrqType type=CAN::IrqType::RxIrq)</div><div class="ttdef"><b>Definition:</b> CANHandler.h:40</div></div>
+<div class="ttc" id="aclassCANHandler_html_a423563c96d7a7da836a957c5b0c88745"><div class="ttname"><a href="classCANHandler.html#a423563c96d7a7da836a957c5b0c88745">CANHandler::updateCANs</a></div><div class="ttdeci">void updateCANs(PinName canRx, PinName canTx)</div><div class="ttdef"><b>Definition:</b> CANHandler.h:44</div></div>
 <div class="ttc" id="aclassCANHandler_html_a487ccd57fdcb83924bcfb22d28d913f9"><div class="ttname"><a href="classCANHandler.html#a487ccd57fdcb83924bcfb22d28d913f9">CANHandler::printMsg</a></div><div class="ttdeci">static void printMsg(CANMessage &amp;msg)</div><div class="ttdoc">Prints a CANMessage nicely.</div><div class="ttdef"><b>Definition:</b> CANHandler.h:84</div></div>
+<div class="ttc" id="aclassCANHandler_html_a7ae4877d6ba72b43694593b5de105d45"><div class="ttname"><a href="classCANHandler.html#a7ae4877d6ba72b43694593b5de105d45">CANHandler::CANHandler</a></div><div class="ttdeci">CANHandler(PinName canRx, PinName canTx)</div><div class="ttdef"><b>Definition:</b> CANHandler.h:36</div></div>
+<div class="ttc" id="aclassCANHandler_html_a9b8ed61c6dac73788e4091c12448c76e"><div class="ttname"><a href="classCANHandler.html#a9b8ed61c6dac73788e4091c12448c76e">CANHandler::CANHandler</a></div><div class="ttdeci">CANHandler()</div><div class="ttdef"><b>Definition:</b> CANHandler.h:32</div></div>
 <div class="ttc" id="aclassCANHandler_html_ac88d0c1dfff2021f2095d73fa8c6f6e3"><div class="ttname"><a href="classCANHandler.html#ac88d0c1dfff2021f2095d73fa8c6f6e3">CANHandler::getFeedback</a></div><div class="ttdeci">bool getFeedback(int *id, uint8_t bytes[], int canbus)</div><div class="ttdoc">Get feedback back from the motor.</div><div class="ttdef"><b>Definition:</b> CANHandler.h:57</div></div>
+<div class="ttc" id="aclassCANHandler_html_ad251f7cdfa845ca9a90b81d2f5942050"><div class="ttname"><a href="classCANHandler.html#ad251f7cdfa845ca9a90b81d2f5942050">CANHandler::getCAN</a></div><div class="ttdeci">CAN * getCAN()</div><div class="ttdef"><b>Definition:</b> CANHandler.h:49</div></div>
+<div class="ttc" id="aclassCANHandler_html_afa15cc41e80357375d4dd9fa5b22e495"><div class="ttname"><a href="classCANHandler.html#afa15cc41e80357375d4dd9fa5b22e495">CANHandler::exists</a></div><div class="ttdeci">bool exists</div><div class="ttdef"><b>Definition:</b> CANHandler.h:29</div></div>
 <div class="ttc" id="aclassCANMsg_html"><div class="ttname"><a href="classCANMsg.html">CANMsg</a></div><div class="ttdef"><b>Definition:</b> CANMsg.h:16</div></div>
 <div class="ttc" id="aclassCANMsg_html_a969dcb0af8e68883ab104249c8559146"><div class="ttname"><a href="classCANMsg.html#a969dcb0af8e68883ab104249c8559146">CANMsg::clear</a></div><div class="ttdeci">void clear(void)</div><div class="ttdef"><b>Definition:</b> CANMsg.h:35</div></div>
 </div><!-- fragment --></div><!-- contents -->

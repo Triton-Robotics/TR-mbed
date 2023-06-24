@@ -76,14 +76,14 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:ad55c408b2471cabb1e10f6b46bef5b21"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#ad55c408b2471cabb1e10f6b46bef5b21">BrakeMode</a> { <b>BRAKE</b>
-, <b>COAST</b>
+<tr class="memitem:ad55c408b2471cabb1e10f6b46bef5b21"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#ad55c408b2471cabb1e10f6b46bef5b21">BrakeMode</a> { <a class="el" href="classChassis.html#ad55c408b2471cabb1e10f6b46bef5b21a69f42957e1752337d54a4183cec08cfa">BRAKE</a>
+, <a class="el" href="classChassis.html#ad55c408b2471cabb1e10f6b46bef5b21a11867cd95b2127b6c4b064984ecf7bc9">COAST</a>
  }</td></tr>
 <tr class="separator:ad55c408b2471cabb1e10f6b46bef5b21"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ab45e8f9442dd9b4a831d5d728260e863"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#ab45e8f9442dd9b4a831d5d728260e863">Chassis</a> (short lfId, short rfId, short lbId, short rbId, I2C *i2c)</td></tr>
+<tr class="memitem:ab45e8f9442dd9b4a831d5d728260e863"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#ab45e8f9442dd9b4a831d5d728260e863">Chassis</a> (short lfId, short rfId, short lbId, short rbId, I2C *<a class="el" href="TestBench_2main_8cpp.html#ae3e7ab47cd5395225bf7c67b8ee84976">i2c</a>)</td></tr>
 <tr class="separator:ab45e8f9442dd9b4a831d5d728260e863"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac944a5794d05e1dbd57cfd6735ecdc60"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#ac944a5794d05e1dbd57cfd6735ecdc60">driveMotors</a> (<a class="el" href="classWheelSpeeds.html">WheelSpeeds</a> speeds)</td></tr>
 <tr class="separator:ac944a5794d05e1dbd57cfd6735ecdc60"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -97,8 +97,7 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a96455bb04cbf91df5f817b2a73843ff7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a58f76ea47ac6616659f6e42323c606f2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#a58f76ea47ac6616659f6e42323c606f2">driveXYRPower</a> (double ref_chassis_power, double max_power, double lX, double lY, double time_diff, bool beyblading)</td></tr>
 <tr class="separator:a58f76ea47ac6616659f6e42323c606f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7ee3c56828f6e161de5d145bed3e4d2f"><td class="memItemLeft" align="right" valign="top"><a id="a7ee3c56828f6e161de5d145bed3e4d2f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>driveAngle</b> (double angleRadians, double speedRPM, double rotationVelcotiyRPM)</td></tr>
+<tr class="memitem:a7ee3c56828f6e161de5d145bed3e4d2f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#a7ee3c56828f6e161de5d145bed3e4d2f">driveAngle</a> (double angleRadians, double speedRPM, double rotationVelcotiyRPM)</td></tr>
 <tr class="separator:a7ee3c56828f6e161de5d145bed3e4d2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaa1fe234c2c1498b12c9bc3262c8dd25"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#aaa1fe234c2c1498b12c9bc3262c8dd25">beyblade</a> (double xVelocityRPM, double yVelocityRPM, double turretAngleDegrees, bool switchDirections)</td></tr>
 <tr class="separator:aaa1fe234c2c1498b12c9bc3262c8dd25"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -124,23 +123,18 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>driveAngle</b> (doubl
 <tr class="separator:a409eaab438a0850576aee58dad5ad060"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa89590e2e7f685d3da0523dd7958be3a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#aa89590e2e7f685d3da0523dd7958be3a">readImu</a> ()</td></tr>
 <tr class="separator:aa89590e2e7f685d3da0523dd7958be3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae4e7781f4fc54139e5d6f8c3ed7602c6"><td class="memItemLeft" align="right" valign="top"><a id="ae4e7781f4fc54139e5d6f8c3ed7602c6"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>allMotorsConnected</b> ()</td></tr>
+<tr class="memitem:ae4e7781f4fc54139e5d6f8c3ed7602c6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#ae4e7781f4fc54139e5d6f8c3ed7602c6">allMotorsConnected</a> ()</td></tr>
 <tr class="separator:ae4e7781f4fc54139e5d6f8c3ed7602c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:aba5b1d2f371ab6434b5e49169b276773"><td class="memItemLeft" align="right" valign="top"><a id="aba5b1d2f371ab6434b5e49169b276773"></a>
-int8_t&#160;</td><td class="memItemRight" valign="bottom"><b>isInverted</b> [4]</td></tr>
+<tr class="memitem:aba5b1d2f371ab6434b5e49169b276773"><td class="memItemLeft" align="right" valign="top">int8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#aba5b1d2f371ab6434b5e49169b276773">isInverted</a> [4]</td></tr>
 <tr class="separator:aba5b1d2f371ab6434b5e49169b276773"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad3312d23a758eb6977d3b44591624c1d"><td class="memItemLeft" align="right" valign="top"><a id="ad3312d23a758eb6977d3b44591624c1d"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>prevVel</b></td></tr>
+<tr class="memitem:ad3312d23a758eb6977d3b44591624c1d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#ad3312d23a758eb6977d3b44591624c1d">prevVel</a></td></tr>
 <tr class="separator:ad3312d23a758eb6977d3b44591624c1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a81868ce33f51014504c723196ad3baca"><td class="memItemLeft" align="right" valign="top"><a id="a81868ce33f51014504c723196ad3baca"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>testData</b> [300][4]</td></tr>
+<tr class="memitem:a81868ce33f51014504c723196ad3baca"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#a81868ce33f51014504c723196ad3baca">testData</a> [300][4]</td></tr>
 <tr class="separator:a81868ce33f51014504c723196ad3baca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a461b1077d45b3cd4270ff041e89b0a04"><td class="memItemLeft" align="right" valign="top"><a id="a461b1077d45b3cd4270ff041e89b0a04"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>testDataIndex</b> = 0</td></tr>
+<tr class="memitem:a461b1077d45b3cd4270ff041e89b0a04"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#a461b1077d45b3cd4270ff041e89b0a04">testDataIndex</a> = 0</td></tr>
 <tr class="separator:a461b1077d45b3cd4270ff041e89b0a04"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -159,6 +153,10 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>testDataIndex</b> = 0<
       </table>
 </div><div class="memdoc">
 <p>The BrakeMode enum is used to set the brake mode of the chassis. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ad55c408b2471cabb1e10f6b46bef5b21a69f42957e1752337d54a4183cec08cfa"></a>BRAKE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ad55c408b2471cabb1e10f6b46bef5b21a11867cd95b2127b6c4b064984ecf7bc9"></a>COAST&#160;</td><td class="fielddoc"></td></tr>
+</table>
 
 </div>
 </div>
@@ -219,6 +217,23 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>testDataIndex</b> = 0<
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="ae4e7781f4fc54139e5d6f8c3ed7602c6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4e7781f4fc54139e5d6f8c3ed7602c6">&#9670;&nbsp;</a></span>allMotorsConnected()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Chassis::allMotorsConnected </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="aaa1fe234c2c1498b12c9bc3262c8dd25"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aaa1fe234c2c1498b12c9bc3262c8dd25">&#9670;&nbsp;</a></span>beyblade()</h2>
 
@@ -291,6 +306,40 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>testDataIndex</b> = 0<
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The angle converted to radians </dd></dl>
+
+</div>
+</div>
+<a id="a7ee3c56828f6e161de5d145bed3e4d2f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ee3c56828f6e161de5d145bed3e4d2f">&#9670;&nbsp;</a></span>driveAngle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Chassis::driveAngle </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>angleRadians</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>speedRPM</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>rotationVelcotiyRPM</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -698,9 +747,66 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>testDataIndex</b> = 0<
 
 </div>
 </div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="aba5b1d2f371ab6434b5e49169b276773"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aba5b1d2f371ab6434b5e49169b276773">&#9670;&nbsp;</a></span>isInverted</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int8_t Chassis::isInverted[4]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad3312d23a758eb6977d3b44591624c1d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad3312d23a758eb6977d3b44591624c1d">&#9670;&nbsp;</a></span>prevVel</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double Chassis::prevVel</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a81868ce33f51014504c723196ad3baca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a81868ce33f51014504c723196ad3baca">&#9670;&nbsp;</a></span>testData</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Chassis::testData[300][4]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a461b1077d45b3cd4270ff041e89b0a04"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a461b1077d45b3cd4270ff041e89b0a04">&#9670;&nbsp;</a></span>testDataIndex</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Chassis::testDataIndex = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>core/subsystems/<a class="el" href="Chassis_8h_source.html">Chassis.h</a></li>
-<li>core/subsystems/Chassis.cpp</li>
+<li>core/subsystems/<a class="el" href="Chassis_8cpp.html">Chassis.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

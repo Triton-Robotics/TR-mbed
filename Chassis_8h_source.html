@@ -70,42 +70,42 @@ $(function() {
 <div class="title">Chassis.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">//</span></div>
+<a href="Chassis_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">//</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">// Created by ankit on 1/31/23.</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">//</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#ifndef TR_EMBEDDED_CHASSIS_H</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#define TR_EMBEDDED_CHASSIS_H</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;motor/DJIMotor.h&gt;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;communications/CANHandler.h&gt;</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;peripherals/imu/BNO055.h&gt;</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;peripherals/oled/SSD1308.h&gt;</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;subsystems/ChassisKalman.h&gt;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="DJIMotor_8h.html">motor/DJIMotor.h</a>&gt;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="CANHandler_8h.html">communications/CANHandler.h</a>&gt;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="BNO055_8h.html">peripherals/imu/BNO055.h</a>&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="SSD1308_8h.html">peripherals/oled/SSD1308.h</a>&gt;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="ChassisKalman_8h.html">subsystems/ChassisKalman.h</a>&gt;</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="comment">//#include &lt;algorithms/WheelKalman.h&gt;</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;algorithms/Pose2D.h&gt;</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;algorithms/WheelSpeeds.h&gt;</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &lt;algorithms/ChassisSpeeds.h&gt;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="Pose2D_8h.html">algorithms/Pose2D.h</a>&gt;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="WheelSpeeds_8h.html">algorithms/WheelSpeeds.h</a>&gt;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="ChassisSpeeds_8h.html">algorithms/ChassisSpeeds.h</a>&gt;</span></div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#define CAN_BUS_TYPE CANHandler::CANBUS_1</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#define MOTOR_TYPE M3508</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#define INPUT_THRESHOLD 0.01</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="Chassis_8h.html#a19febbfa229a296c51870933d2422f01">   18</a></span>&#160;<span class="preprocessor">#define CAN_BUS_TYPE CANHandler::CANBUS_1</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="Chassis_8h.html#ad47970668f4c1d0ab4b2364fabf0d4a6">   19</a></span>&#160;<span class="preprocessor">#define MOTOR_TYPE M3508</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="Chassis_8h.html#a67d2a3982b851b00892c9da982c1c5df">   20</a></span>&#160;<span class="preprocessor">#define INPUT_THRESHOLD 0.01</span></div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#define I2C_SDA PB_9</span></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#define I2C_SCL PB_8</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#define IMU_RESET PA_8</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="Chassis_8h.html#a18aefd12ad84d4c33dc97923cb821e47">   22</a></span>&#160;<span class="preprocessor">#define I2C_SDA PB_9</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="Chassis_8h.html#a212ca328a6409c98f8c3dfbbe1ba561d">   23</a></span>&#160;<span class="preprocessor">#define I2C_SCL PB_8</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="Chassis_8h.html#afe5a31debea7f8fd3ee5e4c742c7500b">   24</a></span>&#160;<span class="preprocessor">#define IMU_RESET PA_8</span></div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#define MAX_BEYBLADE_SPEED 1800</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#define BEYBLADE_ACCELERATION 0.05</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="Chassis_8h.html#adc3913c9fd21f4d624d5007e4ce0949e">   26</a></span>&#160;<span class="preprocessor">#define MAX_BEYBLADE_SPEED 1800</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="Chassis_8h.html#a671b7b1546d2fb81d6ab9076e297dfa3">   27</a></span>&#160;<span class="preprocessor">#define BEYBLADE_ACCELERATION 0.05</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
 <div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="classChassis.html">   37</a></span>&#160;<span class="keyword">class </span><a class="code" href="classChassis.html">Chassis</a> {</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <a class="code" href="classChassis.html#ab45e8f9442dd9b4a831d5d728260e863">Chassis</a>(<span class="keywordtype">short</span> lfId, <span class="keywordtype">short</span> rfId, <span class="keywordtype">short</span> lbId, <span class="keywordtype">short</span> rbId, I2C *i2c);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <a class="code" href="classChassis.html#ab45e8f9442dd9b4a831d5d728260e863">Chassis</a>(<span class="keywordtype">short</span> lfId, <span class="keywordtype">short</span> rfId, <span class="keywordtype">short</span> lbId, <span class="keywordtype">short</span> rbId, I2C *<a class="code" href="Hero_2main_8cpp.html#ae3e7ab47cd5395225bf7c67b8ee84976">i2c</a>);</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
 <div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="classChassis.html#ad55c408b2471cabb1e10f6b46bef5b21">   51</a></span>&#160;    <span class="keyword">enum</span> <a class="code" href="classChassis.html#ad55c408b2471cabb1e10f6b46bef5b21">BrakeMode</a> {</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        BRAKE,</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        COAST</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    };</div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="classChassis.html#ad55c408b2471cabb1e10f6b46bef5b21a69f42957e1752337d54a4183cec08cfa">   52</a></span>&#160;        <a class="code" href="classChassis.html#ad55c408b2471cabb1e10f6b46bef5b21a69f42957e1752337d54a4183cec08cfa">BRAKE</a>,</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <a class="code" href="classChassis.html#ad55c408b2471cabb1e10f6b46bef5b21a11867cd95b2127b6c4b064984ecf7bc9">COAST</a></div>
+<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="classChassis.html#ad55c408b2471cabb1e10f6b46bef5b21a11867cd95b2127b6c4b064984ecf7bc9">   54</a></span>&#160;    };</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classChassis.html#ac944a5794d05e1dbd57cfd6735ecdc60">driveMotors</a>(<a class="code" href="classWheelSpeeds.html">WheelSpeeds</a> speeds);</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
@@ -122,7 +122,7 @@ $(function() {
 <div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="comment">// void driveFieldRelativePower(double ref_chassis_power, double time_diff, double yVelocityRPM, double xVelocityRPM, double rotationVelocityRPM);</span></div>
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="comment">// void driveOffsetAnglePower(double ref_chassis_power, double time_diff, double yVelocityRPM, double xVelocityRPM, double rotationVelocityRPM, double angleOffset);</span></div>
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keywordtype">void</span> driveAngle(<span class="keywordtype">double</span> angleRadians, <span class="keywordtype">double</span> speedRPM, <span class="keywordtype">double</span> rotationVelcotiyRPM);</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classChassis.html#a7ee3c56828f6e161de5d145bed3e4d2f">driveAngle</a>(<span class="keywordtype">double</span> angleRadians, <span class="keywordtype">double</span> speedRPM, <span class="keywordtype">double</span> rotationVelcotiyRPM);</div>
 <div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classChassis.html#aaa1fe234c2c1498b12c9bc3262c8dd25">beyblade</a>(<span class="keywordtype">double</span> xVelocityRPM, <span class="keywordtype">double</span> yVelocityRPM, <span class="keywordtype">double</span> turretAngleDegrees, <span class="keywordtype">bool</span> switchDirections);</div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
@@ -147,14 +147,14 @@ $(function() {
 <div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    <a class="code" href="classChassisSpeeds.html">ChassisSpeeds</a> <a class="code" href="classChassis.html#a409eaab438a0850576aee58dad5ad060">getSpeeds</a>();</div>
 <div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classChassis.html#aa89590e2e7f685d3da0523dd7958be3a">readImu</a>();</div>
 <div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160; </div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;    <span class="keywordtype">bool</span> allMotorsConnected();</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classChassis.html#ae4e7781f4fc54139e5d6f8c3ed7602c6">allMotorsConnected</a>();</div>
 <div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160; </div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    int8_t isInverted[4];</div>
+<div class="line"><a name="l00185"></a><span class="lineno"><a class="line" href="classChassis.html#aba5b1d2f371ab6434b5e49169b276773">  185</a></span>&#160;    int8_t <a class="code" href="classChassis.html#aba5b1d2f371ab6434b5e49169b276773">isInverted</a>[4];</div>
 <div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160; </div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    <span class="keywordtype">double</span> prevVel;</div>
+<div class="line"><a name="l00187"></a><span class="lineno"><a class="line" href="classChassis.html#ad3312d23a758eb6977d3b44591624c1d">  187</a></span>&#160;    <span class="keywordtype">double</span> <a class="code" href="classChassis.html#ad3312d23a758eb6977d3b44591624c1d">prevVel</a>;</div>
 <div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160; </div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;    <span class="keywordtype">int</span> testData[300][4];</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;    <span class="keywordtype">int</span> testDataIndex = 0;</div>
+<div class="line"><a name="l00189"></a><span class="lineno"><a class="line" href="classChassis.html#a81868ce33f51014504c723196ad3baca">  189</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classChassis.html#a81868ce33f51014504c723196ad3baca">testData</a>[300][4];</div>
+<div class="line"><a name="l00190"></a><span class="lineno"><a class="line" href="classChassis.html#a461b1077d45b3cd4270ff041e89b0a04">  190</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classChassis.html#a461b1077d45b3cd4270ff041e89b0a04">testDataIndex</a> = 0;</div>
 <div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160; </div>
 <div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;<span class="keyword">private</span>:</div>
 <div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    <a class="code" href="classDJIMotor.html">DJIMotor</a> LF, RF, LB, RB;</div>
@@ -189,6 +189,15 @@ $(function() {
 <div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;};</div>
 <div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160; </div>
 <div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;<span class="preprocessor">#endif </span><span class="comment">//TR_EMBEDDED_CHASSIS_H</span></div>
+<div class="ttc" id="aBNO055_8h_html"><div class="ttname"><a href="BNO055_8h.html">BNO055.h</a></div></div>
+<div class="ttc" id="aCANHandler_8h_html"><div class="ttname"><a href="CANHandler_8h.html">CANHandler.h</a></div></div>
+<div class="ttc" id="aChassisKalman_8h_html"><div class="ttname"><a href="ChassisKalman_8h.html">ChassisKalman.h</a></div></div>
+<div class="ttc" id="aChassisSpeeds_8h_html"><div class="ttname"><a href="ChassisSpeeds_8h.html">ChassisSpeeds.h</a></div></div>
+<div class="ttc" id="aDJIMotor_8h_html"><div class="ttname"><a href="DJIMotor_8h.html">DJIMotor.h</a></div></div>
+<div class="ttc" id="aHero_2main_8cpp_html_ae3e7ab47cd5395225bf7c67b8ee84976"><div class="ttname"><a href="Hero_2main_8cpp.html#ae3e7ab47cd5395225bf7c67b8ee84976">i2c</a></div><div class="ttdeci">I2C i2c(I2C_SDA, I2C_SCL)</div></div>
+<div class="ttc" id="aPose2D_8h_html"><div class="ttname"><a href="Pose2D_8h.html">Pose2D.h</a></div></div>
+<div class="ttc" id="aSSD1308_8h_html"><div class="ttname"><a href="SSD1308_8h.html">SSD1308.h</a></div></div>
+<div class="ttc" id="aWheelSpeeds_8h_html"><div class="ttname"><a href="WheelSpeeds_8h.html">WheelSpeeds.h</a></div></div>
 <div class="ttc" id="aclassBNO055_html"><div class="ttname"><a href="classBNO055.html">BNO055</a></div><div class="ttdef"><b>Definition:</b> BNO055.h:141</div></div>
 <div class="ttc" id="aclassChassisKalman_html"><div class="ttname"><a href="classChassisKalman.html">ChassisKalman</a></div><div class="ttdef"><b>Definition:</b> ChassisKalman.h:39</div></div>
 <div class="ttc" id="aclassChassisSpeeds_html"><div class="ttname"><a href="classChassisSpeeds.html">ChassisSpeeds</a></div><div class="ttdef"><b>Definition:</b> ChassisSpeeds.h:12</div></div>
@@ -200,7 +209,10 @@ $(function() {
 <div class="ttc" id="aclassChassis_html_a2b54d825e4b870fdb7b628540cc49a5e"><div class="ttname"><a href="classChassis.html#a2b54d825e4b870fdb7b628540cc49a5e">Chassis::initializeImu</a></div><div class="ttdeci">void initializeImu()</div><div class="ttdef"><b>Definition:</b> Chassis.cpp:230</div></div>
 <div class="ttc" id="aclassChassis_html_a3eac84eb3b12b0cc60fc29cc547d5fe7"><div class="ttname"><a href="classChassis.html#a3eac84eb3b12b0cc60fc29cc547d5fe7">Chassis::getBrakeMode</a></div><div class="ttdeci">BrakeMode getBrakeMode()</div><div class="ttdef"><b>Definition:</b> Chassis.cpp:222</div></div>
 <div class="ttc" id="aclassChassis_html_a409eaab438a0850576aee58dad5ad060"><div class="ttname"><a href="classChassis.html#a409eaab438a0850576aee58dad5ad060">Chassis::getSpeeds</a></div><div class="ttdeci">ChassisSpeeds getSpeeds()</div><div class="ttdef"><b>Definition:</b> Chassis.cpp:351</div></div>
+<div class="ttc" id="aclassChassis_html_a461b1077d45b3cd4270ff041e89b0a04"><div class="ttname"><a href="classChassis.html#a461b1077d45b3cd4270ff041e89b0a04">Chassis::testDataIndex</a></div><div class="ttdeci">int testDataIndex</div><div class="ttdef"><b>Definition:</b> Chassis.h:190</div></div>
 <div class="ttc" id="aclassChassis_html_a58f76ea47ac6616659f6e42323c606f2"><div class="ttname"><a href="classChassis.html#a58f76ea47ac6616659f6e42323c606f2">Chassis::driveXYRPower</a></div><div class="ttdeci">void driveXYRPower(double ref_chassis_power, double max_power, double lX, double lY, double time_diff, bool beyblading)</div><div class="ttdef"><b>Definition:</b> Chassis.cpp:103</div></div>
+<div class="ttc" id="aclassChassis_html_a7ee3c56828f6e161de5d145bed3e4d2f"><div class="ttname"><a href="classChassis.html#a7ee3c56828f6e161de5d145bed3e4d2f">Chassis::driveAngle</a></div><div class="ttdeci">void driveAngle(double angleRadians, double speedRPM, double rotationVelcotiyRPM)</div><div class="ttdef"><b>Definition:</b> Chassis.cpp:167</div></div>
+<div class="ttc" id="aclassChassis_html_a81868ce33f51014504c723196ad3baca"><div class="ttname"><a href="classChassis.html#a81868ce33f51014504c723196ad3baca">Chassis::testData</a></div><div class="ttdeci">int testData[300][4]</div><div class="ttdef"><b>Definition:</b> Chassis.h:189</div></div>
 <div class="ttc" id="aclassChassis_html_a8e2b350720dfa6897ef75f0e0e368436"><div class="ttname"><a href="classChassis.html#a8e2b350720dfa6897ef75f0e0e368436">Chassis::degreesToRadians</a></div><div class="ttdeci">double degreesToRadians(double degrees)</div><div class="ttdef"><b>Definition:</b> Chassis.cpp:334</div></div>
 <div class="ttc" id="aclassChassis_html_a9089741a5e6f56bd0587b0d3a047d586"><div class="ttname"><a href="classChassis.html#a9089741a5e6f56bd0587b0d3a047d586">Chassis::periodic</a></div><div class="ttdeci">void periodic()</div><div class="ttdef"><b>Definition:</b> Chassis.cpp:234</div></div>
 <div class="ttc" id="aclassChassis_html_a96455bb04cbf91df5f817b2a73843ff7"><div class="ttname"><a href="classChassis.html#a96455bb04cbf91df5f817b2a73843ff7">Chassis::driveOffsetAngle</a></div><div class="ttdeci">void driveOffsetAngle(ChassisSpeeds speeds, double angleOffset)</div><div class="ttdef"><b>Definition:</b> Chassis.cpp:161</div></div>
@@ -208,10 +220,15 @@ $(function() {
 <div class="ttc" id="aclassChassis_html_aa89590e2e7f685d3da0523dd7958be3a"><div class="ttname"><a href="classChassis.html#aa89590e2e7f685d3da0523dd7958be3a">Chassis::readImu</a></div><div class="ttdeci">void readImu()</div><div class="ttdef"><b>Definition:</b> Chassis.cpp:306</div></div>
 <div class="ttc" id="aclassChassis_html_aaa1fe234c2c1498b12c9bc3262c8dd25"><div class="ttname"><a href="classChassis.html#aaa1fe234c2c1498b12c9bc3262c8dd25">Chassis::beyblade</a></div><div class="ttdeci">void beyblade(double xVelocityRPM, double yVelocityRPM, double turretAngleDegrees, bool switchDirections)</div><div class="ttdef"><b>Definition:</b> Chassis.cpp:173</div></div>
 <div class="ttc" id="aclassChassis_html_ab45e8f9442dd9b4a831d5d728260e863"><div class="ttname"><a href="classChassis.html#ab45e8f9442dd9b4a831d5d728260e863">Chassis::Chassis</a></div><div class="ttdeci">Chassis(short lfId, short rfId, short lbId, short rbId, I2C *i2c)</div><div class="ttdef"><b>Definition:</b> Chassis.cpp:4</div></div>
+<div class="ttc" id="aclassChassis_html_aba5b1d2f371ab6434b5e49169b276773"><div class="ttname"><a href="classChassis.html#aba5b1d2f371ab6434b5e49169b276773">Chassis::isInverted</a></div><div class="ttdeci">int8_t isInverted[4]</div><div class="ttdef"><b>Definition:</b> Chassis.h:185</div></div>
 <div class="ttc" id="aclassChassis_html_ac944a5794d05e1dbd57cfd6735ecdc60"><div class="ttname"><a href="classChassis.html#ac944a5794d05e1dbd57cfd6735ecdc60">Chassis::driveMotors</a></div><div class="ttdeci">void driveMotors(WheelSpeeds speeds)</div><div class="ttdef"><b>Definition:</b> Chassis.cpp:91</div></div>
+<div class="ttc" id="aclassChassis_html_ad3312d23a758eb6977d3b44591624c1d"><div class="ttname"><a href="classChassis.html#ad3312d23a758eb6977d3b44591624c1d">Chassis::prevVel</a></div><div class="ttdeci">double prevVel</div><div class="ttdef"><b>Definition:</b> Chassis.h:187</div></div>
 <div class="ttc" id="aclassChassis_html_ad39d1c1c41a0053331eff67b0f8db595"><div class="ttname"><a href="classChassis.html#ad39d1c1c41a0053331eff67b0f8db595">Chassis::driveTurretRelative</a></div><div class="ttdeci">void driveTurretRelative(ChassisSpeeds speeds, double turretAngleDegrees)</div><div class="ttdef"><b>Definition:</b> Chassis.cpp:144</div></div>
 <div class="ttc" id="aclassChassis_html_ad55c408b2471cabb1e10f6b46bef5b21"><div class="ttname"><a href="classChassis.html#ad55c408b2471cabb1e10f6b46bef5b21">Chassis::BrakeMode</a></div><div class="ttdeci">BrakeMode</div><div class="ttdef"><b>Definition:</b> Chassis.h:51</div></div>
+<div class="ttc" id="aclassChassis_html_ad55c408b2471cabb1e10f6b46bef5b21a11867cd95b2127b6c4b064984ecf7bc9"><div class="ttname"><a href="classChassis.html#ad55c408b2471cabb1e10f6b46bef5b21a11867cd95b2127b6c4b064984ecf7bc9">Chassis::COAST</a></div><div class="ttdeci">@ COAST</div><div class="ttdef"><b>Definition:</b> Chassis.h:53</div></div>
+<div class="ttc" id="aclassChassis_html_ad55c408b2471cabb1e10f6b46bef5b21a69f42957e1752337d54a4183cec08cfa"><div class="ttname"><a href="classChassis.html#ad55c408b2471cabb1e10f6b46bef5b21a69f42957e1752337d54a4183cec08cfa">Chassis::BRAKE</a></div><div class="ttdeci">@ BRAKE</div><div class="ttdef"><b>Definition:</b> Chassis.h:52</div></div>
 <div class="ttc" id="aclassChassis_html_ad69c0979ebc90e1f28baa21a59f8463d"><div class="ttname"><a href="classChassis.html#ad69c0979ebc90e1f28baa21a59f8463d">Chassis::printMotorAngle</a></div><div class="ttdeci">void printMotorAngle()</div><div class="ttdef"><b>Definition:</b> Chassis.cpp:151</div></div>
+<div class="ttc" id="aclassChassis_html_ae4e7781f4fc54139e5d6f8c3ed7602c6"><div class="ttname"><a href="classChassis.html#ae4e7781f4fc54139e5d6f8c3ed7602c6">Chassis::allMotorsConnected</a></div><div class="ttdeci">bool allMotorsConnected()</div><div class="ttdef"><b>Definition:</b> Chassis.cpp:360</div></div>
 <div class="ttc" id="aclassChassis_html_af20dd0af1bbc0b32597125dc826393c8"><div class="ttname"><a href="classChassis.html#af20dd0af1bbc0b32597125dc826393c8">Chassis::getMotor</a></div><div class="ttdeci">DJIMotor getMotor(int index)</div><div class="ttdef"><b>Definition:</b> Chassis.cpp:198</div></div>
 <div class="ttc" id="aclassDJIMotor_html"><div class="ttname"><a href="classDJIMotor.html">DJIMotor</a></div><div class="ttdef"><b>Definition:</b> DJIMotor.h:63</div></div>
 <div class="ttc" id="aclassPose2D_html"><div class="ttname"><a href="classPose2D.html">Pose2D</a></div><div class="ttdef"><b>Definition:</b> Pose2D.h:13</div></div>

@@ -70,11 +70,11 @@ $(function() {
 <div class="title">serialLogger.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &quot;mbed.h&quot;</span></div>
+<a href="serialLogger_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &quot;mbed.h&quot;</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;cstdlib&gt;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#define MAX_PRINT_CHARS 200 </span><span class="comment">//Number of can handlers</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno"><a class="line" href="serialLogger_8h.html#af7e91cec56fdaf0af7c37613eb518237">    5</a></span>&#160;<span class="preprocessor">#define MAX_PRINT_CHARS 200 </span><span class="comment">//Number of can handlers</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#ifndef seriallogger_hpp</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#define seriallogger_hpp</span></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
@@ -87,31 +87,31 @@ $(function() {
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        <span class="keywordtype">int</span> delay_ms = 10;</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <span class="keywordtype">void</span> setDelay(<span class="keywordtype">int</span> ms) {delay_ms = ms;}</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        <span class="keywordtype">int</span> getDelay() {<span class="keywordflow">return</span> delay_ms;}</div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="classLogger.html#a6e67bb4c70347bb5670d4f68a7b6ecad">   18</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classLogger.html#a6e67bb4c70347bb5670d4f68a7b6ecad">setDelay</a>(<span class="keywordtype">int</span> ms) {delay_ms = ms;}</div>
+<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="classLogger.html#a973fb6a1098615664b5f3ebffea4331c">   19</a></span>&#160;        <span class="keywordtype">int</span> <a class="code" href="classLogger.html#a973fb6a1098615664b5f3ebffea4331c">getDelay</a>() {<span class="keywordflow">return</span> delay_ms;}</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        <span class="keywordtype">void</span> log(<span class="keywordtype">string</span> item, <span class="keywordtype">int</span> value){</div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="classLogger.html#ab1905ee060e68af76b616c8d1cb0b962">   21</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classLogger.html#ab1905ee060e68af76b616c8d1cb0b962">log</a>(<span class="keywordtype">string</span> item, <span class="keywordtype">int</span> value){</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;            <span class="keywordtype">string</span> tempSend;</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;            toSend = toSend + item + <span class="stringliteral">&quot;:&quot;</span> + std::to_string(value) + <span class="stringliteral">&quot; | &quot;</span>;</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        }</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        <span class="keywordtype">void</span> log(<span class="keywordtype">string</span> item, <span class="keywordtype">double</span> value){</div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classLogger.html#a5eeb9f40aa0316c4ffe6d21172c739ab">   26</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classLogger.html#a5eeb9f40aa0316c4ffe6d21172c739ab">log</a>(<span class="keywordtype">string</span> item, <span class="keywordtype">double</span> value){</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;            <span class="keywordtype">string</span> tempSend;</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;            toSend = toSend + item + <span class="stringliteral">&quot;:&quot;</span> + std::to_string(value) + <span class="stringliteral">&quot; | &quot;</span>;</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        }</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="keywordtype">void</span> log(<span class="keywordtype">string</span> item){</div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="classLogger.html#a70d064d3a96bedf59f44183459f4ca3c">   31</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classLogger.html#a70d064d3a96bedf59f44183459f4ca3c">log</a>(<span class="keywordtype">string</span> item){</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;            <span class="keywordtype">string</span> tempSend;</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;            toSend = toSend + item + <span class="stringliteral">&quot; | &quot;</span>;</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        }</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keywordtype">void</span> tick(){</div>
+<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="classLogger.html#a1c3215a440fd1267be596d7134b11d61">   36</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classLogger.html#a1c3215a440fd1267be596d7134b11d61">tick</a>(){</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;            <span class="keywordtype">char</span> send[toSend.length() + 1];</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;            printf(<span class="stringliteral">&quot;%s&quot;</span>, send);</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;            toSend = <span class="stringliteral">&quot;&quot;</span>;</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        }</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keywordtype">void</span> loggerThread(){</div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="classLogger.html#a54a71d8862bedc1f232e72ff3584020b">   42</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classLogger.html#a54a71d8862bedc1f232e72ff3584020b">loggerThread</a>(){</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            <span class="keywordflow">while</span>(1){</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                tick();</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                ThisThread::sleep_for(delay_ms);</div>
@@ -121,6 +121,13 @@ $(function() {
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aclassLogger_html"><div class="ttname"><a href="classLogger.html">Logger</a></div><div class="ttdef"><b>Definition:</b> serialLogger.h:11</div></div>
+<div class="ttc" id="aclassLogger_html_a1c3215a440fd1267be596d7134b11d61"><div class="ttname"><a href="classLogger.html#a1c3215a440fd1267be596d7134b11d61">Logger::tick</a></div><div class="ttdeci">void tick()</div><div class="ttdef"><b>Definition:</b> serialLogger.h:36</div></div>
+<div class="ttc" id="aclassLogger_html_a54a71d8862bedc1f232e72ff3584020b"><div class="ttname"><a href="classLogger.html#a54a71d8862bedc1f232e72ff3584020b">Logger::loggerThread</a></div><div class="ttdeci">void loggerThread()</div><div class="ttdef"><b>Definition:</b> serialLogger.h:42</div></div>
+<div class="ttc" id="aclassLogger_html_a5eeb9f40aa0316c4ffe6d21172c739ab"><div class="ttname"><a href="classLogger.html#a5eeb9f40aa0316c4ffe6d21172c739ab">Logger::log</a></div><div class="ttdeci">void log(string item, double value)</div><div class="ttdef"><b>Definition:</b> serialLogger.h:26</div></div>
+<div class="ttc" id="aclassLogger_html_a6e67bb4c70347bb5670d4f68a7b6ecad"><div class="ttname"><a href="classLogger.html#a6e67bb4c70347bb5670d4f68a7b6ecad">Logger::setDelay</a></div><div class="ttdeci">void setDelay(int ms)</div><div class="ttdef"><b>Definition:</b> serialLogger.h:18</div></div>
+<div class="ttc" id="aclassLogger_html_a70d064d3a96bedf59f44183459f4ca3c"><div class="ttname"><a href="classLogger.html#a70d064d3a96bedf59f44183459f4ca3c">Logger::log</a></div><div class="ttdeci">void log(string item)</div><div class="ttdef"><b>Definition:</b> serialLogger.h:31</div></div>
+<div class="ttc" id="aclassLogger_html_a973fb6a1098615664b5f3ebffea4331c"><div class="ttname"><a href="classLogger.html#a973fb6a1098615664b5f3ebffea4331c">Logger::getDelay</a></div><div class="ttdeci">int getDelay()</div><div class="ttdef"><b>Definition:</b> serialLogger.h:19</div></div>
+<div class="ttc" id="aclassLogger_html_ab1905ee060e68af76b616c8d1cb0b962"><div class="ttname"><a href="classLogger.html#ab1905ee060e68af76b616c8d1cb0b962">Logger::log</a></div><div class="ttdeci">void log(string item, int value)</div><div class="ttdef"><b>Definition:</b> serialLogger.h:21</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

@@ -1,13 +1,19 @@
 var searchData=
 [
-  ['degreestoradians_257',['degreesToRadians',['../classChassis.html#a8e2b350720dfa6897ef75f0e0e368436',1,'Chassis']]],
-  ['display_258',['display',['../classAdafruit__SSD1306.html#aeaa87aea232bb42cbcc642e510f0d95a',1,'Adafruit_SSD1306']]],
-  ['drawchar_259',['drawChar',['../classAdafruit__GFX.html#ab7f5a29b3a3dffe30c6a3f4c1f604a5a',1,'Adafruit_GFX']]],
-  ['drawpixel_260',['drawPixel',['../classAdafruit__GFX.html#ab7fbf72885c873266f9c7eb53b5c8896',1,'Adafruit_GFX::drawPixel()'],['../classAdafruit__SSD1306.html#ae2851d927a047a770c569c7c9fde4807',1,'Adafruit_SSD1306::drawPixel()']]],
-  ['drivefieldrelative_261',['driveFieldRelative',['../classChassis.html#a22231af9f43825063ac800ae186b6970',1,'Chassis']]],
-  ['drivemotors_262',['driveMotors',['../classChassis.html#ac944a5794d05e1dbd57cfd6735ecdc60',1,'Chassis']]],
-  ['driveoffsetangle_263',['driveOffsetAngle',['../classChassis.html#a96455bb04cbf91df5f817b2a73843ff7',1,'Chassis']]],
-  ['driveturretrelative_264',['driveTurretRelative',['../classChassis.html#ad39d1c1c41a0053331eff67b0f8db595',1,'Chassis']]],
-  ['drivexyr_265',['driveXYR',['../classChassis.html#a964c30630d2724e1e4f1774d0df305cc',1,'Chassis']]],
-  ['drivexyrpower_266',['driveXYRPower',['../classChassis.html#a58f76ea47ac6616659f6e42323c606f2',1,'Chassis']]]
+  ['data_1204',['data',['../classAdafruit__SSD1306__Spi.html#a0c5cc3ad19836ae1c685275250cbd466',1,'Adafruit_SSD1306_Spi::data()'],['../classAdafruit__SSD1306__I2c.html#a8e66ec6502b80fb982916374256a1f66',1,'Adafruit_SSD1306_I2c::data()'],['../classAdafruit__SSD1306.html#a8f7543f9d0bf80bd07f51ce2200689ab',1,'Adafruit_SSD1306::data()']]],
+  ['degreestoradians_1205',['degreesToRadians',['../classChassis.html#a8e2b350720dfa6897ef75f0e0e368436',1,'Chassis::degreesToRadians()'],['../classChassisKalman.html#a9c9a1233c14c5010aca437b793805dcf',1,'ChassisKalman::degreesToRadians()']]],
+  ['determine_5fid_1206',['determine_ID',['../ref__serial_8cpp.html#a4d098c7b89bb0aa9fbefe3065127c81e',1,'ref_serial.cpp']]],
+  ['digitalout2_1207',['DigitalOut2',['../classDigitalOut2.html#a0304c6e3a4ae0d46c2fccaa4cff0d3dd',1,'DigitalOut2']]],
+  ['display_1208',['display',['../classAdafruit__SSD1306.html#aeaa87aea232bb42cbcc642e510f0d95a',1,'Adafruit_SSD1306']]],
+  ['djimotor_1209',['DJIMotor',['../classDJIMotor.html#a40c2408b315b0ff17a5d2edb02a085ac',1,'DJIMotor::DJIMotor(bool isErroneousMotor=false)'],['../classDJIMotor.html#ad9c887b0c27db6eee2b491a2d8fa6bc1',1,'DJIMotor::DJIMotor(short canID, CANHandler::CANBus bus, motorType mType=STANDARD)']]],
+  ['drawchar_1210',['drawChar',['../classAdafruit__GFX.html#ab7f5a29b3a3dffe30c6a3f4c1f604a5a',1,'Adafruit_GFX']]],
+  ['drawpixel_1211',['drawPixel',['../classAdafruit__GFX.html#ab7fbf72885c873266f9c7eb53b5c8896',1,'Adafruit_GFX::drawPixel()'],['../classAdafruit__SSD1306.html#ae2851d927a047a770c569c7c9fde4807',1,'Adafruit_SSD1306::drawPixel()']]],
+  ['driveangle_1212',['driveAngle',['../classChassis.html#a7ee3c56828f6e161de5d145bed3e4d2f',1,'Chassis']]],
+  ['drivefieldrelative_1213',['driveFieldRelative',['../classChassis.html#a22231af9f43825063ac800ae186b6970',1,'Chassis']]],
+  ['drivemotors_1214',['driveMotors',['../classChassis.html#ac944a5794d05e1dbd57cfd6735ecdc60',1,'Chassis']]],
+  ['driveoffsetangle_1215',['driveOffsetAngle',['../classChassis.html#a96455bb04cbf91df5f817b2a73843ff7',1,'Chassis']]],
+  ['driveturretrelative_1216',['driveTurretRelative',['../classChassis.html#ad39d1c1c41a0053331eff67b0f8db595',1,'Chassis']]],
+  ['drivexyr_1217',['driveXYR',['../classChassis.html#a964c30630d2724e1e4f1774d0df305cc',1,'Chassis']]],
+  ['drivexyrpower_1218',['driveXYRPower',['../classChassis.html#a58f76ea47ac6616659f6e42323c606f2',1,'Chassis']]],
+  ['dumpinfo_1219',['dumpInfo',['../classRemote.html#ab3e55d985b57ba798e757b24b8ed76de',1,'Remote']]]
 ];

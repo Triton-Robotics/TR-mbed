@@ -70,17 +70,17 @@ $(function() {
 <div class="title">TRMutex.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef TR_EMBEDDED_MUTEX_H</span></div>
+<a href="TRMutex_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef TR_EMBEDDED_MUTEX_H</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define TR_EMBEDDED_MUTEX_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;mbed.h&quot;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;cstdlib&gt;</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;queue&gt;</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">enum</span> priorityLevels {</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    FATAL = 1,</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    WARNING = 2,</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    DEFAULT = 3,</div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="TRMutex_8h.html#af5f478ebdb1815432fb04589309d5492">   18</a></span>&#160;<span class="keyword">enum</span> <a class="code" href="TRMutex_8h.html#af5f478ebdb1815432fb04589309d5492">priorityLevels</a> {</div>
+<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="TRMutex_8h.html#af5f478ebdb1815432fb04589309d5492a651d8a47a6976d6fe05c0e03fb4cd2d0">   19</a></span>&#160;    <a class="code" href="TRMutex_8h.html#af5f478ebdb1815432fb04589309d5492a651d8a47a6976d6fe05c0e03fb4cd2d0">FATAL</a> = 1,</div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="TRMutex_8h.html#af5f478ebdb1815432fb04589309d5492a984de77c680eaff141ec910e25568a81">   20</a></span>&#160;    <a class="code" href="TRMutex_8h.html#af5f478ebdb1815432fb04589309d5492a984de77c680eaff141ec910e25568a81">WARNING</a> = 2,</div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="TRMutex_8h.html#af5f478ebdb1815432fb04589309d5492a88ec7d5086d2469ba843c7fcceade8a6">   21</a></span>&#160;    <a class="code" href="TRMutex_8h.html#af5f478ebdb1815432fb04589309d5492a88ec7d5086d2469ba843c7fcceade8a6">DEFAULT</a> = 3,</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;};</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
 <div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="classTRMutex.html">   28</a></span>&#160;<span class="keyword">class </span><a class="code" href="classTRMutex.html">TRMutex</a> {</div>
@@ -91,23 +91,23 @@ $(function() {
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <a class="code" href="classTRMutex.html#a3f42e63f89376a505d97b090c1f98b32">TRMutex</a>(); </div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="classTRMutex.html#a7634374f088cf7589d45df45b572af84">   48</a></span>&#160;    priorityLevels <a class="code" href="classTRMutex.html#a7634374f088cf7589d45df45b572af84">priorityIndicator</a>;</div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="classTRMutex.html#a7634374f088cf7589d45df45b572af84">   48</a></span>&#160;    <a class="code" href="TRMutex_8h.html#af5f478ebdb1815432fb04589309d5492">priorityLevels</a> <a class="code" href="classTRMutex.html#a7634374f088cf7589d45df45b572af84">priorityIndicator</a>;</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classTRMutex.html#a38565f6d25cef7576e7ad4d5d96c3ccb">updatePriority</a>(priorityLevels desiredLevel);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classTRMutex.html#a38565f6d25cef7576e7ad4d5d96c3ccb">updatePriority</a>(<a class="code" href="TRMutex_8h.html#af5f478ebdb1815432fb04589309d5492">priorityLevels</a> desiredLevel);</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classTRMutex.html#ac50a84e782af92a0d8d26be52558999c">print</a>(<span class="keywordtype">int</span> integer, priorityLevels priority);</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classTRMutex.html#ac50a84e782af92a0d8d26be52558999c">print</a>(<span class="keywordtype">int</span> integer, <a class="code" href="TRMutex_8h.html#af5f478ebdb1815432fb04589309d5492">priorityLevels</a> priority);</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classTRMutex.html#ac50a84e782af92a0d8d26be52558999c">print</a>(<span class="keywordtype">char</span> statement[], priorityLevels priority);</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classTRMutex.html#ac50a84e782af92a0d8d26be52558999c">print</a>(<span class="keywordtype">char</span> statement[], <a class="code" href="TRMutex_8h.html#af5f478ebdb1815432fb04589309d5492">priorityLevels</a> priority);</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    </div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classTRMutex.html#a9abd718a37e809a5c83ca3438a21471e">println</a>(<span class="keywordtype">int</span> integer, priorityLevels priority);</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classTRMutex.html#a9abd718a37e809a5c83ca3438a21471e">println</a>(<span class="keywordtype">int</span> integer, <a class="code" href="TRMutex_8h.html#af5f478ebdb1815432fb04589309d5492">priorityLevels</a> priority);</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classTRMutex.html#a9abd718a37e809a5c83ca3438a21471e">println</a>(<span class="keywordtype">char</span> statement[], priorityLevels priority);</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classTRMutex.html#a9abd718a37e809a5c83ca3438a21471e">println</a>(<span class="keywordtype">char</span> statement[], <a class="code" href="TRMutex_8h.html#af5f478ebdb1815432fb04589309d5492">priorityLevels</a> priority);</div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
-<div class="line"><a name="l00095"></a><span class="lineno"><a class="line" href="classTRMutex.html#a17b5483495010f44fa2e6e925e663c95">   95</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classTRMutex.html#a17b5483495010f44fa2e6e925e663c95">printff</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* format, priorityLevels priority, ...);</div>
+<div class="line"><a name="l00095"></a><span class="lineno"><a class="line" href="classTRMutex.html#a17b5483495010f44fa2e6e925e663c95">   95</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classTRMutex.html#a17b5483495010f44fa2e6e925e663c95">printff</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* format, <a class="code" href="TRMutex_8h.html#af5f478ebdb1815432fb04589309d5492">priorityLevels</a> priority, ...);</div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
 <div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="classTRMutex.html#a2407149a29f8539033950caedc1d39bc">loop</a>();</div>
@@ -115,6 +115,10 @@ $(function() {
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;};</div>
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;<span class="preprocessor">#endif </span><span class="comment">//TR_EMBEDDED_MUTEX_H</span></div>
+<div class="ttc" id="aTRMutex_8h_html_af5f478ebdb1815432fb04589309d5492"><div class="ttname"><a href="TRMutex_8h.html#af5f478ebdb1815432fb04589309d5492">priorityLevels</a></div><div class="ttdeci">priorityLevels</div><div class="ttdef"><b>Definition:</b> TRMutex.h:18</div></div>
+<div class="ttc" id="aTRMutex_8h_html_af5f478ebdb1815432fb04589309d5492a651d8a47a6976d6fe05c0e03fb4cd2d0"><div class="ttname"><a href="TRMutex_8h.html#af5f478ebdb1815432fb04589309d5492a651d8a47a6976d6fe05c0e03fb4cd2d0">FATAL</a></div><div class="ttdeci">@ FATAL</div><div class="ttdef"><b>Definition:</b> TRMutex.h:19</div></div>
+<div class="ttc" id="aTRMutex_8h_html_af5f478ebdb1815432fb04589309d5492a88ec7d5086d2469ba843c7fcceade8a6"><div class="ttname"><a href="TRMutex_8h.html#af5f478ebdb1815432fb04589309d5492a88ec7d5086d2469ba843c7fcceade8a6">DEFAULT</a></div><div class="ttdeci">@ DEFAULT</div><div class="ttdef"><b>Definition:</b> TRMutex.h:21</div></div>
+<div class="ttc" id="aTRMutex_8h_html_af5f478ebdb1815432fb04589309d5492a984de77c680eaff141ec910e25568a81"><div class="ttname"><a href="TRMutex_8h.html#af5f478ebdb1815432fb04589309d5492a984de77c680eaff141ec910e25568a81">WARNING</a></div><div class="ttdeci">@ WARNING</div><div class="ttdef"><b>Definition:</b> TRMutex.h:20</div></div>
 <div class="ttc" id="aclassTRMutex_html"><div class="ttname"><a href="classTRMutex.html">TRMutex</a></div><div class="ttdef"><b>Definition:</b> TRMutex.h:28</div></div>
 <div class="ttc" id="aclassTRMutex_html_a17b5483495010f44fa2e6e925e663c95"><div class="ttname"><a href="classTRMutex.html#a17b5483495010f44fa2e6e925e663c95">TRMutex::printff</a></div><div class="ttdeci">void printff(const char *format, priorityLevels priority,...)</div></div>
 <div class="ttc" id="aclassTRMutex_html_a2407149a29f8539033950caedc1d39bc"><div class="ttname"><a href="classTRMutex.html#a2407149a29f8539033950caedc1d39bc">TRMutex::loop</a></div><div class="ttdeci">static void loop()</div><div class="ttdef"><b>Definition:</b> TRMutex.cpp:78</div></div>

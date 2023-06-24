@@ -1,14 +1,14 @@
 var searchData=
 [
-  ['wheelkalman_378',['WheelKalman',['../classWheelKalman.html#a13b949274ccccd72e48de14d9b8583c4',1,'WheelKalman']]],
-  ['wheelspeeds_379',['WheelSpeeds',['../classWheelSpeeds.html#a54a77a5b990f21644e538dbb90dc9cd4',1,'WheelSpeeds']]],
-  ['width_380',['width',['../classAdafruit__GFX.html#aa381d8858e0cbeb2053096dab99c92a0',1,'Adafruit_GFX']]],
-  ['write_5freg0_381',['write_reg0',['../classBNO055.html#a325ee94cfe39a3fb1b0ae36d575ad938',1,'BNO055']]],
-  ['write_5freg1_382',['write_reg1',['../classBNO055.html#a45060130cb79550438a4ea7c29b0ef88',1,'BNO055']]],
-  ['writebigchar_383',['writeBigChar',['../classSSD1308.html#a9d3824306ada51c8ef6d11df2209d861',1,'SSD1308']]],
-  ['writebitmap_384',['writeBitmap',['../classSSD1308.html#a719e43402727ae1d298b633483242a65',1,'SSD1308']]],
-  ['writechar_385',['writeChar',['../classAdafruit__GFX.html#a0f7218be0dd30eeb6797f11d1858465d',1,'Adafruit_GFX::writeChar()'],['../classSSD1308.html#ae736d6e0dd077985bbab27c477a30909',1,'SSD1308::writeChar(char chr)']]],
-  ['writelevelbar_386',['writeLevelBar',['../classSSD1308.html#a5e1ae00f549bbaf24f681d8ae654d9c5',1,'SSD1308']]],
-  ['writeprogressbar_387',['writeProgressBar',['../classSSD1308.html#a0fe498a448b5fad2ea3febd7a4689c8b',1,'SSD1308']]],
-  ['writestring_388',['writeString',['../classSSD1308.html#a668eef7a824e2c460029b9ea105f59df',1,'SSD1308']]]
+  ['ui_5fdelete_5fall_1393',['ui_delete_all',['../ref__ui_8cpp.html#a2039086b93b7d100f18e0e1dd32091ce',1,'ui_delete_all(BufferedSerial *serial):&#160;ref_ui.cpp'],['../ref__ui_8h.html#a2039086b93b7d100f18e0e1dd32091ce',1,'ui_delete_all(BufferedSerial *serial):&#160;ref_ui.cpp']]],
+  ['ui_5fgraph_5fcharacters_1394',['ui_graph_characters',['../ref__ui_8cpp.html#abfc3616a0584ee5efb352491d8832c7c',1,'ui_graph_characters(BufferedSerial *serial, int operation_type, string str, int x, int y, int name):&#160;ref_ui.cpp'],['../ref__ui_8h.html#abfc3616a0584ee5efb352491d8832c7c',1,'ui_graph_characters(BufferedSerial *serial, int operation_type, string str, int x, int y, int name):&#160;ref_ui.cpp']]],
+  ['unit_5fselection_1395',['unit_selection',['../classBNO055.html#a236e74fb55e1fcf6d6ee67db325b81e6',1,'BNO055']]],
+  ['update_1396',['update',['../classSerialCommunication.html#a2655518d96d0f9b59bdc3398ac34bf21',1,'SerialCommunication']]],
+  ['updatecans_1397',['updateCANs',['../classCANHandler.html#a423563c96d7a7da836a957c5b0c88745',1,'CANHandler']]],
+  ['updatemultiturnposition_1398',['updateMultiTurnPosition',['../classDJIMotor.html#a693ed44d5c0e9d66e52c87f3d9827c7f',1,'DJIMotor']]],
+  ['updatepriority_1399',['updatePriority',['../classTRMutex.html#a38565f6d25cef7576e7ad4d5d96c3ccb',1,'TRMutex::updatePriority()'],['../main_8h.html#aee5523542bbb75fc9e1053ed3fc7f214',1,'updatePriority():&#160;main.h']]],
+  ['use_5fcelsius_1400',['use_celsius',['../classBNO055.html#a8b5648e70366a3eeb94f4529a550a4f3',1,'BNO055']]],
+  ['use_5fdegrees_1401',['use_degrees',['../classBNO055.html#a7e9abb10d31dec78f0d6aae84a2d3dfb',1,'BNO055']]],
+  ['use_5fdps_1402',['use_dps',['../classBNO055.html#a06468e20ab6978b8c4d13363958b2428',1,'BNO055']]],
+  ['use_5fmss_1403',['use_mss',['../classBNO055.html#a8c4a62acd9d260dac947752212e40028',1,'BNO055']]]
 ];

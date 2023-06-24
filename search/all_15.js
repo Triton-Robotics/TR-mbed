@@ -1,4 +1,32 @@
 var searchData=
 [
-  ['xframeheader_189',['xFrameHeader',['../structxFrameHeader.html',1,'']]]
+  ['u_991',['u',['../classWheelKalman.html#a635d2b40830e1b90b237e96a1a6b28c0',1,'WheelKalman']]],
+  ['ui_5fdelete_5fall_992',['ui_delete_all',['../ref__ui_8h.html#a2039086b93b7d100f18e0e1dd32091ce',1,'ui_delete_all(BufferedSerial *serial):&#160;ref_ui.cpp'],['../ref__ui_8cpp.html#a2039086b93b7d100f18e0e1dd32091ce',1,'ui_delete_all(BufferedSerial *serial):&#160;ref_ui.cpp']]],
+  ['ui_5fgraph_5fcharacters_993',['ui_graph_characters',['../ref__ui_8h.html#abfc3616a0584ee5efb352491d8832c7c',1,'ui_graph_characters(BufferedSerial *serial, int operation_type, string str, int x, int y, int name):&#160;ref_ui.cpp'],['../ref__ui_8cpp.html#abfc3616a0584ee5efb352491d8832c7c',1,'ui_graph_characters(BufferedSerial *serial, int operation_type, string str, int x, int y, int name):&#160;ref_ui.cpp']]],
+  ['unfiltered_994',['unfiltered',['../classRemote.html#add5cdef11d0bba19fe2960cc08c68425',1,'Remote']]],
+  ['unit_5facc_5fmg_995',['UNIT_ACC_MG',['../BNO055_8h.html#a912475adffdcf9a51e820f7b53a9294c',1,'BNO055.h']]],
+  ['unit_5facc_5fmss_996',['UNIT_ACC_MSS',['../BNO055_8h.html#a0b284e858212de410821f5cc7f5cdf49',1,'BNO055.h']]],
+  ['unit_5feuler_5fdeg_997',['UNIT_EULER_DEG',['../BNO055_8h.html#a7b770106ce563da4e831f34c2acde9a6',1,'BNO055.h']]],
+  ['unit_5feuler_5frad_998',['UNIT_EULER_RAD',['../BNO055_8h.html#a8870656456d7e1050483588717156ab0',1,'BNO055.h']]],
+  ['unit_5fgyr_5fdps_999',['UNIT_GYR_DPS',['../BNO055_8h.html#a8d8cdfd2156332f9b40073036617a080',1,'BNO055.h']]],
+  ['unit_5fgyr_5frps_1000',['UNIT_GYR_RPS',['../BNO055_8h.html#a2b004a6effecf03c1cfba66de51b94ed',1,'BNO055.h']]],
+  ['unit_5fori_5fandroid_1001',['UNIT_ORI_ANDROID',['../BNO055_8h.html#a9ed3198856d2a0159bebecab357d02e1',1,'BNO055.h']]],
+  ['unit_5fori_5fwin_1002',['UNIT_ORI_WIN',['../BNO055_8h.html#a431cce4da059071f207b802978d86cd5',1,'BNO055.h']]],
+  ['unit_5fselection_1003',['unit_selection',['../classBNO055.html#a236e74fb55e1fcf6d6ee67db325b81e6',1,'BNO055']]],
+  ['unit_5ftemp_5fc_1004',['UNIT_TEMP_C',['../BNO055_8h.html#ae3e10d20371fe40eaef7d79ae88e6407',1,'BNO055.h']]],
+  ['unit_5ftemp_5ff_1005',['UNIT_TEMP_F',['../BNO055_8h.html#a36611dd0d307f98dba478f2217f6ffcc',1,'BNO055.h']]],
+  ['unknown_1006',['UNKNOWN',['../classRemote.html#affd0b019d5483d546bc29b07447649bba696b031073e74bf2cb98e5ef201d4aa3',1,'Remote']]],
+  ['up_1007',['UP',['../classRemote.html#affd0b019d5483d546bc29b07447649bbafbaedde498cdead4f2780217646e9ba1',1,'Remote']]],
+  ['update_1008',['update',['../classSerialCommunication.html#a2655518d96d0f9b59bdc3398ac34bf21',1,'SerialCommunication']]],
+  ['updatecans_1009',['updateCANs',['../classCANHandler.html#a423563c96d7a7da836a957c5b0c88745',1,'CANHandler']]],
+  ['updatemultiturnposition_1010',['updateMultiTurnPosition',['../classDJIMotor.html#a693ed44d5c0e9d66e52c87f3d9827c7f',1,'DJIMotor']]],
+  ['updatepriority_1011',['updatePriority',['../classTRMutex.html#a38565f6d25cef7576e7ad4d5d96c3ccb',1,'TRMutex::updatePriority()'],['../main_8h.html#aee5523542bbb75fc9e1053ed3fc7f214',1,'updatePriority(priorityLevels desiredLevel):&#160;main.h']]],
+  ['upperbound_1012',['UPPERBOUND',['../Hero_2main_8cpp.html#ad3d72467bd78e4b87c376f6341367087',1,'UPPERBOUND():&#160;main.cpp'],['../Infantry_2main_8cpp.html#ad3d72467bd78e4b87c376f6341367087',1,'UPPERBOUND():&#160;main.cpp'],['../TestBench_2main_8cpp.html#ad3d72467bd78e4b87c376f6341367087',1,'UPPERBOUND():&#160;main.cpp']]],
+  ['use_5fcelsius_1013',['use_celsius',['../classBNO055.html#a8b5648e70366a3eeb94f4529a550a4f3',1,'BNO055']]],
+  ['use_5fdegrees_1014',['use_degrees',['../classBNO055.html#a7e9abb10d31dec78f0d6aae84a2d3dfb',1,'BNO055']]],
+  ['use_5fdps_1015',['use_dps',['../classBNO055.html#a06468e20ab6978b8c4d13363958b2428',1,'BNO055']]],
+  ['use_5fmss_1016',['use_mss',['../classBNO055.html#a8c4a62acd9d260dac947752212e40028',1,'BNO055']]],
+  ['useabsencoder_1017',['useAbsEncoder',['../classDJIMotor.html#aa9af1d0a5135cc17bb97a777ecf81137',1,'DJIMotor']]],
+  ['useintegrationforpid_1018',['useIntegrationForPID',['../classDJIMotor.html#ae7dd82ffd0f909f4de9ef5faf48ba6ff',1,'DJIMotor']]],
+  ['usekalmanforpid_1019',['useKalmanForPID',['../classDJIMotor.html#aa37f2bcbc3ca4080588bd0509f68db89',1,'DJIMotor']]]
 ];
