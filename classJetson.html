@@ -86,14 +86,11 @@ Public Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:abe5d566811d83f624969fe48a8547ecb"><td class="memItemLeft" align="right" valign="top"><a id="abe5d566811d83f624969fe48a8547ecb"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Jetson</b> (PinName tx, PinName rx)</td></tr>
+<tr class="memitem:abe5d566811d83f624969fe48a8547ecb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJetson.html#abe5d566811d83f624969fe48a8547ecb">Jetson</a> (PinName tx, PinName rx)</td></tr>
 <tr class="separator:abe5d566811d83f624969fe48a8547ecb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a51812e5df0aa7ac64b30f2ade765dd63"><td class="memItemLeft" align="right" valign="top"><a id="a51812e5df0aa7ac64b30f2ade765dd63"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>read</b> ()</td></tr>
+<tr class="memitem:a51812e5df0aa7ac64b30f2ade765dd63"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJetson.html#a51812e5df0aa7ac64b30f2ade765dd63">read</a> ()</td></tr>
 <tr class="separator:a51812e5df0aa7ac64b30f2ade765dd63"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a66d9a9d4e0d40cfbabd9f2029719d46f"><td class="memItemLeft" align="right" valign="top"><a id="a66d9a9d4e0d40cfbabd9f2029719d46f"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>get</b> (cv axis)</td></tr>
+<tr class="memitem:a66d9a9d4e0d40cfbabd9f2029719d46f"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJetson.html#a66d9a9d4e0d40cfbabd9f2029719d46f">get</a> (cv axis)</td></tr>
 <tr class="separator:a66d9a9d4e0d40cfbabd9f2029719d46f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
@@ -102,9 +99,103 @@ Public Attributes</h2></td></tr>
 atomic&lt; JetsonStatus &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>status</b></td></tr>
 <tr class="separator:a34374de51274d24eb8a7d7fa3f74c7ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="abe5d566811d83f624969fe48a8547ecb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe5d566811d83f624969fe48a8547ecb">&#9670;&nbsp;</a></span>Jetson()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Jetson::Jetson </td>
+          <td>(</td>
+          <td class="paramtype">PinName&#160;</td>
+          <td class="paramname"><em>tx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">PinName&#160;</td>
+          <td class="paramname"><em>rx</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Constructor for the <a class="el" href="classJetson.html">Jetson</a> class. The current implementation of the <a class="el" href="classJetson.html">Jetson</a> class uses UART serial communication.</p>
+<div class="fragment"><div class="line"><span class="comment">// Example usage</span></div>
+<div class="line"><a class="code" href="classJetson.html">Jetson</a> jetson(PA_9, PA_10);  <span class="comment">// Baud rate is automatically initialized to 115200</span></div>
+<div class="ttc" id="aclassJetson_html"><div class="ttname"><a href="classJetson.html">Jetson</a></div><div class="ttdef"><b>Definition:</b> Jetson.h:20</div></div>
+</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tx</td><td>The transmit pin </td></tr>
+    <tr><td class="paramname">rx</td><td>The receive pin </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a66d9a9d4e0d40cfbabd9f2029719d46f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66d9a9d4e0d40cfbabd9f2029719d46f">&#9670;&nbsp;</a></span>get()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float Jetson::get </td>
+          <td>(</td>
+          <td class="paramtype">Jetson::cv&#160;</td>
+          <td class="paramname"><em>axis</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns the current value of the specified axis.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">axis</td><td>The axis to get the value of </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The current value of the specified axis</dd></dl>
+<p>For example usage, see the example for the <a class="el" href="classJetson.html#a51812e5df0aa7ac64b30f2ade765dd63">read()</a> function. </p>
+
+</div>
+</div>
+<a id="a51812e5df0aa7ac64b30f2ade765dd63"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a51812e5df0aa7ac64b30f2ade765dd63">&#9670;&nbsp;</a></span>read()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Jetson::read </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Should be called once per loop. Reads the next set of data from the serial port.</p>
+<div class="fragment"><div class="line"><span class="comment">// Example usage</span></div>
+<div class="line"><a class="code" href="classJetson.html">Jetson</a> jetson(PA_9, PA_10);</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">while</span> (<span class="keyword">true</span>) {</div>
+<div class="line">  jetson.read();</div>
+<div class="line">  printf(<span class="stringliteral">&quot;X: %f, Y: %f, Z: %f\n&quot;</span>, jetson.get(Jetson::X), jetson.get(Jetson::Y), jetson.get(Jetson::Z));</div>
+<div class="line">}</div>
+</div><!-- fragment --><p>Note that it is often preferred to do this in a separate thread. See the class header for a full example. </p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>core/util/communications/<a class="el" href="Jetson_8h_source.html">Jetson.h</a></li>
-<li>core/util/communications/Jetson.cpp</li>
+<li>core/util/communications/<a class="el" href="Jetson_8cpp.html">Jetson.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
