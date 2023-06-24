@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['feedbackthread_1220',['feedbackThread',['../classDJIMotor.html#a13bfd707f9c790420a18ccd33221a74d',1,'DJIMotor']]],
-  ['filldisplay_1221',['fillDisplay',['../classSSD1308.html#a37cc717a9520a7a010b5394675384264',1,'SSD1308']]],
-  ['fprintff_1222',['fprintff',['../main_8h.html#a87027087814298bcef44b6088c3c808f',1,'main.h']]],
-  ['frequency_1223',['frequency',['../classBNO055.html#a34a045235dd5d7dc2f9d571dbd95a51c',1,'BNO055']]]
+  ['ekf_5finit_1268',['ekf_init',['../tiny__ekf_8cpp.html#ab782fd42051389bc29eeb8cd98c824c7',1,'ekf_init(void *v, int n, int m):&#160;tiny_ekf.cpp'],['../tiny__ekf_8h.html#a13a41575831a36b9829c8d6597581cd5',1,'ekf_init(void *ekf, int n, int m):&#160;tiny_ekf.cpp'],['../TinyEKF_8h.html#abfb788c76ee021849107b46cd54476b6',1,'ekf_init(void *, int, int):&#160;tiny_ekf.cpp']]],
+  ['ekf_5fstep_1269',['ekf_step',['../tiny__ekf_8cpp.html#ad5598497d818bf3ae3b20af2d2b65eb7',1,'ekf_step(void *v, double *z):&#160;tiny_ekf.cpp'],['../tiny__ekf_8h.html#abd02021a67c3e0ee3af92d495e0d3cef',1,'ekf_step(void *ekf, double *z):&#160;tiny_ekf.cpp'],['../TinyEKF_8h.html#acf47c28b0cf626afbef78a230072873f',1,'ekf_step(void *, double *):&#160;tiny_ekf.cpp']]]
 ];

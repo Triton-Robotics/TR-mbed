@@ -80,7 +80,7 @@ $(function() {
 <div class="line"><a name="l00008"></a><span class="lineno"><a class="line" href="ChassisKalman_8h.html#a70b31cfe0717c959b5ecf757bd4adcf9">    8</a></span>&#160;<span class="preprocessor">#define Nsta 6 </span><span class="comment">// 6 states: x, y, and rotation pos and velocity</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="ChassisKalman_8h.html#afe2fd7d498bb68ad247cd176cca5b81b">    9</a></span>&#160;<span class="preprocessor">#define Mobs 5 </span><span class="comment">// 5 Measurements: velocity of each wheel, and IMU angle</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;algorithms/ekf/TinyEKF.h&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="TinyEKF_8h.html">algorithms/ekf/TinyEKF.h</a>&gt;</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;cmath&gt;</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
 <div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="ChassisKalman_8h.html#a598a3330b3c21701223ee0ca14316eca">   14</a></span>&#160;<span class="preprocessor">#define PI 3.14159265</span></div>
@@ -91,7 +91,7 @@ $(function() {
 <div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="ChassisKalman_8h.html#a1c00a849b02c2dd96e4726fcd5a9ceec">   19</a></span>&#160;<span class="preprocessor">#define TRACK_WIDTH_INCHES 18.0</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="classChassisKalman.html">   39</a></span>&#160;<span class="keyword">class </span><a class="code" href="classChassisKalman.html">ChassisKalman</a> : <span class="keyword">public</span> TinyEKF {</div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="classChassisKalman.html">   39</a></span>&#160;<span class="keyword">class </span><a class="code" href="classChassisKalman.html">ChassisKalman</a> : <span class="keyword">public</span> <a class="code" href="classTinyEKF.html">TinyEKF</a> {</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <a class="code" href="classChassisKalman.html#a263e5f825f0f28009bd10123ed268b9a">ChassisKalman</a>();</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
@@ -110,6 +110,7 @@ $(function() {
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor">#endif </span><span class="comment">//TR_EMBEDDED_CHASSISKALMAN_H</span></div>
 <div class="ttc" id="aChassisKalman_8h_html_a70b31cfe0717c959b5ecf757bd4adcf9"><div class="ttname"><a href="ChassisKalman_8h.html#a70b31cfe0717c959b5ecf757bd4adcf9">Nsta</a></div><div class="ttdeci">#define Nsta</div><div class="ttdef"><b>Definition:</b> ChassisKalman.h:8</div></div>
 <div class="ttc" id="aChassisKalman_8h_html_afe2fd7d498bb68ad247cd176cca5b81b"><div class="ttname"><a href="ChassisKalman_8h.html#afe2fd7d498bb68ad247cd176cca5b81b">Mobs</a></div><div class="ttdeci">#define Mobs</div><div class="ttdef"><b>Definition:</b> ChassisKalman.h:9</div></div>
+<div class="ttc" id="aTinyEKF_8h_html"><div class="ttname"><a href="TinyEKF_8h.html">TinyEKF.h</a></div></div>
 <div class="ttc" id="aclassChassisKalman_html"><div class="ttname"><a href="classChassisKalman.html">ChassisKalman</a></div><div class="ttdef"><b>Definition:</b> ChassisKalman.h:39</div></div>
 <div class="ttc" id="aclassChassisKalman_html_a263e5f825f0f28009bd10123ed268b9a"><div class="ttname"><a href="classChassisKalman.html#a263e5f825f0f28009bd10123ed268b9a">ChassisKalman::ChassisKalman</a></div><div class="ttdeci">ChassisKalman()</div><div class="ttdef"><b>Definition:</b> ChassisKalman.cpp:8</div></div>
 <div class="ttc" id="aclassChassisKalman_html_a3910b9e2213102e1e702624c38290dec"><div class="ttname"><a href="classChassisKalman.html#a3910b9e2213102e1e702624c38290dec">ChassisKalman::pythag</a></div><div class="ttdeci">double pythag(double dx, double dy)</div><div class="ttdef"><b>Definition:</b> ChassisKalman.cpp:37</div></div>
@@ -117,6 +118,7 @@ $(function() {
 <div class="ttc" id="aclassChassisKalman_html_a80a7e01c3e416fb724cdd5ed1f7e5956"><div class="ttname"><a href="classChassisKalman.html#a80a7e01c3e416fb724cdd5ed1f7e5956">ChassisKalman::dt</a></div><div class="ttdeci">double dt</div><div class="ttdef"><b>Definition:</b> ChassisKalman.h:50</div></div>
 <div class="ttc" id="aclassChassisKalman_html_a9c9a1233c14c5010aca437b793805dcf"><div class="ttname"><a href="classChassisKalman.html#a9c9a1233c14c5010aca437b793805dcf">ChassisKalman::degreesToRadians</a></div><div class="ttdeci">double degreesToRadians(double degrees)</div><div class="ttdef"><b>Definition:</b> ChassisKalman.cpp:41</div></div>
 <div class="ttc" id="aclassChassisKalman_html_af90d012edf93747fc914cd66a602e6e9"><div class="ttname"><a href="classChassisKalman.html#af90d012edf93747fc914cd66a602e6e9">ChassisKalman::model</a></div><div class="ttdeci">void model(double fx[Nsta], double F[Nsta][Nsta], double hx[Mobs], double H[Mobs][Nsta]) override</div><div class="ttdef"><b>Definition:</b> ChassisKalman.cpp:45</div></div>
+<div class="ttc" id="aclassTinyEKF_html"><div class="ttname"><a href="classTinyEKF.html">TinyEKF</a></div><div class="ttdef"><b>Definition:</b> TinyEKF.h:20</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

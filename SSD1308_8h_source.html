@@ -249,7 +249,7 @@ $(function() {
 <div class="line"><a name="l00223"></a><span class="lineno"><a class="line" href="classSSD1308.html">  223</a></span>&#160;<span class="keyword">class </span><a class="code" href="classSSD1308.html">SSD1308</a> : <span class="keyword">public</span> mbed::Stream {</div>
 <div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;  <span class="keyword">public</span>:</div>
 <div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;    </div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;    <a class="code" href="classSSD1308.html#a9f6a8ffd2452acf066a88d2e2354f89e">SSD1308</a>(mbed::I2C *<a class="code" href="Hero_2main_8cpp.html#ae3e7ab47cd5395225bf7c67b8ee84976">i2c</a>, uint8_t address = <a class="code" href="SSD1308_8h.html#a48312a917e7f3464112ab08723900150">SSD1308_DEF_SA</a>);</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;    <a class="code" href="classSSD1308.html#a9f6a8ffd2452acf066a88d2e2354f89e">SSD1308</a>(mbed::I2C *<a class="code" href="imuExampleAllData_8cpp.html#af0e9d191330cab6591f3ab5a44270db7">i2c</a>, uint8_t address = <a class="code" href="SSD1308_8h.html#a48312a917e7f3464112ab08723900150">SSD1308_DEF_SA</a>);</div>
 <div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160; </div>
 <div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;<span class="comment">// High Level methods</span></div>
 <div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160; </div>
@@ -415,7 +415,6 @@ $(function() {
 <div class="line"><a name="l00545"></a><span class="lineno">  545</span>&#160;};</div>
 <div class="line"><a name="l00546"></a><span class="lineno">  546</span>&#160; </div>
 <div class="line"><a name="l00547"></a><span class="lineno">  547</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aHero_2main_8cpp_html_ae3e7ab47cd5395225bf7c67b8ee84976"><div class="ttname"><a href="Hero_2main_8cpp.html#ae3e7ab47cd5395225bf7c67b8ee84976">i2c</a></div><div class="ttdeci">I2C i2c(I2C_SDA, I2C_SCL)</div></div>
 <div class="ttc" id="aInfantry_2main_8cpp_html_a3684be787ab6b04f9bb857d0c7366c79"><div class="ttname"><a href="Infantry_2main_8cpp.html#a3684be787ab6b04f9bb857d0c7366c79">command</a></div><div class="ttdeci">RamseteCommand command(Pose2D(0, 0, 0), Pose2D(20, 20, 0), 2, &amp;chassis)</div></div>
 <div class="ttc" id="aSSD1308_8h_html_a48312a917e7f3464112ab08723900150"><div class="ttname"><a href="SSD1308_8h.html#a48312a917e7f3464112ab08723900150">SSD1308_DEF_SA</a></div><div class="ttdeci">#define SSD1308_DEF_SA</div><div class="ttdef"><b>Definition:</b> SSD1308.h:56</div></div>
 <div class="ttc" id="aSSD1308_8h_html_a7aa401b7cb66018ebb4d6fc22aa80563"><div class="ttname"><a href="SSD1308_8h.html#a7aa401b7cb66018ebb4d6fc22aa80563">MAX_PAGE</a></div><div class="ttdeci">#define MAX_PAGE</div><div class="ttdef"><b>Definition:</b> SSD1308.h:62</div></div>
@@ -467,6 +466,7 @@ $(function() {
 <div class="ttc" id="aclassSSD1308_html_af1b1aece20277442505b1af2d72f0bad"><div class="ttname"><a href="classSSD1308.html#af1b1aece20277442505b1af2d72f0bad">SSD1308::setDisplayStartLine</a></div><div class="ttdeci">void setDisplayStartLine(uint8_t line)</div><div class="ttdoc">Set Display StartLine, takes one byte, 0x00-0x3F.</div><div class="ttdef"><b>Definition:</b> SSD1308.cpp:794</div></div>
 <div class="ttc" id="aclassSSD1308_html_af8a86ca40257dc7b46480bc8939d0b49"><div class="ttname"><a href="classSSD1308.html#af8a86ca40257dc7b46480bc8939d0b49">SSD1308::setDisplayOffset</a></div><div class="ttdeci">void setDisplayOffset(uint8_t offset)</div></div>
 <div class="ttc" id="aclassSSD1308_html_af8e162e8189cc26ed6218526db470b50"><div class="ttname"><a href="classSSD1308.html#af8e162e8189cc26ed6218526db470b50">SSD1308::setDisplayFlip</a></div><div class="ttdeci">void setDisplayFlip(bool left, bool down)</div><div class="ttdoc">Display Flip (Left/Right, Up/Down)</div><div class="ttdef"><b>Definition:</b> SSD1308.cpp:900</div></div>
+<div class="ttc" id="aimuExampleAllData_8cpp_html_af0e9d191330cab6591f3ab5a44270db7"><div class="ttname"><a href="imuExampleAllData_8cpp.html#af0e9d191330cab6591f3ab5a44270db7">i2c</a></div><div class="ttdeci">I2C i2c(PB_9, PB_8)</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

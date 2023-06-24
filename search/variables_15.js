@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['w_1673',['w',['../structBNO055__QUATERNION__TypeDef.html#ae197a4fdd344d5f8684b88ef3a6e7463',1,'BNO055_QUATERNION_TypeDef']]],
-  ['wcrc_5ftable_1674',['wCRC_Table',['../crc_8cpp.html#a1f1756c7786010bcec22c6d4d8228732',1,'crc.cpp']]],
-  ['width_1675',['width',['../struct____packed.html#ad7f05b40e93a8e8d55719fa7e9aa6761',1,'__packed']]],
-  ['winner_1676',['winner',['../structext__game__result__t.html#acdeb089d1c4e64550c72583f0dde933f',1,'ext_game_result_t']]],
-  ['wrap_1677',['wrap',['../classAdafruit__GFX.html#a8c31e63d43f7285e47aa48c363d86ce9',1,'Adafruit_GFX']]]
+  ['u_1753',['u',['../classWheelKalman.html#a635d2b40830e1b90b237e96a1a6b28c0',1,'WheelKalman']]],
+  ['unfiltered_1754',['unfiltered',['../classRemote.html#add5cdef11d0bba19fe2960cc08c68425',1,'Remote']]],
+  ['useabsencoder_1755',['useAbsEncoder',['../classDJIMotor.html#aa9af1d0a5135cc17bb97a777ecf81137',1,'DJIMotor']]],
+  ['useintegrationforpid_1756',['useIntegrationForPID',['../classDJIMotor.html#ae7dd82ffd0f909f4de9ef5faf48ba6ff',1,'DJIMotor']]],
+  ['usekalmanforpid_1757',['useKalmanForPID',['../classDJIMotor.html#aa37f2bcbc3ca4080588bd0509f68db89',1,'DJIMotor']]]
 ];

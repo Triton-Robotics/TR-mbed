@@ -1,14 +1,8 @@
 var searchData=
 [
-  ['ui_5fdelete_5fall_1393',['ui_delete_all',['../ref__ui_8cpp.html#a2039086b93b7d100f18e0e1dd32091ce',1,'ui_delete_all(BufferedSerial *serial):&#160;ref_ui.cpp'],['../ref__ui_8h.html#a2039086b93b7d100f18e0e1dd32091ce',1,'ui_delete_all(BufferedSerial *serial):&#160;ref_ui.cpp']]],
-  ['ui_5fgraph_5fcharacters_1394',['ui_graph_characters',['../ref__ui_8cpp.html#abfc3616a0584ee5efb352491d8832c7c',1,'ui_graph_characters(BufferedSerial *serial, int operation_type, string str, int x, int y, int name):&#160;ref_ui.cpp'],['../ref__ui_8h.html#abfc3616a0584ee5efb352491d8832c7c',1,'ui_graph_characters(BufferedSerial *serial, int operation_type, string str, int x, int y, int name):&#160;ref_ui.cpp']]],
-  ['unit_5fselection_1395',['unit_selection',['../classBNO055.html#a236e74fb55e1fcf6d6ee67db325b81e6',1,'BNO055']]],
-  ['update_1396',['update',['../classSerialCommunication.html#a2655518d96d0f9b59bdc3398ac34bf21',1,'SerialCommunication']]],
-  ['updatecans_1397',['updateCANs',['../classCANHandler.html#a423563c96d7a7da836a957c5b0c88745',1,'CANHandler']]],
-  ['updatemultiturnposition_1398',['updateMultiTurnPosition',['../classDJIMotor.html#a693ed44d5c0e9d66e52c87f3d9827c7f',1,'DJIMotor']]],
-  ['updatepriority_1399',['updatePriority',['../classTRMutex.html#a38565f6d25cef7576e7ad4d5d96c3ccb',1,'TRMutex::updatePriority()'],['../main_8h.html#aee5523542bbb75fc9e1053ed3fc7f214',1,'updatePriority():&#160;main.h']]],
-  ['use_5fcelsius_1400',['use_celsius',['../classBNO055.html#a8b5648e70366a3eeb94f4529a550a4f3',1,'BNO055']]],
-  ['use_5fdegrees_1401',['use_degrees',['../classBNO055.html#a7e9abb10d31dec78f0d6aae84a2d3dfb',1,'BNO055']]],
-  ['use_5fdps_1402',['use_dps',['../classBNO055.html#a06468e20ab6978b8c4d13363958b2428',1,'BNO055']]],
-  ['use_5fmss_1403',['use_mss',['../classBNO055.html#a8c4a62acd9d260dac947752212e40028',1,'BNO055']]]
+  ['tick_1445',['tick',['../classLogger.html#a1c3215a440fd1267be596d7134b11d61',1,'Logger::tick()'],['../classDJIMotor.html#adffff2089806c76cac3980b7eacb1930',1,'DJIMotor::tick()']]],
+  ['tickthread_1446',['tickThread',['../classDJIMotor.html#a8f64bc2d4648b7a3508e530985b26b7e',1,'DJIMotor']]],
+  ['tinyekf_1447',['TinyEKF',['../classTinyEKF.html#aa40df55f61015b9d34ab4a785e9c3b84',1,'TinyEKF']]],
+  ['tonum_1448',['toNum',['../classSerialCommunication.html#a09419c84e1bc2a085e1357a68b1e8319',1,'SerialCommunication']]],
+  ['trmutex_1449',['TRMutex',['../classTRMutex.html#a3f42e63f89376a505d97b090c1f98b32',1,'TRMutex']]]
 ];

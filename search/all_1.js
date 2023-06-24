@@ -28,14 +28,15 @@ var searchData=
   ['adafruit_5fssd1306_2eh_37',['Adafruit_SSD1306.h',['../Adafruit__SSD1306_8h.html',1,'']]],
   ['adafruit_5fssd1306_5fi2c_38',['Adafruit_SSD1306_I2c',['../classAdafruit__SSD1306__I2c.html#aedd8bbda96e97453b2a55c1773a190b5',1,'Adafruit_SSD1306_I2c::Adafruit_SSD1306_I2c()'],['../classAdafruit__SSD1306__I2c.html',1,'Adafruit_SSD1306_I2c']]],
   ['adafruit_5fssd1306_5fspi_39',['Adafruit_SSD1306_Spi',['../classAdafruit__SSD1306__Spi.html#a95bd78e1ae613b2f2f3f5cb53b9e86d4',1,'Adafruit_SSD1306_Spi::Adafruit_SSD1306_Spi()'],['../classAdafruit__SSD1306__Spi.html',1,'Adafruit_SSD1306_Spi']]],
-  ['aerial_5frobot_5fenergy_40',['aerial_robot_energy',['../ref__serial_8h.html#a23461de793418f7c8335887b6d94c205',1,'aerial_robot_energy():&#160;ref_serial.cpp'],['../ref__serial_8cpp.html#a23461de793418f7c8335887b6d94c205',1,'aerial_robot_energy():&#160;ref_serial.cpp']]],
+  ['aerial_5frobot_5fenergy_40',['aerial_robot_energy',['../ref__serial_8cpp.html#a23461de793418f7c8335887b6d94c205',1,'aerial_robot_energy():&#160;ref_serial.cpp'],['../ref__serial_8h.html#a23461de793418f7c8335887b6d94c205',1,'aerial_robot_energy():&#160;ref_serial.cpp']]],
   ['aerial_5frobot_5fenergy_5ft_41',['aerial_robot_energy_t',['../structaerial__robot__energy__t.html',1,'']]],
   ['allmotorsconnected_42',['allMotorsConnected',['../classChassis.html#ae4e7781f4fc54139e5d6f8c3ed7602c6',1,'Chassis']]],
   ['angle_43',['ANGLE',['../DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4a0361b31f1fea060374e017af17d84435',1,'DJIMotor.h']]],
   ['angleradians_44',['angleRadians',['../classPose2D.html#a01e4621df6667b3e1466fb8eb39634dd',1,'Pose2D']]],
-  ['append_5fcrc16_5fcheck_5fsum_45',['Append_CRC16_Check_Sum',['../crc_8cpp.html#ab64afc0e5dec0d04dee81fb98c274894',1,'Append_CRC16_Check_Sum(uint8_t *pchMessage, uint32_t dwLength):&#160;crc.cpp'],['../crc_8h.html#ab64afc0e5dec0d04dee81fb98c274894',1,'Append_CRC16_Check_Sum(uint8_t *pchMessage, uint32_t dwLength):&#160;crc.cpp']]],
-  ['append_5fcrc8_5fcheck_5fsum_46',['Append_CRC8_Check_Sum',['../crc_8cpp.html#a6597501f13b4c73b399ef72ad9db8b24',1,'Append_CRC8_Check_Sum(unsigned char *pchMessage, unsigned int dwLength):&#160;crc.cpp'],['../crc_8h.html#a6597501f13b4c73b399ef72ad9db8b24',1,'Append_CRC8_Check_Sum(unsigned char *pchMessage, unsigned int dwLength):&#160;crc.cpp']]],
-  ['armor_5fid_47',['armor_id',['../structext__robot__hurt__t.html#af02d12ac9fc6be944228994a672af6de',1,'ext_robot_hurt_t']]],
-  ['attach_48',['attach',['../classCANHandler.html#a415414f5289348a031d5436a13cb10f8',1,'CANHandler']]],
-  ['attack_5ftime_49',['attack_time',['../structaerial__robot__energy__t.html#aa46c7d0624eb94583c591fb81c826157',1,'aerial_robot_energy_t']]]
+  ['angular_5facc_45',['angular_acc',['../imuExampleAllData_8cpp.html#acd2c04b75392304205a57d8923addd8d',1,'imuExampleAllData.cpp']]],
+  ['append_5fcrc16_5fcheck_5fsum_46',['Append_CRC16_Check_Sum',['../crc_8cpp.html#ab64afc0e5dec0d04dee81fb98c274894',1,'Append_CRC16_Check_Sum(uint8_t *pchMessage, uint32_t dwLength):&#160;crc.cpp'],['../crc_8h.html#ab64afc0e5dec0d04dee81fb98c274894',1,'Append_CRC16_Check_Sum(uint8_t *pchMessage, uint32_t dwLength):&#160;crc.cpp']]],
+  ['append_5fcrc8_5fcheck_5fsum_47',['Append_CRC8_Check_Sum',['../crc_8cpp.html#a6597501f13b4c73b399ef72ad9db8b24',1,'Append_CRC8_Check_Sum(unsigned char *pchMessage, unsigned int dwLength):&#160;crc.cpp'],['../crc_8h.html#a6597501f13b4c73b399ef72ad9db8b24',1,'Append_CRC8_Check_Sum(unsigned char *pchMessage, unsigned int dwLength):&#160;crc.cpp']]],
+  ['armor_5fid_48',['armor_id',['../structext__robot__hurt__t.html#af02d12ac9fc6be944228994a672af6de',1,'ext_robot_hurt_t']]],
+  ['attach_49',['attach',['../classCANHandler.html#a415414f5289348a031d5436a13cb10f8',1,'CANHandler']]],
+  ['attack_5ftime_50',['attack_time',['../structaerial__robot__energy__t.html#aa46c7d0624eb94583c591fb81c826157',1,'aerial_robot_energy_t']]]
 ];

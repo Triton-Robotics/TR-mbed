@@ -77,8 +77,11 @@ $(function() {
 Inheritance diagram for ChassisKalman:</div>
 <div class="dyncontent">
  <div class="center">
-  <img src="classChassisKalman.png" alt=""/>
- </div></div>
+  <img src="classChassisKalman.png" usemap="#ChassisKalman_map" alt=""/>
+  <map id="ChassisKalman_map" name="ChassisKalman_map">
+<area href="classTinyEKF.html" alt="TinyEKF" shape="rect" coords="0,0,97,24"/>
+  </map>
+</div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -86,6 +89,13 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a263e5f825f0f28009bd10123ed268b9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5ef8459e1e50d9e993d4200f05b7fa39"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisKalman.html#a5ef8459e1e50d9e993d4200f05b7fa39">setDt</a> (double <a class="el" href="classChassisKalman.html#a80a7e01c3e416fb724cdd5ed1f7e5956">dt</a>)</td></tr>
 <tr class="separator:a5ef8459e1e50d9e993d4200f05b7fa39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classTinyEKF"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classTinyEKF')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classTinyEKF.html">TinyEKF</a></td></tr>
+<tr class="memitem:a8042cc29297ea94c7648a55ab571091e inherit pub_methods_classTinyEKF"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTinyEKF.html#a8042cc29297ea94c7648a55ab571091e">getX</a> (int i)</td></tr>
+<tr class="separator:a8042cc29297ea94c7648a55ab571091e inherit pub_methods_classTinyEKF"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0fd96b519941f57dc2d468bbd64f8cf1 inherit pub_methods_classTinyEKF"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTinyEKF.html#a0fd96b519941f57dc2d468bbd64f8cf1">setX</a> (int i, double value)</td></tr>
+<tr class="separator:a0fd96b519941f57dc2d468bbd64f8cf1 inherit pub_methods_classTinyEKF"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7815fde89daa6395aade0e668ebb1829 inherit pub_methods_classTinyEKF"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTinyEKF.html#a7815fde89daa6395aade0e668ebb1829">step</a> (double *z)</td></tr>
+<tr class="separator:a7815fde89daa6395aade0e668ebb1829 inherit pub_methods_classTinyEKF"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -100,6 +110,23 @@ Protected Member Functions</h2></td></tr>
 <tr class="separator:a9c9a1233c14c5010aca437b793805dcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af90d012edf93747fc914cd66a602e6e9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisKalman.html#af90d012edf93747fc914cd66a602e6e9">model</a> (double fx[<a class="el" href="WheelKalman_8h.html#a70b31cfe0717c959b5ecf757bd4adcf9">Nsta</a>], double F[<a class="el" href="WheelKalman_8h.html#a70b31cfe0717c959b5ecf757bd4adcf9">Nsta</a>][<a class="el" href="WheelKalman_8h.html#a70b31cfe0717c959b5ecf757bd4adcf9">Nsta</a>], double hx[<a class="el" href="WheelKalman_8h.html#afe2fd7d498bb68ad247cd176cca5b81b">Mobs</a>], double H[<a class="el" href="WheelKalman_8h.html#afe2fd7d498bb68ad247cd176cca5b81b">Mobs</a>][<a class="el" href="WheelKalman_8h.html#a70b31cfe0717c959b5ecf757bd4adcf9">Nsta</a>]) override</td></tr>
 <tr class="separator:af90d012edf93747fc914cd66a602e6e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_methods_classTinyEKF"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classTinyEKF')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classTinyEKF.html">TinyEKF</a></td></tr>
+<tr class="memitem:aa40df55f61015b9d34ab4a785e9c3b84 inherit pro_methods_classTinyEKF"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTinyEKF.html#aa40df55f61015b9d34ab4a785e9c3b84">TinyEKF</a> ()</td></tr>
+<tr class="separator:aa40df55f61015b9d34ab4a785e9c3b84 inherit pro_methods_classTinyEKF"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acdb80f6a01f01e455ced46ff97b75f19 inherit pro_methods_classTinyEKF"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTinyEKF.html#acdb80f6a01f01e455ced46ff97b75f19">~TinyEKF</a> ()</td></tr>
+<tr class="separator:acdb80f6a01f01e455ced46ff97b75f19 inherit pro_methods_classTinyEKF"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae332f8d61107e2c24dd7cbe85e22f64 inherit pro_methods_classTinyEKF"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTinyEKF.html#aae332f8d61107e2c24dd7cbe85e22f64">setP</a> (int i, int j, double value)</td></tr>
+<tr class="separator:aae332f8d61107e2c24dd7cbe85e22f64 inherit pro_methods_classTinyEKF"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09d26ecfd1b50b6ebdd79ba50a845a71 inherit pro_methods_classTinyEKF"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTinyEKF.html#a09d26ecfd1b50b6ebdd79ba50a845a71">setQ</a> (int i, int j, double value)</td></tr>
+<tr class="separator:a09d26ecfd1b50b6ebdd79ba50a845a71 inherit pro_methods_classTinyEKF"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67c8d1bfae529910d674fb5152c91d1e inherit pro_methods_classTinyEKF"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTinyEKF.html#a67c8d1bfae529910d674fb5152c91d1e">setR</a> (int i, int j, double value)</td></tr>
+<tr class="separator:a67c8d1bfae529910d674fb5152c91d1e inherit pro_methods_classTinyEKF"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pro_attribs_classTinyEKF"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classTinyEKF')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classTinyEKF.html">TinyEKF</a></td></tr>
+<tr class="memitem:a3bf1cf44824e216539ac4acbe782a41f inherit pro_attribs_classTinyEKF"><td class="memItemLeft" align="right" valign="top">double *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTinyEKF.html#a3bf1cf44824e216539ac4acbe782a41f">x</a></td></tr>
+<tr class="separator:a3bf1cf44824e216539ac4acbe782a41f inherit pro_attribs_classTinyEKF"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Kalman filter for <a class="el" href="classChassis.html">Chassis</a> localization.</p>
@@ -201,10 +228,21 @@ Protected Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">protected</span></span>  </td>
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Implement this function for your EKF model. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">fx</td><td>gets output of state-transition function <em>f(x<sub>0 .. n-1</sub>)</em> </td></tr>
+    <tr><td class="paramname">F</td><td>gets <em>n &times; n</em> Jacobian of <em>f(x)</em> </td></tr>
+    <tr><td class="paramname">hx</td><td>gets output of observation function <em>h(x<sub>0 .. n-1</sub>)</em> </td></tr>
+    <tr><td class="paramname">H</td><td>gets <em>m &times; n</em> Jacobian of <em>h(x)</em> </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classTinyEKF.html#ad39adf5a048a4d284c135f731e43b540">TinyEKF</a>.</p>
 
 </div>
 </div>

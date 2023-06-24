@@ -217,15 +217,15 @@ Public Member Functions</h2></td></tr>
 <div class="line"><span class="comment">//Pin Defines for I2C Bus</span></div>
 <div class="line"><span class="preprocessor">#define D_SDA                  p28</span></div>
 <div class="line"><span class="preprocessor">#define D_SCL                  p27</span></div>
-<div class="line">I2C <a class="code" href="Hero_2main_8cpp.html#ae3e7ab47cd5395225bf7c67b8ee84976">i2c</a>(D_SDA, D_SCL);</div>
+<div class="line">I2C <a class="code" href="imuExampleAllData_8cpp.html#af0e9d191330cab6591f3ab5a44270db7">i2c</a>(D_SDA, D_SCL);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Host PC Communication channels</span></div>
 <div class="line">Serial pc(USBTX, USBRX); <span class="comment">// tx, rx</span></div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Instantiate OLED</span></div>
-<div class="line"><a class="code" href="classSSD1308.html">SSD1308</a> <a class="code" href="Sentry_2main_8cpp.html#a86851a20edac4e1e140fd94fc7430035">oled</a> = <a class="code" href="classSSD1308.html#a9f6a8ffd2452acf066a88d2e2354f89e">SSD1308</a>(&amp;<a class="code" href="Hero_2main_8cpp.html#ae3e7ab47cd5395225bf7c67b8ee84976">i2c</a>, <a class="code" href="SSD1308_8h.html#add464927de109941ee2f7992119b177e">SSD1308_SA0</a>);</div>
+<div class="line"><a class="code" href="classSSD1308.html">SSD1308</a> <a class="code" href="Sentry_2main_8cpp.html#a86851a20edac4e1e140fd94fc7430035">oled</a> = <a class="code" href="classSSD1308.html#a9f6a8ffd2452acf066a88d2e2354f89e">SSD1308</a>(&amp;<a class="code" href="imuExampleAllData_8cpp.html#af0e9d191330cab6591f3ab5a44270db7">i2c</a>, <a class="code" href="SSD1308_8h.html#add464927de109941ee2f7992119b177e">SSD1308_SA0</a>);</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">int</span> <a class="code" href="Engineer_2main_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main</a>() {</div>
+<div class="line"><span class="keywordtype">int</span> <a class="code" href="imuExampleAllData_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main</a>() {</div>
 <div class="line">  pc.printf(<span class="stringliteral">&quot;OLED test start\r&quot;</span>);  </div>
 <div class="line">  <a class="code" href="Sentry_2main_8cpp.html#a86851a20edac4e1e140fd94fc7430035">oled</a>.writeString(0, 0, <span class="stringliteral">&quot;Hello World !&quot;</span>);</div>
 <div class="line">  <span class="comment">//  oled.printf(&quot;Hello World !&quot;);</span></div>
@@ -244,14 +244,14 @@ Public Member Functions</h2></td></tr>
 <div class="line"> </div>
 <div class="line">  pc.printf(<span class="stringliteral">&quot;OLED test done\r\n&quot;</span>);  </div>
 <div class="line">}</div>
-<div class="ttc" id="aEngineer_2main_8cpp_html_ae66f6b31b5ad750f1fe042a706a4e3d4"><div class="ttname"><a href="Engineer_2main_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main</a></div><div class="ttdeci">int main()</div><div class="ttdef"><b>Definition:</b> main.cpp:3</div></div>
-<div class="ttc" id="aHero_2main_8cpp_html_ae3e7ab47cd5395225bf7c67b8ee84976"><div class="ttname"><a href="Hero_2main_8cpp.html#ae3e7ab47cd5395225bf7c67b8ee84976">i2c</a></div><div class="ttdeci">I2C i2c(I2C_SDA, I2C_SCL)</div></div>
 <div class="ttc" id="aSSD1308_8h_html"><div class="ttname"><a href="SSD1308_8h.html">SSD1308.h</a></div></div>
 <div class="ttc" id="aSSD1308_8h_html_add464927de109941ee2f7992119b177e"><div class="ttname"><a href="SSD1308_8h.html#add464927de109941ee2f7992119b177e">SSD1308_SA0</a></div><div class="ttdeci">#define SSD1308_SA0</div><div class="ttdef"><b>Definition:</b> SSD1308.h:54</div></div>
 <div class="ttc" id="aSentry_2main_8cpp_html_a86851a20edac4e1e140fd94fc7430035"><div class="ttname"><a href="Sentry_2main_8cpp.html#a86851a20edac4e1e140fd94fc7430035">oled</a></div><div class="ttdeci">Adafruit_SSD1306_I2c oled(i2c, LED1)</div></div>
 <div class="ttc" id="aclassAdafruit__SSD1306_html_afe1e0f5efabd931aab7998275356744d"><div class="ttname"><a href="classAdafruit__SSD1306.html#afe1e0f5efabd931aab7998275356744d">Adafruit_SSD1306::clearDisplay</a></div><div class="ttdeci">void clearDisplay(void)</div><div class="ttdoc">Clear the display buffer.</div><div class="ttdef"><b>Definition:</b> Adafruit_SSD1306.cpp:147</div></div>
 <div class="ttc" id="aclassSSD1308_html"><div class="ttname"><a href="classSSD1308.html">SSD1308</a></div><div class="ttdef"><b>Definition:</b> SSD1308.h:223</div></div>
 <div class="ttc" id="aclassSSD1308_html_a9f6a8ffd2452acf066a88d2e2354f89e"><div class="ttname"><a href="classSSD1308.html#a9f6a8ffd2452acf066a88d2e2354f89e">SSD1308::SSD1308</a></div><div class="ttdeci">SSD1308(mbed::I2C *i2c, uint8_t address=SSD1308_DEF_SA)</div><div class="ttdoc">Constructor.</div><div class="ttdef"><b>Definition:</b> SSD1308.cpp:66</div></div>
+<div class="ttc" id="aimuExampleAllData_8cpp_html_ae66f6b31b5ad750f1fe042a706a4e3d4"><div class="ttname"><a href="imuExampleAllData_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main</a></div><div class="ttdeci">int main()</div><div class="ttdef"><b>Definition:</b> imuExampleAllData.cpp:27</div></div>
+<div class="ttc" id="aimuExampleAllData_8cpp_html_af0e9d191330cab6591f3ab5a44270db7"><div class="ttname"><a href="imuExampleAllData_8cpp.html#af0e9d191330cab6591f3ab5a44270db7">i2c</a></div><div class="ttdeci">I2C i2c(PB_9, PB_8)</div></div>
 <div class="ttc" id="ambed__logo_8h_html"><div class="ttname"><a href="mbed__logo_8h.html">mbed_logo.h</a></div></div>
 <div class="ttc" id="ambed__logo_8h_html_a18148959f88dd70e0c636c82c46a9550"><div class="ttname"><a href="mbed__logo_8h.html#a18148959f88dd70e0c636c82c46a9550">mbed_logo</a></div><div class="ttdeci">const uint8_t mbed_logo[]</div><div class="ttdef"><b>Definition:</b> mbed_logo.h:7</div></div>
 </div><!-- fragment --> </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>

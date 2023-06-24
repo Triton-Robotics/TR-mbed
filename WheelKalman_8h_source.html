@@ -81,7 +81,7 @@ $(function() {
 <div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="WheelKalman_8h.html#afe2fd7d498bb68ad247cd176cca5b81b">    9</a></span>&#160;<span class="preprocessor">#define Mobs 2 </span><span class="comment">// 2 measurements: rotational angle and velocity</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno"><a class="line" href="WheelKalman_8h.html#ac96e5b7c10bc1fa53e18e8efc86392a1">   10</a></span>&#160;<span class="preprocessor">#define ControlInputs 1 </span><span class="comment">// 1 control input: power sent to motor</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;algorithms/ekf/TinyEKF.h&gt;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="TinyEKF_8h.html">algorithms/ekf/TinyEKF.h</a>&gt;</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;cmath&gt;</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
 <div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="WheelKalman_8h.html#ae5e089b553f791f79d02046ff63f3cdb">   15</a></span>&#160;<span class="preprocessor">#define SECONDS_PER_MINUTE 60</span></div>
@@ -91,7 +91,7 @@ $(function() {
 <div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="WheelKalman_8h.html#a1c00a849b02c2dd96e4726fcd5a9ceec">   19</a></span>&#160;<span class="preprocessor">#define TRACK_WIDTH_INCHES 18.0</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classWheelKalman.html">   26</a></span>&#160;<span class="keyword">class </span><a class="code" href="classWheelKalman.html">WheelKalman</a>: <span class="keyword">public</span> TinyEKF {</div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classWheelKalman.html">   26</a></span>&#160;<span class="keyword">class </span><a class="code" href="classWheelKalman.html">WheelKalman</a>: <span class="keyword">public</span> <a class="code" href="classTinyEKF.html">TinyEKF</a> {</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <a class="code" href="classWheelKalman.html#a13b949274ccccd72e48de14d9b8583c4">WheelKalman</a>();</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
@@ -108,9 +108,11 @@ $(function() {
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">#endif </span><span class="comment">//TR_EMBEDDED_WHEELKALMAN_H</span></div>
+<div class="ttc" id="aTinyEKF_8h_html"><div class="ttname"><a href="TinyEKF_8h.html">TinyEKF.h</a></div></div>
 <div class="ttc" id="aWheelKalman_8h_html_a70b31cfe0717c959b5ecf757bd4adcf9"><div class="ttname"><a href="WheelKalman_8h.html#a70b31cfe0717c959b5ecf757bd4adcf9">Nsta</a></div><div class="ttdeci">#define Nsta</div><div class="ttdef"><b>Definition:</b> WheelKalman.h:8</div></div>
 <div class="ttc" id="aWheelKalman_8h_html_ac96e5b7c10bc1fa53e18e8efc86392a1"><div class="ttname"><a href="WheelKalman_8h.html#ac96e5b7c10bc1fa53e18e8efc86392a1">ControlInputs</a></div><div class="ttdeci">#define ControlInputs</div><div class="ttdef"><b>Definition:</b> WheelKalman.h:10</div></div>
 <div class="ttc" id="aWheelKalman_8h_html_afe2fd7d498bb68ad247cd176cca5b81b"><div class="ttname"><a href="WheelKalman_8h.html#afe2fd7d498bb68ad247cd176cca5b81b">Mobs</a></div><div class="ttdeci">#define Mobs</div><div class="ttdef"><b>Definition:</b> WheelKalman.h:9</div></div>
+<div class="ttc" id="aclassTinyEKF_html"><div class="ttname"><a href="classTinyEKF.html">TinyEKF</a></div><div class="ttdef"><b>Definition:</b> TinyEKF.h:20</div></div>
 <div class="ttc" id="aclassWheelKalman_html"><div class="ttname"><a href="classWheelKalman.html">WheelKalman</a></div><div class="ttdef"><b>Definition:</b> WheelKalman.h:26</div></div>
 <div class="ttc" id="aclassWheelKalman_html_a13b949274ccccd72e48de14d9b8583c4"><div class="ttname"><a href="classWheelKalman.html#a13b949274ccccd72e48de14d9b8583c4">WheelKalman::WheelKalman</a></div><div class="ttdeci">WheelKalman()</div><div class="ttdef"><b>Definition:</b> WheelKalman.cpp:7</div></div>
 <div class="ttc" id="aclassWheelKalman_html_a56ded0fca693872890ed687502e74d2f"><div class="ttname"><a href="classWheelKalman.html#a56ded0fca693872890ed687502e74d2f">WheelKalman::model</a></div><div class="ttdeci">void model(double fx[Nsta], double F[Nsta][Nsta], double hx[Mobs], double H[Mobs][Nsta]) override</div><div class="ttdef"><b>Definition:</b> WheelKalman.cpp:32</div></div>

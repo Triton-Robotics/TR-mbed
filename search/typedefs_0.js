@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['clientdata_5fstruct_5ft_1684',['ClientData_struct_t',['../ref__serial_8h.html#ad3118340379d18a91c5d8540ffae5ccc',1,'ref_serial.h']]]
+  ['clientdata_5fstruct_5ft_1770',['ClientData_struct_t',['../ref__serial_8h.html#ad3118340379d18a91c5d8540ffae5ccc',1,'ref_serial.h']]]
 ];
