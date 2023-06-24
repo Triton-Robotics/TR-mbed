@@ -357,25 +357,17 @@ void DJIMotor::sendOneID(CANHandler::CANBus bus, short sendIDindex, bool debug){
 void DJIMotor::getFeedback(){
 
     for(int i = 0; i < CAN_HANDLER_NUMBER; i ++){
-        uint8_t recievedBytes[8] = {0,0,0,0,0,0,0,0};
+        uint8_t receivedBytes[8] = {0, 0, 0, 0, 0, 0, 0, 0};
         int msgID;
 
-        while(canHandlers[i]->getFeedback(&msgID,recievedBytes)) {
+        while(canHandlers[i]->getFeedback(&msgID, receivedBytes, i)) {
             int mNum = msgID - 0x201;
 
-            // Debugging motorsExist array
-            // for(int o = 0; o < 3; o++){
-            //     for(int p = 0; p < 4; p++){
-            //         printf("%d ",motorsExist[i][o][p]);
-            //     }
-            //     printf("\n");(int16_t)
-            // }
-
             if(motorsExist[i][mNum/4][mNum%4]){
-                allMotors[i][mNum/4][mNum%4] -> motorData[ANGLE]        = (int16_t)(recievedBytes[0] << 8 | recievedBytes[1]);
-                allMotors[i][mNum/4][mNum%4] -> motorData[VELOCITY]     = (int16_t)(recievedBytes[2] << 8 | recievedBytes[3]);
-                allMotors[i][mNum/4][mNum%4] -> motorData[TORQUE]       = (int16_t)(recievedBytes[4] << 8 | recievedBytes[5]);
-                allMotors[i][mNum/4][mNum%4] -> motorData[TEMPERATURE]  = (int16_t) recievedBytes[6];
+                allMotors[i][mNum/4][mNum%4] -> motorData[ANGLE]        = (int16_t)(receivedBytes[0] << 8 | receivedBytes[1]);
+                allMotors[i][mNum/4][mNum%4] -> motorData[VELOCITY]     = (int16_t)(receivedBytes[2] << 8 | receivedBytes[3]);
+                allMotors[i][mNum/4][mNum%4] -> motorData[TORQUE]       = (int16_t)(receivedBytes[4] << 8 | receivedBytes[5]);
+                allMotors[i][mNum/4][mNum%4] -> motorData[TEMPERATURE]  = (int16_t) receivedBytes[6];
 
                 if(feedbackDebug)
                     allMotors[i][mNum/4][mNum%4] -> printAllMotorData();
@@ -388,7 +380,7 @@ void DJIMotor::getFeedback(){
                     printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS %d DEGREES CELSIUS\n",msgID,allMotors[i][mNum/4][mNum%4]->motorData[TEMPERATURE]);
 
             }else{
-                // printf("[WARNING] YOU HAVE A MOTOR [0x%x] {%d}{%d} ATTACHED THAT IS NOT INITIALIZED.. WHY: \n",msgID,mNum/4,mNum%4);
+                printf("[WARNING] YOU HAVE A MOTOR [0x%x] {%d}{%d} ATTACHED THAT IS NOT INITIALIZED.. WHY: \n",msgID,mNum/4,mNum%4);
             }
         }
     }

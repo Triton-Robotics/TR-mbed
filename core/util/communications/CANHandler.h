@@ -54,14 +54,14 @@ class CANHandler{
         * @brief Get feedback back from the motor
         * 
         */
-        bool getFeedback(int *id, uint8_t bytes[]){
+        bool getFeedback(int *id, uint8_t bytes[], int canbus){
             bool gotMsg = false;
             rxMsg.clear();
             rxMsg.len = 8;
             if (can.read(rxMsg)) {
                 int err = can.rderror();
                 if (err){
-                    printf("[%d CAN Read Errors]\n", err);
+                    printf("[%d CAN Read Errors] on CANBus_%d\n", err, canbus + 1);
                     can.reset();
                     return false;
                 }

@@ -177,7 +177,7 @@ int main()
             chassis.periodic();
 
             refLoop++;
-            if (refLoop >= 25)
+            if (refLoop >= 5)
             {
                 refereeThread(&referee);
                 // printf("thread\n");

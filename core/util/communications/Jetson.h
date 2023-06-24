@@ -17,6 +17,36 @@
 #define JETSON_READ_TIMEOUT     250     // ms
 #define JETSON_READ_RATE        100     // ms per packet
 
+/**
+ * @brief A class for interfacing with the Jetson TX2 and receiving computer vision data over UART
+ *
+ * A full end to end example with threading can be seen here:
+ *
+ * ```
+ * #include "mbed.h"
+ * #include "communications/Jetson.h"
+ *
+ * Jetson jetson(PC_12, PD_2);
+ * Thread cv;
+ *
+ * int main() {
+ *   cv.start([]() {
+ *     while (true) {
+ *       jetson.read();
+ *     }
+ *   });
+ *
+ *   DigitalOut led(LED1);
+ *   while (true) {
+ *     led = !led;
+ *     printf("Data: %f, %f, %f\n", jetson.get(Jetson::cv::X), jetson.get(Jetson::cv::Y), jetson.get(Jetson::cv::Z));
+ *     printf("Status: %d\n", jetson.status);
+ *     ThisThread::sleep_for(500);
+ *   }
+ *   return 0;
+ * }
+ * ```
+ */
 class Jetson {
 
 private:

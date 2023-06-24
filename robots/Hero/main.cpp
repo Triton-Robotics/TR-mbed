@@ -106,13 +106,13 @@ int main()
 
     while (true) {
         led = !led;
-        remoteRead();
 
         unsigned long timeStart = us_ticker_read() / 1000;
         if(timeStart - loopTimer > 25){
             loopTimer = timeStart;
 
             refLoop++;
+            remoteRead();
 
             if (!sticksMoved) {
                 chassis.driveXYR({0,0,0});
@@ -164,6 +164,7 @@ int main()
                     indexer.setPower(0);
                 } else {
                     indexer.setPower(rY * 32);
+                    printf("%d\n", rY * 32);
                 }
 //                setFlyWheelPwr(60000);
                 LFLYWHEEL.setPower(-16384); RFLYWHEEL.setPower(16384);
