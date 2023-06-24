@@ -93,7 +93,7 @@ int main(){
 
             //printff("%d\n",Wh);
             
-            int bb = 0;
+            double bb = 0;
 
             if(!(rS == Remote::SwitchState::MID)){
                 yawSetpoint -= rX / 4.5;

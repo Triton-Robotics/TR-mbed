@@ -39,11 +39,11 @@ DJIMotor LFLYWHEEL(5, CANHandler::CANBUS_2,M3508);
 
 void setFlyWheelPwr(int pwr) {
     // for (int i = 0; i < 2; i++)
-    //     //flyWheelMotors[i].set(pwr);
-    // RFLYWHEEL.setPower(pwr);
-    // LFLYWHEEL.setPower(-pwr);
-    LFLYWHEEL.setSpeed(-pwr);
-    RFLYWHEEL.setSpeed(pwr);
+    //     //flyWheelMotors[i].set(pwr)
+    RFLYWHEEL.setPower(pwr);
+    LFLYWHEEL.setPower(-pwr);
+//    LFLYWHEEL.setSpeed(-pwr);
+//    RFLYWHEEL.setSpeed(pwr);
     //printf("L%d R%d\n", LFLYWHEEL.getData(VELOCITY), RFLYWHEEL.getData(VELOCITY));
 }
 
@@ -105,6 +105,9 @@ int main()
     double beybladeSpeed = 2;
     bool beybladeIncreasing = true;
 
+    double ref_chassis_power;
+    int max_power;
+
     while (true) {
         
 
@@ -124,6 +127,9 @@ int main()
                 //                 printf("%d\n",ext_power_heat_data.data.chassis_power);
                 led2 = !led2;
             }
+
+            ref_chassis_power = ext_power_heat_data.data.chassis_power;
+            max_power = ext_game_robot_state.data.chassis_power_limit;
 
             remoteRead();
 
