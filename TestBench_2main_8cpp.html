@@ -105,6 +105,8 @@ Functions</h2></td></tr>
 <tr class="separator:ac5b4e3d89a93e5ac7e4ddeddd014ef17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7d983075b33b3c1c559855e8de6fd7cf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TestBench_2main_8cpp.html#a7d983075b33b3c1c559855e8de6fd7cf">indexerLoop</a> (bool &amp;previousMid, bool &amp;nowUp, bool &amp;nowDown, int &amp;actualPosition, float &amp;desiredPosition, int &amp;t)</td></tr>
 <tr class="separator:a7d983075b33b3c1c559855e8de6fd7cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a726510b180af9a4eeb0a709779b2d2ae"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TestBench_2main_8cpp.html#a726510b180af9a4eeb0a709779b2d2ae">stopFLyWheels</a> ()</td></tr>
+<tr class="separator:a726510b180af9a4eeb0a709779b2d2ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae66f6b31b5ad750f1fe042a706a4e3d4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TestBench_2main_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main</a> ()</td></tr>
 <tr class="separator:ae66f6b31b5ad750f1fe042a706a4e3d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -114,8 +116,6 @@ Variables</h2></td></tr>
 <tr class="separator:a191b20daad7b699a798c76257f0366e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a29ea4318ffd1f8f0a7edeee7eaa10723"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDJIMotor.html">DJIMotor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TestBench_2main_8cpp.html#a29ea4318ffd1f8f0a7edeee7eaa10723">yaw</a> (5, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4">CANHandler::CANBUS_1</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a5ac5633b85d6640dcf5f424b967a77c6">GIMBLY</a>)</td></tr>
 <tr class="separator:a29ea4318ffd1f8f0a7edeee7eaa10723"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeba4d64ddb2382af0ab6eeb7f62403b9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDJIMotor.html">DJIMotor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TestBench_2main_8cpp.html#aeba4d64ddb2382af0ab6eeb7f62403b9">pitch</a> (6, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4">CANHandler::CANBUS_1</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a5ac5633b85d6640dcf5f424b967a77c6">GIMBLY</a>)</td></tr>
-<tr class="separator:aeba4d64ddb2382af0ab6eeb7f62403b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af815d9c0bfea14e6cee795cdae85e5bd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDJIMotor.html">DJIMotor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TestBench_2main_8cpp.html#af815d9c0bfea14e6cee795cdae85e5bd">indexer</a> (7, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4">CANHandler::CANBUS_1</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a5ac5633b85d6640dcf5f424b967a77c6">GIMBLY</a>)</td></tr>
 <tr class="separator:af815d9c0bfea14e6cee795cdae85e5bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5f0e53f622aa42da2720773b9fd743f6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDJIMotor.html">DJIMotor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TestBench_2main_8cpp.html#a5f0e53f622aa42da2720773b9fd743f6">RFLYWHEEL</a> (8, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a28474eec9dbe74a0107e8bfb33d0751f">M3508</a>)</td></tr>
@@ -384,6 +384,23 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="a726510b180af9a4eeb0a709779b2d2ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a726510b180af9a4eeb0a709779b2d2ae">&#9670;&nbsp;</a></span>stopFLyWheels()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void stopFLyWheels </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Variable Documentation</h2>
 <a id="a191b20daad7b699a798c76257f0366e4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a191b20daad7b699a798c76257f0366e4">&#9670;&nbsp;</a></span>chassis</h2>
@@ -501,40 +518,6 @@ Variables</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a28474eec9dbe74a0107e8bfb33d0751f">M3508</a>&#160;</td>
-          <td class="paramname">&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aeba4d64ddb2382af0ab6eeb7f62403b9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeba4d64ddb2382af0ab6eeb7f62403b9">&#9670;&nbsp;</a></span>pitch</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classDJIMotor.html">DJIMotor</a> pitch(6, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4">CANHandler::CANBUS_1</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a5ac5633b85d6640dcf5f424b967a77c6">GIMBLY</a>) </td>
-          <td>(</td>
-          <td class="paramtype">6&#160;</td>
-          <td class="paramname">, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4">CANHandler::CANBUS_1</a>&#160;</td>
-          <td class="paramname">, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a5ac5633b85d6640dcf5f424b967a77c6">GIMBLY</a>&#160;</td>
           <td class="paramname">&#160;</td>
         </tr>
         <tr>
