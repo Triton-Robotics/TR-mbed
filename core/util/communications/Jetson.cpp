@@ -1,35 +1,3 @@
-/**
- * @file Jetson.cpp
- * @brief A class for interfacing with the Jetson TX2 and receiving computer vision data over UART
- *
- * A full end to end example with threading can be seen here:
- *
- * ```
- * #include "mbed.h"
- * #include "communications/Jetson.h"
- *
- * Jetson jetson(PC_12, PD_2);
- * Thread cv;
- *
- * int main() {
- *   cv.start([]() {
- *     while (true) {
- *       jetson.read();
- *     }
- *   });
- *
- *   DigitalOut led(LED1);
- *   while (true) {
- *     led = !led;
- *     printf("Data: %f, %f, %f\n", jetson.get(Jetson::cv::X), jetson.get(Jetson::cv::Y), jetson.get(Jetson::cv::Z));
- *     printf("Status: %d\n", jetson.status);
- *     ThisThread::sleep_for(500);
- *   }
- *   return 0;
- * }
- * ```
- */
-
 #include "Jetson.h"
 
 /**
