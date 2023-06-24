@@ -86,63 +86,63 @@ $(function() {
 <div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="Jetson_8h.html#a39e71ca36f46ce9dc54fe341fa12fe57">   17</a></span>&#160;<span class="preprocessor">#define JETSON_READ_TIMEOUT     250     </span><span class="comment">// ms</span></div>
 <div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="Jetson_8h.html#aa7543069091b5cb12ada2c0dfb10522a">   18</a></span>&#160;<span class="preprocessor">#define JETSON_READ_RATE        100     </span><span class="comment">// ms per packet</span></div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
-<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="classJetson.html">   20</a></span>&#160;<span class="keyword">class </span><a class="code" href="classJetson.html">Jetson</a> {</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    UnbufferedSerial jetson;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    Timer readTimer;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    time_t lastRead = 0;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    uint8_t rxBuffer[<a class="code" href="Jetson_8h.html#aac7f4a6d26d0b66cdc6a6a445173762a">JETSON_BUF_LEN</a>]{0};</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    uint8_t cobsBuffer[<a class="code" href="Jetson_8h.html#aac7f4a6d26d0b66cdc6a6a445173762a">JETSON_BUF_LEN</a>]{0};</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keywordtype">int</span> currentBufferIndex = 0;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    atomic&lt;float&gt; cvX, cvY, cvZ;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordtype">void</span> parse();</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keywordtype">void</span> clear();</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordtype">void</span> reset();</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    T find(uint8_t* buf, <span class="keywordtype">size_t</span> len, <span class="keywordtype">int</span> index);</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <a class="code" href="classJetson.html#abe5d566811d83f624969fe48a8547ecb">Jetson</a>(PinName tx, PinName rx);</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627">   45</a></span>&#160;    <span class="keyword">enum</span> <a class="code" href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627">cv</a>{</div>
-<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a2a7ff166b192b1cad627c0ce2e13e51d">   46</a></span>&#160;        <a class="code" href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a2a7ff166b192b1cad627c0ce2e13e51d">X</a>,</div>
-<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a609f35c87579ac622ac058a124fb4ba4">   47</a></span>&#160;        <a class="code" href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a609f35c87579ac622ac058a124fb4ba4">Y</a>,</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <a class="code" href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a2294689374a1b16610171a8aa9772f13">Z</a></div>
-<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a2294689374a1b16610171a8aa9772f13">   49</a></span>&#160;    };</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="classJetson.html#a0da6dd80b8c8c3af02585f4fdaf49c49">   51</a></span>&#160;    <span class="keyword">enum</span> <a class="code" href="classJetson.html#a0da6dd80b8c8c3af02585f4fdaf49c49">JetsonStatus</a> {</div>
-<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="classJetson.html#a0da6dd80b8c8c3af02585f4fdaf49c49a60030575332b250440f220ac41eb0821">   52</a></span>&#160;        <a class="code" href="classJetson.html#a0da6dd80b8c8c3af02585f4fdaf49c49a60030575332b250440f220ac41eb0821">CONNECTED</a>,</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <a class="code" href="classJetson.html#a0da6dd80b8c8c3af02585f4fdaf49c49aa0a18ee6b7720db87726ee50e5ebdbf1">DISCONNECTED</a></div>
-<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="classJetson.html#a0da6dd80b8c8c3af02585f4fdaf49c49aa0a18ee6b7720db87726ee50e5ebdbf1">   54</a></span>&#160;    };</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classJetson.html#a51812e5df0aa7ac64b30f2ade765dd63">read</a>();</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keywordtype">float</span> <a class="code" href="classJetson.html#a66d9a9d4e0d40cfbabd9f2029719d46f">get</a>(<a class="code" href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627">cv</a> axis);</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
-<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="classJetson.html#a34374de51274d24eb8a7d7fa3f74c7ee">   59</a></span>&#160;    atomic&lt;JetsonStatus&gt; <a class="code" href="classJetson.html#a34374de51274d24eb8a7d7fa3f74c7ee">status</a>;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;};</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
+<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="classJetson.html">   50</a></span>&#160;<span class="keyword">class </span><a class="code" href="classJetson.html">Jetson</a> {</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    UnbufferedSerial jetson;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    Timer readTimer;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    time_t lastRead = 0;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    uint8_t rxBuffer[<a class="code" href="Jetson_8h.html#aac7f4a6d26d0b66cdc6a6a445173762a">JETSON_BUF_LEN</a>]{0};</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    uint8_t cobsBuffer[<a class="code" href="Jetson_8h.html#aac7f4a6d26d0b66cdc6a6a445173762a">JETSON_BUF_LEN</a>]{0};</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keywordtype">int</span> currentBufferIndex = 0;</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor">#endif </span><span class="comment">//TR_MBED_JETSON_H</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    atomic&lt;float&gt; cvX, cvY, cvZ;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keywordtype">void</span> parse();</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keywordtype">void</span> clear();</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordtype">void</span> reset();</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    T find(uint8_t* buf, <span class="keywordtype">size_t</span> len, <span class="keywordtype">int</span> index);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <a class="code" href="classJetson.html#abe5d566811d83f624969fe48a8547ecb">Jetson</a>(PinName tx, PinName rx);</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
+<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627">   75</a></span>&#160;    <span class="keyword">enum</span> <a class="code" href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627">cv</a>{</div>
+<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a2a7ff166b192b1cad627c0ce2e13e51d">   76</a></span>&#160;        <a class="code" href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a2a7ff166b192b1cad627c0ce2e13e51d">X</a>,</div>
+<div class="line"><a name="l00077"></a><span class="lineno"><a class="line" href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a609f35c87579ac622ac058a124fb4ba4">   77</a></span>&#160;        <a class="code" href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a609f35c87579ac622ac058a124fb4ba4">Y</a>,</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <a class="code" href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a2294689374a1b16610171a8aa9772f13">Z</a></div>
+<div class="line"><a name="l00079"></a><span class="lineno"><a class="line" href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a2294689374a1b16610171a8aa9772f13">   79</a></span>&#160;    };</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
+<div class="line"><a name="l00081"></a><span class="lineno"><a class="line" href="classJetson.html#a0da6dd80b8c8c3af02585f4fdaf49c49">   81</a></span>&#160;    <span class="keyword">enum</span> <a class="code" href="classJetson.html#a0da6dd80b8c8c3af02585f4fdaf49c49">JetsonStatus</a> {</div>
+<div class="line"><a name="l00082"></a><span class="lineno"><a class="line" href="classJetson.html#a0da6dd80b8c8c3af02585f4fdaf49c49a60030575332b250440f220ac41eb0821">   82</a></span>&#160;        <a class="code" href="classJetson.html#a0da6dd80b8c8c3af02585f4fdaf49c49a60030575332b250440f220ac41eb0821">CONNECTED</a>,</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <a class="code" href="classJetson.html#a0da6dd80b8c8c3af02585f4fdaf49c49aa0a18ee6b7720db87726ee50e5ebdbf1">DISCONNECTED</a></div>
+<div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="classJetson.html#a0da6dd80b8c8c3af02585f4fdaf49c49aa0a18ee6b7720db87726ee50e5ebdbf1">   84</a></span>&#160;    };</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classJetson.html#a51812e5df0aa7ac64b30f2ade765dd63">read</a>();</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="keywordtype">float</span> <a class="code" href="classJetson.html#a66d9a9d4e0d40cfbabd9f2029719d46f">get</a>(<a class="code" href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627">cv</a> axis);</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
+<div class="line"><a name="l00089"></a><span class="lineno"><a class="line" href="classJetson.html#a34374de51274d24eb8a7d7fa3f74c7ee">   89</a></span>&#160;    atomic&lt;JetsonStatus&gt; <a class="code" href="classJetson.html#a34374de51274d24eb8a7d7fa3f74c7ee">status</a>;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;};</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="preprocessor">#endif </span><span class="comment">//TR_MBED_JETSON_H</span></div>
 <div class="ttc" id="aJetson_8h_html_aac7f4a6d26d0b66cdc6a6a445173762a"><div class="ttname"><a href="Jetson_8h.html#aac7f4a6d26d0b66cdc6a6a445173762a">JETSON_BUF_LEN</a></div><div class="ttdeci">#define JETSON_BUF_LEN</div><div class="ttdef"><b>Definition:</b> Jetson.h:14</div></div>
-<div class="ttc" id="aclassJetson_html"><div class="ttname"><a href="classJetson.html">Jetson</a></div><div class="ttdef"><b>Definition:</b> Jetson.h:20</div></div>
-<div class="ttc" id="aclassJetson_html_a0da6dd80b8c8c3af02585f4fdaf49c49"><div class="ttname"><a href="classJetson.html#a0da6dd80b8c8c3af02585f4fdaf49c49">Jetson::JetsonStatus</a></div><div class="ttdeci">JetsonStatus</div><div class="ttdef"><b>Definition:</b> Jetson.h:51</div></div>
-<div class="ttc" id="aclassJetson_html_a0da6dd80b8c8c3af02585f4fdaf49c49a60030575332b250440f220ac41eb0821"><div class="ttname"><a href="classJetson.html#a0da6dd80b8c8c3af02585f4fdaf49c49a60030575332b250440f220ac41eb0821">Jetson::CONNECTED</a></div><div class="ttdeci">@ CONNECTED</div><div class="ttdef"><b>Definition:</b> Jetson.h:52</div></div>
-<div class="ttc" id="aclassJetson_html_a0da6dd80b8c8c3af02585f4fdaf49c49aa0a18ee6b7720db87726ee50e5ebdbf1"><div class="ttname"><a href="classJetson.html#a0da6dd80b8c8c3af02585f4fdaf49c49aa0a18ee6b7720db87726ee50e5ebdbf1">Jetson::DISCONNECTED</a></div><div class="ttdeci">@ DISCONNECTED</div><div class="ttdef"><b>Definition:</b> Jetson.h:53</div></div>
-<div class="ttc" id="aclassJetson_html_a34374de51274d24eb8a7d7fa3f74c7ee"><div class="ttname"><a href="classJetson.html#a34374de51274d24eb8a7d7fa3f74c7ee">Jetson::status</a></div><div class="ttdeci">atomic&lt; JetsonStatus &gt; status</div><div class="ttdef"><b>Definition:</b> Jetson.h:59</div></div>
-<div class="ttc" id="aclassJetson_html_a51812e5df0aa7ac64b30f2ade765dd63"><div class="ttname"><a href="classJetson.html#a51812e5df0aa7ac64b30f2ade765dd63">Jetson::read</a></div><div class="ttdeci">void read()</div><div class="ttdef"><b>Definition:</b> Jetson.cpp:107</div></div>
-<div class="ttc" id="aclassJetson_html_a66d9a9d4e0d40cfbabd9f2029719d46f"><div class="ttname"><a href="classJetson.html#a66d9a9d4e0d40cfbabd9f2029719d46f">Jetson::get</a></div><div class="ttdeci">float get(cv axis)</div><div class="ttdef"><b>Definition:</b> Jetson.cpp:189</div></div>
-<div class="ttc" id="aclassJetson_html_aa63103bffe77a5f527da3a3d8eb63627"><div class="ttname"><a href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627">Jetson::cv</a></div><div class="ttdeci">cv</div><div class="ttdef"><b>Definition:</b> Jetson.h:45</div></div>
-<div class="ttc" id="aclassJetson_html_aa63103bffe77a5f527da3a3d8eb63627a2294689374a1b16610171a8aa9772f13"><div class="ttname"><a href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a2294689374a1b16610171a8aa9772f13">Jetson::Z</a></div><div class="ttdeci">@ Z</div><div class="ttdef"><b>Definition:</b> Jetson.h:48</div></div>
-<div class="ttc" id="aclassJetson_html_aa63103bffe77a5f527da3a3d8eb63627a2a7ff166b192b1cad627c0ce2e13e51d"><div class="ttname"><a href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a2a7ff166b192b1cad627c0ce2e13e51d">Jetson::X</a></div><div class="ttdeci">@ X</div><div class="ttdef"><b>Definition:</b> Jetson.h:46</div></div>
-<div class="ttc" id="aclassJetson_html_aa63103bffe77a5f527da3a3d8eb63627a609f35c87579ac622ac058a124fb4ba4"><div class="ttname"><a href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a609f35c87579ac622ac058a124fb4ba4">Jetson::Y</a></div><div class="ttdeci">@ Y</div><div class="ttdef"><b>Definition:</b> Jetson.h:47</div></div>
-<div class="ttc" id="aclassJetson_html_abe5d566811d83f624969fe48a8547ecb"><div class="ttname"><a href="classJetson.html#abe5d566811d83f624969fe48a8547ecb">Jetson::Jetson</a></div><div class="ttdeci">Jetson(PinName tx, PinName rx)</div><div class="ttdef"><b>Definition:</b> Jetson.cpp:83</div></div>
+<div class="ttc" id="aclassJetson_html"><div class="ttname"><a href="classJetson.html">Jetson</a></div><div class="ttdoc">A class for interfacing with the Jetson TX2 and receiving computer vision data over UART.</div><div class="ttdef"><b>Definition:</b> Jetson.h:50</div></div>
+<div class="ttc" id="aclassJetson_html_a0da6dd80b8c8c3af02585f4fdaf49c49"><div class="ttname"><a href="classJetson.html#a0da6dd80b8c8c3af02585f4fdaf49c49">Jetson::JetsonStatus</a></div><div class="ttdeci">JetsonStatus</div><div class="ttdef"><b>Definition:</b> Jetson.h:81</div></div>
+<div class="ttc" id="aclassJetson_html_a0da6dd80b8c8c3af02585f4fdaf49c49a60030575332b250440f220ac41eb0821"><div class="ttname"><a href="classJetson.html#a0da6dd80b8c8c3af02585f4fdaf49c49a60030575332b250440f220ac41eb0821">Jetson::CONNECTED</a></div><div class="ttdeci">@ CONNECTED</div><div class="ttdef"><b>Definition:</b> Jetson.h:82</div></div>
+<div class="ttc" id="aclassJetson_html_a0da6dd80b8c8c3af02585f4fdaf49c49aa0a18ee6b7720db87726ee50e5ebdbf1"><div class="ttname"><a href="classJetson.html#a0da6dd80b8c8c3af02585f4fdaf49c49aa0a18ee6b7720db87726ee50e5ebdbf1">Jetson::DISCONNECTED</a></div><div class="ttdeci">@ DISCONNECTED</div><div class="ttdef"><b>Definition:</b> Jetson.h:83</div></div>
+<div class="ttc" id="aclassJetson_html_a34374de51274d24eb8a7d7fa3f74c7ee"><div class="ttname"><a href="classJetson.html#a34374de51274d24eb8a7d7fa3f74c7ee">Jetson::status</a></div><div class="ttdeci">atomic&lt; JetsonStatus &gt; status</div><div class="ttdef"><b>Definition:</b> Jetson.h:89</div></div>
+<div class="ttc" id="aclassJetson_html_a51812e5df0aa7ac64b30f2ade765dd63"><div class="ttname"><a href="classJetson.html#a51812e5df0aa7ac64b30f2ade765dd63">Jetson::read</a></div><div class="ttdeci">void read()</div><div class="ttdef"><b>Definition:</b> Jetson.cpp:75</div></div>
+<div class="ttc" id="aclassJetson_html_a66d9a9d4e0d40cfbabd9f2029719d46f"><div class="ttname"><a href="classJetson.html#a66d9a9d4e0d40cfbabd9f2029719d46f">Jetson::get</a></div><div class="ttdeci">float get(cv axis)</div><div class="ttdef"><b>Definition:</b> Jetson.cpp:157</div></div>
+<div class="ttc" id="aclassJetson_html_aa63103bffe77a5f527da3a3d8eb63627"><div class="ttname"><a href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627">Jetson::cv</a></div><div class="ttdeci">cv</div><div class="ttdef"><b>Definition:</b> Jetson.h:75</div></div>
+<div class="ttc" id="aclassJetson_html_aa63103bffe77a5f527da3a3d8eb63627a2294689374a1b16610171a8aa9772f13"><div class="ttname"><a href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a2294689374a1b16610171a8aa9772f13">Jetson::Z</a></div><div class="ttdeci">@ Z</div><div class="ttdef"><b>Definition:</b> Jetson.h:78</div></div>
+<div class="ttc" id="aclassJetson_html_aa63103bffe77a5f527da3a3d8eb63627a2a7ff166b192b1cad627c0ce2e13e51d"><div class="ttname"><a href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a2a7ff166b192b1cad627c0ce2e13e51d">Jetson::X</a></div><div class="ttdeci">@ X</div><div class="ttdef"><b>Definition:</b> Jetson.h:76</div></div>
+<div class="ttc" id="aclassJetson_html_aa63103bffe77a5f527da3a3d8eb63627a609f35c87579ac622ac058a124fb4ba4"><div class="ttname"><a href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a609f35c87579ac622ac058a124fb4ba4">Jetson::Y</a></div><div class="ttdeci">@ Y</div><div class="ttdef"><b>Definition:</b> Jetson.h:77</div></div>
+<div class="ttc" id="aclassJetson_html_abe5d566811d83f624969fe48a8547ecb"><div class="ttname"><a href="classJetson.html#abe5d566811d83f624969fe48a8547ecb">Jetson::Jetson</a></div><div class="ttdeci">Jetson(PinName tx, PinName rx)</div><div class="ttdef"><b>Definition:</b> Jetson.cpp:51</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
