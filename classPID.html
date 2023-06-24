@@ -111,6 +111,14 @@ Public Attributes</h2></td></tr>
 <tr class="separator:ac686925341bcab06b11df109533b6807"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abcc8f2679433bd7d5d69bfa6e06d8eab"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#abcc8f2679433bd7d5d69bfa6e06d8eab">sumError</a> = 0</td></tr>
 <tr class="separator:abcc8f2679433bd7d5d69bfa6e06d8eab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33faef9f749f8e9ff78be469ab7f7932"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a33faef9f749f8e9ff78be469ab7f7932">d10xMultiplier</a> = 0</td></tr>
+<tr class="separator:a33faef9f749f8e9ff78be469ab7f7932"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c32425676fecd38176b63f93bb5bffd"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a6c32425676fecd38176b63f93bb5bffd">slopeCarry</a> = 5</td></tr>
+<tr class="separator:a6c32425676fecd38176b63f93bb5bffd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade7776bc34e7eb3df33e4c3548e428e4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#ade7776bc34e7eb3df33e4c3548e428e4">carryCount</a> = 0</td></tr>
+<tr class="separator:ade7776bc34e7eb3df33e4c3548e428e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9f9cf23e731fce7fe7b1d96216f117a8"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a9f9cf23e731fce7fe7b1d96216f117a8">prevRealError</a> = 0</td></tr>
+<tr class="separator:a9f9cf23e731fce7fe7b1d96216f117a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The <a class="el" href="classPID.html">PID</a> class is used to implement <a class="el" href="classPID.html">PID</a> (proportional, integral, derivative) control of a motor. It is used by almost every motor on the robot, and supports both position and velocity control. </p>
@@ -407,6 +415,34 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="ade7776bc34e7eb3df33e4c3548e428e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ade7776bc34e7eb3df33e4c3548e428e4">&#9670;&nbsp;</a></span>carryCount</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int PID::carryCount = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a33faef9f749f8e9ff78be469ab7f7932"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a33faef9f749f8e9ff78be469ab7f7932">&#9670;&nbsp;</a></span>d10xMultiplier</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int PID::d10xMultiplier = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="af366e4a87e653fba7b5ce615f55522b8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af366e4a87e653fba7b5ce615f55522b8">&#9670;&nbsp;</a></span>debug</h2>
 
@@ -457,6 +493,34 @@ Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">float PID::kI</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9f9cf23e731fce7fe7b1d96216f117a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9f9cf23e731fce7fe7b1d96216f117a8">&#9670;&nbsp;</a></span>prevRealError</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double PID::prevRealError = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6c32425676fecd38176b63f93bb5bffd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c32425676fecd38176b63f93bb5bffd">&#9670;&nbsp;</a></span>slopeCarry</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int PID::slopeCarry = 5</td>
         </tr>
       </table>
 </div><div class="memdoc">
