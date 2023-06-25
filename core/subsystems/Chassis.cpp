@@ -142,15 +142,13 @@ void Chassis::driveFieldRelative(ChassisSpeeds speeds) {
 }
 
 void Chassis::driveTurretRelative(ChassisSpeeds speeds, double turretAngleDegrees) {
-    double robotHeading = imuAngles.yaw * PI / 180.0;
-//    printf("Turret angle: %i\n", (int) turretAngleDegrees);
+    //double robotHeading = imuAngles.yaw * PI / 180.0;
     driveOffsetAngle(speeds, -turretAngleDegrees * PI / 180.0);
 }
 
 void Chassis::driveTurretRelativePower(double ref_chassis_power, double max_power, ChassisSpeeds speeds, double turretAngleDegrees) {
-    double robotHeading = imuAngles.yaw * PI / 180.0;
-//    printf("Turret angle: %i\n", (int) turretAngleDegrees);
-    driveOffsetAngle(speeds, -turretAngleDegrees * PI / 180.0);
+    //double robotHeading = imuAngles.yaw * PI / 180.0;
+    driveOffsetAnglePower(ref_chassis_power, max_power, speeds, -turretAngleDegrees * PI / 180.0);
 }
 
 
