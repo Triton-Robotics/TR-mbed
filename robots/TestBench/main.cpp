@@ -1,5 +1,6 @@
 
 
+#include <iostream>
 #include "main.h"
 
 #pragma clang diagnostic push
@@ -142,14 +143,16 @@ int main(){
     int yawSetPoint = 0;
 
     double beyblade;
-    double ref_chassis_power;
-    int max_power;
+    float ref_chassis_power;
+    uint16_t max_power;
 
     DJIMotor::getFeedback();
-    unsigned long loopTimer = us_ticker_read() / 1000;
+    unsigned long loopTimer = us_ticker_read();
+    unsigned long timeEnd;
+    unsigned long timeStart;
 
     while(true){
-        unsigned long timeStart = us_ticker_read() / 1000;
+        timeStart = us_ticker_read() / 1000;
         if(timeStart - loopTimer > 25){
             loopTimer = timeStart;
             refLoop++;
@@ -171,7 +174,8 @@ int main(){
 
             ref_chassis_power = ext_power_heat_data.data.chassis_power;
             max_power = ext_game_robot_state.data.chassis_power_limit;
-            //printff("Ref power: %i\n", (int) (ref_chassis_power * 100));
+            //printf("Ref power: %f\n", ext_power_heat_data.data.chassis_power);
+            //std::cout << ext_power_heat_data.data.chassis_power << std::endl;
 
             if (!sticksMoved) {
                 chassis.driveXYR({0,0,0});
@@ -182,28 +186,29 @@ int main(){
                 else
                     prevLS = lS, prevRS = rS;
 
-            }else if(rS == Remote::SwitchState::UP){
-                //pitch.setPosition((-rY / 2) + 5600);
-                yawSetPoint -= int(rX / 10.0);
-                yaw.setPosition(yawSetPoint);
-                indexerLoop(previousMid, nowUp, nowDown, actualPosition, desiredPosition, t);
-                setFlyWheelPwr(16000);
-                beyblade = 2000;
-
-            }else{
-                yaw.setPower(0);
-                //pitch.setPower(0);
+            }else if(rS == Remote::SwitchState::MID){
                 indexer.setPower(0);
 
                 desiredPosition = float(int((actualPosition / dr)) * dr) + IOFFSET;
                 stopFLyWheels();
                 beyblade = 0;
-            }
 
-            chassis.driveTurretRelativePower(ref_chassis_power, max_power,{-lX * 5.0, -lY * 5.0, beyblade},  -yaw.getData(MULTITURNANGLE) * 360.0 / 8192 + 90);
+            }else{
+                //pitch.setPosition((-rY / 2) + 5600);
+                yawSetPoint -= int(rX / 10.0);
+                yaw.setPosition(yawSetPoint);
+                indexerLoop(previousMid, nowUp, nowDown, actualPosition, desiredPosition, t);
+                setFlyWheelPwr(0);
+
+                if(rS == Remote::SwitchState::DOWN)
+                    beyblade = 2000;
+                else
+                    beyblade = 0;
+            }
+            timeEnd = us_ticker_read();
+            chassis.driveTurretRelativePower(ref_chassis_power, max_power,{-lX * 5.0, -lY * 5.0, beyblade}, yaw.getData(MULTITURNANGLE) * 180.0 / 8191.0 + 90, int(timeEnd - timeStart));
             DJIMotor::sendValues();
         }
-        unsigned long timeEnd = us_ticker_read() / 1000;
         DJIMotor::getFeedback();
         ThisThread::sleep_for(1ms);
     }
