@@ -12,10 +12,10 @@ var searchData=
   ['drivefieldrelative_1271',['driveFieldRelative',['../classChassis.html#a22231af9f43825063ac800ae186b6970',1,'Chassis']]],
   ['drivemotors_1272',['driveMotors',['../classChassis.html#ac944a5794d05e1dbd57cfd6735ecdc60',1,'Chassis']]],
   ['driveoffsetangle_1273',['driveOffsetAngle',['../classChassis.html#a96455bb04cbf91df5f817b2a73843ff7',1,'Chassis']]],
-  ['driveoffsetanglepower_1274',['driveOffsetAnglePower',['../classChassis.html#a2c4091ba9a9dfdb5a5d1713c711753f4',1,'Chassis']]],
+  ['driveoffsetanglepower_1274',['driveOffsetAnglePower',['../classChassis.html#a623558de0ae20cc3cba57cf7f73b76b1',1,'Chassis']]],
   ['driveturretrelative_1275',['driveTurretRelative',['../classChassis.html#ad39d1c1c41a0053331eff67b0f8db595',1,'Chassis']]],
-  ['driveturretrelativepower_1276',['driveTurretRelativePower',['../classChassis.html#a77dbc24798358b7fd3f8c059ed805373',1,'Chassis']]],
+  ['driveturretrelativepower_1276',['driveTurretRelativePower',['../classChassis.html#a361297745f88de39648bef98f699068c',1,'Chassis']]],
   ['drivexyr_1277',['driveXYR',['../classChassis.html#a964c30630d2724e1e4f1774d0df305cc',1,'Chassis']]],
-  ['drivexyrpower_1278',['driveXYRPower',['../classChassis.html#a04a1ba06d47b2df81f51c53288e08c3b',1,'Chassis']]],
+  ['drivexyrpower_1278',['driveXYRPower',['../classChassis.html#a791473aa5e2fb592134ec81f686fe8e9',1,'Chassis']]],
   ['dumpinfo_1279',['dumpInfo',['../classRemote.html#ab3e55d985b57ba798e757b24b8ed76de',1,'Remote']]]
 ];
