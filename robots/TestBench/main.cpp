@@ -51,7 +51,7 @@ void setMotorSettings(){
 //    pitch.useAbsEncoder = true;
 //    pitch.justPosError = true;
 
-    yaw.setPositionPID(3.5, 0, 0.25);
+    yaw.setPositionPID(7, 0.3, 0.55);
     yaw.setPositionIntegralCap(10000);
     yaw.justPosError = true;
 
@@ -103,11 +103,11 @@ void indexerLoop(bool &previousMid, bool &nowUp, bool &nowDown, int &actualPosit
         else
             indexer.setPower(0);
 
-        printf("pos: %d\n", int(desiredPosition));
-        printf("POSITION: %d\n\n", actualPosition);
-
-        printf("s %d\n", p);
-        printf("torque: %d\n", t);
+//        printf("pos: %d\n", int(desiredPosition));
+//        printf("POSITION: %d\n\n", actualPosition);
+//
+//        printf("s %d\n", p);
+//        printf("torque: %d\n", t);
     }
 
 }
@@ -137,10 +137,8 @@ int main(){
     bool nowUp;
     bool nowDown;
 
-    float translationalMultiplier = 1.5;
-
     int refLoop = 0;
-    int yawSetPoint = 0;
+    int yawSetPoint = 2745;
 
     double beyblade;
     float ref_chassis_power;
@@ -174,8 +172,11 @@ int main(){
 
             ref_chassis_power = ext_power_heat_data.data.chassis_power;
             max_power = ext_game_robot_state.data.chassis_power_limit;
-            //printf("Ref power: %f\n", ext_power_heat_data.data.chassis_power);
-            //std::cout << ext_power_heat_data.data.chassis_power << std::endl;
+
+            if(ref_chassis_power > float(max_power))
+                ref_chassis_power = float(max_power);
+
+            //printf("max power: %d ref power: %d \n",  int(max_power * 100), int(ref_chassis_power * 100));
 
             if (!sticksMoved) {
                 chassis.driveXYR({0,0,0});
@@ -195,18 +196,20 @@ int main(){
 
             }else{
                 //pitch.setPosition((-rY / 2) + 5600);
-                yawSetPoint -= int(rX / 10.0);
-                yaw.setPosition(yawSetPoint);
                 indexerLoop(previousMid, nowUp, nowDown, actualPosition, desiredPosition, t);
-                setFlyWheelPwr(0);
+                setFlyWheelPwr(16000);
 
                 if(rS == Remote::SwitchState::DOWN)
                     beyblade = 2000;
                 else
                     beyblade = 0;
             }
+
+            yawSetPoint -= int(rX / 10.0);
+            yaw.setPosition(yawSetPoint);
+
             timeEnd = us_ticker_read();
-            chassis.driveTurretRelativePower(ref_chassis_power, max_power,{-lX * 5.0, -lY * 5.0, beyblade}, yaw.getData(MULTITURNANGLE) * 180.0 / 8191.0 + 90, int(timeEnd - timeStart));
+            chassis.driveTurretRelativePower(ref_chassis_power, max_power,{-lX * 5.0, -lY * 5.0, beyblade}, yaw.getData(MULTITURNANGLE) * 180.0 / 8191.0 - 60, int(timeEnd - timeStart));
             DJIMotor::sendValues();
         }
         DJIMotor::getFeedback();

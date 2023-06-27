@@ -100,16 +100,17 @@ void Chassis::driveXYR(ChassisSpeeds speeds) {
     driveMotors(Chassis::chassisSpeedsToWheelSpeeds(speeds));
 }
 
-void Chassis::driveXYRPower(double ref_chassis_power, double max_power, double lX, double lY, double dt, bool beyblading) {
+void Chassis::driveXYRPower(float ref_chassis_power, uint16_t max_power, double lX, double lY, double dt, bool beyblading) {
     double rotationalPower = 0;
-    
+
     if (beyblading) {
-        rotationalPower = 100 * (max_power - ref_chassis_power);
-        printf("max power: %f\n", rotationalPower);
-        printf("rotational power: %f\n", rotationalPower);
-        printf("ref power: %f\n", rotationalPower);
+        rotationalPower = 100 * (float(max_power) - ref_chassis_power);
+        if(rotationalPower < 0)
+            rotationalPower = 0;
+
+        printf("rotational power: %d\n", int(rotationalPower));
     }
-    
+
     double scale = 1;
 
     PID power_pid(12, 0.008, 0, 0, 0);
@@ -118,7 +119,7 @@ void Chassis::driveXYRPower(double ref_chassis_power, double max_power, double l
     double powerLB = LB.pidSpeed.calculate(0 - lX + lY + 0, LB.getData(VELOCITY), dt) + rotationalPower;
     double powerRB = RB.pidSpeed.calculate(0 - lX - lY + 0, RB.getData(VELOCITY), dt) + rotationalPower;
 
-    scale = abs(power_pid.calculate(48, ref_chassis_power, dt));
+    scale = abs(power_pid.calculate(48, 0, dt));
 
     if (ref_chassis_power > 40) {
         powerLF /= scale;
@@ -146,7 +147,7 @@ void Chassis::driveTurretRelative(ChassisSpeeds speeds, double turretAngleDegree
     driveOffsetAngle(speeds, -turretAngleDegrees * PI / 180.0);
 }
 
-void Chassis::driveTurretRelativePower(double ref_chassis_power, double max_power, ChassisSpeeds speeds, double turretAngleDegrees, int dt) {
+void Chassis::driveTurretRelativePower(float ref_chassis_power, uint16_t max_power, ChassisSpeeds speeds, double turretAngleDegrees, int dt) {
     //double robotHeading = imuAngles.yaw * PI / 180.0;
     driveOffsetAnglePower(ref_chassis_power, max_power, speeds, -turretAngleDegrees * PI / 180.0, dt);
 }
@@ -167,7 +168,7 @@ void Chassis::driveOffsetAngle(ChassisSpeeds speeds, double angleOffset) {
     driveXYR({robotRelativeXVelocity, robotRelativeYVelocity, speeds.rotation});
 }
 
-void Chassis::driveOffsetAnglePower(double ref_chassis_power, double max_power, ChassisSpeeds speeds, double angleOffset, int dt) {
+void Chassis::driveOffsetAnglePower(float ref_chassis_power, uint16_t max_power, ChassisSpeeds speeds, double angleOffset, int dt) {
     double robotRelativeXVelocity = speeds.x * cos(angleOffset) + speeds.y * sin(angleOffset);
     double robotRelativeYVelocity = - speeds.x * sin(angleOffset) + speeds.y * cos(angleOffset);
     driveXYRPower(ref_chassis_power, max_power, robotRelativeXVelocity, robotRelativeYVelocity, dt, bool(speeds.rotation));
@@ -269,7 +270,7 @@ void Chassis::periodic() {
 //    double measured = LF.getData(ANGLE);
 //    int MODULUS = 8192;
 //    z[0] = (measured + angle - ((int) angle) % MODULUS);
-    int power =  LF.getPowerOut() - 300;
+//    int power =  LF.getPowerOut() - 300;
 
 //    int diff = (int) (z[1] - prevVel);
 //    if (diff != 0) {
@@ -383,12 +384,12 @@ bool Chassis::allMotorsConnected() {
 //     driveOffsetAngle(speeds, -turretAngleDegrees * PI / 180.0);
 // }
 
-// void Chassis::driveFieldRelativePower(double ref_chassis_power, double time_diff, double xVelocityRPM, double yVelocityRPM, double rotationVelocityRPM) {
+// void Chassis::driveFieldRelativePower(float ref_chassis_power, double time_diff, double xVelocityRPM, double yVelocityRPM, double rotationVelocityRPM) {
 //     double robotHeading = imuAngles.yaw * PI / 180.0;
 //     driveOffsetAnglePower(ref_chassis_power, time_diff, xVelocityRPM, yVelocityRPM, rotationVelocityRPM, robotHeading);
 // }
 
-// void Chassis::driveOffsetAnglePower(double ref_chassis_power, double time_diff, double xVelocityRPM, double yVelocityRPM, double rotationVelocityRPM, double angleOffset) {
+// void Chassis::driveOffsetAnglePower(float ref_chassis_power, double time_diff, double xVelocityRPM, double yVelocityRPM, double rotationVelocityRPM, double angleOffset) {
 //     double robotRelativeXVelocity = xVelocityRPM * cos(angleOffset) + yVelocityRPM * sin(angleOffset);
 //     double robotRelativeYVelocity = - xVelocityRPM * sin(angleOffset) + yVelocityRPM * cos(angleOffset);
 //     driveXYRPower(ref_chassis_power, robotRelativeXVelocity, robotRelativeYVelocity, rotationVelocityRPM, time_diff);
