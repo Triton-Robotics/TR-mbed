@@ -41,6 +41,7 @@ bool xyzToSpherical(double x, double y, double z, double &phi, double &theta){
         // z
         phi = acos(z);
         phi *= 180 / PI;
+        phi -= 90;
 
         // xy
         theta = atan2(y, x);
