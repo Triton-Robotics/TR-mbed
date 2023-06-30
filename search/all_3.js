@@ -54,7 +54,7 @@ var searchData=
   ['color_229',['color',['../struct____packed.html#aa8e80df5f725c8734954b88782340e0e',1,'__packed']]],
   ['color_230',['Color',['../ref__serial_8cpp.html#a41189354ca1ee8a6def821148ffed29b',1,'ref_serial.cpp']]],
   ['columns_231',['COLUMNS',['../SSD1308_8h.html#a06c6c391fc11d106e9909f0401b255b1',1,'SSD1308.h']]],
-  ['command_232',['command',['../Infantry_2main_8cpp.html#a3684be787ab6b04f9bb857d0c7366c79',1,'command():&#160;main.cpp'],['../classAdafruit__SSD1306.html#a21922085457ef7cb35586ee68bbf4e79',1,'Adafruit_SSD1306::command()'],['../classAdafruit__SSD1306__Spi.html#aa0a3797008126ae63a2ce11a20f374fe',1,'Adafruit_SSD1306_Spi::command()'],['../classAdafruit__SSD1306__I2c.html#a0450b0cd6cef198f97198eab2aff7750',1,'Adafruit_SSD1306_I2c::command()']]],
+  ['command_232',['command',['../Infantry_2main_8cpp.html#a3684be787ab6b04f9bb857d0c7366c79',1,'command():&#160;main.cpp'],['../classAdafruit__SSD1306__I2c.html#a0450b0cd6cef198f97198eab2aff7750',1,'Adafruit_SSD1306_I2c::command()'],['../classAdafruit__SSD1306__Spi.html#aa0a3797008126ae63a2ce11a20f374fe',1,'Adafruit_SSD1306_Spi::command()'],['../classAdafruit__SSD1306.html#a21922085457ef7cb35586ee68bbf4e79',1,'Adafruit_SSD1306::command()']]],
   ['command_5fmode_233',['COMMAND_MODE',['../SSD1308_8h.html#ad52829a17df9d2904cb8078b4cb57ab5',1,'SSD1308.h']]],
   ['common_5falternative_234',['COMMON_ALTERNATIVE',['../SSD1308_8h.html#ae36be6657659dd0d6aa8d0dbfaf3c54a',1,'SSD1308.h']]],
   ['common_5fbase_235',['COMMON_BASE',['../SSD1308_8h.html#a1aa2af408abe3da18601bef3530ba345',1,'SSD1308.h']]],
@@ -79,5 +79,5 @@ var searchData=
   ['ctrl_254',['CTRL',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fa32f7eee2581c72a5561c21df3013a89a',1,'Remote']]],
   ['cursor_5fx_255',['cursor_x',['../classAdafruit__GFX.html#a8f8983cea8d81a7c8e9d05eef36318e2',1,'Adafruit_GFX']]],
   ['cursor_5fy_256',['cursor_y',['../classAdafruit__GFX.html#aebe0a38f6e6fd59cb81620c4696286c9',1,'Adafruit_GFX']]],
-  ['cv_257',['cv',['../classJetson.html#aa63103bffe77a5f527da3a3d8eb63627',1,'Jetson']]]
+  ['cv_257',['cv',['../classJetson.html#aa63103bffe77a5f527da3a3d8eb63627',1,'Jetson::cv()'],['../Sentry_2main_8cpp.html#a90ce0e462e8e1fec812ecb00d5f5008b',1,'cv():&#160;main.cpp']]]
 ];

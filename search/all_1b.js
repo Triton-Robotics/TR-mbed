@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['_7edjimotor_1111',['~DJIMotor',['../classDJIMotor.html#ad921d2682aaecf47d29339b14f75f708',1,'DJIMotor']]],
-  ['_7etinyekf_1112',['~TinyEKF',['../classTinyEKF.html#acdb80f6a01f01e455ced46ff97b75f19',1,'TinyEKF']]]
+  ['_7edjimotor_1113',['~DJIMotor',['../classDJIMotor.html#ad921d2682aaecf47d29339b14f75f708',1,'DJIMotor']]],
+  ['_7etinyekf_1114',['~TinyEKF',['../classTinyEKF.html#acdb80f6a01f01e455ced46ff97b75f19',1,'TinyEKF']]]
 ];

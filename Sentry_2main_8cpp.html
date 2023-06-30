@@ -76,6 +76,7 @@ $(function() {
 <div class="textblock"><code>#include &lt;mbed.h&gt;</code><br />
 <code>#include &lt;<a class="el" href="main_8h_source.html">main.h</a>&gt;</code><br />
 <code>#include &quot;<a class="el" href="Adafruit__SSD1306_8h_source.html">peripherals/oled/Adafruit_SSD1306.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Jetson_8h_source.html">communications/Jetson.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -83,11 +84,17 @@ Functions</h2></td></tr>
 <tr class="separator:ae3e7ab47cd5395225bf7c67b8ee84976"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3e810cc07153a7af916db348bc82131e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_2main_8cpp.html#a3e810cc07153a7af916db348bc82131e">setFlyWheelSpeed</a> (int speed)</td></tr>
 <tr class="separator:a3e810cc07153a7af916db348bc82131e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab377bc3e23b1d71f306b7948cf540941"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_2main_8cpp.html#ab377bc3e23b1d71f306b7948cf540941">xyzToSpherical</a> (double x, double y, double z, double &amp;phi, double &amp;theta)</td></tr>
+<tr class="separator:ab377bc3e23b1d71f306b7948cf540941"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae66f6b31b5ad750f1fe042a706a4e3d4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_2main_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main</a> ()</td></tr>
 <tr class="separator:ae66f6b31b5ad750f1fe042a706a4e3d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
+<tr class="memitem:a123de954d1fc50da75bf47c8d56b27f5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classJetson.html">Jetson</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_2main_8cpp.html#a123de954d1fc50da75bf47c8d56b27f5">jetson</a> (PC_12, PD_2)</td></tr>
+<tr class="separator:a123de954d1fc50da75bf47c8d56b27f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a90ce0e462e8e1fec812ecb00d5f5008b"><td class="memItemLeft" align="right" valign="top">Thread&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_2main_8cpp.html#a90ce0e462e8e1fec812ecb00d5f5008b">cv</a></td></tr>
+<tr class="separator:a90ce0e462e8e1fec812ecb00d5f5008b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acb1a5b4b0850b5dcfb3f5982c52db46e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDJIMotor.html">DJIMotor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_2main_8cpp.html#acb1a5b4b0850b5dcfb3f5982c52db46e">yaw1</a> (5, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4">CANHandler::CANBUS_1</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a5ac5633b85d6640dcf5f424b967a77c6">GIMBLY</a>)</td></tr>
 <tr class="separator:acb1a5b4b0850b5dcfb3f5982c52db46e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4edc858d906063ce57ef2836c39078b5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDJIMotor.html">DJIMotor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_2main_8cpp.html#a4edc858d906063ce57ef2836c39078b5">yaw2</a> (7, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4">CANHandler::CANBUS_1</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a5ac5633b85d6640dcf5f424b967a77c6">GIMBLY</a>)</td></tr>
@@ -175,6 +182,52 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="ab377bc3e23b1d71f306b7948cf540941"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab377bc3e23b1d71f306b7948cf540941">&#9670;&nbsp;</a></span>xyzToSpherical()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool xyzToSpherical </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>z</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double &amp;&#160;</td>
+          <td class="paramname"><em>phi</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double &amp;&#160;</td>
+          <td class="paramname"><em>theta</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Variable Documentation</h2>
 <a id="a191b20daad7b699a798c76257f0366e4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a191b20daad7b699a798c76257f0366e4">&#9670;&nbsp;</a></span>chassis</h2>
@@ -216,6 +269,20 @@ Variables</h2></td></tr>
           <td></td>
           <td>)</td>
           <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a90ce0e462e8e1fec812ecb00d5f5008b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a90ce0e462e8e1fec812ecb00d5f5008b">&#9670;&nbsp;</a></span>cv</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Thread cv</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -278,6 +345,34 @@ Variables</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a5c09ef61e8b225afd4edbb87ffcbd4f0">C610</a>&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a123de954d1fc50da75bf47c8d56b27f5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a123de954d1fc50da75bf47c8d56b27f5">&#9670;&nbsp;</a></span>jetson</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classJetson.html">Jetson</a> jetson(PC_12, PD_2) </td>
+          <td>(</td>
+          <td class="paramtype">PC_12&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">PD_2&#160;</td>
           <td class="paramname">&#160;</td>
         </tr>
         <tr>
