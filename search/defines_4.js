@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['data_5fmode_2012',['DATA_MODE',['../SSD1308_8h.html#ab08014dd3c3515b9ff8abbf9560e6cc1',1,'SSD1308.h']]],
-  ['dr_2013',['dr',['../TestBench_2main_8cpp.html#a86776f7e9bb26c226d909f1e82d9501c',1,'main.cpp']]]
+  ['data_5fmode_2016',['DATA_MODE',['../SSD1308_8h.html#ab08014dd3c3515b9ff8abbf9560e6cc1',1,'SSD1308.h']]],
+  ['dr_2017',['dr',['../TestBench_2main_8cpp.html#a86776f7e9bb26c226d909f1e82d9501c',1,'main.cpp']]]
 ];
