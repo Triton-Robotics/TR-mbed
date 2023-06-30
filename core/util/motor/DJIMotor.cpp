@@ -156,14 +156,15 @@ void DJIMotor::setOutput(){
     unsigned long time = us_ticker_read();
 //    printf("Time: %i\n", (int) time);
 
-    if(mode == POW)
-        powerOut = (int16_t)value;
+    if(mode == POW) {
+        if(value > 32766)
+            value = 32766;
+        powerOut = (int16_t) value;
 
-    else if(mode == SPD) {
+    }else if(mode == SPD) {
         powerOut = (int16_t) pidSpeed.calculate((float) value, (float) getData(VELOCITY), (double) (time - lastTime));
-    }
 
-    else if(mode == POS)
+    }else if(mode == POS) {
         if (useKalmanForPID) {
 //            double z[2] = {0, 0};
 //            double angle = kalman.getX(0);
@@ -201,18 +202,24 @@ void DJIMotor::setOutput(){
 ////            }
 ////            printf("power: %i\n", (int) powerOut);
 ////            printf("%i\t%i\t%i\t%i\n", (int) newAngle, (int) value, (int) z[1], (int) powerOut);
-        }
-        else if(!justPosError)
-            if(!useAbsEncoder)
-                powerOut = (int16_t)pidSpeed.calculate(pidPosition.calculate((float)value, (float)getData(MULTITURNANGLE), (double)(time - lastTime)), (float)getData(VELOCITY), (float)(time - lastTime));
+        } else if (!justPosError)
+            if (!useAbsEncoder)
+                powerOut = (int16_t) pidSpeed.calculate(
+                        pidPosition.calculate((float) value, (float) getData(MULTITURNANGLE),
+                                              (double) (time - lastTime)), (float) getData(VELOCITY),
+                        (float) (time - lastTime));
             else
-                powerOut = (int16_t)pidSpeed.calculate(pidPosition.calculate((float)value, (float)getData(ANGLE), (double)(time - lastTime)), (float)getData(VELOCITY), (float)(time - lastTime));
+                powerOut = (int16_t) pidSpeed.calculate(
+                        pidPosition.calculate((float) value, (float) getData(ANGLE), (double) (time - lastTime)),
+                        (float) getData(VELOCITY), (float) (time - lastTime));
 
+        else if (!useAbsEncoder)
+            powerOut = (int16_t) pidPosition.calculate((float) value, (float) getData(MULTITURNANGLE),
+                                                       (double) (time - lastTime));
         else
-            if(!useAbsEncoder)
-                powerOut = (int16_t)pidPosition.calculate((float)value, (float)getData(MULTITURNANGLE), (double)(time - lastTime));
-            else
-                powerOut = (int16_t)pidPosition.calculate((float)value, (float)getData(ANGLE), (double)(time - lastTime));
+            powerOut = (int16_t) pidPosition.calculate((float) value, (float) getData(ANGLE),
+                                                       (double) (time - lastTime));
+    }
 
     else if(mode == OFF)
         powerOut = 0;
@@ -220,15 +227,13 @@ void DJIMotor::setOutput(){
     else if(mode == ERR)
         printf("[ERROR] THIS IS AN ERRONEOUS MOTOR. DO NOT ATTEMPT TO SEND IT DATA, DO NOT PASS GO, DO NOT COLLECT $200, FIX THIS!\n");
 
-    if(powerOut > outCap)
-        powerOut = (int16_t)outCap;
+    if(powerOut > outCap || powerOut > 32766)
+        powerOut = (int16_t) min(outCap, 32766);
 
-    else if(powerOut < -outCap)
-        powerOut = (int16_t) - outCap;
+    if(powerOut < -outCap || powerOut < -32766)
+        powerOut = (int16_t) - max(-outCap, -32766);
 
     lastTime = time;
-//    printf("Power out: %i\n", powerOut);
-//    ThisThread::sleep_for(1ms);
 }
 
 __attribute__((unused)) int DJIMotor::getPowerOut() const {
@@ -340,11 +345,6 @@ void DJIMotor::sendOneID(CANHandler::CANBus bus, short sendIDindex, bool debug){
         }else
             if(debug) printf("NA\t");
     }
-    //if(debug) printf("\n");
-    //printf("0x%x:\t",sendIDs[sendIDindex]);
-    //printArray(bytes, 8);
-    //printf("meh1%d, meh2%d\n",canHandlers[0]->exists,canHandlers[1]->exists);
-    //printf("canhandler id is%d\n",canHandlers[bus]);
 
     if(canHandlers[bus]->exists)
         canHandlers[bus]->rawSend(sendIDs[sendIDindex], bytes);
@@ -380,7 +380,7 @@ void DJIMotor::getFeedback(){
                     printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS %d DEGREES CELSIUS\n",msgID,allMotors[i][mNum/4][mNum%4]->motorData[TEMPERATURE]);
 
             }else{
-                //printf("[WARNING] YOU HAVE A MOTOR [0x%x] {%d}{%d} ATTACHED THAT IS NOT INITIALIZED.. WHY: \n",msgID,mNum/4,mNum%4);
+                printf("[WARNING] YOU HAVE A MOTOR [0x%x] {%d}{%d} ATTACHED THAT IS NOT INITIALIZED.. WHY: \n",msgID,mNum/4,mNum%4);
             }
         }
     }

@@ -1,5 +1,5 @@
 #include "Chassis.h"
-#include <math.h>
+#include <cmath>
 
 Chassis::Chassis(short lfId, short rfId, short lbId, short rbId, I2C *i2c) : LF(lfId, CAN_BUS_TYPE, MOTOR_TYPE), RF(rfId, CAN_BUS_TYPE, MOTOR_TYPE),
 LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE),  imu(*i2c, IMU_RESET, MODE_IMU), chassisKalman() {
@@ -119,7 +119,7 @@ void Chassis::driveXYRPower(float ref_chassis_power, uint16_t max_power, double 
     double powerLB = LB.pidSpeed.calculate(0 - lX + lY + 0, LB.getData(VELOCITY), dt) + rotationalPower;
     double powerRB = RB.pidSpeed.calculate(0 - lX - lY + 0, RB.getData(VELOCITY), dt) + rotationalPower;
 
-    scale = abs(power_pid.calculate(48, 0, dt));
+    scale = abs(power_pid.calculate(48, ref_chassis_power, dt));
 
     if (ref_chassis_power > 40) {
         powerLF /= scale;

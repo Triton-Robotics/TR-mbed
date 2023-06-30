@@ -1,6 +1,10 @@
 #include <mbed.h>
 #include <main.h>
 #include "peripherals/oled/Adafruit_SSD1306.h"
+#include "communications/Jetson.h"
+
+Jetson jetson(PC_12, PD_2);
+Thread cv;
 
 DJIMotor yaw1(5, CANHandler::CANBUS_1, GIMBLY);
 DJIMotor yaw2(7, CANHandler::CANBUS_1, GIMBLY);
@@ -25,32 +29,56 @@ void setFlyWheelSpeed(int speed) {
     RBOTTOMFLYWHEEL.setSpeed(-speed);
 }
 
+bool xyzToSpherical(double x, double y, double z, double &phi, double &theta){
+    double mag = sqrt(x*x + y*y + z*z);
+
+    if(mag > 28 && mag < 32) {
+
+        x /= mag;
+        y /= mag;
+        z /= mag;
+
+        // z
+        phi = acos(z);
+        phi *= 180 / PI;
+
+        // xy
+        theta = atan2(y, x);
+        theta *= 180 / PI;
+        theta -= 90;
+
+        return true;
+    }
+    return false;
+}
+
 int main(){
-    int yawSetpoint = 0;
+
+    int yawSetPoint = 0;
 
     pitch.pidPosition.feedForward = 1900;
 
     pitch.setPositionPID(24.3, 0.3, 35.5);
     pitch.setPositionIntegralCap(10000);
     pitch.setPositionOutputCap(20000);
-    pitch.useAbsEncoder = 1;
-    pitch.justPosError = 1;
+    pitch.useAbsEncoder = true;
+    pitch.justPosError = true;
 
     yaw1.setPositionPID(10.5, 0.2, 4.4);
     yaw1.setPositionIntegralCap(10000);
-    yaw1.useAbsEncoder = 0;
-    yaw1.justPosError = 1;
+    yaw1.useAbsEncoder = false;
+    yaw1.justPosError = true;
     yaw1.pidPosition.setOutputCap(100000);
     yaw1.outCap = 32000;
-    
+
+    cv.start([]() {
+        while (true) {
+            jetson.read();
+        }
+    });
 
     indexerL.setSpeedPID(1.94, 0.002, 0.166);
     indexerL.setSpeedIntegralCap(500000);
-
-    // LTOPFLYWHEEL.setSpeedPID(1, 0, 0);
-    // RBOTTOMFLYWHEEL.setSpeedPID(1, 0, 0);
-    // RTOPFLYWHEEL.setSpeedPID(1, 0, 0);
-    // RBOTTOMFLYWHEEL.setSpeedPID(1, 0, 0);
 
     DigitalOut led(L26);
     DigitalOut led2(L27);
@@ -59,32 +87,40 @@ int main(){
     DJIMotor::getFeedback();
 
     int refLoop = 0;
+    uint16_t max_power;
+    float ref_chassis_power;
 
-    unsigned long loopTimer = us_ticker_read() / 1000;
+    double phi = 0;
+    double theta = 0;
+
+    double x, y, z;
+    int p;
+
+    unsigned long loopTimer = us_ticker_read();
+    unsigned long timeStart;
+    unsigned long timeEnd;
 
     while(true){
 
-        unsigned long timeStart = us_ticker_read() / 1000;
+        timeStart = us_ticker_read();
         
-        if(timeStart - loopTimer > 25) {
+        if((timeStart - loopTimer) / 1000 > 25) {
             loopTimer = timeStart;
 
-            led = !led;
-//        double ref_chassis_power = ext_power_heat_data.data.chass
-//                yawSetpoint =  - 3 * rX;is_power;
-//
+            //led = !led;
             remoteRead();
 
             refLoop++;
-            if (refLoop >= 5)
-            {
+            if (refLoop >= 5){
                 refereeThread(&referee);
-                // printf("thread\n");
                 refLoop = 0;
-                //                 led = ext_power_heat_data.data.chassis_power > 0;
-                //                 printf("%d\n",ext_power_heat_data.data.chassis_power);
                 led2 = !led2;
             }
+
+            ref_chassis_power = ext_power_heat_data.data.chassis_power;
+            max_power = ext_game_robot_state.data.chassis_power_limit;
+
+            //printff("Ref power: %i\n", (int) (ref_chassis_power * 100));
 
             //printf("RS: %i\n", rS);
             //printff("Pitch:%d PWR: %d\n",pitch.getData(ANGLE),pitch.getData(POWEROUT));
@@ -93,29 +129,44 @@ int main(){
 
             //printff("%d\n",Wh);
             
-            double bb = 0;
+            double beyblade = 0;
 
-            if(!(rS == Remote::SwitchState::MID)){
-                yawSetpoint -= rX / 4.5;
-                yaw1.setPosition(-yawSetpoint);
-                pitch.setPosition((2*rY / 3) + 6700);
-                yaw2.setPower(yaw1.powerOut);
-                bb = 2000;
-            }else{
+            if(rS == Remote::SwitchState::MID){
                 yaw1.setPower(0);
                 yaw2.setPower(0);
                 pitch.setPower(0);
+
+                beyblade = 0;
+
+            }else if(rS == Remote::SwitchState::DOWN){
+                yawSetPoint -= rX / 4.5;
+                yaw1.setPosition(-yawSetPoint);
+                pitch.setPosition((2*rY / 3) + 6700);
+                yaw2.setPower(yaw1.powerOut);
+                beyblade = 0;
+
+                printf("%d, %d\n",-yawSetPoint, yaw1.getData(MULTITURNANGLE));
+            }else if(rS == Remote::SwitchState::UP){
+
+                x = jetson.get(Jetson::cv::X);
+                y = jetson.get(Jetson::cv::Y);
+                z = jetson.get(Jetson::cv::Z);
+
+                //printf("%f %f %f\n", x, y, z);
+
+
+                if(xyzToSpherical(x, y, z, phi, theta))
+                    printf("%f %f %f %f %f\n", x, y, z, phi, theta);
+
+
+                p = int(theta * 100);
+                yaw1.setPower(p);
+                yaw2.setPower(yaw1.powerOut);
+                printf("%d\n", p);
+
+                //6890
+//                printf("%d\n", pitch.getData(ANGLE));
             }
-            if(rS == Remote::SwitchState::DOWN){
-                bb = 0;
-            }
-
-            double ref_chassis_power = ext_power_heat_data.data.chassis_power;
-            int max_power = ext_game_robot_state.data.chassis_power_limit;
-
-            printff("Ref power: %i\n", (int) (ref_chassis_power * 100));
-
-            chassis.driveTurretRelativePower(ref_chassis_power, max_power,{-lX * 5.0, -lY * 5.0, bb},  -yaw1.getData(MULTITURNANGLE) * 360.0 / 8192 + 90);
 
             if (lS == Remote::SwitchState::UP) {
 //              indexerL.setSpeed(-2000);
@@ -125,6 +176,9 @@ int main(){
                 indexerR.setPower(0);
                 setFlyWheelSpeed(0);
             }
+
+            timeEnd = us_ticker_read();
+            chassis.driveTurretRelativePower(ref_chassis_power, max_power, {-lX * 5.0, -lY * 5.0, beyblade}, -yaw1.getData(MULTITURNANGLE) * 360.0 / 8192 + 90, int(timeEnd - timeStart));
             DJIMotor::sendValues();
         }
         DJIMotor::getFeedback();
