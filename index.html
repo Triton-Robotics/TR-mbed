@@ -90,8 +90,8 @@ $(function() {
 <hr  />
 <h2><a class="anchor" id="autotoc_md2"></a>
 Prerequisites</h2>
-<p><b>We strongly recommend using Linux (Ubuntu or any other flavor) for development.</b> If this is not possible, we've created setup guides for the major operating systems below:</p>
-<ul>
+<p><b>We strongly recommend using Linux (Ubuntu or any other flavor) for development.</b> If this is not possible, we've created setup guides for the major operating systems.</p>
+<p><b>Please choose the appropriate setup guide for your operating system:</b></p><ul>
 <li>/home/runner/work/TR-mbed/TR-mbed/.md/os/linux.md "Linux"</li>
 <li>/home/runner/work/TR-mbed/TR-mbed/.md/os/windows.md "Windows"</li>
 <li>/home/runner/work/TR-mbed/TR-mbed/.md/os/wsl.md "Windows Subsystem for Linux (WSL)"</li>
@@ -104,9 +104,8 @@ Setup</h2>
 <li>Clone this repo:</li>
 </ol>
 <div class="fragment"><div class="line">git clone https://github.com/Triton-Robotics/TR-mbed.git</div>
-</div><!-- fragment --><blockquote class="doxtable">
-<p>At this point, you may choose to diverge from the CLI setup guide and set up an IDE instead. Check out the setup instructions for /home/runner/work/TR-mbed/TR-mbed/.md/ide/clion.md "CLion" or /home/runner/work/TR-mbed/TR-mbed/.md/ide/vscode.md "VSCode". </p>
-</blockquote>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md5"></a>
+At this point, you may choose to diverge from the CLI setup guide and set up an IDE instead. Check out the setup instructions for @ref /home/runner/work/TR-mbed/TR-mbed/.md/ide/clion.md "CLion" or @ref /home/runner/work/TR-mbed/TR-mbed/.md/ide/vscode.md "VSCode".</h3>
 <ol type="1">
 <li>Configure <code>CMake</code> project. This should only be done once per project, or after editing any <code>CMakeLists.txt</code>:</li>
 </ol>
@@ -117,7 +116,7 @@ Setup</h2>
 <div class="fragment"><div class="line">cmake --build cmake-build-debug --target TR-TestBench -j $(nproc)</div>
 </div><!-- fragment --><p>Viable targets for build are: <code>TR-Engineer</code>, <code>TR-Infantry</code>, <code>TR-Sentry</code>, <code>TR-Hero</code>, and <code>TR-TestBench</code></p>
 <hr  />
-<h2><a class="anchor" id="autotoc_md6"></a>
+<h2><a class="anchor" id="autotoc_md7"></a>
 Flashing STM32</h2>
 <ol type="1">
 <li><p class="startli">Locate the generated executable:</p>
@@ -134,11 +133,11 @@ Flashing STM32</h2>
 </ol>
 <div class="fragment"><div class="line">mbed-tools sterm -b 115200</div>
 </div><!-- fragment --><hr  />
-<h2><a class="anchor" id="autotoc_md8"></a>
+<h2><a class="anchor" id="autotoc_md9"></a>
 Troubleshooting</h2>
 <p>See the /home/runner/work/TR-mbed/TR-mbed/.md/TROUBLESHOOTING.md "Troubleshooting" guide for common issues and solutions.</p>
 <hr  />
-<h2><a class="anchor" id="autotoc_md10"></a>
+<h2><a class="anchor" id="autotoc_md11"></a>
 Documentation</h2>
 <p>See our <a href="https://triton-robotics.github.io/TR-mbed/">generated doxygen</a>. </p>
 </div></div><!-- PageDoc -->
