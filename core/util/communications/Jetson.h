@@ -34,14 +34,21 @@
  *   cv.start([]() {
  *     while (true) {
  *       jetson.read();
+ *       jetson.write();
  *     }
  *   });
  *
  *   DigitalOut led(LED1);
  *   while (true) {
  *     led = !led;
+ *     // Read some data
  *     printf("Data: %f, %f, %f\n", jetson.get(Jetson::cv::X), jetson.get(Jetson::cv::Y), jetson.get(Jetson::cv::Z));
- *     printf("Status: %d\n", jetson.status.load());
+ *
+ *     // Send some data
+ *     jetson.set(Jetson::cv::X, 1.0);
+ *     jetson.set(Jetson::cv::Y, 2.0);
+ *     jetson.set(Jetson::cv::Z, 3.0);
+ *
  *     ThisThread::sleep_for(500);
  *   }
  *   return 0;
@@ -61,6 +68,7 @@ private:
     int currentBufferIndex = 0;
 
     atomic<float> cvX, cvY, cvZ;
+    atomic<float> turretX, turretY, turretZ;
 
     void parse();
     void clear();
@@ -126,8 +134,9 @@ public:
     };
 
     void read();
-    void send(float x, float y, float z);
+    void write();
     float get(cv axis);
+    void set(cv axis, float value);
 
     Timer readTimer;
     atomic<JetsonStatus> status;
