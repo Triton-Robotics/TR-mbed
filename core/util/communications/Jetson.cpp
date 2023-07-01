@@ -36,6 +36,40 @@ size_t cobs_unstuff_data(const uint8_t *ptr, size_t length, uint8_t *dst)
     return dst - start;
 }
 
+size_t cobs_stuff_data(const uint8_t *input, size_t length, uint8_t *output)
+{
+    size_t read_index = 0;
+    size_t write_index = 1;
+    size_t code_index = 0;
+    uint8_t code = 1;
+
+    while (read_index < length)
+    {
+        if (input[read_index] == 0)
+        {
+            output[code_index] = code;
+            code = 1;
+            code_index = write_index++;
+            read_index++;
+        }
+        else
+        {
+            output[write_index++] = input[read_index++];
+            code++;
+            if (code == 0xFF)
+            {
+                output[code_index] = code;
+                code = 1;
+                code_index = write_index++;
+            }
+        }
+    }
+
+    output[code_index] = code;
+
+    return write_index;
+}
+
 /**
  * Constructor for the Jetson class. The current implementation of the Jetson
  * class uses UART serial communication.
@@ -85,12 +119,12 @@ void Jetson::read()
     // Read next byte if available and more needed for the current packet
 
     while (jetson.read(&data, 1) && currentBufferIndex < JETSON_BUF_LEN) {
-        //printf("%x \t", data);
+        printf("%x \t", data);
         rxBuffer[currentBufferIndex] = data;
         currentBufferIndex++;
         lastRead = std::chrono::duration_cast<std::chrono::milliseconds>(readTimer.elapsed_time()).count();
     }
-    //printf("\n");
+    printf("\n");
 
     // Check read timeout
     if (std::chrono::duration_cast<std::chrono::milliseconds>(readTimer.elapsed_time()).count() - lastRead > JETSON_READ_RATE) {
@@ -103,6 +137,66 @@ void Jetson::read()
         clear();
     }
 
+}
+
+uint16_t Jetson::crc16_byte(uint16_t crc, uint8_t data)
+{
+    return static_cast<uint8_t>(crc >> 8U) ^ crc16_table[static_cast<uint8_t>(crc ^ data)];
+}
+
+uint16_t Jetson::crc16(uint8_t const *buffer, size_t len)
+{
+    uint16_t crc = 0;
+
+    while ((len--) != 0)
+    {
+        crc = crc16_byte(crc, *buffer++);
+    }
+
+    return crc;
+}
+
+
+void Jetson::send(float x, float y, float z) {
+    // Make a buffer to store the unstuffed data
+    float float_array[3] = {x, y, z};
+
+    uint8_t* unstuffed_data;
+    unstuffed_data = reinterpret_cast<uint8_t*>(&float_array);
+
+    // Find the CRC of the data
+    uint16_t crc = crc16(unstuffed_data, 3 * sizeof(float));
+
+    uint16_t length = 3 * sizeof(float);
+    uint8_t buffer[JETSON_BUF_LEN - 1];
+    buffer[0] = JETSON_TOPIC_ID_SEND;
+    // buffer[1] should be the high byte of the length
+    buffer[1] = (length >> 8);
+    // buffer[2] should be the low byte of the lengthlength & 0xFF;
+    buffer[2] = length & 0x00FF;
+
+    buffer[3] = (crc >> 8);
+    buffer[4] = crc & 0x00FF;
+
+    pack<float>(buffer, x, 0);
+    pack<float>(buffer, y, 1);
+    pack<float>(buffer, z, 2);
+
+    uint8_t txBuffer[19];
+    cobs_stuff_data(buffer, 17, txBuffer);
+    txBuffer[18] = 0;
+
+
+    // unstuff the data as a test
+    uint8_t test_unstuffed[18];
+    cobs_unstuff_data(txBuffer, 18, test_unstuffed);
+
+
+//    for (unsigned char i : txBuffer) {
+//        printf("%x \t", i);
+//    }
+//    printf("\n");
+    jetson.write(txBuffer, 19);
 }
 
 /**
@@ -191,4 +285,10 @@ T Jetson::find(uint8_t *buf, size_t len, int index) {
     T val;
     memcpy(&val, &cobsBuffer[JETSON_COBS_HEADER_LEN + (index * sizeof(T))], sizeof(T));
     return val;
+}
+
+template<typename T>
+T Jetson::pack(uint8_t *buf, T value, int index) {
+    memcpy(&buf[JETSON_COBS_HEADER_LEN + (index * sizeof(T))], &value, sizeof(T));
+    return value;
 }
