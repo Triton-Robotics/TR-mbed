@@ -113,6 +113,17 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>A helper function to pack a buffer of bytes into a COBS packet. The buffer must be in the form of a COBS packet.</p>
+<dl class="section see"><dt>See also</dt><dd><a href="https://en.wikipedia.org/wiki/Consistent_Overhead_Byte_Stuffing">https://en.wikipedia.org/wiki/Consistent_Overhead_Byte_Stuffing</a></dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">input</td><td>The input buffer, which should be in the form |topic_ID|len_high|len_low|CRC_high|CRC_low|payload_start...payload_end| </td></tr>
+    <tr><td class="paramname">length</td><td>The length of the input buffer </td></tr>
+    <tr><td class="paramname">output</td><td>The output buffer, which will be a stuffed COBS packet </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The length of the output buffer </dd></dl>
 
 </div>
 </div>

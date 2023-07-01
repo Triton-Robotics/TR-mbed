@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['r_763',['r',['../structBNO055__EULER__TypeDef.html#a9233895337c4cc141d4e0ffa570c1d2e',1,'BNO055_EULER_TypeDef']]],
-  ['r_764',['R',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fae1e1d3d40573127e9ee0480caf1283d6',1,'Remote::R()'],['../structekf__t.html#a8588ae93fdb7195117fc5ab3d792e2e7',1,'ekf_t::R()'],['../structekf__t.html#abd8956f78de0ec133489760e35000f0e',1,'ekf_t::R()']]],
+  ['r_763',['R',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fae1e1d3d40573127e9ee0480caf1283d6',1,'Remote::R()'],['../structekf__t.html#a8588ae93fdb7195117fc5ab3d792e2e7',1,'ekf_t::R()'],['../structekf__t.html#abd8956f78de0ec133489760e35000f0e',1,'ekf_t::R()']]],
+  ['r_764',['r',['../structBNO055__EULER__TypeDef.html#a9233895337c4cc141d4e0ffa570c1d2e',1,'BNO055_EULER_TypeDef']]],
   ['radius_765',['radius',['../struct____packed.html#acc43919e7c1ea0dea6e5e5f45b903c10',1,'__packed']]],
   ['ramsetecontroller_766',['RamseteController',['../classRamseteController.html',1,'RamseteController'],['../classRamseteController.html#a4c2d4220a6195837f72b2b3680465666',1,'RamseteController::RamseteController()']]],
   ['ramsetecontroller_2ecpp_767',['RamseteController.cpp',['../RamseteController_8cpp.html',1,'']]],

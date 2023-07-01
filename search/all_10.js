@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['p_705',['p',['../imuExampleAllData_8cpp.html#ad4dd3636d8f0735f00e07fb2ff7ce5f9',1,'imuExampleAllData.cpp']]],
+  ['p_705',['p',['../imuExampleAllData_8cpp.html#ad4dd3636d8f0735f00e07fb2ff7ce5f9',1,'p():&#160;imuExampleAllData.cpp'],['../structBNO055__EULER__TypeDef.html#acf440a186707033203462fc8f316ab1a',1,'BNO055_EULER_TypeDef::p()']]],
   ['p_706',['P',['../structekf__t.html#a3f28e844854649b8bc33769a614fc044',1,'ekf_t::P()'],['../structekf__t.html#a1677cad80e86a72c1e46d00e14e73507',1,'ekf_t::P()']]],
-  ['p_707',['p',['../structBNO055__EULER__TypeDef.html#acf440a186707033203462fc8f316ab1a',1,'BNO055_EULER_TypeDef::p()'],['../imuExampleQuaternions_8cpp.html#ad4dd3636d8f0735f00e07fb2ff7ce5f9',1,'p():&#160;imuExampleQuaternions.cpp']]],
+  ['p_707',['p',['../imuExampleQuaternions_8cpp.html#ad4dd3636d8f0735f00e07fb2ff7ce5f9',1,'imuExampleQuaternions.cpp']]],
   ['page0_708',['PAGE0',['../SSD1308_8h.html#a2a04f7bf0fe13871f7d1c220e4b78acf',1,'SSD1308.h']]],
   ['page1_709',['PAGE1',['../SSD1308_8h.html#a76461f9c28fe509ce976b40a489a57e4',1,'SSD1308.h']]],
   ['page2_710',['PAGE2',['../SSD1308_8h.html#aea3643003e5091546570e0c53c1c9363',1,'SSD1308.h']]],
