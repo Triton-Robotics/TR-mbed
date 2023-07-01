@@ -53,10 +53,7 @@ bool xyzToSpherical(double x, double y, double z, double &phi, double &theta){
     return false;
 }
 
-int main(){
-
-    int yawSetPoint = 0;
-
+void setMotorSettings(){
     pitch.pidPosition.feedForward = 1900;
 
     pitch.setPositionPID(24.3, 0.3, 35.5);
@@ -72,14 +69,20 @@ int main(){
     yaw1.pidPosition.setOutputCap(100000);
     yaw1.outCap = 32000;
 
+    indexerL.setSpeedPID(1.94, 0.002, 0.166);
+    indexerL.setSpeedIntegralCap(500000);
+}
+
+int main(){
+
+    int yawSetPoint = 0;
+    setMotorSettings();
+
     cv.start([]() {
         while (true) {
             jetson.read();
         }
     });
-
-    indexerL.setSpeedPID(1.94, 0.002, 0.166);
-    indexerL.setSpeedIntegralCap(500000);
 
     DigitalOut led(L26);
     DigitalOut led2(L27);
@@ -90,6 +93,7 @@ int main(){
     int refLoop = 0;
     uint16_t max_power;
     float ref_chassis_power;
+    float ref_yaw;
 
     double phi = 0;
     double theta = 0;
@@ -120,6 +124,10 @@ int main(){
 
             ref_chassis_power = ext_power_heat_data.data.chassis_power;
             max_power = ext_game_robot_state.data.chassis_power_limit;
+            ref_yaw = ext_game_robot_pos.data.yaw;
+
+            jetson.set(Jetson::cv::X, ref_yaw);
+            jetson.set(Jetson::cv::Y, -(pitch.getData(ANGLE) - 6890) * 360.0 / 8191);
 
             //printff("Ref power: %i\n", (int) (ref_chassis_power * 100));
 
