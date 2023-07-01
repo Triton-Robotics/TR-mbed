@@ -210,7 +210,7 @@ int main()
 
                 int max_power = ext_game_robot_state.data.chassis_power_limit;
                 //chassis.driveXYRPower(ref_chassis_power, max_power, 5 * lX, 5 * lY, time - lastTime, false);
-                chassis.driveTurretRelativePower(ref_chassis_power, max_power, {lX * 5.0, lY * 5.0, 0}, yaw.getData(MULTITURNANGLE) * 360.0 / 8192);
+                chassis.driveTurretRelativePower(ref_chassis_power, max_power, {lX * 5.0, lY * 5.0, 0}, yaw.getData(MULTITURNANGLE) * 360.0 / 8192, int(time - timeStart)*1000);
 
                 lastTime = time;
 

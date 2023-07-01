@@ -4,6 +4,9 @@
 #include "mbed.h"
 #include "crc.h"
 
+/**
+ * The Referee class was an experiment and is not implemented yet. (maybe it's not needed)
+ */
 class Referee {
 public:
     Referee(PinName pin_tx, PinName pin_rx);
