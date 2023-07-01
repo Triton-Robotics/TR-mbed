@@ -1,7 +1,6 @@
 #include "ref_ui.h"
 
-// Draw text on the UI
-void ui_graph_characters(BufferedSerial* serial, int operation_type, string str, int x, int y, int name){
+void ui_graph_characters(BufferedSerial* serial, int operation_type, string str, int x, int y, char name){
     ext_student_interactive_header_data_character_t custom_character_draw;
     {            
         custom_character_draw.data_cmd_id=0x0110; //0104 for 7 diagrams, 0110 for drawing text		
@@ -30,16 +29,15 @@ void ui_graph_characters(BufferedSerial* serial, int operation_type, string str,
     referee_data_pack_handle(0xA5,0x0301,(uint8_t *)&custom_character_draw,sizeof(custom_character_draw), serial);
 }
 
-// Delete all UI drawing
-void ui_delete_all(BufferedSerial* serial){
+void ui_delete_layer(BufferedSerial* serial, int layer){
     ext_student_interactive_header_data_delete_t custom_delete_draw;
     {
         custom_delete_draw.data_cmd_id=0x0100;		
         custom_delete_draw.sender_ID=get_robot_id();//发送者ID，机器人对应ID
         custom_delete_draw.receiver_ID=get_robot_id()+0x0100;//接收者ID，操作手客户端ID
         {
-            custom_delete_draw.graphic_custom.operate_tpye = 2; // 1=delete a layer, 2=delete all
-            custom_delete_draw.graphic_custom.layer = 5;
+            custom_delete_draw.graphic_custom.operate_tpye = 1; // 1=delete a layer, 2=delete all
+            custom_delete_draw.graphic_custom.layer = layer;
         }
     }
     referee_data_pack_handle(0xA5,0x0301,(uint8_t *)&custom_delete_draw,sizeof(custom_delete_draw), serial);

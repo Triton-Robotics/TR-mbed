@@ -117,7 +117,7 @@ void refereeThread(BufferedSerial* referee){
             }
         }
 
-        ui_delete_all(referee);
+        ui_delete_layer(referee, 5);
         referee_data_pack_handle(0xA5,0x0301,(uint8_t *)&custom_graphic_draw,sizeof(custom_graphic_draw),referee);
 
         string powerStr = "power: " + to_string((int)ext_power_heat_data.data.chassis_power);
@@ -153,7 +153,9 @@ void refereeThread(BufferedSerial* referee){
         */
     }
     else {
-        printf("Not writable!\n"); // usually it is never not writable
+        if(enablePrintRefData){
+            printf("Not writable!\n"); // usually it is never not writable
+        }
     }
 
 
