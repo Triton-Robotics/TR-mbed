@@ -81,13 +81,16 @@ $(function() {
 <div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="ref__ui_8h.html#a18140f6fa4b31c458a8b0cc246da3c7c">    9</a></span>&#160;<span class="preprocessor">#define SCREEN_LENGTH 1920</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno"><a class="line" href="ref__ui_8h.html#a2cd109632a6dcccaa80b43561b1ab700">   10</a></span>&#160;<span class="preprocessor">#define SCREEN_WIDTH 1080</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keywordtype">void</span> <a class="code" href="ref__ui_8h.html#abfc3616a0584ee5efb352491d8832c7c">ui_graph_characters</a>(BufferedSerial* serial, <span class="keywordtype">int</span> operation_type, <span class="keywordtype">string</span> str, <span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keywordtype">int</span> name);</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keywordtype">void</span> <a class="code" href="ref__ui_8h.html#a2039086b93b7d100f18e0e1dd32091ce">ui_delete_all</a>(BufferedSerial* serial);</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="comment">// Draw text on the UI</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keywordtype">void</span> <a class="code" href="ref__ui_8h.html#a17285c788bc94c795ba4fb5c582d6de9">ui_graph_characters</a>(BufferedSerial* serial, <span class="keywordtype">int</span> operation_type, <span class="keywordtype">string</span> str, <span class="keywordtype">int</span> x, <span class="keywordtype">int</span> y, <span class="keywordtype">char</span> name);</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="comment">// Delete a layer of UI drawing</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keywordtype">void</span> <a class="code" href="ref__ui_8h.html#ae68d0a36091f7b06721e87e72c53f439">ui_delete_layer</a>(BufferedSerial* serial, <span class="keywordtype">int</span> layer);</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aref__serial_8h_html"><div class="ttname"><a href="ref__serial_8h.html">ref_serial.h</a></div></div>
-<div class="ttc" id="aref__ui_8h_html_a2039086b93b7d100f18e0e1dd32091ce"><div class="ttname"><a href="ref__ui_8h.html#a2039086b93b7d100f18e0e1dd32091ce">ui_delete_all</a></div><div class="ttdeci">void ui_delete_all(BufferedSerial *serial)</div><div class="ttdef"><b>Definition:</b> ref_ui.cpp:34</div></div>
-<div class="ttc" id="aref__ui_8h_html_abfc3616a0584ee5efb352491d8832c7c"><div class="ttname"><a href="ref__ui_8h.html#abfc3616a0584ee5efb352491d8832c7c">ui_graph_characters</a></div><div class="ttdeci">void ui_graph_characters(BufferedSerial *serial, int operation_type, string str, int x, int y, int name)</div><div class="ttdef"><b>Definition:</b> ref_ui.cpp:4</div></div>
+<div class="ttc" id="aref__ui_8h_html_a17285c788bc94c795ba4fb5c582d6de9"><div class="ttname"><a href="ref__ui_8h.html#a17285c788bc94c795ba4fb5c582d6de9">ui_graph_characters</a></div><div class="ttdeci">void ui_graph_characters(BufferedSerial *serial, int operation_type, string str, int x, int y, char name)</div><div class="ttdef"><b>Definition:</b> ref_ui.cpp:3</div></div>
+<div class="ttc" id="aref__ui_8h_html_ae68d0a36091f7b06721e87e72c53f439"><div class="ttname"><a href="ref__ui_8h.html#ae68d0a36091f7b06721e87e72c53f439">ui_delete_layer</a></div><div class="ttdeci">void ui_delete_layer(BufferedSerial *serial, int layer)</div><div class="ttdef"><b>Definition:</b> ref_ui.cpp:32</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
