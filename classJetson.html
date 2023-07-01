@@ -100,6 +100,8 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
+<tr class="memitem:a1ad48c5fa32d3b8da19e43c66aa4ba4d"><td class="memItemLeft" align="right" valign="top">Timer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJetson.html#a1ad48c5fa32d3b8da19e43c66aa4ba4d">readTimer</a></td></tr>
+<tr class="separator:a1ad48c5fa32d3b8da19e43c66aa4ba4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a34374de51274d24eb8a7d7fa3f74c7ee"><td class="memItemLeft" align="right" valign="top">atomic&lt; <a class="el" href="classJetson.html#a0da6dd80b8c8c3af02585f4fdaf49c49">JetsonStatus</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJetson.html#a34374de51274d24eb8a7d7fa3f74c7ee">status</a></td></tr>
 <tr class="separator:a34374de51274d24eb8a7d7fa3f74c7ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -123,7 +125,7 @@ Public Attributes</h2></td></tr>
 <div class="line">  <span class="keywordflow">while</span> (<span class="keyword">true</span>) {</div>
 <div class="line">    <a class="code" href="Hero_2main_8cpp.html#a689935c8d5f58c88c4dd8a44d5c6abc0">led</a> = !<a class="code" href="Hero_2main_8cpp.html#a689935c8d5f58c88c4dd8a44d5c6abc0">led</a>;</div>
 <div class="line">    printf(<span class="stringliteral">&quot;Data: %f, %f, %f\n&quot;</span>, jetson.get(Jetson::cv::X), jetson.get(Jetson::cv::Y), jetson.get(Jetson::cv::Z));</div>
-<div class="line">    printf(<span class="stringliteral">&quot;Status: %d\n&quot;</span>, jetson.status);</div>
+<div class="line">    printf(<span class="stringliteral">&quot;Status: %d\n&quot;</span>, jetson.status.load());</div>
 <div class="line">    ThisThread::sleep_for(500);</div>
 <div class="line">  }</div>
 <div class="line">  <span class="keywordflow">return</span> 0;</div>
@@ -131,7 +133,7 @@ Public Attributes</h2></td></tr>
 <div class="ttc" id="aHero_2main_8cpp_html_a689935c8d5f58c88c4dd8a44d5c6abc0"><div class="ttname"><a href="Hero_2main_8cpp.html#a689935c8d5f58c88c4dd8a44d5c6abc0">led</a></div><div class="ttdeci">DigitalOut led(L26)</div></div>
 <div class="ttc" id="aJetson_8h_html"><div class="ttname"><a href="Jetson_8h.html">Jetson.h</a></div></div>
 <div class="ttc" id="aclassJetson_html"><div class="ttname"><a href="classJetson.html">Jetson</a></div><div class="ttdoc">A class for interfacing with the Jetson TX2 and receiving computer vision data over UART.</div><div class="ttdef"><b>Definition:</b> Jetson.h:50</div></div>
-<div class="ttc" id="aclassJetson_html_aa63103bffe77a5f527da3a3d8eb63627"><div class="ttname"><a href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627">Jetson::cv</a></div><div class="ttdeci">cv</div><div class="ttdef"><b>Definition:</b> Jetson.h:75</div></div>
+<div class="ttc" id="aclassJetson_html_aa63103bffe77a5f527da3a3d8eb63627"><div class="ttname"><a href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627">Jetson::cv</a></div><div class="ttdeci">cv</div><div class="ttdef"><b>Definition:</b> Jetson.h:74</div></div>
 <div class="ttc" id="aimuExampleAllData_8cpp_html_ae66f6b31b5ad750f1fe042a706a4e3d4"><div class="ttname"><a href="imuExampleAllData_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main</a></div><div class="ttdeci">int main()</div><div class="ttdef"><b>Definition:</b> imuExampleAllData.cpp:27</div></div>
 </div><!-- fragment --> </div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="aa63103bffe77a5f527da3a3d8eb63627"></a>
@@ -260,14 +262,28 @@ Public Attributes</h2></td></tr>
 <div class="line">  jetson.read();</div>
 <div class="line">  printf(<span class="stringliteral">&quot;X: %f, Y: %f, Z: %f\n&quot;</span>, jetson.get(<a class="code" href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a2a7ff166b192b1cad627c0ce2e13e51d">Jetson::X</a>), jetson.get(<a class="code" href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a609f35c87579ac622ac058a124fb4ba4">Jetson::Y</a>), jetson.get(<a class="code" href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a2294689374a1b16610171a8aa9772f13">Jetson::Z</a>));</div>
 <div class="line">}</div>
-<div class="ttc" id="aclassJetson_html_aa63103bffe77a5f527da3a3d8eb63627a2294689374a1b16610171a8aa9772f13"><div class="ttname"><a href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a2294689374a1b16610171a8aa9772f13">Jetson::Z</a></div><div class="ttdeci">@ Z</div><div class="ttdef"><b>Definition:</b> Jetson.h:78</div></div>
-<div class="ttc" id="aclassJetson_html_aa63103bffe77a5f527da3a3d8eb63627a2a7ff166b192b1cad627c0ce2e13e51d"><div class="ttname"><a href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a2a7ff166b192b1cad627c0ce2e13e51d">Jetson::X</a></div><div class="ttdeci">@ X</div><div class="ttdef"><b>Definition:</b> Jetson.h:76</div></div>
-<div class="ttc" id="aclassJetson_html_aa63103bffe77a5f527da3a3d8eb63627a609f35c87579ac622ac058a124fb4ba4"><div class="ttname"><a href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a609f35c87579ac622ac058a124fb4ba4">Jetson::Y</a></div><div class="ttdeci">@ Y</div><div class="ttdef"><b>Definition:</b> Jetson.h:77</div></div>
+<div class="ttc" id="aclassJetson_html_aa63103bffe77a5f527da3a3d8eb63627a2294689374a1b16610171a8aa9772f13"><div class="ttname"><a href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a2294689374a1b16610171a8aa9772f13">Jetson::Z</a></div><div class="ttdeci">@ Z</div><div class="ttdef"><b>Definition:</b> Jetson.h:77</div></div>
+<div class="ttc" id="aclassJetson_html_aa63103bffe77a5f527da3a3d8eb63627a2a7ff166b192b1cad627c0ce2e13e51d"><div class="ttname"><a href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a2a7ff166b192b1cad627c0ce2e13e51d">Jetson::X</a></div><div class="ttdeci">@ X</div><div class="ttdef"><b>Definition:</b> Jetson.h:75</div></div>
+<div class="ttc" id="aclassJetson_html_aa63103bffe77a5f527da3a3d8eb63627a609f35c87579ac622ac058a124fb4ba4"><div class="ttname"><a href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a609f35c87579ac622ac058a124fb4ba4">Jetson::Y</a></div><div class="ttdeci">@ Y</div><div class="ttdef"><b>Definition:</b> Jetson.h:76</div></div>
 </div><!-- fragment --><p>Note that it is often preferred to do this in a separate thread. See the class header for a full example. </p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="a1ad48c5fa32d3b8da19e43c66aa4ba4d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1ad48c5fa32d3b8da19e43c66aa4ba4d">&#9670;&nbsp;</a></span>readTimer</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Timer Jetson::readTimer</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a34374de51274d24eb8a7d7fa3f74c7ee"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a34374de51274d24eb8a7d7fa3f74c7ee">&#9670;&nbsp;</a></span>status</h2>
 

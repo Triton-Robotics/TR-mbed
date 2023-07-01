@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['yawsetposition_1494',['yawSetPosition',['../TestBench_2main_8cpp.html#aa51c408fce77ba1fa9213baf69a63a39',1,'main.cpp']]]
+  ['_7edjimotor_1483',['~DJIMotor',['../classDJIMotor.html#ad921d2682aaecf47d29339b14f75f708',1,'DJIMotor']]],
+  ['_7etinyekf_1484',['~TinyEKF',['../classTinyEKF.html#acdb80f6a01f01e455ced46ff97b75f19',1,'TinyEKF']]]
 ];
