@@ -77,8 +77,6 @@ void Jetson::read()
     // Read next byte if available and more needed for the current packet
     // Check disconnect timeout
 
-    //printf("Time since last: %d\n", std::chrono::duration_cast<std::chrono::milliseconds>(readTimer.elapsed_time()).count() - lastRead);
-
     if (std::chrono::duration_cast<std::chrono::milliseconds>(readTimer.elapsed_time()).count() - lastRead > JETSON_READ_TIMEOUT) {
         status = DISCONNECTED;  // Jetson no longer connected
         reset();                // Reset current remote values
