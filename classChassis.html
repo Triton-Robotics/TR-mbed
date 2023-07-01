@@ -89,12 +89,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ac944a5794d05e1dbd57cfd6735ecdc60"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a964c30630d2724e1e4f1774d0df305cc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#a964c30630d2724e1e4f1774d0df305cc">driveXYR</a> (<a class="el" href="classChassisSpeeds.html">ChassisSpeeds</a> speeds)</td></tr>
 <tr class="separator:a964c30630d2724e1e4f1774d0df305cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4b000cf14dd43dc17a49d21a97788089"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#a4b000cf14dd43dc17a49d21a97788089">driveXYRPower</a> (float chassis_power, uint16_t chassis_power_limit, double lX, double lY, double dt, bool beyblading=false)</td></tr>
-<tr class="separator:a4b000cf14dd43dc17a49d21a97788089"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0eb9475755fd7a47e82f7255d950cf68"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#a0eb9475755fd7a47e82f7255d950cf68">driveOffsetAnglePower</a> (float chassis_power, uint16_t chassis_power_limit, <a class="el" href="classChassisSpeeds.html">ChassisSpeeds</a> speeds, double angleOffset, int dt)</td></tr>
-<tr class="separator:a0eb9475755fd7a47e82f7255d950cf68"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad0317a9cf58567cb08cebcd5c0d92cd5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#ad0317a9cf58567cb08cebcd5c0d92cd5">driveTurretRelativePower</a> (float chassis_power, uint16_t chassis_power_limit, <a class="el" href="classChassisSpeeds.html">ChassisSpeeds</a> speeds, double turretAngleDegrees, int dt)</td></tr>
-<tr class="separator:ad0317a9cf58567cb08cebcd5c0d92cd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac19240e24c88afd4835a34cd651e3797"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#ac19240e24c88afd4835a34cd651e3797">driveXYRPower</a> (float chassis_power, uint16_t chassis_power_limit, double lX, double lY, double dt, bool beyblading, double &amp;rotationalPower)</td></tr>
+<tr class="separator:ac19240e24c88afd4835a34cd651e3797"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1be7a8afb107953132dc1b34a35ca83"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#ab1be7a8afb107953132dc1b34a35ca83">driveOffsetAnglePower</a> (float chassis_power, uint16_t chassis_power_limit, <a class="el" href="classChassisSpeeds.html">ChassisSpeeds</a> speeds, double angleOffset, int dt, double &amp;rotationalPower)</td></tr>
+<tr class="separator:ab1be7a8afb107953132dc1b34a35ca83"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af988e4e5a4f99e130e79688a650439e6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#af988e4e5a4f99e130e79688a650439e6">driveTurretRelativePower</a> (float chassis_power, uint16_t chassis_power_limit, <a class="el" href="classChassisSpeeds.html">ChassisSpeeds</a> speeds, double turretAngleDegrees, int dt, double &amp;rotationalPower)</td></tr>
+<tr class="separator:af988e4e5a4f99e130e79688a650439e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a22231af9f43825063ac800ae186b6970"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#a22231af9f43825063ac800ae186b6970">driveFieldRelative</a> (<a class="el" href="classChassisSpeeds.html">ChassisSpeeds</a> speeds)</td></tr>
 <tr class="separator:a22231af9f43825063ac800ae186b6970"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad39d1c1c41a0053331eff67b0f8db595"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassis.html#ad39d1c1c41a0053331eff67b0f8db595">driveTurretRelative</a> (<a class="el" href="classChassisSpeeds.html">ChassisSpeeds</a> speeds, double turretAngleDegrees)</td></tr>
@@ -442,8 +442,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a0eb9475755fd7a47e82f7255d950cf68"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0eb9475755fd7a47e82f7255d950cf68">&#9670;&nbsp;</a></span>driveOffsetAnglePower()</h2>
+<a id="ab1be7a8afb107953132dc1b34a35ca83"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1be7a8afb107953132dc1b34a35ca83">&#9670;&nbsp;</a></span>driveOffsetAnglePower()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -476,7 +476,13 @@ Public Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>dt</em>&#160;</td>
+          <td class="paramname"><em>dt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double &amp;&#160;</td>
+          <td class="paramname"><em>rotationalPower</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -524,8 +530,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ad0317a9cf58567cb08cebcd5c0d92cd5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad0317a9cf58567cb08cebcd5c0d92cd5">&#9670;&nbsp;</a></span>driveTurretRelativePower()</h2>
+<a id="af988e4e5a4f99e130e79688a650439e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af988e4e5a4f99e130e79688a650439e6">&#9670;&nbsp;</a></span>driveTurretRelativePower()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -558,7 +564,13 @@ Public Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>dt</em>&#160;</td>
+          <td class="paramname"><em>dt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double &amp;&#160;</td>
+          <td class="paramname"><em>rotationalPower</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -595,8 +607,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a4b000cf14dd43dc17a49d21a97788089"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4b000cf14dd43dc17a49d21a97788089">&#9670;&nbsp;</a></span>driveXYRPower()</h2>
+<a id="ac19240e24c88afd4835a34cd651e3797"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac19240e24c88afd4835a34cd651e3797">&#9670;&nbsp;</a></span>driveXYRPower()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -635,7 +647,13 @@ Public Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>beyblading</em> = <code>false</code>&#160;</td>
+          <td class="paramname"><em>beyblading</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double &amp;&#160;</td>
+          <td class="paramname"><em>rotationalPower</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
