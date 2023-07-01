@@ -66,11 +66,11 @@ public:
      */
     void driveXYR(ChassisSpeeds speeds);
 
-    void driveXYRPower(float chassis_power, uint16_t chassis_power_limit, double lX, double lY, double dt, bool beyblading = false);
+    void driveXYRPower(float chassis_power, uint16_t chassis_power_limit, double lX, double lY, double dt, bool beyblading,  double &rotationalPower);
     
-    void driveOffsetAnglePower(float chassis_power, uint16_t chassis_power_limit, ChassisSpeeds speeds, double angleOffset, int dt);
+    void driveOffsetAnglePower(float chassis_power, uint16_t chassis_power_limit, ChassisSpeeds speeds, double angleOffset, int dt,  double &rotationalPower);
     
-    void driveTurretRelativePower(float chassis_power, uint16_t chassis_power_limit, ChassisSpeeds speeds, double turretAngleDegrees, int dt);
+    void driveTurretRelativePower(float chassis_power, uint16_t chassis_power_limit, ChassisSpeeds speeds, double turretAngleDegrees, int dt,  double &rotationalPower);
 
     /**
      * The driveFieldRelative method is used to drive the chassis in a field relative manner.
