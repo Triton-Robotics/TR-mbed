@@ -22,8 +22,9 @@
 ## Prerequisites
 
 **We strongly recommend using Linux (Ubuntu or any other flavor) for development.** If this is not possible,
-we've created setup guides for the major operating systems below:
+we've created setup guides for the major operating systems.
 
+**Please choose the appropriate setup guide for your operating system:**
 - [Linux](.md/os/linux.md)
 - [Windows](.md/os/windows.md)
 - [Windows Subsystem for Linux (WSL)](.md/os/wsl.md)
@@ -38,7 +39,7 @@ we've created setup guides for the major operating systems below:
 git clone https://github.com/Triton-Robotics/TR-mbed.git
 ```
 
-> At this point, you may choose to diverge from the CLI setup guide and set up an IDE instead. Check out the setup instructions for [CLion](.md/ide/clion.md) or [VSCode](.md/ide/vscode.md).
+### At this point, you may choose to diverge from the CLI setup guide and set up an IDE instead. Check out the setup instructions for [CLion](.md/ide/clion.md) or [VSCode](.md/ide/vscode.md).
 
 2. Configure `CMake` project. This should only be done once per project, or after editing
    any `CMakeLists.txt`:

@@ -11,7 +11,7 @@ int main() {
 
     cv.start([]() {
         while (true) {
-            jetson.send(69, 420, 0);
+            jetson.write();
             //jetson.read();
         }
     });

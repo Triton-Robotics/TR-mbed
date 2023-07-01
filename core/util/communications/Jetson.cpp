@@ -292,7 +292,10 @@ void Jetson::clear()
  * Resets the current values of the CV data to 0.
  */
 void Jetson::reset() {
-    cvX = 0; cvY = 0; cvZ = 0;
+    cvX.store(0);
+    cvY.store(0);
+    cvZ.store(0);
+
     clear();
 }
 
@@ -307,11 +310,11 @@ void Jetson::reset() {
 float Jetson::get(Jetson::cv axis) {
     switch(axis){
         case Jetson::cv::X:
-            return cvX;
+            return cvX.load();
         case Jetson::cv::Y:
-            return cvY;
+            return cvY.load();
         case Jetson::cv::Z:
-            return cvZ;
+            return cvZ.load();
         default:
             return 0;
     }
@@ -328,13 +331,13 @@ float Jetson::get(Jetson::cv axis) {
 void Jetson::set(Jetson::cv axis, float value) {
     switch(axis){
         case Jetson::cv::X:
-            cvX = value;
+            cvX.store(value);
             break;
         case Jetson::cv::Y:
-            cvY = value;
+            cvY.store(value);
             break;
         case Jetson::cv::Z:
-            cvZ = value;
+            cvZ.store(value);
             break;
         default:
             return;
