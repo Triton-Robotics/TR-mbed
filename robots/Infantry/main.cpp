@@ -4,8 +4,6 @@
 #include <cstdlib>
 #include <commands/RamseteCommand.h>
 #include <iostream>
-#include "communications/DJIRemote.h"
-#include "mbed.h"
 // #include " COMPONENT_SD/include/SD/SDBlockDevice.h"
 // #include "storage/blockdevice/COMPONENT_SD/include/SD/SDBlockDevice.h"
 // #include "SDBlockDevice.h"
@@ -31,12 +29,16 @@ DigitalOut led(L26);
 DigitalOut led2(L27);
 
 DJIMotor yaw(5, CANHandler::CANBUS_1, GIMBLY);
-DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY);
+DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY); // right
+DJIMotor pitch2(6, CANHandler::CANBUS_2, GIMBLY); // left
+
 int pitchval = 0;
 
 DJIMotor indexer(7, CANHandler::CANBUS_2, C610);
 int indexJamTime = 0;
 int lastJam = 0;
+
+DJIMotor smm_switcher(4, CANHandler::CANBUS_2, C610); // TODO: need to implement this
 
 unsigned long cT = 0;
 unsigned long forwardTime = 250;
@@ -73,6 +75,22 @@ void runImuThread()
     }
 }
 
+void pitchSetPosition(){
+
+    int pitchSetPoint = (-rY / 1.25) + 6000;
+    
+    /* TODO: test min and max pitch position */
+
+    // if(pitchSetPoint > 9000)
+    //     pitchSetPoint = 9000;
+
+    // else if(pitchSetPoint < 5000)
+    //     pitchSetPoint = 5000;
+
+    pitch.setPosition(pitchSetPoint);
+    pitch2.setPower(-pitch.powerOut);
+}
+
 int main()
 {
 
@@ -90,9 +108,11 @@ int main()
     // RF.setSpeedPID(1.073, 0.556, 0);
     // RB.setSpeedPID(1.081, 0.247, 0.386);
     // LF.setSpeedPID(.743, 0.204, 0.284);
-    pitch.setPositionPID(6.3, 0.11, 0.42);
+    pitch.setPositionPID(35, 0.11, 0.42);
     //    pitch.setPositionPID(0, 0, 0);
     pitch.setPositionIntegralCap(10000);
+    pitch.setPositionOutputCap(15000);
+    pitch2.setPositionOutputCap(15000);
     LFLYWHEEL.setSpeedPID(1, 0, 0);
     RFLYWHEEL.setSpeedPID(1, 0, 0);
 
@@ -119,6 +139,7 @@ int main()
     int refLoop = 0;
 
     int yawSetpoint = 0;
+    double rotationalPower = 0;
 
     DJIMotor::getFeedback();
     double beybladeSpeed = 2;
@@ -199,7 +220,7 @@ int main()
                 int RBa = lY + lX * translationalmultiplier - rX;
 
                 double ref_chassis_power = ext_power_heat_data.data.chassis_power;
-                printf("Ref power: %i\n", (int)ref_chassis_power);
+                // printf("Ref power: %i\n", (int)ref_chassis_power);
                 //
                 unsigned long time = us_ticker_read() / 1000;
 
@@ -210,7 +231,7 @@ int main()
 
                 int max_power = ext_game_robot_state.data.chassis_power_limit;
                 //chassis.driveXYRPower(ref_chassis_power, max_power, 5 * lX, 5 * lY, time - lastTime, false);
-                chassis.driveTurretRelativePower(ref_chassis_power, max_power, {lX * 5.0, lY * 5.0, 0}, yaw.getData(MULTITURNANGLE) * 360.0 / 8192, int(time - timeStart)*1000);
+                chassis.driveTurretRelativePower(ref_chassis_power, max_power, {lX * 5.0, lY * 5.0, 0}, yaw.getData(MULTITURNANGLE) * 360.0 / 8192, int(time - timeStart)*1000, rotationalPower);
 
                 lastTime = time;
 
@@ -221,7 +242,7 @@ int main()
                 //                    printf("Setpoint: %i\n", (int) setpoint);
                 //                    pitch.setPosition(setpoint);
 
-                pitch.setPosition((rY / 1.25) + 6500);
+                pitchSetPosition();
 
                 //                 yaw.setSpeed(rX/100);
 
@@ -251,8 +272,10 @@ int main()
                 //                }
                 //                printf("Angle: %i\n", (int) pitch.getData(ANGLE));
                 //                pitch.setPosition((rY * 0.9) + 6400);
-                //                printf("Pitch angle: %i\n", (int) pitch.getData(ANGLE));
-                //                printf("Pitch power: %i\n", (int) pitch.powerOut);
+                               printf("Pitch angle: %i ", (int) pitch.getData(ANGLE));
+                               printf("Pitch power: %i ", (int) pitch.powerOut);
+                               printf("Pitch2 angle: %i ", (int) pitch2.getData(ANGLE));
+                               printf("Pitch2 power: %i\n", (int) pitch2.powerOut);
                 //                printf("Yaw motor angle: %i\n", (int) yaw.getData(MULTITURNANGLE));
                 //                printf("Yaw power: %i\n", (int) yawgetData(MULTI.powerOut);
                 //                printf("Flywheel out: %i\n", (int) LFLYWHEEL.powerOut);
@@ -261,17 +284,18 @@ int main()
                 //                pitch.setPower((int) (rY * 3));
                 //                printf("Setting power: %i\n", (int) pitch.powerOut);
                 // yaw.setSpeed(rX/100);
-                yawSetpoint += rX / 3.5;
+                yawSetpoint += rX / 12;
                 //                yawSetpoint =  - 3 * rX;
                 yaw.setPosition(-chassis.getHeadingDegrees() * 8192 / 360 + yaw.getData(MULTITURNANGLE) - yawSetpoint);
                 //                yaw.setPosition(0);
             }
-            else if (rS == Remote::SwitchState::MID)
+            else if (rS == Remote::SwitchState::MID || rS == Remote::SwitchState::UNKNOWN)
             { // disable all the non-serializer components
                 //                chassis.driveXYR(0,0,0);
                 chassis.driveFieldRelative({0, 0, 0});
                 yaw.setPower(0);
                 pitch.setPower(0);
+                pitch2.setPower(0);
             }
             else if (rS == Remote::SwitchState::UP)
             { // beyblade mode
@@ -279,11 +303,11 @@ int main()
                 // printf("Ref power: %i\n", (int) ref_chassis_power);
                 unsigned long time = us_ticker_read() / 1000;
                 int max_power = ext_game_robot_state.data.chassis_power_limit;
-                chassis.driveXYRPower(ref_chassis_power, max_power, 5 * lX, 5 * lY, time - lastTime, true);
+                chassis.driveXYRPower(ref_chassis_power, max_power, 5 * lX, 5 * lY, time - lastTime, true, rotationalPower);
                 lastTime = time;
                 // chassis.beyblade(lX * 5.0, lY * 5.0, yaw.getData(MULTITURNANGLE) * 360.0 / 8192 + 90, false);
-                pitch.setPosition((rY / 1.25) + 6500);
-                yawSetpoint += rX / 3.5;
+                pitchSetPosition();
+                yawSetpoint += rX / 12;
                 //                yawSetpoint =  - 3 * rX;
                 yaw.setPosition(-chassis.getHeadingDegrees() * 8192 / 360 + yaw.getData(MULTITURNANGLE) - yawSetpoint);
                 //                yaw.setPosition(0);
