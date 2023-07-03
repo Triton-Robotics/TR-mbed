@@ -318,7 +318,7 @@ void indexerLoop(bool &previousMid, bool &nowUp, bool &nowDown, int &actualPosit
 //        printf("pos: %d\n", int(desiredPosition));
 //        printf("POSITION: %d\n\n", actualPosition);
 //
-        printf("s %d %d\n", p, indexer.powerOut);
+//        printf("s %d %d\n", p, indexer.powerOut);
 //        printf("torque: %d\n", t);
     }
 
@@ -335,7 +335,7 @@ void pitchSetPosition(){
         pitchSetPoint = 5000;
 
     pitch.setPosition(pitchSetPoint);
-    //printf("%d %d\n", pitchSetPoint, pitch.getData(ANGLE));
+    printf("%d %d\n", pitchSetPoint, pitch.getData(ANGLE));
 
 }
 
@@ -359,7 +359,7 @@ void setMotorSettings(){
     pitch.useAbsEncoder = true;
 
     yaw.justPosError = true;
-    yaw.setPositionPID(15, 0.4, 10);
+    yaw.setPositionPID(15, 0.4, 1);
     yaw.setPositionOutputCap(100000);
     yaw.setPositionIntegralCap(10000);
     yaw.outCap = 32760;
@@ -371,8 +371,8 @@ void setMotorSettings(){
     indexer.setSpeedIntegralCap(100000);
     indexer.outCap = 32700;
 
-    LFLYWHEEL.outCap = 32760;
-    RFLYWHEEL.outCap = 32760;
+    LFLYWHEEL.outCap = 16380;
+    RFLYWHEEL.outCap = 16380;
 
     chassis.setBrakeMode(Chassis::COAST);
 
@@ -401,10 +401,10 @@ int main(){
     bool rNowDown;
 
     int refLoop = 0;
-    int yawSetPoint = 7330;
-    float ref_yaw;
-    float beforeBeybladeYaw;
-    float deltaYaw;
+    int yawSetPoint = 300;
+    int ref_yaw;
+    int beforeBeybladeYaw;
+    int deltaYaw;
     double rotationalPower = 0;
 
     double beyblade;
@@ -438,9 +438,9 @@ int main(){
 
             chassis_power = ext_power_heat_data.data.chassis_power;
             chassis_power_limit = ext_game_robot_state.data.chassis_power_limit;
-            ref_yaw = ext_game_robot_pos.data.yaw;
+            ref_yaw = int(ext_game_robot_pos.data.yaw);
 
-            printf("yaw: %d pitch %d", int(ref_yaw), -(pitch.getData(ANGLE) - 5660) * 360.0 / 8191);
+            //printf("yaw: %d pitch %d\n", int(ref_yaw), int((pitch.getData(ANGLE) - 5660) * 360.0 / 8191.0));
 
             if(rPreviousDown){
                 if(rNowMid) {
@@ -460,13 +460,14 @@ int main(){
                 stopFLyWheels();
                 beyblade = 0;
 
-                pitchSetPosition();
-                yawSetPosition(yawSetPoint);
-                //printf("%d %d\n", yawSetPoint, yaw.getData(MULTITURNANGLE));
+                yaw.setPower(int(ref_yaw - yawSetPoint) * 100);
+                printf("%d %d\n", yawSetPoint, yaw.getData(MULTITURNANGLE));
 
             }else{
                 indexerLoop(lPreviousMid, lNowUp, lNowDown, actualPosition, desiredPosition, t);
                 setFlyWheelPwr(16300);
+                //printf("%d %d\n", LFLYWHEEL.getData(VELOCITY), RFLYWHEEL.getData(VELOCITY));
+
 
                 if(rS == Remote::SwitchState::DOWN) {
                     beyblade = 2000;
@@ -475,16 +476,17 @@ int main(){
                     while(deltaYaw < 0)
                         deltaYaw += 360;
 
-                    yaw.setPower(pow(deltaYaw * 10, 2));
+                    yaw.setPower(rotationalPower + pow(deltaYaw * 10, 2));
 
                 }else {
                     beyblade = 0;
                     yawSetPosition(yawSetPoint);
                 }
 
-                pitchSetPosition();
                 //printf("%d %d\n", yawSetPoint, yaw.getData(MULTITURNANGLE));
             }
+            pitchSetPosition();
+            //pitch.setPower(10000);
             timeEnd = us_ticker_read();
             chassis.driveTurretRelativePower(chassis_power, chassis_power_limit, {-lX * 5.0, -lY * 5.0, beyblade}, ref_yaw * 360.0 / 8191.0 - 10, int(timeEnd - timeStart), rotationalPower);
             DJIMotor::sendValues();

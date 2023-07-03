@@ -106,6 +106,8 @@ void Chassis::driveXYRPower(float chassis_power, uint16_t chassis_power_limit, d
             rotationalPower = 0;
 
         printf("rotational power: %d\n", int(rotationalPower));
+    }else {
+        rotationalPower = 0;
     }
 
     double scale = 1;
