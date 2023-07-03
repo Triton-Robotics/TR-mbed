@@ -299,7 +299,7 @@ void indexerLoop(bool &previousMid, bool &nowUp, bool &nowDown, int &actualPosit
 
     if(dp != 0) {
 
-        p = 3000 * int(dp / dr + abs(dp) / dp);
+        p = 4000 * int(dp / dr + abs(dp) / dp);
         p += t;
 
         if (smooth) {
@@ -335,7 +335,7 @@ void pitchSetPosition(){
         pitchSetPoint = 5000;
 
     pitch.setPosition(pitchSetPoint);
-    printf("%d %d\n", pitchSetPoint, pitch.getData(ANGLE));
+    //printf("%d %d\n", pitchSetPoint, pitch.getData(ANGLE));
 
 }
 
@@ -391,6 +391,7 @@ int main(){
     int actualPosition = indexer.getData(MULTITURNANGLE);
     float desiredPosition = float(int((actualPosition / dr)) * dr) + IOFFSET;
     int t;
+    int p;
 
     bool lPreviousMid;
     bool lNowUp;
@@ -401,7 +402,7 @@ int main(){
     bool rNowDown;
 
     int refLoop = 0;
-    int yawSetPoint = 300;
+    int yawSetPoint = yaw.getData(MULTITURNANGLE);
     int ref_yaw;
     int beforeBeybladeYaw;
     int deltaYaw;
@@ -459,9 +460,16 @@ int main(){
                 indexer.setPower(0);
                 stopFLyWheels();
                 beyblade = 0;
+                yawSetPosition(yawSetPoint);
 
-                yaw.setPower(int(ref_yaw - yawSetPoint) * 100);
-                printf("%d %d\n", yawSetPoint, yaw.getData(MULTITURNANGLE));
+//                p = ref_yaw - yawSetPoint;
+//                if(abs(p) > 180 && p != 0)
+//                    p -= 360 * (p / abs(p));
+//
+//                yaw.setPosition(int((yawSetPoint - p) * 8191.0 / 180.0));
+//
+//                //yaw.setPower(p);
+//                printf("%d %d %d %D\n", yawSetPoint, ref_yaw, int((yawSetPoint - p) * 8191.0 / 180.0), yaw.getData(MULTITURNANGLE));
 
             }else{
                 indexerLoop(lPreviousMid, lNowUp, lNowDown, actualPosition, desiredPosition, t);
@@ -488,7 +496,7 @@ int main(){
             pitchSetPosition();
             //pitch.setPower(10000);
             timeEnd = us_ticker_read();
-            chassis.driveTurretRelativePower(chassis_power, chassis_power_limit, {-lX * 5.0, -lY * 5.0, beyblade}, ref_yaw * 360.0 / 8191.0 - 10, int(timeEnd - timeStart), rotationalPower);
+            chassis.driveTurretRelativePower(chassis_power, chassis_power_limit, {-lX * 5.0, -lY * 5.0, beyblade}, ref_yaw + 80, int(timeEnd - timeStart), rotationalPower);
             DJIMotor::sendValues();
         }
         DJIMotor::getFeedback();
