@@ -48,6 +48,7 @@ unsigned long totalTime;
 DJIMotor RFLYWHEEL(8, CANHandler::CANBUS_2, M3508);
 DJIMotor LFLYWHEEL(5, CANHandler::CANBUS_2, M3508);
 DJIMotor flyWheelMotors[] = {RFLYWHEEL, LFLYWHEEL};
+DJIMotor gearswap(4,CANHandler::CANBUS_2,M2006); // gear swap
 
 void setFlyWheelSpeed(int speed)
 {
@@ -124,6 +125,9 @@ int main()
     yaw.useAbsEncoder = 0;
     yaw.justPosError = 1;
 
+    gearswap.setPositionPID(4.0,0,0.5);
+    gearswap.setPositionIntegralCap(10000);
+
     indexer.setSpeedPID(1.94, 0.002, 0.166);
     indexer.setSpeedIntegralCap(500000);
 
@@ -169,6 +173,7 @@ int main()
         //        printf("Pitch angle: %i\n", (int) pitch.getData(ANGLE));
         //        printf("Yaw motor angle: %i\n", (int) yaw.getData(MULTITURNANGLE));
         //        chassis.printMotorAngle();
+//                printf("Barrel angle: %i\n", (int) gearswap.getData(ANGLE));
 
         //        printf("Pitch: %i\n", (int) pitch.getData((ANGLE)));
         //        printf("Yaw: %i\n", (int) yaw.getData((ANGLE)));
@@ -314,17 +319,21 @@ int main()
                 //                yaw.setPower(0); pitch.setPower(0);
             }
 
+
+            // Referee barrel temperature for both
+            uint16_t ref_chassis_temp1 = ext_power_heat_data.data.shooter_id1_17mm_cooling_heat;
+            uint16_t ref_chassis_temp2 = ext_power_heat_data.data.shooter_id2_17mm_cooling_heat;
+            // std::cout << ref_chassis_temp1 << endl;
+            // Stop shooting based on Infantry's level
+            int heatMax1 = ext_game_robot_state.data.shooter_id1_17mm_cooling_limit;
+            int heatMax2 = ext_game_robot_state.data.shooter_id2_17mm_cooling_limit;
+
             if (lS == Remote::SwitchState::UP)
             {
+                gearswap.setPower(1000);
+                printf("Ref temp barrel 1: %i Ref temp barrel 2: %i\n", (int)ref_chassis_temp1, (int) ref_chassis_temp2);
 
-                // Getting referee barrel temperature
-                uint16_t ref_chassis_temp1 = ext_power_heat_data.data.shooter_id1_17mm_cooling_heat;
-                // std::cout << ref_chassis_temp1 << endl;
-                printf("Ref temperature of barrel 1 is: %i\n", (int)ref_chassis_temp1);
-
-                // Stop shooting based on Infantry's level
-                int heatMax = ext_game_robot_state.data.shooter_id1_17mm_cooling_limit;
-                printf("Maximum barrel temperature currently is: %i\n", (int)heatMax);
+                printf("MMAX barrel temp currently # 1: %i MAX barrel temp currently # 2: %i\n", (int)heatMax1, (int)heatMax2);
 
                 // cooling rate
                 int coolrate = ext_game_robot_state.data.shooter_id1_17mm_cooling_rate;
@@ -332,7 +341,7 @@ int main()
                 if (us_ticker_read() - timeStart > 1)
                     ref_chassis_temp1 = ref_chassis_temp1 - coolrate / 10;
 
-                if (ref_chassis_temp1 < heatMax)
+                if (ref_chassis_temp1 < heatMax1) // not finish yet
                 {
                     // indexer.setPower(1200);
                     indexer.setSpeed(2000);
@@ -352,15 +361,15 @@ int main()
             }
             else if (lS == Remote::SwitchState::MID)
             { // disable serializer
+                gearswap.setPower(0);
                 indexer.setPower(0);
                 setFlyWheelSpeed(0);
             }
             else if (lS == Remote::SwitchState::DOWN)
             {
-                setFlyWheelSpeed(0);
-                ///////////////////////////////////////////
-                /// THEO SECTION OF CODE
-                ///////////////////////////////////////////
+                gearswap.setPower(-1100);
+                setFlyWheelSpeed(20000); // was 0
+
                 // printf("TORQ:%d VEL:%d\n",indexer.getData(TORQUE), indexer.getData(VELOCITY));
                 if (abs(indexer.getData(TORQUE)) > 100 & abs(indexer.getData(VELOCITY)) < 20)
                 { // jam
@@ -380,7 +389,7 @@ int main()
                 else
                 {
                     // indexer.setPower(-900);
-                    indexer.setSpeed(650);
+                    indexer.setSpeed(1000); // was 650
                 }
             }
             DJIMotor::sendValues();
