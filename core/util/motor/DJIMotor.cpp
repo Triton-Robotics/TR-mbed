@@ -75,7 +75,7 @@ DJIMotor::DJIMotor(short canID, CANHandler::CANBus bus, motorType mType){
     }else{
         DJIMotor mot(true);
         allMotors[bus][motorNumber / 4][motorNumber % 4] = &mot;
-        printf("[ERROR] THERES A CONFLICT ON BUS [%d] ID [%d]. YOU WILL HAVE ERRORS.\n", motorNumber/4, motorNumber%4);
+        printf("[ERROR] THERES A CONFLICT ON BUS [%d] SLOT [%d] ID [%d]. YOU WILL HAVE ERRORS.\n", (int)bus, motorNumber/4, motorNumber%4);
     }
 
     if (canID > 8 || canID < 1)
@@ -293,7 +293,7 @@ void DJIMotor::updateMultiTurnPosition() {
                     } else if (positiveDiff <= -4096) {
                         curMotor->integratedAngle += positiveDiff + 8192;
                     } else {
-                        printf("Dont know what to do with this %i\n", positiveDiff);
+                        //printf("Dont know what to do with this %i\n", positiveDiff);
                     }
                     if (abs(speed) < 100)
                         if (curAngle > (8191 - Threshold) && lastAngle < Threshold)
