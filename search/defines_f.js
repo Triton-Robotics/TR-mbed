@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['red_2187',['RED',['../ref__serial_8h.html#a8d23feea868a983c8c2b661e1e16972f',1,'ref_serial.h']]],
-  ['rows_2188',['ROWS',['../SSD1308_8h.html#a3cfd3aa62338d12609f6d65bce97e9cd',1,'SSD1308.h']]]
+  ['red_2166',['RED',['../ref__serial_8h.html#a8d23feea868a983c8c2b661e1e16972f',1,'ref_serial.h']]],
+  ['rows_2167',['ROWS',['../SSD1308_8h.html#a3cfd3aa62338d12609f6d65bce97e9cd',1,'SSD1308.h']]]
 ];
