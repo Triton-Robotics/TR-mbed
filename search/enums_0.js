@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['brakemode_1808',['BrakeMode',['../classChassis.html#ad55c408b2471cabb1e10f6b46bef5b21',1,'Chassis']]]
+  ['accelscale_1987',['AccelScale',['../MPU6050_8h.html#ad70a0b09993694925c04d1b62dd9848c',1,'MPU6050.h']]]
 ];

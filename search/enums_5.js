@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['motordatatype_1815',['motorDataType',['../DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4',1,'DJIMotor.h']]],
-  ['motortype_1816',['motorType',['../DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54',1,'DJIMotor.h']]]
+  ['jetsonstatus_1994',['JetsonStatus',['../classJetson.html#a0da6dd80b8c8c3af02585f4fdaf49c49',1,'Jetson']]]
 ];

@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['serialcommunication_1162',['SerialCommunication',['../classSerialCommunication.html',1,'']]],
-  ['ssd1308_1163',['SSD1308',['../classSSD1308.html',1,'']]]
+  ['ramsetecontroller_1312',['RamseteController',['../classRamseteController.html',1,'']]],
+  ['referee_1313',['Referee',['../classReferee.html',1,'']]],
+  ['remote_1314',['Remote',['../classRemote.html',1,'']]]
 ];

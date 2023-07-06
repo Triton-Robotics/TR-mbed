@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['key_1814',['Key',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4f',1,'Remote']]]
+  ['gyroscale_1993',['GyroScale',['../MPU6050_8h.html#ae8f873b20f9242838464a183943556fa',1,'MPU6050.h']]]
 ];
