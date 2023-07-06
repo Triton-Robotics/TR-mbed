@@ -100,7 +100,7 @@ void Chassis::driveXYR(ChassisSpeeds speeds) {
 void Chassis::driveXYRPower(float chassis_power, uint16_t chassis_power_limit, double lX, double lY, double dt, bool beyblading, double &rotationalPower) {
 
     if (beyblading) {
-        rotationalPower = 100 * (float(chassis_power_limit) - chassis_power);
+        rotationalPower = 50 * (float(chassis_power_limit) - chassis_power);
         //rotationalPower = chassis_power_limit / 2 * 100;
         if(rotationalPower < 0)
             rotationalPower = 0;
@@ -118,9 +118,9 @@ void Chassis::driveXYRPower(float chassis_power, uint16_t chassis_power_limit, d
     double powerLB = LB.pidSpeed.calculate(-lX + lY, LB.getData(VELOCITY), dt) + rotationalPower;
     double powerRB = RB.pidSpeed.calculate(-lX - lY, RB.getData(VELOCITY), dt) + rotationalPower;
 
-    scale = abs(power_pid.calculate(chassis_power_limit, chassis_power, dt));
+    scale = abs(power_pid.calculate(chassis_power_limit - 12, chassis_power, dt));
 
-    if (chassis_power > chassis_power_limit) {
+    if (chassis_power > (chassis_power_limit - 20)) {
         powerLF /= scale;
         powerRF /= scale;
         powerLB /= scale;
