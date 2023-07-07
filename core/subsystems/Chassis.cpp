@@ -105,7 +105,7 @@ void Chassis::driveXYRPower(float chassis_power, uint16_t chassis_power_limit, d
         if(rotationalPower < 0)
             rotationalPower = 0;
 
-        printf("rotational power: %d\n", int(rotationalPower));
+        //printf("rotational power: %d\n", int(rotationalPower));
     }else {
         rotationalPower = 0;
     }
@@ -118,9 +118,9 @@ void Chassis::driveXYRPower(float chassis_power, uint16_t chassis_power_limit, d
     double powerLB = LB.pidSpeed.calculate(-lX + lY, LB.getData(VELOCITY), dt) + rotationalPower;
     double powerRB = RB.pidSpeed.calculate(-lX - lY, RB.getData(VELOCITY), dt) + rotationalPower;
 
-    scale = abs(power_pid.calculate(chassis_power_limit - 10, chassis_power, dt));
+    scale = abs(power_pid.calculate(chassis_power_limit - 15, chassis_power, dt));
 
-    if (chassis_power > (chassis_power_limit - 10)) {
+    if (chassis_power > (chassis_power_limit - 30)) {
         powerLF /= scale;
         powerRF /= scale;
         powerLB /= scale;
