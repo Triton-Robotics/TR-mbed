@@ -69,14 +69,9 @@ void pitchSetPosition(){
     // else if(pitchSetPoint < 5000)
     //     pitchSetPoint = 5000;
 
-    // pitch.setPosition(pitchSetPoint);
-    // pitch2.setPower(-pitch.powerOut);
-    // pitch.setPower(-10000);
-
-    pitch.setPower((-rY * 7) - 8000);
-    pitch2.setPower(-(pitch>>POWEROUT));
-
-    printff("%d %d %d %d\n", pitchSetPoint, pitch.getData(ANGLE), pitch.powerOut, pitch2.powerOut);
+    pitch.setPosition(pitchSetPoint);
+    //pitch2.setPower(-pitch.powerOut);
+    printf("%d %d %d\n", pitchSetPoint, pitch.getData(ANGLE), pitch.powerOut);
 
 }
 
@@ -90,32 +85,18 @@ int main(){
 
     DJIMotor::setCANHandlers(&canHandler1, &canHandler2, false, false);
 
-    //    Jetson::init();
-
-    // LB.setSpeedPID(1.75, 0.351, 5.63);
-    // RF.setSpeedPID(1.073, 0.556, 0);
-    // RB.setSpeedPID(1.081, 0.247, 0.386);
-    // LF.setSpeedPID(.743, 0.204, 0.284);
-
-    pitch.setPositionPID(10, 0.1, 0);
+    pitch.setPositionPID(50, 0.3, 50);
     pitch.setPositionIntegralCap(100000);
     pitch.setPositionOutputCap(100000);
 
-    pitch2.setPositionPID(100, 1, 30);
-    pitch2.setPositionIntegralCap(10000);
-    pitch2.setPositionOutputCap(100000);
-
     pitch.outCap = 32760;
-    pitch2.outCap = 32760;
-
     pitch.justPosError = true;
-    pitch2.justPosError = true;
+    pitch.useAbsEncoder = true;
 
     LFLYWHEEL.setSpeedPID(1, 0, 0);
     RFLYWHEEL.setSpeedPID(1, 0, 0);
 
-    pitch.useAbsEncoder = true;
-    pitch.justPosError = false;
+
 
     yaw.setPositionPID(4.6, 0, 0.5);
     yaw.setPositionIntegralCap(10000);
@@ -181,12 +162,10 @@ int main(){
             heatMax1 = ext_game_robot_state.data.shooter_id1_17mm_cooling_limit;
             heatMax2 = ext_game_robot_state.data.shooter_id2_17mm_cooling_limit;
 
-            printff("%d\n",chassis.getHeadingDegrees());
+            //printff("%d\n",chassis.getHeadingDegrees());
+            //printf("%d %d\n", lX, rX);
 
-            if (!chassis.allMotorsConnected()){
-                chassis.driveXYR({0, 0, 0});
-
-            }else if (rS == Remote::SwitchState::UP){          // All non-serializer motors activated
+            if (rS == Remote::SwitchState::UP){          // All non-serializer motors activated
                 int LFa = lY + lX * translationalmultiplier + rX;
                 int RFa = lY - lX * translationalmultiplier - rX; 
                 int LBa = lY - lX * translationalmultiplier + rX;
@@ -196,7 +175,7 @@ int main(){
                 chassis.driveTurretRelativePower(chassis_power, chassis_power_limit, {lX * 5.0, lY * 5.0, 0}, yaw.getData(ANGLE) * 360.0 / 8192, int(time - lastTime), rotationalPower);
 
                 lastTime = time;
-                pitchSetPosition(); 
+                pitchSetPosition();
 
                 yawSetPoint += rX / 12;
                 yaw.setPosition(-chassis.getHeadingDegrees() * 8192 / 360 + yaw.getData(MULTITURNANGLE) - yawSetPoint);
