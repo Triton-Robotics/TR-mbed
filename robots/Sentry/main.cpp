@@ -19,14 +19,20 @@ Adafruit_SSD1306_I2c oled(i2c, LED1);
 
 DJIMotor RTOPFLYWHEEL(1, CANHandler::CANBUS_2, M3508_FLYWHEEL);
 DJIMotor LTOPFLYWHEEL(2, CANHandler::CANBUS_2, M3508_FLYWHEEL);
-DJIMotor RBOTTOMFLYWHEEL(3, CANHandler::CANBUS_2, M3508_FLYWHEEL);
-DJIMotor LBOTTOMFLYWHEEL(4, CANHandler::CANBUS_2, M3508_FLYWHEEL);
+DJIMotor RBOTTOMFLYWHEEL(4, CANHandler::CANBUS_2, M3508_FLYWHEEL);
+DJIMotor LBOTTOMFLYWHEEL(3, CANHandler::CANBUS_2, M3508_FLYWHEEL);
 
 void setFlyWheelSpeed(int speed) {
     LTOPFLYWHEEL.setSpeed(-speed);
     LBOTTOMFLYWHEEL.setSpeed(speed);
     RTOPFLYWHEEL.setSpeed(speed);
     RBOTTOMFLYWHEEL.setSpeed(-speed);
+}
+void setFlyWheelPower(int speed) {
+    LTOPFLYWHEEL.setPower(-speed);
+    LBOTTOMFLYWHEEL.setPower(speed);
+    RTOPFLYWHEEL.setPower(speed);
+    RBOTTOMFLYWHEEL.setPower(-speed);
 }
 
 bool xyzToSpherical(double x, double y, double z, double &phi, double &theta){
@@ -131,7 +137,7 @@ int main(){
             jetson.set(Jetson::cv::X, ref_yaw);
             jetson.set(Jetson::cv::Y, (pitch.getData(ANGLE) - 6890) * 360.0 / 8191.0);
 
-            printf("%d %d\n", ref_yaw, int(-(pitch.getData(ANGLE) - 6890) * 360.0 / 8191));
+            //printf("%d %d\n", ref_yaw, int(-(pitch.getData(ANGLE) - 6890) * 360.0 / 8191));
 
             //printff("Ref power: %i\n", (int) (ref_chassis_power * 100));
 
@@ -144,7 +150,7 @@ int main(){
             
             double beyblade = 0;
 
-            if(rS == Remote::SwitchState::MID){
+            if(rS == Remote::SwitchState::MID || rS == Remote::SwitchState::UNKNOWN){
                 yaw1.setPower(0);
                 yaw2.setPower(0);
                 pitch.setPower(0);
@@ -177,11 +183,21 @@ int main(){
 
             if (lS == Remote::SwitchState::UP) {
 //              indexerL.setSpeed(-2000);
-                setFlyWheelSpeed(8000);
+                setFlyWheelPower(8000);
+                indexerL.setSpeed(2000);
+                indexerR.setSpeed(-2000);
+                //printff("indexer.s%d\n")
+            }else if (lS == Remote::SwitchState::MID) {
+//              indexerL.setSpeed(-2000);
+                setFlyWheelPower(8000);
+                indexerL.setPower(0);
+                indexerR.setPower(0);
+                //printff("indexer.s%d\n")
             } else { //disable serializer
                 indexerL.setPower(0);
                 indexerR.setPower(0);
-                setFlyWheelSpeed(0);
+                setFlyWheelPower(0);
+                //LTOPFLYWHEEL.setPower(0);
             }
 
             timeEnd = us_ticker_read();
