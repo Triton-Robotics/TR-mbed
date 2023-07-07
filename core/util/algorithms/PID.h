@@ -57,6 +57,8 @@ public:
      */
     float calculate(float desiredV, float actualV, double dt);
 
+    float calculate(float dV, double dt);
+
     /**
      * Sets the integral cap
      * @param sumCap The new integral cap

@@ -100,7 +100,7 @@ void Chassis::driveXYR(ChassisSpeeds speeds) {
 void Chassis::driveXYRPower(float chassis_power, uint16_t chassis_power_limit, double lX, double lY, double dt, bool beyblading, double &rotationalPower) {
 
     if (beyblading) {
-        rotationalPower = 50 * (float(chassis_power_limit) - chassis_power);
+        rotationalPower = 100 * (float(chassis_power_limit) - chassis_power);
         //rotationalPower = chassis_power_limit / 2 * 100;
         if(rotationalPower < 0)
             rotationalPower = 0;
@@ -118,9 +118,9 @@ void Chassis::driveXYRPower(float chassis_power, uint16_t chassis_power_limit, d
     double powerLB = LB.pidSpeed.calculate(-lX + lY, LB.getData(VELOCITY), dt) + rotationalPower;
     double powerRB = RB.pidSpeed.calculate(-lX - lY, RB.getData(VELOCITY), dt) + rotationalPower;
 
-    scale = abs(power_pid.calculate(chassis_power_limit - 12, chassis_power, dt));
+    scale = abs(power_pid.calculate(chassis_power_limit - 10, chassis_power, dt));
 
-    if (chassis_power > (chassis_power_limit - 20)) {
+    if (chassis_power > (chassis_power_limit - 10)) {
         powerLF /= scale;
         powerRF /= scale;
         powerLB /= scale;
@@ -131,6 +131,9 @@ void Chassis::driveXYRPower(float chassis_power, uint16_t chassis_power_limit, d
     RF.setPower(powerRF);
     LB.setPower(powerLB);
     RB.setPower(powerRB);
+
+    //printf("%d %d %d %d", int(powerLF), int(powerRF), int(powerLB), int(powerRB));
+    //printf("%d\n", int(abs(powerLF) + abs(powerRB) + abs(powerRF) + abs(powerLB)));
 }
 
 
@@ -313,31 +316,7 @@ void Chassis::periodic() {
 }
 
 void Chassis::readImu() {
-//    double lastAngle = imuAngles.yaw;
-//printf("Reading imu: \n");
     imu.get_angular_position_quat(&imuAngles);
-//    double curAngle = imuAngles.yaw;
-//    double deltaAngle = curAngle - lastAngle;
-//    if (deltaAngle < -300) {
-//        imuAngles.yaw += 360;
-//    }
-//    imuAngles.yaw += (rand() % 20 - 10);
-
-//
-
-//    int currTime = us_ticker_read() / 1000;
-//    if (lastTimeMs != 0) {
-//        testAngle += LF.getData(VELOCITY) * (currTime - lastTimeMs) / ((double) TICKS_PER_ROTATION * M3508_GEAR_RATIO);
-//    }
-//    lastTimeMs = currTime;
-//
-//    printf("Dist: %i\n", (int) testAngle);
-
-//    BNO055_VECTOR_TypeDef imuGyro;
-//    imu.get_gyro(&imuGyro);
-//    printf("XYZ: %i\n", (int) imuGyro.x);
-
-//    printf("Measurement: %i Prediction: %i\n", (int) imuAngles.yaw, (int) imuKalman.getX(0));
 }
 
 double Chassis::degreesToRadians(double degrees) {
@@ -345,7 +324,7 @@ double Chassis::degreesToRadians(double degrees) {
 }
 
 int Chassis::getHeadingDegrees() {
-    return (int) imu.multiturnYaw;
+    return (int) imuAngles.yaw;
 }
 
 
