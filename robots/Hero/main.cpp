@@ -276,7 +276,7 @@ int main(){
             yaw.setPower(-rX * 20);
             pitchSetPosition();
             timeEnd = us_ticker_read();
-            chassis.driveTurretRelativePower(chassis_power, chassis_power_limit, {-lX * 5.0, -lY * 5.0, beyblade}, ref_yaw - 80, int(timeEnd - timeStart), rotationalPower);
+            chassis.driveTurretRelativePower(chassis_power, chassis_power_limit, {-lX * 5.0, -lY * 5.0, beyblade}, chassis.getHeadingDegrees() - 180, int(timeEnd - timeStart), rotationalPower);
             DJIMotor::sendValues();
         }
         DJIMotor::getFeedback();
