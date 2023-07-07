@@ -380,7 +380,7 @@ void DJIMotor::getFeedback(){
                     printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS %d DEGREES CELSIUS\n",msgID,allMotors[i][mNum/4][mNum%4]->motorData[TEMPERATURE]);
 
             }else{
-                printf("[WARNING] YOU HAVE A MOTOR [0x%x] {%d}{%d} ATTACHED THAT IS NOT INITIALIZED.. WHY: \n",msgID,mNum/4,mNum%4);
+                printf("[WARNING] YOU HAVE A MOTOR [0x%x] {%d}{%d}{%d} ATTACHED THAT IS NOT INITIALIZED.. WHY: \n",msgID,i,mNum/4,mNum%4);
             }
         }
     }
