@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['gyroscale_1990',['GyroScale',['../MPU6050_8h.html#ae8f873b20f9242838464a183943556fa',1,'MPU6050.h']]]
+  ['gyroscale_1992',['GyroScale',['../MPU6050_8h.html#ae8f873b20f9242838464a183943556fa',1,'MPU6050.h']]]
 ];
