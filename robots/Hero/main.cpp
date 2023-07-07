@@ -211,6 +211,7 @@ int main(){
                 beforeBeybladeYaw = ref_yaw;
             }
 
+            printff("%d\n",chassis.getHeadingDegrees());
 
             //printf("max power: %d ref power: %d \n",  int(chassis_power_limit * 100), int(chassis_power * 100));
 
