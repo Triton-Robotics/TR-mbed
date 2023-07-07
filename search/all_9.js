@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['i2c_561',['i2c',['../Sentry_2main_8cpp.html#ae3e7ab47cd5395225bf7c67b8ee84976',1,'i2c(I2C_SDA, I2C_SCL):&#160;main.cpp'],['../Infantry_2main_8cpp.html#ae3e7ab47cd5395225bf7c67b8ee84976',1,'i2c(I2C_SDA, I2C_SCL):&#160;main.cpp'],['../Hero_2main_8cpp.html#ae3e7ab47cd5395225bf7c67b8ee84976',1,'i2c(I2C_SDA, I2C_SCL):&#160;main.cpp'],['../imuExampleQuaternions_8cpp.html#af0e9d191330cab6591f3ab5a44270db7',1,'i2c(PB_9, PB_8):&#160;imuExampleQuaternions.cpp'],['../imuExampleAllData_8cpp.html#af0e9d191330cab6591f3ab5a44270db7',1,'i2c(PB_9, PB_8):&#160;imuExampleAllData.cpp']]],
+  ['i2c_561',['i2c',['../imuExampleAllData_8cpp.html#af0e9d191330cab6591f3ab5a44270db7',1,'i2c(PB_9, PB_8):&#160;imuExampleAllData.cpp'],['../TestBench_2main_8cpp.html#af0e9d191330cab6591f3ab5a44270db7',1,'i2c(PB_9, PB_8):&#160;main.cpp'],['../Sentry_2main_8cpp.html#ae3e7ab47cd5395225bf7c67b8ee84976',1,'i2c(I2C_SDA, I2C_SCL):&#160;main.cpp'],['../Infantry_2main_8cpp.html#ae3e7ab47cd5395225bf7c67b8ee84976',1,'i2c(I2C_SDA, I2C_SCL):&#160;main.cpp'],['../Hero_2main_8cpp.html#ae3e7ab47cd5395225bf7c67b8ee84976',1,'i2c(I2C_SDA, I2C_SCL):&#160;main.cpp'],['../imuExampleQuaternions_8cpp.html#af0e9d191330cab6591f3ab5a44270db7',1,'i2c(PB_9, PB_8):&#160;imuExampleQuaternions.cpp']]],
   ['i2c_5fmst_5fctrl_562',['I2C_MST_CTRL',['../MPU6050_8h.html#a24bc05247067ad9f0479f5a6d49c6412',1,'MPU6050.h']]],
   ['i2c_5fmst_5fdelay_5fctrl_563',['I2C_MST_DELAY_CTRL',['../MPU6050_8h.html#a070e664a4ae9c8f4f78f8a6e8e15b9b3',1,'MPU6050.h']]],
   ['i2c_5fmst_5fen_564',['I2C_MST_EN',['../MPU6050_8h.html#acb5b7cc1d39ba9199cef1d5c676db667',1,'MPU6050.h']]],
@@ -33,7 +33,7 @@ var searchData=
   ['i_5fam_5fbno055_5fchip_591',['I_AM_BNO055_CHIP',['../BNO055_8h.html#abddef9f88acd482ec0858e672775cd71',1,'BNO055.h']]],
   ['i_5fam_5fbno055_5fgyr_592',['I_AM_BNO055_GYR',['../BNO055_8h.html#ad4ad6c2bd6bdc8314a95dfe64cc57887',1,'BNO055.h']]],
   ['i_5fam_5fbno055_5fmag_593',['I_AM_BNO055_MAG',['../BNO055_8h.html#aa31939193930607a5a76ec3b50af9fc4',1,'BNO055.h']]],
-  ['imu_594',['imu',['../imuExampleAllData_8cpp.html#a74abbde13f81ae74801b94e0aa0a87d5',1,'imu():&#160;imuExampleAllData.cpp'],['../imuExampleQuaternions_8cpp.html#af16caf859b728b5fd832095ff849d605',1,'imu():&#160;imuExampleQuaternions.cpp']]],
+  ['imu_594',['imu',['../imuExampleAllData_8cpp.html#a74abbde13f81ae74801b94e0aa0a87d5',1,'imu():&#160;imuExampleAllData.cpp'],['../imuExampleQuaternions_8cpp.html#af16caf859b728b5fd832095ff849d605',1,'imu():&#160;imuExampleQuaternions.cpp'],['../TestBench_2main_8cpp.html#af16caf859b728b5fd832095ff849d605',1,'imu():&#160;main.cpp']]],
   ['imu_5freset_595',['IMU_RESET',['../Chassis_8h.html#afe5a31debea7f8fd3ee5e4c742c7500b',1,'Chassis.h']]],
   ['imuexamplealldata_2ecpp_596',['imuExampleAllData.cpp',['../imuExampleAllData_8cpp.html',1,'']]],
   ['imuexamplequaternions_2ecpp_597',['imuExampleQuaternions.cpp',['../imuExampleQuaternions_8cpp.html',1,'']]],

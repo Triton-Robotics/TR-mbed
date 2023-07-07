@@ -56,7 +56,7 @@ var searchData=
   ['bno055_5fgyr_5fz_5flsb_120',['BNO055_GYR_Z_LSB',['../BNO055_8h.html#ac301975eb8a4f327bddd33bad421e0d8',1,'BNO055.h']]],
   ['bno055_5fgyr_5fz_5fmsb_121',['BNO055_GYR_Z_MSB',['../BNO055_8h.html#a93a0b6925c4fa19c6452e4e9f796f900',1,'BNO055.h']]],
   ['bno055_5fgyro_5frev_5fid_122',['BNO055_GYRO_REV_ID',['../BNO055_8h.html#a59b5a742618a18eb0d71933d145ee40a',1,'BNO055.h']]],
-  ['bno055_5fid_5finf_123',['bno055_id_inf',['../imuExampleQuaternions_8cpp.html#ad567fe76e73137e70f5a3a728a297069',1,'bno055_id_inf():&#160;imuExampleQuaternions.cpp'],['../imuExampleAllData_8cpp.html#ad567fe76e73137e70f5a3a728a297069',1,'bno055_id_inf():&#160;imuExampleAllData.cpp']]],
+  ['bno055_5fid_5finf_123',['bno055_id_inf',['../imuExampleQuaternions_8cpp.html#ad567fe76e73137e70f5a3a728a297069',1,'bno055_id_inf():&#160;imuExampleQuaternions.cpp'],['../imuExampleAllData_8cpp.html#ad567fe76e73137e70f5a3a728a297069',1,'bno055_id_inf():&#160;imuExampleAllData.cpp'],['../TestBench_2main_8cpp.html#ad567fe76e73137e70f5a3a728a297069',1,'bno055_id_inf():&#160;main.cpp']]],
   ['bno055_5fid_5finf_5ftypedef_124',['BNO055_ID_INF_TypeDef',['../structBNO055__ID__INF__TypeDef.html',1,'']]],
   ['bno055_5fintr_5fstat_125',['BNO055_INTR_STAT',['../BNO055_8h.html#a2705db16a8212d939f111a4666d324a4',1,'BNO055.h']]],
   ['bno055_5flinear_5facc_5fx_5flsb_126',['BNO055_LINEAR_ACC_X_LSB',['../BNO055_8h.html#ab7dc13596ac70c5db2f5adda6c6fe14f',1,'BNO055.h']]],
