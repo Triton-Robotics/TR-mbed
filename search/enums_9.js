@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['switch_1998',['Switch',['../classRemote.html#add727f68db8fff42e6f572b19008ec66',1,'Remote']]],
-  ['switchstate_1999',['SwitchState',['../classRemote.html#affd0b019d5483d546bc29b07447649bb',1,'Remote']]]
+  ['switch_1996',['Switch',['../classRemote.html#add727f68db8fff42e6f572b19008ec66',1,'Remote']]],
+  ['switchstate_1997',['SwitchState',['../classRemote.html#affd0b019d5483d546bc29b07447649bb',1,'Remote']]]
 ];
