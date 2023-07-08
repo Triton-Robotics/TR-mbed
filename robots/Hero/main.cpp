@@ -99,13 +99,6 @@ void pitchSetPosition(){
 
 }
 
-void yawSetPosition(int &yawSetPoint){
-    if(abs(rX) > 300)
-        yawSetPoint -= int(((abs(rX) - 200) / 6.0) * (rX / abs(rX))); // was div by 10
-
-    yaw.setPosition(yawSetPoint);
-}
-
 int calculateDeltaYaw(int ref_yaw, int beforeBeybladeYaw){
     int deltaYaw = beforeBeybladeYaw - ref_yaw;
 
@@ -174,6 +167,7 @@ int main(){
     bool rNowMid;
     bool rNowDown;
     bool once = false;
+    bool onceT = false;
 
     DJIMotor::getFeedback();
     int refLoop = 0;
@@ -186,32 +180,33 @@ int main(){
     double beyblade;
     float chassis_power;
     uint16_t chassis_power_limit;
+    unsigned long count = 0;
 
     unsigned long loopTimer = us_ticker_read();
     unsigned long timeEnd;
     unsigned long timeStart;
 
-    PID yawPID(300,0.2,0,30000,32760);
-    unsigned long yawPidLast = us_ticker_read();
+    PID yawPID(100, 0.1, 500, 50000, 32760);
 
     while(true){
         timeStart = us_ticker_read();
 
-        if((timeStart - loopTimer) / 1000 > 25){
+        if((timeStart - loopTimer) / 1000 > 25) {
             loopTimer = timeStart;
 
 
-            if(refLoop >= 10){
+            if (refLoop >= 5) {
                 refLoop = 0;
-
-                if(!once){
-                    once = true;
-                    yawSetPoint = yaw.getData(MULTITURNANGLE);
-                }
+                refereeThread(&referee);
             }
-            refLoop++;
 
-            refereeThread(&referee);
+            if(!once && lS == Remote::SwitchState::DOWN){
+                once = true;
+                yawSetPoint = yaw.getData(MULTITURNANGLE);
+            }
+
+            count++;
+            refLoop++;
 
             lPreviousMid    = lS == Remote::SwitchState::MID;
             rPreviousDown   = rS == Remote::SwitchState::DOWN;
@@ -235,7 +230,7 @@ int main(){
             //printf("%d\n",chassis.getHeadingDegrees());
             //printf("%d %d\n", lX, lY);
 
-            //printf("max power: %d ref power: %d \n",  int(chassis_power_limit * 100), int(chassis_power * 100));
+            //printf("ref power: %d \n", int(chassis_power * 100));
 
 
             if(rPreviousDown){
@@ -261,22 +256,19 @@ int main(){
                 if(rS == Remote::SwitchState::DOWN) {
                     beyblade = 2000;
                     deltaYaw = calculateDeltaYaw(chassis.getHeadingDegrees(), beforeBeybladeYaw);
-
                     yaw.setPower((int)yawPID.calculate(float(deltaYaw),us_ticker_read() - timeEnd));
-                    printf("%d %d\n", deltaYaw, yaw.powerOut);
-                    //printff("")
-                    //yaw.setPower(-rX * 20 + rotationalPower);
                 }else {
                     beyblade = 0;
-                    yaw.setPower(-rX * 20 + 0);
+                    yaw.setPower(-rX * 20);
                 }
             }
-
+            //printf("%d %d %d %d\n");
             //printf("%d\n", yaw.getData(MULTITURNANGLE));
+            //chassis.printMotorAngle();
             pitchSetPosition();
             timeEnd = us_ticker_read();
             chassis.driveTurretRelativePower(chassis_power, chassis_power_limit, {-lX * 5.0, -lY * 5.0, beyblade}, (yaw.getData(MULTITURNANGLE) - yawSetPoint) * 180.0 / 8191.0 - 180, int(timeEnd - timeStart), rotationalPower);
-            //printf("%d %d %d\n" , yaw.getData(MULTITURNANGLE) - yawSetPoint, int((yaw.getData(MULTITURNANGLE) - yawSetPoint) * 180.0 / 8191.0 - 180), chassis.getHeadingDegrees());
+            //printf("%d %d %d %d\n" , yawSetPoint, yaw.getData(MULTITURNANGLE) - yawSetPoint, int((yaw.getData(MULTITURNANGLE) - yawSetPoint) * 180.0 / 8191.0 - 180), chassis.getHeadingDegrees());
             DJIMotor::sendValues();
         }
         DJIMotor::getFeedback();
