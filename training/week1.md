@@ -49,7 +49,7 @@ You can get its value the same way you would a variable
 int x = input;
 ```
 
-Where `x` will be 1 if the input is high and 0 if the input is low.
+Where `x` will be 1 if the input is high (Button pressed) and 0 if the input is low (Button unpressed).
 
 You can also create a digital output, like an led, simply, with the `DigitalOut` Class
 
@@ -73,4 +73,14 @@ WIth this information, write a simple program in the simulator that controls the
 
 # Exercise 2: Analog Input
 
-Now let's mess around with getting our board to input analog signals. This is basically reading the voltage on a pin relative to ground.
+Now let's mess around with getting our board to input analog signals. This is basically reading the voltage on a pin relative to ground. The `AnalogIn` has us covered here. `AnalogIn` functions similarly to `DigitalIn` (`AnalogOut` and `PWMOut` mirror `DigitalOut` as well)
+
+```cpp
+AnalogIn aInput(PINNAME)
+double x = input;
+```
+
+However now x will be a decimal value from 0 to 1.
+Using this, have an led PWM for that percentage of time. and print it out as well. 
+
+You can use the `PWMOut` class, which as mentioned before, is similar in structure to the `DigitalOut` class, except it deals in doubles instead of ints.
