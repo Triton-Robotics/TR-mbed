@@ -17,7 +17,7 @@ For all of our activities and code running, we'll be using the [ARM mbed Simulat
 
 - Digital signals must have a finite set of possible values, but in our case we will be primarily working with binary digital signals, either high or low. In software the high is a 1, or true, and the low is a 0, or false.
   
-  ![](C:\Users\ansha\AppData\Roaming\marktext\images\2023-07-12-20-36-33-image.png)
+  ![](assets/week1_1.png)
   
   This signal is 1100111101101001100100000111111101110010010000011001111100000001111110001.
   
@@ -27,13 +27,13 @@ For all of our activities and code running, we'll be using the [ARM mbed Simulat
 
 - Analog signals are signals that are meant to be interpreted in terms of a range.
   
-  ![](C:\Users\ansha\AppData\Roaming\marktext\images\2023-07-12-20-52-56-image.png)
+  ![](assets/week1_2.png)
   
   For example, at time 4.34s, we can see that this voltage is 1.935V. The board can read this to a certain level of accuracy.
 
 # 
 
-# Practice 1: Using Digital Signals
+# Exercise 1: Using Digital Signals
 
 The mbed library allows us to very easily manipulate digital inputs and outputs. You can experiment with this using the [ARM mbed Simulator](http://195.130.59.221/). 
 
@@ -69,6 +69,8 @@ However now you can also set the value like a variable
 output = 1; // setting the output high
 ```
 
-WIth this information, write a simple program in the simulator that controls the LED with the button. the led pin is `LED1` and the button pin is `BUTTON1`. You can play around with this by pressing the button in the sim.
+WIth this information, write a simple program in the simulator that controls the LED with the button. the led pin is `LED1` and the button pin is `BUTTON1`. You can play around with this by pressing the button in the simulator.
 
+# Exercise 2: Analog Input
 
+Now let's mess around with getting our board to input analog signals. This is basically reading the voltage on a pin relative to ground.
