@@ -1,7 +1,3 @@
-//
-// Created by ankit on 1/31/23.
-//
-
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "ConstantConditionsOC"
 #pragma ide diagnostic ignored "UnreachableCode"
@@ -20,7 +16,7 @@ bool DJIMotor::feedbackDebug = false;
 
 DJIMotor::DJIMotor(bool isErroneousMotor){
 
-    motorNumber = -1;
+    canID_0 = -1;
     canBus = CANHandler::NOBUS;
     value = 0;
     mode = OFF;
@@ -32,50 +28,51 @@ DJIMotor::DJIMotor(bool isErroneousMotor){
     powerOut = 0;
 }
 
-DJIMotor::DJIMotor(short canID, CANHandler::CANBus bus, motorType mType){
+DJIMotor::DJIMotor(short canID, CANHandler::CANBus canBus, motorType type){
 
-    motorNumber = (short)(canID - 1);
-    canBus = bus;
-    type = mType;
+    canID_0 = (short)(canID - 1);
+    this -> canBus = canBus;
+    this -> type = type;
 
     value = 0;
 
     if(type == GM6020){
-        motorNumber += 4;
-        pidSpeed.setPID(defautlGimblySpeedSettings[0],defautlGimblySpeedSettings[1],defautlGimblySpeedSettings[2]);
-        pidSpeed.setOutputCap(defautlGimblySpeedSettings[3]);
-        pidSpeed.setIntegralCap(defautlGimblySpeedSettings[4]);
+        canID_0 += 4;
+        setSpeedPID(gimbly.speed.p, gimbly.speed.i, gimbly.speed.d);
+        setSpeedOutputCap(gimbly.speed.outputCap);
+        setSpeedIntegralCap(gimbly.speed.integralCap);
 
-        pidPosition.setPID(defaultGimblyPosSettings[0],defaultGimblyPosSettings[1],defaultGimblyPosSettings[2]);
-        pidPosition.setOutputCap(defaultGimblyPosSettings[3]);
-        pidPosition.setIntegralCap(defaultGimblyPosSettings[4]);
+        setPositionPID(gimbly.pos.p, gimbly.pos.i, gimbly.pos.d);
+        setPositionOutputCap(gimbly.pos.outputCap);
+        setPositionIntegralCap(gimbly.pos.integralCap);
 
     }else if(type == M3508){
-        pidSpeed.setPID(defautM3508SpeedSettings[0],defautM3508SpeedSettings[1],defautM3508SpeedSettings[2]);
-        pidSpeed.setOutputCap(defautM3508SpeedSettings[3]);
-        pidSpeed.setIntegralCap(defautM3508SpeedSettings[4]);
+        setSpeedPID(m3508.speed.p, m3508.speed.i, m3508.speed.d);
+        setSpeedOutputCap(m3508.speed.outputCap);
+        setSpeedIntegralCap(m3508.speed.integralCap);
 
-        pidPosition.setPID(defautM3508PosSettings[0],defautM3508PosSettings[1],defautM3508PosSettings[2]);
-        pidPosition.setOutputCap(defautM3508PosSettings[3]);
-        pidPosition.setIntegralCap(defautM3508PosSettings[4]);
+        setPositionPID(m3508.pos.p, m3508.pos.i, m3508.pos.d);
+        setPositionOutputCap(m3508.pos.outputCap);
+        setPositionIntegralCap(m3508.pos.integralCap);
+
     }else if(type == M3508_FLYWHEEL){
-        pidSpeed.setPID(defautM3508FlywheelSpeedSettings[0],defautM3508FlywheelSpeedSettings[1],defautM3508FlywheelSpeedSettings[2]);
-        pidSpeed.setOutputCap(defautM3508FlywheelSpeedSettings[3]);
-        pidSpeed.setIntegralCap(defautM3508FlywheelSpeedSettings[4]);
+        setSpeedPID(m3508Flywheel.speed.p, m3508Flywheel.speed.i, m3508Flywheel.speed.d);
+        setSpeedOutputCap(m3508Flywheel.speed.outputCap);
+        setSpeedIntegralCap(m3508Flywheel.speed.integralCap);
 
-        pidPosition.setPID(defautM3508PosSettings[0],defautM3508PosSettings[1],defautM3508PosSettings[2]);
-        pidPosition.setOutputCap(defautM3508PosSettings[3]);
-        pidPosition.setIntegralCap(defautM3508PosSettings[4]);
+        setPositionPID(m3508Flywheel.pos.p, m3508Flywheel.pos.i, m3508Flywheel.pos.d);
+        setPositionOutputCap(m3508Flywheel.pos.outputCap);
+        setPositionIntegralCap(m3508Flywheel.pos.integralCap);
     }
 
-    if(!motorsExist [bus][motorNumber / 4][motorNumber % 4]){
-        allMotors   [bus][motorNumber / 4][motorNumber % 4] = this;
-        motorsExist [bus][motorNumber / 4][motorNumber % 4] = true;
+    if(!motorsExist [canBus][canID_0 / 4][canID_0 % 4]){
+        allMotors   [canBus][canID_0 / 4][canID_0 % 4] = this;
+        motorsExist [canBus][canID_0 / 4][canID_0 % 4] = true;
 
     }else{
         DJIMotor mot(true);
-        allMotors[bus][motorNumber / 4][motorNumber % 4] = &mot;
-        printf("[ERROR] THERES A CONFLICT ON BUS [%d] SLOT [%d] ID [%d]. YOU WILL HAVE ERRORS.\n", (int)bus, motorNumber/4, motorNumber%4);
+        allMotors[canBus][canID_0 / 4][canID_0 % 4] = &mot;
+        printf("[ERROR] THERES A CONFLICT ON BUS [%d] SLOT [%d] ID [%d]. YOU WILL HAVE ERRORS.\n", (int)canBus, canID_0 / 4, canID_0 % 4);
     }
 
     if (canID > 8 || canID < 1)
@@ -86,8 +83,8 @@ DJIMotor::DJIMotor(short canID, CANHandler::CANBus bus, motorType mType){
 
 DJIMotor::~DJIMotor(){
     mode = OFF;
-    motorsExist[canBus][motorNumber/4][motorNumber%4] = false;
-    motorNumber = -1;
+    motorsExist[canBus][canID_0 / 4][canID_0 % 4] = false;
+    canID_0 = -1;
     canBus = CANHandler::NOBUS;
 }
 
@@ -146,11 +143,6 @@ void DJIMotor::operator=(int value){
     setValue(value);
 }
 
-
-__attribute__((unused)) double DJIMotor::rpmToTicksPerSecond(double RPM) {
-    return 0;
-//    return RPM * TICKS_PER_ROTATION / (M3508_GEAR_RATIO * SECONDS_PER_MINUTE);
-}
 
 void DJIMotor::setOutput(){
     unsigned long time = us_ticker_read();
@@ -325,16 +317,16 @@ void DJIMotor::updateMultiTurnPosition() {
                 }
 }
 
-void DJIMotor::sendOneID(CANHandler::CANBus bus, short sendIDindex, bool debug){
+void DJIMotor::sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool debug){
     int8_t bytes[8]  = {0,0,0,0,0,0,0,0};
 
     if(debug)
         printf("0x%x:\t",sendIDs[sendIDindex]);
 
     for(int i = 0; i < 4; i++){
-        if(motorsExist[bus][sendIDindex][i]){
-            allMotors[bus][sendIDindex][i]->setOutput();
-            int16_t pO = allMotors[bus][sendIDindex][i]->powerOut;
+        if(motorsExist[canBus][sendIDindex][i]){
+            allMotors[canBus][sendIDindex][i]->setOutput();
+            int16_t pO = allMotors[canBus][sendIDindex][i]->powerOut;
 
             if(debug)
                 printf("%d\t",pO);
@@ -346,8 +338,8 @@ void DJIMotor::sendOneID(CANHandler::CANBus bus, short sendIDindex, bool debug){
             if(debug) printf("NA\t");
     }
 
-    if(canHandlers[bus]->exists)
-        canHandlers[bus]->rawSend(sendIDs[sendIDindex], bytes);
+    if(canHandlers[canBus]->exists)
+        canHandlers[canBus]->rawSend(sendIDs[sendIDindex], bytes);
 
     else
         printf("[ERROR] YOUR CANHANDLERS ARE NOT DEFINED YET. DO THIS BEFORE YOU CALL ANY MOTORS,\n USING [(DJIMotor::setCANHandlers(PA_11,PA_12,PB_12,PB_13)], WHERE PA_11, PA_12 ARE TX, RX\n");
@@ -387,12 +379,12 @@ void DJIMotor::getFeedback(){
     updateMultiTurnPosition();
 }
 
-__attribute__((unused)) bool DJIMotor::isMotorConnected(short canID, CANHandler::CANBus bus, motorType mType) {
-    return !motorsExist[bus][mType][canID] || us_ticker_read() / 1000 - lastCalled[bus][mType][canID] <= TIMEOUT_MS;
+bool DJIMotor::s_isMotorConnected(CANHandler::CANBus bus, motorType type, short canID) {
+    return (motorsExist[bus][type][canID] && us_ticker_read() / 1000 - lastCalled[bus][type][canID] <= TIMEOUT_MS);
 }
 
 
-__attribute__((unused)) bool DJIMotor::checkConnection(bool debug){
+bool DJIMotor::s_allMotorsConnected(bool debug){
     for(int bus = 0; bus < CAN_HANDLER_NUMBER; bus++)
         for(int c = 0; c < 4; c++)
             for(int r = 0; r < 3; r++)
@@ -412,16 +404,6 @@ __attribute__((unused)) void DJIMotor::zeroPos(){
     multiTurn = 0;
 }
 
-/**
-* @brief the thread that runs the ever-necessary Motor::tick()
-*/
-
-__attribute__((unused)) void DJIMotor::tickThread() {
-    while (true) {
-        tick();
-        ThisThread::sleep_for(1ms);
-    }
-}
 
 /**
 * @brief the thread that runs the ever-necessary Motor::tick()
@@ -462,35 +444,3 @@ void DJIMotor::tick(){
 }
 
 #pragma clang diagnostic pop
-
-//void DJIMotor::printChunk(CANHandler::CANBus bus, short sendID, motorDataType data){
-//    printf("Bus:");
-//    if(bus == CANHandler::CANBUS_1)
-//        printf("BUS_1 |");
-//    else if(bus == CANHandler::CANBUS_2)
-//        printf("BUS_2 |");
-//    printf(" sendID:0x%x ",sendIDs[sendID]);
-//    for(int i = 0; i < 4; i ++){
-//        if(motorsExist[bus][sendID][i])
-//            if(data == POWEROUT)
-//                printf("%d ",allMotors[bus][sendID][i]->powerOut);
-//            else
-//                printf("%d ",allMotors[bus][sendID][i]->getData(data));
-//        else
-//            printf("NA ");
-//    }
-//    printf("\n");
-//}
-
-// static void DJIMotor::setCANHandlers(PinName can1Tx, PinName can1Rx, PinName can2Tx, PinName can2Rx){
-//     canHandlers[0].updateCANs(PinName canRx, PinName canTx);
-//     canHandlers[1]* = &can2;
-//     for(int i = 0; i < 3; i ++){
-//         for(int j = 0; j < 4; j++){
-//             for(int k = 0; k < 2; k++){
-//                 CANMotor m;
-//                 allMotors[k][i][j] = &m;
-//             }
-//         }
-//     }
-// }

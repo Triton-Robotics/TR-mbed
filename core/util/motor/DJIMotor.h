@@ -1,23 +1,16 @@
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "misc-unconventional-assign-operator"
-//
-// Created by ankit on 1/31/23.
-//
-
-#pragma clang diagnostic push
 #pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
 #ifndef TR_EMBEDDED_DJIMOTOR_H
 #define TR_EMBEDDED_DJIMOTOR_H
 
-#define CAN_HANDLER_NUMBER 2            //Number of can handlers
-#define TIMEOUT_MS 400                  //timeout for motor feedback
-
 #include "mbed.h"
 #include "algorithms/PID.h"
 #include "communications/CANHandler.h"
-
-//#include "algorithms/WheelKalman.h"
 #include <cmath>
+
+#define CAN_HANDLER_NUMBER 2            //Number of can handlers
+#define TIMEOUT_MS 400                  //timeout for motor feedback
 
 static int sendIDs[3] = {0x200,0x1FF,0x2FF}; //IDs to send data
 static Thread motorFeedbackThread(osPriorityAboveNormal); //threading for Motor::tick()
@@ -55,7 +48,7 @@ enum motorType {
     //be changed to STANDARD, because that's what the code uses.
     M3508_FLYWHEEL = 5,
 
-    GIMBLY = 2, //Gimblyyyyyyyyyy
+    GIMBLY = 2,
     GM6020 = 2
 };
 
@@ -63,11 +56,34 @@ enum motorType {
 class DJIMotor {
 
 private:
-    float defaultGimblyPosSettings[5] = {10.88,1.2,18.9,8000,500};
-    float defautlGimblySpeedSettings[5] = {0.13, 8.8, 0, 25000, 1000};
-    float defautM3508PosSettings[5] = {.48, 0.0137, 4.2, 3000, 300};
-    float defautM3508SpeedSettings[5] = {1.79, 0.27, 10.57, 15000, 500};
-    float defautM3508FlywheelSpeedSettings[5] = {2.013, 0.319, 20.084, 15000, 500};
+
+    struct PidSettings{
+        float p;
+        float i;
+        float d;
+        float outputCap;
+        float integralCap;
+    };
+
+    struct MotorSettings{
+        PidSettings pos;
+        PidSettings speed;
+    };
+
+    MotorSettings gimbly = {
+            {10.88,1.2,18.9,8000,500},
+            {0.13, 8.8, 0, 25000, 1000}
+    };
+
+    MotorSettings m3508 = {
+            {.48, 0.0137, 4.2, 3000, 300},
+            {1.79, 0.27, 10.57, 15000, 500}
+    };
+
+    MotorSettings m3508Flywheel = {
+            {.48, 0.0137, 4.2, 3000, 300},
+            {2.013, 0.319, 20.084, 15000, 500}
+    };
 
     enum motorMoveMode{
         OFF = 0,
@@ -84,7 +100,7 @@ private:
 
 
     static CANHandler* canHandlers[CAN_HANDLER_NUMBER];
-    short motorNumber;                                          // canID - 1, because canID is 1-8, arrays are 0-7
+    short canID_0;                                          // canID - 1, because canID is 1-8, arrays are 0-7
     int gearRatio = 1;                                          //the gear ratio of the motor to encoder
 
     CANHandler::CANBus canBus = CANHandler::NOBUS;              //the CANBus this motor is on
@@ -122,11 +138,9 @@ public:
     bool printAngle = false;
     int integratedAngle = 0;
     long lastIntegrationTime = -1;
-//    WheelKalman kalman;
     static bool sendDebug;
     static bool feedbackDebug;
 
-    // user methods
     explicit DJIMotor(bool isErroneousMotor = false);
     DJIMotor(short canID, CANHandler::CANBus bus, motorType mType = STANDARD);
     ~DJIMotor();
@@ -134,13 +148,12 @@ public:
     // static void printChunk(CANHandler::CANBus bus, short sendID, motorDataType data = POWEROUT);
     static void setCANHandlers(CANHandler* bus_1, CANHandler* bus_2, bool threadSend = true, bool threadFeedback = true);
     static void updateMultiTurnPosition();
-    static void sendOneID(CANHandler::CANBus bus, short sendIDindex, bool debug = false);
+    static void sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool debug = false);
     static void getFeedback();
 
-    __attribute__((unused)) __attribute__((unused)) static bool checkConnection(bool debug);
-    __attribute__((unused)) __attribute__((unused)) static bool isMotorConnected(short canID, CANHandler::CANBus bus, motorType mType);
+    static bool s_allMotorsConnected(bool debug);
+    static bool s_isMotorConnected(CANHandler::CANBus bus, motorType type, short canID);
 
-    static void tickThread();
     static void feedbackThread();
     static void sendThread();
     static void sendValues();
@@ -156,8 +169,6 @@ public:
     void setPower(int power);
     void setSpeed(int speed);
     void setPosition(int position);
-
-    __attribute__((unused)) static double rpmToTicksPerSecond(double RPM);
 
     __attribute__((unused)) void zeroPos();
 
