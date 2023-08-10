@@ -6,11 +6,10 @@
 
 #include "DJIMotor.h"
 
-DJIMotor* DJIMotor::allMotors[2][3][4];
-bool DJIMotor::motorsExist[2][3][4];
-long int DJIMotor::lastCalled [CAN_HANDLER_NUMBER][3][4];
+DJIMotor* DJIMotor::s_allMotors[2][3][4];
+bool DJIMotor::s_motorsExist[2][3][4];
 
-CANHandler* DJIMotor::canHandlers[2];
+CANHandler* DJIMotor::s_canHandlers[2];
 bool DJIMotor::sendDebug = false;
 bool DJIMotor::feedbackDebug = false;
 
@@ -65,13 +64,13 @@ DJIMotor::DJIMotor(short canID, CANHandler::CANBus canBus, motorType type){
         setPositionIntegralCap(m3508Flywheel.pos.integralCap);
     }
 
-    if(!motorsExist [canBus][canID_0 / 4][canID_0 % 4]){
-        allMotors   [canBus][canID_0 / 4][canID_0 % 4] = this;
-        motorsExist [canBus][canID_0 / 4][canID_0 % 4] = true;
+    if(!s_motorsExist [canBus][canID_0 / 4][canID_0 % 4]){
+        s_allMotors   [canBus][canID_0 / 4][canID_0 % 4] = this;
+        s_motorsExist [canBus][canID_0 / 4][canID_0 % 4] = true;
 
     }else{
         DJIMotor mot(true);
-        allMotors[canBus][canID_0 / 4][canID_0 % 4] = &mot;
+        s_allMotors[canBus][canID_0 / 4][canID_0 % 4] = &mot;
         printf("[ERROR] THERES A CONFLICT ON BUS [%d] SLOT [%d] ID [%d]. YOU WILL HAVE ERRORS.\n", (int)canBus, canID_0 / 4, canID_0 % 4);
     }
 
@@ -83,14 +82,14 @@ DJIMotor::DJIMotor(short canID, CANHandler::CANBus canBus, motorType type){
 
 DJIMotor::~DJIMotor(){
     mode = OFF;
-    motorsExist[canBus][canID_0 / 4][canID_0 % 4] = false;
+    s_motorsExist[canBus][canID_0 / 4][canID_0 % 4] = false;
     canID_0 = -1;
     canBus = CANHandler::NOBUS;
 }
 
 void DJIMotor::setCANHandlers(CANHandler* bus_1, CANHandler* bus_2, bool threadSend, bool threadFeedback){
-    canHandlers[0] = bus_1;
-    canHandlers[1] = bus_2;
+    s_canHandlers[0] = bus_1;
+    s_canHandlers[1] = bus_2;
 
     // if(thread){
     //     //motorupdatethread.start(tickThread);
@@ -250,7 +249,7 @@ int DJIMotor::operator>>(motorDataType data){
 }
 
 void DJIMotor::printAllMotorData() {
-    printf("ANGL:%d MLTI:%d VELO:%d TORQ:%d TEMP:%d | PWR:%d\n", getData(ANGLE), getData(MULTITURNANGLE), getData(VELOCITY), getData(TORQUE), getData(TEMPERATURE), powerOut);
+    printf("TYPE:%d ANGL:%d MLTI:%d VELO:%d TORQ:%d TEMP:%d | PWR:%d\n", type, getData(ANGLE), getData(MULTITURNANGLE), getData(VELOCITY), getData(TORQUE), getData(TEMPERATURE), powerOut);
 }
 
 void DJIMotor::updateMultiTurnPosition() {
@@ -263,8 +262,8 @@ void DJIMotor::updateMultiTurnPosition() {
     for(int x = 0; x < CAN_HANDLER_NUMBER; x++)
         for (int y = 0; y < 3; y++)
             for (int z = 0; z < 4; z++)
-                if (motorsExist[x][y][z]) {
-                    curMotor = allMotors[x][y][z];
+                if (s_motorsExist[x][y][z]) {
+                    curMotor = s_allMotors[x][y][z];
 
                     curAngle = curMotor->getData(ANGLE);
                     lastAngle = curMotor->lastMotorAngle;
@@ -285,7 +284,7 @@ void DJIMotor::updateMultiTurnPosition() {
                     } else if (positiveDiff <= -4096) {
                         curMotor->integratedAngle += positiveDiff + 8192;
                     } else {
-                        //printf("Dont know what to do with this %i\n", positiveDiff);
+                        //printf("Don't know what to do with this %i\n", positiveDiff);
                     }
                     if (abs(speed) < 100)
                         if (curAngle > (8191 - Threshold) && lastAngle < Threshold)
@@ -310,7 +309,7 @@ void DJIMotor::updateMultiTurnPosition() {
 
                     curMotor->lastMotorAngle = curAngle;
 
-                    curMotor->lastIntegrationTime = time;
+                    curMotor->lastIntegrationTime = long(time);
                     if (curMotor->printAngle) {
                         printf("Integ multi: %i %i\n", curMotor->integratedAngle, curMotor->multiTurn);
                     }
@@ -324,9 +323,9 @@ void DJIMotor::sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool debu
         printf("0x%x:\t",sendIDs[sendIDindex]);
 
     for(int i = 0; i < 4; i++){
-        if(motorsExist[canBus][sendIDindex][i]){
-            allMotors[canBus][sendIDindex][i]->setOutput();
-            int16_t pO = allMotors[canBus][sendIDindex][i]->powerOut;
+        if(s_motorsExist[canBus][sendIDindex][i]){
+            s_allMotors[canBus][sendIDindex][i]->setOutput();
+            int16_t pO = s_allMotors[canBus][sendIDindex][i]->powerOut;
 
             if(debug)
                 printf("%d\t",pO);
@@ -338,8 +337,8 @@ void DJIMotor::sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool debu
             if(debug) printf("NA\t");
     }
 
-    if(canHandlers[canBus]->exists)
-        canHandlers[canBus]->rawSend(sendIDs[sendIDindex], bytes);
+    if(s_canHandlers[canBus]->exists)
+        s_canHandlers[canBus]->rawSend(sendIDs[sendIDindex], bytes);
 
     else
         printf("[ERROR] YOUR CANHANDLERS ARE NOT DEFINED YET. DO THIS BEFORE YOU CALL ANY MOTORS,\n USING [(DJIMotor::setCANHandlers(PA_11,PA_12,PB_12,PB_13)], WHERE PA_11, PA_12 ARE TX, RX\n");
@@ -352,24 +351,23 @@ void DJIMotor::getFeedback(){
         uint8_t receivedBytes[8] = {0, 0, 0, 0, 0, 0, 0, 0};
         int msgID;
 
-        while(canHandlers[i]->getFeedback(&msgID, receivedBytes, i)) {
+        while(s_canHandlers[i]->getFeedback(&msgID, receivedBytes, i)) {
             int mNum = msgID - 0x201;
 
-            if(motorsExist[i][mNum/4][mNum%4]){
-                allMotors[i][mNum/4][mNum%4] -> motorData[ANGLE]        = (int16_t)(receivedBytes[0] << 8 | receivedBytes[1]);
-                allMotors[i][mNum/4][mNum%4] -> motorData[VELOCITY]     = (int16_t)(receivedBytes[2] << 8 | receivedBytes[3]);
-                allMotors[i][mNum/4][mNum%4] -> motorData[TORQUE]       = (int16_t)(receivedBytes[4] << 8 | receivedBytes[5]);
-                allMotors[i][mNum/4][mNum%4] -> motorData[TEMPERATURE]  = (int16_t) receivedBytes[6];
+            if(s_motorsExist[i][mNum / 4][mNum % 4]){
+                s_allMotors[i][mNum / 4][mNum % 4] -> motorData[ANGLE]        = (int16_t)(receivedBytes[0] << 8 | receivedBytes[1]);
+                s_allMotors[i][mNum / 4][mNum % 4] -> motorData[VELOCITY]     = (int16_t)(receivedBytes[2] << 8 | receivedBytes[3]);
+                s_allMotors[i][mNum / 4][mNum % 4] -> motorData[TORQUE]       = (int16_t)(receivedBytes[4] << 8 | receivedBytes[5]);
+                s_allMotors[i][mNum / 4][mNum % 4] -> motorData[TEMPERATURE]  = (int16_t) receivedBytes[6];
 
                 if(feedbackDebug)
-                    allMotors[i][mNum/4][mNum%4] -> printAllMotorData();
+                    s_allMotors[i][mNum / 4][mNum % 4] -> printAllMotorData();
 
-                allMotors [i][mNum/4][mNum%4] -> timeSinceLastFeedback = us_ticker_read() / 1000 - allMotors[i][mNum/4][mNum%4]->timeOfLastFeedback;
-                allMotors [i][mNum/4][mNum%4] -> timeOfLastFeedback = us_ticker_read() / 1000;
-                lastCalled[i][mNum/4][mNum%4] = us_ticker_read() / 1000;
+                s_allMotors [i][mNum / 4][mNum % 4] -> timeSinceLastFeedback = us_ticker_read() / 1000 - s_allMotors[i][mNum / 4][mNum % 4] -> timeOfLastFeedback;
+                s_allMotors [i][mNum / 4][mNum % 4] -> timeOfLastFeedback = us_ticker_read() / 1000;
 
-                if(allMotors[i][mNum/4][mNum%4]->motorData[TEMPERATURE] > 80)
-                    printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS %d DEGREES CELSIUS\n",msgID,allMotors[i][mNum/4][mNum%4]->motorData[TEMPERATURE]);
+                if(s_allMotors[i][mNum / 4][mNum % 4] -> motorData[TEMPERATURE] > 80)
+                    printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS %d DEGREES CELSIUS\n", msgID, s_allMotors[i][mNum / 4][mNum % 4]->motorData[TEMPERATURE]);
 
             }else{
                 printf("[WARNING] YOU HAVE A MOTOR [0x%x] {%d}{%d}{%d} ATTACHED THAT IS NOT INITIALIZED.. WHY: \n",msgID,i,mNum/4,mNum%4);
@@ -379,31 +377,29 @@ void DJIMotor::getFeedback(){
     updateMultiTurnPosition();
 }
 
-bool DJIMotor::s_isMotorConnected(CANHandler::CANBus bus, motorType type, short canID) {
-    return (motorsExist[bus][type][canID] && us_ticker_read() / 1000 - lastCalled[bus][type][canID] <= TIMEOUT_MS);
+bool DJIMotor::isConnected() const {
+    return us_ticker_read() / 1000 - timeOfLastFeedback <= TIMEOUT_MS;
 }
 
+bool DJIMotor::s_isMotorConnected(CANHandler::CANBus bus, motorType type, short canID){
+    return (s_motorsExist[bus][type][canID] && us_ticker_read() / 1000 - s_allMotors[bus][type][canID] -> timeOfLastFeedback <= TIMEOUT_MS);
+}
 
-bool DJIMotor::s_allMotorsConnected(bool debug){
-    for(int bus = 0; bus < CAN_HANDLER_NUMBER; bus++)
+__attribute__((unused)) bool DJIMotor::s_allMotorsConnected(bool debug){
+    for(int canBus = 0; canBus < CAN_HANDLER_NUMBER; canBus++)
         for(int c = 0; c < 4; c++)
             for(int r = 0; r < 3; r++)
-                if(motorsExist[bus][r][c]) {
-                    if (us_ticker_read() / 1000 - lastCalled[bus][r][c] > TIMEOUT_MS) {
+                if(s_motorsExist[canBus][r][c]) {
+                    if (us_ticker_read() / 1000 - s_allMotors[canBus][r][c] -> timeOfLastFeedback > TIMEOUT_MS) {
                         if(debug) {
-                            printf("Motor %d on bus: %d lost connection\n", c + 4 * r + 1, bus + 1);
-                            printf("Motor[%d][%d][%d]\n", bus, r, c);
+                            printf("Motor %d on bus: %d lost connection\n", c + 4 * r + 1, canBus + 1);
+                            printf("Motor[%d][%d][%d]\n", canBus, r, c);
                         }
                         return false;
                     }
                 }
     return true;
 }
-
-__attribute__((unused)) void DJIMotor::zeroPos(){
-    multiTurn = 0;
-}
-
 
 /**
 * @brief the thread that runs the ever-necessary Motor::tick()

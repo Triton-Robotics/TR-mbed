@@ -29,29 +29,28 @@ enum motorDataType {
     TORQUE = 2,
     TEMPERATURE = 3,
     MULTITURNANGLE = 4,
-    MULTI  = 4,
     POWEROUT = 5,
 };
 
+//keep in mind that in the constructor, this is only used to
+//set the default pid values and gear ratio. The motortype will
+//be changed to STANDARD, because that's what the code uses.
 
 enum motorType {
     NONE = 0,
-    STANDARD = 1, //identifier for all motors that use the standard can protocol, used by the C610 and C620
+    STANDARD = 1,       //identifier for all motors that use the standard can protocol, used by the C610 and C620
+
+    GIMBLY = 2,
+    GM6020 = 2,
+
+    C620 = 3,
+    M3508 = 3,
 
     C610 = 4,
     M2006 = 4,
 
-    C620 = 3,
-    M3508 = 3,
-    //keep in mind that in the constructor, this is only used to
-    //set the default pid values and gear ratio. The motortype will
-    //be changed to STANDARD, because that's what the code uses.
     M3508_FLYWHEEL = 5,
-
-    GIMBLY = 2,
-    GM6020 = 2
 };
-
 
 class DJIMotor {
 
@@ -69,6 +68,8 @@ private:
         PidSettings pos;
         PidSettings speed;
     };
+
+    // Default motor PID settings
 
     MotorSettings gimbly = {
             {10.88,1.2,18.9,8000,500},
@@ -93,26 +94,23 @@ private:
         ERR = 4
     };
 
-    static DJIMotor* allMotors  [CAN_HANDLER_NUMBER][3][4];
-    static bool motorsExist     [CAN_HANDLER_NUMBER][3][4];
-    static long int lastCalled  [CAN_HANDLER_NUMBER][3][4];
+    static DJIMotor* s_allMotors  [CAN_HANDLER_NUMBER][3][4];
+    static bool s_motorsExist     [CAN_HANDLER_NUMBER][3][4];
 
+    static CANHandler* s_canHandlers[CAN_HANDLER_NUMBER];
+    CANHandler::CANBus canBus = CANHandler::NOBUS;                  //the CANBus this motor is on
 
+    short canID_0;                                                  // canID - 1, because canID is 1-8, arrays are 0-7
+    int gearRatio = 1;                                              //the gear ratio of the motor to encoder
+    motorType type = NONE;                                          //mode of the motor
+    motorMoveMode mode = OFF;                                       //mode of the motor
 
-    static CANHandler* canHandlers[CAN_HANDLER_NUMBER];
-    short canID_0;                                          // canID - 1, because canID is 1-8, arrays are 0-7
-    int gearRatio = 1;                                          //the gear ratio of the motor to encoder
-
-    CANHandler::CANBus canBus = CANHandler::NOBUS;              //the CANBus this motor is on
-    motorType type = NONE;                                      //mode of the motor
-    motorMoveMode mode = OFF;                                   //mode of the motor
-
+    unsigned long timeSinceLastFeedback = 0;
     unsigned long timeOfLastFeedback = 0;
     unsigned long timeOfLastPID = 0;
 
 public:
 
-    unsigned long timeSinceLastFeedback = 0;
     int maxSpeed = 8723;
     int bounds[2] = {0,0};
 
@@ -125,7 +123,7 @@ public:
     PID pidPosition;
 
     int value = 0;
-    int16_t powerOut;
+    int16_t powerOut = 0;
 
     bool conflict{};                                            //check for a conflict when running motors
     unsigned long lastTime = 0;
@@ -142,7 +140,7 @@ public:
     static bool feedbackDebug;
 
     explicit DJIMotor(bool isErroneousMotor = false);
-    DJIMotor(short canID, CANHandler::CANBus bus, motorType mType = STANDARD);
+    DJIMotor(short canID, CANHandler::CANBus canBus, motorType type = STANDARD);
     ~DJIMotor();
 
     // static void printChunk(CANHandler::CANBus bus, short sendID, motorDataType data = POWEROUT);
@@ -151,7 +149,8 @@ public:
     static void sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool debug = false);
     static void getFeedback();
 
-    static bool s_allMotorsConnected(bool debug);
+    bool isConnected() const;
+    __attribute__((unused)) static bool s_allMotorsConnected(bool debug);
     static bool s_isMotorConnected(CANHandler::CANBus bus, motorType type, short canID);
 
     static void feedbackThread();
@@ -169,8 +168,6 @@ public:
     void setPower(int power);
     void setSpeed(int speed);
     void setPosition(int position);
-
-    __attribute__((unused)) void zeroPos();
 
     void printAllMotorData();
 
