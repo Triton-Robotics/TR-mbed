@@ -8,6 +8,7 @@
 #include "algorithms/PID.h"
 #include "communications/CANHandler.h"
 #include <cmath>
+#include <string>
 
 #define CAN_HANDLER_NUMBER 2            //Number of can handlers
 #define TIMEOUT_MS 400                  //timeout for motor feedback
@@ -101,6 +102,7 @@ private:
     CANHandler::CANBus canBus = CANHandler::NOBUS;                  //the CANBus this motor is on
 
     short canID_0;                                                  // canID - 1, because canID is 1-8, arrays are 0-7
+    short motorID_0;
     int gearRatio = 1;                                              //the gear ratio of the motor to encoder
     motorType type = NONE;                                          //mode of the motor
     motorMoveMode mode = OFF;                                       //mode of the motor
@@ -111,10 +113,12 @@ private:
 
 public:
 
+    std::string name = "NO_NAME";
+
     int maxSpeed = 8723;
     int bounds[2] = {0,0};
 
-    //angle | velocity | torque | temperature
+    //  angle | velocity | torque | temperature
     int16_t motorData[4] = {0,0,0,0};
     int multiTurn = 0;
     int lastMotorAngle = 0;
@@ -140,7 +144,8 @@ public:
     static bool feedbackDebug;
 
     explicit DJIMotor(bool isErroneousMotor = false);
-    DJIMotor(short canID, CANHandler::CANBus canBus, motorType type = STANDARD);
+    DJIMotor(short canID, CANHandler::CANBus canBus, motorType type, std::string name);
+    DJIMotor(short motorID, CANHandler::CANBus canBus, motorType type = STANDARD);
     ~DJIMotor();
 
     // static void printChunk(CANHandler::CANBus bus, short sendID, motorDataType data = POWEROUT);
@@ -160,7 +165,6 @@ public:
 
     //int getValue();
 
-    __attribute__((unused)) int getPowerOut() const;
     int getData(motorDataType data);
 
     void setValue(int val);

@@ -6,6 +6,8 @@
 
 #include "DJIMotor.h"
 
+#include <utility>
+
 DJIMotor* DJIMotor::s_allMotors[2][3][4];
 bool DJIMotor::s_motorsExist[2][3][4];
 
@@ -16,6 +18,7 @@ bool DJIMotor::feedbackDebug = false;
 DJIMotor::DJIMotor(bool isErroneousMotor){
 
     canID_0 = -1;
+    motorID_0 = -1;
     canBus = CANHandler::NOBUS;
     value = 0;
     mode = OFF;
@@ -27,9 +30,14 @@ DJIMotor::DJIMotor(bool isErroneousMotor){
     powerOut = 0;
 }
 
-DJIMotor::DJIMotor(short canID, CANHandler::CANBus canBus, motorType type){
+DJIMotor::DJIMotor(short canID, CANHandler::CANBus canBus, motorType type, std::string name): DJIMotor(canID, canBus, type){
+    this -> name = std::move(name);
+}
 
-    canID_0 = (short)(canID - 1);
+DJIMotor::DJIMotor(short motorID, CANHandler::CANBus canBus, motorType type){
+
+    canID_0 = (short)(motorID - 1);
+    motorID_0 = canID_0;
     this -> canBus = canBus;
     this -> type = type;
 
@@ -37,6 +45,7 @@ DJIMotor::DJIMotor(short canID, CANHandler::CANBus canBus, motorType type){
 
     if(type == GM6020){
         canID_0 += 4;
+
         setSpeedPID(gimbly.speed.p, gimbly.speed.i, gimbly.speed.d);
         setSpeedOutputCap(gimbly.speed.outputCap);
         setSpeedIntegralCap(gimbly.speed.integralCap);
@@ -71,11 +80,11 @@ DJIMotor::DJIMotor(short canID, CANHandler::CANBus canBus, motorType type){
     }else{
         DJIMotor mot(true);
         s_allMotors[canBus][canID_0 / 4][canID_0 % 4] = &mot;
-        printf("[ERROR] THERES A CONFLICT ON BUS [%d] SLOT [%d] ID [%d]. YOU WILL HAVE ERRORS.\n", (int)canBus, canID_0 / 4, canID_0 % 4);
+        printf("[ERROR] THERES A CONFLICT ON BUS [%d] MOTOR [%d], \"%s\". YOU WILL HAVE ERRORS.\n", canBus + 1, motorID + 1, name.c_str());
     }
 
-    if (canID > 8 || canID < 1)
-        printf("[ERROR] The canID [%d] not within correct bounds\n", canID);
+    if (motorID > 8 || motorID < 1)
+        printf("[ERROR] The canID [%d] not within correct bounds\n", motorID);
 
     powerOut = 0;
 }
@@ -84,6 +93,7 @@ DJIMotor::~DJIMotor(){
     mode = OFF;
     s_motorsExist[canBus][canID_0 / 4][canID_0 % 4] = false;
     canID_0 = -1;
+    motorID_0 = -1;
     canBus = CANHandler::NOBUS;
 }
 
@@ -145,7 +155,6 @@ void DJIMotor::operator=(int value){
 
 void DJIMotor::setOutput(){
     unsigned long time = us_ticker_read();
-//    printf("Time: %i\n", (int) time);
 
     if(mode == POW) {
         if(value > 32766)
@@ -156,44 +165,7 @@ void DJIMotor::setOutput(){
         powerOut = (int16_t) pidSpeed.calculate((float) value, (float) getData(VELOCITY), (double) (time - lastTime));
 
     }else if(mode == POS) {
-        if (useKalmanForPID) {
-//            double z[2] = {0, 0};
-//            double angle = kalman.getX(0);
-//            z[1] = rpmToTicksPerSecond(getData(VELOCITY));
-//            z[0] = getData(MULTITURNANGLE);
-//            int MODULUS = 8192;
-////            int measured = getData(ANGLE);
-////            z[2] = (measured + angle - ((int) angle) % MODULUS);
-//            kalman.setDt((time - lastTime) / 1000000.0);
-//            kalman.step(z);
-////            double newAngle = kalman.getX(0) / 10000.0;
-//            double newAngle = getData(MULTITURNANGLE) / 19.0;
-////            printf("Angle: %i Velo: %i\n", (int) newAngle, (int) z[1]);
-////            printf("%i  %i  %i\n", (int) newAngle, (int) value, (int) z[1]);
-////            powerOut = 0;
-////            pidPosition.debug = true;
-//            powerOut = (int16_t) pidPosition.calculate((float) value, (float) newAngle,
-//                                                       (double) (time - lastTime));
-//
-//            double velocityAbsValue = kalman.getX(1);
-//            if (velocityAbsValue < 0) {
-//                velocityAbsValue = -velocityAbsValue;
-//            }
-//
-//            bool isMoving = velocityAbsValue >= 2000;
-//
-////            printf("Is moving: %i\n", (int) isMoving);
-//
-////            printf("VELO: %i\n", (int) z[1]);
-//
-////            if (!isMoving) {
-////                powerOut += pidPosition.sumError * pidPosition.kI;
-////            } else {
-////                pidPosition.sumError = 0;
-////            }
-////            printf("power: %i\n", (int) powerOut);
-////            printf("%i\t%i\t%i\t%i\n", (int) newAngle, (int) value, (int) z[1], (int) powerOut);
-        } else if (!justPosError)
+        if (!justPosError) {
             if (!useAbsEncoder)
                 powerOut = (int16_t) pidSpeed.calculate(
                         pidPosition.calculate((float) value, (float) getData(MULTITURNANGLE),
@@ -204,19 +176,20 @@ void DJIMotor::setOutput(){
                         pidPosition.calculate((float) value, (float) getData(ANGLE), (double) (time - lastTime)),
                         (float) getData(VELOCITY), (float) (time - lastTime));
 
-        else if (!useAbsEncoder)
+        }else if (!useAbsEncoder) {
             powerOut = (int16_t) pidPosition.calculate((float) value, (float) getData(MULTITURNANGLE),
                                                        (double) (time - lastTime));
-        else
+        }else {
             powerOut = (int16_t) pidPosition.calculate((float) value, (float) getData(ANGLE),
                                                        (double) (time - lastTime));
+        }
     }
 
     else if(mode == OFF)
         powerOut = 0;
 
     else if(mode == ERR)
-        printf("[ERROR] THIS IS AN ERRONEOUS MOTOR. DO NOT ATTEMPT TO SEND IT DATA, DO NOT PASS GO, DO NOT COLLECT $200, FIX THIS!\n");
+        printf("[ERROR] THIS IS AN ERRONEOUS MOTOR. ON BUS [%d] MOTOR [%d], \"%s\". YOU WILL HAVE ERRORS.\n. DO NOT ATTEMPT TO SEND IT DATA, DO NOT PASS GO, DO NOT COLLECT $200, FIX THIS!\n", canBus + 1, motorID_0 + 1, name.c_str());
 
     if(powerOut > outCap || powerOut > 32766)
         powerOut = (int16_t) min(outCap, 32766);
@@ -225,10 +198,6 @@ void DJIMotor::setOutput(){
         powerOut = (int16_t) - max(-outCap, -32766);
 
     lastTime = time;
-}
-
-__attribute__((unused)) int DJIMotor::getPowerOut() const {
-    return powerOut;
 }
 
 int DJIMotor::getData(motorDataType data) {
@@ -249,7 +218,7 @@ int DJIMotor::operator>>(motorDataType data){
 }
 
 void DJIMotor::printAllMotorData() {
-    printf("TYPE:%d ANGL:%d MLTI:%d VELO:%d TORQ:%d TEMP:%d | PWR:%d\n", type, getData(ANGLE), getData(MULTITURNANGLE), getData(VELOCITY), getData(TORQUE), getData(TEMPERATURE), powerOut);
+    printf("TYPE:%d ANGL:%d MLTI:%d VELO:%d TORQ:%d TEMP:%d | PWR:%d canBus:%d ID:%d name:%s\n", type, getData(ANGLE), getData(MULTITURNANGLE), getData(VELOCITY), getData(TORQUE), getData(TEMPERATURE), powerOut, canBus + 1, motorID_0 + 1, name.c_str());
 }
 
 void DJIMotor::updateMultiTurnPosition() {
@@ -325,7 +294,7 @@ void DJIMotor::sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool debu
     for(int i = 0; i < 4; i++){
         if(s_motorsExist[canBus][sendIDindex][i]){
             s_allMotors[canBus][sendIDindex][i]->setOutput();
-            int16_t pO = s_allMotors[canBus][sendIDindex][i]->powerOut;
+            int16_t pO = s_allMotors[canBus][sendIDindex][i] -> powerOut;
 
             if(debug)
                 printf("%d\t",pO);
@@ -351,7 +320,7 @@ void DJIMotor::getFeedback(){
         uint8_t receivedBytes[8] = {0, 0, 0, 0, 0, 0, 0, 0};
         int msgID;
 
-        while(s_canHandlers[i]->getFeedback(&msgID, receivedBytes, i)) {
+        while(s_canHandlers[i] -> getFeedback(&msgID, receivedBytes, i)) {
             int mNum = msgID - 0x201;
 
             if(s_motorsExist[i][mNum / 4][mNum % 4]){
@@ -367,7 +336,7 @@ void DJIMotor::getFeedback(){
                 s_allMotors [i][mNum / 4][mNum % 4] -> timeOfLastFeedback = us_ticker_read() / 1000;
 
                 if(s_allMotors[i][mNum / 4][mNum % 4] -> motorData[TEMPERATURE] > 80)
-                    printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS %d DEGREES CELSIUS\n", msgID, s_allMotors[i][mNum / 4][mNum % 4]->motorData[TEMPERATURE]);
+                    printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS %d DEGREES CELSIUS ON BUS [%d] ID [%d], \"%s\" \n", msgID, s_allMotors[i][mNum / 4][mNum % 4] -> motorData[TEMPERATURE], i + 1, s_allMotors[i][mNum / 4][mNum % 4] -> motorID_0 + 1, s_allMotors[i][mNum / 4][mNum % 4] -> name.c_str());
 
             }else{
                 printf("[WARNING] YOU HAVE A MOTOR [0x%x] {%d}{%d}{%d} ATTACHED THAT IS NOT INITIALIZED.. WHY: \n",msgID,i,mNum/4,mNum%4);
@@ -392,8 +361,8 @@ __attribute__((unused)) bool DJIMotor::s_allMotorsConnected(bool debug){
                 if(s_motorsExist[canBus][r][c]) {
                     if (us_ticker_read() / 1000 - s_allMotors[canBus][r][c] -> timeOfLastFeedback > TIMEOUT_MS) {
                         if(debug) {
-                            printf("Motor %d on bus: %d lost connection\n", c + 4 * r + 1, canBus + 1);
-                            printf("Motor[%d][%d][%d]\n", canBus, r, c);
+                            printf("Motor ID %d on bus: %d lost connection\n", s_allMotors[canBus][r][c] -> motorID_0 + 1, canBus + 1);
+                            printf("Motor [%d][%d][%d]\n", canBus, r, c);
                         }
                         return false;
                     }
@@ -435,7 +404,6 @@ void DJIMotor::sendValues() {
 
 void DJIMotor::tick(){
     getFeedback();
-    //updateMultiTurnPosition();
     sendValues();
 }
 
