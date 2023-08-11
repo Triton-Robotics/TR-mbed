@@ -151,14 +151,14 @@ void PID::setPID(float p, float i, float d){
     kP = p; kI = i; kD = d;
 }
 
-float PID::getkP(){
+float PID::getkP() const{
     return kP;
 }
 
-float PID::getkI(){
+float PID::getkI() const{
     return kI;
 }
 
-float PID::getkD(){
+float PID::getkD() const{
     return kD;
 }
