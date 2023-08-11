@@ -316,30 +316,32 @@ void DJIMotor::sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool debu
 
 void DJIMotor::getFeedback(){
 
-    for(int i = 0; i < CAN_HANDLER_NUMBER; i ++){
+    for(int canBus = 0; canBus < CAN_HANDLER_NUMBER; canBus ++){
         uint8_t receivedBytes[8] = {0, 0, 0, 0, 0, 0, 0, 0};
         int msgID;
 
-        while(s_canHandlers[i] -> getFeedback(&msgID, receivedBytes, i)) {
-            int mNum = msgID - 0x201;
+        while(s_canHandlers[canBus] -> getFeedback(&msgID, receivedBytes, canBus)) {
+            int canID_0 = msgID - 0x201;
 
-            if(s_motorsExist[i][mNum / 4][mNum % 4]){
-                s_allMotors[i][mNum / 4][mNum % 4] -> motorData[ANGLE]        = (int16_t)(receivedBytes[0] << 8 | receivedBytes[1]);
-                s_allMotors[i][mNum / 4][mNum % 4] -> motorData[VELOCITY]     = (int16_t)(receivedBytes[2] << 8 | receivedBytes[3]);
-                s_allMotors[i][mNum / 4][mNum % 4] -> motorData[TORQUE]       = (int16_t)(receivedBytes[4] << 8 | receivedBytes[5]);
-                s_allMotors[i][mNum / 4][mNum % 4] -> motorData[TEMPERATURE]  = (int16_t) receivedBytes[6];
+            if(s_motorsExist[canBus][canID_0 / 4][canID_0 % 4]){
+                DJIMotor* motor = s_allMotors[canBus][canID_0 / 4][canID_0 % 4];
+
+                motor -> motorData[ANGLE]        = (int16_t)(receivedBytes[0] << 8 | receivedBytes[1]);
+                motor -> motorData[VELOCITY]     = (int16_t)(receivedBytes[2] << 8 | receivedBytes[3]);
+                motor -> motorData[TORQUE]       = (int16_t)(receivedBytes[4] << 8 | receivedBytes[5]);
+                motor -> motorData[TEMPERATURE]  = (int16_t) receivedBytes[6];
 
                 if(feedbackDebug)
-                    s_allMotors[i][mNum / 4][mNum % 4] -> printAllMotorData();
+                    motor -> printAllMotorData();
 
-                s_allMotors [i][mNum / 4][mNum % 4] -> timeSinceLastFeedback = us_ticker_read() / 1000 - s_allMotors[i][mNum / 4][mNum % 4] -> timeOfLastFeedback;
-                s_allMotors [i][mNum / 4][mNum % 4] -> timeOfLastFeedback = us_ticker_read() / 1000;
+                motor -> timeSinceLastFeedback = us_ticker_read() / 1000 - motor -> timeOfLastFeedback;
+                motor -> timeOfLastFeedback = us_ticker_read() / 1000;
 
-                if(s_allMotors[i][mNum / 4][mNum % 4] -> motorData[TEMPERATURE] > 80)
-                    printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS %d DEGREES CELSIUS ON BUS [%d] ID [%d], \"%s\" \n", msgID, s_allMotors[i][mNum / 4][mNum % 4] -> motorData[TEMPERATURE], i + 1, s_allMotors[i][mNum / 4][mNum % 4] -> motorID_0 + 1, s_allMotors[i][mNum / 4][mNum % 4] -> name.c_str());
+                if(motor -> motorData[TEMPERATURE] > 80)
+                    printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS %d DEGREES CELSIUS ON BUS [%d] ID [%d], \"%s\" \n", msgID, motor -> motorData[TEMPERATURE], canBus + 1, motor -> motorID_0 + 1, motor -> name.c_str());
 
             }else{
-                printf("[WARNING] YOU HAVE A MOTOR [0x%x] {%d}{%d}{%d} ATTACHED THAT IS NOT INITIALIZED.. WHY: \n",msgID,i,mNum/4,mNum%4);
+                printf("[WARNING] YOU HAVE A MOTOR [0x%x] {%d}{%d}{%d} ATTACHED THAT IS NOT INITIALIZED.. WHY: \n", msgID, canBus, canID_0 / 4, canID_0 % 4);
             }
         }
     }
