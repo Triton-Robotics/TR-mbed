@@ -9,10 +9,10 @@ LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE),  imu(*i2
     RB.outCap = 16000;
     LF.setSpeedPID(1.5, 0, 0);
 
-    this->lfId= lfId;
+    this->lfId = lfId;
     this->rfId = rfId;
-    this->lbId  = lbId;
     this->lbId = lbId;
+    this->rbId = rbId;
 
     LF.useKalmanForPID = true;
     RF.setSpeedPID(1.5, 0, 0);
