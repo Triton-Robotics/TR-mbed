@@ -29,16 +29,13 @@ DJIMotor::DJIMotor(bool isErroneousMotor){
     powerOut = 0;
 }
 
-DJIMotor::DJIMotor(short motorID, CANHandler::CANBus canBus, motorType type, std::string name): DJIMotor(motorID, canBus, type){
-    this -> name = std::move(name);
-}
-
-DJIMotor::DJIMotor(short motorID, CANHandler::CANBus canBus, motorType type){
+DJIMotor::DJIMotor(short motorID, CANHandler::CANBus canBus, motorType type, const std::string& name){
 
     canID_0 = (short)(motorID - 1);
     motorID_0 = canID_0;
     this -> canBus = canBus;
     this -> type = type;
+    this -> name = name;
 
     value = 0;
 

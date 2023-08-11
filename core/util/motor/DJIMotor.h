@@ -143,8 +143,8 @@ public:
     static bool feedbackDebug;
 
     explicit DJIMotor(bool isErroneousMotor = false);
-    DJIMotor(short motorID, CANHandler::CANBus canBus, motorType type, std::string name);
-    DJIMotor(short motorID, CANHandler::CANBus canBus, motorType type = STANDARD);
+    //DJIMotor(short motorID, CANHandler::CANBus canBus, motorType type, std::string name);
+    DJIMotor(short motorID, CANHandler::CANBus canBus, motorType type = STANDARD, const std::string& name = "NO_NAME");
     ~DJIMotor();
 
     // static void printChunk(CANHandler::CANBus bus, short sendID, motorDataType data = POWEROUT);
