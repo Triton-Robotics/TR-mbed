@@ -25,12 +25,12 @@ enum errorCodes{
 };
 
 enum motorDataType {
-    ANGLE = 0,
-    VELOCITY = 1,
-    TORQUE = 2,
-    TEMPERATURE = 3,
-    MULTITURNANGLE = 4,
-    POWEROUT = 5,
+    ANGLE,
+    VELOCITY,
+    TORQUE,
+    TEMPERATURE,
+    MULTITURNANGLE,
+    POWEROUT,
 };
 
 //keep in mind that in the constructor, this is only used to
@@ -88,11 +88,11 @@ private:
     };
 
     enum motorMoveMode{
-        OFF = 0,
-        POS = 1,
-        SPD = 2,
-        POW = 3,
-        ERR = 4
+        OFF,
+        POS,
+        SPD,
+        POW,
+        ERR
     };
 
     static DJIMotor* s_allMotors  [CAN_HANDLER_NUMBER][3][4];
@@ -115,24 +115,20 @@ public:
 
     std::string name = "NO_NAME";
 
-    int maxSpeed = 8723;
-    int bounds[2] = {0,0};
+    int value = 0;
+    int16_t powerOut = 0;
 
     //  angle | velocity | torque | temperature
-    int16_t motorData[4] = {0,0,0,0};
+    int16_t motorData[4] = {0, 0, 0, 0};
     int multiTurn = 0;
     int lastMotorAngle = 0;
 
     PID pidSpeed;
     PID pidPosition;
 
-    int value = 0;
-    int16_t powerOut = 0;
+    bool conflict = false;                                              //check for a conflict when running motors
 
-    bool conflict{};                                            //check for a conflict when running motors
-    unsigned long lastTime = 0;
     int outCap = 16000;
-
     bool useAbsEncoder = false;
     bool justPosError = false;
     bool useKalmanForPID = false;
@@ -143,11 +139,9 @@ public:
     static bool feedbackDebug;
 
     explicit DJIMotor(bool isErroneousMotor = false);
-    //DJIMotor(short motorID, CANHandler::CANBus canBus, motorType type, std::string name);
     DJIMotor(short motorID, CANHandler::CANBus canBus, motorType type = STANDARD, const std::string& name = "NO_NAME");
     ~DJIMotor();
 
-    // static void printChunk(CANHandler::CANBus bus, short sendID, motorDataType data = POWEROUT);
     static void setCANHandlers(CANHandler* bus_1, CANHandler* bus_2, bool threadSend = true, bool threadFeedback = true);
     static void updateMultiTurnPosition();
     static void sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool debug = false);
@@ -162,8 +156,6 @@ public:
     static void sendValues(bool debug = false);
     static void tick();
 
-    //int getValue();
-
     int getData(motorDataType data);
 
     void setValue(int val);
@@ -177,13 +169,16 @@ public:
     void operator=(int value);
     int operator>>(motorDataType data);
 
-    inline void setPositionPID(float kP, float kI, float kD)    { pidPosition.setPID(kP, kI, kD); }
-    inline void setPositionIntegralCap(double cap)              { pidPosition.setIntegralCap((float)cap); }
-    inline void setPositionOutputCap(double cap)                { pidPosition.setOutputCap((float)cap); }
+    inline void setPositionPID(float kP, float kI, float kD)                    { pidPosition.setPID(kP, kI, kD); }
+    inline void setPositionIntegralCap(double cap)                              { pidPosition.setIntegralCap((float)cap); }
+    inline void setPositionOutputCap(double cap)                                { pidPosition.setOutputCap((float)cap); }
 
-    inline void setSpeedPID(float kP, float kI, float kD)       { pidSpeed.setPID(kP, kI, kD); }
-    inline void setSpeedIntegralCap(double cap)                 { pidSpeed.setIntegralCap((float)cap); }
-    inline void setSpeedOutputCap(double cap)                   { pidSpeed.setOutputCap((float)cap); }
+    inline void setSpeedPID(float kP, float kI, float kD)                       { pidSpeed.setPID(kP, kI, kD); }
+    inline void setSpeedIntegralCap(double cap)                                 { pidSpeed.setIntegralCap((float)cap); }
+    inline void setSpeedOutputCap(double cap)                                   { pidSpeed.setOutputCap((float)cap); }
+
+    inline void calculateSpeedPID(float desiredV, float actualV, float dt)      { pidSpeed.calculate(desiredV, actualV, dt); }
+    inline void calculatePositionPID(float desiredP, float actualP, float dt)   { pidPosition.calculate(desiredP, actualP, dt); }
 
 };
 

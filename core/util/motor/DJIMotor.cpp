@@ -158,26 +158,26 @@ void DJIMotor::setOutput(){
         powerOut = (int16_t) value;
 
     }else if(mode == SPD) {
-        powerOut = (int16_t) pidSpeed.calculate((float) value, (float) getData(VELOCITY), (double) (time - lastTime));
+        powerOut = (int16_t) pidSpeed.calculate((float) value, (float) getData(VELOCITY), (double) (time - timeOfLastPID));
 
     }else if(mode == POS) {
         if (!justPosError) {
             if (!useAbsEncoder)
                 powerOut = (int16_t) pidSpeed.calculate(
                         pidPosition.calculate((float) value, (float) getData(MULTITURNANGLE),
-                                              (double) (time - lastTime)), (float) getData(VELOCITY),
-                        (float) (time - lastTime));
+                                              (double) (time - timeOfLastPID)), (float) getData(VELOCITY),
+                        (float) (time - timeOfLastPID));
             else
                 powerOut = (int16_t) pidSpeed.calculate(
-                        pidPosition.calculate((float) value, (float) getData(ANGLE), (double) (time - lastTime)),
-                        (float) getData(VELOCITY), (float) (time - lastTime));
+                        pidPosition.calculate((float) value, (float) getData(ANGLE), (double) (time - timeOfLastPID)),
+                        (float) getData(VELOCITY), (float) (time - timeOfLastPID));
 
         }else if (!useAbsEncoder) {
             powerOut = (int16_t) pidPosition.calculate((float) value, (float) getData(MULTITURNANGLE),
-                                                       (double) (time - lastTime));
+                                                       (double) (time - timeOfLastPID));
         }else {
             powerOut = (int16_t) pidPosition.calculate((float) value, (float) getData(ANGLE),
-                                                       (double) (time - lastTime));
+                                                       (double) (time - timeOfLastPID));
         }
     }
 
@@ -193,18 +193,18 @@ void DJIMotor::setOutput(){
     if(powerOut < -outCap || powerOut < -32766)
         powerOut = (int16_t) - max(-outCap, -32766);
 
-    lastTime = time;
+    timeOfLastPID = time;
 }
 
 int DJIMotor::getData(motorDataType data) {
-    if(data == POWEROUT)
-        return powerOut;
-
-    else if (data != MULTITURNANGLE)
+    if(data <= 3)
         return motorData[data];
 
     else if(data == MULTITURNANGLE)
         return multiTurn;
+
+    else
+        return powerOut;
 
     return 0;
 }
