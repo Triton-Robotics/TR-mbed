@@ -8,7 +8,8 @@ var indexSectionsWithContent =
   5: "cegr",
   6: "abcegjkmps",
   7: "abcdefglmnopqrstuvwxyz",
-  8: "_abcdefghijlmnprstuvwxyz"
+  8: "_abcdefghijlmnprstuvwxyz",
+  9: "m"
 };
 
 var indexSectionNames =
@@ -21,7 +22,8 @@ var indexSectionNames =
   5: "typedefs",
   6: "enums",
   7: "enumvalues",
-  8: "defines"
+  8: "defines",
+  9: "pages"
 };
 
 var indexSectionLabels =
@@ -34,6 +36,7 @@ var indexSectionLabels =
   5: "Typedefs",
   6: "Enumerations",
   7: "Enumerator",
-  8: "Macros"
+  8: "Macros",
+  9: "Pages"
 };
 
