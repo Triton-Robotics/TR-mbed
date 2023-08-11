@@ -34,7 +34,7 @@ enum motorDataType {
 };
 
 //keep in mind that in the constructor, this is only used to
-//set the default pid values and gear ratio. The motortype will
+//set the default pid values and gear ratio. The motorType will
 //be changed to STANDARD, because that's what the code uses.
 
 enum motorType {
@@ -140,11 +140,10 @@ public:
     bool printAngle = false;
     int integratedAngle = 0;
     long lastIntegrationTime = -1;
-    static bool sendDebug;
     static bool feedbackDebug;
 
     explicit DJIMotor(bool isErroneousMotor = false);
-    DJIMotor(short canID, CANHandler::CANBus canBus, motorType type, std::string name);
+    DJIMotor(short motorID, CANHandler::CANBus canBus, motorType type, std::string name);
     DJIMotor(short motorID, CANHandler::CANBus canBus, motorType type = STANDARD);
     ~DJIMotor();
 
@@ -160,7 +159,7 @@ public:
 
     static void feedbackThread();
     static void sendThread();
-    static void sendValues();
+    static void sendValues(bool debug = false);
     static void tick();
 
     //int getValue();

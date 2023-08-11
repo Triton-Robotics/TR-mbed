@@ -10,9 +10,8 @@
 
 DJIMotor* DJIMotor::s_allMotors[2][3][4];
 bool DJIMotor::s_motorsExist[2][3][4];
-
 CANHandler* DJIMotor::s_canHandlers[2];
-bool DJIMotor::sendDebug = false;
+
 bool DJIMotor::feedbackDebug = false;
 
 DJIMotor::DJIMotor(bool isErroneousMotor){
@@ -30,7 +29,7 @@ DJIMotor::DJIMotor(bool isErroneousMotor){
     powerOut = 0;
 }
 
-DJIMotor::DJIMotor(short canID, CANHandler::CANBus canBus, motorType type, std::string name): DJIMotor(canID, canBus, type){
+DJIMotor::DJIMotor(short motorID, CANHandler::CANBus canBus, motorType type, std::string name): DJIMotor(motorID, canBus, type){
     this -> name = std::move(name);
 }
 
@@ -285,38 +284,51 @@ void DJIMotor::updateMultiTurnPosition() {
                 }
 }
 
+void DJIMotor::sendValues(bool debug){
+
+    for(short canBus = 0; canBus < CAN_HANDLER_NUMBER; canBus++)
+        for(short sendIDindex = 0; sendIDindex < 3; sendIDindex++)
+            sendOneID((CANHandler::CANBus) canBus, sendIDindex, debug);
+
+}
+
 void DJIMotor::sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool debug){
     int8_t bytes[8]  = {0,0,0,0,0,0,0,0};
+    bool anyMotors = false;
 
     if(debug)
-        printf("0x%x:\t",sendIDs[sendIDindex]);
+        printf("0x%x:\t", sendIDs[sendIDindex]);
 
     for(int i = 0; i < 4; i++){
         if(s_motorsExist[canBus][sendIDindex][i]){
-            s_allMotors[canBus][sendIDindex][i]->setOutput();
-            int16_t pO = s_allMotors[canBus][sendIDindex][i] -> powerOut;
+            s_allMotors[canBus][sendIDindex][i] -> setOutput();
+            int16_t powerOut = s_allMotors[canBus][sendIDindex][i] -> powerOut;
+
+            bytes[2 * i] =      int8_t(powerOut >> 8);
+            bytes[2 * i + 1] =  int8_t(powerOut);
+
+            anyMotors = true;
 
             if(debug)
-                printf("%d\t",pO);
+                printf("%d\t", powerOut);
 
-            bytes[2*i] = int8_t(pO >> 8);
-            bytes[2*i + 1] = int8_t(pO);
-
-        }else
-            if(debug) printf("NA\t");
+        }else if (debug)
+            printf("NA\t");
     }
 
-    if(s_canHandlers[canBus]->exists)
-        s_canHandlers[canBus]->rawSend(sendIDs[sendIDindex], bytes);
+    if(s_canHandlers[canBus] -> exists && anyMotors)
+        s_canHandlers[canBus] -> rawSend(sendIDs[sendIDindex], bytes);
 
     else
-        printf("[ERROR] YOUR CANHANDLERS ARE NOT DEFINED YET. DO THIS BEFORE YOU CALL ANY MOTORS,\n USING [(DJIMotor::setCANHandlers(PA_11,PA_12,PB_12,PB_13)], WHERE PA_11, PA_12 ARE TX, RX\n");
+        printf("\n[ERROR] YOUR CANHANDLERS ARE NOT DEFINED YET. DO THIS BEFORE YOU CALL ANY MOTORS,\n USING [(DJIMotor::setCANHandlers(PA_11,PA_12,PB_12,PB_13)], WHERE PA_11, PA_12 ARE TX, RX\n");
+
+    if(debug) printf("\n");
 
 }
 
 void DJIMotor::getFeedback(){
 
-    for(int canBus = 0; canBus < CAN_HANDLER_NUMBER; canBus ++){
+    for(int canBus = 0; canBus < CAN_HANDLER_NUMBER; canBus++){
         uint8_t receivedBytes[8] = {0, 0, 0, 0, 0, 0, 0, 0};
         int msgID;
 
@@ -392,16 +404,6 @@ void DJIMotor::sendThread() {
         sendValues();
         ThisThread::sleep_for(1ms);
     }
-}
-
-//TODO: MAKE THIS MORE EFFICIENT BY LIMITING ADDRESSES TO ONLY THOSE THAT HOLD MOTORS
-void DJIMotor::sendValues() {
-    for(short i = 0; i < 3; i ++)
-        sendOneID(CANHandler::CANBUS_1, i, sendDebug);
-    if(sendDebug) printf("\n");
-    for(short i = 0; i < 3; i ++)
-        sendOneID(CANHandler::CANBUS_2, i, sendDebug);
-    if(sendDebug) printf("\n");
 }
 
 void DJIMotor::tick(){
