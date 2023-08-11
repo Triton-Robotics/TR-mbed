@@ -136,7 +136,6 @@ public:
     bool printAngle = false;
     int integratedAngle = 0;
     long lastIntegrationTime = -1;
-    static bool feedbackDebug;
 
     explicit DJIMotor(bool isErroneousMotor = false);
     DJIMotor(short motorID, CANHandler::CANBus canBus, motorType type = STANDARD, const std::string& name = "NO_NAME");
@@ -145,10 +144,10 @@ public:
     static void setCANHandlers(CANHandler* bus_1, CANHandler* bus_2, bool threadSend = true, bool threadFeedback = true);
     static void updateMultiTurnPosition();
     static void sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool debug = false);
-    static void getFeedback();
+    static void getFeedback(bool debug = false);
 
     bool isConnected() const;
-    __attribute__((unused)) static bool s_allMotorsConnected(bool debug);
+    __attribute__((unused)) static bool s_allMotorsConnected(bool debug = false);
     static bool s_isMotorConnected(CANHandler::CANBus bus, motorType type, short canID);
 
     static void feedbackThread();

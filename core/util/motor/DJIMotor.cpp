@@ -12,8 +12,6 @@ DJIMotor* DJIMotor::s_allMotors[2][3][4];
 bool DJIMotor::s_motorsExist[2][3][4];
 CANHandler* DJIMotor::s_canHandlers[2];
 
-bool DJIMotor::feedbackDebug = false;
-
 DJIMotor::DJIMotor(bool isErroneousMotor){
 
     canID_0 = -1;
@@ -323,7 +321,7 @@ void DJIMotor::sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool debu
 
 }
 
-void DJIMotor::getFeedback(){
+void DJIMotor::getFeedback(bool debug){
 
     for(int canBus = 0; canBus < CAN_HANDLER_NUMBER; canBus++){
         uint8_t receivedBytes[8] = {0, 0, 0, 0, 0, 0, 0, 0};
@@ -340,7 +338,7 @@ void DJIMotor::getFeedback(){
                 motor -> motorData[TORQUE]       = (int16_t)(receivedBytes[4] << 8 | receivedBytes[5]);
                 motor -> motorData[TEMPERATURE]  = (int16_t) receivedBytes[6];
 
-                if(feedbackDebug)
+                if(debug)
                     motor -> printAllMotorData();
 
                 motor -> timeSinceLastFeedback = us_ticker_read() / 1000 - motor -> timeOfLastFeedback;
