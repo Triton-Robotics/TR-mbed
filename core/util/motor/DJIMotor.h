@@ -13,9 +13,9 @@
 #define CAN_HANDLER_NUMBER 2            //Number of can handlers
 #define TIMEOUT_MS 400                  //timeout for motor feedback
 
-static int sendIDs[3] = {0x200,0x1FF,0x2FF}; //IDs to send data
-static Thread motorFeedbackThread(osPriorityAboveNormal); //threading for Motor::tick()
-static Thread motorSendThread(osPriorityNormal); //threading for Motor::tick()
+static int s_sendIDs[3] = {0x200, 0x1FF, 0x2FF};           //IDs to send data
+static Thread s_motorFeedbackThread(osPriorityAboveNormal);     //threading for Motor::tick()
+static Thread s_motorSendThread(osPriorityNormal);              //threading for Motor::tick()
 
 enum errorCodes{
     NO_ERROR,
@@ -99,13 +99,13 @@ private:
     static bool s_motorsExist     [CAN_HANDLER_NUMBER][3][4];
 
     static CANHandler* s_canHandlers[CAN_HANDLER_NUMBER];
-    CANHandler::CANBus canBus = CANHandler::NOBUS;                  //the CANBus this motor is on
+    CANHandler::CANBus canBus = CANHandler::NOBUS;
 
     short canID_0;                                                  // canID - 1, because canID is 1-8, arrays are 0-7
-    short motorID_0;
-    int gearRatio = 1;                                              //the gear ratio of the motor to encoder
-    motorType type = NONE;                                          //mode of the motor
-    motorMoveMode mode = OFF;                                       //mode of the motor
+    short motorID_0;                                                // physical motorID - 1
+    int gearRatio = 1;                                              // the gear ratio of the motor to encoder
+    motorType type = NONE;                                          // type of the motor
+    motorMoveMode mode = OFF;                                       // mode of the motor
 
     unsigned long timeSinceLastFeedback = 0;
     unsigned long timeOfLastFeedback = 0;
@@ -119,14 +119,12 @@ public:
     int16_t powerOut = 0;
 
     //  angle | velocity | torque | temperature
-    int16_t motorData[4] = {0, 0, 0, 0};
+    int16_t motorData[4] = {};
     int multiTurn = 0;
     int lastMotorAngle = 0;
 
     PID pidSpeed;
     PID pidPosition;
-
-    bool conflict = false;                                              //check for a conflict when running motors
 
     int outCap = 16000;
     bool useAbsEncoder = false;
@@ -142,31 +140,29 @@ public:
     ~DJIMotor();
 
     static void setCANHandlers(CANHandler* bus_1, CANHandler* bus_2, bool threadSend = true, bool threadFeedback = true);
-    static void updateMultiTurnPosition();
-    static void sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool debug = false);
+    static void s_updateMultiTurnPosition();
+    static void s_sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool debug = false);
+
     static void getFeedback(bool debug = false);
+    static void sendValues(bool debug = false);
+    static void s_feedbackThread();
+    static void s_sendThread();
 
     bool isConnected() const;
     __attribute__((unused)) static bool s_allMotorsConnected(bool debug = false);
     static bool s_isMotorConnected(CANHandler::CANBus bus, motorType type, short canID);
 
-    static void feedbackThread();
-    static void sendThread();
-    static void sendValues(bool debug = false);
-    static void tick();
-
     int getData(motorDataType data);
+    void printAllMotorData();
 
-    void setValue(int val);
     void setOutput();
+    void setValue(int val);
     void setPower(int power);
     void setSpeed(int speed);
     void setPosition(int position);
 
-    void printAllMotorData();
-
-    void operator=(int value);
-    int operator>>(motorDataType data);
+    inline void operator=(int value)                                            { setValue(value); }
+    inline int operator>>(motorDataType data)                                   { return getData(data); }
 
     inline void setPositionPID(float kP, float kI, float kD)                    { pidPosition.setPID(kP, kI, kD); }
     inline void setPositionIntegralCap(double cap)                              { pidPosition.setIntegralCap((float)cap); }
@@ -176,8 +172,8 @@ public:
     inline void setSpeedIntegralCap(double cap)                                 { pidSpeed.setIntegralCap((float)cap); }
     inline void setSpeedOutputCap(double cap)                                   { pidSpeed.setOutputCap((float)cap); }
 
-    inline void calculateSpeedPID(float desiredV, float actualV, float dt)      { pidSpeed.calculate(desiredV, actualV, dt); }
-    inline void calculatePositionPID(float desiredP, float actualP, float dt)   { pidPosition.calculate(desiredP, actualP, dt); }
+    inline float calculateSpeedPID(float desiredV, float actualV, float dt)     { pidSpeed.calculate(desiredV, actualV, dt); }
+    inline float calculatePositionPID(float desiredP, float actualP, double dt) { pidPosition.calculate(desiredP, actualP, dt); }
 
 };
 
