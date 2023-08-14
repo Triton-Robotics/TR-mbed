@@ -108,19 +108,16 @@ void DJIMotor::setValue(int val){
 void DJIMotor::setPower(int power){
     setValue(power);
     mode = POW;
-    setOutput();
 }
 
 void DJIMotor::setSpeed(int speed){
     setValue(speed);
     mode = SPD;
-    setOutput();
 }
 
 void DJIMotor::setPosition(int position){
     setValue(position);
     mode = POS;
-    setOutput();
 }
 
 void DJIMotor::setOutput(){
