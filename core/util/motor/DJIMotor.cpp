@@ -1,13 +1,7 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "ConstantConditionsOC"
-#pragma ide diagnostic ignored "UnreachableCode"
-#pragma ide diagnostic ignored "EndlessLoop"
-#pragma ide diagnostic ignored "misc-unconventional-assign-operator"
-
 #include "DJIMotor.h"
 
-#include <utility>
-
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "EndlessLoop"
 DJIMotor* DJIMotor::s_allMotors[2][3][4];
 bool DJIMotor::s_motorsExist[2][3][4];
 CANHandler* DJIMotor::s_canHandlers[2];
@@ -136,7 +130,7 @@ void DJIMotor::setOutput(){
             if (!useAbsEncoder)
                 powerOut = (int16_t) calculateSpeedPID(
                         calculatePositionPID((float) value, (float) getData(MULTITURNANGLE),
-                                              (double) (time - timeOfLastPID)), (float) getData(VELOCITY),
+                                             (double) (time - timeOfLastPID)), (float) getData(VELOCITY),
                         (float) (time - timeOfLastPID));
             else
                 powerOut = (int16_t) calculateSpeedPID(
@@ -145,18 +139,19 @@ void DJIMotor::setOutput(){
 
         }else if (!useAbsEncoder) {
             powerOut = (int16_t) calculatePositionPID((float) value, (float) getData(MULTITURNANGLE),
-                                                       (double) (time - timeOfLastPID));
+                                                      (double) (time - timeOfLastPID));
         }else {
             powerOut = (int16_t) calculatePositionPID((float) value, (float) getData(ANGLE),
-                                                       (double) (time - timeOfLastPID));
+                                                      (double) (time - timeOfLastPID));
         }
     }
 
     else if(mode == OFF)
         powerOut = 0;
 
-    else if(mode == ERR)
-        printf("[ERROR] THIS IS AN ERRONEOUS MOTOR. ON BUS [%d] MOTOR [%d], \"%s\". YOU WILL HAVE ERRORS.\n. DO NOT ATTEMPT TO SEND IT DATA, DO NOT PASS GO, DO NOT COLLECT $200, FIX THIS!\n", canBus + 1, motorID_0 + 1, name.c_str());
+    else
+        printf("[ERROR] THIS IS AN ERRONEOUS MOTOR. ON BUS [%d] MOTOR [%d], \"%s\". YOU WILL HAVE ERRORS.\n. DO NOT ATTEMPT TO SEND IT DATA, DO NOT PASS GO, DO NOT COLLECT $200, FIX THIS!\n",
+               canBus + 1, motorID_0 + 1, name.c_str());
 
     if(powerOut > outCap || powerOut > 32766)
         powerOut = (int16_t) min(outCap, 32766);
@@ -225,12 +220,10 @@ void DJIMotor::getFeedback(bool debug){
                 motor -> motorData[VELOCITY]     = (int16_t)(receivedBytes[2] << 8 | receivedBytes[3]);
                 motor -> motorData[TORQUE]       = (int16_t)(receivedBytes[4] << 8 | receivedBytes[5]);
                 motor -> motorData[TEMPERATURE]  = (int16_t) receivedBytes[6];
+                motor -> timeOfLastFeedback = us_ticker_read() / 1000;
 
                 if(debug)
                     motor -> printAllMotorData();
-
-                motor -> timeSinceLastFeedback = us_ticker_read() / 1000 - motor -> timeOfLastFeedback;
-                motor -> timeOfLastFeedback = us_ticker_read() / 1000;
 
                 if(motor -> motorData[TEMPERATURE] > 80)
                     printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS %d DEGREES CELSIUS ON BUS [%d] ID [%d], \"%s\" \n", msgID, motor -> motorData[TEMPERATURE], canBus + 1, motor -> motorID_0 + 1, motor -> name.c_str());
@@ -240,14 +233,6 @@ void DJIMotor::getFeedback(bool debug){
         }
     }
     s_updateMultiTurnPosition();
-}
-
-bool DJIMotor::isConnected() const {
-    return us_ticker_read() / 1000 - timeOfLastFeedback <= TIMEOUT_MS;
-}
-
-bool DJIMotor::s_isMotorConnected(CANHandler::CANBus bus, motorType type, short canID){
-    return (s_motorsExist[bus][type][canID] && us_ticker_read() / 1000 - s_allMotors[bus][type][canID] -> timeOfLastFeedback <= TIMEOUT_MS);
 }
 
 __attribute__((unused)) bool DJIMotor::s_allMotorsConnected(bool debug){
@@ -276,7 +261,6 @@ int DJIMotor::getData(motorDataType data) {
     else
         return powerOut;
 
-    return 0;
 }
 
 void DJIMotor::printAllMotorData() {
@@ -368,5 +352,4 @@ void DJIMotor::s_sendThread() {
         ThisThread::sleep_for(1ms);
     }
 }
-
 #pragma clang diagnostic pop

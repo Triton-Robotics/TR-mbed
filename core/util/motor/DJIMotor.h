@@ -1,6 +1,3 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "misc-unconventional-assign-operator"
-#pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
 #ifndef TR_EMBEDDED_DJIMOTOR_H
 #define TR_EMBEDDED_DJIMOTOR_H
 
@@ -17,20 +14,12 @@ static int s_sendIDs[3] = {0x200, 0x1FF, 0x2FF};           //IDs to send data
 static Thread s_motorFeedbackThread(osPriorityAboveNormal);     //threading for Motor::tick()
 static Thread s_motorSendThread(osPriorityNormal);              //threading for Motor::tick()
 
-enum errorCodes{
-    NO_ERROR,
-    MOTOR_CONFLICT,
-    MOTOR_DISABLED,
-    OUTSIDE_OF_BOUNDS,
-};
-
 enum motorDataType {
     ANGLE,
     VELOCITY,
     TORQUE,
     TEMPERATURE,
     MULTITURNANGLE,
-    POWEROUT,
 };
 
 //keep in mind that in the constructor, this is only used to
@@ -44,7 +33,6 @@ enum motorType {
     GIMBLY = 2,
     GM6020 = 2,
 
-    C620 = 3,
     M3508 = 3,
 
     C610 = 4,
@@ -103,11 +91,9 @@ private:
 
     short canID_0;                                                  // canID - 1, because canID is 1-8, arrays are 0-7
     short motorID_0;                                                // physical motorID - 1
-    int gearRatio = 1;                                              // the gear ratio of the motor to encoder
     motorType type = NONE;                                          // type of the motor
     motorMoveMode mode = OFF;                                       // mode of the motor
 
-    unsigned long timeSinceLastFeedback = 0;
     unsigned long timeOfLastFeedback = 0;
     unsigned long timeOfLastPID = 0;
 
@@ -129,8 +115,6 @@ public:
     int outCap = 16000;
     bool useAbsEncoder = false;
     bool justPosError = false;
-    bool useKalmanForPID = false;
-    bool useIntegrationForPID = false;
     bool printAngle = false;
     int integratedAngle = 0;
     long lastIntegrationTime = -1;
@@ -148,9 +132,7 @@ public:
     static void s_feedbackThread();
     static void s_sendThread();
 
-    bool isConnected() const;
     __attribute__((unused)) static bool s_allMotorsConnected(bool debug = false);
-    static bool s_isMotorConnected(CANHandler::CANBus bus, motorType type, short canID);
 
     int getData(motorDataType data);
     void printAllMotorData();
@@ -161,7 +143,13 @@ public:
     void setSpeed(int speed);
     void setPosition(int position);
 
-    inline void operator=(int value)                                            { setValue(value); }
+    __attribute__((unused)) inline bool isConnected() const {
+        return us_ticker_read() / 1000 - timeOfLastFeedback <= TIMEOUT_MS;
+    }
+    inline static bool s_isMotorConnected(CANHandler::CANBus bus, motorType type, short canID){
+        return (s_motorsExist[bus][type][canID] && us_ticker_read() / 1000 - s_allMotors[bus][type][canID] -> timeOfLastFeedback <= TIMEOUT_MS);
+    }
+
     inline int operator>>(motorDataType data)                                   { return getData(data); }
 
     inline void setPositionPID(float kP, float kI, float kD)                    { pidPosition.setPID(kP, kI, kD); }
@@ -179,6 +167,3 @@ public:
 
 
 #endif //TR_EMBEDDED_DJIMOTOR_H
-
-#pragma clang diagnostic pop
-#pragma clang diagnostic pop
