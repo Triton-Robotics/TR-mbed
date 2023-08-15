@@ -119,7 +119,7 @@ void DJIMotor::setOutput(){
         printf("[ERROR] THIS IS AN ERRONEOUS MOTOR. ON BUS [%d] MOTOR [%d], \"%s\". YOU WILL HAVE ERRORS.\n. DO NOT ATTEMPT TO SEND IT DATA, DO NOT PASS GO, DO NOT COLLECT $200, FIX THIS!\n",
                canBus + 1, motorID_0 + 1, name.c_str());
 
-    if(type == M3508_FLYWHEEL || type == M3508){
+    if(type == M3508_FLYWHEEL || type == M3508 || type == M2006){
         if(powerOut > outCap || powerOut > INT15_T_MAX)
             powerOut = min(outCap, INT15_T_MAX);
 
