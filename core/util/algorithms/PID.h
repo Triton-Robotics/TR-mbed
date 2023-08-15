@@ -56,11 +56,13 @@ public:
      * @return The output control power
      */
 
-    int calculate(int desiredV, int actualV, double dt);
-
     float calculate(float desiredV, float actualV, double dt);
 
+    int calculate(int desiredV, int actualV, double dt);
+
     float calculate(float dV, double dt);
+
+    int calculate(int dV, double dt);
 
     /**
      * Sets the integral cap

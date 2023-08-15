@@ -168,6 +168,46 @@ float PID::calculate(float dV, double dt){
     return PIDCalc + feedForward;
 }
 
+int PID::calculate(int dV, double dt) {
+    dt /= 1000;
+
+    float error = static_cast<float>(dV);
+
+    if(lastError == error && carryCount < slopeCarry){
+        carryCount ++;
+    }else{
+        prevRealError = lastError;
+        carryCount = 0;
+    }
+
+    double PIDCalc = kP * error + kI * sumError + kD * (error - prevRealError) / dt;
+    if(debugPIDterms)
+        printf("P: %f\t I: %f\t D: %f\t\n", kP * error, kI * sumError, kD * ((double)(error - lastError) * (pow(10,d10xMultiplier)/dt)));
+
+    sumError += error * dt;
+    lastError = error;
+
+    if(debug)
+        printf("PID: %d\t ERROR: %d\n", int(PIDCalc), int(error));
+
+    if(integralCap != 0){
+        //sumError = std::max(std::min(sumError,integralCap),-integralCap);
+        if(sumError > integralCap)
+            sumError = integralCap;
+        else if(sumError < -integralCap)
+            sumError = -integralCap;
+    }
+    if(outputCap != 0){
+        //PIDCalc = std::max(std::min(PIDCalc,outputCap),-outputCap);
+        if(PIDCalc > outputCap)
+            PIDCalc = outputCap;
+        else if(PIDCalc < -outputCap)
+            PIDCalc = -outputCap;
+    }
+
+    return static_cast<int>(PIDCalc + feedForward);
+}
+
 
 /**
          * @brief set the integral cap

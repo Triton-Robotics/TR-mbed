@@ -107,10 +107,10 @@ void DJIMotor::setOutput(){
 
     else if(mode == POS)
         if (!useAbsEncoder)
-            powerOut = calculatePositionPID(value, getData(MULTITURNANGLE),static_cast<double>(time - timeOfLastPID));
+            powerOut = calculatePositionPID(value, getData(MULTITURNANGLE), static_cast<double>(time - timeOfLastPID));
 
         else
-            powerOut = calculatePositionPID(value, getData(ANGLE), static_cast<double>(time - timeOfLastPID));
+            powerOut = calculatePositionPID(s_calculateDeltaTicks(value, getData(ANGLE)), static_cast<double>(time - timeOfLastPID));
 
     else if(mode == OFF)
         powerOut = 0;
@@ -239,6 +239,18 @@ int DJIMotor::getData(motorDataType data) {
 
 void DJIMotor::printAllMotorData() {
     printf("TYPE:%d ANGL:%d MLTI:%d VELO:%d TORQ:%d TEMP:%d | PWR:%d canBus:%d ID:%d name:%s\n", type, getData(ANGLE), getData(MULTITURNANGLE), getData(VELOCITY), getData(TORQUE), getData(TEMPERATURE), powerOut, canBus + 1, motorID_0 + 1, name.c_str());
+}
+
+int DJIMotor::s_calculateDeltaTicks(int target, int current) {
+    int deltaTicks = target - current;
+
+    if(abs(deltaTicks) > TICKS_REVOLUTION / 2){
+        if(deltaTicks > 0)
+            deltaTicks -= TICKS_REVOLUTION;
+        else
+            deltaTicks += TICKS_REVOLUTION;
+    }
+    return deltaTicks;
 }
 
 void DJIMotor::s_updateMultiTurnPosition() {

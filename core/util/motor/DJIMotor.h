@@ -7,7 +7,7 @@
 #include <cmath>
 #include <string>
 
-
+constexpr int TICKS_REVOLUTION = 8192;
 constexpr int TIMEOUT_MS = 400;
 constexpr int CAN_HANDLER_NUMBER = 2;
 
@@ -137,6 +137,8 @@ public:
 
     __attribute__((unused)) static bool s_allMotorsConnected(bool debug = false);
 
+    static int s_calculateDeltaTicks(int target, int current);
+
     int getData(motorDataType data);
     void printAllMotorData();
     void setOutput();
@@ -175,6 +177,7 @@ public:
 
     inline int calculateSpeedPID(int desiredV, int actualV, double dt)          { pidSpeed.calculate(desiredV, actualV, dt); }
     inline int calculatePositionPID(int desiredP, int actualP, double dt)       { pidPosition.calculate(desiredP, actualP, dt); }
+    inline int calculatePositionPID(int dV, double dt)                          { pidPosition.calculate(dV, dt); }
 
 };
 
