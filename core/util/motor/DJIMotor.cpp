@@ -1,13 +1,13 @@
-#include "DJIMotor.h"
-
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "EndlessLoop"
+
+#include "DJIMotor.h"
+
 DJIMotor* DJIMotor::s_allMotors[2][3][4];
 bool DJIMotor::s_motorsExist[2][3][4];
 CANHandler* DJIMotor::s_canHandlers[2];
 
 DJIMotor::DJIMotor(bool isErroneousMotor){
-
     canID_0 = -1;
     motorID_0 = -1;
     canBus = CANHandler::NOBUS;
@@ -84,7 +84,7 @@ DJIMotor::~DJIMotor(){
     canBus = CANHandler::NOBUS;
 }
 
-void DJIMotor::setCANHandlers(CANHandler* bus_1, CANHandler* bus_2, bool threadSend, bool threadFeedback){
+void DJIMotor::s_setCANHandlers(CANHandler* bus_1, CANHandler* bus_2, bool threadSend, bool threadFeedback){
     s_canHandlers[0] = bus_1;
     s_canHandlers[1] = bus_2;
 
@@ -99,10 +99,7 @@ void DJIMotor::setOutput(){
     uint32_t time = us_ticker_read();
     int powerOut;
 
-    if(mode == POW)
-        powerOut = value;
-
-    else if(mode == SPD)
+    if(mode == SPD)
         powerOut = calculateSpeedPID(value, getData(VELOCITY), static_cast<double>(time - timeOfLastPID));
 
     else if(mode == POS)
@@ -111,6 +108,9 @@ void DJIMotor::setOutput(){
 
         else
             powerOut = calculatePositionPID(s_calculateDeltaTicks(value, getData(ANGLE)), static_cast<double>(time - timeOfLastPID));
+
+    else if(mode == POW)
+        powerOut = value;
 
     else if(mode == OFF)
         powerOut = 0;
@@ -138,7 +138,7 @@ void DJIMotor::setOutput(){
     timeOfLastPID = time;
 }
 
-void DJIMotor::sendValues(bool debug){
+void DJIMotor::s_sendValues(bool debug){
     for(short canBus = 0; canBus < CAN_HANDLER_NUMBER; canBus++)
         for(short sendIDindex = 0; sendIDindex < 3; sendIDindex++)
             s_sendOneID((CANHandler::CANBus) canBus, sendIDindex, debug);
@@ -172,13 +172,13 @@ void DJIMotor::s_sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool de
         s_canHandlers[canBus] -> rawSend(s_sendIDs[sendIDindex], bytes);
 
     else
-        printf("\n[ERROR] YOUR CANHANDLERS ARE NOT DEFINED YET. DO THIS BEFORE YOU CALL ANY MOTORS,\n USING [(DJIMotor::setCANHandlers(PA_11,PA_12,PB_12,PB_13)], WHERE PA_11, PA_12 ARE TX, RX\n");
+        printf("\n[ERROR] YOUR CANHANDLERS ARE NOT DEFINED YET. DO THIS BEFORE YOU CALL ANY MOTORS,\n USING [(DJIMotor::s_setCANHandlers(PA_11,PA_12,PB_12,PB_13)], WHERE PA_11, PA_12 ARE TX, RX\n");
 
     if(debug) printf("\n");
 
 }
 
-void DJIMotor::getFeedback(bool debug){
+void DJIMotor::s_getFeedback(bool debug){
 
     for(int canBus = 0; canBus < CAN_HANDLER_NUMBER; canBus++){
         uint8_t receivedBytes[8] = {0, 0, 0, 0, 0, 0, 0, 0};
@@ -247,6 +247,7 @@ int DJIMotor::s_calculateDeltaTicks(int target, int current) {
     if(abs(deltaTicks) > TICKS_REVOLUTION / 2){
         if(deltaTicks > 0)
             deltaTicks -= TICKS_REVOLUTION;
+
         else
             deltaTicks += TICKS_REVOLUTION;
     }
@@ -318,23 +319,23 @@ void DJIMotor::s_updateMultiTurnPosition() {
 }
 
 /**
-* @brief the thread that runs the ever-necessary DJIMotor::getFeedback()
+* @brief the thread that runs the ever-necessary DJIMotor::s_getFeedback()
 */
 
 void DJIMotor::s_feedbackThread() {
     while (true) {
-        getFeedback();
+        s_getFeedback();
         ThisThread::sleep_for(1ms);
     }
 }
 
 /**
-* @brief the thread that runs the ever-necessary DJIMotor::sendValues()
+* @brief the thread that runs the ever-necessary DJIMotor::s_sendValues()
 */
 
 void DJIMotor::s_sendThread() {
     while (true) {
-        sendValues();
+        s_sendValues();
         ThisThread::sleep_for(1ms);
     }
 }

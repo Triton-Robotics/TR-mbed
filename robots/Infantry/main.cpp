@@ -83,7 +83,7 @@ int main(){
     float translationalmultiplier = 1.5; // was 3
     float beybladespeedmult = 1;
 
-    DJIMotor::setCANHandlers(&canHandler1, &canHandler2, false, false);
+    DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
 
     pitch.setPositionPID(50, 0.3, 50);
     pitch.setPositionIntegralCap(100000);
@@ -120,7 +120,7 @@ int main(){
     int yawSetPoint = 0;
     double rotationalPower = 0;
 
-    DJIMotor::getFeedback();
+    DJIMotor::s_getFeedback();
     double beybladeSpeed = 2;
     bool beybladeIncreasing = true;
 
@@ -255,10 +255,10 @@ int main(){
                 //printff("%d\n", indexer.powerOut);
                 printff("v:%d\n", indexer.getData(VELOCITY));
             }
-            DJIMotor::sendValues();
+            DJIMotor::s_sendValues();
         }
         unsigned long timeEnd = us_ticker_read() / 1000;
-        DJIMotor::getFeedback();
+        DJIMotor::s_getFeedback();
         ThisThread::sleep_for(1ms);
     }
 }

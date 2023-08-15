@@ -146,9 +146,9 @@ int main(){
 
     imuThread.start(runImuThread);
 
-    DJIMotor::setCANHandlers(&canHandler1,&canHandler2, false, false);
-    DJIMotor::sendValues();
-    DJIMotor::getFeedback();
+    DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
+    DJIMotor::s_sendValues();
+    DJIMotor::s_getFeedback();
 
     setMotorSettings();
 
@@ -167,7 +167,7 @@ int main(){
     bool once = false;
     bool onceT = false;
 
-    DJIMotor::getFeedback();
+    DJIMotor::s_getFeedback();
     int refLoop = 0;
     int yawSetPoint;
     int ref_yaw;
@@ -267,9 +267,9 @@ int main(){
             timeEnd = us_ticker_read();
             chassis.driveTurretRelativePower(chassis_power, chassis_power_limit, {-lX * 5.0, -lY * 5.0, beyblade}, (yaw.getData(MULTITURNANGLE) - yawSetPoint) * 180.0 / 8191.0 - 180, int(timeEnd - timeStart), rotationalPower);
             //printf("%d %d %d %d\n" , yawSetPoint, yaw.getData(MULTITURNANGLE) - yawSetPoint, int((yaw.getData(MULTITURNANGLE) - yawSetPoint) * 180.0 / 8191.0 - 180), chassis.getHeadingDegrees());
-            DJIMotor::sendValues();
+            DJIMotor::s_sendValues();
         }
-        DJIMotor::getFeedback();
+        DJIMotor::s_getFeedback();
         ThisThread::sleep_for(1ms);
     }
 }

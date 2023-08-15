@@ -98,10 +98,22 @@ private:
     motorType type = NONE;                                          // type of the motor
     motorMoveMode mode = OFF;                                       // mode of the motor
 
+    //  angle | velocity | torque | temperature
+    int16_t motorData[4] = {};
     int value = 0;
+
+    int lastMotorAngle = 0;
+    int integratedAngle = 0;
+    long lastIntegrationTime = -1;
 
     uint32_t timeOfLastFeedback = 0;
     uint32_t timeOfLastPID = 0;
+
+    static void s_updateMultiTurnPosition();
+    static void s_sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool debug = false);
+    static int s_calculateDeltaTicks(int target, int current);
+
+    void setOutput();
 
 public:
 
@@ -111,37 +123,25 @@ public:
     PID pidSpeed;
     PID pidPosition;
 
-    //  angle | velocity | torque | temperature
-    int16_t motorData[4] = {};
     int multiTurn = 0;
-    int lastMotorAngle = 0;
-
-    int outCap = 16000;
+    int outCap = INT16_T_MAX;
     bool useAbsEncoder = false;
     bool printAngle = false;
-    int integratedAngle = 0;
-    long lastIntegrationTime = -1;
 
     explicit DJIMotor(bool isErroneousMotor = false);
     DJIMotor(short motorID, CANHandler::CANBus canBus, motorType type = STANDARD, const std::string& name = "NO_NAME");
     ~DJIMotor();
 
-    static void setCANHandlers(CANHandler* bus_1, CANHandler* bus_2, bool threadSend = true, bool threadFeedback = true);
-    static void s_updateMultiTurnPosition();
-    static void s_sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool debug = false);
-
-    static void getFeedback(bool debug = false);
-    static void sendValues(bool debug = false);
+    static void s_setCANHandlers(CANHandler* bus_1, CANHandler* bus_2, bool threadSend = true, bool threadFeedback = true);
+    static void s_getFeedback(bool debug = false);
+    static void s_sendValues(bool debug = false);
     static void s_feedbackThread();
     static void s_sendThread();
 
     __attribute__((unused)) static bool s_allMotorsConnected(bool debug = false);
 
-    static int s_calculateDeltaTicks(int target, int current);
-
     int getData(motorDataType data);
     void printAllMotorData();
-    void setOutput();
 
     inline void setPower(int power){
         value = power;
@@ -180,6 +180,5 @@ public:
     inline int calculatePositionPID(int dV, double dt)                          { pidPosition.calculate(dV, dt); }
 
 };
-
 
 #endif //TR_EMBEDDED_DJIMOTOR_H
