@@ -7,8 +7,12 @@
 #include <cmath>
 #include <string>
 
-#define CAN_HANDLER_NUMBER 2            //Number of can handlers
-#define TIMEOUT_MS 400                  //timeout for motor feedback
+
+constexpr int TIMEOUT_MS = 400;
+constexpr int CAN_HANDLER_NUMBER = 2;
+
+constexpr int INT16_T_MAX = 32767;
+constexpr int INT15_T_MAX = 16384;
 
 static int s_sendIDs[3] = {0x200, 0x1FF, 0x2FF};           //IDs to send data
 static Thread s_motorFeedbackThread(osPriorityAboveNormal);     //threading for Motor::tick()
@@ -94,27 +98,26 @@ private:
     motorType type = NONE;                                          // type of the motor
     motorMoveMode mode = OFF;                                       // mode of the motor
 
-    unsigned long timeOfLastFeedback = 0;
-    unsigned long timeOfLastPID = 0;
+    int value = 0;
+
+    uint32_t timeOfLastFeedback = 0;
+    uint32_t timeOfLastPID = 0;
 
 public:
 
     std::string name = "NO_NAME";
-
-    int value = 0;
     int16_t powerOut = 0;
+
+    PID pidSpeed;
+    PID pidPosition;
 
     //  angle | velocity | torque | temperature
     int16_t motorData[4] = {};
     int multiTurn = 0;
     int lastMotorAngle = 0;
 
-    PID pidSpeed;
-    PID pidPosition;
-
     int outCap = 16000;
     bool useAbsEncoder = false;
-    bool justPosError = false;
     bool printAngle = false;
     int integratedAngle = 0;
     long lastIntegrationTime = -1;
@@ -136,12 +139,22 @@ public:
 
     int getData(motorDataType data);
     void printAllMotorData();
-
     void setOutput();
-    void setValue(int val);
-    void setPower(int power);
-    void setSpeed(int speed);
-    void setPosition(int position);
+
+    inline void setPower(int power){
+        value = power;
+        mode = POW;
+    }
+
+    inline void setSpeed(int speed){
+        value = speed;
+        mode = SPD;
+    }
+
+    inline void setPosition(int position){
+        value = position;
+        mode = POS;
+    }
 
     __attribute__((unused)) inline bool isConnected() const {
         return us_ticker_read() / 1000 - timeOfLastFeedback <= TIMEOUT_MS;
@@ -160,8 +173,8 @@ public:
     inline void setSpeedIntegralCap(double cap)                                 { pidSpeed.setIntegralCap((float)cap); }
     inline void setSpeedOutputCap(double cap)                                   { pidSpeed.setOutputCap((float)cap); }
 
-    inline float calculateSpeedPID(float desiredV, float actualV, float dt)     { pidSpeed.calculate(desiredV, actualV, dt); }
-    inline float calculatePositionPID(float desiredP, float actualP, double dt) { pidPosition.calculate(desiredP, actualP, dt); }
+    inline int calculateSpeedPID(int desiredV, int actualV, double dt)          { pidSpeed.calculate(desiredV, actualV, dt); }
+    inline int calculatePositionPID(int desiredP, int actualP, double dt)       { pidPosition.calculate(desiredP, actualP, dt); }
 
 };
 

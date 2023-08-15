@@ -66,12 +66,10 @@ void setMotorSettings(){
     pitch.setPositionIntegralCap(10000);
     pitch.setPositionOutputCap(20000);
     pitch.useAbsEncoder = true;
-    pitch.justPosError = true;
 
     yaw1.setPositionPID(10.5, 0.2, 4.4);
     yaw1.setPositionIntegralCap(10000);
     yaw1.useAbsEncoder = false;
-    yaw1.justPosError = true;
     yaw1.pidPosition.setOutputCap(100000);
     yaw1.outCap = 32000;
 

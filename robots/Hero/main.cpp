@@ -113,7 +113,6 @@ int calculateDeltaYaw(int ref_yaw, int beforeBeybladeYaw){
 
 void setMotorSettings(){
 
-    pitch.justPosError = true;
     pitch.setPositionPID(15, 0.2, 10);
     //10, 0.3, 50
     //15, 0.6, 70
@@ -123,14 +122,13 @@ void setMotorSettings(){
     pitch.setPositionIntegralCap(10000);
     pitch.useAbsEncoder = true;
 
-    yaw.justPosError = true;
+
     yaw.setPositionPID(50, 0.3, 1);
     yaw.setPositionOutputCap(100000);
     yaw.setPositionIntegralCap(10000);
     yaw.outCap = 32760;
     yaw.useAbsEncoder = false;
 
-    indexer.justPosError = true;
     indexer.setPositionOutputCap(100000);
     indexer.setSpeedOutputCap(1000000);
     indexer.setPositionIntegralCap(100000);

@@ -14,7 +14,6 @@ LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE),  imu(*i2
     this->lbId = lbId;
     this->rbId = rbId;
 
-    LF.useKalmanForPID = true;
     RF.setSpeedPID(1.5, 0, 0);
     LB.setSpeedPID(1.5, 0, 0);
     RB.setSpeedPID(1.5, 0, 0);

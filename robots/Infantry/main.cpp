@@ -90,7 +90,6 @@ int main(){
     pitch.setPositionOutputCap(100000);
 
     pitch.outCap = 32760;
-    pitch.justPosError = true;
     pitch.useAbsEncoder = true;
 
     LFLYWHEEL.setSpeedPID(1, 0, 0);
@@ -101,7 +100,6 @@ int main(){
     yaw.setPositionPID(4.6, 0, 0.5);
     yaw.setPositionIntegralCap(10000);
     yaw.useAbsEncoder = false;
-    yaw.justPosError = true;
 
     gearSwap.setPositionPID(4.0, 0, 0.5);
     gearSwap.setPositionIntegralCap(10000);

@@ -95,56 +95,22 @@ void DJIMotor::setCANHandlers(CANHandler* bus_1, CANHandler* bus_2, bool threadS
         s_motorFeedbackThread.start(s_feedbackThread);
 }
 
-void DJIMotor::setValue(int val){
-    value = val;
-}
-
-void DJIMotor::setPower(int power){
-    setValue(power);
-    mode = POW;
-}
-
-void DJIMotor::setSpeed(int speed){
-    setValue(speed);
-    mode = SPD;
-}
-
-void DJIMotor::setPosition(int position){
-    setValue(position);
-    mode = POS;
-}
-
 void DJIMotor::setOutput(){
-    unsigned long time = us_ticker_read();
+    uint32_t time = us_ticker_read();
+    int powerOut;
 
-    if(mode == POW) {
-        if(value > 32766)
-            value = 32766;
-        powerOut = (int16_t) value;
+    if(mode == POW)
+        powerOut = value;
 
-    }else if(mode == SPD) {
-        powerOut = (int16_t) calculatePositionPID((float) value, (float) getData(VELOCITY), (double) (time - timeOfLastPID));
+    else if(mode == SPD)
+        powerOut = calculateSpeedPID(value, getData(VELOCITY), static_cast<double>(time - timeOfLastPID));
 
-    }else if(mode == POS) {
-        if (!justPosError) {
-            if (!useAbsEncoder)
-                powerOut = (int16_t) calculateSpeedPID(
-                        calculatePositionPID((float) value, (float) getData(MULTITURNANGLE),
-                                             (double) (time - timeOfLastPID)), (float) getData(VELOCITY),
-                        (float) (time - timeOfLastPID));
-            else
-                powerOut = (int16_t) calculateSpeedPID(
-                        calculatePositionPID((float) value, (float) getData(ANGLE), (double) (time - timeOfLastPID)),
-                        (float) getData(VELOCITY), (float) (time - timeOfLastPID));
+    else if(mode == POS)
+        if (!useAbsEncoder)
+            powerOut = calculatePositionPID(value, getData(MULTITURNANGLE),static_cast<double>(time - timeOfLastPID));
 
-        }else if (!useAbsEncoder) {
-            powerOut = (int16_t) calculatePositionPID((float) value, (float) getData(MULTITURNANGLE),
-                                                      (double) (time - timeOfLastPID));
-        }else {
-            powerOut = (int16_t) calculatePositionPID((float) value, (float) getData(ANGLE),
-                                                      (double) (time - timeOfLastPID));
-        }
-    }
+        else
+            powerOut = calculatePositionPID(value, getData(ANGLE), static_cast<double>(time - timeOfLastPID));
 
     else if(mode == OFF)
         powerOut = 0;
@@ -153,21 +119,29 @@ void DJIMotor::setOutput(){
         printf("[ERROR] THIS IS AN ERRONEOUS MOTOR. ON BUS [%d] MOTOR [%d], \"%s\". YOU WILL HAVE ERRORS.\n. DO NOT ATTEMPT TO SEND IT DATA, DO NOT PASS GO, DO NOT COLLECT $200, FIX THIS!\n",
                canBus + 1, motorID_0 + 1, name.c_str());
 
-    if(powerOut > outCap || powerOut > 32766)
-        powerOut = (int16_t) min(outCap, 32766);
+    if(type == M3508_FLYWHEEL || type == M3508){
+        if(powerOut > outCap || powerOut > INT15_T_MAX)
+            powerOut = min(outCap, INT15_T_MAX);
 
-    if(powerOut < -outCap || powerOut < -32766)
-        powerOut = (int16_t) - max(-outCap, -32766);
+        else if(powerOut < -outCap || powerOut < -INT15_T_MAX)
+            powerOut = max(-outCap, -INT15_T_MAX);
 
+    }else{
+        if(powerOut > outCap || powerOut > INT16_T_MAX)
+            powerOut = min(outCap, INT16_T_MAX);
+
+        else if(powerOut < -outCap || powerOut < -INT16_T_MAX)
+            powerOut = max(-outCap, -INT16_T_MAX);
+    }
+
+    this -> powerOut = (int16_t) powerOut;
     timeOfLastPID = time;
 }
 
 void DJIMotor::sendValues(bool debug){
-
     for(short canBus = 0; canBus < CAN_HANDLER_NUMBER; canBus++)
         for(short sendIDindex = 0; sendIDindex < 3; sendIDindex++)
             s_sendOneID((CANHandler::CANBus) canBus, sendIDindex, debug);
-
 }
 
 void DJIMotor::s_sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool debug){
