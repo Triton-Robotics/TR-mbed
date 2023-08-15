@@ -22,7 +22,7 @@ DJIMotor::DJIMotor(bool isErroneousMotor){
 
 DJIMotor::DJIMotor(short motorID, CANHandler::CANBus canBus, motorType type, const std::string& name){
 
-    canID_0 = (short)(motorID - 1);
+    canID_0 = static_cast<short>(motorID - 1);
     motorID_0 = canID_0;
     this -> canBus = canBus;
     this -> type = type;
@@ -134,7 +134,7 @@ void DJIMotor::setOutput(){
             powerOut = max(-outCap, -INT16_T_MAX);
     }
 
-    this -> powerOut = (int16_t) powerOut;
+    this -> powerOut = static_cast<int16_t>(powerOut);
     timeOfLastPID = time;
 }
 
@@ -190,11 +190,11 @@ void DJIMotor::s_getFeedback(bool debug){
             if(s_motorsExist[canBus][canID_0 / 4][canID_0 % 4]){
                 DJIMotor* motor = s_allMotors[canBus][canID_0 / 4][canID_0 % 4];
 
-                motor -> motorData[ANGLE]        = (int16_t)(receivedBytes[0] << 8 | receivedBytes[1]);
-                motor -> motorData[VELOCITY]     = (int16_t)(receivedBytes[2] << 8 | receivedBytes[3]);
-                motor -> motorData[TORQUE]       = (int16_t)(receivedBytes[4] << 8 | receivedBytes[5]);
-                motor -> motorData[TEMPERATURE]  = (int16_t) receivedBytes[6];
-                motor -> timeOfLastFeedback = us_ticker_read() / 1000;
+                motor -> motorData[ANGLE]       = (int16_t)(receivedBytes[0] << 8 | receivedBytes[1]);
+                motor -> motorData[VELOCITY]    = (int16_t)(receivedBytes[2] << 8 | receivedBytes[3]);
+                motor -> motorData[TORQUE]      = (int16_t)(receivedBytes[4] << 8 | receivedBytes[5]);
+                motor -> motorData[TEMPERATURE] = (int16_t) receivedBytes[6];
+                motor -> timeOfLastFeedback     = us_ticker_read() / 1000;
 
                 if(debug)
                     motor -> printAllMotorData();
