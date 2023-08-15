@@ -55,6 +55,9 @@ public:
      * @param dt The time that has passed since the last calculation, in milliseconds
      * @return The output control power
      */
+
+    int calculate(int desiredV, int actualV, double dt);
+
     float calculate(float desiredV, float actualV, double dt);
 
     float calculate(float dV, double dt);

@@ -1,3 +1,5 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "modernize-use-auto"
 //
 // Created by ankit on 1/31/23.
 //
@@ -81,6 +83,48 @@ float PID::calculate(float desiredV, float actualV, double dt){
     return PIDCalc + feedForward;
 }
 
+int PID::calculate(int desiredV, int actualV, double dt) {
+    dt /= 1000;
+
+    float error = static_cast<float>(desiredV - actualV);
+
+    if(lastError == error && carryCount < slopeCarry){
+        carryCount ++;
+    }else{
+        prevRealError = lastError;
+        carryCount = 0;
+    }
+
+    double PIDCalc = kP * error + kI * sumError + kD * (error - prevRealError) / dt;
+    if(debugPIDterms)
+        printf("P: %f\t I: %f\t D: %f\t\n", kP * error, kI * sumError, kD * ((double)(error - lastError) * (pow(10,d10xMultiplier)/dt)));
+
+    //printf("dd[%f]\n",((double)(error - lastError)));
+
+    sumError += error * dt;
+    lastError = error;
+
+    if(debug)
+        printf("DES: %d\t ACT: %d\t PID: %d\t ERROR: %d\n",(int)desiredV, int(actualV), int(PIDCalc), int(error));
+
+    if(integralCap != 0){
+        //sumError = std::max(std::min(sumError,integralCap),-integralCap);
+        if(sumError > integralCap)
+            sumError = integralCap;
+        else if(sumError < -integralCap)
+            sumError = -integralCap;
+    }
+    if(outputCap != 0){
+        //PIDCalc = std::max(std::min(PIDCalc,outputCap),-outputCap);
+        if(PIDCalc > outputCap)
+            PIDCalc = outputCap;
+        else if(PIDCalc < -outputCap)
+            PIDCalc = -outputCap;
+    }
+
+    return static_cast<int>(PIDCalc + feedForward);
+}
+
 
 float PID::calculate(float dV, double dt){
     dt /= 1000;
@@ -162,3 +206,5 @@ float PID::getkI() const{
 float PID::getkD() const{
     return kD;
 }
+
+#pragma clang diagnostic pop
