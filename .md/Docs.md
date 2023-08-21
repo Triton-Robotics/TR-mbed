@@ -13,8 +13,8 @@ A file containing useful documentation, datasheets, pinouts, and links
 
 
 ## Images
-![](.md/.assets/STM32_Nucleo_F446Re_Pinout.png)
+![](.assets/STM32_Nucleo_F446Re_Pinout.png)
 
-![](.md/.assets/breakout_board.png)
+![](.assets/breakout_board.png)
 
-![](.md/.assets/DBUS_circuit.png)
+![](.assets/DBUS_circuit.png)
