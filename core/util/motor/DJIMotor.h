@@ -7,6 +7,9 @@
 #include <cmath>
 #include <string>
 
+constexpr double M3508_GEAR_RATIO = 3591.0 / 187.0;
+constexpr double M2006_GEAR_RATIO = 36.0;
+
 constexpr int TICKS_REVOLUTION = 8192;
 constexpr int TIMEOUT_MS = 400;
 constexpr int CAN_HANDLER_NUMBER = 2;
