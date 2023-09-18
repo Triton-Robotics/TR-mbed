@@ -142,6 +142,8 @@ void DJIMotor::s_sendValues(bool debug){
     for(short canBus = 0; canBus < CAN_HANDLER_NUMBER; canBus++)
         for(short sendIDindex = 0; sendIDindex < 3; sendIDindex++)
             s_sendOneID((CANHandler::CANBus) canBus, sendIDindex, debug);
+
+    printf("test\n");
 }
 
 void DJIMotor::s_sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool debug){
@@ -168,11 +170,12 @@ void DJIMotor::s_sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool de
             printf("NA\t");
     }
 
-    if(s_canHandlers[canBus] -> exists && anyMotors)
-        s_canHandlers[canBus] -> rawSend(s_sendIDs[sendIDindex], bytes);
+    if(anyMotors)
+        if(s_canHandlers[canBus] -> exists)
+            s_canHandlers[canBus] -> rawSend(s_sendIDs[sendIDindex], bytes);
 
-    else
-        printf("\n[ERROR] YOUR CANHANDLERS ARE NOT DEFINED YET. DO THIS BEFORE YOU CALL ANY MOTORS,\n USING [(DJIMotor::s_setCANHandlers(PA_11,PA_12,PB_12,PB_13)], WHERE PA_11, PA_12 ARE TX, RX\n");
+        else
+            printf("\n[ERROR] YOUR CANHANDLERS ARE NOT DEFINED YET. DO THIS BEFORE YOU CALL ANY MOTORS,\n USING [(DJIMotor::s_setCANHandlers(PA_11,PA_12,PB_12,PB_13)], WHERE PA_11, PA_12 ARE TX, RX\n");
 
     if(debug) printf("\n");
 

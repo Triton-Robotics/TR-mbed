@@ -117,7 +117,7 @@ void Chassis::driveXYRPower(float chassis_power, uint16_t chassis_power_limit, d
     double powerLB = LB.pidSpeed.calculate(-lX + lY, LB.getData(VELOCITY), dt) + rotationalPower;
     double powerRB = RB.pidSpeed.calculate(-lX - lY, RB.getData(VELOCITY), dt) + rotationalPower;
 
-    scale = abs(power_pid.calculate(chassis_power_limit - 15, chassis_power, dt));
+    scale = abs(power_pid.calculate((float)chassis_power_limit - 15, chassis_power, dt));
 
     if (chassis_power > (chassis_power_limit - 10)) {
         powerLF /= scale;
