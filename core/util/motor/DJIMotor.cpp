@@ -190,10 +190,10 @@ void DJIMotor::s_getFeedback(bool debug){
             if(s_motorsExist[canBus][canID_0 / 4][canID_0 % 4]){
                 DJIMotor* motor = s_allMotors[canBus][canID_0 / 4][canID_0 % 4];
 
-                motor -> motorData[ANGLE]       = (int16_t)(receivedBytes[0] << 8 | receivedBytes[1]);
-                motor -> motorData[VELOCITY]    = (int16_t)(receivedBytes[2] << 8 | receivedBytes[3]);
-                motor -> motorData[TORQUE]      = (int16_t)(receivedBytes[4] << 8 | receivedBytes[5]);
-                motor -> motorData[TEMPERATURE] = (int16_t) receivedBytes[6];
+                motor -> motorData[ANGLE]       = static_cast<int16_t>(receivedBytes[0] << 8 | receivedBytes[1]);
+                motor -> motorData[VELOCITY]    = static_cast<int16_t>(receivedBytes[2] << 8 | receivedBytes[3]);
+                motor -> motorData[TORQUE]      = static_cast<int16_t>(receivedBytes[4] << 8 | receivedBytes[5]);
+                motor -> motorData[TEMPERATURE] = static_cast<int16_t>(receivedBytes[6]);
                 motor -> timeOfLastFeedback     = us_ticker_read() / 1000;
 
                 if(debug)
