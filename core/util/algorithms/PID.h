@@ -60,9 +60,7 @@ public:
 
     int calculate(int desiredV, int actualV, double dt);
 
-    float calculate(float dV, double dt);
-
-    int calculate(int dV, double dt);
+    int calculateDV(int dV, double dt);
 
     /**
      * Sets the integral cap
