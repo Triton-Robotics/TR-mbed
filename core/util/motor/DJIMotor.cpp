@@ -107,7 +107,7 @@ void DJIMotor::setOutput(){
             powerOut = calculatePositionPID(value, getData(MULTITURNANGLE), static_cast<double>(time - timeOfLastPID));
 
         else
-            powerOut = calculatePositionPID(s_calculateDeltaTicks(value, getData(ANGLE)), static_cast<double>(time - timeOfLastPID));
+            powerOut = calculateDVPositionPID(s_calculateDeltaTicks(value, getData(ANGLE)), static_cast<double>(time - timeOfLastPID));
 
     else if(mode == POW)
         powerOut = value;
@@ -143,7 +143,6 @@ void DJIMotor::s_sendValues(bool debug){
         for(short sendIDindex = 0; sendIDindex < 3; sendIDindex++)
             s_sendOneID((CANHandler::CANBus) canBus, sendIDindex, debug);
 
-    printf("test\n");
 }
 
 void DJIMotor::s_sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool debug){
