@@ -13,12 +13,12 @@ DigitalOut led2(L27);
 I2C i2c(I2C_SDA, I2C_SCL);
 Chassis chassis(1, 2, 3, 4, &i2c);
 
-DJIMotor yaw(5, CANHandler::CANBUS_1, GIMBLY);
-DJIMotor indexer(7, CANHandler::CANBUS_1, GIMBLY);
+DJIMotor yaw(5, CANHandler::CANBUS_1, GIMBLY, "YAW");
+DJIMotor indexer(7, CANHandler::CANBUS_1, GIMBLY, "INDEXER");
 
-DJIMotor pitch(6, CANHandler::CANBUS_2, GIMBLY);
-DJIMotor RFLYWHEEL(8, CANHandler::CANBUS_2,M3508);
-DJIMotor LFLYWHEEL(5, CANHandler::CANBUS_2,M3508);
+DJIMotor pitch(6, CANHandler::CANBUS_2, GIMBLY, "PITCH");
+DJIMotor RFLYWHEEL(8, CANHandler::CANBUS_2,M3508, "RFLYWHEEL");
+DJIMotor LFLYWHEEL(5, CANHandler::CANBUS_2,M3508, "LFLYWHEEL");
 
 Remote::SwitchState prevRS = Remote::SwitchState::UNKNOWN, prevLS = Remote::SwitchState::UNKNOWN;
 
@@ -254,15 +254,13 @@ int main(){
                 if(rS == Remote::SwitchState::DOWN) {
                     beyblade = 2000;
                     deltaYaw = calculateDeltaYaw(chassis.getHeadingDegrees(), beforeBeybladeYaw);
-                    yaw.setPower((int)yawPID.calculate(float(deltaYaw),us_ticker_read() - timeEnd));
+                    yaw.setPower((int)yawPID.calculateDV(deltaYaw,us_ticker_read() - timeEnd));
                 }else {
                     beyblade = 0;
                     yaw.setPower(-rX * 20);
                 }
             }
-            //printf("%d %d %d %d\n");
-            //printf("%d\n", yaw.getData(MULTITURNANGLE));
-            //chassis.printMotorAngle();
+
             pitchSetPosition();
             timeEnd = us_ticker_read();
             chassis.driveTurretRelativePower(chassis_power, chassis_power_limit, {-lX * 5.0, -lY * 5.0, beyblade}, (yaw.getData(MULTITURNANGLE) - yawSetPoint) * 180.0 / 8191.0 - 180, int(timeEnd - timeStart), rotationalPower);
