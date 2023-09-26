@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['gyroscale_1993',['GyroScale',['../MPU6050_8h.html#ae8f873b20f9242838464a183943556fa',1,'MPU6050.h']]]
+  ['jetsonstatus_1962',['JetsonStatus',['../classJetson.html#a0da6dd80b8c8c3af02585f4fdaf49c49',1,'Jetson']]]
 ];

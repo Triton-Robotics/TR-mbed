@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['errorcodes_1992',['errorCodes',['../DJIMotor_8h.html#a88edd67ec29d18293fae821840fef3ac',1,'DJIMotor.h']]]
+  ['gyroscale_1961',['GyroScale',['../MPU6050_8h.html#ae8f873b20f9242838464a183943556fa',1,'MPU6050.h']]]
 ];

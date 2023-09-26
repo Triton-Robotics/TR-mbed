@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['motordatatype_1996',['motorDataType',['../DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4',1,'DJIMotor.h']]],
-  ['motortype_1997',['motorType',['../DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54',1,'DJIMotor.h']]]
+  ['prioritylevels_1966',['priorityLevels',['../TRMutex_8h.html#af5f478ebdb1815432fb04589309d5492',1,'TRMutex.h']]]
 ];

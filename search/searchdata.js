@@ -4,10 +4,10 @@ var indexSectionsWithContent =
   1: "_abcdejlmprstwx",
   2: "abcdefghijmprstw",
   3: "_abcdefghijklmnoprstuvwxy~",
-  4: "_abcdefghijklmnopqrstuvwxyz",
+  4: "_abcdefghijlmnopqrstuwxyz",
   5: "cegr",
-  6: "abcegjkmps",
-  7: "abcdefglmnopqrstuvwxyz",
+  6: "abcgjkmps",
+  7: "abcdefglmnqrstuvwxyz",
   8: "_abcdefghijlmnprstuvwxyz",
   9: "m"
 };

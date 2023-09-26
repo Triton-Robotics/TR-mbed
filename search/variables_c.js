@@ -1,15 +1,17 @@
 var searchData=
 [
-  ['last_5fdart_5flaunch_5ftime_1829',['last_dart_launch_time',['../structext__dart__client__cmd__t.html#a4ac00be5861bd963fa710e201cc50175',1,'ext_dart_client_cmd_t']]],
-  ['lastintegrationtime_1830',['lastIntegrationTime',['../classDJIMotor.html#af87d41808cae9aadbf3f56ccd5a13b41',1,'DJIMotor']]],
-  ['lastmotorangle_1831',['lastMotorAngle',['../classDJIMotor.html#aaf2e6d94d6261825def4306f47e4eba9',1,'DJIMotor']]],
-  ['lasttime_1832',['lastTime',['../classDJIMotor.html#a522f9cc9c68130c7ccc618a5d80e06c8',1,'DJIMotor']]],
-  ['layer_1833',['layer',['../struct____packed.html#a532b1a6b4a5c5c92e0df34129ddcfdd6',1,'__packed::layer()'],['../struct____packed.html#a532b1a6b4a5c5c92e0df34129ddcfdd6',1,'__packed::layer()']]],
-  ['lb_1834',['LB',['../classWheelSpeeds.html#aef971dd6bc99754e9c204c9b5e2c561e',1,'WheelSpeeds']]],
-  ['lbottomflywheel_1835',['LBOTTOMFLYWHEEL',['../Sentry_2main_8cpp.html#a2afb9376452aa306fa1df4d1d19c02aa',1,'main.cpp']]],
-  ['level_1836',['level',['../structext__referee__warning__t.html#a9a5820b5a238c06b7eda6fd1835e27df',1,'ext_referee_warning_t']]],
-  ['lf_1837',['LF',['../classWheelSpeeds.html#aa6d46770ab92112d6984a7138c238035',1,'WheelSpeeds']]],
-  ['lflywheel_1838',['LFLYWHEEL',['../Hero_2main_8cpp.html#a432a243bd1262af481065797febf52f5',1,'LFLYWHEEL():&#160;main.cpp'],['../Infantry_2main_8cpp.html#a432a243bd1262af481065797febf52f5',1,'LFLYWHEEL():&#160;main.cpp']]],
-  ['linear_5facc_1839',['linear_acc',['../imuExampleAllData_8cpp.html#a3a594955bf0fcab8fd702c02d92e3ce3',1,'imuExampleAllData.cpp']]],
-  ['ltopflywheel_1840',['LTOPFLYWHEEL',['../Sentry_2main_8cpp.html#abee266236980eab9f54c522cf5294eb1',1,'main.cpp']]]
+  ['m_1813',['m',['../structekf__t.html#a80fd374c0af7f13c2f60e55c0b0916af',1,'ekf_t']]],
+  ['m2006_5fgear_5fratio_1814',['M2006_GEAR_RATIO',['../DJIMotor_8h.html#a38af225bd7b4b9813f5306f16844f4fa',1,'DJIMotor.h']]],
+  ['m3508_5fgear_5fratio_1815',['M3508_GEAR_RATIO',['../DJIMotor_8h.html#af8633b71950d9e6974c6c1cc295efdf4',1,'DJIMotor.h']]],
+  ['mag_5fid_1816',['mag_id',['../structBNO055__ID__INF__TypeDef.html#a81577686386ae91d4a3ccd9b2f785926',1,'BNO055_ID_INF_TypeDef']]],
+  ['mains_5fpower_5fchassis_5foutput_1817',['mains_power_chassis_output',['../structext__game__robot__status__t.html#a391141250696401a428d5827092eded0',1,'ext_game_robot_status_t']]],
+  ['mains_5fpower_5fgimbal_5foutput_1818',['mains_power_gimbal_output',['../structext__game__robot__status__t.html#a7ab2bef3e3742364f0f127f112aa5ec8',1,'ext_game_robot_status_t']]],
+  ['mains_5fpower_5fshooter_5foutput_1819',['mains_power_shooter_output',['../structext__game__robot__status__t.html#ae5d799b7af3e2380efbebe93917c6c43',1,'ext_game_robot_status_t']]],
+  ['max_5fhp_1820',['max_HP',['../structext__game__robot__status__t.html#a2427b334e5d44f08f74ab16289ae1a47',1,'ext_game_robot_status_t']]],
+  ['mbed_5flogo_1821',['mbed_logo',['../mbed__logo_8h.html#a18148959f88dd70e0c636c82c46a9550',1,'mbed_logo.h']]],
+  ['mi2c_1822',['mi2c',['../classAdafruit__SSD1306__I2c.html#abf004a7e21f2653ad8dcff8c8f812831',1,'Adafruit_SSD1306_I2c']]],
+  ['mi2caddress_1823',['mi2cAddress',['../classAdafruit__SSD1306__I2c.html#a3516332f68d7e4781a817c621b5e8c6a',1,'Adafruit_SSD1306_I2c']]],
+  ['mspi_1824',['mspi',['../classAdafruit__SSD1306__Spi.html#a578d37e6ad2f57e66ceebe003abc7b58',1,'Adafruit_SSD1306_Spi']]],
+  ['multiturn_1825',['multiTurn',['../classDJIMotor.html#a6c02fbe9de17133a2f5d0004676a247f',1,'DJIMotor']]],
+  ['multiturnyaw_1826',['multiturnYaw',['../classBNO055.html#afcfeacc40059d0c2f4d01b6948e30385',1,'BNO055']]]
 ];

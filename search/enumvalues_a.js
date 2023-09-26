@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['outside_5fof_5fbounds_2053',['OUTSIDE_OF_BOUNDS',['../DJIMotor_8h.html#a88edd67ec29d18293fae821840fef3acaeef6094d2bc6dd61f9a70b0f417c0468',1,'DJIMotor.h']]]
+  ['q_2016',['Q',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4faf09564c9ca56850d4cd6b3319e541aee',1,'Remote']]]
 ];

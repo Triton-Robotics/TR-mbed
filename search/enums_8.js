@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['prioritylevels_1998',['priorityLevels',['../TRMutex_8h.html#af5f478ebdb1815432fb04589309d5492',1,'TRMutex.h']]]
+  ['switch_1967',['Switch',['../classRemote.html#add727f68db8fff42e6f572b19008ec66',1,'Remote']]],
+  ['switchstate_1968',['SwitchState',['../classRemote.html#affd0b019d5483d546bc29b07447649bb',1,'Remote']]]
 ];
