@@ -14,7 +14,6 @@ LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE),  imu(*i2
     this->lbId = lbId;
     this->rbId = rbId;
 
-    LF.useKalmanForPID = true;
     RF.setSpeedPID(1.5, 0, 0);
     LB.setSpeedPID(1.5, 0, 0);
     RB.setSpeedPID(1.5, 0, 0);
@@ -118,7 +117,7 @@ void Chassis::driveXYRPower(float chassis_power, uint16_t chassis_power_limit, d
     double powerLB = LB.pidSpeed.calculate(-lX + lY, LB.getData(VELOCITY), dt) + rotationalPower;
     double powerRB = RB.pidSpeed.calculate(-lX - lY, RB.getData(VELOCITY), dt) + rotationalPower;
 
-    scale = abs(power_pid.calculate(chassis_power_limit - 15, chassis_power, dt));
+    scale = abs(power_pid.calculate((float)chassis_power_limit - 15, chassis_power, dt));
 
     if (chassis_power > (chassis_power_limit - 10)) {
         powerLF /= scale;
@@ -347,10 +346,10 @@ ChassisSpeeds Chassis::getSpeeds() {
 
 bool Chassis::allMotorsConnected() {
     return (
-            (DJIMotor::isMotorConnected(lfId, CAN_BUS_TYPE, MOTOR_TYPE)) &&
-                    (DJIMotor::isMotorConnected(rfId, CAN_BUS_TYPE, MOTOR_TYPE)) &&
-                    (DJIMotor::isMotorConnected(lbId, CAN_BUS_TYPE, MOTOR_TYPE)) &&
-                    (DJIMotor::isMotorConnected(rbId, CAN_BUS_TYPE, MOTOR_TYPE))
+            (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, lfId)) &&
+            (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, rfId)) &&
+            (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, lbId)) &&
+            (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, rbId))
 
     );
 }

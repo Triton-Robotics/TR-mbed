@@ -1,183 +1,187 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "misc-unconventional-assign-operator"
-//
-// Created by ankit on 1/31/23.
-//
-
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
 #ifndef TR_EMBEDDED_DJIMOTOR_H
 #define TR_EMBEDDED_DJIMOTOR_H
-
-#define CAN_HANDLER_NUMBER 2            //Number of can handlers
-#define TIMEOUT_MS 400                  //timeout for motor feedback
 
 #include "mbed.h"
 #include "algorithms/PID.h"
 #include "communications/CANHandler.h"
-
-//#include "algorithms/WheelKalman.h"
 #include <cmath>
+#include <string>
 
-static int sendIDs[3] = {0x200,0x1FF,0x2FF}; //IDs to send data
-static Thread motorFeedbackThread(osPriorityAboveNormal); //threading for Motor::tick()
-static Thread motorSendThread(osPriorityNormal); //threading for Motor::tick()
+constexpr double M3508_GEAR_RATIO = 3591.0 / 187.0;
+constexpr double M2006_GEAR_RATIO = 36.0;
 
-enum errorCodes{
-    NO_ERROR,
-    MOTOR_CONFLICT,
-    MOTOR_DISABLED,
-    OUTSIDE_OF_BOUNDS,
-};
+constexpr int TICKS_REVOLUTION = 8192;
+constexpr int TIMEOUT_MS = 400;
+constexpr int CAN_HANDLER_NUMBER = 2;
+
+constexpr int INT16_T_MAX = 32767;
+constexpr int INT15_T_MAX = 16384;
+
+static int s_sendIDs[3] = {0x200, 0x1FF, 0x2FF};           //IDs to send data
+static Thread s_motorFeedbackThread(osPriorityAboveNormal);     //threading for Motor::tick()
+static Thread s_motorSendThread(osPriorityNormal);              //threading for Motor::tick()
 
 enum motorDataType {
-    ANGLE = 0,
-    VELOCITY = 1,
-    TORQUE = 2,
-    TEMPERATURE = 3,
-    MULTITURNANGLE = 4,
-    MULTI  = 4,
-    POWEROUT = 5,
+    ANGLE,
+    VELOCITY,
+    TORQUE,
+    TEMPERATURE,
+    MULTITURNANGLE,
 };
 
+//keep in mind that in the constructor, this is only used to
+//set the default pid values and gear ratio. The motorType will
+//be changed to STANDARD, because that's what the code uses.
 
 enum motorType {
     NONE = 0,
-    STANDARD = 1, //identifier for all motors that use the standard can protocol, used by the C610 and C620
+    STANDARD = 1,       //identifier for all motors that use the standard can protocol, used by the C610 and C620
+
+    GIMBLY = 2,
+    GM6020 = 2,
+
+    M3508 = 3,
 
     C610 = 4,
     M2006 = 4,
 
-    C620 = 3,
-    M3508 = 3,
-    //keep in mind that in the constructor, this is only used to
-    //set the default pid values and gear ratio. The motortype will
-    //be changed to STANDARD, because that's what the code uses.
     M3508_FLYWHEEL = 5,
-
-    GIMBLY = 2, //Gimblyyyyyyyyyy
-    GM6020 = 2
 };
-
 
 class DJIMotor {
 
 private:
-    float defaultGimblyPosSettings[5] = {10.88,1.2,18.9,8000,500};
-    float defautlGimblySpeedSettings[5] = {0.13, 8.8, 0, 25000, 1000};
-    float defautM3508PosSettings[5] = {.48, 0.0137, 4.2, 3000, 300};
-    float defautM3508SpeedSettings[5] = {1.79, 0.27, 10.57, 15000, 500};
-    float defautM3508FlywheelSpeedSettings[5] = {2.013, 0.319, 20.084, 15000, 500};
 
-    enum motorMoveMode{
-        OFF = 0,
-        POS = 1,
-        SPD = 2,
-        POW = 3,
-        ERR = 4
+    struct PidSettings{
+        float p;
+        float i;
+        float d;
+        float outputCap;
+        float integralCap;
     };
 
-    static DJIMotor* allMotors  [CAN_HANDLER_NUMBER][3][4];
-    static bool motorsExist     [CAN_HANDLER_NUMBER][3][4];
-    static long int lastCalled  [CAN_HANDLER_NUMBER][3][4];
+    struct MotorSettings{
+        PidSettings pos;
+        PidSettings speed;
+    };
 
+    // Default motor PID settings
 
+    MotorSettings gimbly = {
+            {10.88,1.2,18.9,8000,500},
+            {0.13, 8.8, 0, 25000, 1000}
+    };
 
-    static CANHandler* canHandlers[CAN_HANDLER_NUMBER];
-    short motorNumber;                                          // canID - 1, because canID is 1-8, arrays are 0-7
-    int gearRatio = 1;                                          //the gear ratio of the motor to encoder
+    MotorSettings m3508 = {
+            {.48, 0.0137, 4.2, 3000, 300},
+            {1.79, 0.27, 10.57, 15000, 500}
+    };
 
-    CANHandler::CANBus canBus = CANHandler::NOBUS;              //the CANBus this motor is on
-    motorType type = NONE;                                      //mode of the motor
-    motorMoveMode mode = OFF;                                   //mode of the motor
+    MotorSettings m3508Flywheel = {
+            {.48, 0.0137, 4.2, 3000, 300},
+            {2.013, 0.319, 20.084, 15000, 500}
+    };
 
-    unsigned long timeOfLastFeedback = 0;
-    unsigned long timeOfLastPID = 0;
+    enum motorMoveMode{
+        OFF,
+        POS,
+        SPD,
+        POW,
+        ERR
+    };
+
+    static DJIMotor* s_allMotors  [CAN_HANDLER_NUMBER][3][4];
+    static bool s_motorsExist     [CAN_HANDLER_NUMBER][3][4];
+
+    static CANHandler* s_canHandlers[CAN_HANDLER_NUMBER];
+    CANHandler::CANBus canBus = CANHandler::NOBUS;
+
+    short canID_0;                                                  // canID - 1, because canID is 1-8, arrays are 0-7
+    short motorID_0;                                                // physical motorID - 1
+    motorType type = NONE;                                          // type of the motor
+    motorMoveMode mode = OFF;                                       // mode of the motor
+
+    //  angle | velocity | torque | temperature
+    int16_t motorData[4] = {};
+    int value = 0;
+
+    int lastMotorAngle = 0;
+    int integratedAngle = 0;
+    long lastIntegrationTime = -1;
+
+    uint32_t timeOfLastFeedback = 0;
+    uint32_t timeOfLastPID = 0;
+
+    static void s_updateMultiTurnPosition();
+    static void s_sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool debug = false);
+    static int s_calculateDeltaTicks(int target, int current);
+
+    void setOutput();
 
 public:
 
-    unsigned long timeSinceLastFeedback = 0;
-    int maxSpeed = 8723;
-    int bounds[2] = {0,0};
-
-    //angle | velocity | torque | temperature
-    int16_t motorData[4] = {0,0,0,0};
-    int multiTurn = 0;
-    int lastMotorAngle = 0;
+    std::string name = "NO_NAME";
+    int16_t powerOut = 0;
 
     PID pidSpeed;
     PID pidPosition;
 
-    int value = 0;
-    int16_t powerOut;
-
-    bool conflict{};                                            //check for a conflict when running motors
-    unsigned long lastTime = 0;
-    int outCap = 16000;
-
+    int multiTurn = 0;
+    int outCap = INT16_T_MAX;
     bool useAbsEncoder = false;
-    bool justPosError = false;
-    bool useKalmanForPID = false;
-    bool useIntegrationForPID = false;
     bool printAngle = false;
-    int integratedAngle = 0;
-    long lastIntegrationTime = -1;
-//    WheelKalman kalman;
-    static bool sendDebug;
-    static bool feedbackDebug;
 
-    // user methods
     explicit DJIMotor(bool isErroneousMotor = false);
-    DJIMotor(short canID, CANHandler::CANBus bus, motorType mType = STANDARD);
+    DJIMotor(short motorID, CANHandler::CANBus canBus, motorType type = STANDARD, const std::string& name = "NO_NAME");
     ~DJIMotor();
 
-    // static void printChunk(CANHandler::CANBus bus, short sendID, motorDataType data = POWEROUT);
-    static void setCANHandlers(CANHandler* bus_1, CANHandler* bus_2, bool threadSend = true, bool threadFeedback = true);
-    static void updateMultiTurnPosition();
-    static void sendOneID(CANHandler::CANBus bus, short sendIDindex, bool debug = false);
-    static void getFeedback();
+    static void s_setCANHandlers(CANHandler* bus_1, CANHandler* bus_2, bool threadSend = true, bool threadFeedback = true);
+    static void s_getFeedback(bool debug = false);
+    static void s_sendValues(bool debug = false);
+    static void s_feedbackThread();
+    static void s_sendThread();
 
-    __attribute__((unused)) __attribute__((unused)) static bool checkConnection(bool debug);
-    __attribute__((unused)) __attribute__((unused)) static bool isMotorConnected(short canID, CANHandler::CANBus bus, motorType mType);
+    __attribute__((unused)) static bool s_allMotorsConnected(bool debug = false);
 
-    static void tickThread();
-    static void feedbackThread();
-    static void sendThread();
-    static void sendValues();
-    static void tick();
-
-    //int getValue();
-
-    __attribute__((unused)) int getPowerOut() const;
     int getData(motorDataType data);
-
-    void setValue(int val);
-    void setOutput();
-    void setPower(int power);
-    void setSpeed(int speed);
-    void setPosition(int position);
-
-    __attribute__((unused)) static double rpmToTicksPerSecond(double RPM);
-
-    __attribute__((unused)) void zeroPos();
-
     void printAllMotorData();
 
-    void operator=(int value);
-    int operator>>(motorDataType data);
+    inline void setPower(int power){
+        value = power;
+        mode = POW;
+    }
 
-    inline void setPositionPID(float kP, float kI, float kD)    { pidPosition.setPID(kP, kI, kD); }
-    inline void setPositionIntegralCap(double cap)              { pidPosition.setIntegralCap((float)cap); }
-    inline void setPositionOutputCap(double cap)                { pidPosition.setOutputCap((float)cap); }
+    inline void setSpeed(int speed){
+        value = speed;
+        mode = SPD;
+    }
 
-    inline void setSpeedPID(float kP, float kI, float kD)       { pidSpeed.setPID(kP, kI, kD); }
-    inline void setSpeedIntegralCap(double cap)                 { pidSpeed.setIntegralCap((float)cap); }
-    inline void setSpeedOutputCap(double cap)                   { pidSpeed.setOutputCap((float)cap); }
+    inline void setPosition(int position){
+        value = position;
+        mode = POS;
+    }
+
+    __attribute__((unused)) inline bool isConnected() const {
+        return us_ticker_read() / 1000 - timeOfLastFeedback <= TIMEOUT_MS;
+    }
+    inline static bool s_isMotorConnected(CANHandler::CANBus bus, motorType type, short canID){
+        return (s_motorsExist[bus][type][canID] && us_ticker_read() / 1000 - s_allMotors[bus][type][canID] -> timeOfLastFeedback <= TIMEOUT_MS);
+    }
+
+    inline int operator>>(motorDataType data)                                   { return getData(data); }
+
+    inline void setPositionPID(float kP, float kI, float kD)                    { pidPosition.setPID(kP, kI, kD); }
+    inline void setPositionIntegralCap(double cap)                              { pidPosition.setIntegralCap((float)cap); }
+    inline void setPositionOutputCap(double cap)                                { pidPosition.setOutputCap((float)cap); }
+
+    inline void setSpeedPID(float kP, float kI, float kD)                       { pidSpeed.setPID(kP, kI, kD); }
+    inline void setSpeedIntegralCap(double cap)                                 { pidSpeed.setIntegralCap((float)cap); }
+    inline void setSpeedOutputCap(double cap)                                   { pidSpeed.setOutputCap((float)cap); }
+
+    inline int calculateSpeedPID(int desiredV, int actualV, double dt)          { return pidSpeed.calculate(desiredV, actualV, dt); }
+    inline int calculatePositionPID(int desiredP, int actualP, double dt)       { return pidPosition.calculate(desiredP, actualP, dt); }
+    inline int calculateDVPositionPID(int dV, double dt)                          { return pidPosition.calculateDV(dV, dt); }
 
 };
 
-
 #endif //TR_EMBEDDED_DJIMOTOR_H
-
-#pragma clang diagnostic pop
-#pragma clang diagnostic pop
