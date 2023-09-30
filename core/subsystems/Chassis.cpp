@@ -9,12 +9,11 @@ LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE),  imu(*i2
     RB.outCap = 16000;
     LF.setSpeedPID(1.5, 0, 0);
 
-    this->lfId= lfId;
+    this->lfId = lfId;
     this->rfId = rfId;
-    this->lbId  = lbId;
     this->lbId = lbId;
+    this->rbId = rbId;
 
-    LF.useKalmanForPID = true;
     RF.setSpeedPID(1.5, 0, 0);
     LB.setSpeedPID(1.5, 0, 0);
     RB.setSpeedPID(1.5, 0, 0);
@@ -100,10 +99,10 @@ void Chassis::driveXYR(ChassisSpeeds speeds) {
 void Chassis::driveXYRPower(float chassis_power, uint16_t chassis_power_limit, double lX, double lY, double dt, bool beyblading, double &rotationalPower) {
 
     if (beyblading) {
-        rotationalPower = 100 * (float(chassis_power_limit) - chassis_power);
+        rotationalPower = -(chassis_power_limit) * 100;
         //rotationalPower = chassis_power_limit / 2 * 100;
-        if(rotationalPower < 0)
-            rotationalPower = 0;
+//        if(rotationalPower < 0)
+//            rotationalPower = 0;
 
         //printf("rotational power: %d\n", int(rotationalPower));
     }else {
@@ -112,15 +111,15 @@ void Chassis::driveXYRPower(float chassis_power, uint16_t chassis_power_limit, d
 
     double scale = 1;
 
-    PID power_pid(12, 0.008, 0, 0, 0);
+    PID power_pid(12, 0.01, 10, 1, 0);
     double powerLF = LF.pidSpeed.calculate(lX + lY, LF.getData(VELOCITY), dt) + rotationalPower;
     double powerRF = RF.pidSpeed.calculate(lX - lY, RF.getData(VELOCITY), dt) + rotationalPower;
     double powerLB = LB.pidSpeed.calculate(-lX + lY, LB.getData(VELOCITY), dt) + rotationalPower;
     double powerRB = RB.pidSpeed.calculate(-lX - lY, RB.getData(VELOCITY), dt) + rotationalPower;
 
-    scale = abs(power_pid.calculate(chassis_power_limit - 15, chassis_power, dt));
+    scale = abs(power_pid.calculate((float)chassis_power_limit - 15, chassis_power, dt));
 
-    if (chassis_power > (chassis_power_limit - 30)) {
+    if (chassis_power > (chassis_power_limit - 10)) {
         powerLF /= scale;
         powerRF /= scale;
         powerLB /= scale;
@@ -347,10 +346,10 @@ ChassisSpeeds Chassis::getSpeeds() {
 
 bool Chassis::allMotorsConnected() {
     return (
-            (DJIMotor::isMotorConnected(lfId, CAN_BUS_TYPE, MOTOR_TYPE)) &&
-                    (DJIMotor::isMotorConnected(rfId, CAN_BUS_TYPE, MOTOR_TYPE)) &&
-                    (DJIMotor::isMotorConnected(lbId, CAN_BUS_TYPE, MOTOR_TYPE)) &&
-                    (DJIMotor::isMotorConnected(rbId, CAN_BUS_TYPE, MOTOR_TYPE))
+            (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, lfId)) &&
+            (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, rfId)) &&
+            (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, lbId)) &&
+            (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, rbId))
 
     );
 }

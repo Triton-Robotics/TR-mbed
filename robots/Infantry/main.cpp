@@ -96,14 +96,13 @@ int main(){
     float translationalmultiplier = 1.5; // was 3
     float beybladespeedmult = 1;
 
-    DJIMotor::setCANHandlers(&canHandler1, &canHandler2, false, false);
+    DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
 
     pitch.setPositionPID(17.3, 0.03, 8.5); //12.3 0.03 2.5 //mid is 13.3, 0.03, 7.5
     pitch.setPositionIntegralCap(60000);
     pitch.setPositionOutputCap(100000);
     pitch.pidPosition.feedForward = 0;
     pitch.outCap = 32760;
-    pitch.justPosError = true;
     pitch.useAbsEncoder = true;
 
     LFLYWHEEL.setSpeedPID(1, 0, 0);
@@ -114,7 +113,6 @@ int main(){
     yaw.setPositionPID(10.5, 0.2, 4.4);
     yaw.setPositionIntegralCap(10000);
     yaw.useAbsEncoder = false;
-    yaw.justPosError = true;
 
     PID yawIMU(200.0,0.1,150,20000,8000);//7.0,0.02,15.0,20000,8000
 
@@ -138,7 +136,7 @@ int main(){
     int yawSetPoint = int(-ext_game_robot_pos.data.yaw * 8192 / 360);
     double rotationalPower = 0;
 
-    DJIMotor::getFeedback();
+    DJIMotor::s_getFeedback();
     double beybladeSpeed = 2;
     bool beybladeIncreasing = true;
 
@@ -306,10 +304,10 @@ int main(){
                     indexer.setPower(0);
                 }
             }
-            DJIMotor::sendValues();
+            DJIMotor::s_sendValues();
         }
         unsigned long timeEnd = us_ticker_read() / 1000;
-        DJIMotor::getFeedback();
+        DJIMotor::s_getFeedback();
         ThisThread::sleep_for(1ms);
     }
 }

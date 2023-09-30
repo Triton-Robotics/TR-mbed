@@ -66,12 +66,10 @@ void setMotorSettings(){
     pitch.setPositionIntegralCap(10000);
     pitch.setPositionOutputCap(20000);
     pitch.useAbsEncoder = true;
-    pitch.justPosError = true;
 
     yaw1.setPositionPID(10.5, 0.2, 4.4);
     yaw1.setPositionIntegralCap(10000);
     yaw1.useAbsEncoder = false;
-    yaw1.justPosError = true;
     yaw1.pidPosition.setOutputCap(100000);
     yaw1.outCap = 32000;
 
@@ -94,8 +92,8 @@ int main(){
     DigitalOut led(L26);
     DigitalOut led2(L27);
 
-    DJIMotor::setCANHandlers(&canHandler1,&canHandler2, false, false);
-    DJIMotor::getFeedback();
+    DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
+    DJIMotor::s_getFeedback();
 
     int refLoop = 0;
     uint16_t max_power;
@@ -202,9 +200,9 @@ int main(){
 
             timeEnd = us_ticker_read();
             chassis.driveTurretRelativePower(ref_chassis_power, max_power, {-lX * 5.0, -lY * 5.0, beyblade}, -yaw1.getData(MULTITURNANGLE) * 360.0 / 8192 + 90, int(timeEnd - timeStart), rotationalPower);
-            DJIMotor::sendValues();
+            DJIMotor::s_sendValues();
         }
-        DJIMotor::getFeedback();
+        DJIMotor::s_getFeedback();
         ThisThread::sleep_for(1ms);
     }
 }

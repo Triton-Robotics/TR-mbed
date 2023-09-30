@@ -14,6 +14,7 @@
 class PID {
 private:
     float kP;
+    float kI;
     float kD;
     float integralCap;
     float outputCap;
@@ -24,8 +25,7 @@ public:
     bool debugPIDterms = false;
     float feedForward = 0;
 
-    float kI;
-    float sumError = 0;
+    double sumError = 0;
 
     int d10xMultiplier = 0;
     int slopeCarry = 5;
@@ -55,9 +55,12 @@ public:
      * @param dt The time that has passed since the last calculation, in milliseconds
      * @return The output control power
      */
+
     float calculate(float desiredV, float actualV, double dt);
 
-    float calculate(float dV, double dt);
+    int calculate(int desiredV, int actualV, double dt);
+
+    int calculateDV(int dV, double dt);
 
     /**
      * Sets the integral cap
@@ -83,19 +86,19 @@ public:
      * Gets the P (proportional) control parameter
      * @return The P (proportional) control parameter
      */
-    float getkP();
+    float getkP() const;
 
     /**
      * Gets the I (integral) control parameter
      * @return The I (integral) control parameter
      */
-    float getkI();
+    float getkI() const;
 
     /**
      * Gets the D (derivative) control parameter
      * @return The D (derivative) control parameter
      */
-    float getkD();
+    float getkD() const;
 };
 
 
