@@ -17,7 +17,7 @@ docs/html
 docs/latex
 libs/
 micro-ros/
-robots/TestBench/
+robots/TestBench
 
 .DS_STORE
 *.ps1
