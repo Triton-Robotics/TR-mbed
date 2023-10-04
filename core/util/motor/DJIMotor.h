@@ -27,7 +27,9 @@ enum motorDataType {
     TORQUE,
     TEMPERATURE,
     MULTITURNANGLE,
+    POWEROUT
 };
+
 
 //keep in mind that in the constructor, this is only used to
 //set the default pid values and gear ratio. The motorType will

@@ -226,8 +226,7 @@ int main(){
                 while(yawSetPoint < 0)
                     yawSetPoint += 360;
                 //yaw.setPosition(-ref_yaw * 8192 / 360 + yaw.getData(MULTITURNANGLE) - yawSetPoint);
-                yaw.setPower(yawIMU.calculate(float(calculateDeltaYaw(ref_yaw, yawSetPoint)), us_ticker_read() - yawTime));
-                
+                yaw.setPower(yawIMU.calculateDV(float(calculateDeltaYaw(ref_yaw, yawSetPoint)), us_ticker_read() - yawTime));
                 printff("%dya imu:[%d] pwr%d\n",yawSetPoint,ref_yaw, yaw>>POWEROUT);
             }
             yawTime = us_ticker_read();
