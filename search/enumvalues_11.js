@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['x_2034',['X',['../classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a2a7ff166b192b1cad627c0ce2e13e51d',1,'Jetson::X()'],['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fa02129bb861061d1a052c592e2dc6b383',1,'Remote::X()']]]
+  ['w_2034',['W',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fa61e9c06ea9a85a5088a499df6458d276',1,'Remote']]],
+  ['warning_2035',['WARNING',['../TRMutex_8h.html#af5f478ebdb1815432fb04589309d5492a984de77c680eaff141ec910e25568a81',1,'TRMutex.h']]]
 ];

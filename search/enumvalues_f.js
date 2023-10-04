@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['v_2030',['V',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fa5206560a306a2e085a437fd258eb57ce',1,'Remote']]],
-  ['velocity_2031',['VELOCITY',['../DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4a06e15744a8bd69fceeeb39ab3614b3f6',1,'DJIMotor.h']]]
+  ['unknown_2030',['UNKNOWN',['../classRemote.html#affd0b019d5483d546bc29b07447649bba696b031073e74bf2cb98e5ef201d4aa3',1,'Remote']]],
+  ['up_2031',['UP',['../classRemote.html#affd0b019d5483d546bc29b07447649bbafbaedde498cdead4f2780217646e9ba1',1,'Remote']]]
 ];

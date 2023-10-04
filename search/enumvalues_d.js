@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['temperature_2026',['TEMPERATURE',['../DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4ac4ae6787ff1d8b2d1cf0ae9aa696e56c',1,'DJIMotor.h']]],
-  ['torque_2027',['TORQUE',['../DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4ab14fe26ae2d673af2927fd2a8a1eb91f',1,'DJIMotor.h']]]
+  ['s_2025',['S',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fa5dbc98dcc983a70728bd082d1a47546e',1,'Remote']]],
+  ['shift_2026',['SHIFT',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fa46afff2b309b8b16a46d812172a9235c',1,'Remote']]],
+  ['standard_2027',['STANDARD',['../DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a9de934790934fe831fe946c851e8338e',1,'DJIMotor.h']]]
 ];

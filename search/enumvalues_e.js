@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['unknown_2028',['UNKNOWN',['../classRemote.html#affd0b019d5483d546bc29b07447649bba696b031073e74bf2cb98e5ef201d4aa3',1,'Remote']]],
-  ['up_2029',['UP',['../classRemote.html#affd0b019d5483d546bc29b07447649bbafbaedde498cdead4f2780217646e9ba1',1,'Remote']]]
+  ['temperature_2028',['TEMPERATURE',['../DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4ac4ae6787ff1d8b2d1cf0ae9aa696e56c',1,'DJIMotor.h']]],
+  ['torque_2029',['TORQUE',['../DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4ab14fe26ae2d673af2927fd2a8a1eb91f',1,'DJIMotor.h']]]
 ];
