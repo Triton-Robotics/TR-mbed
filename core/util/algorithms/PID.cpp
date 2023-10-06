@@ -38,50 +38,6 @@ PID::PID(float p, float i, float d, float sumCap = 0, float outCap = 0){
          * @param actualV the actual value
          * @param dt the change in time
          */
-float PID::calculate(float desiredV, float actualV, double dt){
-    dt /= 1000;
-//    printf("dt (ms): %i\n", (int) (1000 * dt));
-
-    float error = (desiredV - actualV);
-
-    if(lastError == error && carryCount < slopeCarry){
-        carryCount ++;
-    }else{
-        prevRealError = lastError;
-        carryCount = 0;
-    }
-
-    float PIDCalc = kP * error + kI * sumError + kD * ((double)(error - prevRealError) * (pow(10,d10xMultiplier)/dt));
-    if(debugPIDterms)
-        printf("P: %f\t I: %f\t D: %f\t\n", kP * error, kI * sumError, kD * ((double)(error - lastError) * (pow(10,d10xMultiplier)/dt)));
-    
-    //printf("dd[%f]\n",((double)(error - lastError)));
-
-    sumError += error * dt;
-    lastError = error;
-
-    if(debug)
-        printf("DES: %d\t ACT: %d\t PID: %d\t ERROR: %d\n",(int)desiredV, int(actualV), int(PIDCalc), int(error));
-
-    if(integralCap != 0){
-        //sumError = std::max(std::min(sumError,integralCap),-integralCap);
-        if(sumError > integralCap)
-            sumError = integralCap;
-        else if(sumError < -integralCap)
-            sumError = -integralCap;
-    }
-    if(outputCap != 0){
-        //PIDCalc = std::max(std::min(PIDCalc,outputCap),-outputCap);
-        if(PIDCalc > outputCap)
-            PIDCalc = outputCap;
-        else if(PIDCalc < -outputCap)
-            PIDCalc = -outputCap;
-    }
-
-    
-
-    return PIDCalc + feedForward;
-}
 
 int PID::calculate(int desiredV, int actualV, double dt) {
     dt /= 1000;
@@ -95,14 +51,14 @@ int PID::calculate(int desiredV, int actualV, double dt) {
         carryCount = 0;
     }
 
+    sumError += dt * (error + lastError) / 2;
+    lastError = error;
+
     double PIDCalc = kP * error + kI * sumError + kD * (error - prevRealError) / dt;
     if(debugPIDterms)
         printf("P: %f\t I: %f\t D: %f\t\n", kP * error, kI * sumError, kD * ((double)(error - lastError) * (pow(10,d10xMultiplier)/dt)));
 
     //printf("dd[%f]\n",((double)(error - lastError)));
-
-    sumError += error * dt;
-    lastError = error;
 
     if(debug)
         printf("DES: %d\t ACT: %d\t PID: %d\t ERROR: %d\n",(int)desiredV, int(actualV), int(PIDCalc), int(error));
@@ -152,6 +108,7 @@ int PID::calculateDV(int dV, double dt){
         //sumError = std::max(std::min(sumError,integralCap),-integralCap);
         if(sumError > integralCap)
             sumError = integralCap;
+
         else if(sumError < -integralCap)
             sumError = -integralCap;
     }
@@ -159,6 +116,7 @@ int PID::calculateDV(int dV, double dt){
         //PIDCalc = std::max(std::min(PIDCalc,outputCap),-outputCap);
         if(PIDCalc > outputCap)
             PIDCalc = outputCap;
+
         else if(PIDCalc < -outputCap)
             PIDCalc = -outputCap;
     }
