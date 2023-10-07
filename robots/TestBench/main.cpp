@@ -13,6 +13,7 @@ int main(){
 
     while(true){
         timeStart = us_ticker_read();
+        printf("Hey\n");
 
         if ((timeStart - loopTimer) / 1000 > 25){
             led = !led;

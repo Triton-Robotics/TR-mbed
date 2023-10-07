@@ -182,7 +182,7 @@ public:
 
     inline int calculateSpeedPID(int desired, int current, double dt)           { return pidSpeed.calculate(desired, current, dt); }
     inline int calculatePositionPID(int desired, int current, double dt)        { return pidPosition.calculate(desired, current, dt); }
-    inline int calculatePeriodicPosition(float dV, double dt)                   { return pidPosition.calculatePeriodic(dV, dt); }
+    inline int calculatePeriodicPosition(float dE, double dt)                   { return pidPosition.calculatePeriodic(dE, dt); }
 
 };
 

@@ -103,12 +103,11 @@ void DJIMotor::setOutput(){
         powerOut = calculateSpeedPID(value, getData(VELOCITY), static_cast<double>(time - timeOfLastPID));
 
     else if(mode == POS)
-        if (!useAbsEncoder)
+        if(!useAbsEncoder)
             powerOut = calculatePositionPID(value, getData(MULTITURNANGLE), static_cast<double>(time - timeOfLastPID));
 
         else
-            powerOut = calculatePeriodicPosition(static_cast<float>(s_calculateDeltaTicks(value, getData(ANGLE))),
-                                                 static_cast<double>(time - timeOfLastPID));
+            powerOut = calculatePeriodicPosition(static_cast<float>(s_calculateDeltaTicks(value, getData(ANGLE))), static_cast<double>(time - timeOfLastPID));
 
     else if(mode == POW)
         powerOut = value;

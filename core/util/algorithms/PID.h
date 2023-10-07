@@ -13,9 +13,9 @@
  */
 class PID {
 private:
-    float kP;
-    float kI;
-    float kD;
+    float kP = 0;
+    float kI = 0;
+    float kD = 0;
 
     float integralCap = 0;
     float outputCap = 0;
@@ -62,7 +62,7 @@ public:
 
     int calculatePeriodic(float error, double dt);
 
-    int limitOutput(double &PIDCalc);
+    void limitOutput(double &PIDCalc);
 
     /**
      * Sets the integral cap

@@ -32,7 +32,11 @@ int PID::calculate(int desired, int current, double dt) {
     float error = static_cast<float>(desired - current);
     errorIntegral += dt * (error + lastError) / 2;
 
-    double PIDCalc = (kP * error) + (kI * errorIntegral) + (kD * (error - lastError) / dt) + feedForward;
+    double PIDCalc = (kP * error) + (kI * errorIntegral) + feedForward;
+
+    if(dt > 0)
+        PIDCalc += (kD * (error - lastError) / dt);
+
     lastError = error;
 
     limitOutput(PIDCalc);
@@ -44,14 +48,18 @@ int PID::calculatePeriodic(float error, double dt) {
     dt /= 1000;
     errorIntegral += dt * (error + lastError) / 2;
 
-    double PIDCalc = (kP * error) + (kI * errorIntegral) + (kD * (error - lastError) / dt) + feedForward;
+    double PIDCalc = (kP * error) + (kI * errorIntegral) + feedForward;
+
+    if(dt > 0)
+        PIDCalc += (kD * (error - lastError) / dt);
+
     lastError = error;
 
     limitOutput(PIDCalc);
     return static_cast<int>(PIDCalc);
 }
 
-int PID::limitOutput(double &PIDCalc){
+void PID::limitOutput(double &PIDCalc){
 
     if(integralCap != 0) {
         if (errorIntegral > integralCap)
