@@ -13,24 +13,18 @@
  */
 class PID {
 private:
-    float kP;
-    float kI;
-    float kD;
-    float integralCap;
-    float outputCap;
+    float kP = 0;
+    float kI = 0;
+    float kD = 0;
+
+    float integralCap = 0;
+    float outputCap = 0;
+
     float lastError = 0;
+    double errorIntegral = 0;
 
 public:
-    bool debug = false;
-    bool debugPIDterms = false;
     float feedForward = 0;
-
-    double sumError = 0;
-
-    int d10xMultiplier = 0;
-    int slopeCarry = 5;
-    int carryCount = 0;
-    double prevRealError = 0;
 
     /**
      * Creates a new PID object with the default control parameters
@@ -39,40 +33,13 @@ public:
 
     /**
      * Creates a new PID object with the given control parameters
-     * @param p The P (proportional) parameter
-     * @param i The I (integral) parameter
-     * @param d The D (derivative) parameter
-     * @param sumCap The maximum integral that can be achieved, above which the integral will be capped
-     * @param outCap The maximum output of the PID, above which the output will be capped
+     * @param kP The P (proportional) parameter
+     * @param kI The I (integral) parameter
+     * @param kD The D (derivative) parameter
+     * @param integralCAp The maximum integral that can be achieved, above which the integral will be capped
+     * @param outputCap The maximum output of the PID, above which the output will be capped
      */
-    PID(float p, float i, float d, float sumCap, float outCap);
-
-    /**
-     * Calculates an output power based on the current and desired measurement (speed/position)
-     *
-     * @param desiredV The desired speed/position
-     * @param actualV The current speed/position
-     * @param dt The time that has passed since the last calculation, in milliseconds
-     * @return The output control power
-     */
-
-    float calculate(float desiredV, float actualV, double dt);
-
-    int calculate(int desiredV, int actualV, double dt);
-
-    int calculateDV(int dV, double dt);
-
-    /**
-     * Sets the integral cap
-     * @param sumCap The new integral cap
-     */
-    void setIntegralCap(float sumCap);
-
-    /**
-     * Sets the output cap
-     * @param outCap The new output cap
-     */
-    void setOutputCap(float outCap);
+    PID(float kP, float kI, float kD, float integralCap = 0, float outputCap = 0);
 
     /**
      * Sets the P, I, and D control parameters
@@ -80,25 +47,36 @@ public:
      * @param i The new I (integral) parameter
      * @param d The new D (derivative) parameter
      */
-    void setPID(float p, float i, float d);
+    void setPID(float p, float i, float d, float integralCap = 0, float outputCap = 0);
+
 
     /**
-     * Gets the P (proportional) control parameter
-     * @return The P (proportional) control parameter
+     * Calculates an output power based on the current and desired measurement (speed/position)
+     *
+     * @param desired The desired speed/position
+     * @param current The current speed/position
+     * @param dt The time that has passed since the last calculation, in milliseconds
+     * @return The output control power
      */
-    float getkP() const;
+    int calculate(int desired, int current, double dt);
+
+    int calculatePeriodic(float error, double dt);
+
+    void limitOutput(double &PIDCalc);
 
     /**
-     * Gets the I (integral) control parameter
-     * @return The I (integral) control parameter
+     * Sets the integral cap
+     * @param integralCap The new integral cap
      */
-    float getkI() const;
+    void setIntegralCap(float integralCap);
 
     /**
-     * Gets the D (derivative) control parameter
-     * @return The D (derivative) control parameter
+     * Sets the output cap
+     * @param outCap The new output cap
      */
-    float getkD() const;
+    void setOutputCap(float outCap);
+
+
 };
 
 

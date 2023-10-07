@@ -58,7 +58,7 @@ private:
         float p;
         float i;
         float d;
-        float outputCap;
+        float outCap;
         float integralCap;
     };
 
@@ -129,7 +129,7 @@ public:
     PID pidPosition;
 
     int multiTurn = 0;
-    int outCap = INT16_T_MAX;
+    int outputCap = INT16_T_MAX;
     bool useAbsEncoder = false;
     bool printAngle = false;
 
@@ -180,9 +180,9 @@ public:
     inline void setSpeedIntegralCap(double cap)                                 { pidSpeed.setIntegralCap((float)cap); }
     inline void setSpeedOutputCap(double cap)                                   { pidSpeed.setOutputCap((float)cap); }
 
-    inline int calculateSpeedPID(int desiredV, int actualV, double dt)          { return pidSpeed.calculate(desiredV, actualV, dt); }
-    inline int calculatePositionPID(int desiredP, int actualP, double dt)       { return pidPosition.calculate(desiredP, actualP, dt); }
-    inline int calculateDVPositionPID(int dV, double dt)                          { return pidPosition.calculateDV(dV, dt); }
+    inline int calculateSpeedPID(int desired, int current, double dt)           { return pidSpeed.calculate(desired, current, dt); }
+    inline int calculatePositionPID(int desired, int current, double dt)        { return pidPosition.calculate(desired, current, dt); }
+    inline int calculatePeriodicPosition(float dE, double dt)                   { return pidPosition.calculatePeriodic(dE, dt); }
 
 };
 
