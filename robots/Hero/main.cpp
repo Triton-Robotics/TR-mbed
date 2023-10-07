@@ -126,17 +126,17 @@ void setMotorSettings(){
     yaw.setPositionPID(50, 0.3, 1);
     yaw.setPositionOutputCap(100000);
     yaw.setPositionIntegralCap(10000);
-    yaw.outCap = 32760;
+    yaw.outputCap = 32760;
     yaw.useAbsEncoder = false;
 
     indexer.setPositionOutputCap(100000);
     indexer.setSpeedOutputCap(1000000);
     indexer.setPositionIntegralCap(100000);
     indexer.setSpeedIntegralCap(100000);
-    indexer.outCap = 32700;
+    indexer.outputCap = 32700;
 
-    LFLYWHEEL.outCap = 16380;
-    RFLYWHEEL.outCap = 16380;
+    LFLYWHEEL.outputCap = 16380;
+    RFLYWHEEL.outputCap = 16380;
 
     chassis.setBrakeMode(Chassis::COAST);
 
@@ -254,7 +254,7 @@ int main(){
                 if(rS == Remote::SwitchState::DOWN) {
                     beyblade = 2000;
                     deltaYaw = calculateDeltaYaw(chassis.getHeadingDegrees(), beforeBeybladeYaw);
-                    yaw.setPower((int)yawPID.calculateDV(deltaYaw,us_ticker_read() - timeEnd));
+                    yaw.setPower((int)yawPID.calculatePeriodic(static_cast<float>(deltaYaw),us_ticker_read() - timeEnd));
                 }else {
                     beyblade = 0;
                     yaw.setPower(-rX * 20);

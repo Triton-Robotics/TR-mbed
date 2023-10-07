@@ -34,29 +34,29 @@ DJIMotor::DJIMotor(short motorID, CANHandler::CANBus canBus, motorType type, con
         canID_0 += 4;
 
         setSpeedPID(gimbly.speed.p, gimbly.speed.i, gimbly.speed.d);
-        setSpeedOutputCap(gimbly.speed.outputCap);
+        setSpeedOutputCap(gimbly.speed.outCap);
         setSpeedIntegralCap(gimbly.speed.integralCap);
 
         setPositionPID(gimbly.pos.p, gimbly.pos.i, gimbly.pos.d);
-        setPositionOutputCap(gimbly.pos.outputCap);
+        setPositionOutputCap(gimbly.pos.outCap);
         setPositionIntegralCap(gimbly.pos.integralCap);
 
     }else if(type == M3508){
         setSpeedPID(m3508.speed.p, m3508.speed.i, m3508.speed.d);
-        setSpeedOutputCap(m3508.speed.outputCap);
+        setSpeedOutputCap(m3508.speed.outCap);
         setSpeedIntegralCap(m3508.speed.integralCap);
 
         setPositionPID(m3508.pos.p, m3508.pos.i, m3508.pos.d);
-        setPositionOutputCap(m3508.pos.outputCap);
+        setPositionOutputCap(m3508.pos.outCap);
         setPositionIntegralCap(m3508.pos.integralCap);
 
     }else if(type == M3508_FLYWHEEL){
         setSpeedPID(m3508Flywheel.speed.p, m3508Flywheel.speed.i, m3508Flywheel.speed.d);
-        setSpeedOutputCap(m3508Flywheel.speed.outputCap);
+        setSpeedOutputCap(m3508Flywheel.speed.outCap);
         setSpeedIntegralCap(m3508Flywheel.speed.integralCap);
 
         setPositionPID(m3508Flywheel.pos.p, m3508Flywheel.pos.i, m3508Flywheel.pos.d);
-        setPositionOutputCap(m3508Flywheel.pos.outputCap);
+        setPositionOutputCap(m3508Flywheel.pos.outCap);
         setPositionIntegralCap(m3508Flywheel.pos.integralCap);
     }
 
@@ -107,7 +107,8 @@ void DJIMotor::setOutput(){
             powerOut = calculatePositionPID(value, getData(MULTITURNANGLE), static_cast<double>(time - timeOfLastPID));
 
         else
-            powerOut = calculateDVPositionPID(s_calculateDeltaTicks(value, getData(ANGLE)), static_cast<double>(time - timeOfLastPID));
+            powerOut = calculatePeriodicPosition(static_cast<float>(s_calculateDeltaTicks(value, getData(ANGLE))),
+                                                 static_cast<double>(time - timeOfLastPID));
 
     else if(mode == POW)
         powerOut = value;
@@ -120,18 +121,18 @@ void DJIMotor::setOutput(){
                canBus + 1, motorID_0 + 1, name.c_str());
 
     if(type == M3508_FLYWHEEL || type == M3508 || type == M2006){
-        if(powerOut > outCap || powerOut > INT15_T_MAX)
-            powerOut = min(outCap, INT15_T_MAX);
+        if(powerOut > outputCap || powerOut > INT15_T_MAX)
+            powerOut = min(outputCap, INT15_T_MAX);
 
-        else if(powerOut < -outCap || powerOut < -INT15_T_MAX)
-            powerOut = max(-outCap, -INT15_T_MAX);
+        else if(powerOut < -outputCap || powerOut < -INT15_T_MAX)
+            powerOut = max(-outputCap, -INT15_T_MAX);
 
     }else{
-        if(powerOut > outCap || powerOut > INT16_T_MAX)
-            powerOut = min(outCap, INT16_T_MAX);
+        if(powerOut > outputCap || powerOut > INT16_T_MAX)
+            powerOut = min(outputCap, INT16_T_MAX);
 
-        else if(powerOut < -outCap || powerOut < -INT16_T_MAX)
-            powerOut = max(-outCap, -INT16_T_MAX);
+        else if(powerOut < -outputCap || powerOut < -INT16_T_MAX)
+            powerOut = max(-outputCap, -INT16_T_MAX);
     }
 
     this -> powerOut = static_cast<int16_t>(powerOut);

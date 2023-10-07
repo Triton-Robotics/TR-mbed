@@ -1,11 +1,5 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "modernize-use-auto"
-//
-// Created by ankit on 1/31/23.
-//
-
 #include "PID.h"
-#include <math.h>
+#include <cmath>
 
 PID::PID(){
     kP = 0; kI = 0; kD = 0;
@@ -14,153 +8,72 @@ PID::PID(){
     feedForward = 0;
 }
 
-/**
-         * @brief Simple PID Constructor
-         *
-         * @param p
-         * @param i
-         * @param d
-         * @param sumCap the integral sum cap, to prevent runaway I values
-         *
-         * @param outCap a cap on the actual output so you can limit how much the pid will output until you're sure it
-         * works well before you let it loose
-         */
-PID::PID(float p, float i, float d, float sumCap = 0, float outCap = 0){
-    kP = p; kI = i; kD = d;
-    integralCap = sumCap;
-    outputCap = outCap;
+
+PID::PID(float kP, float kI, float kD, float integralCap, float outputCap){
+    this -> kP = kP;
+    this -> kI = kI;
+    this -> kD = kD;
+    this -> integralCap = integralCap;
+    this -> outputCap = outputCap;
 }
 
-/**
-         * @brief calculate the PID output
-         *
-         * @param desiredV the desired value
-         * @param actualV the actual value
-         * @param dt the change in time
-         */
+void PID::setPID(float kP, float kI, float kD, float integralCap, float outputCap){
+    this -> kP = kP;
+    this -> kI = kI;
+    this -> kD = kD;
+    this -> integralCap = integralCap;
+    this -> outputCap = outputCap;
+}
 
-int PID::calculate(int desiredV, int actualV, double dt) {
+int PID::calculate(int desired, int current, double dt) {
+
     dt /= 1000;
 
-    float error = static_cast<float>(desiredV - actualV);
+    float error = static_cast<float>(desired - current);
+    errorIntegral += dt * (error + lastError) / 2;
 
-    if(lastError == error && carryCount < slopeCarry){
-        carryCount ++;
-    }else{
-        prevRealError = lastError;
-        carryCount = 0;
-    }
-
-    sumError += dt * (error + lastError) / 2;
+    double PIDCalc = (kP * error) + (kI * errorIntegral) + (kD * (error - lastError) / dt) + feedForward;
     lastError = error;
 
-    double PIDCalc = kP * error + kI * sumError + kD * (error - prevRealError) / dt;
-    if(debugPIDterms)
-        printf("P: %f\t I: %f\t D: %f\t\n", kP * error, kI * sumError, kD * ((double)(error - lastError) * (pow(10,d10xMultiplier)/dt)));
-
-    //printf("dd[%f]\n",((double)(error - lastError)));
-
-    if(debug)
-        printf("DES: %d\t ACT: %d\t PID: %d\t ERROR: %d\n",(int)desiredV, int(actualV), int(PIDCalc), int(error));
-
-    if(integralCap != 0){
-        //sumError = std::max(std::min(sumError,integralCap),-integralCap);
-        if(sumError > integralCap)
-            sumError = integralCap;
-        else if(sumError < -integralCap)
-            sumError = -integralCap;
-    }
-    if(outputCap != 0){
-        //PIDCalc = std::max(std::min(PIDCalc,outputCap),-outputCap);
-        if(PIDCalc > outputCap)
-            PIDCalc = outputCap;
-        else if(PIDCalc < -outputCap)
-            PIDCalc = -outputCap;
-    }
-
-    return static_cast<int>(PIDCalc + feedForward);
+    limitOutput(PIDCalc);
+    return static_cast<int>(PIDCalc);
 }
 
+int PID::calculatePeriodic(float error, double dt) {
 
-int PID::calculateDV(int dV, double dt){
     dt /= 1000;
-//    printf("dt (ms): %i\n", (int) (1000 * dt));
+    errorIntegral += dt * (error + lastError) / 2;
 
-    float error = dV;
-
-    if(lastError == error && carryCount < slopeCarry){
-        carryCount ++;
-    }else{
-        prevRealError = lastError;
-        carryCount = 0;
-    }
-
-    float PIDCalc = kP * error + kI * sumError + kD * ((double)(error - prevRealError) * (pow(10,d10xMultiplier)/dt));
-    if(debugPIDterms)
-        printf("P: %f\t I: %f\t D: %f\t\n", kP * error, kI * sumError, kD * ((double)(error - lastError) * (pow(10,d10xMultiplier)/dt)));
-
-    //printf("dd[%f]\n",((double)(error - lastError)));
-
-    sumError += error * dt;
+    double PIDCalc = (kP * error) + (kI * errorIntegral) + (kD * (error - lastError) / dt) + feedForward;
     lastError = error;
 
-    if(integralCap != 0){
-        //sumError = std::max(std::min(sumError,integralCap),-integralCap);
-        if(sumError > integralCap)
-            sumError = integralCap;
+    limitOutput(PIDCalc);
+    return static_cast<int>(PIDCalc);
+}
 
-        else if(sumError < -integralCap)
-            sumError = -integralCap;
+int PID::limitOutput(double &PIDCalc){
+
+    if(integralCap != 0) {
+        if (errorIntegral > integralCap)
+            errorIntegral = integralCap;
+
+        else if (errorIntegral < -integralCap)
+            errorIntegral = -integralCap;
     }
-    if(outputCap != 0){
-        //PIDCalc = std::max(std::min(PIDCalc,outputCap),-outputCap);
-        if(PIDCalc > outputCap)
+
+    if(outputCap != 0) {
+        if (PIDCalc > outputCap)
             PIDCalc = outputCap;
 
-        else if(PIDCalc < -outputCap)
+        else if (PIDCalc < -outputCap)
             PIDCalc = -outputCap;
     }
-
-    return static_cast<int>(PIDCalc + feedForward);
 }
 
-
-/**
-         * @brief set the integral cap
-         * @param sumCap the integral cap
-         */
-void PID::setIntegralCap(float sumCap){
-    integralCap = sumCap;
+void PID::setIntegralCap(float integralCap){
+    this -> integralCap = integralCap;
 }
 
-/**
- * @brief set the output cap
- * @param outCap the output cap
- */
-void PID::setOutputCap(float outCap){
-    outputCap = outCap;
+void PID::setOutputCap(float outputCap){
+    this -> outputCap = outputCap;
 }
-
-/**
- * @brief set the PID values
- * @param p
- * @param i
- * @param d
- */
-void PID::setPID(float p, float i, float d){
-    kP = p; kI = i; kD = d;
-}
-
-float PID::getkP() const{
-    return kP;
-}
-
-float PID::getkI() const{
-    return kI;
-}
-
-float PID::getkD() const{
-    return kD;
-}
-
-#pragma clang diagnostic pop

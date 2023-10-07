@@ -71,7 +71,7 @@ void setMotorSettings(){
     yaw1.setPositionIntegralCap(10000);
     yaw1.useAbsEncoder = false;
     yaw1.pidPosition.setOutputCap(100000);
-    yaw1.outCap = 32000;
+    yaw1.outputCap = 32000;
 
     indexerL.setSpeedPID(1.94, 0.002, 0.166);
     indexerL.setSpeedIntegralCap(500000);

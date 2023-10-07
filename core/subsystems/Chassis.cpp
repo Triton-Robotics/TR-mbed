@@ -3,10 +3,10 @@
 
 Chassis::Chassis(short lfId, short rfId, short lbId, short rbId, I2C *i2c) : LF(lfId, CAN_BUS_TYPE, MOTOR_TYPE), RF(rfId, CAN_BUS_TYPE, MOTOR_TYPE),
 LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE),  imu(*i2c, IMU_RESET, MODE_IMU), chassisKalman() {
-    LF.outCap = 16000;
-    RF.outCap = 16000;
-    LB.outCap = 16000;
-    RB.outCap = 16000;
+    LF.outputCap = 16000;
+    RF.outputCap = 16000;
+    LB.outputCap = 16000;
+    RB.outputCap = 16000;
     LF.setSpeedPID(1.5, 0, 0);
 
     this->lfId = lfId;
