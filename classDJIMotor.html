@@ -111,12 +111,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a52cb939650f8dab27642688bd46ac574"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2ac7fba32e99d7f4d3b5361e7db8aa41"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a2ac7fba32e99d7f4d3b5361e7db8aa41">setSpeedOutputCap</a> (double cap)</td></tr>
 <tr class="separator:a2ac7fba32e99d7f4d3b5361e7db8aa41"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab3a89523068360c8bb814cc0683b4d1f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#ab3a89523068360c8bb814cc0683b4d1f">calculateSpeedPID</a> (int desiredV, int actualV, double dt)</td></tr>
-<tr class="separator:ab3a89523068360c8bb814cc0683b4d1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6f78ebf1b5e19cc842d5547a7179ebb6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a6f78ebf1b5e19cc842d5547a7179ebb6">calculatePositionPID</a> (int desiredP, int actualP, double dt)</td></tr>
-<tr class="separator:a6f78ebf1b5e19cc842d5547a7179ebb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0f48427537a3196318d5b5008de93e4f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a0f48427537a3196318d5b5008de93e4f">calculateDVPositionPID</a> (int dV, double dt)</td></tr>
-<tr class="separator:a0f48427537a3196318d5b5008de93e4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7772d081abc12b0dbb20dd719ff3c3a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#aa7772d081abc12b0dbb20dd719ff3c3a">calculateSpeedPID</a> (int desired, int current, double dt)</td></tr>
+<tr class="separator:aa7772d081abc12b0dbb20dd719ff3c3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2723c71606a1bbb5f4c9499095bf487d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a2723c71606a1bbb5f4c9499095bf487d">calculatePositionPID</a> (int desired, int current, double dt)</td></tr>
+<tr class="separator:a2723c71606a1bbb5f4c9499095bf487d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac72aa95453f1c3fd8123cae4dd4a3219"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#ac72aa95453f1c3fd8123cae4dd4a3219">calculatePeriodicPosition</a> (float dE, double dt)</td></tr>
+<tr class="separator:ac72aa95453f1c3fd8123cae4dd4a3219"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -147,8 +147,8 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a3c65dfbd935be4734c15fe7580d2cc53"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6c02fbe9de17133a2f5d0004676a247f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a6c02fbe9de17133a2f5d0004676a247f">multiTurn</a> = 0</td></tr>
 <tr class="separator:a6c02fbe9de17133a2f5d0004676a247f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56c9d6e5565556c1c135a063ecd5740d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a56c9d6e5565556c1c135a063ecd5740d">outCap</a> = <a class="el" href="DJIMotor_8h.html#ae3866762933a285386d03033c49f5600">INT16_T_MAX</a></td></tr>
-<tr class="separator:a56c9d6e5565556c1c135a063ecd5740d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a344ebeab5bbf1acbb28654ca2b20813f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a344ebeab5bbf1acbb28654ca2b20813f">outputCap</a> = <a class="el" href="DJIMotor_8h.html#ae3866762933a285386d03033c49f5600">INT16_T_MAX</a></td></tr>
+<tr class="separator:a344ebeab5bbf1acbb28654ca2b20813f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa9af1d0a5135cc17bb97a777ecf81137"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#aa9af1d0a5135cc17bb97a777ecf81137">useAbsEncoder</a> = false</td></tr>
 <tr class="separator:aa9af1d0a5135cc17bb97a777ecf81137"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a722b68762ff53f6102a6f64b5bc731cc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a722b68762ff53f6102a6f64b5bc731cc">printAngle</a> = false</td></tr>
@@ -283,8 +283,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a0f48427537a3196318d5b5008de93e4f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0f48427537a3196318d5b5008de93e4f">&#9670;&nbsp;</a></span>calculateDVPositionPID()</h2>
+<a id="ac72aa95453f1c3fd8123cae4dd4a3219"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac72aa95453f1c3fd8123cae4dd4a3219">&#9670;&nbsp;</a></span>calculatePeriodicPosition()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -293,10 +293,10 @@ Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int DJIMotor::calculateDVPositionPID </td>
+          <td class="memname">int DJIMotor::calculatePeriodicPosition </td>
           <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>dV</em>, </td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>dE</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -319,8 +319,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a6f78ebf1b5e19cc842d5547a7179ebb6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6f78ebf1b5e19cc842d5547a7179ebb6">&#9670;&nbsp;</a></span>calculatePositionPID()</h2>
+<a id="a2723c71606a1bbb5f4c9499095bf487d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2723c71606a1bbb5f4c9499095bf487d">&#9670;&nbsp;</a></span>calculatePositionPID()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -332,13 +332,13 @@ Public Attributes</h2></td></tr>
           <td class="memname">int DJIMotor::calculatePositionPID </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>desiredP</em>, </td>
+          <td class="paramname"><em>desired</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>actualP</em>, </td>
+          <td class="paramname"><em>current</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -361,8 +361,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ab3a89523068360c8bb814cc0683b4d1f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab3a89523068360c8bb814cc0683b4d1f">&#9670;&nbsp;</a></span>calculateSpeedPID()</h2>
+<a id="aa7772d081abc12b0dbb20dd719ff3c3a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa7772d081abc12b0dbb20dd719ff3c3a">&#9670;&nbsp;</a></span>calculateSpeedPID()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -374,13 +374,13 @@ Public Attributes</h2></td></tr>
           <td class="memname">int DJIMotor::calculateSpeedPID </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>desiredV</em>, </td>
+          <td class="paramname"><em>desired</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>actualV</em>, </td>
+          <td class="paramname"><em>current</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -955,14 +955,14 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a56c9d6e5565556c1c135a063ecd5740d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a56c9d6e5565556c1c135a063ecd5740d">&#9670;&nbsp;</a></span>outCap</h2>
+<a id="a344ebeab5bbf1acbb28654ca2b20813f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a344ebeab5bbf1acbb28654ca2b20813f">&#9670;&nbsp;</a></span>outputCap</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int DJIMotor::outCap = <a class="el" href="DJIMotor_8h.html#ae3866762933a285386d03033c49f5600">INT16_T_MAX</a></td>
+          <td class="memname">int DJIMotor::outputCap = <a class="el" href="DJIMotor_8h.html#ae3866762933a285386d03033c49f5600">INT16_T_MAX</a></td>
         </tr>
       </table>
 </div><div class="memdoc">

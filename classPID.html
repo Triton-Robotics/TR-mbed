@@ -77,50 +77,25 @@ $(function() {
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a0311b6f7de348499ce24e53ba353514a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a0311b6f7de348499ce24e53ba353514a">PID</a> ()</td></tr>
 <tr class="separator:a0311b6f7de348499ce24e53ba353514a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a12e94de8989b93f89fc9a58f56d61817"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a12e94de8989b93f89fc9a58f56d61817">PID</a> (float <a class="el" href="imuExampleQuaternions_8cpp.html#ad4dd3636d8f0735f00e07fb2ff7ce5f9">p</a>, float i, float d, float sumCap, float outCap)</td></tr>
-<tr class="memdesc:a12e94de8989b93f89fc9a58f56d61817"><td class="mdescLeft">&#160;</td><td class="mdescRight">Simple <a class="el" href="classPID.html">PID</a> Constructor.  <a href="classPID.html#a12e94de8989b93f89fc9a58f56d61817">More...</a><br /></td></tr>
-<tr class="separator:a12e94de8989b93f89fc9a58f56d61817"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8c501a62399df36de281d370c465441f"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a8c501a62399df36de281d370c465441f">calculate</a> (float desiredV, float actualV, double dt)</td></tr>
-<tr class="separator:a8c501a62399df36de281d370c465441f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a09e078358b34666fd48e5048fff61526"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a09e078358b34666fd48e5048fff61526">calculate</a> (int desiredV, int actualV, double dt)</td></tr>
-<tr class="memdesc:a09e078358b34666fd48e5048fff61526"><td class="mdescLeft">&#160;</td><td class="mdescRight">calculate the <a class="el" href="classPID.html">PID</a> output  <a href="classPID.html#a09e078358b34666fd48e5048fff61526">More...</a><br /></td></tr>
-<tr class="separator:a09e078358b34666fd48e5048fff61526"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac7833f410177298cf3c33ce5d4fed52d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#ac7833f410177298cf3c33ce5d4fed52d">calculateDV</a> (int dV, double dt)</td></tr>
-<tr class="separator:ac7833f410177298cf3c33ce5d4fed52d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac7ee1c162a0a2b75d4d638ad6ed911da"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#ac7ee1c162a0a2b75d4d638ad6ed911da">setIntegralCap</a> (float sumCap)</td></tr>
-<tr class="memdesc:ac7ee1c162a0a2b75d4d638ad6ed911da"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the integral cap  <a href="classPID.html#ac7ee1c162a0a2b75d4d638ad6ed911da">More...</a><br /></td></tr>
-<tr class="separator:ac7ee1c162a0a2b75d4d638ad6ed911da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11fa491da71a1f9e95bfa95776d09f7c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a11fa491da71a1f9e95bfa95776d09f7c">PID</a> (float kP, float kI, float kD, float integralCap=0, float outputCap=0)</td></tr>
+<tr class="separator:a11fa491da71a1f9e95bfa95776d09f7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a328bd50f380430b2d5d475dd1a30adfd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a328bd50f380430b2d5d475dd1a30adfd">setPID</a> (float <a class="el" href="imuExampleQuaternions_8cpp.html#ad4dd3636d8f0735f00e07fb2ff7ce5f9">p</a>, float i, float d, float integralCap=0, float outputCap=0)</td></tr>
+<tr class="separator:a328bd50f380430b2d5d475dd1a30adfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a908c6955daeac2cf3e65682d661a85c6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a908c6955daeac2cf3e65682d661a85c6">calculate</a> (int desired, int current, double dt)</td></tr>
+<tr class="separator:a908c6955daeac2cf3e65682d661a85c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a260015c5948e580ea5b620a628b17179"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a260015c5948e580ea5b620a628b17179">calculatePeriodic</a> (float error, double dt)</td></tr>
+<tr class="separator:a260015c5948e580ea5b620a628b17179"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c2837919a7d455e64ac315c4863ebac"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a2c2837919a7d455e64ac315c4863ebac">limitOutput</a> (double &amp;PIDCalc)</td></tr>
+<tr class="separator:a2c2837919a7d455e64ac315c4863ebac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac3dde8d74b0f05b5a82ed8b8018b855f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#ac3dde8d74b0f05b5a82ed8b8018b855f">setIntegralCap</a> (float integralCap)</td></tr>
+<tr class="separator:ac3dde8d74b0f05b5a82ed8b8018b855f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a53169403b2a9bed490ed0346c4fff9ea"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a53169403b2a9bed490ed0346c4fff9ea">setOutputCap</a> (float outCap)</td></tr>
-<tr class="memdesc:a53169403b2a9bed490ed0346c4fff9ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the output cap  <a href="classPID.html#a53169403b2a9bed490ed0346c4fff9ea">More...</a><br /></td></tr>
 <tr class="separator:a53169403b2a9bed490ed0346c4fff9ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac6ca9c4c2850643db59f7ae453a02082"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#ac6ca9c4c2850643db59f7ae453a02082">setPID</a> (float <a class="el" href="imuExampleQuaternions_8cpp.html#ad4dd3636d8f0735f00e07fb2ff7ce5f9">p</a>, float i, float d)</td></tr>
-<tr class="memdesc:ac6ca9c4c2850643db59f7ae453a02082"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the <a class="el" href="classPID.html">PID</a> values  <a href="classPID.html#ac6ca9c4c2850643db59f7ae453a02082">More...</a><br /></td></tr>
-<tr class="separator:ac6ca9c4c2850643db59f7ae453a02082"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0f81bd3da1221a67a4464c9ca76dd93f"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a0f81bd3da1221a67a4464c9ca76dd93f">getkP</a> () const</td></tr>
-<tr class="separator:a0f81bd3da1221a67a4464c9ca76dd93f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c47373b27b024f743b84c2140dfef77"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a7c47373b27b024f743b84c2140dfef77">getkI</a> () const</td></tr>
-<tr class="separator:a7c47373b27b024f743b84c2140dfef77"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afcc8ea452820034a4781b52e623f8954"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#afcc8ea452820034a4781b52e623f8954">getkD</a> () const</td></tr>
-<tr class="separator:afcc8ea452820034a4781b52e623f8954"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:af366e4a87e653fba7b5ce615f55522b8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#af366e4a87e653fba7b5ce615f55522b8">debug</a> = false</td></tr>
-<tr class="separator:af366e4a87e653fba7b5ce615f55522b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae0ca4a071ebce923d0d3c6353248354e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#ae0ca4a071ebce923d0d3c6353248354e">debugPIDterms</a> = false</td></tr>
-<tr class="separator:ae0ca4a071ebce923d0d3c6353248354e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62b8d72d1f225e7d57d5202568e0bde5"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a62b8d72d1f225e7d57d5202568e0bde5">feedForward</a> = 0</td></tr>
 <tr class="separator:a62b8d72d1f225e7d57d5202568e0bde5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaee3ca28f4d31ccc5ca128d7c2f3f857"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#aaee3ca28f4d31ccc5ca128d7c2f3f857">sumError</a> = 0</td></tr>
-<tr class="separator:aaee3ca28f4d31ccc5ca128d7c2f3f857"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a33faef9f749f8e9ff78be469ab7f7932"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a33faef9f749f8e9ff78be469ab7f7932">d10xMultiplier</a> = 0</td></tr>
-<tr class="separator:a33faef9f749f8e9ff78be469ab7f7932"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6c32425676fecd38176b63f93bb5bffd"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a6c32425676fecd38176b63f93bb5bffd">slopeCarry</a> = 5</td></tr>
-<tr class="separator:a6c32425676fecd38176b63f93bb5bffd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ade7776bc34e7eb3df33e4c3548e428e4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#ade7776bc34e7eb3df33e4c3548e428e4">carryCount</a> = 0</td></tr>
-<tr class="separator:ade7776bc34e7eb3df33e4c3548e428e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9f9cf23e731fce7fe7b1d96216f117a8"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a9f9cf23e731fce7fe7b1d96216f117a8">prevRealError</a> = 0</td></tr>
-<tr class="separator:a9f9cf23e731fce7fe7b1d96216f117a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The <a class="el" href="classPID.html">PID</a> class is used to implement <a class="el" href="classPID.html">PID</a> (proportional, integral, derivative) control of a motor. It is used by almost every motor on the robot, and supports both position and velocity control. </p>
@@ -143,8 +118,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a12e94de8989b93f89fc9a58f56d61817"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a12e94de8989b93f89fc9a58f56d61817">&#9670;&nbsp;</a></span>PID() <span class="overload">[2/2]</span></h2>
+<a id="a11fa491da71a1f9e95bfa95776d09f7c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11fa491da71a1f9e95bfa95776d09f7c">&#9670;&nbsp;</a></span>PID() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -153,31 +128,31 @@ Public Attributes</h2></td></tr>
           <td class="memname">PID::PID </td>
           <td>(</td>
           <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>p</em>, </td>
+          <td class="paramname"><em>kP</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>i</em>, </td>
+          <td class="paramname"><em>kI</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>d</em>, </td>
+          <td class="paramname"><em>kD</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>sumCap</em> = <code>0</code>, </td>
+          <td class="paramname"><em>integralCap</em> = <code>0</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>outCap</em> = <code>0</code>&#160;</td>
+          <td class="paramname"><em>outputCap</em> = <code>0</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -186,20 +161,13 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p>Simple <a class="el" href="classPID.html">PID</a> Constructor. </p>
 <p>Creates a new <a class="el" href="classPID.html">PID</a> object with the given control parameters </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">p</td><td>The P (proportional) parameter </td></tr>
-    <tr><td class="paramname">i</td><td>The I (integral) parameter </td></tr>
-    <tr><td class="paramname">d</td><td>The D (derivative) parameter </td></tr>
-    <tr><td class="paramname">sumCap</td><td>The maximum integral that can be achieved, above which the integral will be capped </td></tr>
-    <tr><td class="paramname">outCap</td><td>The maximum output of the <a class="el" href="classPID.html">PID</a>, above which the output will be capped</td></tr>
-    <tr><td class="paramname">p</td><td></td></tr>
-    <tr><td class="paramname">i</td><td></td></tr>
-    <tr><td class="paramname">d</td><td></td></tr>
-    <tr><td class="paramname">sumCap</td><td>the integral sum cap, to prevent runaway I values</td></tr>
-    <tr><td class="paramname">outCap</td><td>a cap on the actual output so you can limit how much the pid will output until you're sure it works well before you let it loose </td></tr>
+    <tr><td class="paramname">kP</td><td>The P (proportional) parameter </td></tr>
+    <tr><td class="paramname">kI</td><td>The I (integral) parameter </td></tr>
+    <tr><td class="paramname">kD</td><td>The D (derivative) parameter </td></tr>
+    <tr><td class="paramname">integralCAp</td><td>The maximum integral that can be achieved, above which the integral will be capped </td></tr>
+    <tr><td class="paramname">outputCap</td><td>The maximum output of the <a class="el" href="classPID.html">PID</a>, above which the output will be capped </td></tr>
   </table>
   </dd>
 </dl>
@@ -207,23 +175,23 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a8c501a62399df36de281d370c465441f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8c501a62399df36de281d370c465441f">&#9670;&nbsp;</a></span>calculate() <span class="overload">[1/2]</span></h2>
+<a id="a908c6955daeac2cf3e65682d661a85c6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a908c6955daeac2cf3e65682d661a85c6">&#9670;&nbsp;</a></span>calculate()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">float PID::calculate </td>
+          <td class="memname">int PID::calculate </td>
           <td>(</td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>desiredV</em>, </td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>desired</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>actualV</em>, </td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>current</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -241,8 +209,8 @@ Public Attributes</h2></td></tr>
 <p>Calculates an output power based on the current and desired measurement (speed/position)</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">desiredV</td><td>The desired speed/position </td></tr>
-    <tr><td class="paramname">actualV</td><td>The current speed/position </td></tr>
+    <tr><td class="paramname">desired</td><td>The desired speed/position </td></tr>
+    <tr><td class="paramname">current</td><td>The current speed/position </td></tr>
     <tr><td class="paramname">dt</td><td>The time that has passed since the last calculation, in milliseconds </td></tr>
   </table>
   </dd>
@@ -251,61 +219,17 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a09e078358b34666fd48e5048fff61526"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a09e078358b34666fd48e5048fff61526">&#9670;&nbsp;</a></span>calculate() <span class="overload">[2/2]</span></h2>
+<a id="a260015c5948e580ea5b620a628b17179"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a260015c5948e580ea5b620a628b17179">&#9670;&nbsp;</a></span>calculatePeriodic()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int PID::calculate </td>
+          <td class="memname">int PID::calculatePeriodic </td>
           <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>desiredV</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>actualV</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>dt</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>calculate the <a class="el" href="classPID.html">PID</a> output </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">desiredV</td><td>the desired value </td></tr>
-    <tr><td class="paramname">actualV</td><td>the actual value </td></tr>
-    <tr><td class="paramname">dt</td><td>the change in time </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="ac7833f410177298cf3c33ce5d4fed52d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac7833f410177298cf3c33ce5d4fed52d">&#9670;&nbsp;</a></span>calculateDV()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int PID::calculateDV </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>dV</em>, </td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>error</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -323,62 +247,26 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="afcc8ea452820034a4781b52e623f8954"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afcc8ea452820034a4781b52e623f8954">&#9670;&nbsp;</a></span>getkD()</h2>
+<a id="a2c2837919a7d455e64ac315c4863ebac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c2837919a7d455e64ac315c4863ebac">&#9670;&nbsp;</a></span>limitOutput()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">float PID::getkD </td>
+          <td class="memname">void PID::limitOutput </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
+          <td class="paramtype">double &amp;&#160;</td>
+          <td class="paramname"><em>PIDCalc</em></td><td>)</td>
+          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets the D (derivative) control parameter </p><dl class="section return"><dt>Returns</dt><dd>The D (derivative) control parameter </dd></dl>
 
 </div>
 </div>
-<a id="a7c47373b27b024f743b84c2140dfef77"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7c47373b27b024f743b84c2140dfef77">&#9670;&nbsp;</a></span>getkI()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">float PID::getkI </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Gets the I (integral) control parameter </p><dl class="section return"><dt>Returns</dt><dd>The I (integral) control parameter </dd></dl>
-
-</div>
-</div>
-<a id="a0f81bd3da1221a67a4464c9ca76dd93f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0f81bd3da1221a67a4464c9ca76dd93f">&#9670;&nbsp;</a></span>getkP()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">float PID::getkP </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Gets the P (proportional) control parameter </p><dl class="section return"><dt>Returns</dt><dd>The P (proportional) control parameter </dd></dl>
-
-</div>
-</div>
-<a id="ac7ee1c162a0a2b75d4d638ad6ed911da"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac7ee1c162a0a2b75d4d638ad6ed911da">&#9670;&nbsp;</a></span>setIntegralCap()</h2>
+<a id="ac3dde8d74b0f05b5a82ed8b8018b855f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac3dde8d74b0f05b5a82ed8b8018b855f">&#9670;&nbsp;</a></span>setIntegralCap()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -387,17 +275,14 @@ Public Attributes</h2></td></tr>
           <td class="memname">void PID::setIntegralCap </td>
           <td>(</td>
           <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>sumCap</em></td><td>)</td>
+          <td class="paramname"><em>integralCap</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p>set the integral cap </p>
 <p>Sets the integral cap </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">sumCap</td><td>The new integral cap</td></tr>
-    <tr><td class="paramname">sumCap</td><td>the integral cap </td></tr>
+    <tr><td class="paramname">integralCap</td><td>The new integral cap </td></tr>
   </table>
   </dd>
 </dl>
@@ -419,20 +304,17 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p>set the output cap </p>
 <p>Sets the output cap </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">outCap</td><td>The new output cap</td></tr>
-    <tr><td class="paramname">outCap</td><td>the output cap </td></tr>
+    <tr><td class="paramname">outCap</td><td>The new output cap </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="ac6ca9c4c2850643db59f7ae453a02082"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac6ca9c4c2850643db59f7ae453a02082">&#9670;&nbsp;</a></span>setPID()</h2>
+<a id="a328bd50f380430b2d5d475dd1a30adfd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a328bd50f380430b2d5d475dd1a30adfd">&#9670;&nbsp;</a></span>setPID()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -453,7 +335,19 @@ Public Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>d</em>&#160;</td>
+          <td class="paramname"><em>d</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>integralCap</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>outputCap</em> = <code>0</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -462,16 +356,11 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p>set the <a class="el" href="classPID.html">PID</a> values </p>
 <p>Sets the P, I, and D control parameters </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">p</td><td>The new P (proportional) parameter </td></tr>
     <tr><td class="paramname">i</td><td>The new I (integral) parameter </td></tr>
-    <tr><td class="paramname">d</td><td>The new D (derivative) parameter</td></tr>
-    <tr><td class="paramname">p</td><td></td></tr>
-    <tr><td class="paramname">i</td><td></td></tr>
-    <tr><td class="paramname">d</td><td></td></tr>
+    <tr><td class="paramname">d</td><td>The new D (derivative) parameter </td></tr>
   </table>
   </dd>
 </dl>
@@ -479,62 +368,6 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="ade7776bc34e7eb3df33e4c3548e428e4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ade7776bc34e7eb3df33e4c3548e428e4">&#9670;&nbsp;</a></span>carryCount</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int PID::carryCount = 0</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a33faef9f749f8e9ff78be469ab7f7932"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a33faef9f749f8e9ff78be469ab7f7932">&#9670;&nbsp;</a></span>d10xMultiplier</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int PID::d10xMultiplier = 0</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="af366e4a87e653fba7b5ce615f55522b8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af366e4a87e653fba7b5ce615f55522b8">&#9670;&nbsp;</a></span>debug</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool PID::debug = false</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ae0ca4a071ebce923d0d3c6353248354e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae0ca4a071ebce923d0d3c6353248354e">&#9670;&nbsp;</a></span>debugPIDterms</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool PID::debugPIDterms = false</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a62b8d72d1f225e7d57d5202568e0bde5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a62b8d72d1f225e7d57d5202568e0bde5">&#9670;&nbsp;</a></span>feedForward</h2>
 
@@ -543,48 +376,6 @@ Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">float PID::feedForward = 0</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a9f9cf23e731fce7fe7b1d96216f117a8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9f9cf23e731fce7fe7b1d96216f117a8">&#9670;&nbsp;</a></span>prevRealError</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">double PID::prevRealError = 0</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a6c32425676fecd38176b63f93bb5bffd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6c32425676fecd38176b63f93bb5bffd">&#9670;&nbsp;</a></span>slopeCarry</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int PID::slopeCarry = 5</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aaee3ca28f4d31ccc5ca128d7c2f3f857"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaee3ca28f4d31ccc5ca128d7c2f3f857">&#9670;&nbsp;</a></span>sumError</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">double PID::sumError = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
