@@ -1,8 +1,7 @@
 var searchData=
 [
-  ['r_1840',['R',['../structekf__t.html#a8588ae93fdb7195117fc5ab3d792e2e7',1,'ekf_t']]],
-  ['r_1841',['r',['../structBNO055__EULER__TypeDef.html#a9233895337c4cc141d4e0ffa570c1d2e',1,'BNO055_EULER_TypeDef']]],
-  ['r_1842',['R',['../structekf__t.html#abd8956f78de0ec133489760e35000f0e',1,'ekf_t']]],
+  ['r_1841',['R',['../structekf__t.html#abd8956f78de0ec133489760e35000f0e',1,'ekf_t::R()'],['../structekf__t.html#a8588ae93fdb7195117fc5ab3d792e2e7',1,'ekf_t::R()']]],
+  ['r_1842',['r',['../structBNO055__EULER__TypeDef.html#a9233895337c4cc141d4e0ffa570c1d2e',1,'BNO055_EULER_TypeDef']]],
   ['radius_1843',['radius',['../struct____packed.html#acc43919e7c1ea0dea6e5e5f45b903c10',1,'__packed']]],
   ['rb_1844',['RB',['../classWheelSpeeds.html#a05b61ac758fb5434fa3151cf05c96206',1,'WheelSpeeds']]],
   ['rbottomflywheel_1845',['RBOTTOMFLYWHEEL',['../Sentry_2main_8cpp.html#ab31056fa6caa9cdb90fe007b3f159897',1,'main.cpp']]],
