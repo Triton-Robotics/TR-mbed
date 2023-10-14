@@ -22,6 +22,7 @@ DJIMotor::DJIMotor(bool isErroneousMotor){
 
 DJIMotor::DJIMotor(short motorID, CANHandler::CANBus canBus, motorType type, const std::string& name){
 
+    motorCount++;
     canID_0 = static_cast<short>(motorID - 1);
     motorID_0 = canID_0;
     this -> canBus = canBus;

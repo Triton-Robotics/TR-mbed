@@ -17,6 +17,7 @@ constexpr int CAN_HANDLER_NUMBER = 2;
 constexpr int INT16_T_MAX = 32767;
 constexpr int INT15_T_MAX = 16384;
 
+static int motorCount = 0;
 static int s_sendIDs[3] = {0x200, 0x1FF, 0x2FF};           //IDs to send data
 static Thread s_motorFeedbackThread(osPriorityAboveNormal);     //threading for Motor::tick()
 static Thread s_motorSendThread(osPriorityNormal);              //threading for Motor::tick()
