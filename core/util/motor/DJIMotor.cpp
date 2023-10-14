@@ -3,6 +3,7 @@
 
 #include "DJIMotor.h"
 
+int DJIMotor::motorCount = 0;
 DJIMotor* DJIMotor::s_allMotors[2][3][4];
 bool DJIMotor::s_motorsExist[2][3][4];
 CANHandler* DJIMotor::s_canHandlers[2];
@@ -22,7 +23,7 @@ DJIMotor::DJIMotor(bool isErroneousMotor){
 
 DJIMotor::DJIMotor(short motorID, CANHandler::CANBus canBus, motorType type, const std::string& name){
 
-    motorCount++;
+    DJIMotor::motorCount++;
     canID_0 = static_cast<short>(motorID - 1);
     motorID_0 = canID_0;
     this -> canBus = canBus;
