@@ -26,9 +26,9 @@
 
 #include <cstring>
 
-// #define OLED_SDA                  PB_9
-// #define OLED_SCL                  PB_8
-// I2C i2c(OLED_SDA, OLED_SCL);
+ #define OLED_SDA                  PB_7
+ #define OLED_SCL                  PB_8
+ //I2C i2c(OLED_SDA, OLED_SCL);
 
 // SSD1308 oled(&i2c, 0x78);
 
