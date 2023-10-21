@@ -1,10 +1,10 @@
 var searchData=
 [
-  ['_5fheight_1640',['_height',['../classAdafruit__GFX.html#ab9bb0cbc2455f64dce2a5ec36307aa94',1,'Adafruit_GFX']]],
-  ['_5fi2c_1641',['_i2c',['../classBNO055.html#ae74cb63430157f18d7ffa5b53e0bc293',1,'BNO055']]],
-  ['_5fi2c_5fp_1642',['_i2c_p',['../classBNO055.html#a940934023c15d30ecb60f85c37dadae1',1,'BNO055']]],
-  ['_5frawheight_1643',['_rawHeight',['../classAdafruit__GFX.html#a5292e0fe696d30ebca8e1c9b15dbc112',1,'Adafruit_GFX']]],
-  ['_5frawwidth_1644',['_rawWidth',['../classAdafruit__GFX.html#a212fe786d541c64946cba684b3d20bd5',1,'Adafruit_GFX']]],
-  ['_5fres_1645',['_res',['../classBNO055.html#a3f18e6d90832cd3b026f60f3e740b3a0',1,'BNO055']]],
-  ['_5fwidth_1646',['_width',['../classAdafruit__GFX.html#ab237f850a033492f5e745d79405a097a',1,'Adafruit_GFX']]]
+  ['_5fheight_1658',['_height',['../classAdafruit__GFX.html#ab9bb0cbc2455f64dce2a5ec36307aa94',1,'Adafruit_GFX']]],
+  ['_5fi2c_1659',['_i2c',['../classBNO055.html#ae74cb63430157f18d7ffa5b53e0bc293',1,'BNO055']]],
+  ['_5fi2c_5fp_1660',['_i2c_p',['../classBNO055.html#a940934023c15d30ecb60f85c37dadae1',1,'BNO055']]],
+  ['_5frawheight_1661',['_rawHeight',['../classAdafruit__GFX.html#a5292e0fe696d30ebca8e1c9b15dbc112',1,'Adafruit_GFX']]],
+  ['_5frawwidth_1662',['_rawWidth',['../classAdafruit__GFX.html#a212fe786d541c64946cba684b3d20bd5',1,'Adafruit_GFX']]],
+  ['_5fres_1663',['_res',['../classBNO055.html#a3f18e6d90832cd3b026f60f3e740b3a0',1,'BNO055']]],
+  ['_5fwidth_1664',['_width',['../classAdafruit__GFX.html#ab237f850a033492f5e745d79405a097a',1,'Adafruit_GFX']]]
 ];

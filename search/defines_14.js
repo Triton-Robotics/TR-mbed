@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['wheel_5fdiameter_5finches_2489',['WHEEL_DIAMETER_INCHES',['../ChassisKalman_8h.html#a3084a93ecc85cbde5f2ae04db0930044',1,'WHEEL_DIAMETER_INCHES():&#160;ChassisKalman.h'],['../WheelKalman_8h.html#a3084a93ecc85cbde5f2ae04db0930044',1,'WHEEL_DIAMETER_INCHES():&#160;WheelKalman.h']]],
-  ['white_2490',['WHITE',['../Adafruit__GFX_8h.html#a87b537f5fa5c109d3c05c13d6b18f382',1,'Adafruit_GFX.h']]],
-  ['who_5fam_5fi_5fmpu6050_2491',['WHO_AM_I_MPU6050',['../MPU6050_8h.html#a39dd5be380647ef470a0940057791c5e',1,'MPU6050.h']]]
+  ['vcomh_5fdeselect_5f0_5f65_5fcode_2506',['VCOMH_DESELECT_0_65_CODE',['../SSD1308_8h.html#a263effbe8e699bd78affbdbc74984323',1,'SSD1308.h']]],
+  ['vcomh_5fdeselect_5f0_5f77_5fcode_2507',['VCOMH_DESELECT_0_77_CODE',['../SSD1308_8h.html#a6400efd8ee7bcaef5eca3f8c9ce141b0',1,'SSD1308.h']]],
+  ['vcomh_5fdeselect_5f0_5f83_5fcode_2508',['VCOMH_DESELECT_0_83_CODE',['../SSD1308_8h.html#a3a852934e5aab78cca06e7297169ecae',1,'SSD1308.h']]],
+  ['vertical_5faddressing_5fmode_2509',['VERTICAL_ADDRESSING_MODE',['../SSD1308_8h.html#a8c56c6f0b31ba4da25b493c4dd1b9d86',1,'SSD1308.h']]]
 ];

@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['tinyekf_1287',['TinyEKF',['../classTinyEKF.html',1,'']]],
-  ['trmutex_1288',['TRMutex',['../classTRMutex.html',1,'']]]
+  ['serialcommunication_1297',['SerialCommunication',['../classSerialCommunication.html',1,'']]],
+  ['ssd1308_1298',['SSD1308',['../classSSD1308.html',1,'']]]
 ];

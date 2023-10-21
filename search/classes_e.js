@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['xframeheader_1291',['xFrameHeader',['../structxFrameHeader.html',1,'']]]
+  ['wheelkalman_1301',['WheelKalman',['../classWheelKalman.html',1,'']]],
+  ['wheelspeeds_1302',['WheelSpeeds',['../classWheelSpeeds.html',1,'']]]
 ];
