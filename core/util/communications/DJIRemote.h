@@ -146,27 +146,27 @@ public:
     long goodDataChainNumber = 0;
     bool unfiltered = false;
 
-    inline int leftX(){
+    inline int leftX() const{
         return remote.leftHorizontal;
     }
 
-    inline int leftY(){
+    inline int leftY() const{
         return remote.leftVertical;
     }
 
-    inline int rightX(){
+    inline int rightX() const{
         return remote.rightHorizontal;
     }
 
-    inline int rightY(){
+    inline int rightY() const{
         return remote.rightVertical;
     }
 
-    inline Remote::SwitchState leftSwitch(){
+    inline Remote::SwitchState leftSwitch() const{
         return remote.leftSwitch;
     }
 
-    inline Remote::SwitchState rightSwitch(){
+    inline Remote::SwitchState rightSwitch() const{
         return remote.rightSwitch;
     }
 
