@@ -159,78 +159,109 @@ $(function() {
 <div class="line"><a name="l00146"></a><span class="lineno"><a class="line" href="classRemote.html#aa67aa0e1bd7548e39f70481b395ed04a">  146</a></span>&#160;    <span class="keywordtype">long</span> <a class="code" href="classRemote.html#aa67aa0e1bd7548e39f70481b395ed04a">goodDataChainNumber</a> = 0;</div>
 <div class="line"><a name="l00147"></a><span class="lineno"><a class="line" href="classRemote.html#add5cdef11d0bba19fe2960cc08c68425">  147</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classRemote.html#add5cdef11d0bba19fe2960cc08c68425">unfiltered</a> = <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160; </div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160; </div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    BufferedSerial receiver;</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    Timer readTimer;</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> REMOTE_BUF_LEN = 18;              </div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> REMOTE_READ_TIMEOUT = 6;          </div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> REMOTE_DISCONNECT_TIMEOUT = 200;  </div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> REMOTE_INT_PRI = 12;              </div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    <span class="keyword">static</span> constexpr <span class="keywordtype">float</span> STICK_MAX_VALUE = 660.0f;   </div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160; </div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    <span class="keyword">struct </span>RemoteInfo</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    {</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;        uint32_t updateCounter = 0;</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;        int16_t rightHorizontal = 0;</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;        int16_t rightVertical = 0;</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;        int16_t leftHorizontal = 0;</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;        int16_t leftVertical = 0;</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;        <a class="code" href="classRemote.html#affd0b019d5483d546bc29b07447649bb">SwitchState</a> leftSwitch = <a class="code" href="classRemote.html#affd0b019d5483d546bc29b07447649bba696b031073e74bf2cb98e5ef201d4aa3">SwitchState::UNKNOWN</a>;</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;        <a class="code" href="classRemote.html#affd0b019d5483d546bc29b07447649bb">SwitchState</a> rightSwitch = <a class="code" href="classRemote.html#affd0b019d5483d546bc29b07447649bba696b031073e74bf2cb98e5ef201d4aa3">SwitchState::UNKNOWN</a>;</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;        <span class="keyword">struct</span></div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;        {  </div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;            int16_t x = 0;</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;            int16_t y = 0;</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;            int16_t z = 0;</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;            <span class="keywordtype">bool</span> l = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;            <span class="keywordtype">bool</span> r = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        } mouse;</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;        uint16_t key = 0;   </div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;        int16_t wheel = 0;  </div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    };</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160; </div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    RemoteInfo remote;</div>
+<div class="line"><a name="l00149"></a><span class="lineno"><a class="line" href="classRemote.html#a07539b62f2ac2ccdac5eee71d5d956a3">  149</a></span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">int</span> <a class="code" href="classRemote.html#a07539b62f2ac2ccdac5eee71d5d956a3">leftX</a>(){</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;        <span class="keywordflow">return</span> remote.leftHorizontal;</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    }</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160; </div>
+<div class="line"><a name="l00153"></a><span class="lineno"><a class="line" href="classRemote.html#a3e7ef1b6f9754ade3d430edc65694f1d">  153</a></span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">int</span> <a class="code" href="classRemote.html#a3e7ef1b6f9754ade3d430edc65694f1d">leftY</a>(){</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;        <span class="keywordflow">return</span> remote.leftVertical;</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    }</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160; </div>
+<div class="line"><a name="l00157"></a><span class="lineno"><a class="line" href="classRemote.html#a6f8c7aea615e7af6cd25e68b10255be2">  157</a></span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">int</span> <a class="code" href="classRemote.html#a6f8c7aea615e7af6cd25e68b10255be2">rightX</a>(){</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;        <span class="keywordflow">return</span> remote.rightHorizontal;</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    }</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160; </div>
+<div class="line"><a name="l00161"></a><span class="lineno"><a class="line" href="classRemote.html#a0eb656261d906a213b278c34f83ba542">  161</a></span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">int</span> <a class="code" href="classRemote.html#a0eb656261d906a213b278c34f83ba542">rightY</a>(){</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;        <span class="keywordflow">return</span> remote.rightVertical;</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;    }</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160; </div>
+<div class="line"><a name="l00165"></a><span class="lineno"><a class="line" href="classRemote.html#aa7d0f06da8fde0b982984bf489f330a3">  165</a></span>&#160;    <span class="keyword">inline</span> <a class="code" href="classRemote.html#affd0b019d5483d546bc29b07447649bb">Remote::SwitchState</a> <a class="code" href="classRemote.html#aa7d0f06da8fde0b982984bf489f330a3">leftSwitch</a>(){</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;        <span class="keywordflow">return</span> remote.leftSwitch;</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    }</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160; </div>
+<div class="line"><a name="l00169"></a><span class="lineno"><a class="line" href="classRemote.html#a2a80c6513e4f16372b2a434f3231dc52">  169</a></span>&#160;    <span class="keyword">inline</span> <a class="code" href="classRemote.html#affd0b019d5483d546bc29b07447649bb">Remote::SwitchState</a> <a class="code" href="classRemote.html#a2a80c6513e4f16372b2a434f3231dc52">rightSwitch</a>(){</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;        <span class="keywordflow">return</span> remote.rightSwitch;</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    }</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160; </div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160; </div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    BufferedSerial receiver;</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    Timer readTimer;</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160; </div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> REMOTE_BUF_LEN = 18;              </div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> REMOTE_READ_TIMEOUT = 6;          </div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> REMOTE_DISCONNECT_TIMEOUT = 200;  </div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> REMOTE_INT_PRI = 12;              </div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    <span class="keyword">static</span> constexpr <span class="keywordtype">float</span> STICK_MAX_VALUE = 660.0f;   </div>
 <div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160; </div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> switchToState(RemoteInfo *remote);</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160; </div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    <span class="keywordtype">bool</span> badData(<span class="keyword">const</span> uint8_t rxBuffer[], RemoteInfo *remote);</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160; </div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;    <span class="keywordtype">bool</span> connected = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160; </div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;    uint8_t rxBuffer[REMOTE_BUF_LEN]{0};</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160; </div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;    uint32_t lastRead = 0;</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160; </div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;    uint8_t currentBufferIndex = 0;</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160; </div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;    <span class="keywordtype">void</span> parseBuffer();</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160; </div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;    <span class="keywordtype">void</span> clearRxBuffer();</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    <span class="keyword">struct </span>RemoteInfo</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    {</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;        uint32_t updateCounter = 0;</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;        int16_t rightHorizontal = 0;</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;        int16_t rightVertical = 0;</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;        int16_t leftHorizontal = 0;</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;        int16_t leftVertical = 0;</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;        <a class="code" href="classRemote.html#affd0b019d5483d546bc29b07447649bb">SwitchState</a> <a class="code" href="classRemote.html#aa7d0f06da8fde0b982984bf489f330a3">leftSwitch</a> = <a class="code" href="classRemote.html#affd0b019d5483d546bc29b07447649bba696b031073e74bf2cb98e5ef201d4aa3">SwitchState::UNKNOWN</a>;</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;        <a class="code" href="classRemote.html#affd0b019d5483d546bc29b07447649bb">SwitchState</a> <a class="code" href="classRemote.html#a2a80c6513e4f16372b2a434f3231dc52">rightSwitch</a> = <a class="code" href="classRemote.html#affd0b019d5483d546bc29b07447649bba696b031073e74bf2cb98e5ef201d4aa3">SwitchState::UNKNOWN</a>;</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;        <span class="keyword">struct</span></div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;        {  </div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;            int16_t x = 0;</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;            int16_t y = 0;</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;            int16_t z = 0;</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;            <span class="keywordtype">bool</span> l = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;            <span class="keywordtype">bool</span> r = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;        } mouse;</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;        uint16_t key = 0;   </div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;        int16_t wheel = 0;  </div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;    };</div>
 <div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160; </div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    <span class="keywordtype">void</span> reset();</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;};  <span class="comment">// class Remote</span></div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160; </div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;    RemoteInfo remote;</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160; </div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> switchToState(RemoteInfo *remote);</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160; </div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;    <span class="keywordtype">bool</span> badData(<span class="keyword">const</span> uint8_t rxBuffer[], RemoteInfo *remote);</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160; </div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;    <span class="keywordtype">bool</span> connected = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160; </div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;    uint8_t rxBuffer[REMOTE_BUF_LEN]{0};</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160; </div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;    uint32_t lastRead = 0;</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160; </div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;    uint8_t currentBufferIndex = 0;</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160; </div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;    <span class="keywordtype">void</span> parseBuffer();</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160; </div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;    <span class="keywordtype">void</span> clearRxBuffer();</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160; </div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;    <span class="keywordtype">void</span> reset();</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160; </div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;};  <span class="comment">// class Remote</span></div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160; </div>
 <div class="ttc" id="aclassRemote_html"><div class="ttname"><a href="classRemote.html">Remote</a></div><div class="ttdef"><b>Definition:</b> DJIRemote.h:11</div></div>
 <div class="ttc" id="aclassRemote_html_a0584fcca643d59d1b4d8b2624d2807eb"><div class="ttname"><a href="classRemote.html#a0584fcca643d59d1b4d8b2624d2807eb">Remote::Channel</a></div><div class="ttdeci">Channel</div><div class="ttdef"><b>Definition:</b> DJIRemote.h:20</div></div>
 <div class="ttc" id="aclassRemote_html_a0584fcca643d59d1b4d8b2624d2807eba00becf7a52ae174c4e0f10136a6c12d5"><div class="ttname"><a href="classRemote.html#a0584fcca643d59d1b4d8b2624d2807eba00becf7a52ae174c4e0f10136a6c12d5">Remote::Channel::LEFT_HORIZONTAL</a></div><div class="ttdeci">@ LEFT_HORIZONTAL</div></div>
 <div class="ttc" id="aclassRemote_html_a0584fcca643d59d1b4d8b2624d2807eba9d428ae6820060c90bd43d8bd9828fed"><div class="ttname"><a href="classRemote.html#a0584fcca643d59d1b4d8b2624d2807eba9d428ae6820060c90bd43d8bd9828fed">Remote::Channel::RIGHT_HORIZONTAL</a></div><div class="ttdeci">@ RIGHT_HORIZONTAL</div></div>
 <div class="ttc" id="aclassRemote_html_a0584fcca643d59d1b4d8b2624d2807eba9da7be8ebb1891ae625897f06d61b12c"><div class="ttname"><a href="classRemote.html#a0584fcca643d59d1b4d8b2624d2807eba9da7be8ebb1891ae625897f06d61b12c">Remote::Channel::RIGHT_VERTICAL</a></div><div class="ttdeci">@ RIGHT_VERTICAL</div></div>
 <div class="ttc" id="aclassRemote_html_a0584fcca643d59d1b4d8b2624d2807ebacf495bfd96c88eb30072ede2f71b4d6f"><div class="ttname"><a href="classRemote.html#a0584fcca643d59d1b4d8b2624d2807ebacf495bfd96c88eb30072ede2f71b4d6f">Remote::Channel::LEFT_VERTICAL</a></div><div class="ttdeci">@ LEFT_VERTICAL</div></div>
+<div class="ttc" id="aclassRemote_html_a07539b62f2ac2ccdac5eee71d5d956a3"><div class="ttname"><a href="classRemote.html#a07539b62f2ac2ccdac5eee71d5d956a3">Remote::leftX</a></div><div class="ttdeci">int leftX()</div><div class="ttdef"><b>Definition:</b> DJIRemote.h:149</div></div>
 <div class="ttc" id="aclassRemote_html_a0c15d86cf90cd288ecdcdc944ab87443"><div class="ttname"><a href="classRemote.html#a0c15d86cf90cd288ecdcdc944ab87443">Remote::printAxisData</a></div><div class="ttdeci">void printAxisData() const</div></div>
+<div class="ttc" id="aclassRemote_html_a0eb656261d906a213b278c34f83ba542"><div class="ttname"><a href="classRemote.html#a0eb656261d906a213b278c34f83ba542">Remote::rightY</a></div><div class="ttdeci">int rightY()</div><div class="ttdef"><b>Definition:</b> DJIRemote.h:161</div></div>
 <div class="ttc" id="aclassRemote_html_a0f1fd8cdfc6ac4037d008a6a3782322e"><div class="ttname"><a href="classRemote.html#a0f1fd8cdfc6ac4037d008a6a3782322e">Remote::getWheel</a></div><div class="ttdeci">int16_t getWheel() const</div></div>
 <div class="ttc" id="aclassRemote_html_a18755c249bf7a3b11b2a6b6d4b9d3218"><div class="ttname"><a href="classRemote.html#a18755c249bf7a3b11b2a6b6d4b9d3218">Remote::getMouseZ</a></div><div class="ttdeci">int16_t getMouseZ() const</div></div>
 <div class="ttc" id="aclassRemote_html_a1a975e03f2c6bb770932ba18457822da"><div class="ttname"><a href="classRemote.html#a1a975e03f2c6bb770932ba18457822da">Remote::initialize</a></div><div class="ttdeci">void initialize()</div><div class="ttdef"><b>Definition:</b> DJIRemote.cpp:16</div></div>
+<div class="ttc" id="aclassRemote_html_a2a80c6513e4f16372b2a434f3231dc52"><div class="ttname"><a href="classRemote.html#a2a80c6513e4f16372b2a434f3231dc52">Remote::rightSwitch</a></div><div class="ttdeci">Remote::SwitchState rightSwitch()</div><div class="ttdef"><b>Definition:</b> DJIRemote.h:169</div></div>
+<div class="ttc" id="aclassRemote_html_a3e7ef1b6f9754ade3d430edc65694f1d"><div class="ttname"><a href="classRemote.html#a3e7ef1b6f9754ade3d430edc65694f1d">Remote::leftY</a></div><div class="ttdeci">int leftY()</div><div class="ttdef"><b>Definition:</b> DJIRemote.h:153</div></div>
 <div class="ttc" id="aclassRemote_html_a4c64ca0c900cc124d18e700b2c0b774a"><div class="ttname"><a href="classRemote.html#a4c64ca0c900cc124d18e700b2c0b774a">Remote::__attribute__</a></div><div class="ttdeci">__attribute__((unused)) bool isConnected() const</div></div>
 <div class="ttc" id="aclassRemote_html_a4da81903b311b6f779459f18a60b2538"><div class="ttname"><a href="classRemote.html#a4da81903b311b6f779459f18a60b2538">Remote::badDataChainNumber</a></div><div class="ttdeci">long badDataChainNumber</div><div class="ttdef"><b>Definition:</b> DJIRemote.h:145</div></div>
 <div class="ttc" id="aclassRemote_html_a5a6a6f599018b561d136b3676cef17dc"><div class="ttname"><a href="classRemote.html#a5a6a6f599018b561d136b3676cef17dc">Remote::Remote</a></div><div class="ttdeci">Remote(PinName dbus)</div><div class="ttdef"><b>Definition:</b> DJIRemote.cpp:5</div></div>
+<div class="ttc" id="aclassRemote_html_a6f8c7aea615e7af6cd25e68b10255be2"><div class="ttname"><a href="classRemote.html#a6f8c7aea615e7af6cd25e68b10255be2">Remote::rightX</a></div><div class="ttdeci">int rightX()</div><div class="ttdef"><b>Definition:</b> DJIRemote.h:157</div></div>
 <div class="ttc" id="aclassRemote_html_a78576f85d239c63887ee0b515c066912"><div class="ttname"><a href="classRemote.html#a78576f85d239c63887ee0b515c066912">Remote::getMouseX</a></div><div class="ttdeci">int16_t getMouseX() const</div></div>
 <div class="ttc" id="aclassRemote_html_a7ec4426e84aea331fc20e91a832d215c"><div class="ttname"><a href="classRemote.html#a7ec4426e84aea331fc20e91a832d215c">Remote::getSwitch</a></div><div class="ttdeci">SwitchState getSwitch(Switch sw) const</div></div>
 <div class="ttc" id="aclassRemote_html_a8eed352a5638ea183317a4a479618bef"><div class="ttname"><a href="classRemote.html#a8eed352a5638ea183317a4a479618bef">Remote::getMouseL</a></div><div class="ttdeci">bool getMouseL() const</div></div>
 <div class="ttc" id="aclassRemote_html_a8f893b0d8a54c44f1ea13e8ced570c19"><div class="ttname"><a href="classRemote.html#a8f893b0d8a54c44f1ea13e8ced570c19">Remote::getChannelInt</a></div><div class="ttdeci">int16_t getChannelInt(Channel ch) const</div></div>
 <div class="ttc" id="aclassRemote_html_aa67aa0e1bd7548e39f70481b395ed04a"><div class="ttname"><a href="classRemote.html#aa67aa0e1bd7548e39f70481b395ed04a">Remote::goodDataChainNumber</a></div><div class="ttdeci">long goodDataChainNumber</div><div class="ttdef"><b>Definition:</b> DJIRemote.h:146</div></div>
+<div class="ttc" id="aclassRemote_html_aa7d0f06da8fde0b982984bf489f330a3"><div class="ttname"><a href="classRemote.html#aa7d0f06da8fde0b982984bf489f330a3">Remote::leftSwitch</a></div><div class="ttdeci">Remote::SwitchState leftSwitch()</div><div class="ttdef"><b>Definition:</b> DJIRemote.h:165</div></div>
 <div class="ttc" id="aclassRemote_html_ab2d4f11023646780e61792a59347de10"><div class="ttname"><a href="classRemote.html#ab2d4f11023646780e61792a59347de10">Remote::keyPressed</a></div><div class="ttdeci">bool keyPressed(Key key) const</div></div>
 <div class="ttc" id="aclassRemote_html_ab3e55d985b57ba798e757b24b8ed76de"><div class="ttname"><a href="classRemote.html#ab3e55d985b57ba798e757b24b8ed76de">Remote::dumpInfo</a></div><div class="ttdeci">void dumpInfo() const</div></div>
 <div class="ttc" id="aclassRemote_html_ab8195af65d12a53d238f6714b46451e0"><div class="ttname"><a href="classRemote.html#ab8195af65d12a53d238f6714b46451e0">Remote::read</a></div><div class="ttdeci">void read()</div><div class="ttdef"><b>Definition:</b> DJIRemote.cpp:19</div></div>
