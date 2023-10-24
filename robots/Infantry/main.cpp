@@ -72,7 +72,7 @@ void runImuThread()
 
 void pitchSetPosition(){
 
-    int pitchSetPoint = (-rY * 0.5) + 6200;
+    int pitchSetPoint = (-remote.rightY() * 0.5) + 6200;
     
     /* TODO: test min and max pitch position */
 
@@ -183,15 +183,15 @@ int main(){
             //printff("%d\n",chassis.getHeadingDegrees());
             //printf("%d %d\n", lX, rX);
 
-            if (rS == Remote::SwitchState::UP){          // All non-serializer motors activated
+            if (remote.rightSwitch() == Remote::SwitchState::UP){          // All non-serializer motors activated
                 led3 = 1;
-                int LFa = lY + lX * translationalmultiplier + rX;
-                int RFa = lY - lX * translationalmultiplier - rX; 
-                int LBa = lY - lX * translationalmultiplier + rX;
-                int RBa = lY + lX * translationalmultiplier - rX;
+                int LFa = remote.leftY() + remote.leftX() * translationalmultiplier + remote.rightX();
+                int RFa = remote.leftY() - remote.leftX() * translationalmultiplier - remote.rightX();
+                int LBa = remote.leftY() - remote.leftX() * translationalmultiplier + remote.rightX();
+                int RBa = remote.leftY() + remote.leftX() * translationalmultiplier - remote.rightX();
 
                 unsigned long time = us_ticker_read();
-                chassis.driveTurretRelativePower(chassis_power, chassis_power_limit, {lX * 5.0, lY * 5.0, 0}, yaw.getData(ANGLE) * 360.0 / 8192 + 180, int(time - lastTime), rotationalPower);
+                chassis.driveTurretRelativePower(chassis_power, chassis_power_limit, {remote.leftX() * 5.0, remote.leftY() * 5.0, 0}, yaw.getData(ANGLE) * 360.0 / 8192 + 180, int(time - lastTime), rotationalPower);
 
                 lastTime = time;
                 pitchSetPosition();
@@ -199,12 +199,12 @@ int main(){
                 //yawSetPoint += rX / 36;
                 //yaw.setPosition(-chassis.getHeadingDegrees() * 8192 / 360 + yaw.getData(MULTITURNANGLE) - yawSetPoint);
 
-                yaw.setPower(-rX * 10);
+                yaw.setPower(-remote.rightX() * 10);
 
                 //printff("Yaw:%d Pitch%d\n",(int)((double)(yaw>>MULTITURNANGLE) * 360 / 8192),(int)((double)((pitch>>MULTITURNANGLE) - 6000) * 360 / 8192));
                 //printff("y:%d p:%d\n",yaw>>MULTI,pitch>>ANGLE);
             }
-            else if (rS == Remote::SwitchState::MID || rS == Remote::SwitchState::UNKNOWN){ // disable all the non-serializer components
+            else if (remote.rightSwitch() == Remote::SwitchState::MID || remote.rightSwitch() == Remote::SwitchState::UNKNOWN){ // disable all the non-serializer components
                 led3 = 0;
                 chassis.driveFieldRelative({0, 0, 0});
                 yaw.setPower(0); 
@@ -214,14 +214,14 @@ int main(){
                 //printff("whe%d\n",Wh);
                 pitchSetPosition();
 
-            }else if (rS == Remote::SwitchState::DOWN){           // beyblade mode
+            }else if (remote.rightSwitch() == Remote::SwitchState::DOWN){           // beyblade mode
                 led3 = 1;
                 unsigned long time = us_ticker_read();
                 double r = 4000;
-                chassis.driveXYRPower(chassis_power, chassis_power_limit, 5 * lX, 5 * lY, int(time - lastTime), true, r);
+                chassis.driveXYRPower(chassis_power, chassis_power_limit, 5 * remote.leftX(), 5 * remote.leftY(), int(time - lastTime), true, r);
                 lastTime = time;
                 pitchSetPosition();
-                yawSetPoint += rX / 110;
+                yawSetPoint += remote.rightX() / 110;
                 yawSetPoint %= 360;
                 while(yawSetPoint < 0)
                     yawSetPoint += 360;
@@ -230,7 +230,7 @@ int main(){
                 printff("%dya imu:[%d] pwr%d\n",yawSetPoint,ref_yaw, yaw>>POWEROUT);
             }
             yawTime = us_ticker_read();
-            if (lS == Remote::SwitchState::MID){
+            if (remote.leftSwitch() == Remote::SwitchState::MID){
                 gearSwap.setPower(-1500);
                 double mps = ext_game_robot_state.data.shooter_id1_17mm_speed_limit * 0.9;
                 double rpm = 60 * (mps / 0.03) / (3.14159 * 2);
@@ -259,12 +259,12 @@ int main(){
                 //               }
                 burstTimestamp = us_ticker_read();
 
-            }else if (lS == Remote::SwitchState::DOWN || lS == Remote::SwitchState::UNKNOWN){          // disable serializer
+            }else if (remote.leftSwitch() == Remote::SwitchState::DOWN || remote.leftSwitch() == Remote::SwitchState::UNKNOWN){          // disable serializer
                 gearSwap.setPower(-1500);
                 indexer.setPower(0);
                 setFlyWheelSpeed(0);
 
-            }else if (lS == Remote::SwitchState::UP){
+            }else if (remote.leftSwitch() == Remote::SwitchState::UP){
                 gearSwap.setPower(-1500);
                 double mps = ext_game_robot_state.data.shooter_id1_17mm_speed_limit;
                 double rpm = 60 * (mps / 0.03) / (3.14159 * 2);

@@ -146,6 +146,30 @@ public:
     long goodDataChainNumber = 0;
     bool unfiltered = false;
 
+    inline int leftX(){
+        return remote.leftHorizontal;
+    }
+
+    inline int leftY(){
+        return remote.leftVertical;
+    }
+
+    inline int rightX(){
+        return remote.rightHorizontal;
+    }
+
+    inline int rightY(){
+        return remote.rightVertical;
+    }
+
+    inline Remote::SwitchState leftSwitch(){
+        return remote.leftSwitch;
+    }
+
+    inline Remote::SwitchState rightSwitch(){
+        return remote.rightSwitch;
+    }
+
 private:
 
     BufferedSerial receiver;
@@ -205,6 +229,7 @@ private:
 
     /// Resets the current remote info.
     void reset();
+
 };  // class Remote
 #endif
 

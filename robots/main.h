@@ -82,31 +82,15 @@ static BufferedSerial referee(PC_10, PC_11, 115200); // Nucleo board: top left m
 CANHandler canHandler1(PA_11, PA_12);
 CANHandler canHandler2(PB_12, PB_13);
 
-static int lX = 0;
-static int lY = 0;
-static int rX = 0;
-static int rY = 0;
-static int Wh = 0;
-static Remote::SwitchState lS = Remote::SwitchState::UNKNOWN;
-static Remote::SwitchState rS = Remote::SwitchState::UNKNOWN;
 
-
-static void remoteRead(){ // for threadless
+inline static void remoteRead(){
     remote.read();
-    lX = remote.getChannelInt(Remote::Channel::LEFT_HORIZONTAL);
-    lY = remote.getChannelInt(Remote::Channel::LEFT_VERTICAL);
-    rX = remote.getChannelInt(Remote::Channel::RIGHT_HORIZONTAL);
-    rY = remote.getChannelInt(Remote::Channel::RIGHT_VERTICAL);
-    Wh = remote.getWheel();
-    lS = remote.getSwitch(Remote::Switch::LEFT_SWITCH);
-    rS = remote.getSwitch(Remote::Switch::RIGHT_SWITCH);
-
 }
 
 static void remotePrint(){
     // for (int i = 0; i < 7; i++)
     //     printf("%d\t", dats[i]);
-    printf("%d\t%d\t%d\t%d\t%d\t%d\t",lX,lY,rX,rY,lS,rS);
+    printf("%d\t%d\t%d\t%d\t%d\t%d\t", remote.leftX(), remote.leftY(), remote.rightX(), remote.rightY(), remote.leftSwitch(), remote.rightSwitch());
     printf("\n");
 }
 

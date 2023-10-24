@@ -148,7 +148,7 @@ int main(){
             
             double beyblade = 0;
 
-            if(rS == Remote::SwitchState::MID || rS == Remote::SwitchState::UNKNOWN){
+            if(remote.rightSwitch() == Remote::SwitchState::MID || remote.rightSwitch() == Remote::SwitchState::UNKNOWN){
                 yaw1.setPower(0);
                 yaw2.setPower(0);
                 pitch.setPower(0);
@@ -156,15 +156,15 @@ int main(){
 
                 beyblade = 0;
 
-            }else if(rS == Remote::SwitchState::DOWN){
-                yawSetPoint -= rX / 4.5;
+            }else if(remote.rightSwitch() == Remote::SwitchState::DOWN){
+                yawSetPoint -= remote.rightX() / 4.5;
                 yaw1.setPosition(-yawSetPoint);
-                pitch.setPosition((2*rY / 3) + 6700);
+                pitch.setPosition((2 * remote.rightY() / 3) + 6700);
                 yaw2.setPower(yaw1.powerOut);
                 beyblade = 0;
 
                 printf("%d, %d\n",-yawSetPoint, yaw1.getData(MULTITURNANGLE));
-            }else if(rS == Remote::SwitchState::UP){
+            }else if(remote.rightSwitch() == Remote::SwitchState::UP){
 
                 x = jetson.get(Jetson::cv::Z);
                 y = jetson.get(Jetson::cv::X);
@@ -179,13 +179,13 @@ int main(){
 //                printf("%d\n", pitch.getData(ANGLE));
             }
 
-            if (lS == Remote::SwitchState::UP) {
+            if (remote.leftSwitch() == Remote::SwitchState::UP) {
 //              indexerL.setSpeed(-2000);
                 setFlyWheelPower(8000);
                 indexerL.setSpeed(2000);
                 indexerR.setSpeed(-2000);
                 //printff("indexer.s%d\n")
-            }else if (lS == Remote::SwitchState::MID) {
+            }else if (remote.leftSwitch() == Remote::SwitchState::MID) {
 //              indexerL.setSpeed(-2000);
                 setFlyWheelPower(8000);
                 indexerL.setPower(0);
@@ -199,7 +199,7 @@ int main(){
             }
 
             timeEnd = us_ticker_read();
-            chassis.driveTurretRelativePower(ref_chassis_power, max_power, {-lX * 5.0, -lY * 5.0, beyblade}, -yaw1.getData(MULTITURNANGLE) * 360.0 / 8192 + 90, int(timeEnd - timeStart), rotationalPower);
+            chassis.driveTurretRelativePower(ref_chassis_power, max_power, {-remote.leftX() * 5.0, -remote.leftY() * 5.0, beyblade}, -yaw1.getData(MULTITURNANGLE) * 360.0 / 8192 + 90, int(timeEnd - timeStart), rotationalPower);
             DJIMotor::s_sendValues();
         }
         DJIMotor::s_getFeedback();

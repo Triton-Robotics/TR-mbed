@@ -86,7 +86,7 @@ void indexerLoop(bool &previousMid, bool &nowUp, bool &nowDown, int &actualPosit
 
 void pitchSetPosition(){
 
-    int pitchSetPoint = -rY / 1.5 + 5660;
+    int pitchSetPoint = -remote.rightY() / 1.5 + 5660;
 
     if(pitchSetPoint > 6100)
         pitchSetPoint = 6100;
@@ -198,7 +198,7 @@ int main(){
                 refereeThread(&referee);
             }
 
-            if(!once && lS == Remote::SwitchState::DOWN){
+            if(!once && remote.leftSwitch() == Remote::SwitchState::DOWN){
                 once = true;
                 yawSetPoint = yaw.getData(MULTITURNANGLE);
             }
@@ -206,14 +206,14 @@ int main(){
             count++;
             refLoop++;
 
-            lPreviousMid    = lS == Remote::SwitchState::MID;
-            rPreviousDown   = rS == Remote::SwitchState::DOWN;
+            lPreviousMid    = remote.leftSwitch()   == Remote::SwitchState::MID;
+            rPreviousDown   = remote.rightSwitch()  == Remote::SwitchState::DOWN;
             remoteRead();
 
-            rNowDown        = rS == Remote::SwitchState::DOWN;
-            rNowMid         = rS == Remote::SwitchState::MID;
-            lNowUp          = lS == Remote::SwitchState::UP;
-            lNowDown        = lS == Remote::SwitchState::DOWN;
+            rNowDown        = remote.rightSwitch()  == Remote::SwitchState::DOWN;
+            rNowMid         = remote.rightSwitch()  == Remote::SwitchState::MID;
+            lNowUp          = remote.leftSwitch()   == Remote::SwitchState::UP;
+            lNowDown        = remote.leftSwitch()   == Remote::SwitchState::DOWN;
 
             actualPosition = indexer.getData(MULTITURNANGLE);
             t = indexer.getData(TORQUE);
@@ -239,31 +239,31 @@ int main(){
                 beforeBeybladeYaw = chassis.getHeadingDegrees();
             }
 
-            if(rS == Remote::SwitchState::MID || rS == Remote::SwitchState::UNKNOWN){
+            if(remote.rightSwitch() == Remote::SwitchState::MID || remote.rightSwitch() == Remote::SwitchState::UNKNOWN){
                 desiredPosition = float(int((actualPosition / dr)) * dr) + IOFFSET;
                 indexer.setPower(0);
                 yaw.setPower(0);
                 stopFLyWheels();
                 beyblade = 0;
-                yaw.setPower(-rX * 20);
+                yaw.setPower(-remote.rightX() * 20);
 
             }else{
                 indexerLoop(lPreviousMid, lNowUp, lNowDown, actualPosition, desiredPosition, t);
                 setFlyWheelPwr(16300);
 
-                if(rS == Remote::SwitchState::DOWN) {
+                if(remote.rightSwitch() == Remote::SwitchState::DOWN) {
                     beyblade = 2000;
                     deltaYaw = calculateDeltaYaw(chassis.getHeadingDegrees(), beforeBeybladeYaw);
                     yaw.setPower((int)yawPID.calculatePeriodic(static_cast<float>(deltaYaw),us_ticker_read() - timeEnd));
                 }else {
                     beyblade = 0;
-                    yaw.setPower(-rX * 20);
+                    yaw.setPower(-remote.rightX() * 20);
                 }
             }
 
             pitchSetPosition();
             timeEnd = us_ticker_read();
-            chassis.driveTurretRelativePower(chassis_power, chassis_power_limit, {-lX * 5.0, -lY * 5.0, beyblade}, (yaw.getData(MULTITURNANGLE) - yawSetPoint) * 180.0 / 8191.0 - 180, int(timeEnd - timeStart), rotationalPower);
+            chassis.driveTurretRelativePower(chassis_power, chassis_power_limit, {-remote.leftX() * 5.0, -remote.leftY() * 5.0, beyblade}, (yaw.getData(MULTITURNANGLE) - yawSetPoint) * 180.0 / 8191.0 - 180, int(timeEnd - timeStart), rotationalPower);
             //printf("%d %d %d %d\n" , yawSetPoint, yaw.getData(MULTITURNANGLE) - yawSetPoint, int((yaw.getData(MULTITURNANGLE) - yawSetPoint) * 180.0 / 8191.0 - 180), chassis.getHeadingDegrees());
             DJIMotor::s_sendValues();
         }
