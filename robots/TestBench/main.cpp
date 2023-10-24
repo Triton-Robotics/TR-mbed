@@ -1,6 +1,8 @@
 #include "main.h"
 
 DigitalOut led(L27);
+DigitalOut led2(L26);
+DigitalOut led3(L25);
 
 int main(){
 
@@ -10,13 +12,20 @@ int main(){
 
     unsigned long timeStart;
     unsigned long loopTimer = us_ticker_read();
+    int refLoop = 0;
 
     while(true){
         timeStart = us_ticker_read();
-        printf("Hey\n");
 
         if ((timeStart - loopTimer) / 1000 > 25){
             led = !led;
+
+            refLoop++;
+            if (refLoop >= 5){
+                refereeThread(&referee);
+                refLoop = 0;
+                led2 = !led2;
+            }
 
             remoteRead();
 
