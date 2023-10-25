@@ -181,7 +181,7 @@ Protected Attributes</h2></td></tr>
 <div class="line"><a class="code" href="structBNO055__ID__INF__TypeDef.html">BNO055_ID_INF_TypeDef</a> <a class="code" href="imuExampleAllData_8cpp.html#ad567fe76e73137e70f5a3a728a297069">bno055_id_inf</a>;</div>
 <div class="line"><a class="code" href="structBNO055__EULER__TypeDef.html">BNO055_EULER_TypeDef</a>  euler_angles;</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">int</span> <a class="code" href="imuExampleAllData_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main</a>() {</div>
+<div class="line"><span class="keywordtype">int</span> <a class="code" href="DJIMotor_8h.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main</a>() {</div>
 <div class="line">    pc.printf(<span class="stringliteral">&quot;Bosch Sensortec BNO055 test program on &quot;</span> __DATE__ <span class="stringliteral">&quot;/&quot;</span> __TIME__ <span class="stringliteral">&quot;\r\n&quot;</span>);</div>
 <div class="line">    <span class="keywordflow">if</span> (<a class="code" href="imuExampleAllData_8cpp.html#a74abbde13f81ae74801b94e0aa0a87d5">imu</a>.<a class="code" href="classBNO055.html#a4367136d057891191d873107cd9a6c31">chip_ready</a>() == 0){</div>
 <div class="line">        pc.printf(<span class="stringliteral">&quot;Bosch BNO055 is NOT avirable!!\r\n&quot;</span>);</div>
@@ -198,12 +198,12 @@ Protected Attributes</h2></td></tr>
 <div class="line">    }</div>
 <div class="line">}</div>
 <div class="ttc" id="aBNO055_8h_html"><div class="ttname"><a href="BNO055_8h.html">BNO055.h</a></div></div>
+<div class="ttc" id="aDJIMotor_8h_html_ae66f6b31b5ad750f1fe042a706a4e3d4"><div class="ttname"><a href="DJIMotor_8h.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main</a></div><div class="ttdeci">int main()</div><div class="ttdef"><b>Definition:</b> DJIMotor.h:180</div></div>
 <div class="ttc" id="aclassBNO055_html"><div class="ttname"><a href="classBNO055.html">BNO055</a></div><div class="ttdef"><b>Definition:</b> BNO055.h:141</div></div>
 <div class="ttc" id="aclassBNO055_html_a4367136d057891191d873107cd9a6c31"><div class="ttname"><a href="classBNO055.html#a4367136d057891191d873107cd9a6c31">BNO055::chip_ready</a></div><div class="ttdeci">uint8_t chip_ready(void)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:448</div></div>
 <div class="ttc" id="aclassBNO055_html_a61a2812efc810f7a24382a51f60074f4"><div class="ttname"><a href="classBNO055.html#a61a2812efc810f7a24382a51f60074f4">BNO055::read_id_inf</a></div><div class="ttdeci">void read_id_inf(BNO055_ID_INF_TypeDef *id)</div><div class="ttdef"><b>Definition:</b> BNO055.cpp:437</div></div>
 <div class="ttc" id="aimuExampleAllData_8cpp_html_a74abbde13f81ae74801b94e0aa0a87d5"><div class="ttname"><a href="imuExampleAllData_8cpp.html#a74abbde13f81ae74801b94e0aa0a87d5">imu</a></div><div class="ttdeci">BNO055 imu(i2c, PA_8, MODE_NDOF)</div></div>
 <div class="ttc" id="aimuExampleAllData_8cpp_html_ad567fe76e73137e70f5a3a728a297069"><div class="ttname"><a href="imuExampleAllData_8cpp.html#ad567fe76e73137e70f5a3a728a297069">bno055_id_inf</a></div><div class="ttdeci">BNO055_ID_INF_TypeDef bno055_id_inf</div><div class="ttdef"><b>Definition:</b> imuExampleAllData.cpp:20</div></div>
-<div class="ttc" id="aimuExampleAllData_8cpp_html_ae66f6b31b5ad750f1fe042a706a4e3d4"><div class="ttname"><a href="imuExampleAllData_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main</a></div><div class="ttdeci">int main()</div><div class="ttdef"><b>Definition:</b> imuExampleAllData.cpp:27</div></div>
 <div class="ttc" id="aimuExampleAllData_8cpp_html_af0e9d191330cab6591f3ab5a44270db7"><div class="ttname"><a href="imuExampleAllData_8cpp.html#af0e9d191330cab6591f3ab5a44270db7">i2c</a></div><div class="ttdeci">I2C i2c(PB_9, PB_8)</div></div>
 <div class="ttc" id="astructBNO055__EULER__TypeDef_html"><div class="ttname"><a href="structBNO055__EULER__TypeDef.html">BNO055_EULER_TypeDef</a></div><div class="ttdef"><b>Definition:</b> BNO055.h:75</div></div>
 <div class="ttc" id="astructBNO055__EULER__TypeDef_html_a855f2a13dab33626812b067a0f29997b"><div class="ttname"><a href="structBNO055__EULER__TypeDef.html#a855f2a13dab33626812b067a0f29997b">BNO055_EULER_TypeDef::h</a></div><div class="ttdeci">double h</div><div class="ttdef"><b>Definition:</b> BNO055.h:76</div></div>

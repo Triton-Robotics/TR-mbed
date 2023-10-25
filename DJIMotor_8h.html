@@ -69,37 +69,31 @@ $(function() {
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
+<a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
 <div class="title">DJIMotor.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;mbed.h&quot;</code><br />
-<code>#include &quot;<a class="el" href="PID_8h_source.html">algorithms/PID.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="CANHandler_8h_source.html">communications/CANHandler.h</a>&quot;</code><br />
-<code>#include &lt;cmath&gt;</code><br />
-<code>#include &lt;string&gt;</code><br />
+<div class="textblock"><code>#include &lt;string&gt;</code><br />
+<code>#include &lt;cstdint&gt;</code><br />
+<code>#include &lt;cstdio&gt;</code><br />
 </div>
 <p><a href="DJIMotor_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRemote.html">Remote</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCANHandler.html">CANHandler</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html">DJIMotor</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structremote__.html">remote_</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a238767f13820c0bc654f141bb45ae8e4"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4">motorDataType</a> { <br />
-&#160;&#160;<a class="el" href="DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4a0361b31f1fea060374e017af17d84435">ANGLE</a>
-, <a class="el" href="DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4a06e15744a8bd69fceeeb39ab3614b3f6">VELOCITY</a>
-, <a class="el" href="DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4ab14fe26ae2d673af2927fd2a8a1eb91f">TORQUE</a>
-, <a class="el" href="DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4ac4ae6787ff1d8b2d1cf0ae9aa696e56c">TEMPERATURE</a>
-, <br />
-&#160;&#160;<a class="el" href="DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4a2fa9ca913788a7b9cf60b00183b5652a">MULTITURNANGLE</a>
-, <a class="el" href="DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4a94707eb65b0628757416f2d767818a91">POWEROUT</a>
-<br />
- }</td></tr>
-<tr class="separator:a238767f13820c0bc654f141bb45ae8e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa0b95df57b6ae3d5b5ac026d56968a54"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54">motorType</a> { <br />
 &#160;&#160;<a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54ac157bdf0b85a40d2619cbc8bc1ae5fe2">NONE</a> = 0
 , <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a9de934790934fe831fe946c851e8338e">STANDARD</a> = 1
@@ -113,23 +107,32 @@ Enumerations</h2></td></tr>
 <br />
  }</td></tr>
 <tr class="separator:aa0b95df57b6ae3d5b5ac026d56968a54"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a238767f13820c0bc654f141bb45ae8e4"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4">motorDataType</a> { <br />
+&#160;&#160;<a class="el" href="DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4a0361b31f1fea060374e017af17d84435">ANGLE</a>
+, <a class="el" href="DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4a06e15744a8bd69fceeeb39ab3614b3f6">VELOCITY</a>
+, <a class="el" href="DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4ab14fe26ae2d673af2927fd2a8a1eb91f">TORQUE</a>
+, <a class="el" href="DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4ac4ae6787ff1d8b2d1cf0ae9aa696e56c">TEMPERATURE</a>
+, <br />
+&#160;&#160;<a class="el" href="DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4a316771101d4b4b1dea7d7e2a82ef1658">POWER</a>
+<br />
+ }</td></tr>
+<tr class="separator:a238767f13820c0bc654f141bb45ae8e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:ae66f6b31b5ad750f1fe042a706a4e3d4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DJIMotor_8h.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main</a> ()</td></tr>
+<tr class="separator:ae66f6b31b5ad750f1fe042a706a4e3d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:af8633b71950d9e6974c6c1cc295efdf4"><td class="memItemLeft" align="right" valign="top">constexpr double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DJIMotor_8h.html#af8633b71950d9e6974c6c1cc295efdf4">M3508_GEAR_RATIO</a> = 3591.0 / 187.0</td></tr>
-<tr class="separator:af8633b71950d9e6974c6c1cc295efdf4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a38af225bd7b4b9813f5306f16844f4fa"><td class="memItemLeft" align="right" valign="top">constexpr double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DJIMotor_8h.html#a38af225bd7b4b9813f5306f16844f4fa">M2006_GEAR_RATIO</a> = 36.0</td></tr>
-<tr class="separator:a38af225bd7b4b9813f5306f16844f4fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad03dbacc70a2fb4f766bf0d10ea3afc4"><td class="memItemLeft" align="right" valign="top">constexpr int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DJIMotor_8h.html#ad03dbacc70a2fb4f766bf0d10ea3afc4">TICKS_REVOLUTION</a> = 8192</td></tr>
-<tr class="separator:ad03dbacc70a2fb4f766bf0d10ea3afc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ba39dd2e759bb75ccb5787bca51a590"><td class="memItemLeft" align="right" valign="top">constexpr int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DJIMotor_8h.html#a3ba39dd2e759bb75ccb5787bca51a590">TIMEOUT_MS</a> = 400</td></tr>
-<tr class="separator:a3ba39dd2e759bb75ccb5787bca51a590"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aadf019a0a0b3dd6b468a015f891f8b3e"><td class="memItemLeft" align="right" valign="top">constexpr int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DJIMotor_8h.html#aadf019a0a0b3dd6b468a015f891f8b3e">CAN_HANDLER_NUMBER</a> = 2</td></tr>
-<tr class="separator:aadf019a0a0b3dd6b468a015f891f8b3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae3866762933a285386d03033c49f5600"><td class="memItemLeft" align="right" valign="top">constexpr int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DJIMotor_8h.html#ae3866762933a285386d03033c49f5600">INT16_T_MAX</a> = 32767</td></tr>
-<tr class="separator:ae3866762933a285386d03033c49f5600"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abd8764be73bf240cb414a74da465743c"><td class="memItemLeft" align="right" valign="top">constexpr int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DJIMotor_8h.html#abd8764be73bf240cb414a74da465743c">INT15_T_MAX</a> = 16384</td></tr>
-<tr class="separator:abd8764be73bf240cb414a74da465743c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ecb0a84a536f6911439600d6b44e343"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DJIMotor_8h.html#a2ecb0a84a536f6911439600d6b44e343">CAN_HANDLER_NUMBER</a> = 2</td></tr>
+<tr class="separator:a2ecb0a84a536f6911439600d6b44e343"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f354dc4cf2078d5b09af20f53398dde"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classRemote.html#affd0b019d5483d546bc29b07447649bb">Remote::SwitchState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DJIMotor_8h.html#a1f354dc4cf2078d5b09af20f53398dde">lS</a></td></tr>
+<tr class="separator:a1f354dc4cf2078d5b09af20f53398dde"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11ea081ed1729815c211295a578ae9f8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DJIMotor_8h.html#a11ea081ed1729815c211295a578ae9f8">lX</a></td></tr>
+<tr class="separator:a11ea081ed1729815c211295a578ae9f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e33dcfa22b63d8138aac0f561ac0f17"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structremote__.html">remote_</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DJIMotor_8h.html#a9e33dcfa22b63d8138aac0f561ac0f17">remote</a></td></tr>
+<tr class="separator:a9e33dcfa22b63d8138aac0f561ac0f17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="a238767f13820c0bc654f141bb45ae8e4"></a>
@@ -148,8 +151,7 @@ Variables</h2></td></tr>
 <tr><td class="fieldname"><a id="a238767f13820c0bc654f141bb45ae8e4a06e15744a8bd69fceeeb39ab3614b3f6"></a>VELOCITY&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a238767f13820c0bc654f141bb45ae8e4ab14fe26ae2d673af2927fd2a8a1eb91f"></a>TORQUE&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a238767f13820c0bc654f141bb45ae8e4ac4ae6787ff1d8b2d1cf0ae9aa696e56c"></a>TEMPERATURE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a238767f13820c0bc654f141bb45ae8e4a2fa9ca913788a7b9cf60b00183b5652a"></a>MULTITURNANGLE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a238767f13820c0bc654f141bb45ae8e4a94707eb65b0628757416f2d767818a91"></a>POWEROUT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a238767f13820c0bc654f141bb45ae8e4a316771101d4b4b1dea7d7e2a82ef1658"></a>POWER&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -178,157 +180,77 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="ae66f6b31b5ad750f1fe042a706a4e3d4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae66f6b31b5ad750f1fe042a706a4e3d4">&#9670;&nbsp;</a></span>main()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int main </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="aadf019a0a0b3dd6b468a015f891f8b3e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aadf019a0a0b3dd6b468a015f891f8b3e">&#9670;&nbsp;</a></span>CAN_HANDLER_NUMBER</h2>
+<a id="a2ecb0a84a536f6911439600d6b44e343"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2ecb0a84a536f6911439600d6b44e343">&#9670;&nbsp;</a></span>CAN_HANDLER_NUMBER</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr int CAN_HANDLER_NUMBER = 2</td>
+          <td class="memname">const int CAN_HANDLER_NUMBER = 2</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="abd8764be73bf240cb414a74da465743c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abd8764be73bf240cb414a74da465743c">&#9670;&nbsp;</a></span>INT15_T_MAX</h2>
+<a id="a1f354dc4cf2078d5b09af20f53398dde"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f354dc4cf2078d5b09af20f53398dde">&#9670;&nbsp;</a></span>lS</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr int INT15_T_MAX = 16384</td>
+          <td class="memname"><a class="el" href="classRemote.html#affd0b019d5483d546bc29b07447649bb">Remote::SwitchState</a> lS</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="ae3866762933a285386d03033c49f5600"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae3866762933a285386d03033c49f5600">&#9670;&nbsp;</a></span>INT16_T_MAX</h2>
+<a id="a11ea081ed1729815c211295a578ae9f8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11ea081ed1729815c211295a578ae9f8">&#9670;&nbsp;</a></span>lX</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr int INT16_T_MAX = 32767</td>
+          <td class="memname">int lX</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a38af225bd7b4b9813f5306f16844f4fa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a38af225bd7b4b9813f5306f16844f4fa">&#9670;&nbsp;</a></span>M2006_GEAR_RATIO</h2>
+<a id="a9e33dcfa22b63d8138aac0f561ac0f17"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e33dcfa22b63d8138aac0f561ac0f17">&#9670;&nbsp;</a></span>remote</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr double M2006_GEAR_RATIO = 36.0</td>
+          <td class="memname">struct <a class="el" href="structremote__.html">remote_</a> remote</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="af8633b71950d9e6974c6c1cc295efdf4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af8633b71950d9e6974c6c1cc295efdf4">&#9670;&nbsp;</a></span>M3508_GEAR_RATIO</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">constexpr double M3508_GEAR_RATIO = 3591.0 / 187.0</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ad03dbacc70a2fb4f766bf0d10ea3afc4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad03dbacc70a2fb4f766bf0d10ea3afc4">&#9670;&nbsp;</a></span>TICKS_REVOLUTION</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">constexpr int TICKS_REVOLUTION = 8192</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a3ba39dd2e759bb75ccb5787bca51a590"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3ba39dd2e759bb75ccb5787bca51a590">&#9670;&nbsp;</a></span>TIMEOUT_MS</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">constexpr int TIMEOUT_MS = 400</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 </div>

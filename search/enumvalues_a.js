@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['powerout_2032',['POWEROUT',['../DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4a94707eb65b0628757416f2d767818a91',1,'DJIMotor.h']]]
+  ['power_1985',['POWER',['../DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4a316771101d4b4b1dea7d7e2a82ef1658',1,'DJIMotor.h']]]
 ];
