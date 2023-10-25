@@ -1,14 +1,14 @@
 var searchData=
 [
-  ['m_1796',['m',['../structekf__t.html#a80fd374c0af7f13c2f60e55c0b0916af',1,'ekf_t']]],
-  ['mag_5fid_1797',['mag_id',['../structBNO055__ID__INF__TypeDef.html#a81577686386ae91d4a3ccd9b2f785926',1,'BNO055_ID_INF_TypeDef']]],
-  ['mains_5fpower_5fchassis_5foutput_1798',['mains_power_chassis_output',['../structext__game__robot__status__t.html#a391141250696401a428d5827092eded0',1,'ext_game_robot_status_t']]],
-  ['mains_5fpower_5fgimbal_5foutput_1799',['mains_power_gimbal_output',['../structext__game__robot__status__t.html#a7ab2bef3e3742364f0f127f112aa5ec8',1,'ext_game_robot_status_t']]],
-  ['mains_5fpower_5fshooter_5foutput_1800',['mains_power_shooter_output',['../structext__game__robot__status__t.html#ae5d799b7af3e2380efbebe93917c6c43',1,'ext_game_robot_status_t']]],
-  ['max_5fhp_1801',['max_HP',['../structext__game__robot__status__t.html#a2427b334e5d44f08f74ab16289ae1a47',1,'ext_game_robot_status_t']]],
-  ['mbed_5flogo_1802',['mbed_logo',['../mbed__logo_8h.html#a18148959f88dd70e0c636c82c46a9550',1,'mbed_logo.h']]],
-  ['mi2c_1803',['mi2c',['../classAdafruit__SSD1306__I2c.html#abf004a7e21f2653ad8dcff8c8f812831',1,'Adafruit_SSD1306_I2c']]],
-  ['mi2caddress_1804',['mi2cAddress',['../classAdafruit__SSD1306__I2c.html#a3516332f68d7e4781a817c621b5e8c6a',1,'Adafruit_SSD1306_I2c']]],
-  ['mspi_1805',['mspi',['../classAdafruit__SSD1306__Spi.html#a578d37e6ad2f57e66ceebe003abc7b58',1,'Adafruit_SSD1306_Spi']]],
-  ['multiturnyaw_1806',['multiturnYaw',['../classBNO055.html#afcfeacc40059d0c2f4d01b6948e30385',1,'BNO055']]]
+  ['m_1792',['m',['../structekf__t.html#a80fd374c0af7f13c2f60e55c0b0916af',1,'ekf_t']]],
+  ['mag_5fid_1793',['mag_id',['../structBNO055__ID__INF__TypeDef.html#a81577686386ae91d4a3ccd9b2f785926',1,'BNO055_ID_INF_TypeDef']]],
+  ['mains_5fpower_5fchassis_5foutput_1794',['mains_power_chassis_output',['../structext__game__robot__status__t.html#a391141250696401a428d5827092eded0',1,'ext_game_robot_status_t']]],
+  ['mains_5fpower_5fgimbal_5foutput_1795',['mains_power_gimbal_output',['../structext__game__robot__status__t.html#a7ab2bef3e3742364f0f127f112aa5ec8',1,'ext_game_robot_status_t']]],
+  ['mains_5fpower_5fshooter_5foutput_1796',['mains_power_shooter_output',['../structext__game__robot__status__t.html#ae5d799b7af3e2380efbebe93917c6c43',1,'ext_game_robot_status_t']]],
+  ['max_5fhp_1797',['max_HP',['../structext__game__robot__status__t.html#a2427b334e5d44f08f74ab16289ae1a47',1,'ext_game_robot_status_t']]],
+  ['mbed_5flogo_1798',['mbed_logo',['../mbed__logo_8h.html#a18148959f88dd70e0c636c82c46a9550',1,'mbed_logo.h']]],
+  ['mi2c_1799',['mi2c',['../classAdafruit__SSD1306__I2c.html#abf004a7e21f2653ad8dcff8c8f812831',1,'Adafruit_SSD1306_I2c']]],
+  ['mi2caddress_1800',['mi2cAddress',['../classAdafruit__SSD1306__I2c.html#a3516332f68d7e4781a817c621b5e8c6a',1,'Adafruit_SSD1306_I2c']]],
+  ['mspi_1801',['mspi',['../classAdafruit__SSD1306__Spi.html#a578d37e6ad2f57e66ceebe003abc7b58',1,'Adafruit_SSD1306_Spi']]],
+  ['multiturnyaw_1802',['multiturnYaw',['../classBNO055.html#afcfeacc40059d0c2f4d01b6948e30385',1,'BNO055']]]
 ];

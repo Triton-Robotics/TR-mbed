@@ -7,8 +7,8 @@ var searchData=
   ['layer_681',['layer',['../struct____packed.html#a532b1a6b4a5c5c92e0df34129ddcfdd6',1,'__packed::layer()'],['../struct____packed.html#a532b1a6b4a5c5c92e0df34129ddcfdd6',1,'__packed::layer()']]],
   ['lb_682',['LB',['../classWheelSpeeds.html#aef971dd6bc99754e9c204c9b5e2c561e',1,'WheelSpeeds']]],
   ['lbottomflywheel_683',['LBOTTOMFLYWHEEL',['../Sentry_2main_8cpp.html#a2afb9376452aa306fa1df4d1d19c02aa',1,'main.cpp']]],
-  ['led_684',['led',['../Hero_2main_8cpp.html#a689935c8d5f58c88c4dd8a44d5c6abc0',1,'led(L26):&#160;main.cpp'],['../Infantry_2main_8cpp.html#a689935c8d5f58c88c4dd8a44d5c6abc0',1,'led(L26):&#160;main.cpp'],['../TestBench_2main_8cpp.html#afeb9ad17704148332f0e3f99e197b162',1,'led(L27):&#160;main.cpp']]],
-  ['led2_685',['led2',['../Hero_2main_8cpp.html#a9aff7223480399d08d0951cb0e960186',1,'led2(L27):&#160;main.cpp'],['../Infantry_2main_8cpp.html#a9aff7223480399d08d0951cb0e960186',1,'led2(L27):&#160;main.cpp'],['../TestBench_2main_8cpp.html#a3c3155dd75ddc08cebaa6fcc6393cc84',1,'led2(L26):&#160;main.cpp']]],
+  ['led_684',['led',['../TestBench_2main_8cpp.html#afeb9ad17704148332f0e3f99e197b162',1,'led(L27):&#160;main.cpp'],['../Infantry_2main_8cpp.html#a689935c8d5f58c88c4dd8a44d5c6abc0',1,'led(L26):&#160;main.cpp'],['../Hero_2main_8cpp.html#a689935c8d5f58c88c4dd8a44d5c6abc0',1,'led(L26):&#160;main.cpp']]],
+  ['led2_685',['led2',['../Infantry_2main_8cpp.html#a9aff7223480399d08d0951cb0e960186',1,'led2(L27):&#160;main.cpp'],['../Hero_2main_8cpp.html#a9aff7223480399d08d0951cb0e960186',1,'led2(L27):&#160;main.cpp'],['../TestBench_2main_8cpp.html#a3c3155dd75ddc08cebaa6fcc6393cc84',1,'led2(L26):&#160;main.cpp']]],
   ['led3_686',['led3',['../TestBench_2main_8cpp.html#a9756ad2c67a2edbf64dd523340b72f87',1,'led3(L25):&#160;main.cpp'],['../Infantry_2main_8cpp.html#a9756ad2c67a2edbf64dd523340b72f87',1,'led3(L25):&#160;main.cpp']]],
   ['left_5fhorizontal_687',['LEFT_HORIZONTAL',['../classRemote.html#a0584fcca643d59d1b4d8b2624d2807eba00becf7a52ae174c4e0f10136a6c12d5',1,'Remote']]],
   ['left_5fswitch_688',['LEFT_SWITCH',['../classRemote.html#add727f68db8fff42e6f572b19008ec66a0eebf3c734bb9e11d832f5239e120091',1,'Remote']]],
@@ -21,7 +21,7 @@ var searchData=
   ['len_5ftail_695',['LEN_TAIL',['../ref__serial_8h.html#a678be00622af728789459e4bd5e58837',1,'ref_serial.h']]],
   ['level_696',['level',['../structext__referee__warning__t.html#a9a5820b5a238c06b7eda6fd1835e27df',1,'ext_referee_warning_t']]],
   ['lf_697',['LF',['../classWheelSpeeds.html#aa6d46770ab92112d6984a7138c238035',1,'WheelSpeeds']]],
-  ['lflywheel_698',['LFLYWHEEL',['../Hero_2main_8cpp.html#a274141732086b259b9dc8ee822ada549',1,'LFLYWHEEL():&#160;main.cpp'],['../Infantry_2main_8cpp.html#a432a243bd1262af481065797febf52f5',1,'LFLYWHEEL():&#160;main.cpp']]],
+  ['lflywheel_698',['LFLYWHEEL',['../Infantry_2main_8cpp.html#a432a243bd1262af481065797febf52f5',1,'LFLYWHEEL():&#160;main.cpp'],['../Hero_2main_8cpp.html#a274141732086b259b9dc8ee822ada549',1,'LFLYWHEEL():&#160;main.cpp']]],
   ['limitoutput_699',['limitOutput',['../classPID.html#a2c2837919a7d455e64ac315c4863ebac',1,'PID']]],
   ['linear_5facc_700',['linear_acc',['../imuExampleAllData_8cpp.html#a3a594955bf0fcab8fd702c02d92e3ce3',1,'imuExampleAllData.cpp']]],
   ['log_701',['log',['../classLogger.html#a70d064d3a96bedf59f44183459f4ca3c',1,'Logger::log(string item)'],['../classLogger.html#a5eeb9f40aa0316c4ffe6d21172c739ab',1,'Logger::log(string item, double value)'],['../classLogger.html#ab1905ee060e68af76b616c8d1cb0b962',1,'Logger::log(string item, int value)']]],
@@ -30,7 +30,5 @@ var searchData=
   ['loop_704',['loop',['../classTRMutex.html#a2407149a29f8539033950caedc1d39bc',1,'TRMutex']]],
   ['lowerbound_705',['LOWERBOUND',['../Infantry_2main_8cpp.html#a25a376a2bf1a9e49fdd2cf7110993acb',1,'main.cpp']]],
   ['lowpoweraccelonly_706',['lowPowerAccelOnly',['../classMPU6050.html#a144c5eeb14c620d9df9bb601dabcdfe4',1,'MPU6050']]],
-  ['ls_707',['lS',['../DJIMotor_8h.html#a1f354dc4cf2078d5b09af20f53398dde',1,'DJIMotor.h']]],
-  ['ltopflywheel_708',['LTOPFLYWHEEL',['../Sentry_2main_8cpp.html#abee266236980eab9f54c522cf5294eb1',1,'main.cpp']]],
-  ['lx_709',['lX',['../DJIMotor_8h.html#a11ea081ed1729815c211295a578ae9f8',1,'DJIMotor.h']]]
+  ['ltopflywheel_707',['LTOPFLYWHEEL',['../Sentry_2main_8cpp.html#abee266236980eab9f54c522cf5294eb1',1,'main.cpp']]]
 ];
