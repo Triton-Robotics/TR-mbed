@@ -37,10 +37,6 @@ public:
     };
 };
 
-// never use global variables, we are using them here due to the nature of this assignment
-Remote::SwitchState lS;         // left switch
-int lX;                         // x value of left joystick
-
 class CANHandler{
 public:
     enum CANBus {CANBUS_1, CANBUS_2, NOBUS};
@@ -180,5 +176,5 @@ public:
 int main(){
 
 
-    
+
 }
