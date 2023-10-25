@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['digitalout2_1247',['DigitalOut2',['../classDigitalOut2.html',1,'']]],
-  ['djimotor_1248',['DJIMotor',['../classDJIMotor.html',1,'']]]
+  ['digitalout2_1272',['DigitalOut2',['../classDigitalOut2.html',1,'']]],
+  ['djimotor_1273',['DJIMotor',['../classDJIMotor.html',1,'']]]
 ];
