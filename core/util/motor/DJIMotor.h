@@ -123,6 +123,7 @@ private:
 public:
 
     static int motorCount;
+    static bool initializedWarning;
     std::string name = "NO_NAME";
     int16_t powerOut = 0;
 

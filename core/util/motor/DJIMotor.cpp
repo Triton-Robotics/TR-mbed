@@ -7,6 +7,7 @@ int DJIMotor::motorCount = 0;
 DJIMotor* DJIMotor::s_allMotors[2][3][4];
 bool DJIMotor::s_motorsExist[2][3][4];
 CANHandler* DJIMotor::s_canHandlers[2];
+bool DJIMotor::initializedWarning = true;
 
 DJIMotor::DJIMotor(bool isErroneousMotor){
     canID_0 = -1;
@@ -206,7 +207,7 @@ void DJIMotor::s_getFeedback(bool debug){
                 if(motor -> motorData[TEMPERATURE] > 80)
                     printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS %d DEGREES CELSIUS ON BUS [%d] ID [%d], \"%s\" \n", msgID, motor -> motorData[TEMPERATURE], canBus + 1, motor -> motorID_0 + 1, motor -> name.c_str());
 
-            }else{
+            }else if(initializedWarning){
                 printf("[WARNING] YOU HAVE A MOTOR [0x%x] {%d}{%d}{%d} ATTACHED THAT IS NOT INITIALIZED.. WHY: \n", msgID, canBus, canID_0 / 4, canID_0 % 4);
             }
         }
