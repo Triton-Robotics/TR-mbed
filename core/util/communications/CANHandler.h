@@ -76,6 +76,28 @@ class CANHandler{
             //CAN Recieving from feedback IDs
         }
 
+        bool rawRead(int *id, uint8_t bytes[], int length){
+            bool gotMsg = false;
+            rxMsg.clear();
+            rxMsg.len = length;
+            if (can.read(rxMsg)) {
+                int err = can.rderror();
+                if (err){
+                    printf("[%d CAN Read Errors]\n", err);
+                    can.reset();
+                    return false;
+                }
+                *id = rxMsg.id;
+                for(int i = 0;  i < length; i ++){
+                    rxMsg >> bytes[i]; //Extract information from rxMsg and store it into the bytes array
+                }
+                gotMsg = true;
+                //printf("Motor 0x%x:\tAngle (0,8191):%d\tSpeed  ( RPM ):%d\tTorque ( CUR ):%d\tTemperature(C):%d \n",rxMsg.id,feedback[motorID][0],feedback[motorID][1],feedback[motorID][2],feedback[motorID][3]);
+            }
+            return gotMsg;
+            //CAN Recieving from feedback IDs
+        }
+
         /**
         * @brief Prints a CANMessage nicely
         * 
