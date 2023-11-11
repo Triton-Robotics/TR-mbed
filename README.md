@@ -24,7 +24,7 @@
 **We strongly recommend using Linux (Ubuntu or any other flavor) for development.** If this is not possible,
 we've created setup guides for the major operating systems.
 
-**Please choose the appropriate setup guide for your operating system:**
+### **Please choose the appropriate setup guide for your operating system:**
 - [Linux](.md/os/linux.md)
 - [Windows](.md/os/windows.md)
 - [Windows Subsystem for Linux (WSL)](.md/os/wsl.md)
