@@ -29,4 +29,6 @@ source ~/.bashrc
 
 > Note: May have to replace  `~/.bashrc` with your shell (eg. `~/.zshrc` for zsh).
 
+> Note: If you are getting a missing arm-none-eabi-gcc, you may have to run `brew install armmbed/formulae/arm-none-eabi-gcc`
+
 ### Return to [main setup guide](../../README.md#setup) to continue setup.
