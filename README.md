@@ -25,10 +25,10 @@
 we've created setup guides for the major operating systems.
 
 ### **Please choose the appropriate setup guide for your operating system:**
-- #### [Linux](.md/os/linux.md)
-- #### [Windows](.md/os/windows.md)
-- #### [Windows Subsystem for Linux (WSL)](.md/os/wsl.md)
-- #### [MacOS](.md/os/macos.md)
+- ### [Linux](.md/os/linux.md)
+- ### [Windows](.md/os/windows.md)
+- ### [Windows Subsystem for Linux (WSL)](.md/os/wsl.md)
+- ### [MacOS](.md/os/macos.md)
 
 ---
 
