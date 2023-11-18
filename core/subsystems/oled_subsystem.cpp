@@ -3,3 +3,5 @@
 //
 
 #include "oled_subsystem.h"
+
+oled_subsystem::oled_subsystem() {}

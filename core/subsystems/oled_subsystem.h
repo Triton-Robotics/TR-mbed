@@ -6,8 +6,13 @@
 #define TR_EMBEDDED_OLED_SUBSYSTEM_H
 
 
-class oled_subsystem {
+#include "mbed.h"
+#include "peripherals/oled/Adafruit_SSD1306.h"
+#include "motor/DJIMotor.h"
 
+class oled_subsystem {
+    oled_subsystem();
+    //I2c itoo;
 };
 
 

@@ -142,11 +142,14 @@ public:
     static void s_getFeedback(bool debug = false);
     static void s_sendValues(bool debug = false);
     static void s_feedbackThread();
-    static void s_sendThread();
 
     __attribute__((unused)) static bool s_allMotorsConnected(bool debug = false);
 
     int getData(motorDataType data);
+
+    static bool getMotorExist(int bus,int sendIDindex,int number);
+    static DJIMotor* getMotor(int bus,int sendIDindex,int number);
+
     void printAllMotorData();
 
     inline void setPower(int power){
@@ -164,10 +167,10 @@ public:
         mode = POS;
     }
 
-    __attribute__((unused)) inline bool isConnected() const {
+    inline bool isConnected() const {
         return us_ticker_read() / 1000 - timeOfLastFeedback <= TIMEOUT_MS;
     }
-    inline static bool s_isMotorConnected(CANHandler::CANBus bus, motorType type, short canID){
+    inline static bool s_isMotorConnected(CANHandler::CANBus bus, short type, short canID){
         return (s_motorsExist[bus][type][canID] && us_ticker_read() / 1000 - s_allMotors[bus][type][canID] -> timeOfLastFeedback <= TIMEOUT_MS);
     }
 

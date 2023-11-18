@@ -107,7 +107,7 @@ public:
             , mspi(spi)
     {
         begin();
-        splash();
+        //splash();
         display();
     };
 
@@ -176,7 +176,7 @@ public:
             , mi2cAddress(i2cAddress)
     {
         begin();
-        splash();
+        //splash();
         display();
     };
 

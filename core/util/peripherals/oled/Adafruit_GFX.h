@@ -151,7 +151,10 @@ public:
     inline int16_t height(void) { return _height; };
 
     /// Set the text cursor location, based on the size of the text
-    inline void setTextCursor(int16_t x, int16_t y) { cursor_x = x; cursor_y = y; };
+    inline void setTextCursor(int16_t x, int16_t y) {
+        cursor_x = x;
+        cursor_y = y;
+        };
 #if defined(GFX_WANT_ABSTRACTS) || defined(GFX_SIZEABLE_TEXT)
     /** Set the size of the text to be drawn
      * @note Make sure to enable either GFX_SIZEABLE_TEXT or GFX_WANT_ABSTRACTS

@@ -90,11 +90,11 @@ void DJIMotor::s_setCANHandlers(CANHandler* bus_1, CANHandler* bus_2, bool threa
     s_canHandlers[0] = bus_1;
     s_canHandlers[1] = bus_2;
 
-    if(threadSend)
-        s_motorSendThread.start(s_sendThread);
-
-    if(threadFeedback)
-        s_motorFeedbackThread.start(s_feedbackThread);
+//    if(threadSend)
+//        s_motorSendThread.start(s_sendThread);
+//
+//    if(threadFeedback)
+//        s_motorFeedbackThread.start(s_feedbackThread);
 }
 
 void DJIMotor::setOutput(){
@@ -230,6 +230,8 @@ __attribute__((unused)) bool DJIMotor::s_allMotorsConnected(bool debug){
     return true;
 }
 
+
+
 int DJIMotor::getData(motorDataType data) {
     if(data <= 3)
         return motorData[data];
@@ -240,6 +242,14 @@ int DJIMotor::getData(motorDataType data) {
     else
         return powerOut;
 
+}
+
+bool DJIMotor::getMotorExist(int bus, int sendIDindex, int number) {
+    return s_motorsExist[bus][sendIDindex][number];
+}
+
+DJIMotor* DJIMotor::getMotor(int bus, int sendIDindex, int number) {
+    return s_allMotors[bus][sendIDindex][number];
 }
 
 void DJIMotor::printAllMotorData() {
@@ -338,10 +348,10 @@ void DJIMotor::s_feedbackThread() {
 * @brief the thread that runs the ever-necessary DJIMotor::s_sendValues()
 */
 
-void DJIMotor::s_sendThread() {
-    while (true) {
-        s_sendValues();
-        ThisThread::sleep_for(1ms);
-    }
-}
+//void DJIMotor::s_motorSendThread() {
+//    while (true) {
+//        s_sendValues();
+//        ThisThread::sleep_for(1ms);
+//    }
+//}
 #pragma clang diagnostic pop

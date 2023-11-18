@@ -45,6 +45,8 @@ All text above, and the splash screen below must be included in any redistributi
 #define SSD1306_SEGREMAP 0xA0
 #define SSD1306_CHARGEPUMP 0x8D
 
+//#define NO_SPLASH_ADAFRUIT
+
 void Adafruit_SSD1306::begin(uint8_t vccstate)
 {
     rst = 1;
