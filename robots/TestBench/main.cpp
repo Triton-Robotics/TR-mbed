@@ -16,9 +16,6 @@ int main(){
     unsigned long timeStart;
     unsigned long loopTimer = us_ticker_read();
 
-    int pk = 10;
-    int dk = 0.02;
-
     double kP = 1.5;
     double kI = 0.0000021;
     double kD = 0.04;
