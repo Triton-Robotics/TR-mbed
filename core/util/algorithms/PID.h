@@ -17,7 +17,7 @@ private:
     float kI = 0;
     float kD = 0;
 
-    float integralCap = 0;
+    double integralCap = 0;
     float outputCap = 0;
 
     float lastError = 0;

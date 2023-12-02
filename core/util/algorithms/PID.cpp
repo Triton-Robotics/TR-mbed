@@ -46,15 +46,15 @@ int PID::calculate(int desired, int current, double dt) {
 int PID::calculatePeriodic(float error, double dt) {
 
     dt /= 1000;
-    errorIntegral += dt * (error + lastError) / 2;
+    errorIntegral += kI * dt * (error + lastError) / 2;
 
-    double PIDCalc = (kP * error) + (kI * errorIntegral) + feedForward;
+    double PIDCalc = (kP * error) + (errorIntegral) + feedForward;
 
-    if(dt > 0)
+    if(dt > 0) {
         PIDCalc += (kD * (error - lastError) / dt);
+    }
 
     lastError = error;
-
     limitOutput(PIDCalc);
     return static_cast<int>(PIDCalc);
 }
