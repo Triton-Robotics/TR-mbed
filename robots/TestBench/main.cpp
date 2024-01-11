@@ -1,4 +1,6 @@
 #include "main.h"
+#include <fstream>
+#include <iostream>
 
 
 DJIMotor indexer(5, CANHandler::CANBUS_1, C610);
@@ -26,6 +28,9 @@ int main(){
     indexer.setPositionPID(1, 0, 0);
     indexer.useAbsEncoder = false;
 
+    // Setting up output of serial to external file
+    ofstream outFile("heroSerialData.txt", ios::app);
+
     while(true){
         timeStart = us_ticker_read();
 
@@ -46,6 +51,8 @@ int main(){
             LFLYWHEEL.setSpeed(((int)remote.leftSwitch()-1) * -3200);
             RFLYWHEEL.setSpeed(((int)remote.leftSwitch()-1) * 3200);
             indexer.setPower(remote.leftX()*10);
+
+            outFile << LFLYWHEEL.getData(VELOCITY) << endl;
 
             loopTimer = timeStart;
             DJIMotor::s_sendValues();
