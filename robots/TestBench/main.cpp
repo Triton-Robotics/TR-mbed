@@ -14,6 +14,7 @@ int main(){
     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
     int flywheelspd = 6500;
     int refLoop = 0;
+    int carsonLoop = 0;
 
     unsigned long timeStart;
     unsigned long loopTimer = us_ticker_read();
@@ -41,7 +42,16 @@ int main(){
                 refereeThread(&referee);
                 refLoop = 0;
 
-                printff("cP: %f\n", ext_power_heat_data.data.chassis_power);
+//                printff("%c%c\n", LFLYWHEEL.getData(VELOCITY) >> 8, (int8_t)LFLYWHEEL.getData(VELOCITY));
+                printff("%d\n", LFLYWHEEL.getData(VELOCITY));
+            }
+
+            carsonLoop++;
+            if (carsonLoop >= 5){
+                carsonLoop = 0;
+
+//                printff("%c%c\n", LFLYWHEEL.getData(VELOCITY) >> 8, (int8_t)LFLYWHEEL.getData(VELOCITY));
+                printff("%d\n", LFLYWHEEL.getData(VELOCITY));
             }
 
             led =! led;
@@ -51,8 +61,6 @@ int main(){
             LFLYWHEEL.setSpeed(((int)remote.leftSwitch()-1) * -3200);
             RFLYWHEEL.setSpeed(((int)remote.leftSwitch()-1) * 3200);
             indexer.setPower(remote.leftX()*10);
-
-            outFile << LFLYWHEEL.getData(VELOCITY) << endl;
 
             loopTimer = timeStart;
             DJIMotor::s_sendValues();
