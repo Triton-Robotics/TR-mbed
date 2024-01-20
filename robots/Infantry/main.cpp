@@ -72,7 +72,8 @@ void runImuThread()
 
 void pitchSetPosition(){
 
-    int pitchSetPoint = (-remote.rightY() * 0.5) + 6200;
+    //int pitchSetPoint = (-remote.rightY() * 0.5) + 6200;
+    int pitchSetPoint = (-remote.rightY() * 0.8) + 2600;
 
     /* TODO: test min and max pitch position */
 
@@ -83,6 +84,7 @@ void pitchSetPosition(){
     //     pitchSetPoint = 5000;
 
     pitch.setPosition(pitchSetPoint);
+    //pitch2.setPosition(pitchSetPoint);
     //pitch2.setPower(-pitch.powerOut);
     //printf("%d.%d %d\n", pitchSetPoint, pitch.getData(ANGLE), pitch.powerOut);
 
@@ -123,12 +125,19 @@ int main(){
 
     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
 
-    pitch.setPositionPID(17.3, 0.03, 8.5); //12.3 0.03 2.5 //mid is 13.3, 0.03, 7.5
+    pitch.setPositionPID(20, 0.03, 8.5); //12.3 0.03 2.5 //mid is 13.3, 0.03, 7.5
     pitch.setPositionIntegralCap(60000);
     pitch.setPositionOutputCap(100000);
     pitch.pidPosition.feedForward = 0;
     pitch.outputCap = 32760;
     pitch.useAbsEncoder = true;
+
+    pitch2.setPositionPID(17.3, 0.03, 8.5); //12.3 0.03 2.5 //mid is 13.3, 0.03, 7.5
+    pitch2.setPositionIntegralCap(60000);
+    pitch2.setPositionOutputCap(100000);
+    pitch2.pidPosition.feedForward = 0;
+    pitch2.outputCap = 32760;
+    pitch2.useAbsEncoder = true;
 
     LFLYWHEEL.setSpeedPID(7.5, 0, 0.04);
     RFLYWHEEL.setSpeedPID(7.5, 0, 0.04);
@@ -248,7 +257,7 @@ int main(){
                 pitch2.setPower(0);
                 yawSetPoint = int(ext_game_robot_pos.data.yaw);
                 //printff("whe%d\n",Wh);
-                pitchSetPosition();
+//                pitchSetPosition();
 
             }else if (remote.rightSwitch() == Remote::SwitchState::DOWN){           // beyblade mode
                 led3 = 1;
@@ -281,55 +290,50 @@ int main(){
                 indexer.setSpeed(0);
             }
 
-            //burstFire(shoot);
-
-
-            if (remote.leftSwitch() == Remote::SwitchState::MID){
-                //gearSwap.setPower(-1500);
-                double mps = ext_game_robot_state.data.shooter_id1_17mm_speed_limit * 0.9;
-                double rpm = 60 * (mps / 0.03) / (3.14159 * 2);
-                //setFlyWheelSpeed(rpm);
-                RFLYWHEEL.setSpeed(7000);
-                LFLYWHEEL.setSpeed(-7000);
-                //indexer.setPower(0);
-                shootReady = true;
-                //burstTimestamp = us_ticker_read();
-
-            }else if (remote.leftSwitch() == Remote::SwitchState::DOWN || remote.leftSwitch() == Remote::SwitchState::UNKNOWN){          // disable serializer
-                //gearSwap.setPower(-1500);
-                //indexer.setPower(0);
-                setFlyWheelSpeed(0);
-
-
-                shootReady = true;
-
-            }else if (remote.leftSwitch() == Remote::SwitchState::UP){
-                //gearSwap.setPower(-1500);
-                double mps = ext_game_robot_state.data.shooter_id1_17mm_speed_limit;
-                double rpm = 60 * (mps / 0.03) / (3.14159 * 2);
-                //setFlyWheelSpeed(rpm); // was 0 * 0/
-                RFLYWHEEL.setSpeed(7000);
-                LFLYWHEEL.setSpeed(-7000);
-
-                // burstTimestamp used for previous indexer control for burst fire?
-                // if((us_ticker_read() - burstTimestamp)/1000 < 99){
-                //     indexer.setPower(8000);
-                // }else{
-                //     indexer.setPower(0);
-                // }
+            if (remote.leftSwitch() == Remote::SwitchState::UP ){
                 if (shootReady){
                     shootReady = false;
                     shoot = true;
                     shootTargetPosition = 8192 * 12 + (indexer>>MULTITURNANGLE);
                 }
+            } else {
+                shootReady = true;
+            }
 
 
+            if (remote.leftSwitch() != Remote::SwitchState::DOWN){
+//                double mps = ext_game_robot_state.data.shooter_id1_17mm_speed_limit * 0.9;
+//                double rpm = 60 * (mps / 0.03) / (3.14159 * 2);
+                RFLYWHEEL.setSpeed(7000);
+                LFLYWHEEL.setSpeed(-7000);
+                //indexer.setPower(0);
+                //shootReady = true;
+                //burstTimestamp = us_ticker_read();
 
-                //printff("%d\n", indexer.powerOut);
-                printff("v:%d\n", indexer.getData(VELOCITY));
-                if(heatMax1 - ref_chassis_temp1 < 60){
-                    indexer.setPower(0);
-                }
+            }
+
+//            }else if (remote.leftSwitch() == Remote::SwitchState::UP){
+//
+//
+////                double mps = ext_game_robot_state.data.shooter_id1_17mm_speed_limit;
+////                double rpm = 60 * (mps / 0.03) / (3.14159 * 2);
+////                RFLYWHEEL.setSpeed(7000);
+////                LFLYWHEEL.setSpeed(-7000);
+////                if (shootReady){
+////                    shootReady = false;
+////                    shoot = true;
+////                    shootTargetPosition = 8192 * 12 + (indexer>>MULTITURNANGLE);
+////                }
+////                printff("v:%d\n", indexer.getData(VELOCITY));
+////                if(heatMax1 - ref_chassis_temp1 < 60){
+////                    indexer.setPower(0);
+////                }
+//
+//
+//            }
+            else{
+                RFLYWHEEL.setSpeed(0);
+                LFLYWHEEL.setSpeed(0);
             }
             DJIMotor::s_sendValues();
         }
