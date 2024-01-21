@@ -142,8 +142,6 @@ int main(){
     LFLYWHEEL.setSpeedPID(7.5, 0, 0.04);
     RFLYWHEEL.setSpeedPID(7.5, 0, 0.04);
 
-    // yaw.setPositionPID(10, 0, 5.5);
-    // yaw.setPositionIntegralCap(10000);
     yaw.setPositionPID(10.5, 0.2, 4.4);
     yaw.setPositionIntegralCap(10000);
     yaw.useAbsEncoder = false;
@@ -153,7 +151,6 @@ int main(){
     gearSwap.setPositionPID(4.0, 0, 0.5);
     gearSwap.setPositionIntegralCap(10000);
 
-    //indexer.setSpeedPID(3.1, 0.07, 4);
     indexer.setSpeedPID(1, 0, 1);
     indexer.setSpeedIntegralCap(8000);
 
@@ -163,8 +160,6 @@ int main(){
 
     unsigned long loopTimer = us_ticker_read();
 
-    int indexJamTime = 0;
-    bool strawberryJam = false;
     int refLoop = 0;
     int ref_yaw;
 
@@ -186,7 +181,7 @@ int main(){
 
     unsigned long lastTime = 0;
     unsigned long yawTime = us_ticker_read();
-    unsigned long burstTimestamp = 0;
+    //unsigned long burstTimestamp = 0;
 
     bool shoot = false;
     //int shootPosition;
@@ -214,6 +209,10 @@ int main(){
                 led2= !led2;
             }
 
+
+            /**
+             * Variables
+             */
             chassis_power = ext_power_heat_data.data.chassis_power;
             chassis_power_limit = ext_game_robot_state.data.chassis_power_limit;
 
@@ -228,40 +227,24 @@ int main(){
             //printff("%d\n",chassis.getHeadingDegrees());
             //printf("%d %d\n", lX, rX);
 
+
+            /**
+             * rightSwitch controls
+             */
             if (remote.rightSwitch() == Remote::SwitchState::UP){          // All non-serializer motors activated
                 led3 = 1;
-                int LFa = remote.leftY() + remote.leftX() * translationalmultiplier + remote.rightX();
-                int RFa = remote.leftY() - remote.leftX() * translationalmultiplier - remote.rightX();
-                int LBa = remote.leftY() - remote.leftX() * translationalmultiplier + remote.rightX();
-                int RBa = remote.leftY() + remote.leftX() * translationalmultiplier - remote.rightX();
-
                 unsigned long time = us_ticker_read();
                 chassis.driveTurretRelativePower(chassis_power, chassis_power_limit, {remote.leftX() * 5.0, remote.leftY() * 5.0, 0}, yaw.getData(ANGLE) * 360.0 / 8192 + 180, int(time - lastTime), rotationalPower);
-
                 lastTime = time;
                 pitchSetPosition();
-
-                //yawSetPoint += rX / 36;
-                //yaw.setPosition(-chassis.getHeadingDegrees() * 8192 / 360 + yaw.getData(MULTITURNANGLE) - yawSetPoint);
-
                 yaw.setPower(-remote.rightX() * 10);
-
-                //printff("Yaw:%d Pitch%d\n",(int)((double)(yaw>>MULTITURNANGLE) * 360 / 8192),(int)((double)((pitch>>MULTITURNANGLE) - 6000) * 360 / 8192));
-                //printff("y:%d p:%d\n",yaw>>MULTI,pitch>>ANGLE);
-            }
-            else if (remote.rightSwitch() == Remote::SwitchState::MID || remote.rightSwitch() == Remote::SwitchState::UNKNOWN){ // disable all the non-serializer components
-                led3 = 0;
+            } else if (remote.rightSwitch() == Remote::SwitchState::MID || remote.rightSwitch() == Remote::SwitchState::UNKNOWN){ // disable all the non-serializer components
                 chassis.driveFieldRelative({0, 0, 0});
                 yaw.setPower(0);
                 pitch.setPower(0);
                 pitch2.setPower(0);
-                yawSetPoint = int(ext_game_robot_pos.data.yaw);
-                //printff("whe%d\n",Wh);
-//                pitchSetPosition();
-
-            }else if (remote.rightSwitch() == Remote::SwitchState::DOWN){           // beyblade mode
-                led3 = 1;
-                unsigned long time = us_ticker_read();
+            } else if (remote.rightSwitch() == Remote::SwitchState::DOWN){           // beyblade mode
+                unsigned long time = us_ticker_read(); //time for pid
                 double r = 4000;
                 chassis.driveXYRPower(chassis_power, chassis_power_limit, 5 * remote.leftX(), 5 * remote.leftY(), int(time - lastTime), true, r);
                 lastTime = time;
@@ -270,71 +253,65 @@ int main(){
                 yawSetPoint %= 360;
                 while(yawSetPoint < 0)
                     yawSetPoint += 360;
-                //yaw.setPosition(-ref_yaw * 8192 / 360 + yaw.getData(MULTITURNANGLE) - yawSetPoint);
-                yaw.setPower(yawIMU.calculatePeriodic(float(calculateDeltaYaw(ref_yaw, yawSetPoint)), us_ticker_read() - yawTime));
-                printff("%dya imu:[%d] pwr%d\n",yawSetPoint,ref_yaw, yaw>>POWEROUT);
+                yaw.setPower(yawIMU.calculatePeriodic(float(calculateDeltaYaw(ref_yaw, yawSetPoint)), us_ticker_read() - yawTime)); //
+                //printff("%dya imu:[%d] pwr%d\n",yawSetPoint,ref_yaw, yaw>>POWEROUT);
             }
             yawTime = us_ticker_read();
 
 
+            // burst fire, turn the indexer to shoot 3-5 balls a time and stop indexer
+            // only shoot when left switch changes from down/unknown/mid to up
+            // if left switch remains at up state, indexer stops after 3-5 balls
             if (shoot){
                 if (indexer>>MULTITURNANGLE >= shootTargetPosition){
-                    indexer.setSpeed(0); //before -1000
+                    indexer.setSpeed(0);
                     shoot = false;
                 } else {
                     timeSure = us_ticker_read();
-                    indexer.setSpeed(sure.calculate(shootTargetPosition, indexer>>MULTITURNANGLE, timeSure - prevTimeSure));
+                    indexer.setSpeed(sure.calculate(shootTargetPosition, indexer>>MULTITURNANGLE, timeSure - prevTimeSure)); //
                     prevTimeSure = timeSure;
                 }
             } else {
                 indexer.setSpeed(0);
             }
 
+
+            /**
+             * left switch controls burst fire: indexer and flywheels
+             * state down or unknown: no motion
+             * state mid: flywheels running, resetting shoot state
+             * state up: flywheels continues running, turn indexer if state set by state mid
+             */
             if (remote.leftSwitch() == Remote::SwitchState::UP ){
+                // Monitors state of left switch at previous loop and determine whether to turn indexer on
+                // if left switch was at other states, turn indexer on
+                // otherwise, continue the burstfire and stop after 3-5 shots
+                // $shootReady local to if block, $shoot variable used above
                 if (shootReady){
                     shootReady = false;
                     shoot = true;
                     shootTargetPosition = 8192 * 12 + (indexer>>MULTITURNANGLE);
                 }
             } else {
+                //SwitchState state set to mid/down/unknown
                 shootReady = true;
             }
-
-
-            if (remote.leftSwitch() != Remote::SwitchState::DOWN){
+            if (remote.leftSwitch() != Remote::SwitchState::DOWN &&
+                remote.leftSwitch() != Remote::SwitchState::UNKNOWN){
 //                double mps = ext_game_robot_state.data.shooter_id1_17mm_speed_limit * 0.9;
 //                double rpm = 60 * (mps / 0.03) / (3.14159 * 2);
                 RFLYWHEEL.setSpeed(7000);
                 LFLYWHEEL.setSpeed(-7000);
-                //indexer.setPower(0);
-                //shootReady = true;
-                //burstTimestamp = us_ticker_read();
-
-            }
-
-//            }else if (remote.leftSwitch() == Remote::SwitchState::UP){
-//
-//
-////                double mps = ext_game_robot_state.data.shooter_id1_17mm_speed_limit;
-////                double rpm = 60 * (mps / 0.03) / (3.14159 * 2);
-////                RFLYWHEEL.setSpeed(7000);
-////                LFLYWHEEL.setSpeed(-7000);
-////                if (shootReady){
-////                    shootReady = false;
-////                    shoot = true;
-////                    shootTargetPosition = 8192 * 12 + (indexer>>MULTITURNANGLE);
-////                }
-////                printff("v:%d\n", indexer.getData(VELOCITY));
-////                if(heatMax1 - ref_chassis_temp1 < 60){
-////                    indexer.setPower(0);
-////                }
-//
-//
-//            }
-            else{
+            } else{
+                // left SwitchState set to up/mid/unknown
                 RFLYWHEEL.setSpeed(0);
                 LFLYWHEEL.setSpeed(0);
             }
+
+
+
+
+
             DJIMotor::s_sendValues();
         }
         unsigned long timeEnd = us_ticker_read() / 1000;
