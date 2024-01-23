@@ -21,11 +21,11 @@ int main(){
     int pk = 10;
     int dk = 0.02;
 
-    double kP = 0.349;
-    double kI = 0.498;
-    double kD = 0.003;
+    double kP = 0.254; // 0.428
+    double kI = 0.146; // 0.434
+    double kD = 0.127; // 0.214
 
-    int speedVal = 3200;
+    int speedVal = 3100;
     int desiredSpeed = 0;
     int power = 0;
 
