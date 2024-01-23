@@ -12,7 +12,6 @@ DigitalOut led(L27);
 int main(){
 
     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
-    int flywheelspd = 6500;
     int refLoop = 0;
     int carsonLoop = 0;
 
@@ -22,11 +21,14 @@ int main(){
     int pk = 10;
     int dk = 0.02;
 
-    double kP = 1.5;
-    double kI = 0.0000021;
-    double kD = 0.04;
+    double kP = 0.349;
+    double kI = 0.498;
+    double kD = 0.003;
 
-    indexer.setPositionPID(1, 0, 0);
+    int desiredSpeed = 0;
+    int power = 0;
+
+    indexer.setPositionPID(kP, kI, kD);
     indexer.useAbsEncoder = false;
 
     // Setting up output of serial to external file
@@ -43,24 +45,32 @@ int main(){
                 refLoop = 0;
 
 //                printff("%c%c\n", LFLYWHEEL.getData(VELOCITY) >> 8, (int8_t)LFLYWHEEL.getData(VELOCITY));
-                printff("%d\n", LFLYWHEEL.getData(VELOCITY));
+                //printff("%d %d\n", , LFLYWHEEL.getData(VELOCITY));
             }
+
+            led =! led;
+            remoteRead();
+
+            if (remote.leftSwitch() == Remote::SwitchState::UNKNOWN) {
+                power = 0;
+            } else {
+                power = remote.leftX()*10;
+
+            }
+
+            desiredSpeed = ((int)remote.leftSwitch()-1) * 3400;
 
             carsonLoop++;
             if (carsonLoop >= 5){
                 carsonLoop = 0;
 
 //                printff("%c%c\n", LFLYWHEEL.getData(VELOCITY) >> 8, (int8_t)LFLYWHEEL.getData(VELOCITY));
-                printff("%d\n", LFLYWHEEL.getData(VELOCITY));
+                printff("%d %d\n", desiredSpeed, LFLYWHEEL.getData(VELOCITY));
             }
 
-            led =! led;
-            remoteRead();
-
-
-            LFLYWHEEL.setSpeed(((int)remote.leftSwitch()-1) * -3200);
-            RFLYWHEEL.setSpeed(((int)remote.leftSwitch()-1) * 3200);
-            indexer.setPower(remote.leftX()*10);
+            LFLYWHEEL.setSpeed(((int)remote.leftSwitch()-1) * -3300);
+            RFLYWHEEL.setSpeed(((int)remote.leftSwitch()-1) * 3300);
+            indexer.setPower(power);
 
             loopTimer = timeStart;
             DJIMotor::s_sendValues();
