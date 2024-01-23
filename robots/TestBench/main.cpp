@@ -25,6 +25,7 @@ int main(){
     double kI = 0.498;
     double kD = 0.003;
 
+    int speedVal = 3200;
     int desiredSpeed = 0;
     int power = 0;
 
@@ -58,7 +59,7 @@ int main(){
 
             }
 
-            desiredSpeed = ((int)remote.leftSwitch()-1) * 3400;
+            desiredSpeed = ((int)remote.leftSwitch()-1) * speedVal;
 
             carsonLoop++;
             if (carsonLoop >= 5){
@@ -68,8 +69,8 @@ int main(){
                 printff("%d %d\n", desiredSpeed, LFLYWHEEL.getData(VELOCITY));
             }
 
-            LFLYWHEEL.setSpeed(((int)remote.leftSwitch()-1) * -3300);
-            RFLYWHEEL.setSpeed(((int)remote.leftSwitch()-1) * 3300);
+            LFLYWHEEL.setSpeed(((int)remote.leftSwitch()-1) * -speedVal);
+            RFLYWHEEL.setSpeed(((int)remote.leftSwitch()-1) * speedVal);
             indexer.setPower(power);
 
             loopTimer = timeStart;
