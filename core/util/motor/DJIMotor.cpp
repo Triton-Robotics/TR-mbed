@@ -7,7 +7,7 @@ int DJIMotor::motorCount = 0;
 DJIMotor* DJIMotor::s_allMotors[2][3][4];
 bool DJIMotor::s_motorsExist[2][3][4];
 CANHandler* DJIMotor::s_canHandlers[2];
-bool DJIMotor::initializedWarning = true;
+bool DJIMotor::initializedWarning = false;
 
 DJIMotor::DJIMotor(bool isErroneousMotor){
     canID_0 = -1;
