@@ -346,11 +346,10 @@ ChassisSpeeds Chassis::getSpeeds() {
 
 bool Chassis::allMotorsConnected() {
     return (
-            (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, lfId)) &&
-            (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, rfId)) &&
-            (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, lbId)) &&
-            (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, rbId))
-
+            (LF.isConnected()) &&
+            (LB.isConnected()) &&
+            (RF.isConnected()) &&
+            (RB.isConnected())
     );
 }
 

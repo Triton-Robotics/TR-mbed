@@ -166,13 +166,8 @@ public:
     __attribute__((unused)) inline bool isConnected() const {
         return us_ticker_read() / 1000 - timeOfLastFeedback <= TIMEOUT_MS;
     }
-    inline static bool s_isMotorConnected(CANHandler::CANBus bus, motorType type, short canID){
-        return (s_motorsExist[bus][type][canID] && us_ticker_read() / 1000 - s_allMotors[bus][type][canID] -> timeOfLastFeedback <= TIMEOUT_MS);
-    }
-
-    __attribute__((unused)) static bool s_theseConnected(DJIMotor* motors[], int size, bool debug = false);
-
-    __attribute__((unused)) static bool s_allMotorsConnected(bool debug = false);
+    static bool s_theseConnected(DJIMotor* motors[], int size, bool debug = false);
+    static bool s_allConnected(bool debug = false);
 
 
     inline int operator>>(motorDataType data)                                   { return getData(data); }

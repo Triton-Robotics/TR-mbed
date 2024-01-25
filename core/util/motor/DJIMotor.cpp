@@ -160,8 +160,8 @@ void DJIMotor::s_sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool de
             s_allMotors[canBus][sendIDindex][i] -> setOutput();
             int16_t powerOut = s_allMotors[canBus][sendIDindex][i] -> powerOut;
 
-            bytes[2 * i] =      int8_t(powerOut >> 8);
-            bytes[2 * i + 1] =  int8_t(powerOut);
+            bytes[2 * i] =      static_cast<int8_t>(powerOut >> 8);
+            bytes[2 * i + 1] =  static_cast<int8_t>(powerOut);
 
             anyMotors = true;
 
@@ -215,41 +215,47 @@ void DJIMotor::s_getFeedback(bool debug){
     s_updateMultiTurnPosition();
 }
 
-__attribute__((unused)) bool DJIMotor::s_theseConnected(DJIMotor* motors[], int size, bool debug) {
-    bool allConnected = true;
+bool DJIMotor::s_theseConnected(DJIMotor* motors[], int size, bool debug) {
+    if(!debug) {
+        return std::all_of(motors, motors + size, [](DJIMotor *motor){
+            return motor -> isConnected();
+        });
 
-    for(int i = 0; i < size; i++){
-        if(!motors[i] -> isConnected()) {
-            if (debug) {
+    }else{
+        bool allConnected = true;
+
+        for (int i = 0; i < size; i++) {
+            if (!motors[i] -> isConnected()) {
                 allConnected = false;
                 printf("Motor ID_1 %d on canBus_1: %d, \"%s\" lost connection\n", motors[i] -> motorID_0 + 1, motors[i] -> canBus + 1, motors[i] -> name.c_str());
-            } else
-                return false;
+            }
         }
+        return allConnected;
     }
-
-    return allConnected;
 }
 
-__attribute__((unused)) bool DJIMotor::s_allMotorsConnected(bool debug){
-    bool allConnected = true;
+bool DJIMotor::s_allConnected(bool debug){
+    if(!debug){
+        return std::all_of(**s_allMotors, **s_allMotors + CAN_HANDLER_NUMBER * 3 * 4, [](DJIMotor *motor){
+            return motor -> isConnected();
+        });
 
-    for(int canBus = 0; canBus < CAN_HANDLER_NUMBER; canBus++) {
-        for (int r = 0; r < 3; r++) {
-            for (int c = 0; c < 4; c++) {
-                if (s_motorsExist[canBus][r][c] && !s_allMotors[canBus][r][c] -> isConnected()) {
-                    if (debug) {
+    }else {
+        bool allConnected = true;
+
+        for (int canBus = 0; canBus < CAN_HANDLER_NUMBER; canBus++) {
+            for (int r = 0; r < 3; r++) {
+                for (int c = 0; c < 4; c++) {
+                    if (s_motorsExist[canBus][r][c] && !s_allMotors[canBus][r][c] -> isConnected()) {
                         allConnected = false;
                         printf("Motor ID_1 %d on canBus_1: %d, \"%s\" lost connection\n", s_allMotors[canBus][r][c] -> motorID_0 + 1, canBus + 1, s_allMotors[canBus][r][c] -> name.c_str());
                         printf("Motor [%d][%d][%d]\n", canBus, r, c);
-
-                    }else
-                        return false;
+                    }
                 }
             }
         }
+        return allConnected;
     }
-    return allConnected;
 }
 
 int DJIMotor::getData(motorDataType data) {
@@ -271,16 +277,16 @@ void DJIMotor::printAllMotorData() {
 int DJIMotor::s_calculateDeltaPhase(int target, int current, int max) {
     target %= max;
 
-    int deltaTicks = target - current;
+    int deltaPhase = target - current;
 
-    if(abs(deltaTicks) > max / 2){
-        if(deltaTicks > 0)
-            deltaTicks -= max;
+    if(abs(deltaPhase) > max / 2){
+        if(deltaPhase > 0)
+            deltaPhase -= max;
 
         else
-            deltaTicks += max;
+            deltaPhase += max;
     }
-    return deltaTicks;
+    return deltaPhase;
 }
 
 void DJIMotor::s_updateMultiTurnPosition() {
