@@ -67,17 +67,17 @@ int main()
                 double jy = remote.leftY() / 660.0;
                 double jr = remote.rightX() / 660.0;
 
-                double LFa = (1/sqrt(2))*(-jx - jy - jr *((-0.228) - (0.228)));
-                ChassisOne.setSpeed(- LFa / (0.0254*2) / (2*PI/60) * M3508_GEAR_RATIO );
+                double LFa = (1/sqrt(2))*(jx + jy + jr *((-0.228) - (0.228)));
+                ChassisOne.setSpeed(LFa / (0.0254*2) / (2*PI/60) * M3508_GEAR_RATIO );
                 // ChassisOne.setPower(LFa);
-                double RFa = (1/sqrt(2))*(-jx + jy + jr *((0.228) + (0.228)));
-                ChassisTwo.setSpeed(- RFa / (0.0254*2) / (2*PI/60) * M3508_GEAR_RATIO );
+                double RFa = (1/sqrt(2))*(jx - jy - jr *((0.228) + (0.228)));
+                ChassisTwo.setSpeed(RFa / (0.0254*2) / (2*PI/60) * M3508_GEAR_RATIO );
                 // ChassisTwo.setPower(RFa);
-                double LBa = (1/sqrt(2))*(jx  - jy - jr *((-0.228) + (-0.228)));
-                ChassisThree.setSpeed(- LBa / (0.0254*2) / (2*PI/60) * M3508_GEAR_RATIO );
+                double LBa = (1/sqrt(2))*(-jx  + jy + jr *((-0.228) + (-0.228)));
+                ChassisThree.setSpeed(LBa / (0.0254*2) / (2*PI/60) * M3508_GEAR_RATIO );
                 // ChassisThree.setPower(LBa);
-                double RBa = (1/sqrt(2))*(jx  + jy + jr *((0.228) - (-0.228)));
-                ChassisFour.setSpeed(- RBa / (0.0254*2) / (2*PI/60) * M3508_GEAR_RATIO );
+                double RBa = (1/sqrt(2))*(-jx  - jy - jr *((0.228) - (-0.228)));
+                ChassisFour.setSpeed(RBa / (0.0254*2) / (2*PI/60) * M3508_GEAR_RATIO );
                 // ChassisFour.setPower(RBa);
 
                 double a[4] = {LFa, RFa, LBa, RBa};
