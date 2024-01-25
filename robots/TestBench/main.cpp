@@ -13,30 +13,31 @@ DJIMotor ChassisFour(4, CANHandler::CANBUS_1, STANDARD, "testMotor");
 DJIMotor yawOne(5, CANHandler::CANBUS_1, GM6020, "testMotor");
 // Chassis chassis(1, 2, 3, 4, &i2c);
 
+
 int main()
 {
 
     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
     DJIMotor::s_sendValues();
     DJIMotor::s_getFeedback();
-    DJIMotor::initializedWarning = false;
-
+    DJIMotor::initializedWarning=false;
     unsigned long timeStart;
     unsigned long loopTimer = us_ticker_read();
     int refLoop = 0;
+
     ChassisOne.setSpeedPID(2, 0, 0);
     ChassisTwo.setSpeedPID(2, 0, 0);
     ChassisThree.setSpeedPID(2, 0, 0);
     ChassisFour.setSpeedPID(2, 0, 0);
+
+    
 
     while (true)
     {
         timeStart = us_ticker_read();
 
         if ((timeStart - loopTimer) / 1000 > 25)
-        {
-
-            unsigned long time = us_ticker_read();
+        {// 
 
             led2 = !led2;
 
@@ -46,40 +47,48 @@ int main()
                 refereeThread(&referee);
                 refLoop = 0;
                 led = !led;
-                //  printff("angle:%f\n", euler_angles.h);
             }
 
-            remoteRead();
-            // gets the angle off the chassis
-            BNO055_ANGULAR_POSITION_typedef angle_quat;
-            imu.get_angular_position_quat(&angle_quat);
+            remoteRead();            
 
-            // printff("%f\n", angle_quat.yaw);
+            // gets the angle off the chassis
+            BNO055_ANGULAR_POSITION_typedef imuAngle;
+            imu.get_angular_position_quat(&imuAngle);
+
+            // printff("%f\n", imuAngle.yaw);
 
             // gets the angle of the motor
 
             // printff("%d\n", yawOne.getData(ANGLE));
             if (remote.rightSwitch() == Remote::SwitchState::UP)
-            {
-                int LFa = (-1 * remote.leftY()) + remote.leftX() + remote.rightX();
-                ChassisOne.setSpeed(LFa);
+            {   
+                double max_vel = 0.0254*2* (8000/M3508_GEAR_RATIO) * (2*PI/60);
+                double jx = remote.leftX() / 660.0;
+                double jy = remote.leftY() / 660.0;
+                double jr = remote.rightX() / 660.0;
+
+                double LFa = (1/sqrt(2))*(-jx - jy - jr *((-0.228) - (0.228)));
+                ChassisOne.setSpeed(- LFa / (0.0254*2) / (2*PI/60) * M3508_GEAR_RATIO );
                 // ChassisOne.setPower(LFa);
-                int RFa = (1 * remote.leftY()) - remote.leftX() - remote.rightX();
-                ChassisTwo.setSpeed(-RFa);
+                double RFa = (1/sqrt(2))*(-jx + jy + jr *((0.228) + (0.228)));
+                ChassisTwo.setSpeed(- RFa / (0.0254*2) / (2*PI/60) * M3508_GEAR_RATIO );
                 // ChassisTwo.setPower(RFa);
-                int LBa = remote.leftY() - remote.leftX() + remote.rightX();
-                ChassisThree.setSpeed(LBa);
+                double LBa = (1/sqrt(2))*(jx  - jy - jr *((-0.228) + (-0.228)));
+                ChassisThree.setSpeed(- LBa / (0.0254*2) / (2*PI/60) * M3508_GEAR_RATIO );
                 // ChassisThree.setPower(LBa);
-                int RBa = remote.leftY() + remote.leftX() - remote.rightX();
-                ChassisFour.setSpeed(-RBa);
+                double RBa = (1/sqrt(2))*(jx  + jy + jr *((0.228) - (-0.228)));
+                ChassisFour.setSpeed(- RBa / (0.0254*2) / (2*PI/60) * M3508_GEAR_RATIO );
                 // ChassisFour.setPower(RBa);
-                int a[4] = {LFa, -RFa, LBa, -RBa};
+
+                double a[4] = {LFa, RFa, LBa, RBa};
                 for (int i = 0; i < 4; i++)
                 {
-                    printff("%d ", a[i]);
+                    printff("%f ", a[i]);
                 }
                 printff("\n");
             }
+            unsigned long time = us_ticker_read();
+
             loopTimer = timeStart;
             DJIMotor::s_sendValues();
         }
