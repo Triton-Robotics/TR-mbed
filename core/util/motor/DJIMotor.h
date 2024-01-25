@@ -116,7 +116,7 @@ private:
 
     static void s_updateMultiTurnPosition();
     static void s_sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool debug = false);
-    static int s_calculateDeltaTicks(int target, int current);
+    static int s_calculateDeltaPhase(int target, int current, int max = TICKS_REVOLUTION);
 
     void setOutput();
 
@@ -132,7 +132,7 @@ public:
 
     int multiTurn = 0;
     int outputCap = INT16_T_MAX;
-    bool useAbsEncoder = false;
+    bool useAbsEncoder = true;
     bool printAngle = false;
 
     explicit DJIMotor(bool isErroneousMotor = false);
@@ -144,8 +144,6 @@ public:
     static void s_sendValues(bool debug = false);
     static void s_feedbackThread();
     static void s_sendThread();
-
-    __attribute__((unused)) static bool s_allMotorsConnected(bool debug = false);
 
     int getData(motorDataType data);
     void printAllMotorData();
@@ -171,6 +169,11 @@ public:
     inline static bool s_isMotorConnected(CANHandler::CANBus bus, motorType type, short canID){
         return (s_motorsExist[bus][type][canID] && us_ticker_read() / 1000 - s_allMotors[bus][type][canID] -> timeOfLastFeedback <= TIMEOUT_MS);
     }
+
+    __attribute__((unused)) static bool s_theseConnected(DJIMotor* motors[], int size, bool debug = false);
+
+    __attribute__((unused)) static bool s_allMotorsConnected(bool debug = false);
+
 
     inline int operator>>(motorDataType data)                                   { return getData(data); }
 

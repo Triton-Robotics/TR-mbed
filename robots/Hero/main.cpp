@@ -49,6 +49,8 @@ void indexerLoop(bool &previousMid, bool &nowUp, bool &nowDown, int &actualPosit
     float dp;
     int p;
 
+    //printf("%d\n", indexer.isConnected());
+
     if(previousMid && nowUp)
         desiredPosition += dr;
 
@@ -64,6 +66,7 @@ void indexerLoop(bool &previousMid, bool &nowUp, bool &nowDown, int &actualPosit
 
         if (smooth) {
             p -= int((pow((dr - abs(dp)) / dr, 2.7) * t) * (abs(dp) / dp));
+            //printf("%d\n", p);
         } else {
             p += int(1 * (-pow((abs(dp) - dr / 2 - 30) / 8.35, 2) + 3000) * abs(dp) / dp);
             p -= int((pow((dr - abs(dp)) / dr, 3) * t) * (abs(dp) / dp));
@@ -146,6 +149,7 @@ int main(){
 
     imuThread.start(runImuThread);
 
+    DJIMotor::initializedWarning = false;
     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
     DJIMotor::s_sendValues();
     DJIMotor::s_getFeedback();
@@ -191,6 +195,7 @@ int main(){
 
         if((timeStart - loopTimer) / 1000 > 25) {
             loopTimer = timeStart;
+            led = !led;
 
 
             if (refLoop >= 5) {
