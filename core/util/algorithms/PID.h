@@ -22,6 +22,7 @@ private:
 
     float lastError = 0;
     double errorIntegral = 0;
+    double savedD = 0;
 
 public:
     float feedForward = 0;
@@ -76,7 +77,7 @@ public:
      */
     void setOutputCap(float outCap);
 
-
+    double DPower();
 };
 
 

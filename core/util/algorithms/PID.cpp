@@ -6,6 +6,8 @@ PID::PID(){
     integralCap = 0;
     outputCap = 0;
     feedForward = 0;
+
+    savedD = 0;
 }
 
 
@@ -39,6 +41,7 @@ int PID::calculate(int desired, int current, double dt) {
 
     lastError = error;
 
+    //savedD = (kD * (error - lastError) / dt);
     limitOutput(PIDCalc);
     return static_cast<int>(PIDCalc);
 }
@@ -53,7 +56,9 @@ int PID::calculatePeriodic(float error, double dt) {
     if(dt > 0)
         PIDCalc += (kD * (error - lastError) / dt);
 
+    savedD = (kD * (error - lastError) / dt);
     lastError = error;
+
 
     limitOutput(PIDCalc);
     return static_cast<int>(PIDCalc);
@@ -84,4 +89,9 @@ void PID::setIntegralCap(float integralCap){
 
 void PID::setOutputCap(float outputCap){
     this -> outputCap = outputCap;
+}
+
+
+double PID::DPower(){
+    return savedD;
 }

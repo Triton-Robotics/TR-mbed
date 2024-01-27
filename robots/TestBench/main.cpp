@@ -75,9 +75,10 @@ int main(){
 
     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
 
-    pitch.setPositionPID(18, 0.00000, 100); //12.3 0.03 2.5 //mid is 13.3, 0.03, 7.5
-    pitch.setPositionIntegralCap(60000);
-    pitch.setPositionOutputCap(100000);
+    pitch.setPositionPID(18, 0.01, 850); //12.3 0.03 2.5 //mid is 13.3, 0.03, 7.5
+    //pitch.setPositionPID(22, 0.0000000001, 250); //12.3 0.03 2.5 //mid is 13.3, 0.03, 7.5
+    pitch.setPositionIntegralCap(6000);
+    //pitch.setPositionOutputCap(6000);
     pitch.pidPosition.feedForward = 0;
     pitch.outputCap = 32760;
     pitch.useAbsEncoder = true;
@@ -107,7 +108,7 @@ int main(){
                 refereeThread(&referee);
                 refLoop = 0;
                 led2= !led2;
-                printff("%d %d\n", pitch2>>POWEROUT, pitch>>POWEROUT);
+                printff("%d %d %lf\n", pitch2>>POWEROUT, pitch>>POWEROUT, pitch.pidPosition.DPower());
             }
 
 

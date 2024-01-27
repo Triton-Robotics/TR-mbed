@@ -71,23 +71,19 @@ void runImuThread()
 }
 
 void pitchSetPosition(){
-
     //int pitchSetPoint = (-remote.rightY() * 0.5) + 6200;
-    int pitchSetPoint = (-remote.rightY() * 0.8) + 2600;
+    int pitchSetPoint = 5960 - (5960 - 5350)/660.0 * remote.rightY();
 
     /* TODO: test min and max pitch position */
-
-    // if(pitchSetPoint > 9000)
-    //     pitchSetPoint = 9000;
-
-    // else if(pitchSetPoint < 5000)
-    //     pitchSetPoint = 5000;
+    // low
+    if(pitchSetPoint > 6570)
+        pitchSetPoint = 6570;
+        // high
+    else if(pitchSetPoint < 5350)
+        pitchSetPoint = 5350;
 
     pitch.setPosition(pitchSetPoint);
-    //pitch2.setPosition(pitchSetPoint);
-    //pitch2.setPower(-pitch.powerOut);
-    //printf("%d.%d %d\n", pitchSetPoint, pitch.getData(ANGLE), pitch.powerOut);
-
+    //printff("%d.%d %d\n", pitchSetPoint, pitch.getData(ANGLE), pitch.powerOut);
 }
 
 /*
@@ -125,9 +121,9 @@ int main(){
 
     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
 
-    pitch.setPositionPID(20, 0.03, 8.5); //12.3 0.03 2.5 //mid is 13.3, 0.03, 7.5
-    pitch.setPositionIntegralCap(60000);
-    pitch.setPositionOutputCap(100000);
+    pitch.setPositionPID(18, 0.01, 850); //12.3 0.03 2.5 //mid is 13.3, 0.03, 7.5
+    pitch.setPositionIntegralCap(6000);
+    //pitch.setPositionOutputCap(100000);
     pitch.pidPosition.feedForward = 0;
     pitch.outputCap = 32760;
     pitch.useAbsEncoder = true;
