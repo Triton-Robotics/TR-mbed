@@ -14,14 +14,13 @@ DJIMotor ChassisFour(4, CANHandler::CANBUS_1, STANDARD, "testMotor");
 DJIMotor yawOne(5, CANHandler::CANBUS_1, GM6020, "testMotor");
 // Chassis chassis(1, 2, 3, 4, &i2c);
 
-
 int main()
 {
 
     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
     DJIMotor::s_sendValues();
     DJIMotor::s_getFeedback();
-    DJIMotor::initializedWarning=false;
+    DJIMotor::initializedWarning = false;
     unsigned long timeStart;
     unsigned long loopTimer = us_ticker_read();
     int refLoop = 0;
@@ -31,14 +30,12 @@ int main()
     ChassisThree.setSpeedPID(2, 0, 0);
     ChassisFour.setSpeedPID(2, 0, 0);
 
-    
-
     while (true)
     {
         timeStart = us_ticker_read();
 
         if ((timeStart - loopTimer) / 1000 > 25)
-        {// 
+        { //
 
             led2 = !led2;
 
@@ -50,7 +47,7 @@ int main()
                 led = !led;
             }
 
-            remoteRead();            
+            remoteRead();
 
             // gets the angle off the chassis
             BNO055_ANGULAR_POSITION_typedef imuAngle;
@@ -62,23 +59,23 @@ int main()
 
             // printff("%d\n", yawOne.getData(ANGLE));
             if (remote.rightSwitch() == Remote::SwitchState::UP)
-            {   
-                double max_vel = 0.0254*2* (8000/M3508_GEAR_RATIO) * (2*PI/60);
+            {
+                double max_vel = 0.0254 * 2 * (8000 / M3508_GEAR_RATIO) * (2 * PI / 60);
                 double jx = remote.leftX() / 660.0;
                 double jy = remote.leftY() / 660.0;
                 double jr = remote.rightX() / 660.0;
 
-                double LFa = (1/sqrt(2))*(jx + jy + jr *((-0.228) - (0.228)));
-                ChassisOne.setSpeed(LFa / (0.0254*2) / (2*PI/60) * M3508_GEAR_RATIO );
+                double LFa = (1 / sqrt(2)) * (jx + jy + jr * ((-0.228) - (0.228)));
+                ChassisOne.setSpeed(LFa / (0.0254 * 2) / (2 * PI / 60) * M3508_GEAR_RATIO);
                 // ChassisOne.setPower(LFa);
-                double RFa = (1/sqrt(2))*(jx - jy - jr *((0.228) + (0.228)));
-                ChassisTwo.setSpeed(RFa / (0.0254*2) / (2*PI/60) * M3508_GEAR_RATIO );
+                double RFa = (1 / sqrt(2)) * (jx - jy - jr * ((0.228) + (0.228)));
+                ChassisTwo.setSpeed(RFa / (0.0254 * 2) / (2 * PI / 60) * M3508_GEAR_RATIO);
                 // ChassisTwo.setPower(RFa);
-                double LBa = (1/sqrt(2))*(-jx  + jy + jr *((-0.228) + (-0.228)));
-                ChassisThree.setSpeed(LBa / (0.0254*2) / (2*PI/60) * M3508_GEAR_RATIO );
+                double LBa = (1 / sqrt(2)) * (-jx + jy + jr * ((-0.228) + (-0.228)));
+                ChassisThree.setSpeed(LBa / (0.0254 * 2) / (2 * PI / 60) * M3508_GEAR_RATIO);
                 // ChassisThree.setPower(LBa);
-                double RBa = (1/sqrt(2))*(-jx  - jy - jr *((0.228) - (-0.228)));
-                ChassisFour.setSpeed(RBa / (0.0254*2) / (2*PI/60) * M3508_GEAR_RATIO );
+                double RBa = (1 / sqrt(2)) * (-jx - jy - jr * ((0.228) - (-0.228)));
+                ChassisFour.setSpeed(RBa / (0.0254 * 2) / (2 * PI / 60) * M3508_GEAR_RATIO);
                 // ChassisFour.setPower(RBa);
 
                 double a[4] = {LFa, RFa, LBa, RBa};

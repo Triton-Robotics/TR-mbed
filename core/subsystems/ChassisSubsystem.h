@@ -30,7 +30,6 @@ struct OmniKinematics
     double r1x, r1y, r2x, r2y, r3x, r3y, r4x, r4y;
 };
 
-
 /**
  * The Chassis class is a wrapper for the DJIMotor class that allows for easy control of the chassis.
  * It also contains methods for controlling the chassis in a field relative manner, and for controlling the chassis
@@ -60,15 +59,12 @@ public:
         COAST
     };
 
-
     /**
      * The driveXYR method is used to drive the chassis in a chassis relative manner.
      *
      * @param speeds The robot-relative speeds (x, y, and rotation) in RPM
      */
     void setChassisSpeeds(ChassisSpeeds speeds);
-
-
 
     /**
      * A helper method to find a DJIMotor object from an index.
@@ -126,7 +122,7 @@ public:
      */
     Pose2D getPose();
 
-        /**
+    /**
      * Gets the chassis's current speeds
      * @return The chassis's current speeds
      */
@@ -159,14 +155,13 @@ private:
     double ticksPerSecondToInchesPerSecond(double ticksPerSecond);
     double rpmToInchesPerSecond(double RPM);
 
-    
     OmniKinematics m_OmniKinematics;
     OmniKinematics setOmniKinematics(double radius);
     WheelSpeeds ChassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds);
 
     void setMotorPower(int index, double power);
     void setMotorSpeedRPM(int index, double speed);
-    void setMotorSpeedTicksPerSecond(int index, double speed);
+    // void setMotorSpeedTicksPerSecond(int index, double speed);
 
     double getMotorSpeedRPM(int index);
 
