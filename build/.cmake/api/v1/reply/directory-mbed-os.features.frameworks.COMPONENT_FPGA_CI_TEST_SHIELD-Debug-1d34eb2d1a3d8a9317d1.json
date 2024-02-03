@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "mbed-os/features/frameworks/COMPONENT_FPGA_CI_TEST_SHIELD",
+		"source" : "mbed-os/features/frameworks/COMPONENT_FPGA_CI_TEST_SHIELD"
+	}
+}

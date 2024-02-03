@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "mbed-os/connectivity/drivers/cellular/UBLOX/N2XX",
+		"source" : "mbed-os/connectivity/drivers/cellular/UBLOX/N2XX"
+	}
+}

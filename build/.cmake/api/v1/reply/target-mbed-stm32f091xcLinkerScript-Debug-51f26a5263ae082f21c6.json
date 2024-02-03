@@ -1,0 +1,81 @@
+{
+	"backtrace" : 2,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_custom_target",
+			"mbed_set_linker_script"
+		],
+		"files" : 
+		[
+			"mbed-os/tools/cmake/mbed_set_linker_script.cmake",
+			"mbed-os/targets/TARGET_STM/TARGET_STM32F0/TARGET_STM32F091xC/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 27,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 37,
+				"parent" : 1
+			}
+		]
+	},
+	"id" : "mbed-stm32f091xcLinkerScript::@2406fd3ebd4efd699a4a",
+	"name" : "mbed-stm32f091xcLinkerScript",
+	"paths" : 
+	{
+		"build" : "mbed-os/targets/TARGET_STM/TARGET_STM32F0/TARGET_STM32F091xC",
+		"source" : "mbed-os/targets/TARGET_STM/TARGET_STM32F0/TARGET_STM32F091xC"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		},
+		{
+			"name" : "CMake Rules",
+			"sourceIndexes" : 
+			[
+				1,
+				2
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/mbed-os/targets/TARGET_STM/TARGET_STM32F0/TARGET_STM32F091xC/CMakeFiles/mbed-stm32f091xcLinkerScript",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/mbed-os/targets/TARGET_STM/TARGET_STM32F0/TARGET_STM32F091xC/CMakeFiles/mbed-stm32f091xcLinkerScript.rule",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/mbed-os/targets/TARGET_STM/TARGET_STM32F0/TARGET_STM32F091xC/mbed-stm32f091xc.link_script.ld.rule",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "UTILITY"
+}

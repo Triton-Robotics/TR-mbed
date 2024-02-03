@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "mbed-os/connectivity/drivers/wifi/COMPONENT_WHD/whd-bsp-integration",
+		"source" : "mbed-os/connectivity/drivers/wifi/COMPONENT_WHD/whd-bsp-integration"
+	}
+}

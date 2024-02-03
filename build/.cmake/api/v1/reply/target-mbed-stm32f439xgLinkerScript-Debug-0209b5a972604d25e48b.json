@@ -1,0 +1,81 @@
+{
+	"backtrace" : 2,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_custom_target",
+			"mbed_set_linker_script"
+		],
+		"files" : 
+		[
+			"mbed-os/tools/cmake/mbed_set_linker_script.cmake",
+			"mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F439xG/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 24,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 37,
+				"parent" : 1
+			}
+		]
+	},
+	"id" : "mbed-stm32f439xgLinkerScript::@fddbe61b4a55d4cf0244",
+	"name" : "mbed-stm32f439xgLinkerScript",
+	"paths" : 
+	{
+		"build" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F439xG",
+		"source" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F439xG"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		},
+		{
+			"name" : "CMake Rules",
+			"sourceIndexes" : 
+			[
+				1,
+				2
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F439xG/CMakeFiles/mbed-stm32f439xgLinkerScript",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F439xG/CMakeFiles/mbed-stm32f439xgLinkerScript.rule",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F439xG/mbed-stm32f439xg.link_script.ld.rule",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "UTILITY"
+}

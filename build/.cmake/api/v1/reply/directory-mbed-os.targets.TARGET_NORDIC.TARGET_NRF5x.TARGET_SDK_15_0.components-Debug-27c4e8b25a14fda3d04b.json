@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "mbed-os/targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_SDK_15_0/components",
+		"source" : "mbed-os/targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_SDK_15_0/components"
+	}
+}

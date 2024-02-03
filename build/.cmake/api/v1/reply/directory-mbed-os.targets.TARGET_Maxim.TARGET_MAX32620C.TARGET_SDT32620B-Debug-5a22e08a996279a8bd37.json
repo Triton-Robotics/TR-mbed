@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "mbed-os/targets/TARGET_Maxim/TARGET_MAX32620C/TARGET_SDT32620B",
+		"source" : "mbed-os/targets/TARGET_Maxim/TARGET_MAX32620C/TARGET_SDT32620B"
+	}
+}

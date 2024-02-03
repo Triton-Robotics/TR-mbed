@@ -1,0 +1,81 @@
+{
+	"backtrace" : 2,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_custom_target",
+			"mbed_set_linker_script"
+		],
+		"files" : 
+		[
+			"mbed-os/tools/cmake/mbed_set_linker_script.cmake",
+			"mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L433xC/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 28,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 37,
+				"parent" : 1
+			}
+		]
+	},
+	"id" : "mbed-stm32l433xcLinkerScript::@93d95cf9f3cac4853062",
+	"name" : "mbed-stm32l433xcLinkerScript",
+	"paths" : 
+	{
+		"build" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L433xC",
+		"source" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L433xC"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		},
+		{
+			"name" : "CMake Rules",
+			"sourceIndexes" : 
+			[
+				1,
+				2
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L433xC/CMakeFiles/mbed-stm32l433xcLinkerScript",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L433xC/CMakeFiles/mbed-stm32l433xcLinkerScript.rule",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L433xC/mbed-stm32l433xc.link_script.ld.rule",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "UTILITY"
+}

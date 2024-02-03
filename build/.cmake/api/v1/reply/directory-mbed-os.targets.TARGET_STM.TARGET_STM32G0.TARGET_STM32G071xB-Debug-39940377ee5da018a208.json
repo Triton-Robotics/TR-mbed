@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "mbed-os/targets/TARGET_STM/TARGET_STM32G0/TARGET_STM32G071xB",
+		"source" : "mbed-os/targets/TARGET_STM/TARGET_STM32G0/TARGET_STM32G071xB"
+	}
+}

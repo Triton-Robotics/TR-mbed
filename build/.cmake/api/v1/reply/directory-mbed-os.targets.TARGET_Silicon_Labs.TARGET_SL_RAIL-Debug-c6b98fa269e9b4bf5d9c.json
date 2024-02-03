@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "mbed-os/targets/TARGET_Silicon_Labs/TARGET_SL_RAIL",
+		"source" : "mbed-os/targets/TARGET_Silicon_Labs/TARGET_SL_RAIL"
+	}
+}

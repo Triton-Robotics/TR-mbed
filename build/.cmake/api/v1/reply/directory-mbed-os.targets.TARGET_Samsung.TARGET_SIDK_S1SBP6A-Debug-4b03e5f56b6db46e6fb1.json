@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "mbed-os/targets/TARGET_Samsung/TARGET_SIDK_S1SBP6A",
+		"source" : "mbed-os/targets/TARGET_Samsung/TARGET_SIDK_S1SBP6A"
+	}
+}

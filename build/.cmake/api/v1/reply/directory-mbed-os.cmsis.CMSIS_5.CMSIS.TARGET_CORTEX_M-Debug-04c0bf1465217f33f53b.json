@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "mbed-os/cmsis/CMSIS_5/CMSIS/TARGET_CORTEX_M",
+		"source" : "mbed-os/cmsis/CMSIS_5/CMSIS/TARGET_CORTEX_M"
+	}
+}

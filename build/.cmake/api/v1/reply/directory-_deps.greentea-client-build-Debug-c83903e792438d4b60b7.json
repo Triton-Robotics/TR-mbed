@@ -1,0 +1,118 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"install"
+		],
+		"files" : 
+		[
+			"build/_deps/greentea-client-src/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 42,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 51,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 53,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 73,
+				"parent" : 0
+			}
+		]
+	},
+	"installers" : 
+	[
+		{
+			"backtrace" : 1,
+			"component" : "Unspecified",
+			"destination" : "lib",
+			"paths" : 
+			[
+				"_deps/greentea-client-build/libclient.a"
+			],
+			"targetId" : "client::@0618e8cb8e7e7f39208c",
+			"targetIndex" : 7,
+			"type" : "target"
+		},
+		{
+			"backtrace" : 1,
+			"component" : "Unspecified",
+			"destination" : "lib",
+			"paths" : 
+			[
+				"_deps/greentea-client-build/libclient_userio.a"
+			],
+			"targetId" : "client_userio::@0618e8cb8e7e7f39208c",
+			"targetIndex" : 8,
+			"type" : "target"
+		},
+		{
+			"backtrace" : 2,
+			"component" : "Unspecified",
+			"destination" : "include",
+			"paths" : 
+			[
+				"build/_deps/greentea-client-src/include/greentea-client"
+			],
+			"type" : "directory"
+		},
+		{
+			"backtrace" : 3,
+			"component" : "Unspecified",
+			"destination" : "lib/cmake/greentea",
+			"exportName" : "greentea-client-targets",
+			"exportTargets" : 
+			[
+				{
+					"id" : "client::@0618e8cb8e7e7f39208c",
+					"index" : 7
+				},
+				{
+					"id" : "client_userio::@0618e8cb8e7e7f39208c",
+					"index" : 8
+				}
+			],
+			"paths" : 
+			[
+				"_deps/greentea-client-build/CMakeFiles/Export/6d0078628490e99b59e6e3252b13d39f/greentea-client-targets.cmake"
+			],
+			"type" : "export"
+		},
+		{
+			"backtrace" : 4,
+			"component" : "Unspecified",
+			"destination" : "lib/cmake/greentea",
+			"paths" : 
+			[
+				"build/_deps/greentea-client-build/greenteaConfig.cmake",
+				"build/_deps/greentea-client-build/greenteaConfigVersion.cmake"
+			],
+			"type" : "file"
+		}
+	],
+	"paths" : 
+	{
+		"build" : "_deps/greentea-client-build",
+		"source" : "build/_deps/greentea-client-src"
+	}
+}

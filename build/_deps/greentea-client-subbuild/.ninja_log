@@ -1,0 +1,21 @@
+# ninja log v5
+0	82	1706927053	greentea-client-populate-prefix/src/greentea-client-populate-stamp/greentea-client-populate-mkdir	b24f56575dedaeba
+0	82	1706927053	/home/winstonchou/Documents/GitHub/TR-mbed/build/_deps/greentea-client-subbuild/greentea-client-populate-prefix/src/greentea-client-populate-stamp/greentea-client-populate-mkdir	b24f56575dedaeba
+82	2528	1706927056	greentea-client-populate-prefix/src/greentea-client-populate-stamp/greentea-client-populate-download	117e5138821d03cc
+82	2528	1706927056	/home/winstonchou/Documents/GitHub/TR-mbed/build/_deps/greentea-client-subbuild/greentea-client-populate-prefix/src/greentea-client-populate-stamp/greentea-client-populate-download	117e5138821d03cc
+2528	2610	0	greentea-client-populate-prefix/src/greentea-client-populate-stamp/greentea-client-populate-update	cbc61da58cde5222
+2528	2610	0	/home/winstonchou/Documents/GitHub/TR-mbed/build/_deps/greentea-client-subbuild/greentea-client-populate-prefix/src/greentea-client-populate-stamp/greentea-client-populate-update	cbc61da58cde5222
+2610	2663	1706927056	greentea-client-populate-prefix/src/greentea-client-populate-stamp/greentea-client-populate-patch	b5d3aab5c498bf7f
+2610	2663	1706927056	/home/winstonchou/Documents/GitHub/TR-mbed/build/_deps/greentea-client-subbuild/greentea-client-populate-prefix/src/greentea-client-populate-stamp/greentea-client-populate-patch	b5d3aab5c498bf7f
+2664	2717	1706927056	greentea-client-populate-prefix/src/greentea-client-populate-stamp/greentea-client-populate-configure	8453b4f58c23d8b4
+2664	2717	1706927056	/home/winstonchou/Documents/GitHub/TR-mbed/build/_deps/greentea-client-subbuild/greentea-client-populate-prefix/src/greentea-client-populate-stamp/greentea-client-populate-configure	8453b4f58c23d8b4
+2717	2753	1706927056	greentea-client-populate-prefix/src/greentea-client-populate-stamp/greentea-client-populate-build	3742b64c33174d42
+2717	2753	1706927056	/home/winstonchou/Documents/GitHub/TR-mbed/build/_deps/greentea-client-subbuild/greentea-client-populate-prefix/src/greentea-client-populate-stamp/greentea-client-populate-build	3742b64c33174d42
+2753	2808	1706927056	greentea-client-populate-prefix/src/greentea-client-populate-stamp/greentea-client-populate-install	e3bf2bfb3fc210d4
+2753	2808	1706927056	/home/winstonchou/Documents/GitHub/TR-mbed/build/_deps/greentea-client-subbuild/greentea-client-populate-prefix/src/greentea-client-populate-stamp/greentea-client-populate-install	e3bf2bfb3fc210d4
+2808	2859	1706927056	greentea-client-populate-prefix/src/greentea-client-populate-stamp/greentea-client-populate-test	bdc5e0148ae39f2
+2808	2859	1706927056	/home/winstonchou/Documents/GitHub/TR-mbed/build/_deps/greentea-client-subbuild/greentea-client-populate-prefix/src/greentea-client-populate-stamp/greentea-client-populate-test	bdc5e0148ae39f2
+2859	2956	1706927056	CMakeFiles/greentea-client-populate-complete	d82212876aa32dde
+2859	2956	1706927056	greentea-client-populate-prefix/src/greentea-client-populate-stamp/greentea-client-populate-done	d82212876aa32dde
+2859	2956	1706927056	/home/winstonchou/Documents/GitHub/TR-mbed/build/_deps/greentea-client-subbuild/CMakeFiles/greentea-client-populate-complete	d82212876aa32dde
+2859	2956	1706927056	/home/winstonchou/Documents/GitHub/TR-mbed/build/_deps/greentea-client-subbuild/greentea-client-populate-prefix/src/greentea-client-populate-stamp/greentea-client-populate-done	d82212876aa32dde

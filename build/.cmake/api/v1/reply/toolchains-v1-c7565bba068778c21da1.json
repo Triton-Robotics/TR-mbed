@@ -1,0 +1,132 @@
+{
+	"kind" : "toolchains",
+	"toolchains" : 
+	[
+		{
+			"compiler" : 
+			{
+				"id" : "GNU",
+				"implicit" : {},
+				"path" : "/usr/bin/arm-none-eabi-gcc",
+				"version" : ""
+			},
+			"language" : "ASM",
+			"sourceFileExtensions" : 
+			[
+				"s",
+				"S",
+				"asm"
+			]
+		},
+		{
+			"compiler" : 
+			{
+				"id" : "GNU",
+				"implicit" : 
+				{
+					"includeDirectories" : 
+					[
+						"/usr/lib/gcc/arm-none-eabi/6.3.1/include",
+						"/usr/lib/gcc/arm-none-eabi/6.3.1/include-fixed",
+						"/usr/lib/arm-none-eabi/include"
+					],
+					"linkDirectories" : 
+					[
+						"/usr/lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv4-sp/softfp",
+						"/usr/lib/arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/softfp",
+						"/usr/lib/gcc/arm-none-eabi/6.3.1",
+						"/usr/lib/arm-none-eabi/lib"
+					],
+					"linkFrameworkDirectories" : [],
+					"linkLibraries" : 
+					[
+						"stdc++",
+						"supc++",
+						"m",
+						"c",
+						"gcc",
+						"nosys",
+						"gcc",
+						"g",
+						"c",
+						"gcc",
+						"c",
+						"nosys"
+					]
+				},
+				"path" : "/usr/bin/arm-none-eabi-gcc",
+				"version" : "6.3.1"
+			},
+			"language" : "C",
+			"sourceFileExtensions" : 
+			[
+				"c",
+				"m"
+			]
+		},
+		{
+			"compiler" : 
+			{
+				"id" : "GNU",
+				"implicit" : 
+				{
+					"includeDirectories" : 
+					[
+						"/usr/lib/arm-none-eabi/include/c++/6.3.1",
+						"/usr/lib/arm-none-eabi/include/c++/6.3.1/arm-none-eabi/thumb/v7e-m/fpv4-sp/softfp",
+						"/usr/lib/arm-none-eabi/include/c++/6.3.1/backward",
+						"/usr/lib/gcc/arm-none-eabi/6.3.1/include",
+						"/usr/lib/gcc/arm-none-eabi/6.3.1/include-fixed",
+						"/usr/lib/arm-none-eabi/include"
+					],
+					"linkDirectories" : 
+					[
+						"/usr/lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv4-sp/softfp",
+						"/usr/lib/arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/softfp",
+						"/usr/lib/gcc/arm-none-eabi/6.3.1",
+						"/usr/lib/arm-none-eabi/lib"
+					],
+					"linkFrameworkDirectories" : [],
+					"linkLibraries" : 
+					[
+						"stdc++",
+						"supc++",
+						"gcc",
+						"nosys",
+						"stdc++",
+						"m",
+						"c",
+						"gcc",
+						"g",
+						"c",
+						"gcc",
+						"c",
+						"nosys"
+					]
+				},
+				"path" : "/usr/bin/arm-none-eabi-g++",
+				"version" : "6.3.1"
+			},
+			"language" : "CXX",
+			"sourceFileExtensions" : 
+			[
+				"C",
+				"M",
+				"c++",
+				"cc",
+				"cpp",
+				"cxx",
+				"mm",
+				"mpp",
+				"CPP",
+				"ixx",
+				"cppm"
+			]
+		}
+	],
+	"version" : 
+	{
+		"major" : 1,
+		"minor" : 0
+	}
+}

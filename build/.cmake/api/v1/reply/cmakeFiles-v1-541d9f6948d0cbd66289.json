@@ -1,0 +1,3054 @@
+{
+	"inputs" : 
+	[
+		{
+			"path" : "CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/tools/cmake/app.cmake"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "build/mbed_config.cmake"
+		},
+		{
+			"path" : "mbed-os/tools/cmake/mbed_set_post_build.cmake"
+		},
+		{
+			"path" : "mbed-os/tools/cmake/mbed_toolchain.cmake"
+		},
+		{
+			"path" : "mbed-os/tools/cmake/toolchains/GCC_ARM.cmake"
+		},
+		{
+			"path" : "mbed-os/tools/cmake/cores/Cortex-M4F.cmake"
+		},
+		{
+			"path" : "mbed-os/tools/cmake/mbed_profile.cmake"
+		},
+		{
+			"path" : "mbed-os/tools/cmake/profiles/debug.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeDetermineSystem.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeSystem.cmake.in"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/3.25.2/CMakeSystem.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeNinjaFindMake.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeSystemSpecificInitialize.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeDetermineCCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeDetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeDetermineCompilerId.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeCompilerIdDetection.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/ADSP-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/ARMCC-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/ARMClang-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/AppleClang-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Clang-DetermineCompilerInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Borland-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Bruce-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Clang-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Clang-DetermineCompilerInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Compaq-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Cray-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Embarcadero-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Fujitsu-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/FujitsuClang-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/GHS-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/GNU-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/HP-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/IAR-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/IBMClang-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Intel-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/IntelLLVM-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/LCC-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/MSVC-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/NVHPC-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/NVIDIA-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/OpenWatcom-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/PGI-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/PathScale-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/SCO-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/SDCC-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/SunPro-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/TI-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Tasking-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/TinyCC-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/VisualAge-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/IBMCPP-C-DetermineVersionInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Watcom-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/XL-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/IBMCPP-C-DetermineVersionInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/XLClang-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/zOS-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/IBMCPP-C-DetermineVersionInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/ADSP-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/ARMCC-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/ARMClang-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/AppleClang-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Clang-DetermineCompilerInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Borland-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Bruce-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Clang-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Clang-DetermineCompilerInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Compaq-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Cray-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Embarcadero-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Fujitsu-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/FujitsuClang-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/GHS-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/GNU-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/HP-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/IAR-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/IBMClang-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Intel-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/IntelLLVM-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/LCC-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/MSVC-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/NVHPC-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/NVIDIA-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/OpenWatcom-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/PGI-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/PathScale-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/SCO-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/SDCC-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/SunPro-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/TI-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Tasking-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/TinyCC-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/VisualAge-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/IBMCPP-C-DetermineVersionInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Watcom-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/XL-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/IBMCPP-C-DetermineVersionInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/XLClang-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/zOS-C-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/IBMCPP-C-DetermineVersionInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeFindBinUtils.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/GNU-FindBinUtils.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeCCompiler.cmake.in"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/3.25.2/CMakeCCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeDetermineCXXCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeDetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeDetermineCompilerId.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeCompilerIdDetection.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/ADSP-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/ARMCC-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/ARMClang-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/AppleClang-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Clang-DetermineCompilerInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Borland-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Clang-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Clang-DetermineCompilerInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Comeau-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Compaq-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Cray-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Embarcadero-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Fujitsu-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/FujitsuClang-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/GHS-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/GNU-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/HP-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/IAR-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/IBMClang-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Intel-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/IntelLLVM-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/LCC-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/MSVC-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/NVHPC-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/NVIDIA-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/OpenWatcom-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/PGI-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/PathScale-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/SCO-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/SunPro-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/TI-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Tasking-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/VisualAge-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Watcom-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/XL-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/XLClang-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/zOS-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/ADSP-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/ARMCC-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/ARMClang-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/AppleClang-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Clang-DetermineCompilerInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Borland-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Clang-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Clang-DetermineCompilerInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Comeau-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Compaq-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Cray-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Embarcadero-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Fujitsu-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/FujitsuClang-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/GHS-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/GNU-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/HP-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/IAR-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/IBMClang-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Intel-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/IntelLLVM-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/LCC-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/MSVC-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/NVHPC-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/NVIDIA-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/OpenWatcom-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/PGI-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/PathScale-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/SCO-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/SunPro-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/TI-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Tasking-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/VisualAge-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/Watcom-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/XL-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/XLClang-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/zOS-CXX-DetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeFindBinUtils.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/GNU-FindBinUtils.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeCXXCompiler.cmake.in"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/3.25.2/CMakeCXXCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeDetermineASMCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeDetermineCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeDetermineCompilerId.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeCompilerIdDetection.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeFindBinUtils.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/GNU-FindBinUtils.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeASMCompiler.cmake.in"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/3.25.2/CMakeASMCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeSystemSpecificInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeGenericSystem.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeInitializeConfigs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Platform/Generic.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeCInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeLanguageInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/GNU-C.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/GNU.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/CMakeCommonCompilerMacros.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Platform/Generic.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeCommonLanguageInclude.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeTestCCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeTestCompilerCommon.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeDetermineCompilerABI.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeParseImplicitIncludeInfo.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeParseImplicitLinkInfo.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeParseLibraryArchitecture.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeTestCompilerCommon.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeCCompilerABI.c"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeDetermineCompileFeatures.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Internal/FeatureTesting.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeCCompiler.cmake.in"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/3.25.2/CMakeCCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeCXXInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeLanguageInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/GNU-CXX.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/GNU.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Platform/Generic.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeCommonLanguageInclude.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeTestCXXCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeTestCompilerCommon.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeDetermineCompilerABI.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeParseImplicitIncludeInfo.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeParseImplicitLinkInfo.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeParseLibraryArchitecture.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeTestCompilerCommon.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeCXXCompilerABI.cpp"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeDetermineCompileFeatures.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Internal/FeatureTesting.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeCXXCompiler.cmake.in"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/3.25.2/CMakeCXXCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeASMInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/GNU-ASM.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/Compiler/GNU.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakeTestASMCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/FindPython3.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/FindPython/Support.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/FindPackageHandleStandardArgs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/FindPackageMessage.cmake"
+		},
+		{
+			"path" : "mbed-os/tools/cmake/CheckPythonPackage.cmake"
+		},
+		{
+			"path" : "mbed-os/tools/cmake/create_distro.cmake"
+		},
+		{
+			"path" : "mbed-os/CMakeLists.txt"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "build/mbed_config.cmake"
+		},
+		{
+			"path" : "mbed-os/tools/cmake/mbed_set_linker_script.cmake"
+		},
+		{
+			"path" : "mbed-os/extern/CMakeLists.txt"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/FetchContent.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/FindGit.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/FindPackageHandleStandardArgs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/FindPackageMessage.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/FetchContent/CMakeLists.cmake.in"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "build/_deps/greentea-client-src/CMakeLists.txt"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/GNUInstallDirs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/CMakePackageConfigHelpers.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/WriteBasicConfigVersionFile.cmake"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "build/_deps/greentea-client-src/Config.cmake.in"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/usr/share/cmake-3.25/Modules/BasicConfigVersion-AnyNewerVersion.cmake.in"
+		},
+		{
+			"path" : "mbed-os/targets/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/tools/cmake/mbed_set_linker_script.cmake"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Ambiq_Micro/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Ambiq_Micro/TARGET_Apollo3/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Ambiq_Micro/TARGET_Apollo3/COMPONENT_hm01b0/hm01b0/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Ambiq_Micro/TARGET_Apollo3/COMPONENT_lis2dh12/lis2dh12/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Ambiq_Micro/TARGET_Apollo3/TARGET_SFE_ARTEMIS/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Ambiq_Micro/TARGET_Apollo3/TARGET_SFE_ARTEMIS_ATP/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Ambiq_Micro/TARGET_Apollo3/TARGET_SFE_ARTEMIS_DK/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Ambiq_Micro/TARGET_Apollo3/TARGET_SFE_ARTEMIS_MODULE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Ambiq_Micro/TARGET_Apollo3/TARGET_SFE_ARTEMIS_NANO/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Ambiq_Micro/TARGET_Apollo3/TARGET_SFE_ARTEMIS_THING_PLUS/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Ambiq_Micro/TARGET_Apollo3/TARGET_SFE_EDGE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Ambiq_Micro/TARGET_Apollo3/TARGET_SFE_EDGE2/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Analog_Devices/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Analog_Devices/TARGET_ADUCM302X/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Analog_Devices/TARGET_ADUCM302X/TARGET_ADUCM3029/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Analog_Devices/TARGET_ADUCM302X/TARGET_ADUCM3029/TARGET_EV_COG_AD3029LZ/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Analog_Devices/TARGET_ADUCM4X50/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Analog_Devices/TARGET_ADUCM4X50/TARGET_ADUCM4050/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Analog_Devices/TARGET_ADUCM4X50/TARGET_ADUCM4050/TARGET_EV_COG_AD4050LZ/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_ARM_FM/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_ARM_FM/TARGET_FVP_MPS2/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_ARM_FM/TARGET_FVP_MPS2/TARGET_FVP_MPS2_M0/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_ARM_FM/TARGET_FVP_MPS2/TARGET_FVP_MPS2_M0P/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_ARM_FM/TARGET_FVP_MPS2/TARGET_FVP_MPS2_M3/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_ARM_FM/TARGET_FVP_MPS2/TARGET_FVP_MPS2_M4/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_ARM_FM/TARGET_FVP_MPS2/TARGET_FVP_MPS2_M7/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_ARM_SSG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_ARM_SSG/TARGET_CM3DS_MPS2/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_ARM_SSG/TARGET_MPS2/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_ARM_SSG/TARGET_MPS2/TARGET_MPS2_M0/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_ARM_SSG/TARGET_MPS2/TARGET_MPS2_M0P/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_ARM_SSG/TARGET_MPS2/TARGET_MPS2_M3/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_ARM_SSG/TARGET_MPS2/TARGET_MPS2_M4/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_ARM_SSG/TARGET_MPS2/TARGET_MPS2_M7/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_ARM_SSG/TARGET_MUSCA_B1/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_ARM_SSG/TARGET_MUSCA_S1/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Cypress/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Cypress/TARGET_PSOC6/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Cypress/TARGET_PSOC6/COMPONENT_SCL/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT064B0S2_4343W/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Cypress/scripts/mbed_set_post_build_cypress.cmake"
+		},
+		{
+			"path" : "mbed-os/tools/cmake/mbed_set_post_build.cmake"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_062S2_43012/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_062_BLE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CKIT_062_WIFI_BT/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CPROTO_062S3_4343W/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CY8CPROTO_062_4343W/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CYSBSYSKIT_01/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Cypress/scripts/mbed_set_post_build_cypress.cmake"
+		},
+		{
+			"path" : "mbed-os/tools/cmake/mbed_set_post_build.cmake"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CYTFM_064B0S2_4343W/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Cypress/scripts/mbed_set_post_build_cypress.cmake"
+		},
+		{
+			"path" : "mbed-os/tools/cmake/mbed_set_post_build.cmake"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CYW9P62S1_43012EVB_01/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Cypress/TARGET_PSOC6/TARGET_CYW9P62S1_43438EVB_01/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Cypress/TARGET_PSOC6/abstraction-rtos/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Freescale/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Freescale/TARGET_KLXX/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Freescale/TARGET_KLXX/TARGET_KL25Z/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Freescale/TARGET_KLXX/TARGET_KL46Z/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Freescale/TARGET_MCUXpresso_MCUS/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Freescale/TARGET_MCUXpresso_MCUS/TARGET_K66F/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Freescale/TARGET_MCUXpresso_MCUS/TARGET_K66F/TARGET_FRDM/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Freescale/TARGET_MCUXpresso_MCUS/TARGET_K82F/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Freescale/TARGET_MCUXpresso_MCUS/TARGET_K82F/TARGET_FRDM/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Freescale/TARGET_MCUXpresso_MCUS/TARGET_KL43Z/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Freescale/TARGET_MCUXpresso_MCUS/TARGET_KL43Z/TARGET_FRDM/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Freescale/TARGET_MCUXpresso_MCUS/TARGET_KW41Z/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Freescale/TARGET_MCUXpresso_MCUS/TARGET_KW41Z/TARGET_FRDM/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Freescale/TARGET_MCUXpresso_MCUS/TARGET_MCU_K22F/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Freescale/TARGET_MCUXpresso_MCUS/TARGET_MCU_K22F/TARGET_MCU_K22F512/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Freescale/TARGET_MCUXpresso_MCUS/TARGET_MCU_K22F/TARGET_MCU_K22F512/TARGET_FRDM/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Freescale/TARGET_MCUXpresso_MCUS/TARGET_MCU_K64F/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Freescale/TARGET_MCUXpresso_MCUS/TARGET_MCU_K64F/TARGET_FRDM/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Freescale/TARGET_MCUXpresso_MCUS/TARGET_MCU_K64F/TARGET_HEXIWEAR/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Freescale/TARGET_MCUXpresso_MCUS/TARGET_MCU_K64F/TARGET_SDT64B/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Freescale/TARGET_MCUXpresso_MCUS/middleware/wireless/TARGET_FRAMEWORK_5_3_3/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_GigaDevice/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_GigaDevice/TARGET_GD32F30X/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_GigaDevice/TARGET_GD32F4XX/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Maxim/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Maxim/TARGET_MAX32620C/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Maxim/TARGET_MAX32620C/TARGET_MAX32620FTHR/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Maxim/TARGET_MAX32620C/TARGET_SDT32620B/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Maxim/TARGET_MAX32625/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Maxim/TARGET_MAX32625/TARGET_MAX32625MBED/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Maxim/TARGET_MAX32625/TARGET_MAX32625PICO/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Maxim/TARGET_MAX32625/TARGET_SDT32625B/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Maxim/TARGET_MAX32625/device/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Maxim/TARGET_MAX32630/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Maxim/TARGET_MAX32630/TARGET_MAX32630FTHR/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Maxim/TARGET_MAX32660/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Maxim/TARGET_MAX32660/TARGET_MAX32660EVSYS/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NORDIC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NORDIC/TARGET_NRF5x/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_NRF52/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_NRF52/TARGET_MCU_NRF52832/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_NRF52/TARGET_MCU_NRF52840/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_SDK_15_0/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_SDK_15_0/TARGET_SOFTDEVICE_NONE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_SDK_15_0/components/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_SDK_15_0/integration/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NORDIC/TARGET_NRF5x/TARGET_SDK_15_0/modules/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NUVOTON/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NUVOTON/TARGET_M251/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NUVOTON/TARGET_M261/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NUVOTON/TARGET_M451/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NUVOTON/TARGET_M480/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NUVOTON/TARGET_NANO100/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NUVOTON/TARGET_NUC472/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NUVOTON/TARGET_M2354/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NXP/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NXP/TARGET_LPC11XX_11CXX/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NXP/TARGET_LPC11XX_11CXX/TARGET_LPC11XX/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NXP/scripts/mbed_set_post_build_nxp.cmake"
+		},
+		{
+			"path" : "mbed-os/tools/cmake/mbed_set_post_build.cmake"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NXP/TARGET_LPC176X/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NXP/TARGET_LPC176X/TARGET_ARCH_PRO/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NXP/scripts/mbed_set_post_build_nxp.cmake"
+		},
+		{
+			"path" : "mbed-os/tools/cmake/mbed_set_post_build.cmake"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NXP/TARGET_LPC176X/TARGET_MBED_LPC1768/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NXP/scripts/mbed_set_post_build_nxp.cmake"
+		},
+		{
+			"path" : "mbed-os/tools/cmake/mbed_set_post_build.cmake"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NXP/TARGET_MCUXpresso_MCUS/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NXP/TARGET_MCUXpresso_MCUS/TARGET_IMX/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NXP/TARGET_MCUXpresso_MCUS/TARGET_LPC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NXP/TARGET_MCUXpresso_MCUS/TARGET_LPC54114/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NXP/TARGET_MCUXpresso_MCUS/TARGET_LPC54114/device/TARGET_LPC54114_M4/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NXP/scripts/mbed_set_post_build_nxp.cmake"
+		},
+		{
+			"path" : "mbed-os/tools/cmake/mbed_set_post_build.cmake"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NXP/TARGET_MCUXpresso_MCUS/TARGET_LPC54114/TARGET_LPCXpresso/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NXP/TARGET_MCUXpresso_MCUS/TARGET_MCU_LPC546XX/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NXP/scripts/mbed_set_post_build_nxp.cmake"
+		},
+		{
+			"path" : "mbed-os/tools/cmake/mbed_set_post_build.cmake"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NXP/TARGET_MCUXpresso_MCUS/TARGET_MCU_LPC546XX/TARGET_FF_LPC546XX/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NXP/TARGET_MCUXpresso_MCUS/TARGET_MCU_LPC546XX/TARGET_LPCXpresso/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NXP/TARGET_MCUXpresso_MCUS/TARGET_MIMXRT1050/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NXP/TARGET_MCUXpresso_MCUS/TARGET_MIMXRT1050/TARGET_EVK/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NXP/TARGET_MCUXpresso_MCUS/TARGET_MIMXRT1170/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NXP/TARGET_MCUXpresso_MCUS/TARGET_MIMXRT1170/TARGET_EVK/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_NXP/TARGET_MCUXpresso_MCUS/middleware/TARGET_USB/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_RENESAS/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_RENESAS/TARGET_RZ_A1XX/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_RENESAS/TARGET_RZ_A1XX/TARGET_GR_LYCHEE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_RENESAS/TARGET_RZ_A1XX/TARGET_RZ_A1H/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_RENESAS/TARGET_RZ_A2XX/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_RENESAS/TARGET_RZ_A2XX/TARGET_GR_MANGO/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Samsung/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Samsung/TARGET_SIDK_S1SBP6A/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Samsung/TARGET_SIDK_S5JS100/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Silicon_Labs/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Silicon_Labs/TARGET_EFM32/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Silicon_Labs/TARGET_EFM32/TARGET_EFM32GG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Silicon_Labs/TARGET_EFM32/TARGET_EFM32GG11/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Silicon_Labs/TARGET_EFM32/TARGET_EFR32MG12/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_Silicon_Labs/TARGET_SL_RAIL/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F0/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F0/TARGET_STM32F091xC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F0/TARGET_STM32F091xC/TARGET_NUCLEO_F091RC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F0/TARGET_STM32F072xB/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F0/TARGET_STM32F072xB/TARGET_NUCLEO_F072RB/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F0/TARGET_STM32F070xB/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F0/TARGET_STM32F070xB/TARGET_NUCLEO_F070RB/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F0/TARGET_STM32F030x8/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F0/STM32Cube_FW/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F1/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F1/TARGET_STM32F103x8/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F1/TARGET_STM32F103xB/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F1/TARGET_STM32F103xB/TARGET_NUCLEO_F103RB/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F1/TARGET_STM32F103xE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F1/STM32Cube_FW/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F2/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F2/TARGET_STM32F207xG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F2/TARGET_STM32F207xG/TARGET_NUCLEO_F207ZG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F2/STM32Cube_FW/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F3/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F3/TARGET_STM32F302x8/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F3/TARGET_STM32F303x8/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F3/TARGET_STM32F303x8/TARGET_NUCLEO_F303K8/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F3/TARGET_STM32F303xC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F3/TARGET_STM32F303xE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F3/TARGET_STM32F303xE/TARGET_NUCLEO_F303RE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F3/TARGET_STM32F303xE/TARGET_NUCLEO_F303ZE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F3/TARGET_STM32F334x8/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F3/STM32Cube_FW/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F401xC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F401xB/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F401xE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F401xE/TARGET_NUCLEO_F401RE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F401xD/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F405xG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F405xE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F407xE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F407xE/TARGET_ARCH_MAX/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F407xG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F410x8/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F410xB/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F411xE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F411xE/TARGET_MTS_DRAGONFLY_F411RE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F411xE/TARGET_MTS_MDOT_F411RE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F411xE/TARGET_NUCLEO_F411RE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F411xC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F412xE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F412xG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F412xG/TARGET_NUCLEO_F412ZG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F412xG/TARGET_WIO_EMW3166/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F413xH/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F413xH/TARGET_DISCO_F413ZH/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F413xH/TARGET_MTS_DRAGONFLY_F413RH/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F413xH/TARGET_NUCLEO_F413ZH/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F413xG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F415xx/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F417xE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F417xG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F423xx/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F427xI/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F427xG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F429xG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F429xI/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F429xI/TARGET_DISCO_F429ZI/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F429xI/TARGET_NUCLEO_F429ZI/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F437xI/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F437xG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F439xG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F439xI/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F439xI/TARGET_NUCLEO_F439ZI/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F439xI/TARGET_WIO_3G/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F439xI/TARGET_WIO_BG96/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TARGET_NUCLEO_F446RE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TARGET_NUCLEO_F446ZE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F469xI/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F469xI/TARGET_DISCO_F469NI/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F469xI/TARGET_SDP_K1/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F469xG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F469xE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F479xI/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F479xG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F4/STM32Cube_FW/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F7/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F7/TARGET_STM32F722xE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F7/TARGET_STM32F722xE/TARGET_NUCLEO_F722ZE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F7/TARGET_STM32F746xG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F7/TARGET_STM32F746xG/TARGET_DISCO_F746NG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F7/TARGET_STM32F746xG/TARGET_NUCLEO_F746ZG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F7/TARGET_STM32F756xG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F7/TARGET_STM32F756xG/TARGET_NUCLEO_F756ZG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F7/TARGET_STM32F767xI/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F7/TARGET_STM32F767xI/TARGET_NUCLEO_F767ZI/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F7/TARGET_STM32F767xI/TARGET_UHURU_RAVEN/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F7/TARGET_STM32F769xI/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F7/TARGET_STM32F769xI/TARGET_DISCO_F769NI/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32F7/STM32Cube_FW/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32G0/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32G0/TARGET_STM32G030x8/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32G0/TARGET_STM32G031x8/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32G0/TARGET_STM32G031x8/TARGET_NUCLEO_G031K8/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32G0/TARGET_STM32G041x8/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32G0/TARGET_STM32G050x8/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32G0/TARGET_STM32G051x8/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32G0/TARGET_STM32G061x8/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32G0/TARGET_STM32G070xB/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32G0/TARGET_STM32G071xB/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32G0/TARGET_STM32G071xB/TARGET_NUCLEO_G071RB/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32G0/TARGET_STM32G081xB/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32G0/TARGET_STM32G0B0xE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32G0/TARGET_STM32G0B1xE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32G0/TARGET_STM32G0C1xE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32G0/STM32Cube_FW/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32G4/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32G4/TARGET_STM32G431xB/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32G4/TARGET_STM32G431xB/TARGET_NUCLEO_G431KB/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32G4/TARGET_STM32G431xB/TARGET_NUCLEO_G431RB/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32G4/TARGET_STM32G441xB/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32G4/TARGET_STM32G471xE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32G4/TARGET_STM32G473xE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32G4/TARGET_STM32G474xE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32G4/TARGET_STM32G474xE/TARGET_NUCLEO_G474RE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32G4/TARGET_STM32G483xE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32G4/TARGET_STM32G484xE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32G4/STM32Cube_FW/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32H7/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32H7/TARGET_STM32H723xG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32H7/TARGET_STM32H725xE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32H7/TARGET_STM32H735xG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32H7/TARGET_STM32H743xI/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32H7/TARGET_STM32H743xI/TARGET_NUCLEO_H743ZI2/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32H7/TARGET_STM32H745xI/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32H7/TARGET_STM32H745xI/TARGET_STM32H745xI_CM4/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32H7/TARGET_STM32H745xI/TARGET_STM32H745xI_CM7/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32H7/TARGET_STM32H747xI/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32H7/TARGET_STM32H747xI/TARGET_STM32H747xI_CM4/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32H7/TARGET_STM32H747xI/TARGET_STM32H747xI_CM7/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32H7/TARGET_STM32H747xI/TARGET_DISCO_H747I/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32H7/TARGET_STM32H747xI/TARGET_PORTENTA_H7/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32H7/TARGET_STM32H747xI/TARGET_PORTENTA_H7/COMPONENT_WHD/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32H7/TARGET_STM32H750xB/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32H7/TARGET_STM32H7A3xIQ/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32H7/TARGET_STM32H7A3xIQ/TARGET_NUCLEO_H7A3ZI_Q/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32H7/TARGET_STM32H7B3xIQ/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32H7/STM32Cube_FW/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L0/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L0/TARGET_STM32L053x8/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L0/TARGET_STM32L071xZ/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L0/TARGET_STM32L072xZ/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L0/TARGET_STM32L072xZ/TARGET_DISCO_L072CZ_LRWAN1/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L0/TARGET_STM32L073xZ/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L0/TARGET_STM32L073xZ/TARGET_NUCLEO_L073RZ/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L0/TARGET_STM32L082xZ/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L0/STM32Cube_FW/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L1/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L1/TARGET_STM32L100xB/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L1/TARGET_STM32L100xC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L1/TARGET_STM32L151xB/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L1/TARGET_STM32L151xBA/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L1/TARGET_STM32L151xC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L1/TARGET_STM32L151xC/TARGET_XDOT_L151CC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L1/TARGET_STM32L151xD/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L1/TARGET_STM32L151xE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L1/TARGET_STM32L152xB/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L1/TARGET_STM32L152xC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L1/TARGET_STM32L152xC/TARGET_MOTE_L152RC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L1/TARGET_STM32L152xD/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L1/TARGET_STM32L152xE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L1/TARGET_STM32L152xE/TARGET_NUCLEO_L152RE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L1/TARGET_STM32L162xC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L1/TARGET_STM32L162xD/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L1/TARGET_STM32L162xE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L1/STM32Cube_FW/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L432xC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L432xC/TARGET_NUCLEO_L432KC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L433xC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L433xC/TARGET_NUCLEO_L433RC_P/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L443xC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L443xC/TARGET_ADV_WISE_1510/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L452xE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L452xE/TARGET_NUCLEO_L452RE_P/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L471xG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L471xG/TARGET_MTS_DRAGONFLY_L471QG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L475xG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L475xG/TARGET_DISCO_L475VG_IOT01A/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L476xG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L476xG/TARGET_DISCO_L476VG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L476xG/TARGET_NUCLEO_L476RG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L476xG/TARGET_RHOMBIO_L476DMW1K/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L486xG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L486xG/TARGET_ADV_WISE_1570/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L486xG/TARGET_NUCLEO_L486RG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L496xG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L496xG/TARGET_DISCO_L496AG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L496xG/TARGET_MTS_DRAGONFLY_L496VG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L496xG/TARGET_NUCLEO_L496ZG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L4R5xI/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L4R5xI/TARGET_NUCLEO_L4R5ZI/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L4R9xI/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L4R9xI/TARGET_DISCO_L4R9I/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L4S5xI/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L4S5xI/TARGET_B_L4S5I_IOT01A/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/STM32Cube_FW/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L5/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L5/TARGET_STM32L552xC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L5/TARGET_STM32L552xE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L5/TARGET_STM32L552xE/TARGET_NUCLEO_L552ZE_Q/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L5/TARGET_STM32L562xE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L5/TARGET_STM32L562xE/TARGET_DISCO_L562QE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32L5/STM32Cube_FW/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32U5/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32U5/TARGET_STM32U575xG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32U5/TARGET_STM32U575xI/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32U5/TARGET_STM32U575xI/TARGET_NUCLEO_U575ZI_Q/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32U5/TARGET_STM32U585xI/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32U5/TARGET_STM32U585xI/TARGET_B_U585I_IOT02A/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32U5/STM32Cube_FW/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32WB/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32WB/TARGET_STM32WB10xC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32WB/TARGET_STM32WB15xC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32WB/TARGET_STM32WB15xC/TARGET_NUCLEO_WB15CC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32WB/TARGET_STM32WB30xE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32WB/TARGET_STM32WB35xC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32WB/TARGET_STM32WB35xE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32WB/TARGET_STM32WB50xG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32WB/TARGET_STM32WB55xC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32WB/TARGET_STM32WB55xE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32WB/TARGET_STM32WB55xG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32WB/TARGET_STM32WB55xG/TARGET_NUCLEO_WB55RG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32WB/TARGET_STM32WB55xY/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32WB/TARGET_STM32WB5MxG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32WB/TARGET_STM32WB5MxG/TARGET_DISCO_WB5MMG/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32WB/STM32Cube_FW/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32WL/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32WL/TARGET_STM32WL54xC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32WL/TARGET_STM32WL55xC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32WL/TARGET_STM32WL55xC/TARGET_NUCLEO_WL55JC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32WL/TARGET_STM32WLE4x8/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32WL/TARGET_STM32WLE4xB/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32WL/TARGET_STM32WLE4xC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32WL/TARGET_STM32WLE5x8/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32WL/TARGET_STM32WLE5xB/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32WL/TARGET_STM32WLE5xC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_STM/TARGET_STM32WL/STM32Cube_FW/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_TOSHIBA/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_TOSHIBA/TARGET_TMPM46B/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/targets/TARGET_TOSHIBA/TARGET_TMPM4G9/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/cmsis/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/cmsis/CMSIS_5/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/cmsis/CMSIS_5/CMSIS/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/cmsis/CMSIS_5/CMSIS/TARGET_CORTEX_A/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/cmsis/CMSIS_5/CMSIS/TARGET_CORTEX_M/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/cmsis/device/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/cmsis/device/RTE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/drivers/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/hal/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/hal/TARGET_FLASH_CMSIS_ALGO/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/hal/usb/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/platform/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/platform/cxxsupport/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/platform/mbed-trace/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/platform/mbed-trace/source/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/platform/randlib/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/platform/source/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/platform/source/TARGET_CORTEX_M/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/platform/source/minimal-printf/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/rtos/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/storage/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/storage/blockdevice/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/storage/blockdevice/COMPONENT_FLASHIAP/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/storage/filesystem/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/storage/filesystem/fat/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/storage/filesystem/littlefs/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/storage/filesystem/littlefsv2/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/storage/kvstore/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/storage/kvstore/tdbstore/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/storage/kvstore/filesystemstore/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/storage/kvstore/securestore/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/storage/kvstore/kv_config/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/storage/kvstore/direct_access_devicekey/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/storage/kvstore/kvstore_global_api/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/storage/platform/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/events/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/FEATURE_BLE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/FEATURE_BLE/libraries/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/FEATURE_BLE/libraries/cordio_stack/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/FEATURE_BLE/libraries/cordio_stack/ble-host/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/FEATURE_BLE/libraries/cordio_stack/platform/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/FEATURE_BLE/libraries/cordio_stack/wsf/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/FEATURE_BLE/source/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/FEATURE_BLE/source/cordio/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/FEATURE_BLE/source/gap/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/FEATURE_BLE/source/gatt/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/FEATURE_BLE/source/generic/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/FEATURE_BLE/source/pal/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/cellular/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/cellular/source/framework/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/cellular/source/framework/AT/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/cellular/source/framework/common/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/cellular/source/framework/device/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/802.15.4_RF/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/802.15.4_RF/stm-s2lp-rf-driver/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/802.15.4_RF/atmel-rf-driver/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/ble/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/ble/FEATURE_BLE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/cellular/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/cellular/Altair/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/cellular/Altair/ALT1250/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/cellular/Altair/ALT1250/PPP/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/cellular/GEMALTO/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/cellular/GEMALTO/CINTERION/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/cellular/GENERIC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/cellular/GENERIC/GENERIC_AT3GPP/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/cellular/MultiTech/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/cellular/MultiTech/DragonflyNano/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/cellular/MultiTech/DragonflyNano/PPP/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/cellular/QUECTEL/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/cellular/QUECTEL/BC95/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/cellular/QUECTEL/BG96/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/cellular/QUECTEL/EC2X/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/cellular/QUECTEL/M26/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/cellular/QUECTEL/UG96/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/cellular/RiotMicro/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/cellular/RiotMicro/AT/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/cellular/TELIT/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/cellular/TELIT/HE910/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/cellular/TELIT/ME310/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/cellular/TELIT/ME910/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/cellular/UBLOX/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/cellular/UBLOX/AT/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/cellular/UBLOX/N2XX/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/cellular/UBLOX/PPP/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/emac/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/emac/TARGET_STM/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/emac/TARGET_STM/TARGET_STM32F4/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/lora/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/mbedtls/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/mbedtls/TARGET_STM/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/nfc/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/wifi/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/wifi/TARGET_WICED/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/wifi/TARGET_STM/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/wifi/COMPONENT_WHD/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/wifi/COMPONENT_WHD/whd-bsp-integration/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/drivers/wifi/esp8266-driver/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/libraries/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/libraries/mbed-coap/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/libraries/nanostack-libservice/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/libraries/ppp/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/lorawan/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/lorawan/lorastack/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/lorawan/system/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/lwipstack/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/mbedtls/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/nanostack/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/nanostack/coap-service/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/nanostack/mbed-mesh-api/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/nanostack/nanostack-hal-mbed-cmsis-rtos/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/nanostack/sal-stack-nanostack/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/nanostack/sal-stack-nanostack/source/6LoWPAN/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/nanostack/sal-stack-nanostack/source/BorderRouter/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/nanostack/sal-stack-nanostack/source/Common_Protocols/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/nanostack/sal-stack-nanostack/source/Core/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/nanostack/sal-stack-nanostack/source/DHCPv6_Server/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/nanostack/sal-stack-nanostack/source/DHCPv6_client/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/nanostack/sal-stack-nanostack/source/MAC/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/nanostack/sal-stack-nanostack/source/MLE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/nanostack/sal-stack-nanostack/source/MPL/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/nanostack/sal-stack-nanostack/source/NWK_INTERFACE/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/nanostack/sal-stack-nanostack/source/RPL/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/nanostack/sal-stack-nanostack/source/Security/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/nanostack/sal-stack-nanostack/source/Service_Libs/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/nanostack/sal-stack-nanostack/source/configs/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/nanostack/sal-stack-nanostack/source/ipv6_stack/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/nanostack/sal-stack-nanostack/source/libDHCPv6/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/nanostack/sal-stack-nanostack/source/libNET/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/nanostack/sal-stack-nanostack-eventloop/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/netsocket/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/nfc/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/nfc/libraries/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/nfc/libraries/acore/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/nfc/libraries/stack/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/nfc/libraries/stack/tech/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/connectivity/nfc/libraries/stack/transceiver/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/drivers/device_key/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/drivers/usb/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/features/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/features/frameworks/COMPONENT_FPGA_CI_TEST_SHIELD/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/features/frameworks/mbed-client-cli/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/features/frameworks/unity/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/features/frameworks/utest/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/features/frameworks/mbed-greentea-io/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/RTX/CMakeLists.txt"
+		},
+		{
+			"path" : "mbed-os/cmsis/device/rtos/CMakeLists.txt"
+		},
+		{
+			"path" : "core/CMakeLists.txt"
+		},
+		{
+			"path" : "core/util/CMakeLists.txt"
+		},
+		{
+			"path" : "core/util/algorithms/CMakeLists.txt"
+		},
+		{
+			"path" : "core/util/algorithms/ekf/CMakeLists.txt"
+		},
+		{
+			"path" : "core/util/communications/CMakeLists.txt"
+		},
+		{
+			"path" : "core/util/communications/referee/CMakeLists.txt"
+		},
+		{
+			"path" : "core/util/peripherals/CMakeLists.txt"
+		},
+		{
+			"path" : "core/util/peripherals/imu/CMakeLists.txt"
+		},
+		{
+			"path" : "core/util/peripherals/imu/examples/CMakeLists.txt"
+		},
+		{
+			"path" : "core/util/peripherals/oled/CMakeLists.txt"
+		},
+		{
+			"path" : "core/util/motor/CMakeLists.txt"
+		},
+		{
+			"path" : "core/subsystems/CMakeLists.txt"
+		},
+		{
+			"path" : "core/commands/CMakeLists.txt"
+		},
+		{
+			"path" : "robots/CMakeLists.txt"
+		},
+		{
+			"path" : "robots/Infantry/CMakeLists.txt"
+		},
+		{
+			"path" : "robots/TestBench/CMakeLists.txt"
+		},
+		{
+			"path" : "robots/Engineer/CMakeLists.txt"
+		},
+		{
+			"path" : "robots/Sentry/CMakeLists.txt"
+		},
+		{
+			"path" : "robots/Hero/CMakeLists.txt"
+		}
+	],
+	"kind" : "cmakeFiles",
+	"paths" : 
+	{
+		"build" : "/home/winstonchou/Documents/GitHub/TR-mbed/build",
+		"source" : "/home/winstonchou/Documents/GitHub/TR-mbed"
+	},
+	"version" : 
+	{
+		"major" : 1,
+		"minor" : 0
+	}
+}

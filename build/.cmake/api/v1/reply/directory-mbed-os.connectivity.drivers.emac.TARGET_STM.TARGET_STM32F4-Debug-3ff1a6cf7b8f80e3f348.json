@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "mbed-os/connectivity/drivers/emac/TARGET_STM/TARGET_STM32F4",
+		"source" : "mbed-os/connectivity/drivers/emac/TARGET_STM/TARGET_STM32F4"
+	}
+}

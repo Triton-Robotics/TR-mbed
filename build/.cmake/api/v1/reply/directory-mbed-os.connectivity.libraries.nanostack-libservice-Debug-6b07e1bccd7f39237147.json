@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "mbed-os/connectivity/libraries/nanostack-libservice",
+		"source" : "mbed-os/connectivity/libraries/nanostack-libservice"
+	}
+}

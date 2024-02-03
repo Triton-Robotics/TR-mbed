@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "mbed-os/storage/filesystem/littlefsv2",
+		"source" : "mbed-os/storage/filesystem/littlefsv2"
+	}
+}

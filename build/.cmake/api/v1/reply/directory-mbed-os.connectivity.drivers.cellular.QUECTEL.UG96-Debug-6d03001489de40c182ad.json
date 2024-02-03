@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "mbed-os/connectivity/drivers/cellular/QUECTEL/UG96",
+		"source" : "mbed-os/connectivity/drivers/cellular/QUECTEL/UG96"
+	}
+}
