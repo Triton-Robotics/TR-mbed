@@ -25,6 +25,8 @@
 #include "communications/Jetson.h"
 
 #include <cstring>
+#define ESP_DEBUG 1 //1 true, 0 false
+
 
  #define OLED_SDA                  PB_7
  #define OLED_SCL                  PB_8
@@ -32,8 +34,11 @@
 
 // SSD1308 oled(&i2c, 0x78);
 
-
+DigitalIn userButton(BUTTON1);
 TRMutex printer;
+static BufferedSerial bc(PA_0, PA_1, 115200);
+
+
 
 void updatePriority(priorityLevels desiredLevel){
     printer.updatePriority(desiredLevel);
@@ -53,6 +58,8 @@ void printff(const char* format, ...) {
     va_start (args, format);
     vsnprintf (temp, 50, format, args);
     printer.print(temp, DEFAULT);
+    if(ESP_DEBUG)
+        bc.write(temp, 50);
     va_end (args);
 }
 
