@@ -3,11 +3,12 @@
 #include <iostream>
 
 
-DJIMotor indexer(5, CANHandler::CANBUS_1, C610);
-DJIMotor RFLYWHEEL(4, CANHandler::CANBUS_1, M3508);
-DJIMotor LFLYWHEEL(1, CANHandler::CANBUS_1, M3508);
+DJIMotor indexer(5, CANHandler::CANBUS_2, C610);
+DJIMotor RFLYWHEEL(4, CANHandler::CANBUS_2, M3508);
+DJIMotor LFLYWHEEL(1, CANHandler::CANBUS_2, M3508);
 
 DigitalOut led(L27);
+DigitalOut led2(L26);
 
 int main(){
 
@@ -25,7 +26,7 @@ int main(){
     double kI = 0.146; // 0.434
     double kD = 0.127; // 0.214
 
-    int speedVal = 3100;
+    int speedVal = 7000;
     int desiredSpeed = 0;
     int power = 0;
 
@@ -49,7 +50,7 @@ int main(){
                 //printff("%d %d\n", , LFLYWHEEL.getData(VELOCITY));
             }
 
-            led =! led;
+            led2 =! led2;
             remoteRead();
 
             if (remote.leftSwitch() == Remote::SwitchState::UNKNOWN) {
