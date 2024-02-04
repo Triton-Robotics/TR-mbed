@@ -116,8 +116,7 @@ WheelSpeeds ChassisSubsystem::ChassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSp
 
 void ChassisSubsystem::setMotorPower(MotorLocation location, double power)
 {
-    DJIMotor motor = getMotor(location);
-    motor.setPower(power);
+    getMotor(location).setPower(power);
 }
 
 void ChassisSubsystem::setMotorSpeedRPM(MotorLocation location, double speed)
