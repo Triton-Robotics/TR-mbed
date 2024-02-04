@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "mbed-os/targets/TARGET_STM/TARGET_STM32L5/TARGET_STM32L562xE/TARGET_DISCO_L562QE",
+		"source" : "mbed-os/targets/TARGET_STM/TARGET_STM32L5/TARGET_STM32L562xE/TARGET_DISCO_L562QE"
+	}
+}

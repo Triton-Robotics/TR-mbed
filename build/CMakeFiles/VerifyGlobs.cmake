@@ -36,6 +36,7 @@ file(GLOB NEW_GLOB LIST_DIRECTORIES true "/home/winstonchou/Documents/GitHub/TR-
 set(OLD_GLOB
   "/home/winstonchou/Documents/GitHub/TR-mbed/core/subsystems/Chassis.cpp"
   "/home/winstonchou/Documents/GitHub/TR-mbed/core/subsystems/ChassisKalman.cpp"
+  "/home/winstonchou/Documents/GitHub/TR-mbed/core/subsystems/ChassisSubsystem.cpp"
   "/home/winstonchou/Documents/GitHub/TR-mbed/core/subsystems/oled_subsystem.cpp"
   )
 if(NOT "${NEW_GLOB}" STREQUAL "${OLD_GLOB}")

@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "mbed-os/connectivity/FEATURE_BLE/libraries/cordio_stack/platform",
+		"source" : "mbed-os/connectivity/FEATURE_BLE/libraries/cordio_stack/platform"
+	}
+}

@@ -11,7 +11,7 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
       LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE),
       RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE),
       imu(imu)
-// chassisKalman()
+    // chassisKalman()
 {
     LF.outputCap = 16000; // DJIMotor class has a max outputCap: 16384
     RF.outputCap = 16000;
@@ -34,23 +34,39 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
     // isInverted[0] = 1; isInverted[1] = 1; isInverted[2] = 1; isInverted[3] = 1;
 }
 
+void ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
+{
+    setMotorSpeedRPM(LEFT_FRONT, wheelSpeeds.LF);
+    setMotorSpeedRPM(RIGHT_FRONT, wheelSpeeds.RF);
+    setMotorSpeedRPM(LEFT_BACK, wheelSpeeds.LB);
+    setMotorSpeedRPM(RIGHT_BACK, wheelSpeeds.RB);
+}
+
+void ChassisSubsystem::setChassisSpeeds(ChassisSpeeds chassisSpeeds)
+{
+    WheelSpeeds wheelSpeeds = ChassisSpeedsToWheelSpeeds(chassisSpeeds); // in m/s (for now)
+    wheelSpeeds *= (1 / (0.0254 * 2) / (2 * PI / 60) * M3508_GEAR_RATIO);
+    setWheelSpeeds(wheelSpeeds);
+}
+
+
 void ChassisSubsystem::setBrakeMode(BrakeMode brakeMode)
 {
 
     return;
 }
 
-DJIMotor ChassisSubsystem::getMotor(int index)
+DJIMotor &ChassisSubsystem::getMotor(MotorLocation location)
 {
-    switch (index)
+    switch (location)
     {
-    case 1:
+    case LEFT_FRONT:
         return LF;
-    case 2:
+    case RIGHT_FRONT:
         return RF;
-    case 3:
+    case LEFT_BACK:
         return LB;
-    case 4:
+    case RIGHT_BACK:
         return RB;
     }
 }
@@ -92,20 +108,19 @@ OmniKinematics ChassisSubsystem::setOmniKinematics(double radius)
 
 WheelSpeeds ChassisSubsystem::ChassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds)
 {
-    return {(1 / sqrt(2)) * (chassisSpeeds.x + chassisSpeeds.y + chassisSpeeds.rotation * ((m_OmniKinematics.r1x) - (m_OmniKinematics.r1y))),
-            (1 / sqrt(2)) * (chassisSpeeds.x - chassisSpeeds.y - chassisSpeeds.rotation * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y))),
-            (1 / sqrt(2)) * (-chassisSpeeds.x + chassisSpeeds.y + chassisSpeeds.rotation * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y))),
-            (1 / sqrt(2)) * (-chassisSpeeds.x - chassisSpeeds.y - chassisSpeeds.rotation * ((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y)))};
+    return {(1 / sqrt(2)) * (chassisSpeeds.vX + chassisSpeeds.vY + chassisSpeeds.vOmega * ((m_OmniKinematics.r1x) - (m_OmniKinematics.r1y))),
+            (1 / sqrt(2)) * (chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y))),
+            (1 / sqrt(2)) * (-chassisSpeeds.vX + chassisSpeeds.vY + chassisSpeeds.vOmega * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y))),
+            (1 / sqrt(2)) * (-chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y)))};
 }
 
-void ChassisSubsystem::setMotorPower(int index, double power)
+void ChassisSubsystem::setMotorPower(MotorLocation location, double power)
 {
-    DJIMotor motor = getMotor(index);
+    DJIMotor motor = getMotor(location);
     motor.setPower(power);
 }
 
-void ChassisSubsystem::setMotorSpeedRPM(int index, double speed)
+void ChassisSubsystem::setMotorSpeedRPM(MotorLocation location, double speed)
 {
-    DJIMotor motor = getMotor(index);
-    motor.setSpeed(speed);
+    getMotor(location).setSpeed(speed);
 }

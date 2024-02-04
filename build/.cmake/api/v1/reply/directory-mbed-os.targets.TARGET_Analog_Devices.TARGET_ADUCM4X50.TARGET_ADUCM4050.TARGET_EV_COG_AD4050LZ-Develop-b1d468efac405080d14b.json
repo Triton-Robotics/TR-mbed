@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "mbed-os/targets/TARGET_Analog_Devices/TARGET_ADUCM4X50/TARGET_ADUCM4050/TARGET_EV_COG_AD4050LZ",
+		"source" : "mbed-os/targets/TARGET_Analog_Devices/TARGET_ADUCM4X50/TARGET_ADUCM4050/TARGET_EV_COG_AD4050LZ"
+	}
+}

@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "mbed-os/cmsis/device/RTE",
+		"source" : "mbed-os/cmsis/device/RTE"
+	}
+}

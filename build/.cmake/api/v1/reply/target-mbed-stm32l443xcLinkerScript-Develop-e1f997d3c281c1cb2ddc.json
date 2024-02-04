@@ -1,0 +1,81 @@
+{
+	"backtrace" : 2,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_custom_target",
+			"mbed_set_linker_script"
+		],
+		"files" : 
+		[
+			"mbed-os/tools/cmake/mbed_set_linker_script.cmake",
+			"mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L443xC/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 28,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 37,
+				"parent" : 1
+			}
+		]
+	},
+	"id" : "mbed-stm32l443xcLinkerScript::@5d5285fb6e6e4830d318",
+	"name" : "mbed-stm32l443xcLinkerScript",
+	"paths" : 
+	{
+		"build" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L443xC",
+		"source" : "mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L443xC"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		},
+		{
+			"name" : "CMake Rules",
+			"sourceIndexes" : 
+			[
+				1,
+				2
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L443xC/CMakeFiles/mbed-stm32l443xcLinkerScript",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L443xC/CMakeFiles/mbed-stm32l443xcLinkerScript.rule",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L443xC/mbed-stm32l443xc.link_script.ld.rule",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "UTILITY"
+}

@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "mbed-os/hal/TARGET_FLASH_CMSIS_ALGO",
+		"source" : "mbed-os/hal/TARGET_FLASH_CMSIS_ALGO"
+	}
+}

@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "mbed-os/connectivity/drivers/wifi/esp8266-driver",
+		"source" : "mbed-os/connectivity/drivers/wifi/esp8266-driver"
+	}
+}

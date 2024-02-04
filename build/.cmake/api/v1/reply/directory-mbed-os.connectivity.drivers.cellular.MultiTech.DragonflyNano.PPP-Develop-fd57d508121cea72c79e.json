@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "mbed-os/connectivity/drivers/cellular/MultiTech/DragonflyNano/PPP",
+		"source" : "mbed-os/connectivity/drivers/cellular/MultiTech/DragonflyNano/PPP"
+	}
+}

@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "mbed-os/features/frameworks/mbed-greentea-io",
+		"source" : "mbed-os/features/frameworks/mbed-greentea-io"
+	}
+}

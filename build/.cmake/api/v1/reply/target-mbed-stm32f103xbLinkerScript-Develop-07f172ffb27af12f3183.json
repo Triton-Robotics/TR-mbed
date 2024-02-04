@@ -1,0 +1,81 @@
+{
+	"backtrace" : 2,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_custom_target",
+			"mbed_set_linker_script"
+		],
+		"files" : 
+		[
+			"mbed-os/tools/cmake/mbed_set_linker_script.cmake",
+			"mbed-os/targets/TARGET_STM/TARGET_STM32F1/TARGET_STM32F103xB/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 27,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 37,
+				"parent" : 1
+			}
+		]
+	},
+	"id" : "mbed-stm32f103xbLinkerScript::@285ff5f222e967453b71",
+	"name" : "mbed-stm32f103xbLinkerScript",
+	"paths" : 
+	{
+		"build" : "mbed-os/targets/TARGET_STM/TARGET_STM32F1/TARGET_STM32F103xB",
+		"source" : "mbed-os/targets/TARGET_STM/TARGET_STM32F1/TARGET_STM32F103xB"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		},
+		{
+			"name" : "CMake Rules",
+			"sourceIndexes" : 
+			[
+				1,
+				2
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/mbed-os/targets/TARGET_STM/TARGET_STM32F1/TARGET_STM32F103xB/CMakeFiles/mbed-stm32f103xbLinkerScript",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/mbed-os/targets/TARGET_STM/TARGET_STM32F1/TARGET_STM32F103xB/CMakeFiles/mbed-stm32f103xbLinkerScript.rule",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/mbed-os/targets/TARGET_STM/TARGET_STM32F1/TARGET_STM32F103xB/mbed-stm32f103xb.link_script.ld.rule",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "UTILITY"
+}

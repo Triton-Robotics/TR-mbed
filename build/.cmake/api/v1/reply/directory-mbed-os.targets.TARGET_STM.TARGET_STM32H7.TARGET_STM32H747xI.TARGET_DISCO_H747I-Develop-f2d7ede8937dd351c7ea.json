@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "mbed-os/targets/TARGET_STM/TARGET_STM32H7/TARGET_STM32H747xI/TARGET_DISCO_H747I",
+		"source" : "mbed-os/targets/TARGET_STM/TARGET_STM32H7/TARGET_STM32H747xI/TARGET_DISCO_H747I"
+	}
+}

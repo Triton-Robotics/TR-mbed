@@ -11,8 +11,8 @@
 // #include <subsystems/ChassisKalman.h>
 // #include <algorithms/WheelKalman.h>
 #include <algorithms/Pose2D.h>
-#include <algorithms/WheelSpeeds.h>
-#include <algorithms/ChassisSpeeds.h>
+// #include <algorithms/WheelSpeeds.h>
+// #include <algorithms/ChassisSpeeds.h>
 
 #define CAN_BUS_TYPE CANHandler::CANBUS_1
 #define MOTOR_TYPE M3508
@@ -28,6 +28,29 @@
 struct OmniKinematics
 {
     double r1x, r1y, r2x, r2y, r3x, r3y, r4x, r4y;
+};
+
+struct WheelSpeeds
+{
+    double LF;
+    double RF;
+    double LB;
+    double RB;
+
+    void operator*=(double scalar)
+    {
+        LF *= scalar;
+        RF *= scalar;
+        LB *= scalar;
+        RB *= scalar;
+    }
+};
+
+struct ChassisSpeeds
+{
+    double vX;
+    double vY;
+    double vOmega;
 };
 
 /**
@@ -59,20 +82,35 @@ public:
         COAST
     };
 
+    enum MotorLocation
+    {
+        LEFT_FRONT,
+        RIGHT_FRONT,
+        LEFT_BACK,
+        RIGHT_BACK
+    };
+
+
+    /**
+     * The driveMotors method drives each motor at a specific speed
+     * @param wheelSpeeds The speeds in RPM to drive each motor at
+     */
+    void setWheelSpeeds(WheelSpeeds wheelSpeeds);
+
     /**
      * The driveXYR method is used to drive the chassis in a chassis relative manner.
      *
-     * @param speeds The robot-relative speeds (x, y, and rotation) in RPM
+     * @param chassisSpeeds The robot-relative speeds (x, y, and rotation) in RPM
      */
-    void setChassisSpeeds(ChassisSpeeds speeds);
+    void setChassisSpeeds(ChassisSpeeds chassisSpeeds);
 
     /**
      * A helper method to find a DJIMotor object from an index.
      *
-     * @param index The index of the motor
+     * @param location The MotorLocation of the motor (LF, RF, LB, RB)
      * @return a DJIMotor object
      */
-    DJIMotor getMotor(int index);
+    DJIMotor &getMotor(MotorLocation location);
 
     /**
      * A helper method to find the brake mode of the chassis.
@@ -157,13 +195,14 @@ private:
 
     OmniKinematics m_OmniKinematics;
     OmniKinematics setOmniKinematics(double radius);
+    WheelSpeeds m_WheelSpeeds;
     WheelSpeeds ChassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds);
 
-    void setMotorPower(int index, double power);
-    void setMotorSpeedRPM(int index, double speed);
+    void setMotorPower(MotorLocation location, double power);
+    void setMotorSpeedRPM(MotorLocation location, double speed);
     // void setMotorSpeedTicksPerSecond(int index, double speed);
 
-    double getMotorSpeedRPM(int index);
+    double getMotorSpeedRPM(MotorLocation location);
 
     // ChassisKalman chassisKalman;
     double testAngle;

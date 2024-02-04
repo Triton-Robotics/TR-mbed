@@ -60,18 +60,18 @@ set_target_properties(greentea::client_userio PROPERTIES
   INTERFACE_INCLUDE_DIRECTORIES "/home/winstonchou/Documents/GitHub/TR-mbed/build/_deps/greentea-client-src/include"
 )
 
-# Import target "greentea::client" for configuration "Debug"
-set_property(TARGET greentea::client APPEND PROPERTY IMPORTED_CONFIGURATIONS DEBUG)
+# Import target "greentea::client" for configuration "Develop"
+set_property(TARGET greentea::client APPEND PROPERTY IMPORTED_CONFIGURATIONS DEVELOP)
 set_target_properties(greentea::client PROPERTIES
-  IMPORTED_LINK_INTERFACE_LANGUAGES_DEBUG "C;CXX"
-  IMPORTED_LOCATION_DEBUG "/home/winstonchou/Documents/GitHub/TR-mbed/build/_deps/greentea-client-build/libclient.a"
+  IMPORTED_LINK_INTERFACE_LANGUAGES_DEVELOP "C;CXX"
+  IMPORTED_LOCATION_DEVELOP "/home/winstonchou/Documents/GitHub/TR-mbed/build/_deps/greentea-client-build/libclient.a"
   )
 
-# Import target "greentea::client_userio" for configuration "Debug"
-set_property(TARGET greentea::client_userio APPEND PROPERTY IMPORTED_CONFIGURATIONS DEBUG)
+# Import target "greentea::client_userio" for configuration "Develop"
+set_property(TARGET greentea::client_userio APPEND PROPERTY IMPORTED_CONFIGURATIONS DEVELOP)
 set_target_properties(greentea::client_userio PROPERTIES
-  IMPORTED_LINK_INTERFACE_LANGUAGES_DEBUG "CXX"
-  IMPORTED_LOCATION_DEBUG "/home/winstonchou/Documents/GitHub/TR-mbed/build/_deps/greentea-client-build/libclient_userio.a"
+  IMPORTED_LINK_INTERFACE_LANGUAGES_DEVELOP "CXX"
+  IMPORTED_LOCATION_DEVELOP "/home/winstonchou/Documents/GitHub/TR-mbed/build/_deps/greentea-client-build/libclient_userio.a"
   )
 
 # This file does not depend on other imported targets which have

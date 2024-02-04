@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "mbed-os/connectivity/nanostack/sal-stack-nanostack/source/RPL",
+		"source" : "mbed-os/connectivity/nanostack/sal-stack-nanostack/source/RPL"
+	}
+}
