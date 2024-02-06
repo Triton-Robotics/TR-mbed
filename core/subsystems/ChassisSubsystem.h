@@ -194,7 +194,7 @@ public:
 
     bool allMotorsConnected();
 
-    ChassisSpeeds DesiredChassisSpeeds;
+    ChassisSpeeds desiredChassisSpeeds;
 
     ChassisSpeeds m_chassisSpeeds;
     WheelSpeeds m_wheelSpeeds;
@@ -225,8 +225,8 @@ private:
     OmniKinematics m_OmniKinematics;
     OmniKinematics setOmniKinematics(double radius);
     WheelSpeeds m_WheelSpeeds;
-    WheelSpeeds ChassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds);
-    ChassisSpeeds WheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds);
+    WheelSpeeds chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds);
+    ChassisSpeeds wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds);
 
     void setMotorPower(MotorLocation location, double power);
     void setMotorSpeedRPM(MotorLocation location, double speed);

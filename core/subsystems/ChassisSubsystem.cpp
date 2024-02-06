@@ -42,10 +42,10 @@ void ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     setMotorSpeedRPM(RIGHT_BACK, wheelSpeeds.RB);
 }
 
-void ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds)
+void ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_)
 {
-    DesiredChassisSpeeds = desiredChassisSpeeds;
-    WheelSpeeds wheelSpeeds = ChassisSpeedsToWheelSpeeds(desiredChassisSpeeds); // in m/s (for now)
+    desiredChassisSpeeds = desiredChassisSpeeds_;
+    WheelSpeeds wheelSpeeds = chassisSpeedsToWheelSpeeds(desiredChassisSpeeds_); // in m/s (for now)
     wheelSpeeds *= (1 / (WHEEL_DIAMETER_METERS / 2) / (2 * PI / 60) * M3508_GEAR_RATIO);
     setWheelSpeeds(wheelSpeeds);
 }
@@ -127,7 +127,7 @@ OmniKinematics ChassisSubsystem::setOmniKinematics(double radius)
     m_OmniKinematics.r4y = -sqrt(radius);
 }
 
-WheelSpeeds ChassisSubsystem::ChassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds)
+WheelSpeeds ChassisSubsystem::chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds)
 {
     return {(1 / sqrt(2)) * (chassisSpeeds.vX + chassisSpeeds.vY + chassisSpeeds.vOmega * ((m_OmniKinematics.r1x) - (m_OmniKinematics.r1y))),
             (1 / sqrt(2)) * (chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y))),
@@ -135,7 +135,7 @@ WheelSpeeds ChassisSubsystem::ChassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSp
             (1 / sqrt(2)) * (-chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y)))};
 }
 
-ChassisSpeeds WheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds)
+ChassisSpeeds ChassisSubsystem::wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds)
 {
     return {};
 }
