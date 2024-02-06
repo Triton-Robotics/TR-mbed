@@ -116,7 +116,6 @@ private:
 
     static void s_updateMultiTurnPosition();
     static void s_sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool debug = false);
-    static int s_calculateDeltaPhase(int target, int current, int max = TICKS_REVOLUTION);
 
     void setOutput();
 
@@ -168,6 +167,8 @@ public:
     }
     static bool s_theseConnected(DJIMotor* motors[], int size, bool debug = false);
     static bool s_allConnected(bool debug = false);
+    static int s_calculateDeltaPhase(int target, int current, int max = TICKS_REVOLUTION);
+
 
 
     inline int operator>>(motorDataType data)                                   { return getData(data); }
