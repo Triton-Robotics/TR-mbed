@@ -12,7 +12,7 @@ BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 // DJIMotor ChassisThree(3, CANHandler::CANBUS_1, STANDARD, "testMotor");
 // DJIMotor ChassisFour(4, CANHandler::CANBUS_1, STANDARD, "testMotor");
 DJIMotor yawOne(5, CANHandler::CANBUS_1, GM6020, "testMotor");
-ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.228);
+ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
 
 int main()
 {
@@ -39,8 +39,9 @@ int main()
                 refereeThread(&referee);
                 refLoop = 0;
                 led = !led;
-                // DJIMotor &motor = ;
-                printff("%d\n", Chassis.getMotor(ChassisSubsystem::LEFT_FRONT)>>POWEROUT);
+    
+                printff("%f\n", Chassis.getMotorSpeed(ChassisSubsystem::LEFT_FRONT, ChassisSubsystem::METER_PER_SECOND));
+                // printff("%d\n", Chassis.getMotor(ChassisSubsystem::LEFT_FRONT)>>VELOCITY);
 
             }
 

@@ -34,6 +34,7 @@
 
 
 TRMutex printer;
+static BufferedSerial bc(PA_0, PA_1, 115200);
 
 void updatePriority(priorityLevels desiredLevel){
     printer.updatePriority(desiredLevel);
@@ -53,6 +54,7 @@ void printff(const char* format, ...) {
     va_start (args, format);
     vsnprintf (temp, 50, format, args);
     printer.print(temp, DEFAULT);
+    bc.write(temp, 50);
     va_end (args);
 }
 

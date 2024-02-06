@@ -42,18 +42,12 @@ void ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     setMotorSpeedRPM(RIGHT_BACK, wheelSpeeds.RB);
 }
 
-void ChassisSubsystem::setChassisSpeeds(ChassisSpeeds chassisSpeeds)
+void ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds)
 {
-    WheelSpeeds wheelSpeeds = ChassisSpeedsToWheelSpeeds(chassisSpeeds); // in m/s (for now)
-    wheelSpeeds *= (1 / (0.0254 * 2) / (2 * PI / 60) * M3508_GEAR_RATIO);
+    DesiredChassisSpeeds = desiredChassisSpeeds;
+    WheelSpeeds wheelSpeeds = ChassisSpeedsToWheelSpeeds(desiredChassisSpeeds); // in m/s (for now)
+    wheelSpeeds *= (1 / (WHEEL_DIAMETER_METERS / 2) / (2 * PI / 60) * M3508_GEAR_RATIO);
     setWheelSpeeds(wheelSpeeds);
-}
-
-
-void ChassisSubsystem::setBrakeMode(BrakeMode brakeMode)
-{
-
-    return;
 }
 
 DJIMotor &ChassisSubsystem::getMotor(MotorLocation location)
@@ -71,10 +65,32 @@ DJIMotor &ChassisSubsystem::getMotor(MotorLocation location)
     }
 }
 
-// BrakeMode ChassisSubsystem::getBrakeMode()
-//{
-//   return
-//}
+ChassisSubsystem::BrakeMode ChassisSubsystem::getBrakeMode()
+{
+    return brakeMode;
+}
+
+void ChassisSubsystem::setBrakeMode(BrakeMode brakeMode)
+{
+    this->brakeMode = brakeMode;
+}
+
+ChassisSpeeds ChassisSubsystem::getSpeeds()
+{
+    return m_chassisSpeeds;
+}
+
+double ChassisSubsystem::getMotorSpeed(MotorLocation location, SPEED_UNIT unit = RPM)
+{
+    double speed = getMotor(location).getData(VELOCITY);
+    switch (unit)
+    {
+    case RPM:
+        return speed;
+    case METER_PER_SECOND:
+        return speed / M3508_GEAR_RATIO * (2 * PI / 60) * WHEEL_DIAMETER_METERS / 2;
+    }
+}
 
 void ChassisSubsystem::readImu()
 {
@@ -84,6 +100,11 @@ void ChassisSubsystem::readImu()
 double ChassisSubsystem::degreesToRadians(double degrees)
 {
     return degrees * PI / 180.0;
+}
+
+double ChassisSubsystem::radiansToDegrees(double radians)
+{
+    return radians / PI * 180.0;
 }
 
 int ChassisSubsystem::getHeadingDegrees()
@@ -114,6 +135,11 @@ WheelSpeeds ChassisSubsystem::ChassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSp
             (1 / sqrt(2)) * (-chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y)))};
 }
 
+ChassisSpeeds WheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds)
+{
+    return {};
+}
+
 void ChassisSubsystem::setMotorPower(MotorLocation location, double power)
 {
     getMotor(location).setPower(power);
@@ -121,5 +147,30 @@ void ChassisSubsystem::setMotorPower(MotorLocation location, double power)
 
 void ChassisSubsystem::setMotorSpeedRPM(MotorLocation location, double speed)
 {
+    if (brakeMode == COAST && speed == 0)
+    {
+        setMotorPower(location, 0);
+        return;
+    }
     getMotor(location).setSpeed(speed);
+}
+
+double ChassisSubsystem::radiansToTicks(double radians)
+{
+    return radians / (2 * PI) * TICKS_PER_ROTATION;
+}
+
+double ChassisSubsystem::ticksToRadians(double ticks)
+{
+    return ticks / TICKS_PER_ROTATION * (2 * PI);
+}
+
+double ChassisSubsystem::rpmToRadPerSecond(double RPM)
+{
+    return RPM * (2 * PI) / SECONDS_PER_MINUTE;
+}
+
+double ChassisSubsystem::radPerSecondToRPM(double radPerSecond)
+{
+    return radPerSecond / (2 * PI) * SECONDS_PER_MINUTE;
 }

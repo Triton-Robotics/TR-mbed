@@ -22,6 +22,12 @@
 #define I2C_SCL PB_8
 #define IMU_RESET PA_8
 
+#define PI 3.14159265
+#define SECONDS_PER_MINUTE 60
+#define TICKS_PER_ROTATION 8192.0
+#define M3508_GEAR_RATIO 19.0
+#define WHEEL_DIAMETER_METERS 4.75 * 0.0254
+
 #define MAX_BEYBLADE_SPEED 1800
 #define BEYBLADE_ACCELERATION 0.05
 
@@ -90,6 +96,12 @@ public:
         RIGHT_BACK
     };
 
+    enum SPEED_UNIT
+    {
+        RAD_PER_SECOND,
+        RPM,
+        METER_PER_SECOND,
+    };
 
     /**
      * The driveMotors method drives each motor at a specific speed
@@ -100,9 +112,9 @@ public:
     /**
      * The driveXYR method is used to drive the chassis in a chassis relative manner.
      *
-     * @param chassisSpeeds The robot-relative speeds (x, y, and rotation) in RPM
+     * @param chassisSpeeds The robot-relative speeds (vX, vY, and vOmega) in RPM
      */
-    void setChassisSpeeds(ChassisSpeeds chassisSpeeds);
+    void setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds);
 
     /**
      * A helper method to find a DJIMotor object from an index.
@@ -143,6 +155,13 @@ public:
 
     /**
      * Helper method to convert an angle from degrees to radians
+     * @param radians An angle measurement in radians
+     * @return The angle converted to degree
+     */
+    double radiansToDegrees(double radians);
+
+    /**
+     * Helper method to convert an angle from radians to degrees
      * @param degrees An angle measurement in degrees
      * @return The angle converted to radians
      */
@@ -165,6 +184,9 @@ public:
      * @return The chassis's current speeds
      */
     ChassisSpeeds getSpeeds();
+
+    double getMotorSpeed(MotorLocation location, SPEED_UNIT unit);
+
     /**
      * A helper method to read/update the IMU.
      */
@@ -172,7 +194,13 @@ public:
 
     bool allMotorsConnected();
 
-    int8_t isInverted[4];
+    ChassisSpeeds DesiredChassisSpeeds;
+
+    ChassisSpeeds m_chassisSpeeds;
+    WheelSpeeds m_wheelSpeeds;
+
+    // int8_t isInverted[4];
+
 
     double prevVel;
 
@@ -188,15 +216,17 @@ private:
     BNO055 imu;
     BNO055_ANGULAR_POSITION_typedef imuAngles;
 
-    double rpmToTicksPerSecond(double RPM);
-    double ticksPerSecondToRPM(double ticksPerSecond);
-    double ticksPerSecondToInchesPerSecond(double ticksPerSecond);
-    double rpmToInchesPerSecond(double RPM);
+    double radiansToTicks(double radians);
+    double ticksToRadians(double ticks);
+
+    double rpmToRadPerSecond(double RPM);
+    double radPerSecondToRPM(double radPerSecond);
 
     OmniKinematics m_OmniKinematics;
     OmniKinematics setOmniKinematics(double radius);
     WheelSpeeds m_WheelSpeeds;
     WheelSpeeds ChassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds);
+    ChassisSpeeds WheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds);
 
     void setMotorPower(MotorLocation location, double power);
     void setMotorSpeedRPM(MotorLocation location, double speed);
