@@ -29,22 +29,34 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
     RF.setSpeedPID(1.5, 0, 0);
     LB.setSpeedPID(1.5, 0, 0);
     RB.setSpeedPID(1.5, 0, 0);
-    brakeMode = BRAKE;
+    
+    brakeMode = COAST;
 
     // isInverted[0] = 1; isInverted[1] = 1; isInverted[2] = 1; isInverted[3] = 1;
 }
 
-void ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
+WheelSpeeds ChassisSubsystem::getWheelSpeeds()
 {
+    return m_wheelSpeeds;
+}
+
+void ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
+{   
+    desiredWheelSpeeds = wheelSpeeds; // WheelSpeeds in RPM
     setMotorSpeedRPM(LEFT_FRONT, wheelSpeeds.LF);
     setMotorSpeedRPM(RIGHT_FRONT, wheelSpeeds.RF);
     setMotorSpeedRPM(LEFT_BACK, wheelSpeeds.LB);
     setMotorSpeedRPM(RIGHT_BACK, wheelSpeeds.RB);
 }
 
+ChassisSpeeds ChassisSubsystem::getChassisSpeeds()
+{
+    return m_chassisSpeeds;
+}
+
 void ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_)
 {
-    desiredChassisSpeeds = desiredChassisSpeeds_;
+    desiredChassisSpeeds = desiredChassisSpeeds_; // ChassisSpeeds in m/s
     WheelSpeeds wheelSpeeds = chassisSpeedsToWheelSpeeds(desiredChassisSpeeds_); // in m/s (for now)
     wheelSpeeds *= (1 / (WHEEL_DIAMETER_METERS / 2) / (2 * PI / 60) * M3508_GEAR_RATIO);
     setWheelSpeeds(wheelSpeeds);
@@ -65,6 +77,21 @@ DJIMotor &ChassisSubsystem::getMotor(MotorLocation location)
     }
 }
 
+void ChassisSubsystem::setMotorSpeedPID(MotorLocation location, float kP, float kI, float kD)
+{
+    getMotor(location).setSpeedPID(kP, kI, kD);
+}
+
+void ChassisSubsystem::setSpeedIntegralCap(MotorLocation location, double cap)
+{
+    getMotor(location).setSpeedIntegralCap(cap);
+}
+
+void ChassisSubsystem::setSpeedFeedforward(MotorLocation location, double FF)
+{
+    getMotor(location).pidSpeed.feedForward = FF * INT15_T_MAX;
+}
+
 ChassisSubsystem::BrakeMode ChassisSubsystem::getBrakeMode()
 {
     return brakeMode;
@@ -73,11 +100,6 @@ ChassisSubsystem::BrakeMode ChassisSubsystem::getBrakeMode()
 void ChassisSubsystem::setBrakeMode(BrakeMode brakeMode)
 {
     this->brakeMode = brakeMode;
-}
-
-ChassisSpeeds ChassisSubsystem::getSpeeds()
-{
-    return m_chassisSpeeds;
 }
 
 double ChassisSubsystem::getMotorSpeed(MotorLocation location, SPEED_UNIT unit = RPM)
@@ -95,6 +117,14 @@ double ChassisSubsystem::getMotorSpeed(MotorLocation location, SPEED_UNIT unit =
 void ChassisSubsystem::readImu()
 {
     imu.get_angular_position_quat(&imuAngles);
+}
+
+void ChassisSubsystem::periodic()
+{
+    m_wheelSpeeds = {getMotorSpeed(LEFT_FRONT), getMotorSpeed(RIGHT_FRONT),
+                     getMotorSpeed(LEFT_BACK), getMotorSpeed(RIGHT_BACK)};
+
+    m_chassisSpeeds = wheelSpeedsToChassisSpeeds(m_wheelSpeeds);
 }
 
 double ChassisSubsystem::degreesToRadians(double degrees)
@@ -150,9 +180,11 @@ void ChassisSubsystem::setMotorSpeedRPM(MotorLocation location, double speed)
     if (brakeMode == COAST && speed == 0)
     {
         setMotorPower(location, 0);
+        setSpeedFeedforward(location, 0);
         return;
     }
     getMotor(location).setSpeed(speed);
+    setSpeedFeedforward(location, speed / (M3508_POST_MAX_RPM * M3508_GEAR_RATIO));
 }
 
 double ChassisSubsystem::radiansToTicks(double radians)

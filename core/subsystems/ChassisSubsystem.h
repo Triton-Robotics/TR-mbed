@@ -16,6 +16,7 @@
 
 #define CAN_BUS_TYPE CANHandler::CANBUS_1
 #define MOTOR_TYPE M3508
+#define M3508_POST_MAX_RPM 469
 #define INPUT_THRESHOLD 0.01
 
 #define I2C_SDA PB_7
@@ -25,7 +26,6 @@
 #define PI 3.14159265
 #define SECONDS_PER_MINUTE 60
 #define TICKS_PER_ROTATION 8192.0
-#define M3508_GEAR_RATIO 19.0
 #define WHEEL_DIAMETER_METERS 4.75 * 0.0254
 
 #define MAX_BEYBLADE_SPEED 1800
@@ -49,6 +49,13 @@ struct WheelSpeeds
         RF *= scalar;
         LB *= scalar;
         RB *= scalar;
+    }
+
+    char *to_string()
+    {
+        char buffer[56];
+        sprintf(buffer, "LF: %4.2f RF: %4.2f LB: %4.2f RB: %4.2f\0", LF, RF, LB, RB);
+        return buffer;
     }
 };
 
@@ -104,10 +111,22 @@ public:
     };
 
     /**
+     * Gets the chassis's current WheelSpeeds
+     * @return The chassis's current WheelSpeeds
+     */
+    WheelSpeeds getWheelSpeeds();
+
+    /**
      * The driveMotors method drives each motor at a specific speed
      * @param wheelSpeeds The speeds in RPM to drive each motor at
      */
     void setWheelSpeeds(WheelSpeeds wheelSpeeds);
+
+    /**
+     * Gets the chassis's current ChassisSpeeds
+     * @return The chassis's current ChassisSpeeds
+     */
+    ChassisSpeeds getChassisSpeeds();
 
     /**
      * The driveXYR method is used to drive the chassis in a chassis relative manner.
@@ -123,6 +142,29 @@ public:
      * @return a DJIMotor object
      */
     DJIMotor &getMotor(MotorLocation location);
+
+    /**
+     * Sets the P, I, and D control parameters
+     * @param location The MotorLocation of the motor (LF, RF, LB, RB)
+     * @param kP The new P (proportional) parameter
+     * @param kI The new I (integral) parameter
+     * @param kD The new D (derivative) parameter
+     */
+    void setMotorSpeedPID(MotorLocation location, float kP, float kI, float kD);
+
+    /**
+     * Sets the IntegralCap for the SpeedPID
+     * @param location The MotorLocation of the motor (LF, RF, LB, RB)
+     * @param cap The maximum integral that can be achieved, above which the integral will be capped
+     */
+    void setSpeedIntegralCap(MotorLocation location, double cap);
+
+    /**
+     * Sets the Feedforward for the SpeedPID
+     * @param location The MotorLocation of the motor (LF, RF, LB, RB)
+     * @param FF The arbitrary Feedforward value ranges from [-1, 1]
+     */
+    void setSpeedFeedforward(MotorLocation location, double FF);
 
     /**
      * A helper method to find the brake mode of the chassis.
@@ -179,12 +221,6 @@ public:
      */
     Pose2D getPose();
 
-    /**
-     * Gets the chassis's current speeds
-     * @return The chassis's current speeds
-     */
-    ChassisSpeeds getSpeeds();
-
     double getMotorSpeed(MotorLocation location, SPEED_UNIT unit);
 
     /**
@@ -195,6 +231,7 @@ public:
     bool allMotorsConnected();
 
     ChassisSpeeds desiredChassisSpeeds;
+    WheelSpeeds desiredWheelSpeeds;
 
     ChassisSpeeds m_chassisSpeeds;
     WheelSpeeds m_wheelSpeeds;
@@ -224,7 +261,7 @@ private:
 
     OmniKinematics m_OmniKinematics;
     OmniKinematics setOmniKinematics(double radius);
-    WheelSpeeds m_WheelSpeeds;
+    
     WheelSpeeds chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds);
     ChassisSpeeds wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds);
 

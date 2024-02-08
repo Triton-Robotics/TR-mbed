@@ -40,8 +40,11 @@ int main()
                 refLoop = 0;
                 led = !led;
     
-                printff("%f\n", Chassis.getMotorSpeed(ChassisSubsystem::LEFT_FRONT, ChassisSubsystem::METER_PER_SECOND));
+                // printff("%f\n", Chassis.getMotorSpeed(ChassisSubsystem::LEFT_FRONT, ChassisSubsystem::METER_PER_SECOND));
                 // printff("%d\n", Chassis.getMotor(ChassisSubsystem::LEFT_FRONT)>>VELOCITY);
+                // printff("%s\n", Chassis.desiredWheelSpeeds.to_string());
+                WheelSpeeds ws = Chassis.desiredWheelSpeeds;
+                printff("LF: %4.2f RF: %4.2f LB: %4.2f RB: %4.2f\n", ws.LF, ws.RF, ws.LB, ws.RB);
 
             }
 
@@ -85,6 +88,12 @@ int main()
                 // }
                 // printff("\n");
             }
+            else
+            {
+                Chassis.setChassisSpeeds({0,0,0});
+            }
+            Chassis.periodic();
+
             unsigned long time = us_ticker_read();
 
             loopTimer = timeStart;
