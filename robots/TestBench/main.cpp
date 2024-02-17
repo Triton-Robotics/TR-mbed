@@ -11,8 +11,8 @@ DJIMotor LFLYWHEEL(1, CANHandler::CANBUS_2, M3508);
 DigitalOut led(L27);
 DigitalOut led2(L26);
 
-int SPEED_BOOST_VAL = 3600;
-int SPEED_VAL = 3200;
+int SPEED_BOOST_VAL = 3600; // Unused currently
+int SPEED_VAL = 5400;
 
 int main(){
 
@@ -52,7 +52,7 @@ int main(){
             if (refLoop >= 25){
                 refereeThread(&referee);
                 refLoop = 0;
-                speedVal = SPEED_VAL;
+//                speedVal = SPEED_VAL;
             }
 
             // Blinking LED and Read Remote
@@ -77,14 +77,14 @@ int main(){
                 printff("%d %d\n", desiredSpeed, LFLYWHEEL.getData(VELOCITY));
             }
 
-            if (remote.leftX() > 10) {
-                speedVal = SPEED_BOOST_VAL;
-            }
+//            if (remote.leftX() > 10) {
+//                speedVal = SPEED_BOOST_VAL;
+//            }
 
             // Sets Speed
             LFLYWHEEL.setSpeed(((int)remote.leftSwitch()-1) * -speedVal);
             RFLYWHEEL.setSpeed(((int)remote.leftSwitch()-1) * speedVal);
-            indexer.setPower(power);
+            indexer.setPower(6600);
 
             loopTimer = timeStart;
             DJIMotor::s_sendValues();
