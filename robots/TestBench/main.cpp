@@ -12,7 +12,7 @@ DigitalOut led(L27);
 DigitalOut led2(L26);
 
 int SPEED_BOOST_VAL = 3600; // Unused currently
-int SPEED_VAL = 5400;
+int SPEED_VAL = 6500;
 
 int main(){
 
@@ -84,7 +84,7 @@ int main(){
             // Sets Speed
             LFLYWHEEL.setSpeed(((int)remote.leftSwitch()-1) * -speedVal);
             RFLYWHEEL.setSpeed(((int)remote.leftSwitch()-1) * speedVal);
-            indexer.setPower(6600);
+            indexer.setPower(power);
 
             loopTimer = timeStart;
             DJIMotor::s_sendValues();
