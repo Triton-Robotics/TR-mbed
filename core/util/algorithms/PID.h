@@ -49,6 +49,8 @@ public:
      */
     void setPID(float p, float i, float d, float integralCap = 0, float outputCap = 0);
 
+    void resetPID(float kP, float kI, float kD);
+
 
     /**
      * Calculates an output power based on the current and desired measurement (speed/position)
@@ -75,7 +77,6 @@ public:
      * @param outCap The new output cap
      */
     void setOutputCap(float outCap);
-
 
 };
 

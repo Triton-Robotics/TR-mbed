@@ -25,6 +25,17 @@ void PID::setPID(float kP, float kI, float kD, float integralCap, float outputCa
     this -> outputCap = outputCap;
 }
 
+void PID::resetPID(float kP, float kI, float kD){
+    this -> kP = kP;
+    this -> kI = kI;
+    this -> kD = kD;
+    this -> integralCap = integralCap;
+    this -> outputCap = outputCap;
+
+    lastError = 0;
+    errorIntegral = 0;
+}
+
 int PID::calculate(int desired, int current, double dt) {
 
     dt /= 1000;

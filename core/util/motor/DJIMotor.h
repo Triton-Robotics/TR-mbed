@@ -15,7 +15,7 @@ constexpr int TIMEOUT_MS = 400;
 constexpr int CAN_HANDLER_NUMBER = 2;
 
 constexpr int INT16_T_MAX = 32767;
-constexpr int INT15_T_MAX = 16384;
+constexpr int INT15_T_MAX = 16383;
 
 static int s_sendIDs[3] = {0x200, 0x1FF, 0x2FF};           //IDs to send data
 static Thread s_motorFeedbackThread(osPriorityAboveNormal);     //threading for Motor::tick()
@@ -100,7 +100,6 @@ private:
 
     short canID_0;                                                  // canID - 1, because canID is 1-8, arrays are 0-7
     short motorID_0;                                                // physical motorID - 1
-    motorType type = NONE;                                          // type of the motor
     motorMoveMode mode = OFF;                                       // mode of the motor
 
     //  angle | velocity | torque | temperature
@@ -133,6 +132,8 @@ public:
     int outputCap = INT16_T_MAX;
     bool useAbsEncoder = true;
     bool printAngle = false;
+
+    motorType type = NONE;
 
     explicit DJIMotor(bool isErroneousMotor = false);
     DJIMotor(short motorID, CANHandler::CANBus canBus, motorType type = STANDARD, const std::string& name = "NO_NAME");
