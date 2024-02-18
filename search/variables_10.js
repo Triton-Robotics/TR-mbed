@@ -1,5 +1,20 @@
 var searchData=
 [
-  ['q_1880',['Q',['../structekf__t.html#a83bcad986881f5706372a744bce3b55e',1,'ekf_t::Q()'],['../structekf__t.html#ab306bdb1ac708e1ce023923def747080',1,'ekf_t::Q()']]],
-  ['quat_1881',['quat',['../imuExampleQuaternions_8cpp.html#a433dc2d132f85677b94548961f27a7e5',1,'imuExampleQuaternions.cpp']]]
+  ['p_1898',['P',['../structekf__t.html#a3f28e844854649b8bc33769a614fc044',1,'ekf_t']]],
+  ['p_1899',['p',['../structBNO055__EULER__TypeDef.html#acf440a186707033203462fc8f316ab1a',1,'BNO055_EULER_TypeDef::p()'],['../imuExampleQuaternions_8cpp.html#ad4dd3636d8f0735f00e07fb2ff7ce5f9',1,'p():&#160;imuExampleQuaternions.cpp'],['../imuExampleAllData_8cpp.html#ad4dd3636d8f0735f00e07fb2ff7ce5f9',1,'p():&#160;imuExampleAllData.cpp']]],
+  ['p_1900',['P',['../structekf__t.html#a1677cad80e86a72c1e46d00e14e73507',1,'ekf_t']]],
+  ['pidposition_1901',['pidPosition',['../classDJIMotor.html#a3c65dfbd935be4734c15fe7580d2cc53',1,'DJIMotor']]],
+  ['pidspeed_1902',['pidSpeed',['../classDJIMotor.html#a8cc310c5708fb1eb837c2064cdd0cbc8',1,'DJIMotor']]],
+  ['pitch_1903',['pitch',['../structBNO055__ANGULAR__POSITION__typedef.html#a69fe567af50605d9fbb33949124916af',1,'BNO055_ANGULAR_POSITION_typedef::pitch()'],['../Sentry_2main_8cpp.html#a84afe59d6f4b2599dfe68390d46ea708',1,'pitch():&#160;main.cpp'],['../Infantry_2main_8cpp.html#ac8baa493ff931cd47bfca10992dadd1d',1,'pitch():&#160;main.cpp'],['../Hero_2main_8cpp.html#a33476f2977e0e9f244066391483cb42f',1,'pitch():&#160;main.cpp']]],
+  ['pitch2_1904',['pitch2',['../Infantry_2main_8cpp.html#a7f2c4fd7ba86df49f16aecb3f44b2cc1',1,'main.cpp']]],
+  ['power_5frune_5fbuff_1905',['power_rune_buff',['../structext__buff__t.html#a8e5375851654acb3742eece8a7b9ce7b',1,'ext_buff_t']]],
+  ['powerout_1906',['powerOut',['../classDJIMotor.html#a3de5c2429ae817d55ee56aa33ecfe44a',1,'DJIMotor']]],
+  ['pp_1907',['Pp',['../structekf__t.html#ad533f1cd6f7388d4d177265f5a88426e',1,'ekf_t::Pp()'],['../structekf__t.html#ad8d25421f33aff1ff45f3ca48911abde',1,'ekf_t::Pp()']]],
+  ['prevls_1908',['prevLS',['../Hero_2main_8cpp.html#a85cee5741ab7d0687c1c4a258f1d7c59',1,'main.cpp']]],
+  ['prevrs_1909',['prevRS',['../Hero_2main_8cpp.html#afc6ec16348d6bb58da488feab2a05bee',1,'main.cpp']]],
+  ['prevvel_1910',['prevVel',['../classChassis.html#ad3312d23a758eb6977d3b44591624c1d',1,'Chassis']]],
+  ['print_5fcode_5fthread_1911',['print_code_thread',['../classTRMutex.html#ad98b7f68b8cfc5b2fe920b43fee2013b',1,'TRMutex']]],
+  ['printangle_1912',['printAngle',['../classDJIMotor.html#a722b68762ff53f6102a6f64b5bc731cc',1,'DJIMotor']]],
+  ['printer_1913',['printer',['../main_8h.html#a2adae086a2ae3536cb44de2df0aa44c0',1,'main.h']]],
+  ['priorityindicator_1914',['priorityIndicator',['../classTRMutex.html#a7634374f088cf7589d45df45b572af84',1,'TRMutex']]]
 ];

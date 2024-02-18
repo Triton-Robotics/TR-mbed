@@ -1,12 +1,6 @@
 var searchData=
 [
-  ['last_5fdart_5flaunch_5ftime_1834',['last_dart_launch_time',['../structext__dart__client__cmd__t.html#a4ac00be5861bd963fa710e201cc50175',1,'ext_dart_client_cmd_t']]],
-  ['layer_1835',['layer',['../struct____packed.html#a532b1a6b4a5c5c92e0df34129ddcfdd6',1,'__packed::layer()'],['../struct____packed.html#a532b1a6b4a5c5c92e0df34129ddcfdd6',1,'__packed::layer()']]],
-  ['lb_1836',['LB',['../classWheelSpeeds.html#aef971dd6bc99754e9c204c9b5e2c561e',1,'WheelSpeeds']]],
-  ['lbottomflywheel_1837',['LBOTTOMFLYWHEEL',['../Sentry_2main_8cpp.html#a2afb9376452aa306fa1df4d1d19c02aa',1,'main.cpp']]],
-  ['level_1838',['level',['../structext__referee__warning__t.html#a9a5820b5a238c06b7eda6fd1835e27df',1,'ext_referee_warning_t']]],
-  ['lf_1839',['LF',['../classWheelSpeeds.html#aa6d46770ab92112d6984a7138c238035',1,'WheelSpeeds']]],
-  ['lflywheel_1840',['LFLYWHEEL',['../Hero_2main_8cpp.html#a274141732086b259b9dc8ee822ada549',1,'LFLYWHEEL():&#160;main.cpp'],['../Infantry_2main_8cpp.html#a432a243bd1262af481065797febf52f5',1,'LFLYWHEEL():&#160;main.cpp']]],
-  ['linear_5facc_1841',['linear_acc',['../imuExampleAllData_8cpp.html#a3a594955bf0fcab8fd702c02d92e3ce3',1,'imuExampleAllData.cpp']]],
-  ['ltopflywheel_1842',['LTOPFLYWHEEL',['../Sentry_2main_8cpp.html#abee266236980eab9f54c522cf5294eb1',1,'main.cpp']]]
+  ['kd_1861',['kD',['../structPIDDataSet.html#aa81c8887c5043a441c7fc41032a2c0c5',1,'PIDDataSet']]],
+  ['ki_1862',['kI',['../structPIDDataSet.html#a8e78e6ab1e2951af32146846685a6031',1,'PIDDataSet']]],
+  ['kp_1863',['kP',['../structPIDDataSet.html#aa0827cfd645850d58ed3284882fba430',1,'PIDDataSet']]]
 ];

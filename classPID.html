@@ -81,6 +81,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a11fa491da71a1f9e95bfa95776d09f7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a328bd50f380430b2d5d475dd1a30adfd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a328bd50f380430b2d5d475dd1a30adfd">setPID</a> (float <a class="el" href="imuExampleQuaternions_8cpp.html#ad4dd3636d8f0735f00e07fb2ff7ce5f9">p</a>, float i, float d, float integralCap=0, float outputCap=0)</td></tr>
 <tr class="separator:a328bd50f380430b2d5d475dd1a30adfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac1d2511d0b16b821e81c9cb2c6dae174"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#ac1d2511d0b16b821e81c9cb2c6dae174">resetPID</a> (float kP, float kI, float kD)</td></tr>
+<tr class="separator:ac1d2511d0b16b821e81c9cb2c6dae174"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a908c6955daeac2cf3e65682d661a85c6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a908c6955daeac2cf3e65682d661a85c6">calculate</a> (int desired, int current, double dt)</td></tr>
 <tr class="separator:a908c6955daeac2cf3e65682d661a85c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a260015c5948e580ea5b620a628b17179"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a260015c5948e580ea5b620a628b17179">calculatePeriodic</a> (float error, double dt)</td></tr>
@@ -259,6 +261,40 @@ Public Attributes</h2></td></tr>
           <td class="paramtype">double &amp;&#160;</td>
           <td class="paramname"><em>PIDCalc</em></td><td>)</td>
           <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac1d2511d0b16b821e81c9cb2c6dae174"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac1d2511d0b16b821e81c9cb2c6dae174">&#9670;&nbsp;</a></span>resetPID()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PID::resetPID </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>kP</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>kI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>kD</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">

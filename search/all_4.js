@@ -44,5 +44,6 @@ var searchData=
   ['drivexyr_315',['driveXYR',['../classChassis.html#a964c30630d2724e1e4f1774d0df305cc',1,'Chassis']]],
   ['drivexyrpower_316',['driveXYRPower',['../classChassis.html#ac19240e24c88afd4835a34cd651e3797',1,'Chassis']]],
   ['dt_317',['dt',['../classChassisKalman.html#a80a7e01c3e416fb724cdd5ed1f7e5956',1,'ChassisKalman::dt()'],['../classWheelKalman.html#af5fb60ec5b998fe6d959641a24b4fd72',1,'WheelKalman::dt()']]],
-  ['dumpinfo_318',['dumpInfo',['../classRemote.html#ab3e55d985b57ba798e757b24b8ed76de',1,'Remote']]]
+  ['dumpdata_318',['dumpData',['../structPIDDataSet.html#af4366c74885d71c79858da6bf282dabd',1,'PIDDataSet']]],
+  ['dumpinfo_319',['dumpInfo',['../classRemote.html#ab3e55d985b57ba798e757b24b8ed76de',1,'Remote']]]
 ];
