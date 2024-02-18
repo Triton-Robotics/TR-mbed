@@ -66,6 +66,12 @@ struct ChassisSpeeds
     double vOmega;
 };
 
+struct OmniKinematicsLimits
+{
+    double max_Vel;
+    double max_vOmega;
+};
+
 /**
  * The Chassis class is a wrapper for the DJIMotor class that allows for easy control of the chassis.
  * It also contains methods for controlling the chassis in a field relative manner, and for controlling the chassis
@@ -117,10 +123,22 @@ public:
     WheelSpeeds getWheelSpeeds();
 
     /**
-     * The driveMotors method drives each motor at a specific speed
+     * The setWheelSpeeds method drives each motor at a specific speed
      * @param wheelSpeeds The speeds in RPM to drive each motor at
      */
     void setWheelSpeeds(WheelSpeeds wheelSpeeds);
+
+    /**
+     * The normalizeWheelSpeeds method normalizes each motor with respect to m_OmniKinematicsLimits.max_Vel
+     * @param wheelSpeeds The speeds in m/s to drive each motor at
+     */
+    WheelSpeeds normalizeWheelSpeeds(WheelSpeeds wheelSpeeds);
+
+    /**
+     * The driveMotors method drives each motor at a specific speed
+     * @param wheelPower The speeds in [-1, 1] to drive each motor at
+     */
+    void setWheelPower(WheelSpeeds wheelPower);
 
     /**
      * Gets the chassis's current ChassisSpeeds
@@ -129,11 +147,26 @@ public:
     ChassisSpeeds getChassisSpeeds();
 
     /**
-     * The driveXYR method is used to drive the chassis in a chassis relative manner.
+     * The setChassisSpeeds method is used to drive the chassis in a chassis relative manner.
      *
-     * @param chassisSpeeds The robot-relative speeds (vX, vY, and vOmega) in RPM
+     * @param desiredChassisSpeeds The robot-relative speeds (vX, vY, and vOmega) in RPM
      */
     void setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds);
+
+    /**
+     * The setChassisPower method is used to drive the chassis in a chassis relative manner.
+     *
+     * @param desiredChassisPower The robot-relative power (vX, vY, and vOmega) in [-1, 1]
+     */
+    void setChassisPower(ChassisSpeeds desiredChassisPower);
+
+    /**
+     * The setTurretRelative method is used to drive the chassis in a turret relative manner.
+     *
+     * @param speeds The turret-relative speeds (vX, vY, and vOmega) in m/s
+     * @param turretAngleDegrees The CCW-positive angle of the turret in degrees
+     */
+    ChassisSpeeds setTurretRelative(ChassisSpeeds speeds, double turretAngleDegrees);
 
     /**
      * A helper method to find a DJIMotor object from an index.
@@ -165,6 +198,12 @@ public:
      * @param FF The arbitrary Feedforward value ranges from [-1, 1]
      */
     void setSpeedFeedforward(MotorLocation location, double FF);
+
+    /**
+     * Sets the Friction Feedforward compensation for the SpeedPID
+     * @param Ks The arbitrary Friction Feedforward Gain in [-1, 1]
+     */
+    void setSpeedFF_Ks(double Ks);
 
     /**
      * A helper method to find the brake mode of the chassis.
@@ -233,6 +272,8 @@ public:
     ChassisSpeeds desiredChassisSpeeds;
     WheelSpeeds desiredWheelSpeeds;
 
+    OmniKinematicsLimits m_OmniKinematicsLimits;
+
     ChassisSpeeds m_chassisSpeeds;
     WheelSpeeds m_wheelSpeeds;
 
@@ -264,6 +305,8 @@ private:
     
     WheelSpeeds chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds);
     ChassisSpeeds wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds);
+
+    double FF_Ks;
 
     void setMotorPower(MotorLocation location, double power);
     void setMotorSpeedRPM(MotorLocation location, double speed);

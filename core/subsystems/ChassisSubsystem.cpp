@@ -24,11 +24,15 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
     this->rbId = rbId;
 
     setOmniKinematics(radius);
+    m_OmniKinematicsLimits.max_Vel = 2.92; // m/s
+    m_OmniKinematicsLimits.max_vOmega = 2; // rad/s
 
-    LF.setSpeedPID(1.5, 0, 0);
-    RF.setSpeedPID(1.5, 0, 0);
-    LB.setSpeedPID(1.5, 0, 0);
-    RB.setSpeedPID(1.5, 0, 0);
+    FF_Ks = 0;
+
+    LF.setSpeedPID(2, 0, 0);
+    RF.setSpeedPID(2, 0, 0);
+    LB.setSpeedPID(2, 0, 0);
+    RB.setSpeedPID(2, 0, 0);
     
     brakeMode = COAST;
 
@@ -49,6 +53,38 @@ void ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     setMotorSpeedRPM(RIGHT_BACK, wheelSpeeds.RB);
 }
 
+WheelSpeeds ChassisSubsystem::normalizeWheelSpeeds(WheelSpeeds wheelSpeeds)
+{
+    double speeds[4] = {wheelSpeeds.LF, wheelSpeeds.RF, wheelSpeeds.LB, wheelSpeeds.RB};
+    double max_speed = m_OmniKinematicsLimits.max_Vel;
+
+    for (int i = 0; i < 4; i++)
+    {
+        if (speeds[i] > max_speed)
+        {
+            max_speed = speeds[i];
+        }
+    }
+
+    if (max_speed > m_OmniKinematicsLimits.max_Vel)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            speeds[i] = speeds[i] / max_speed * m_OmniKinematicsLimits.max_Vel;
+        }
+    }
+
+    return {speeds[0], speeds[1], speeds[2], speeds[3]};
+}
+
+void ChassisSubsystem::setWheelPower(WheelSpeeds wheelPower)
+{
+    setMotorPower(LEFT_FRONT, wheelPower.LF);
+    setMotorPower(RIGHT_FRONT, wheelPower.RF);
+    setMotorPower(LEFT_BACK, wheelPower.LB);
+    setMotorPower(RIGHT_BACK, wheelPower.RB);
+}
+
 ChassisSpeeds ChassisSubsystem::getChassisSpeeds()
 {
     return m_chassisSpeeds;
@@ -58,8 +94,23 @@ void ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_)
 {
     desiredChassisSpeeds = desiredChassisSpeeds_; // ChassisSpeeds in m/s
     WheelSpeeds wheelSpeeds = chassisSpeedsToWheelSpeeds(desiredChassisSpeeds_); // in m/s (for now)
+    wheelSpeeds = normalizeWheelSpeeds(wheelSpeeds);
     wheelSpeeds *= (1 / (WHEEL_DIAMETER_METERS / 2) / (2 * PI / 60) * M3508_GEAR_RATIO);
     setWheelSpeeds(wheelSpeeds);
+}
+
+void ChassisSubsystem::setChassisPower(ChassisSpeeds desiredChassisPower)
+{
+    WheelSpeeds wheelPower = chassisSpeedsToWheelSpeeds(desiredChassisPower); // in [-1, 1] (for now)
+    setWheelPower(wheelPower);
+}
+
+ChassisSpeeds ChassisSubsystem::setTurretRelative(ChassisSpeeds speeds, double turretAngleDegrees)
+{
+    double theta;
+    return {speeds.vX * cos(turretAngleDegrees) + speeds.vY * sin(turretAngleDegrees), 
+            -speeds.vX * sin(turretAngleDegrees) + speeds.vY * cos(turretAngleDegrees), 
+            speeds.vOmega};
 }
 
 DJIMotor &ChassisSubsystem::getMotor(MotorLocation location)
@@ -90,6 +141,11 @@ void ChassisSubsystem::setSpeedIntegralCap(MotorLocation location, double cap)
 void ChassisSubsystem::setSpeedFeedforward(MotorLocation location, double FF)
 {
     getMotor(location).pidSpeed.feedForward = FF * INT15_T_MAX;
+}
+
+void ChassisSubsystem::setSpeedFF_Ks(double Ks)
+{
+    FF_Ks = Ks;
 }
 
 ChassisSubsystem::BrakeMode ChassisSubsystem::getBrakeMode()
@@ -159,10 +215,10 @@ OmniKinematics ChassisSubsystem::setOmniKinematics(double radius)
 
 WheelSpeeds ChassisSubsystem::chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds)
 {
-    return {(1 / sqrt(2)) * (chassisSpeeds.vX + chassisSpeeds.vY + chassisSpeeds.vOmega * ((m_OmniKinematics.r1x) - (m_OmniKinematics.r1y))),
-            (1 / sqrt(2)) * (chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y))),
-            (1 / sqrt(2)) * (-chassisSpeeds.vX + chassisSpeeds.vY + chassisSpeeds.vOmega * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y))),
-            (1 / sqrt(2)) * (-chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y)))};
+    return {(1 / sqrt(2)) * (chassisSpeeds.vX + chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r1x) - (m_OmniKinematics.r1y))),
+            (1 / sqrt(2)) * (chassisSpeeds.vX - chassisSpeeds.vY + chassisSpeeds.vOmega * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y))),
+            (1 / sqrt(2)) * (-chassisSpeeds.vX + chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y))),
+            (1 / sqrt(2)) * (-chassisSpeeds.vX - chassisSpeeds.vY + chassisSpeeds.vOmega * ((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y)))};
 }
 
 ChassisSpeeds ChassisSubsystem::wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds)
@@ -172,7 +228,13 @@ ChassisSpeeds ChassisSubsystem::wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpee
 
 void ChassisSubsystem::setMotorPower(MotorLocation location, double power)
 {
-    getMotor(location).setPower(power);
+    if (brakeMode == COAST && power == 0) // Should be BRAKE
+    {
+        getMotor(location).setSpeed(0);
+        setSpeedFeedforward(location, 0);
+        return;
+    }
+    getMotor(location).setPower(power * INT15_T_MAX);
 }
 
 void ChassisSubsystem::setMotorSpeedRPM(MotorLocation location, double speed)
@@ -184,7 +246,8 @@ void ChassisSubsystem::setMotorSpeedRPM(MotorLocation location, double speed)
         return;
     }
     getMotor(location).setSpeed(speed);
-    setSpeedFeedforward(location, speed / (M3508_POST_MAX_RPM * M3508_GEAR_RATIO));
+    double sgn_speed = speed/abs(speed); // if speed is 0, it won't execute this line
+    setSpeedFeedforward(location, FF_Ks * sgn_speed);
 }
 
 double ChassisSubsystem::radiansToTicks(double radians)

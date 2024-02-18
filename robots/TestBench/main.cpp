@@ -44,7 +44,14 @@ int main()
                 // printff("%d\n", Chassis.getMotor(ChassisSubsystem::LEFT_FRONT)>>VELOCITY);
                 // printff("%s\n", Chassis.desiredWheelSpeeds.to_string());
                 WheelSpeeds ws = Chassis.desiredWheelSpeeds;
-                printff("LF: %4.2f RF: %4.2f LB: %4.2f RB: %4.2f\n", ws.LF, ws.RF, ws.LB, ws.RB);
+
+                // printff("%d ", Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(POWEROUT));
+                // printff("%f\n", Chassis.getMotorSpeed(ChassisSubsystem::LEFT_BACK, ChassisSubsystem::RPM) / M3508_GEAR_RATIO);
+                // printff("%f ", Chassis.desiredWheelSpeeds.LB / M3508_GEAR_RATIO * 2 * PI / 60 * WHEEL_DIAMETER_METERS / 2);
+                // printff("%f\n",Chassis.getMotorSpeed(ChassisSubsystem::LEFT_BACK, ChassisSubsystem::METER_PER_SECOND));
+                // printff("LF: %4.2f RF: %4.2f LB: %4.2f RB: %4.2f\n", ws.LF, ws.RF, ws.LB, ws.RB);
+
+                printff("%f\n", sin(PI));
 
             }
 
@@ -61,12 +68,19 @@ int main()
             // printff("%d\n", yawOne.getData(ANGLE));
             if (remote.rightSwitch() == Remote::SwitchState::UP)
             {
-                double max_vel = 0.0254 * 2 * (8000 / M3508_GEAR_RATIO) * (2 * PI / 60);
-                double jx = remote.leftX() / 660.0;
-                double jy = remote.leftY() / 660.0;
-                double jr = remote.rightX() / 660.0;
+                double scalar = 1;
+                double jx = remote.leftX() / 660.0 * scalar;
+                double jy = remote.leftY() / 660.0 * scalar;
+                double jr = remote.rightX() / 660.0 * scalar;
 
-                Chassis.setChassisSpeeds({jx, jy, jr});
+                double tolerance = 0.05;
+                jx = (abs(jx) < tolerance) ? 0 : jx;
+                jy = (abs(jy) < tolerance) ? 0 : jy;
+                jr = (abs(jr) < tolerance) ? 0 : jr;
+
+                Chassis.setSpeedFF_Ks(0.065);
+                Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel, jy * Chassis.m_OmniKinematicsLimits.max_Vel, jr * Chassis.m_OmniKinematicsLimits.max_vOmega});
+                // Chassis.setChassisPower({jx, jy, jr});
                 
                 // double LFa = (1 / sqrt(2)) * (jx + jy + jr * ((-0.228) - (0.228)));
                 // ChassisOne.setSpeed(LFa / (0.0254 * 2) / (2 * PI / 60) * M3508_GEAR_RATIO);
