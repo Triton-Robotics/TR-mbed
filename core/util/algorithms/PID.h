@@ -66,7 +66,9 @@ public:
 
     int calculatePeriodic(float error, double dt);
 
-    void limitOutput(double &PIDCalc);
+    void limitOutput(double &PIDCalc) const;
+
+    void limitErrorIntegral();
 
     /**
      * Sets the integral cap
