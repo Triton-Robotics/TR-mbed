@@ -11,7 +11,7 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
       LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE),
       RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE),
       imu(imu)
-    // chassisKalman()
+// chassisKalman()
 {
     LF.outputCap = 16000; // DJIMotor class has a max outputCap: 16384
     RF.outputCap = 16000;
@@ -33,7 +33,7 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
     RF.setSpeedPID(2, 0, 0);
     LB.setSpeedPID(2, 0, 0);
     RB.setSpeedPID(2, 0, 0);
-    
+
     brakeMode = COAST;
 
     // isInverted[0] = 1; isInverted[1] = 1; isInverted[2] = 1; isInverted[3] = 1;
@@ -45,7 +45,7 @@ WheelSpeeds ChassisSubsystem::getWheelSpeeds()
 }
 
 void ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
-{   
+{
     desiredWheelSpeeds = wheelSpeeds; // WheelSpeeds in RPM
     setMotorSpeedRPM(LEFT_FRONT, wheelSpeeds.LF);
     setMotorSpeedRPM(RIGHT_FRONT, wheelSpeeds.RF);
@@ -90,9 +90,15 @@ ChassisSpeeds ChassisSubsystem::getChassisSpeeds()
     return m_chassisSpeeds;
 }
 
-void ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_)
+void ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode)
 {
-    desiredChassisSpeeds = desiredChassisSpeeds_; // ChassisSpeeds in m/s
+    if (mode == YAW_ORIENTED)
+    {
+    }
+    else if (mode == ROBOT_ORIENTED)
+    {
+        desiredChassisSpeeds = desiredChassisSpeeds_; // ChassisSpeeds in m/s
+    }
     WheelSpeeds wheelSpeeds = chassisSpeedsToWheelSpeeds(desiredChassisSpeeds_); // in m/s (for now)
     wheelSpeeds = normalizeWheelSpeeds(wheelSpeeds);
     wheelSpeeds *= (1 / (WHEEL_DIAMETER_METERS / 2) / (2 * PI / 60) * M3508_GEAR_RATIO);
@@ -105,11 +111,10 @@ void ChassisSubsystem::setChassisPower(ChassisSpeeds desiredChassisPower)
     setWheelPower(wheelPower);
 }
 
-ChassisSpeeds ChassisSubsystem::setTurretRelative(ChassisSpeeds speeds, double turretAngleDegrees)
+ChassisSpeeds ChassisSubsystem::rotateChassisSpeed(ChassisSpeeds speeds, double theta)
 {
-    double theta;
-    return {speeds.vX * cos(turretAngleDegrees) + speeds.vY * sin(turretAngleDegrees), 
-            -speeds.vX * sin(turretAngleDegrees) + speeds.vY * cos(turretAngleDegrees), 
+    return {speeds.vX * cos(theta) + speeds.vY * sin(theta),
+            -speeds.vX * sin(theta) + speeds.vY * cos(theta),
             speeds.vOmega};
 }
 
@@ -246,8 +251,14 @@ void ChassisSubsystem::setMotorSpeedRPM(MotorLocation location, double speed)
         return;
     }
     getMotor(location).setSpeed(speed);
-    double sgn_speed = speed/abs(speed); // if speed is 0, it won't execute this line
+    double sgn_speed = speed / abs(speed); // if speed is 0, it won't execute this line
     setSpeedFeedforward(location, FF_Ks * sgn_speed);
+}
+
+void ChassisSubsystem::setYawReference(DJIMotor *motor, double initial_offset_ticks)
+{
+    yaw = motor;
+    yawPhase = initial_offset_ticks / TICKS_REVOLUTION;
 }
 
 double ChassisSubsystem::radiansToTicks(double radians)

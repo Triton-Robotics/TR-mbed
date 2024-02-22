@@ -12,6 +12,7 @@ BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 // DJIMotor ChassisThree(3, CANHandler::CANBUS_1, STANDARD, "testMotor");
 // DJIMotor ChassisFour(4, CANHandler::CANBUS_1, STANDARD, "testMotor");
 DJIMotor yawOne(5, CANHandler::CANBUS_1, GM6020, "testMotor");
+DJIMotor yawTwo(6, CANHandler::CANBUS_1, GM6020, "testMotor");
 ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
 
 int main()
@@ -39,7 +40,7 @@ int main()
                 refereeThread(&referee);
                 refLoop = 0;
                 led = !led;
-    
+
                 // printff("%f\n", Chassis.getMotorSpeed(ChassisSubsystem::LEFT_FRONT, ChassisSubsystem::METER_PER_SECOND));
                 // printff("%d\n", Chassis.getMotor(ChassisSubsystem::LEFT_FRONT)>>VELOCITY);
                 // printff("%s\n", Chassis.desiredWheelSpeeds.to_string());
@@ -52,7 +53,6 @@ int main()
                 // printff("LF: %4.2f RF: %4.2f LB: %4.2f RB: %4.2f\n", ws.LF, ws.RF, ws.LB, ws.RB);
 
                 printff("%f\n", sin(PI));
-
             }
 
             remoteRead();
@@ -81,7 +81,7 @@ int main()
                 Chassis.setSpeedFF_Ks(0.065);
                 Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel, jy * Chassis.m_OmniKinematicsLimits.max_Vel, jr * Chassis.m_OmniKinematicsLimits.max_vOmega});
                 // Chassis.setChassisPower({jx, jy, jr});
-                
+
                 // double LFa = (1 / sqrt(2)) * (jx + jy + jr * ((-0.228) - (0.228)));
                 // ChassisOne.setSpeed(LFa / (0.0254 * 2) / (2 * PI / 60) * M3508_GEAR_RATIO);
                 // // ChassisOne.setPower(LFa);
@@ -104,7 +104,7 @@ int main()
             }
             else
             {
-                Chassis.setChassisSpeeds({0,0,0});
+                Chassis.setChassisSpeeds({0, 0, 0});
             }
             Chassis.periodic();
 

@@ -116,6 +116,12 @@ public:
         METER_PER_SECOND,
     };
 
+    enum DRIVE_MODE
+    {
+        YAW_ORIENTED,
+        ROBOT_ORIENTED
+    };
+
     /**
      * Gets the chassis's current WheelSpeeds
      * @return The chassis's current WheelSpeeds
@@ -151,7 +157,7 @@ public:
      *
      * @param desiredChassisSpeeds The robot-relative speeds (vX, vY, and vOmega) in RPM
      */
-    void setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds);
+    void setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode = ROBOT_ORIENTED);
 
     /**
      * The setChassisPower method is used to drive the chassis in a chassis relative manner.
@@ -161,12 +167,12 @@ public:
     void setChassisPower(ChassisSpeeds desiredChassisPower);
 
     /**
-     * The setTurretRelative method is used to drive the chassis in a turret relative manner.
+     * The rotateChassisSpeed method
      *
-     * @param speeds The turret-relative speeds (vX, vY, and vOmega) in m/s
-     * @param turretAngleDegrees The CCW-positive angle of the turret in degrees
+     * @param speeds The relative speeds (vX, vY, and vOmega) in m/s
+     * @param theta The CCW-positive angle in degrees
      */
-    ChassisSpeeds setTurretRelative(ChassisSpeeds speeds, double turretAngleDegrees);
+    ChassisSpeeds rotateChassisSpeed(ChassisSpeeds speeds, double theta);
 
     /**
      * A helper method to find a DJIMotor object from an index.
@@ -269,6 +275,8 @@ public:
 
     bool allMotorsConnected();
 
+    void setYawReference(DJIMotor *motor, double initialOffsetRad);
+
     ChassisSpeeds desiredChassisSpeeds;
     WheelSpeeds desiredWheelSpeeds;
 
@@ -279,7 +287,6 @@ public:
 
     // int8_t isInverted[4];
 
-
     double prevVel;
 
     int testData[300][4];
@@ -287,6 +294,8 @@ public:
 
 private:
     DJIMotor LF, RF, LB, RB;
+    DJIMotor *yaw = 0;
+    double yawPhase;
     BrakeMode brakeMode;
 
     // double beybladeSpeed;
@@ -302,7 +311,7 @@ private:
 
     OmniKinematics m_OmniKinematics;
     OmniKinematics setOmniKinematics(double radius);
-    
+
     WheelSpeeds chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds);
     ChassisSpeeds wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds);
 
