@@ -1,5 +1,4 @@
 #include "PID.h"
-#include <cmath>
 
 PID::PID(){
     kP = 0; kI = 0; kD = 0;
@@ -25,7 +24,7 @@ void PID::setPID(float kP, float kI, float kD, float integralCap, float outputCa
     this -> outputCap = outputCap;
 }
 
-void PID::resetPID(float kP, float kI, float kD){
+void PID::resetPID(float kP, float kI, float kD, float integralCap, float outputCap){
     this -> kP = kP;
     this -> kI = kI;
     this -> kD = kD;
@@ -36,22 +35,14 @@ void PID::resetPID(float kP, float kI, float kD){
     errorIntegral = 0;
 }
 
+void PID::resetErrorIntegral(){
+    lastError = 0;
+    errorIntegral = 0;
+}
+
 int PID::calculate(int desired, int current, double dt) {
-
-    dt /= 1000;
-
     float error = static_cast<float>(desired - current);
-    errorIntegral += dt * (error + lastError) / 2;
-
-    double PIDCalc = (kP * error) + (kI * errorIntegral) + feedForward;
-
-    if(dt > 0)
-        PIDCalc += (kD * (error - lastError) / dt);
-
-    lastError = error;
-
-    limitOutput(PIDCalc);
-    return static_cast<int>(PIDCalc);
+    return calculatePeriodic(error, dt);
 }
 
 int PID::calculatePeriodic(float error, double dt) {

@@ -49,7 +49,9 @@ public:
      */
     void setPID(float p, float i, float d, float integralCap = 0, float outputCap = 0);
 
-    void resetPID(float kP, float kI, float kD);
+    void resetPID(float kP, float kI, float kD, float integralCap = 0, float outputCap = 0);
+
+    void resetErrorIntegral();
 
 
     /**
