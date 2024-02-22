@@ -89,8 +89,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a908c6955daeac2cf3e65682d661a85c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a260015c5948e580ea5b620a628b17179"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a260015c5948e580ea5b620a628b17179">calculatePeriodic</a> (float error, double dt)</td></tr>
 <tr class="separator:a260015c5948e580ea5b620a628b17179"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2c2837919a7d455e64ac315c4863ebac"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a2c2837919a7d455e64ac315c4863ebac">limitOutput</a> (double &amp;PIDCalc)</td></tr>
-<tr class="separator:a2c2837919a7d455e64ac315c4863ebac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af95f3cef98375cc0ef81fe7630ab1ec9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#af95f3cef98375cc0ef81fe7630ab1ec9">limitOutput</a> (double &amp;PIDCalc) const</td></tr>
+<tr class="separator:af95f3cef98375cc0ef81fe7630ab1ec9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa983201822da3346499943637f2779e1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#aa983201822da3346499943637f2779e1">limitErrorIntegral</a> ()</td></tr>
+<tr class="separator:aa983201822da3346499943637f2779e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac3dde8d74b0f05b5a82ed8b8018b855f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#ac3dde8d74b0f05b5a82ed8b8018b855f">setIntegralCap</a> (float integralCap)</td></tr>
 <tr class="separator:ac3dde8d74b0f05b5a82ed8b8018b855f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a53169403b2a9bed490ed0346c4fff9ea"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPID.html#a53169403b2a9bed490ed0346c4fff9ea">setOutputCap</a> (float outCap)</td></tr>
@@ -251,8 +253,25 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a2c2837919a7d455e64ac315c4863ebac"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2c2837919a7d455e64ac315c4863ebac">&#9670;&nbsp;</a></span>limitOutput()</h2>
+<a id="aa983201822da3346499943637f2779e1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa983201822da3346499943637f2779e1">&#9670;&nbsp;</a></span>limitErrorIntegral()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PID::limitErrorIntegral </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af95f3cef98375cc0ef81fe7630ab1ec9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af95f3cef98375cc0ef81fe7630ab1ec9">&#9670;&nbsp;</a></span>limitOutput()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -262,7 +281,7 @@ Public Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramtype">double &amp;&#160;</td>
           <td class="paramname"><em>PIDCalc</em></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
