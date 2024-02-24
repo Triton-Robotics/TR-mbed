@@ -12,7 +12,7 @@ DigitalOut led(L27);
 DigitalOut led2(L26);
 
 int SPEED_BOOST_VAL = 3600; // Unused currently
-int SPEED_VAL = 6500;
+int SPEED_VAL = 6050;
 
 int main(){
 
