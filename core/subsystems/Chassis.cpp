@@ -80,10 +80,6 @@ void Chassis::setMotorSpeedRPM(int index, double speed) {
     setMotorSpeedTicksPerSecond(index, speed);
 }
 
-double Chassis::getMotorSpeedRPM(int index) {
-    return ticksPerSecondToRPM(getMotor(index).getData(VELOCITY));
-}
-
 void Chassis::driveMotors(WheelSpeeds speeds) {
     setMotorSpeedRPM(0, speeds.LF);
     setMotorSpeedRPM(1, speeds.RF);
@@ -96,15 +92,17 @@ void Chassis::driveXYR(ChassisSpeeds speeds) {
     driveMotors(Chassis::chassisSpeedsToWheelSpeeds(speeds));
 }
 
+void Chassis::driveXYR1(int speedX, int speedY, int speedR ) {
+    setMotorSpeedRPM(0, speedX + speedY + speedR);
+    setMotorSpeedRPM(1, speedX - speedY + speedR);
+    setMotorSpeedRPM(2, -speedX + speedY+ speedR);
+    setMotorSpeedRPM(3, -speedX - speedY + speedR);
+}
+
 void Chassis::driveXYRPower(float chassis_power, uint16_t chassis_power_limit, double lX, double lY, double dt, bool beyblading, double &rotationalPower) {
 
     if (beyblading) {
         rotationalPower = -(chassis_power_limit) * 100;
-        //rotationalPower = chassis_power_limit / 2 * 100;
-//        if(rotationalPower < 0)
-//            rotationalPower = 0;
-
-        //printf("rotational power: %d\n", int(rotationalPower));
     }else {
         rotationalPower = 0;
     }
@@ -130,17 +128,12 @@ void Chassis::driveXYRPower(float chassis_power, uint16_t chassis_power_limit, d
     RF.setPower(powerRF);
     LB.setPower(powerLB);
     RB.setPower(powerRB);
-
-    //printf("%d %d %d %d", int(powerLF), int(powerRF), int(powerLB), int(powerRB));
-    //printf("%d\n", int(abs(powerLF) + abs(powerRB) + abs(powerRF) + abs(powerLB)));
 }
 
-
+//updated this in a new function below
 void Chassis::driveFieldRelative(ChassisSpeeds speeds) {
     double robotHeading = imuAngles.yaw * PI / 180.0;
     driveOffsetAngle({speeds.x, speeds.y, speeds.rotation}, robotHeading);
-//    LF.setPosition((int) (speeds.y));
-//printf("%i\t%i\n", (int) LF.getData(MULTITURNANGLE), (int) LF.kalman.getX(0));
 }
 
 void Chassis::driveTurretRelative(ChassisSpeeds speeds, double turretAngleDegrees) {
@@ -149,15 +142,7 @@ void Chassis::driveTurretRelative(ChassisSpeeds speeds, double turretAngleDegree
 }
 
 void Chassis::driveTurretRelativePower(float chassis_power, uint16_t chassis_power_limit, ChassisSpeeds speeds, double turretAngleDegrees, int dt,  double &rotationalPower) {
-    //double robotHeading = imuAngles.yaw * PI / 180.0;
     driveOffsetAnglePower(chassis_power, chassis_power_limit, speeds, -turretAngleDegrees * PI / 180.0, dt,rotationalPower);
-}
-
-void Chassis::printMotorAngle() {
-    printf("LF: %i\n", (int) LF.getData(MULTITURNANGLE));
-    printf("LB: %i\n", (int) LB.getData(MULTITURNANGLE));
-    printf("RF: %i\n", (int) RF.getData(MULTITURNANGLE));
-    printf("RB: %i\n", (int) RB.getData(MULTITURNANGLE));
 }
 
 /**`
@@ -167,6 +152,13 @@ void Chassis::driveOffsetAngle(ChassisSpeeds speeds, double angleOffset) {
     double robotRelativeXVelocity = speeds.x * cos(angleOffset) + speeds.y * sin(angleOffset);
     double robotRelativeYVelocity = - speeds.x * sin(angleOffset) + speeds.y * cos(angleOffset);
     driveXYR({robotRelativeXVelocity, robotRelativeYVelocity, speeds.rotation});
+}
+
+//new function
+void Chassis::driveOffsetAngle1(int speedX, int speedY, int speedR, double angleOffset) {
+    double robotRelativeXVelocity = speedX * cos(angleOffset) + speedY * sin(angleOffset);
+    double robotRelativeYVelocity = - speedX * sin(angleOffset) + speedY * cos(angleOffset);
+    driveXYR({robotRelativeXVelocity, robotRelativeYVelocity, speedR});
 }
 
 void Chassis::driveOffsetAnglePower(float chassis_power, uint16_t chassis_power_limit, ChassisSpeeds speeds, double angleOffset, int dt,  double &rotationalPower) {
@@ -180,6 +172,11 @@ void Chassis::driveAngle(double angleRadians, double speedRPM, double rotationVe
     double vX = speedRPM * sin(angleRadians);
     driveXYR({vX, vY, rotationVelocityRPM});
 }
+
+void Chassis::driveAngle1(double angleDegrees, double speedRPM, double rotationVelocityRPM) {
+    driveAngle(degreesToRadians(angleDegrees), speedRPM, rotationVelocityRPM);
+}
+
 
 void Chassis::beyblade(double xVelocityRPM, double yVelocityRPM, double turretAngleDegrees, bool switchDirections) {
     if (switchDirections) {
@@ -221,30 +218,11 @@ DJIMotor Chassis::getMotor(int index) {
     }
 }
 
-WheelSpeeds Chassis::chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds) {
-    return {
-            chassisSpeeds.x + chassisSpeeds.y + chassisSpeeds.rotation,
-            chassisSpeeds.x - chassisSpeeds.y + chassisSpeeds.rotation,
-            -chassisSpeeds.x + chassisSpeeds.y + chassisSpeeds.rotation,
-            -chassisSpeeds.x - chassisSpeeds.y + chassisSpeeds.rotation
-    };
-}
-
-Chassis::BrakeMode Chassis::getBrakeMode() {
-    return brakeMode;
-}
-
-void Chassis::setBrakeMode(BrakeMode brakeMode) {
-    this->brakeMode = brakeMode;
-}
-
 void Chassis::initializeImu() {
     imu.set_mounting_position(MT_P1);
 }
 
 void Chassis::periodic() {
-//    printMotorAngle();
-//    printf("POW: %i\n", (int) LF.powerOut);
     double z[5] = {0, 0, 0, 0, 0};
     z[0] = rpmToInchesPerSecond(LF.getData(VELOCITY));
     z[1] = rpmToInchesPerSecond(RF.getData(VELOCITY));
@@ -252,8 +230,6 @@ void Chassis::periodic() {
     z[3] = rpmToInchesPerSecond(RB.getData(VELOCITY));
 
     z[4] = imuAngles.yaw;
-
-    // printf("Yaw (IMU): %i\n", (int) z[4]);
 
     int currTime = us_ticker_read();
     if (lastTimeMs != 0) {
@@ -263,55 +239,6 @@ void Chassis::periodic() {
     chassisKalman.step(z);
 
 
-//    printf("%i\t%i\t%i\n", (int) chassisKalman.getX(0), (int) chassisKalman.getX(2), (int) chassisKalman.getX(4));
-
-//    double z[2] = { 0, 0 };
-//    double angle = wheelKalman.getX(0);
-//    z[1] = rpmToTicksPerSecond(LF.getData(VELOCITY)) * M3508_GEAR_RATIO;
-//    double measured = LF.getData(ANGLE);
-//    int MODULUS = 8192;
-//    z[0] = (measured + angle - ((int) angle) % MODULUS);
-//    int power =  LF.getPowerOut() - 300;
-
-//    int diff = (int) (z[1] - prevVel);
-//    if (diff != 0) {
-//        printf("%i\t%i\n",  LF.getPowerOut(), (int) (z[1] - prevVel));
-//    }
-//    prevVel = z[1];
-//printf("Power: %i\n", LF.getPowerOut());
-
-
-//    if (testDataIndex == 300) {
-//
-//    } else {
-//        testData[testDataIndex][0] = us_ticker_read() / 1000;
-//        testData[testDataIndex][1] = (int) (wheelKalman.getX(0) / M3508_GEAR_RATIO);
-//        testData[testDataIndex][2] = (int) (LF.getData(MULTITURNANGLE) / M3508_GEAR_RATIO);
-//        testData[testDataIndex][3] = (int) (z[1] / M3508_GEAR_RATIO);
-//        testDataIndex++;
-//    }
-
-//    printf("%i\t%i\n", (int) z[2], (int) z[0]);
-
-
-//    printf("%i\t%i\n", (int) (wheelKalman.getX(0) / M3508_GEAR_RATIO), (int) (z[0] / M3508_GEAR_RATIO));
-//    printf("%i\t%i\n", (int) (wheelKalman.getX(1)), (int) ((z[1])));
-
-//    printf("Delta angle over delta t: %i\n", (int) ((LF.getData(ANGLE) - prevVel) / wheelKalman.dt));
-//    prevVel = measured;
-    //    printf("Measured: %i \t Estimate: %i\n", (int) measured, (int) (angle / M3508_GEAR_RATIO));
-//    printf("Velo measure: %i   estimate: %i\n", (int) z[1], (int) wheelKalman.getX(1));
-    //    printf("Kalman accel: %i\n", (int) wheelKalman.getX(1));
-//    printf("Multiturn: %i\n", (int) (LF.getData(MULTITURNANGLE) / M3508_GEAR_RATIO));
-//printf("TORQUE: %i\n", (int) LF.getData(TORQUE));
-//int torque = (int) LF.getData(TORQUE);
-//int result[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-//int16ToBitArray(torque, result);
-//printArray(result, 16);
-//printf("%i\t%i\n", (int) LF.getPowerOut(), torque);
-//for (int i = 0; i < 10; i++) {
-//    printf("Bit %i: %i\n", i, (torque >> i) % 2);
-//}
 }
 
 void Chassis::readImu() {
@@ -334,40 +261,3 @@ Pose2D Chassis::getPose() {
         Chassis::degreesToRadians(chassisKalman.getX(4))
     };
 }
-
-ChassisSpeeds Chassis::getSpeeds() {
-    return {
-        chassisKalman.getX(1),
-        chassisKalman.getX(3),
-        chassisKalman.getX(4)
-    };
-}
-
-
-bool Chassis::allMotorsConnected() {
-    return (
-            (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, lfId)) &&
-            (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, rfId)) &&
-            (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, lbId)) &&
-            (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, rbId))
-
-    );
-}
-
-
-// void Chassis::driveTurretRelativePower(ChassisSpeeds speeds, double turretAngleDegrees) {
-//     double robotHeading = imuAngles.yaw * PI / 180.0;
-// //    printf("Turret angle: %i\n", (int) turretAngleDegrees);
-//     driveOffsetAngle(speeds, -turretAngleDegrees * PI / 180.0);
-// }
-
-// void Chassis::driveFieldRelativePower(float chassis_power, double time_diff, double xVelocityRPM, double yVelocityRPM, double rotationVelocityRPM) {
-//     double robotHeading = imuAngles.yaw * PI / 180.0;
-//     driveOffsetAnglePower(chassis_power, time_diff, xVelocityRPM, yVelocityRPM, rotationVelocityRPM, robotHeading);
-// }
-
-// void Chassis::driveOffsetAnglePower(float chassis_power, double time_diff, double xVelocityRPM, double yVelocityRPM, double rotationVelocityRPM, double angleOffset) {
-//     double robotRelativeXVelocity = xVelocityRPM * cos(angleOffset) + yVelocityRPM * sin(angleOffset);
-//     double robotRelativeYVelocity = - xVelocityRPM * sin(angleOffset) + yVelocityRPM * cos(angleOffset);
-//     driveXYRPower(chassis_power, robotRelativeXVelocity, robotRelativeYVelocity, rotationVelocityRPM, time_diff);
-// }

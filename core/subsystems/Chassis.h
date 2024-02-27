@@ -65,6 +65,8 @@ public:
      * @param speeds The robot-relative speeds (x, y, and rotation) in RPM
      */
     void driveXYR(ChassisSpeeds speeds);
+    void driveXYR1(int speedX, int speedY, int speedR);
+
 
     void driveXYRPower(float chassis_power, uint16_t chassis_power_limit, double lX, double lY, double dt, bool beyblading,  double &rotationalPower);
     
@@ -78,6 +80,7 @@ public:
      * @param speeds The field-relative speeds (x, y, and rotation) in RPM
      */
     void driveFieldRelative(ChassisSpeeds speeds);
+    void driveFieldRelative1(int speedX, int speedY, int speedR);
 
     /**
      * The driveTurretRelative method is used to drive the chassis in a turret relative manner.
@@ -94,6 +97,7 @@ public:
      * @param angleOffset The angle offset in radians
      */
     void driveOffsetAngle(ChassisSpeeds speeds, double angleOffset);
+    void driveOffsetAngle1(int speedX, int speedY, int speedR, double angleOffset);
 
     /**
      * The driveAngle method is used to drive the chassis with an absolute angle.
@@ -103,6 +107,7 @@ public:
      * @param rotationVelcotiyRPM Robot rotation velocity in RPM
      */
     void driveAngle(double angleRadians, double speedRPM, double rotationVelcotiyRPM);
+    void driveAngle1(double angleRadians, double speedRPM, double rotationVelcotiyRPM = 0);
 
     /**
      * The beyblade method is used to spin the chassis while moving.
@@ -189,6 +194,30 @@ public:
     int testData[300][4];
     int testDataIndex = 0;
 
+    // Getter for Left Front (LF) Motor ID
+    short getLFId()  { return lfId; }
+
+    // Getter for Right Front (RF) Motor ID
+    short getRFId()  { return rfId; }
+
+    // Getter for Left Back (LB) Motor ID
+    short getLBId()  { return lbId; }
+
+    // Getter for Right Back (RB) Motor ID
+    short getRBId()  { return rbId; }
+
+    // Getter for LF Motor Object
+    DJIMotor getLFMotor()  { return LF; }
+
+    // Getter for RF Motor Object
+    DJIMotor getRFMotor()  { return RF; }
+
+    // Getter for LB Motor Object
+    DJIMotor getLBMotor()  { return LB; }
+
+    // Getter for RB Motor Object
+    DJIMotor getRBMotor()  { return RB; }
+
 private:
     DJIMotor LF, RF, LB, RB;
     BrakeMode brakeMode;
@@ -204,6 +233,7 @@ private:
     double rpmToInchesPerSecond(double RPM);
 
     WheelSpeeds chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds);
+    int chassisSpeedsToWheelSpeeds(int speedX, int speedY, int speedR);
 
     void setMotorPower(int index, double power);
     void setMotorSpeedRPM(int index, double speed);

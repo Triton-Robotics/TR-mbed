@@ -48,6 +48,8 @@ enum motorType {
     M2006 = 4,
 
     M3508_FLYWHEEL = 5,
+
+    MOTOR_6623 = 6
 };
 
 class DJIMotor {
@@ -79,9 +81,14 @@ private:
         {1.79, 0.27, 10.57, 15000, 500}
     };
 
-    MotorSettings m3508Flywheel = {
-        {.48, 0.0137, 4.2, 3000, 300},
+    MotorSettings m3508Flywheel = { //need to test PID values
+        {.48, 0.0137, 4.2, 3000, 300}, //PID, outCap, integralCap
         {2.013, 0.319, 20.084, 15000, 500}
+    };
+
+    MotorSettings MOTOR_6623 = {
+            {.7, 1, .3, 3000, 300},
+            {2.013, 0.319, 20.084, 15000, 500}
     };
 
     enum motorMoveMode{
