@@ -22,6 +22,7 @@ int main()
     DJIMotor::s_sendValues();
     DJIMotor::s_getFeedback();
     DJIMotor::initializedWarning = false;
+    Chassis.setYawReference(&yawOne, 0);
     unsigned long timeStart;
     unsigned long loopTimer = us_ticker_read();
     int refLoop = 0;
@@ -79,7 +80,7 @@ int main()
                 jr = (abs(jr) < tolerance) ? 0 : jr;
 
                 Chassis.setSpeedFF_Ks(0.065);
-                Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel, jy * Chassis.m_OmniKinematicsLimits.max_Vel, jr * Chassis.m_OmniKinematicsLimits.max_vOmega});
+                Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel, jy * Chassis.m_OmniKinematicsLimits.max_Vel, jr * Chassis.m_OmniKinematicsLimits.max_vOmega}, ChassisSubsystem::YAW_ORIENTED);
                 // Chassis.setChassisPower({jx, jy, jr});
 
                 // double LFa = (1 / sqrt(2)) * (jx + jy + jr * ((-0.228) - (0.228)));

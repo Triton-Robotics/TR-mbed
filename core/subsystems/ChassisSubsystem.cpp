@@ -94,12 +94,13 @@ void ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRI
 {
     if (mode == YAW_ORIENTED)
     {
+        desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yaw->getData(ANGLE));
     }
     else if (mode == ROBOT_ORIENTED)
     {
         desiredChassisSpeeds = desiredChassisSpeeds_; // ChassisSpeeds in m/s
     }
-    WheelSpeeds wheelSpeeds = chassisSpeedsToWheelSpeeds(desiredChassisSpeeds_); // in m/s (for now)
+    WheelSpeeds wheelSpeeds = chassisSpeedsToWheelSpeeds(desiredChassisSpeeds); // in m/s (for now)
     wheelSpeeds = normalizeWheelSpeeds(wheelSpeeds);
     wheelSpeeds *= (1 / (WHEEL_DIAMETER_METERS / 2) / (2 * PI / 60) * M3508_GEAR_RATIO);
     setWheelSpeeds(wheelSpeeds);
@@ -113,8 +114,9 @@ void ChassisSubsystem::setChassisPower(ChassisSpeeds desiredChassisPower)
 
 ChassisSpeeds ChassisSubsystem::rotateChassisSpeed(ChassisSpeeds speeds, double theta)
 {
-    return {speeds.vX * cos(theta) + speeds.vY * sin(theta),
-            -speeds.vX * sin(theta) + speeds.vY * cos(theta),
+    // rotate angle counter clockwise
+    return {speeds.vX * cos(theta) - speeds.vY * sin(theta),
+            speeds.vX * sin(theta) + speeds.vY * cos(theta),
             speeds.vOmega};
 }
 
