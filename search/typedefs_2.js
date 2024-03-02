@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['graphic_5fdata_5fstruct_5ft_2022',['graphic_data_struct_t',['../ref__serial_8h.html#aa020d9c41a3b1511f8b0d32e4912b878',1,'ref_serial.h']]]
+  ['fitnessfunction_2029',['fitnessFunction',['../PIDTuner_8h.html#a2cb1044f980752c4132b3c28b5151a14',1,'PIDTuner.h']]]
 ];

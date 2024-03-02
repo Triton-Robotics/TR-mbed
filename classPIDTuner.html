@@ -74,16 +74,16 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a8ce8736db8d28ded1b75f3aee7c0f455"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPIDTuner.html#a8ce8736db8d28ded1b75f3aee7c0f455">PIDTuner</a> (<a class="el" href="classDJIMotor.html">DJIMotor</a> &amp;motor_)</td></tr>
-<tr class="separator:a8ce8736db8d28ded1b75f3aee7c0f455"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3e3abb6ac991308e13d3063dc005c525"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPIDTuner.html#a3e3abb6ac991308e13d3063dc005c525">tune</a> (<a class="el" href="structPIDDataSet.html">PIDDataSet</a> dataSet[], int len, unsigned long time_s, int iterations)</td></tr>
-<tr class="separator:a3e3abb6ac991308e13d3063dc005c525"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3977d72caa382a1d0871ca30544a030c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPIDTuner.html#a3977d72caa382a1d0871ca30544a030c">PIDTuner</a> (<a class="el" href="classDJIMotor.html">DJIMotor</a> &amp;motor_, <a class="el" href="structPIDDataSet.html">PIDDataSet</a> population[], size_t len, <a class="el" href="structPIDRanges.html">PIDRanges</a> ranges={0, 30, 0, 10, 0, 1000})</td></tr>
+<tr class="separator:a3977d72caa382a1d0871ca30544a030c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a998ab3498d72a36d923d2cfba75c4256"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPIDTuner.html#a998ab3498d72a36d923d2cfba75c4256">tune</a> (<a class="el" href="structPIDDataSet.html">PIDDataSet</a> population[], size_t len, unsigned long time_s, size_t iterations, size_t generations)</td></tr>
+<tr class="separator:a998ab3498d72a36d923d2cfba75c4256"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a074d6ff9be7093d6d39039908b4a019b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPIDTuner.html#a074d6ff9be7093d6d39039908b4a019b">~PIDTuner</a> ()=default</td></tr>
 <tr class="separator:a074d6ff9be7093d6d39039908b4a019b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a8ce8736db8d28ded1b75f3aee7c0f455"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8ce8736db8d28ded1b75f3aee7c0f455">&#9670;&nbsp;</a></span>PIDTuner()</h2>
+<a id="a3977d72caa382a1d0871ca30544a030c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3977d72caa382a1d0871ca30544a030c">&#9670;&nbsp;</a></span>PIDTuner()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -92,8 +92,30 @@ Public Member Functions</h2></td></tr>
           <td class="memname">PIDTuner::PIDTuner </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classDJIMotor.html">DJIMotor</a> &amp;&#160;</td>
-          <td class="paramname"><em>motor_</em></td><td>)</td>
+          <td class="paramname"><em>motor_</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="structPIDDataSet.html">PIDDataSet</a>&#160;</td>
+          <td class="paramname"><em>population</em>[], </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>len</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structPIDRanges.html">PIDRanges</a>&#160;</td>
+          <td class="paramname"><em>ranges</em> = <code>{0,&#160;30,&#160;0,&#160;10,&#160;0,&#160;1000}</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -126,8 +148,8 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a3e3abb6ac991308e13d3063dc005c525"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3e3abb6ac991308e13d3063dc005c525">&#9670;&nbsp;</a></span>tune()</h2>
+<a id="a998ab3498d72a36d923d2cfba75c4256"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a998ab3498d72a36d923d2cfba75c4256">&#9670;&nbsp;</a></span>tune()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -136,12 +158,12 @@ Public Member Functions</h2></td></tr>
           <td class="memname">void PIDTuner::tune </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structPIDDataSet.html">PIDDataSet</a>&#160;</td>
-          <td class="paramname"><em>dataSet</em>[], </td>
+          <td class="paramname"><em>population</em>[], </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>len</em>, </td>
         </tr>
         <tr>
@@ -153,8 +175,14 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>iterations</em>&#160;</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>iterations</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>generations</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
