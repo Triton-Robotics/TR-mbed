@@ -39,7 +39,7 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
     // isInverted[0] = 1; isInverted[1] = 1; isInverted[2] = 1; isInverted[3] = 1;
 }
 
-WheelSpeeds ChassisSubsystem::getWheelSpeeds()
+WheelSpeeds ChassisSubsystem::getWheelSpeeds() const
 {
     return m_wheelSpeeds;
 }
@@ -53,26 +53,18 @@ void ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     setMotorSpeedRPM(RIGHT_BACK, wheelSpeeds.RB);
 }
 
-WheelSpeeds ChassisSubsystem::normalizeWheelSpeeds(WheelSpeeds wheelSpeeds)
+WheelSpeeds ChassisSubsystem::normalizeWheelSpeeds(WheelSpeeds wheelSpeeds) const
 {
     double speeds[4] = {wheelSpeeds.LF, wheelSpeeds.RF, wheelSpeeds.LB, wheelSpeeds.RB};
     double max_speed = m_OmniKinematicsLimits.max_Vel;
 
-    for (int i = 0; i < 4; i++)
-    {
-        if (speeds[i] > max_speed)
-        {
-            max_speed = speeds[i];
-        }
-    }
+    for (double speed : speeds)
+        if (speed > max_speed)
+            max_speed = speed;
 
     if (max_speed > m_OmniKinematicsLimits.max_Vel)
-    {
-        for (int i = 0; i < 4; i++)
-        {
-            speeds[i] = speeds[i] / max_speed * m_OmniKinematicsLimits.max_Vel;
-        }
-    }
+        for (double &speed : speeds)
+            speed = speed / max_speed * m_OmniKinematicsLimits.max_Vel;
 
     return {speeds[0], speeds[1], speeds[2], speeds[3]};
 }
@@ -85,7 +77,7 @@ void ChassisSubsystem::setWheelPower(WheelSpeeds wheelPower)
     setMotorPower(RIGHT_BACK, wheelPower.RB);
 }
 
-ChassisSpeeds ChassisSubsystem::getChassisSpeeds()
+ChassisSpeeds ChassisSubsystem::getChassisSpeeds() const
 {
     return m_chassisSpeeds;
 }
@@ -200,12 +192,12 @@ double ChassisSubsystem::radiansToDegrees(double radians)
     return radians / PI * 180.0;
 }
 
-int ChassisSubsystem::getHeadingDegrees()
+int ChassisSubsystem::getHeadingDegrees() const
 {
     return (int)imuAngles.yaw;
 }
 
-OmniKinematics ChassisSubsystem::setOmniKinematics(double radius)
+void ChassisSubsystem::setOmniKinematics(double radius)
 {
     m_OmniKinematics.r1x = -sqrt(radius);
     m_OmniKinematics.r1y = sqrt(radius);
@@ -220,7 +212,7 @@ OmniKinematics ChassisSubsystem::setOmniKinematics(double radius)
     m_OmniKinematics.r4y = -sqrt(radius);
 }
 
-WheelSpeeds ChassisSubsystem::chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds)
+WheelSpeeds ChassisSubsystem::chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds) const
 {
     return {(1 / sqrt(2)) * (chassisSpeeds.vX + chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r1x) - (m_OmniKinematics.r1y))),
             (1 / sqrt(2)) * (chassisSpeeds.vX - chassisSpeeds.vY + chassisSpeeds.vOmega * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y))),

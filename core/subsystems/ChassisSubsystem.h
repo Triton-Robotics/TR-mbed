@@ -126,7 +126,7 @@ public:
      * Gets the chassis's current WheelSpeeds
      * @return The chassis's current WheelSpeeds
      */
-    WheelSpeeds getWheelSpeeds();
+    WheelSpeeds getWheelSpeeds() const;
 
     /**
      * The setWheelSpeeds method drives each motor at a specific speed
@@ -138,7 +138,7 @@ public:
      * The normalizeWheelSpeeds method normalizes each motor with respect to m_OmniKinematicsLimits.max_Vel
      * @param wheelSpeeds The speeds in m/s to drive each motor at
      */
-    WheelSpeeds normalizeWheelSpeeds(WheelSpeeds wheelSpeeds);
+    WheelSpeeds normalizeWheelSpeeds(WheelSpeeds wheelSpeeds) const;
 
     /**
      * The driveMotors method drives each motor at a specific speed
@@ -150,7 +150,7 @@ public:
      * Gets the chassis's current ChassisSpeeds
      * @return The chassis's current ChassisSpeeds
      */
-    ChassisSpeeds getChassisSpeeds();
+    ChassisSpeeds getChassisSpeeds() const;
 
     /**
      * The setChassisSpeeds method is used to drive the chassis in a chassis relative manner.
@@ -172,7 +172,7 @@ public:
      * @param speeds The relative speeds (vX, vY, and vOmega) in m/s
      * @param theta The CCW-positive angle in degrees
      */
-    ChassisSpeeds rotateChassisSpeed(ChassisSpeeds speeds, double theta);
+    static ChassisSpeeds rotateChassisSpeed(ChassisSpeeds speeds, double theta);
 
     /**
      * A helper method to find a DJIMotor object from an index.
@@ -245,20 +245,20 @@ public:
      * @param radians An angle measurement in radians
      * @return The angle converted to degree
      */
-    double radiansToDegrees(double radians);
+    static double radiansToDegrees(double radians);
 
     /**
      * Helper method to convert an angle from radians to degrees
      * @param degrees An angle measurement in degrees
      * @return The angle converted to radians
      */
-    double degreesToRadians(double degrees);
+    static double degreesToRadians(double degrees);
 
     /**
      * Gets the IMU's current angle reading in degrees
      * @return The IMU's current angle reading in degrees
      */
-    int getHeadingDegrees();
+    int getHeadingDegrees() const;
 
     /**
      * Gets the chassis's current 2D position
@@ -303,16 +303,16 @@ private:
     BNO055 imu;
     BNO055_ANGULAR_POSITION_typedef imuAngles;
 
-    double radiansToTicks(double radians);
-    double ticksToRadians(double ticks);
+    static double radiansToTicks(double radians);
+    static double ticksToRadians(double ticks);
 
-    double rpmToRadPerSecond(double RPM);
-    double radPerSecondToRPM(double radPerSecond);
+    static double rpmToRadPerSecond(double RPM);
+    static double radPerSecondToRPM(double radPerSecond);
 
     OmniKinematics m_OmniKinematics;
-    OmniKinematics setOmniKinematics(double radius);
+    void setOmniKinematics(double radius);
 
-    WheelSpeeds chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds);
+    WheelSpeeds chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds) const;
     ChassisSpeeds wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds);
 
     double FF_Ks;
