@@ -75,17 +75,21 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a189c1408a33543aceb88d25af22fe147"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPIDDataSet.html#a189c1408a33543aceb88d25af22fe147">dumpPIDs</a> () const</td></tr>
+<tr class="separator:a189c1408a33543aceb88d25af22fe147"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af28a7e76402731bcf6d37fddf7f76dd4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPIDDataSet.html#af28a7e76402731bcf6d37fddf7f76dd4">dumpIntegrals</a> () const</td></tr>
+<tr class="separator:af28a7e76402731bcf6d37fddf7f76dd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca127e13aaca4fe20c962a1f5ff4fe04"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPIDDataSet.html#aca127e13aaca4fe20c962a1f5ff4fe04">dumpData</a> () const</td></tr>
 <tr class="separator:aca127e13aaca4fe20c962a1f5ff4fe04"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:aa0827cfd645850d58ed3284882fba430"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPIDDataSet.html#aa0827cfd645850d58ed3284882fba430">kP</a> = 0</td></tr>
-<tr class="separator:aa0827cfd645850d58ed3284882fba430"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8e78e6ab1e2951af32146846685a6031"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPIDDataSet.html#a8e78e6ab1e2951af32146846685a6031">kI</a> = 0</td></tr>
-<tr class="separator:a8e78e6ab1e2951af32146846685a6031"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa81c8887c5043a441c7fc41032a2c0c5"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPIDDataSet.html#aa81c8887c5043a441c7fc41032a2c0c5">kD</a> = 0</td></tr>
-<tr class="separator:aa81c8887c5043a441c7fc41032a2c0c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a9d2738ca73defa323b06c6b8b91ae7"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPIDDataSet.html#a7a9d2738ca73defa323b06c6b8b91ae7">kP</a> = 0</td></tr>
+<tr class="separator:a7a9d2738ca73defa323b06c6b8b91ae7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d97d41e6108149c73d123f3608d09e3"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPIDDataSet.html#a7d97d41e6108149c73d123f3608d09e3">kI</a> = 0</td></tr>
+<tr class="separator:a7d97d41e6108149c73d123f3608d09e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a6340a3d2225bb88858d0e395db27d7"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPIDDataSet.html#a2a6340a3d2225bb88858d0e395db27d7">kD</a> = 0</td></tr>
+<tr class="separator:a2a6340a3d2225bb88858d0e395db27d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada42b7eaa2536efc961a1df89f3d6d48"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPIDDataSet.html#ada42b7eaa2536efc961a1df89f3d6d48">meanIntegralAbsError</a> = 0</td></tr>
 <tr class="separator:ada42b7eaa2536efc961a1df89f3d6d48"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade5f039194492003e9adead90862f92b"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPIDDataSet.html#ade5f039194492003e9adead90862f92b">meanIntegralSqError</a> = 0</td></tr>
@@ -117,43 +121,93 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="af28a7e76402731bcf6d37fddf7f76dd4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af28a7e76402731bcf6d37fddf7f76dd4">&#9670;&nbsp;</a></span>dumpIntegrals()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PIDDataSet::dumpIntegrals </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a189c1408a33543aceb88d25af22fe147"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a189c1408a33543aceb88d25af22fe147">&#9670;&nbsp;</a></span>dumpPIDs()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PIDDataSet::dumpPIDs </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="aa81c8887c5043a441c7fc41032a2c0c5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa81c8887c5043a441c7fc41032a2c0c5">&#9670;&nbsp;</a></span>kD</h2>
+<a id="a2a6340a3d2225bb88858d0e395db27d7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2a6340a3d2225bb88858d0e395db27d7">&#9670;&nbsp;</a></span>kD</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">float PIDDataSet::kD = 0</td>
+          <td class="memname">double PIDDataSet::kD = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a8e78e6ab1e2951af32146846685a6031"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8e78e6ab1e2951af32146846685a6031">&#9670;&nbsp;</a></span>kI</h2>
+<a id="a7d97d41e6108149c73d123f3608d09e3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7d97d41e6108149c73d123f3608d09e3">&#9670;&nbsp;</a></span>kI</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">float PIDDataSet::kI = 0</td>
+          <td class="memname">double PIDDataSet::kI = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="aa0827cfd645850d58ed3284882fba430"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa0827cfd645850d58ed3284882fba430">&#9670;&nbsp;</a></span>kP</h2>
+<a id="a7a9d2738ca73defa323b06c6b8b91ae7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a9d2738ca73defa323b06c6b8b91ae7">&#9670;&nbsp;</a></span>kP</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">float PIDDataSet::kP = 0</td>
+          <td class="memname">double PIDDataSet::kP = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">

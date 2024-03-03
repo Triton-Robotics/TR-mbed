@@ -74,16 +74,18 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a3977d72caa382a1d0871ca30544a030c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPIDTuner.html#a3977d72caa382a1d0871ca30544a030c">PIDTuner</a> (<a class="el" href="classDJIMotor.html">DJIMotor</a> &amp;motor_, <a class="el" href="structPIDDataSet.html">PIDDataSet</a> population[], size_t len, <a class="el" href="structPIDRanges.html">PIDRanges</a> ranges={0, 30, 0, 10, 0, 1000})</td></tr>
-<tr class="separator:a3977d72caa382a1d0871ca30544a030c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a998ab3498d72a36d923d2cfba75c4256"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPIDTuner.html#a998ab3498d72a36d923d2cfba75c4256">tune</a> (<a class="el" href="structPIDDataSet.html">PIDDataSet</a> population[], size_t len, unsigned long time_s, size_t iterations, size_t generations)</td></tr>
-<tr class="separator:a998ab3498d72a36d923d2cfba75c4256"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fe3bc8b786e96ae062ea2656c6575d7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPIDTuner.html#a5fe3bc8b786e96ae062ea2656c6575d7">PIDTuner</a> (<a class="el" href="classDJIMotor.html">DJIMotor</a> &amp;motor_, <a class="el" href="structPIDDataSet.html">PIDDataSet</a> population[], size_t populationSize, <a class="el" href="structPIDRanges.html">PIDRanges</a> ranges={0, 30, 0, 10, 0, 1000})</td></tr>
+<tr class="separator:a5fe3bc8b786e96ae062ea2656c6575d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5390fb55d50a9115b5b3a8e9d2fb7fa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPIDTuner.html#ad5390fb55d50a9115b5b3a8e9d2fb7fa">tune</a> (unsigned long time_s, size_t iterations, size_t generations, double mutationRate=0.01, <a class="el" href="PIDTuner_8h.html#a2cb1044f980752c4132b3c28b5151a14">fitnessFunction</a> getFitness=[](double integral){return 1/integral;})</td></tr>
+<tr class="separator:ad5390fb55d50a9115b5b3a8e9d2fb7fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a074d6ff9be7093d6d39039908b4a019b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPIDTuner.html#a074d6ff9be7093d6d39039908b4a019b">~PIDTuner</a> ()=default</td></tr>
 <tr class="separator:a074d6ff9be7093d6d39039908b4a019b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a927b9acb06fe3c0dedbbd0180371ce58"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPIDTuner.html#a927b9acb06fe3c0dedbbd0180371ce58">getRandomNumber</a> (double min, double max)</td></tr>
+<tr class="separator:a927b9acb06fe3c0dedbbd0180371ce58"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a3977d72caa382a1d0871ca30544a030c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3977d72caa382a1d0871ca30544a030c">&#9670;&nbsp;</a></span>PIDTuner()</h2>
+<a id="a5fe3bc8b786e96ae062ea2656c6575d7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5fe3bc8b786e96ae062ea2656c6575d7">&#9670;&nbsp;</a></span>PIDTuner()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -104,7 +106,7 @@ Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>len</em>, </td>
+          <td class="paramname"><em>populationSize</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -148,8 +150,36 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a998ab3498d72a36d923d2cfba75c4256"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a998ab3498d72a36d923d2cfba75c4256">&#9670;&nbsp;</a></span>tune()</h2>
+<a id="a927b9acb06fe3c0dedbbd0180371ce58"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a927b9acb06fe3c0dedbbd0180371ce58">&#9670;&nbsp;</a></span>getRandomNumber()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double PIDTuner::getRandomNumber </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>min</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>max</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad5390fb55d50a9115b5b3a8e9d2fb7fa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad5390fb55d50a9115b5b3a8e9d2fb7fa">&#9670;&nbsp;</a></span>tune()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -157,18 +187,6 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">void PIDTuner::tune </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structPIDDataSet.html">PIDDataSet</a>&#160;</td>
-          <td class="paramname"><em>population</em>[], </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>len</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">unsigned long&#160;</td>
           <td class="paramname"><em>time_s</em>, </td>
         </tr>
@@ -182,7 +200,19 @@ Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>generations</em>&#160;</td>
+          <td class="paramname"><em>generations</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>mutationRate</em> = <code>0.01</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="PIDTuner_8h.html#a2cb1044f980752c4132b3c28b5151a14">fitnessFunction</a>&#160;</td>
+          <td class="paramname"><em>getFitness</em> = <code>[](double&#160;integral){return&#160;1&#160;/&#160;integral;}</code>&#160;</td>
         </tr>
         <tr>
           <td></td>

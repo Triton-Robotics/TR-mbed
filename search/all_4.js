@@ -33,7 +33,7 @@ var searchData=
   ['down_304',['DOWN',['../classRemote.html#affd0b019d5483d546bc29b07447649bbac4e0e4e3118472beeb2ae75827450f1f',1,'Remote']]],
   ['dr_305',['dr',['../Hero_2main_8cpp.html#a86776f7e9bb26c226d909f1e82d9501c',1,'main.cpp']]],
   ['drawchar_306',['drawChar',['../classAdafruit__GFX.html#ab7f5a29b3a3dffe30c6a3f4c1f604a5a',1,'Adafruit_GFX']]],
-  ['drawpixel_307',['drawPixel',['../classAdafruit__SSD1306.html#ae2851d927a047a770c569c7c9fde4807',1,'Adafruit_SSD1306::drawPixel()'],['../classAdafruit__GFX.html#ab7fbf72885c873266f9c7eb53b5c8896',1,'Adafruit_GFX::drawPixel()']]],
+  ['drawpixel_307',['drawPixel',['../classAdafruit__GFX.html#ab7fbf72885c873266f9c7eb53b5c8896',1,'Adafruit_GFX::drawPixel()'],['../classAdafruit__SSD1306.html#ae2851d927a047a770c569c7c9fde4807',1,'Adafruit_SSD1306::drawPixel()']]],
   ['driveangle_308',['driveAngle',['../classChassis.html#a7ee3c56828f6e161de5d145bed3e4d2f',1,'Chassis']]],
   ['drivefieldrelative_309',['driveFieldRelative',['../classChassis.html#a22231af9f43825063ac800ae186b6970',1,'Chassis']]],
   ['drivemotors_310',['driveMotors',['../classChassis.html#ac944a5794d05e1dbd57cfd6735ecdc60',1,'Chassis']]],
@@ -43,7 +43,9 @@ var searchData=
   ['driveturretrelativepower_314',['driveTurretRelativePower',['../classChassis.html#af988e4e5a4f99e130e79688a650439e6',1,'Chassis']]],
   ['drivexyr_315',['driveXYR',['../classChassis.html#a964c30630d2724e1e4f1774d0df305cc',1,'Chassis']]],
   ['drivexyrpower_316',['driveXYRPower',['../classChassis.html#ac19240e24c88afd4835a34cd651e3797',1,'Chassis']]],
-  ['dt_317',['dt',['../classChassisKalman.html#a80a7e01c3e416fb724cdd5ed1f7e5956',1,'ChassisKalman::dt()'],['../classWheelKalman.html#af5fb60ec5b998fe6d959641a24b4fd72',1,'WheelKalman::dt()']]],
+  ['dt_317',['dt',['../classWheelKalman.html#af5fb60ec5b998fe6d959641a24b4fd72',1,'WheelKalman::dt()'],['../classChassisKalman.html#a80a7e01c3e416fb724cdd5ed1f7e5956',1,'ChassisKalman::dt()']]],
   ['dumpdata_318',['dumpData',['../structPIDDataSet.html#aca127e13aaca4fe20c962a1f5ff4fe04',1,'PIDDataSet']]],
-  ['dumpinfo_319',['dumpInfo',['../classRemote.html#ab3e55d985b57ba798e757b24b8ed76de',1,'Remote']]]
+  ['dumpinfo_319',['dumpInfo',['../classRemote.html#ab3e55d985b57ba798e757b24b8ed76de',1,'Remote']]],
+  ['dumpintegrals_320',['dumpIntegrals',['../structPIDDataSet.html#af28a7e76402731bcf6d37fddf7f76dd4',1,'PIDDataSet']]],
+  ['dumppids_321',['dumpPIDs',['../structPIDDataSet.html#a189c1408a33543aceb88d25af22fe147',1,'PIDDataSet']]]
 ];

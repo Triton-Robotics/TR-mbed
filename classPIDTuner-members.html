@@ -69,9 +69,10 @@ $(function() {
 
 <p>This is the complete list of members for <a class="el" href="classPIDTuner.html">PIDTuner</a>, including all inherited members.</p>
 <table class="directory">
-  <tr class="even"><td class="entry"><a class="el" href="classPIDTuner.html#a3977d72caa382a1d0871ca30544a030c">PIDTuner</a>(DJIMotor &amp;motor_, PIDDataSet population[], size_t len, PIDRanges ranges={0, 30, 0, 10, 0, 1000})</td><td class="entry"><a class="el" href="classPIDTuner.html">PIDTuner</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classPIDTuner.html#a998ab3498d72a36d923d2cfba75c4256">tune</a>(PIDDataSet population[], size_t len, unsigned long time_s, size_t iterations, size_t generations)</td><td class="entry"><a class="el" href="classPIDTuner.html">PIDTuner</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classPIDTuner.html#a074d6ff9be7093d6d39039908b4a019b">~PIDTuner</a>()=default</td><td class="entry"><a class="el" href="classPIDTuner.html">PIDTuner</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classPIDTuner.html#a927b9acb06fe3c0dedbbd0180371ce58">getRandomNumber</a>(double min, double max)</td><td class="entry"><a class="el" href="classPIDTuner.html">PIDTuner</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classPIDTuner.html#a5fe3bc8b786e96ae062ea2656c6575d7">PIDTuner</a>(DJIMotor &amp;motor_, PIDDataSet population[], size_t populationSize, PIDRanges ranges={0, 30, 0, 10, 0, 1000})</td><td class="entry"><a class="el" href="classPIDTuner.html">PIDTuner</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classPIDTuner.html#ad5390fb55d50a9115b5b3a8e9d2fb7fa">tune</a>(unsigned long time_s, size_t iterations, size_t generations, double mutationRate=0.01, fitnessFunction getFitness=[](double integral){return 1/integral;})</td><td class="entry"><a class="el" href="classPIDTuner.html">PIDTuner</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classPIDTuner.html#a074d6ff9be7093d6d39039908b4a019b">~PIDTuner</a>()=default</td><td class="entry"><a class="el" href="classPIDTuner.html">PIDTuner</a></td><td class="entry"></td></tr>
 </table></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
