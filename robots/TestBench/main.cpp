@@ -45,34 +45,16 @@ int main(){
 //    //pid looks good
 //    motor3.setSpeedPID(.8,0,0);
     motor4.setSpeedPID(.6,0,0);
-    //motor5.setSpeedPID(.9,0,0);
-//    motor1.setPower(-1000);
-//    motor1.getData(VELOCITY);
-//    motor1.setSpeed(-200);
-//    motor2.setPower(-1000);
-//    motor2.setSpeed(-200);
-   // motor2.getData(VELOCITY);
-//    motor3.setPower(-500);
-//    motor3.getData(VELOCITY);
-//    motor4.setPower(-500);
-//    motor4.getData(VELOCITY);
-    //first motor5 PID
-    //motor5.setSpeedPID(.1,1,1);
-    //second motor5 PID .5 .0001 .001
+
    motor5.setSpeedPID(.2, .0001, .001);
    //good integral cap is 300/.0001
+   //motor 2 250/.0001
    motor5.pidSpeed.setIntegralCap(250/.0001);
     //motor5.setPower(0);
     motor5.setSpeed(-1000);
+    motor5.setPosition(5);
     motor5.getData(VELOCITY);
-//    motor6.setPower(-500);
-//    motor6.getData(VELOCITY);
-//    motor7.setPower(-500);
-//    motor7.getData(VELOCITY);
-//    motor8.setPower(-500);
-//    motor8.getData(VELOCITY);
-//    motor5.setSpeed(-900);
-//    motor5.isConnected();
+
     while(true){
         timeStart = us_ticker_read();
 
