@@ -170,9 +170,9 @@ public:
      * The rotateChassisSpeed method
      *
      * @param speeds The relative speeds (vX, vY, and vOmega) in m/s
-     * @param theta The CCW-positive angle in degrees
+     * @param yawCurrent The CCW-positive angle in degrees
      */
-    static ChassisSpeeds rotateChassisSpeed(ChassisSpeeds speeds, double theta);
+    ChassisSpeeds rotateChassisSpeed(ChassisSpeeds speeds, double yawCurrent);
 
     /**
      * A helper method to find a DJIMotor object from an index.
@@ -275,7 +275,7 @@ public:
 
     bool allMotorsConnected();
 
-    void setYawReference(DJIMotor *motor, double initialOffsetRad);
+    void setYawReference(DJIMotor *motor, double initial_offset_ticks);
 
     ChassisSpeeds desiredChassisSpeeds;
     WheelSpeeds desiredWheelSpeeds;
@@ -288,14 +288,14 @@ public:
     // int8_t isInverted[4];
 
     double prevVel;
-
+    double yawPhase;
     int testData[300][4];
     int testDataIndex = 0;
 
 private:
     DJIMotor LF, RF, LB, RB;
     DJIMotor *yaw = 0;
-    double yawPhase;
+    // double yawPhase;
     BrakeMode brakeMode;
 
     // double beybladeSpeed;

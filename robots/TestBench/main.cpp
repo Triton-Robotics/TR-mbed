@@ -12,7 +12,7 @@ BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 // DJIMotor ChassisThree(3, CANHandler::CANBUS_1, STANDARD, "testMotor");
 // DJIMotor ChassisFour(4, CANHandler::CANBUS_1, STANDARD, "testMotor");
 DJIMotor yawOne(5, CANHandler::CANBUS_1, GM6020, "testMotor");
-DJIMotor yawTwo(6, CANHandler::CANBUS_1, GM6020, "testMotor");
+// DJIMotor yawTwo(6, CANHandler::CANBUS_1, GM6020, "testMotor"); // not plugged
 ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
 
 int main()
@@ -22,7 +22,9 @@ int main()
     DJIMotor::s_sendValues();
     DJIMotor::s_getFeedback();
     DJIMotor::initializedWarning = false;
-    Chassis.setYawReference(&yawOne, 0);
+
+    Chassis.setYawReference(&yawOne, 7167); // "7167" is the number of ticks of yawOne considered to be robot-front
+
     unsigned long timeStart;
     unsigned long loopTimer = us_ticker_read();
     int refLoop = 0;
@@ -47,13 +49,16 @@ int main()
                 // printff("%s\n", Chassis.desiredWheelSpeeds.to_string());
                 WheelSpeeds ws = Chassis.desiredWheelSpeeds;
 
-                // printff("%d ", Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(POWEROUT));
+                // printff("%d\n", Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(ANGLE));
                 // printff("%f\n", Chassis.getMotorSpeed(ChassisSubsystem::LEFT_BACK, ChassisSubsystem::RPM) / M3508_GEAR_RATIO);
                 // printff("%f ", Chassis.desiredWheelSpeeds.LB / M3508_GEAR_RATIO * 2 * PI / 60 * WHEEL_DIAMETER_METERS / 2);
                 // printff("%f\n",Chassis.getMotorSpeed(ChassisSubsystem::LEFT_BACK, ChassisSubsystem::METER_PER_SECOND));
                 // printff("LF: %4.2f RF: %4.2f LB: %4.2f RB: %4.2f\n", ws.LF, ws.RF, ws.LB, ws.RB);
 
-                printff("%f\n", sin(PI));
+                // printff("a%f\n", sin(PI));
+                // printff("%d\n", yawOne.getData(ANGLE));
+                // printff("%d\n", yawTwo.getData(ANGLE));
+                // printff("yawPhase: %f\n",Chassis.yawPhase);
             }
 
             remoteRead();
@@ -80,7 +85,10 @@ int main()
                 jr = (abs(jr) < tolerance) ? 0 : jr;
 
                 Chassis.setSpeedFF_Ks(0.065);
-                Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel, jy * Chassis.m_OmniKinematicsLimits.max_Vel, jr * Chassis.m_OmniKinematicsLimits.max_vOmega}, ChassisSubsystem::YAW_ORIENTED);
+                Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel, 
+                                          jy * Chassis.m_OmniKinematicsLimits.max_Vel, 
+                                          -jr * Chassis.m_OmniKinematicsLimits.max_vOmega}, 
+                                          ChassisSubsystem::YAW_ORIENTED);
                 // Chassis.setChassisPower({jx, jy, jr});
 
                 // double LFa = (1 / sqrt(2)) * (jx + jy + jr * ((-0.228) - (0.228)));

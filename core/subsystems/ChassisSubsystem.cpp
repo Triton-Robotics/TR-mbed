@@ -85,8 +85,10 @@ ChassisSpeeds ChassisSubsystem::getChassisSpeeds() const
 void ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode)
 {
     if (mode == YAW_ORIENTED)
-    {
-        desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yaw->getData(ANGLE));
+    {   
+        // printf("%f\n", double(yaw->getData(ANGLE)));
+        double yawCurrent = (1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
+        desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yawCurrent);
     }
     else if (mode == ROBOT_ORIENTED)
     {
@@ -104,9 +106,10 @@ void ChassisSubsystem::setChassisPower(ChassisSpeeds desiredChassisPower)
     setWheelPower(wheelPower);
 }
 
-ChassisSpeeds ChassisSubsystem::rotateChassisSpeed(ChassisSpeeds speeds, double theta)
+ChassisSpeeds ChassisSubsystem::rotateChassisSpeed(ChassisSpeeds speeds, double yawCurrent)
 {
     // rotate angle counter clockwise
+    double theta = (yawCurrent - yawPhase) / 180 * PI;
     return {speeds.vX * cos(theta) - speeds.vY * sin(theta),
             speeds.vX * sin(theta) + speeds.vY * cos(theta),
             speeds.vOmega};
@@ -214,10 +217,10 @@ void ChassisSubsystem::setOmniKinematics(double radius)
 
 WheelSpeeds ChassisSubsystem::chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds) const
 {
-    return {(1 / sqrt(2)) * (chassisSpeeds.vX + chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r1x) - (m_OmniKinematics.r1y))),
-            (1 / sqrt(2)) * (chassisSpeeds.vX - chassisSpeeds.vY + chassisSpeeds.vOmega * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y))),
-            (1 / sqrt(2)) * (-chassisSpeeds.vX + chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y))),
-            (1 / sqrt(2)) * (-chassisSpeeds.vX - chassisSpeeds.vY + chassisSpeeds.vOmega * ((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y)))};
+    return {(1 / sqrt(2)) * (chassisSpeeds.vX + chassisSpeeds.vY + chassisSpeeds.vOmega * ((m_OmniKinematics.r1x) - (m_OmniKinematics.r1y))),
+            (1 / sqrt(2)) * (chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y))),
+            (1 / sqrt(2)) * (-chassisSpeeds.vX + chassisSpeeds.vY + chassisSpeeds.vOmega * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y))),
+            (1 / sqrt(2)) * (-chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y)))};
 }
 
 ChassisSpeeds ChassisSubsystem::wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds)
@@ -252,7 +255,7 @@ void ChassisSubsystem::setMotorSpeedRPM(MotorLocation location, double speed)
 void ChassisSubsystem::setYawReference(DJIMotor *motor, double initial_offset_ticks)
 {
     yaw = motor;
-    yawPhase = initial_offset_ticks / TICKS_REVOLUTION;
+    yawPhase = 360.0 * (1.0 - (initial_offset_ticks / TICKS_REVOLUTION)); // change Yaw to CCW +, and ranges from 0 to 360
 }
 
 double ChassisSubsystem::radiansToTicks(double radians)
