@@ -14,6 +14,12 @@ int main(){
     unsigned long loopTimer = us_ticker_read();
     int refLoop = 0;
 
+    // Initialize motor
+    DJIMotor motor(3, CANHandler::CANBus::CANBUS_1, M3508, "MotorWeek4");
+    motor.setPositionPID(1, 0, 0);
+    motor.setSpeedPID(1,0,0);
+    motor.pidPosition.setIntegralCap(2/0.01);
+
     while(true){
         timeStart = us_ticker_read();
 
@@ -25,9 +31,33 @@ int main(){
                 refereeThread(&referee);
                 refLoop = 0;
                 led2 = !led2;
+                printff("P: %fI: %fD: %f\n", 
+                    motor.pidPosition.pComponent,
+                    motor.pidPosition.iComponent,
+                    motor.pidPosition.dComponent);
             }
 
             remoteRead();
+
+            // Get left switch state
+            Remote::SwitchState leftSwitchState = remote.leftSwitch();
+
+            // Get left stick value
+            int leftStickValue = remote.leftX();
+
+            // Check switch mode (use scaling factor = 10)
+            if ( leftSwitchState == Remote::SwitchState::UP ) {         // power mode
+                motor.setPower(leftStickValue * 10);
+                //printff("Mode: Power, Value: %d\n", leftStickValue * 10);
+            }
+            else if ( leftSwitchState == Remote::SwitchState::MID ) {   // speed mode
+                motor.setSpeed(leftStickValue * 10);
+                //printff("Mode: Speed, Value: %d\n", leftStickValue * 10);
+            }
+            else if ( leftSwitchState == Remote::SwitchState::DOWN ) {  // position mode
+                motor.setPosition(leftStickValue * 5 + 3300);
+                //printff("Mode: Position, Value: %d\n", leftStickValue * 10);
+            }
 
             loopTimer = timeStart;
             DJIMotor::s_sendValues();

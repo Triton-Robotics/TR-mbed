@@ -5,6 +5,10 @@ PID::PID(){
     integralCap = 0;
     outputCap = 0;
     feedForward = 0;
+    
+    pComponent = 0;
+    iComponent = 0;
+    dComponent = 0;
 }
 
 
@@ -56,6 +60,10 @@ int PID::calculatePeriodic(float error, double dt) {
     if(dt > 0) {
         PIDCalc += (kD * (error - lastError) / dt);
     }
+    
+    pComponent = kP * error;
+    iComponent = kI * errorIntegral;
+    dComponent = (kD * (error - lastError) / dt);
 
     lastError = error;
     limitOutput(PIDCalc);
