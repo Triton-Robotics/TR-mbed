@@ -6,6 +6,10 @@ PID::PID(){
     integralCap = 0;
     outputCap = 0;
     feedForward = 0;
+
+    pComponent = 0;
+    iComponent = 0;
+    dComponent = 0;
 }
 
 
@@ -37,6 +41,10 @@ int PID::calculate(int desired, int current, double dt) {
     if(dt > 0)
         PIDCalc += (kD * (error - lastError) / dt);
 
+    pComponent = kP * error;
+    iComponent = kI * errorIntegral;
+    dComponent = (kD * (error - lastError) / dt);
+
     lastError = error;
 
     limitOutput(PIDCalc);
@@ -54,6 +62,10 @@ int PID::calculatePeriodic(float error, double dt) {
         PIDCalc += (kD * (error - lastError) / dt);
     }
 
+    pComponent = kP * error;
+    iComponent = errorIntegral;
+    dComponent = (kD * (error - lastError) / dt);
+
     lastError = error;
     limitOutput(PIDCalc);
     return static_cast<int>(PIDCalc);
@@ -62,8 +74,11 @@ int PID::calculatePeriodic(float error, double dt) {
 void PID::limitOutput(double &PIDCalc){
 
     if(integralCap != 0) {
-        if (errorIntegral > integralCap)
+        if (errorIntegral > integralCap) {
             errorIntegral = integralCap;
+            //printf("%f\n", errorIntegral);
+        }
+            
 
         else if (errorIntegral < -integralCap)
             errorIntegral = -integralCap;
@@ -85,3 +100,15 @@ void PID::setIntegralCap(float integralCap){
 void PID::setOutputCap(float outputCap){
     this -> outputCap = outputCap;
 }
+
+// line 32
+// capped at 200, then 200 * kI
+// same result as (2/0.01)
+
+// line 54
+// issue: both functions intend to do same thing
+//          however, input value is not standardized
+// potential solution: have 1st function call 2nd
+//                      determine error, pass through to 2nd
+
+// capped at 200 * kI

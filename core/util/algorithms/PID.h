@@ -23,8 +23,13 @@ private:
     float lastError = 0;
     double errorIntegral = 0;
 
+    
 public:
     float feedForward = 0;
+
+    double pComponent;
+    double iComponent;
+    double dComponent;
 
     /**
      * Creates a new PID object with the default control parameters
