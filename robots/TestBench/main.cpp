@@ -15,10 +15,11 @@ int main(){
     int refLoop = 0;
 
     // Initialize motor
-    DJIMotor motor(3, CANHandler::CANBus::CANBUS_1, M3508, "MotorWeek4");
+    DJIMotor motor(6, CANHandler::CANBus::CANBUS_2, GM6020, "refactor-motor");
     motor.setPositionPID(1, 0, 0);
     motor.setSpeedPID(1,0,0);
     motor.pidPosition.setIntegralCap(2/0.01);
+    motor.pidPosition.feedForward(true);
 
     while(true){
         timeStart = us_ticker_read();
@@ -55,7 +56,7 @@ int main(){
                 //printff("Mode: Speed, Value: %d\n", leftStickValue * 10);
             }
             else if ( leftSwitchState == Remote::SwitchState::DOWN ) {  // position mode
-                motor.setPosition(leftStickValue * 5 + 3300);
+                motor.setPosition(leftStickValue * 5 + 2000);
                 //printff("Mode: Position, Value: %d\n", leftStickValue * 10);
             }
 
