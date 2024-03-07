@@ -179,8 +179,8 @@ void ChassisSubsystem::readImu()
 
 void ChassisSubsystem::periodic()
 {
-    m_wheelSpeeds = {getMotorSpeed(LEFT_FRONT), getMotorSpeed(RIGHT_FRONT),
-                     getMotorSpeed(LEFT_BACK), getMotorSpeed(RIGHT_BACK)};
+    m_wheelSpeeds = {getMotorSpeed(LEFT_FRONT, METER_PER_SECOND), getMotorSpeed(RIGHT_FRONT, METER_PER_SECOND),
+                     getMotorSpeed(LEFT_BACK, METER_PER_SECOND), getMotorSpeed(RIGHT_BACK, METER_PER_SECOND)};
 
     m_chassisSpeeds = wheelSpeedsToChassisSpeeds(m_wheelSpeeds);
 }
@@ -215,7 +215,7 @@ void ChassisSubsystem::setOmniKinematics(double radius)
     m_OmniKinematics.r4y = -sqrt(radius);
 }
 
-WheelSpeeds ChassisSubsystem::chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds) const
+WheelSpeeds ChassisSubsystem::chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds)
 {
     return {(1 / sqrt(2)) * (chassisSpeeds.vX + chassisSpeeds.vY + chassisSpeeds.vOmega * ((m_OmniKinematics.r1x) - (m_OmniKinematics.r1y))),
             (1 / sqrt(2)) * (chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y))),
@@ -224,8 +224,30 @@ WheelSpeeds ChassisSubsystem::chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSp
 }
 
 ChassisSpeeds ChassisSubsystem::wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds)
+{   
+    Eigen::MatrixXd Inv_K(4,3);
+    float coef = 1/sqrt(2);
+    Inv_K << coef, coef, coef * ((m_OmniKinematics.r1x) - (m_OmniKinematics.r1y)),
+             coef, -coef, -coef * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y)),
+             -coef, coef, coef * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y)),
+             -coef, -coef, -coef * ((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y));
+    Eigen::MatrixXd FWD_K(3,4);
+    FWD_K = Inv_K.completeOrthogonalDecomposition().pseudoInverse();
+    Eigen::MatrixXd WS(4,1);
+    WS <<  wheelSpeeds.LF, wheelSpeeds.RF, wheelSpeeds.LB, wheelSpeeds.RB;
+    Eigen::MatrixXd CS(3,1);
+    CS = FWD_K * WS;
+    return {CS(0,0), CS(1,0), CS(2,0)};
+}
+
+char * ChassisSubsystem::MatrixtoString(Eigen::MatrixXd mat)
 {
-    return {};
+    std::stringstream ss;
+    ss << mat;
+    ss << '\0';
+    ss << '\n';
+    const char *a = ss.str().c_str();
+    return strdup(a);
 }
 
 void ChassisSubsystem::setMotorPower(MotorLocation location, double power)

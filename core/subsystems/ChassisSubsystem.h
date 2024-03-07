@@ -13,6 +13,7 @@
 #include <algorithms/Pose2D.h>
 // #include <algorithms/WheelSpeeds.h>
 // #include <algorithms/ChassisSpeeds.h>
+#include "algorithms/eigen-3.4.0/Eigen/QR"
 
 #define CAN_BUS_TYPE CANHandler::CANBUS_1
 #define MOTOR_TYPE M3508
@@ -281,6 +282,9 @@ public:
     WheelSpeeds desiredWheelSpeeds;
 
     OmniKinematicsLimits m_OmniKinematicsLimits;
+    WheelSpeeds chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds);
+    ChassisSpeeds wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds);
+    char * MatrixtoString(Eigen::MatrixXd mat);
 
     ChassisSpeeds m_chassisSpeeds;
     WheelSpeeds m_wheelSpeeds;
@@ -311,9 +315,7 @@ private:
 
     OmniKinematics m_OmniKinematics;
     void setOmniKinematics(double radius);
-
-    WheelSpeeds chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds) const;
-    ChassisSpeeds wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds);
+    // Eigen::MatrixXd wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds);
 
     double FF_Ks;
 

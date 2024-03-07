@@ -1,6 +1,8 @@
 #include "main.h"
 #include "subsystems/ChassisSubsystem.h"
 
+// #include "algorithms/eigen-3.4.0/Eigen/Dense"
+
 DigitalOut led(L27);
 DigitalOut led2(L26);
 DigitalOut led3(L25);
@@ -59,6 +61,17 @@ int main()
                 // printff("%d\n", yawOne.getData(ANGLE));
                 // printff("%d\n", yawTwo.getData(ANGLE));
                 // printff("yawPhase: %f\n",Chassis.yawPhase);
+                // Eigen::MatrixXd m(2,2);
+                // Eigen::MatrixXd A(2,2);
+                // Eigen::MatrixXd Inv_K(4,3);
+                // Inv_K << 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12;
+                // printff("%s\n", Chassis.MatrixtoString(Inv_K));
+                ChassisSpeeds cs = Chassis.m_chassisSpeeds;
+                printff("%f %f %f\n", cs.vX, cs.vY, cs.vOmega);
+
+                // A = m.completeOrthogonalDecomposition().pseudoInverse();
+                // printff("%f %f\n%f %f\n", A(0,0), A(0,1), A(1,0), A(1,1));
+
             }
 
             remoteRead();
@@ -88,7 +101,7 @@ int main()
                 Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel, 
                                           jy * Chassis.m_OmniKinematicsLimits.max_Vel, 
                                           -jr * Chassis.m_OmniKinematicsLimits.max_vOmega}, 
-                                          ChassisSubsystem::YAW_ORIENTED);
+                                          ChassisSubsystem::ROBOT_ORIENTED);
                 // Chassis.setChassisPower({jx, jy, jr});
 
                 // double LFa = (1 / sqrt(2)) * (jx + jy + jr * ((-0.228) - (0.228)));
