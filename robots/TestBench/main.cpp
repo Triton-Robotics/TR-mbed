@@ -241,8 +241,10 @@
      yaw.useAbsEncoder = false;
 
      PID yawIMU(200.0,0.1,150,20000,8000);//7.0,0.02,15.0,20000,8000
-     PID yawBeyblade(30.0,0,130);
-     yaw.setSpeedPID(3, 0, 170);
+//     PID yawBeyblade(30.0,0,200);
+     PID yawBeyblade(1, 0, 200, 6000, 220);
+
+     yaw.setSpeedPID(500, 0, 1000);
 
 //     command.initialize();
 
@@ -293,7 +295,9 @@
                  refLoop = 0;
                  led2= !led2;
 //                 led3 = !led3;
-printff("Angle yaw: %d; Set point: %d; Power out: %d %\n", chassis.getHeadingDegreesYaw(), yawSetPoint, yaw>>POWEROUT);
+//printff("Angle yaw: %d; Set point: %d; Power out: %d %\n", chassis.getHeadingDegreesYaw(), yawSetPoint, yaw>>POWEROUT);
+//                 printff("Yaw: %f, %f, %f %d %d\n", yaw.pidSpeed.pC, yaw.pidSpeed.iC, yaw.pidSpeed.dC, yaw>>VELOCITY, yaw>>VALUE);
+
              }
 
 
@@ -317,13 +321,14 @@ printff("Angle yaw: %d; Set point: %d; Power out: %d %\n", chassis.getHeadingDeg
              if (remote.rightSwitch() == Remote::SwitchState::UP){          // All non-serializer motors activated
                  unsigned long time = us_ticker_read();
                  lastTime = time;
-                 yaw.setSpeed(-remote.rightX() *5);
+                 yaw.setSpeed(-remote.rightX() /11.0 );
+
 //                 yaw.setPower(-remote.rightX() * 10);
              } else if (remote.rightSwitch() == Remote::SwitchState::MID || remote.rightSwitch() == Remote::SwitchState::UNKNOWN){ // disable all the non-serializer components
                  yaw.setPower(0);
              } else if (remote.rightSwitch() == Remote::SwitchState::DOWN){           // beyblade mode
 //                 yawDesiredImu  -=  remote.rightX() * 5;
-                 yawSetPoint -= remote.rightX() / 55;
+                 yawSetPoint -= remote.rightX() / 100;
                  yawSetPoint = (yawSetPoint+360) % 360;
                  timeSure = us_ticker_read();
 //                 Determine which direction yaw should turn
