@@ -34,6 +34,6 @@ var searchData=
   ['trmutex_2ecpp_1184',['TRMutex.cpp',['../TRMutex_8cpp.html',1,'']]],
   ['trmutex_2eh_1185',['TRMutex.h',['../TRMutex_8h.html',1,'']]],
   ['true_1186',['TRUE',['../ref__serial_8h.html#aa8cecfc5c5c054d2875c03e77b7be15d',1,'ref_serial.h']]],
-  ['tune_1187',['tune',['../classPIDTuner.html#ad5390fb55d50a9115b5b3a8e9d2fb7fa',1,'PIDTuner']]],
+  ['tune_1187',['tune',['../classPIDTuner.html#a245f02095ef079f3d96267c17992d28b',1,'PIDTuner']]],
   ['type_1188',['type',['../classDJIMotor.html#a72f41290da81929cbce3c01e820b7376',1,'DJIMotor']]]
 ];

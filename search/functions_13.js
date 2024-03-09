@@ -5,5 +5,5 @@ var searchData=
   ['tinyekf_1687',['TinyEKF',['../classTinyEKF.html#aa40df55f61015b9d34ab4a785e9c3b84',1,'TinyEKF']]],
   ['tonum_1688',['toNum',['../classSerialCommunication.html#a09419c84e1bc2a085e1357a68b1e8319',1,'SerialCommunication']]],
   ['trmutex_1689',['TRMutex',['../classTRMutex.html#a3f42e63f89376a505d97b090c1f98b32',1,'TRMutex']]],
-  ['tune_1690',['tune',['../classPIDTuner.html#ad5390fb55d50a9115b5b3a8e9d2fb7fa',1,'PIDTuner']]]
+  ['tune_1690',['tune',['../classPIDTuner.html#a245f02095ef079f3d96267c17992d28b',1,'PIDTuner']]]
 ];
