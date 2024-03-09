@@ -100,6 +100,16 @@ void ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRI
     setWheelSpeeds(wheelSpeeds);
 }
 
+void ChassisSubsystem::setChassisSpeedsPWR(double fwd, double strafe)
+{
+    double huiandward = 0;
+    if (fwd == 0 && strafe == 0) { // Robot is not moving
+        huiandward = rpmToRadPerSecond(10 * M3508_GEAR_RATIO); // Set turning speed - covert to rpm
+    }
+
+    setChassisSpeeds({strafe,fwd,huiandward});
+}
+
 void ChassisSubsystem::setChassisPower(ChassisSpeeds desiredChassisPower)
 {
     WheelSpeeds wheelPower = chassisSpeedsToWheelSpeeds(desiredChassisPower); // in [-1, 1] (for now)
