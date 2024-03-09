@@ -20,7 +20,7 @@ I2C i2c(I2C_SDA, I2C_SCL);
 Chassis chassis(1, 2, 3, 4, &i2c);
 DJIMotor yaw(5, CANHandler::CANBUS_1, GIMBLY);
 DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY); // right
-DJIMotor pitch2(6, CANHandler::CANBUS_2, GIMBLY); // left
+DJIMotor pitch2(6, CANHandler::CANBUS_2, GIMBLY); // left, not functioning
 DJIMotor indexer(7, CANHandler::CANBUS_2, C610);
 DJIMotor RFLYWHEEL(8, CANHandler::CANBUS_2, M3508);
 DJIMotor LFLYWHEEL(5, CANHandler::CANBUS_2, M3508);
@@ -74,7 +74,6 @@ void pitchSetPosition(){
     //int pitchSetPoint = (-remote.rightY() * 0.5) + 6200;
     int pitchSetPoint = 5960 - (5960 - 5350)/660.0 * remote.rightY();
 
-    /* TODO: test min and max pitch position */
     // low
     if(pitchSetPoint > 6570)
         pitchSetPoint = 6570;
@@ -128,12 +127,14 @@ int main(){
     pitch.outputCap = 32760;
     pitch.useAbsEncoder = true;
 
-    pitch2.setPositionPID(17.3, 0.03, 8.5); //12.3 0.03 2.5 //mid is 13.3, 0.03, 7.5
-    pitch2.setPositionIntegralCap(60000);
-    pitch2.setPositionOutputCap(100000);
-    pitch2.pidPosition.feedForward = 0;
-    pitch2.outputCap = 32760;
-    pitch2.useAbsEncoder = true;
+    /* Pitch2 not functioning, only using pitch defined above ^
+    */
+    // pitch2.setPositionPID(17.3, 0.03, 8.5); //12.3 0.03 2.5 //mid is 13.3, 0.03, 7.5
+    // pitch2.setPositionIntegralCap(60000);
+    // pitch2.setPositionOutputCap(100000);
+    // pitch2.pidPosition.feedForward = 0;
+    // pitch2.outputCap = 32760;
+    // pitch2.useAbsEncoder = true;
 
     LFLYWHEEL.setSpeedPID(7.5, 0, 0.04);
     RFLYWHEEL.setSpeedPID(7.5, 0, 0.04);
@@ -179,10 +180,12 @@ int main(){
     unsigned long yawTime = us_ticker_read();
     //unsigned long burstTimestamp = 0;
 
+    //Variables & PID for burst fire
     bool shoot = false;
     //int shootPosition;
     int shootTargetPosition = 36*8190 ;
     bool shootReady = false;
+    //PID for indexer angle position control. Surely there are better names then "sure"...
     PID sure(0.5,0,1);
     sure.setOutputCap(4000);
     unsigned long timeSure;
@@ -225,7 +228,10 @@ int main(){
 
 
             /**
-             * rightSwitch controls
+             * RightSwitch controls: Pitch, Yaw, Chassis
+             * Up: Pitch enabled, yaw and chassis seperate
+             * Mid or Unkown: Off. All power set to 0
+             * Down: Pitch enabled, yaw and chassis Beyblade
              */
             if (remote.rightSwitch() == Remote::SwitchState::UP){          // All non-serializer motors activated
                 led3 = 1;
@@ -238,7 +244,6 @@ int main(){
                 chassis.driveFieldRelative({0, 0, 0});
                 yaw.setPower(0);
                 pitch.setPower(0);
-                pitch2.setPower(0);
             } else if (remote.rightSwitch() == Remote::SwitchState::DOWN){           // beyblade mode
                 unsigned long time = us_ticker_read(); //time for pid
                 double r = 4000;
@@ -303,9 +308,6 @@ int main(){
                 RFLYWHEEL.setSpeed(0);
                 LFLYWHEEL.setSpeed(0);
             }
-
-
-
 
 
             DJIMotor::s_sendValues();
