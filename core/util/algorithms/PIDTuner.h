@@ -3,6 +3,7 @@
 #include "../motor/DJIMotor.h"
 #include <random>
 #include <chrono>
+#include <vector>
 
 using fitnessFunction = std::function<double(double)>;
 
@@ -45,7 +46,7 @@ public:
      * getFitness can be any function that converts the integralAbsError to fitness
      * e.g., a/x, a^-x, a - x
      */
-    void tune(unsigned long time_s, size_t iterations, size_t generations, double mutationRate = 0.01, fitnessFunction getFitness = [](double integral){return 1 / integral;});
+    void tune(unsigned long time_s, size_t iterations, size_t generations, std::vector<PIDDataSet> &best, double mutationRate = 0.01, fitnessFunction getFitness = [](double integral){return 1 / integral;});
 
     ~PIDTuner() = default;
 

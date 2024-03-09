@@ -15,7 +15,7 @@ PIDTuner::PIDTuner(DJIMotor &motor_, PIDDataSet population_[], size_t population
         population[i].dumpPIDs();
 }
 
-void PIDTuner::tune(unsigned long time_s, size_t iterations, size_t generations, double mutationRate, fitnessFunction getFitness){
+void PIDTuner::tune(unsigned long time_s, size_t iterations, size_t generations, std::vector<PIDDataSet> &best, double mutationRate, fitnessFunction getFitness){
     printf("tuning %s...\n", motor.name.c_str());
     this -> getFitness = std::move(getFitness);
     this -> mutationRate = mutationRate;
@@ -70,24 +70,24 @@ void PIDTuner::tune(unsigned long time_s, size_t iterations, size_t generations,
             }
             population[i].meanIntegralAbsError = integralAbsErrorSum_ / iterations;
             population[i].meanIntegralSqError = integralSqErrorSum_ / iterations;
-        }
-        for(int i = 0; i < populationSize; i++) {
             population[i].dumpIntegrals();
+
+            if(population[i].meanIntegralAbsError < best.back().meanIntegralAbsError)
+                best.emplace_back(population[i]);
         }
+        for(auto e: best)
+            e.dumpData();
 
         nextGeneration();
-
-        for(int i = 0; i < populationSize; i++) {
-            printf("%d ", i);
-            population[i].dumpPIDs();
-        }
     }
 }
 
 double PIDTuner::getRandomNumber(double min, double max){
     std::uniform_real_distribution<double> dist(min, max);
+    double num = dist(mt);
 
-    return dist(mt);
+//    printf("%lf, %lf, %lf\n", num, min, max);
+    return num;
 }
 
 void PIDTuner::randomizePosition() {
