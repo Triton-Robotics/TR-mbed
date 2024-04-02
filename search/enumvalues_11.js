@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['w_2113',['W',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fa61e9c06ea9a85a5088a499df6458d276',1,'Remote']]],
-  ['warning_2114',['WARNING',['../TRMutex_8h.html#af5f478ebdb1815432fb04589309d5492a984de77c680eaff141ec910e25568a81',1,'TRMutex.h']]]
+  ['q_37355',['Q',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4faf09564c9ca56850d4cd6b3319e541aee',1,'Remote']]],
+  ['quarterpacketsize_37356',['QuarterPacketSize',['../structEigen_1_1internal_1_1gemm__pack__rhs_3_01Scalar_00_01Index_00_01DataMapper_00_01nr_00_01Ro622ecd83213b653262481d20d625c06b.html#a69cc47729200d19d02445cb6eb738929a9fcd92c85b82557073172684f94d6e3e',1,'Eigen::internal::gemm_pack_rhs&lt; Scalar, Index, DataMapper, nr, RowMajor, Conjugate, PanelMode &gt;']]]
 ];

@@ -99,32 +99,32 @@ $(function() {
 <div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="classCANMsg.html#a969dcb0af8e68883ab104249c8559146">   35</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classCANMsg.html#a969dcb0af8e68883ab104249c8559146">clear</a>(<span class="keywordtype">void</span>) {</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        len    = 0;</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        type   = CANData;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        format = CANStandard;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <a class="code" href="openglsupport_8cpp.html#afb3b8edf3669b067d7266cad3a1b66e7">format</a> = CANStandard;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="keywordtype">id</span>     = 0;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        memset(data, 0, 8);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        memset(<a class="code" href="Map__placement__new_8cpp.html#abe49a82806b5db2e012bc33839af03e6">data</a>, 0, 8);</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    };</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div>
-<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classCANMsg.html#ad460c51cb95bca77c602141f06c8a2a1">   46</a></span>&#160;    <a class="code" href="classCANMsg.html">CANMsg</a> &amp;<a class="code" href="classCANMsg.html#ad460c51cb95bca77c602141f06c8a2a1">operator&lt;&lt;</a>(<span class="keyword">const</span> T val) {</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        MBED_ASSERT(len + <span class="keyword">sizeof</span>(T) &lt;= 8);</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        memcpy(&amp;data[len], &amp;val, <span class="keyword">sizeof</span>(T));</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        len += <span class="keyword">sizeof</span>(T);</div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classCANMsg.html#ad460c51cb95bca77c602141f06c8a2a1">   46</a></span>&#160;    <a class="code" href="classCANMsg.html">CANMsg</a> &amp;<a class="code" href="classCANMsg.html#ad460c51cb95bca77c602141f06c8a2a1">operator&lt;&lt;</a>(<span class="keyword">const</span> <a class="code" href="classEigen_1_1Triplet.html">T</a> val) {</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        MBED_ASSERT(len + <span class="keyword">sizeof</span>(<a class="code" href="classEigen_1_1Triplet.html">T</a>) &lt;= 8);</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        memcpy(&amp;<a class="code" href="Map__placement__new_8cpp.html#abe49a82806b5db2e012bc33839af03e6">data</a>[len], &amp;val, <span class="keyword">sizeof</span>(<a class="code" href="classEigen_1_1Triplet.html">T</a>));</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        len += <span class="keyword">sizeof</span>(<a class="code" href="Tutorial__sparse__example_8cpp.html#af639fb96631ba0018f0b2259fc95edfb">T</a>);</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    }</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div>
-<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="classCANMsg.html#a04a37c4f8c5d7630b4a966f1f49713a3">   56</a></span>&#160;    <a class="code" href="classCANMsg.html">CANMsg</a> &amp;<a class="code" href="classCANMsg.html#a04a37c4f8c5d7630b4a966f1f49713a3">operator&gt;&gt;</a>(T&amp; val) {</div>
+<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="classCANMsg.html#a04a37c4f8c5d7630b4a966f1f49713a3">   56</a></span>&#160;    <a class="code" href="classCANMsg.html">CANMsg</a> &amp;<a class="code" href="classCANMsg.html#a04a37c4f8c5d7630b4a966f1f49713a3">operator&gt;&gt;</a>(<a class="code" href="classEigen_1_1Triplet.html">T</a>&amp; val) {</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <span class="comment">//printf(&quot;Size:%d\tmax length:%d\n&quot;, sizeof(T), len);</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        MBED_ASSERT(<span class="keyword">sizeof</span>(T) &lt;= len);</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="keywordflow">if</span> (<span class="keyword">sizeof</span>(T) &gt; len) {</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;            memcpy(&amp;val, data, len);</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        MBED_ASSERT(<span class="keyword">sizeof</span>(<a class="code" href="classEigen_1_1Triplet.html">T</a>) &lt;= len);</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="keywordflow">if</span> (<span class="keyword">sizeof</span>(<a class="code" href="classEigen_1_1Triplet.html">T</a>) &gt; len) {</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;            memcpy(&amp;val, <a class="code" href="Map__placement__new_8cpp.html#abe49a82806b5db2e012bc33839af03e6">data</a>, len);</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;            len = 0;</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        }</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;            memcpy(&amp;val, data, <span class="keyword">sizeof</span>(T));</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;            len -= <span class="keyword">sizeof</span>(T);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;            memcpy(&amp;val, <a class="code" href="Map__placement__new_8cpp.html#abe49a82806b5db2e012bc33839af03e6">data</a>, <span class="keyword">sizeof</span>(<a class="code" href="classEigen_1_1Triplet.html">T</a>));</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;            len -= <span class="keyword">sizeof</span>(<a class="code" href="Tutorial__sparse__example_8cpp.html#af639fb96631ba0018f0b2259fc95edfb">T</a>);</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        }</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        memcpy(data, data + <span class="keyword">sizeof</span>(T), len);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        memcpy(<a class="code" href="Map__placement__new_8cpp.html#abe49a82806b5db2e012bc33839af03e6">data</a>, <a class="code" href="Map__placement__new_8cpp.html#abe49a82806b5db2e012bc33839af03e6">data</a> + <span class="keyword">sizeof</span>(<a class="code" href="classEigen_1_1Triplet.html">T</a>), len);</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    }</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;};</div>
@@ -132,6 +132,8 @@ $(function() {
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// CANMSG_H</span></div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            </div>
+<div class="ttc" id="aMap__placement__new_8cpp_html_abe49a82806b5db2e012bc33839af03e6"><div class="ttname"><a href="Map__placement__new_8cpp.html#abe49a82806b5db2e012bc33839af03e6">data</a></div><div class="ttdeci">int data[]</div><div class="ttdef"><b>Definition:</b> Map_placement_new.cpp:1</div></div>
+<div class="ttc" id="aTutorial__sparse__example_8cpp_html_af639fb96631ba0018f0b2259fc95edfb"><div class="ttname"><a href="Tutorial__sparse__example_8cpp.html#af639fb96631ba0018f0b2259fc95edfb">T</a></div><div class="ttdeci">Eigen::Triplet&lt; double &gt; T</div><div class="ttdef"><b>Definition:</b> Tutorial_sparse_example.cpp:6</div></div>
 <div class="ttc" id="aclassCANMsg_html"><div class="ttname"><a href="classCANMsg.html">CANMsg</a></div><div class="ttdef"><b>Definition:</b> CANMsg.h:16</div></div>
 <div class="ttc" id="aclassCANMsg_html_a04a37c4f8c5d7630b4a966f1f49713a3"><div class="ttname"><a href="classCANMsg.html#a04a37c4f8c5d7630b4a966f1f49713a3">CANMsg::operator&gt;&gt;</a></div><div class="ttdeci">CANMsg &amp; operator&gt;&gt;(T &amp;val)</div><div class="ttdef"><b>Definition:</b> CANMsg.h:56</div></div>
 <div class="ttc" id="aclassCANMsg_html_a2e19ae2a3e39908d407404c989cdc432"><div class="ttname"><a href="classCANMsg.html#a2e19ae2a3e39908d407404c989cdc432">CANMsg::CANMsg</a></div><div class="ttdeci">CANMsg(int _id, CANFormat _format=CANStandard)</div><div class="ttdef"><b>Definition:</b> CANMsg.h:30</div></div>
@@ -139,6 +141,8 @@ $(function() {
 <div class="ttc" id="aclassCANMsg_html_ad460c51cb95bca77c602141f06c8a2a1"><div class="ttname"><a href="classCANMsg.html#ad460c51cb95bca77c602141f06c8a2a1">CANMsg::operator&lt;&lt;</a></div><div class="ttdeci">CANMsg &amp; operator&lt;&lt;(const T val)</div><div class="ttdef"><b>Definition:</b> CANMsg.h:46</div></div>
 <div class="ttc" id="aclassCANMsg_html_af843ce3b8b5889c427e6b8237542999d"><div class="ttname"><a href="classCANMsg.html#af843ce3b8b5889c427e6b8237542999d">CANMsg::CANMsg</a></div><div class="ttdeci">CANMsg(int _id, const char *_data, char _len=8, CANType _type=CANData, CANFormat _format=CANStandard)</div><div class="ttdef"><b>Definition:</b> CANMsg.h:25</div></div>
 <div class="ttc" id="aclassCANMsg_html_af996bcbe3d52b8c90dd432d12294cf1c"><div class="ttname"><a href="classCANMsg.html#af996bcbe3d52b8c90dd432d12294cf1c">CANMsg::CANMsg</a></div><div class="ttdeci">CANMsg()</div><div class="ttdef"><b>Definition:</b> CANMsg.h:20</div></div>
+<div class="ttc" id="aclassEigen_1_1Triplet_html"><div class="ttname"><a href="classEigen_1_1Triplet.html">Eigen::Triplet&lt; double &gt;</a></div></div>
+<div class="ttc" id="aopenglsupport_8cpp_html_afb3b8edf3669b067d7266cad3a1b66e7"><div class="ttname"><a href="openglsupport_8cpp.html#afb3b8edf3669b067d7266cad3a1b66e7">format</a></div><div class="ttdeci">std::string format(const std::string &amp;str, const std::vector&lt; std::string &gt; &amp;find, const std::vector&lt; std::string &gt; &amp;replace)</div><div class="ttdef"><b>Definition:</b> openglsupport.cpp:226</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

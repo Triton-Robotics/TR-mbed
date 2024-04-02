@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['motors_2611',['motors',['../md_core_util_motor_motors.html',1,'']]]
+  ['adding_20a_20new_20expression_20type_41034',['Adding a new expression type',['../TopicNewExpressionType.html',1,'UserManual_CustomizingEigen']]],
+  ['assertions_41035',['Assertions',['../TopicAssertions.html',1,'UserManual_Generalities']]]
 ];

@@ -1,12 +1,20 @@
 var searchData=
 [
-  ['ramsetecontroller_2ecpp_1395',['RamseteController.cpp',['../RamseteController_8cpp.html',1,'']]],
-  ['ramsetecontroller_2eh_1396',['RamseteController.h',['../RamseteController_8h.html',1,'']]],
-  ['readme_2emd_1397',['README.md',['../README_8md.html',1,'']]],
-  ['ref_5foperations_2ecpp_1398',['ref_operations.cpp',['../ref__operations_8cpp.html',1,'']]],
-  ['ref_5foperations_2eh_1399',['ref_operations.h',['../ref__operations_8h.html',1,'']]],
-  ['ref_5fserial_2ecpp_1400',['ref_serial.cpp',['../ref__serial_8cpp.html',1,'']]],
-  ['ref_5fserial_2eh_1401',['ref_serial.h',['../ref__serial_8h.html',1,'']]],
-  ['ref_5fui_2ecpp_1402',['ref_ui.cpp',['../ref__ui_8cpp.html',1,'']]],
-  ['ref_5fui_2eh_1403',['ref_ui.h',['../ref__ui_8h.html',1,'']]]
+  ['nestbyvalue_2ecpp_24667',['nestbyvalue.cpp',['../nestbyvalue_8cpp.html',1,'']]],
+  ['nestbyvalue_2eh_24668',['NestByValue.h',['../NestByValue_8h.html',1,'']]],
+  ['nesting_5fops_2ecpp_24669',['nesting_ops.cpp',['../nesting__ops_8cpp.html',1,'']]],
+  ['newexpressiontype_2edox_24670',['NewExpressionType.dox',['../NewExpressionType_8dox.html',1,'']]],
+  ['noalias_2eh_24671',['NoAlias.h',['../NoAlias_8h.html',1,'']]],
+  ['nomalloc_2ecpp_24672',['nomalloc.cpp',['../nomalloc_8cpp.html',1,'']]],
+  ['nonblockingthreadpool_2eh_24673',['NonBlockingThreadPool.h',['../NonBlockingThreadPool_8h.html',1,'']]],
+  ['nonlinearoptimization_2ecpp_24674',['NonLinearOptimization.cpp',['../NonLinearOptimization_8cpp.html',1,'']]],
+  ['nonmpl2_2eh_24675',['NonMPL2.h',['../NonMPL2_8h.html',1,'']]],
+  ['nullary_2ecpp_24676',['nullary.cpp',['../nullary_8cpp.html',1,'']]],
+  ['nullary_5findexing_2ecpp_24677',['nullary_indexing.cpp',['../nullary__indexing_8cpp.html',1,'']]],
+  ['nullaryfunctors_2eh_24678',['NullaryFunctors.h',['../NullaryFunctors_8h.html',1,'']]],
+  ['num_5fdimensions_2ecpp_24679',['num_dimensions.cpp',['../num__dimensions_8cpp.html',1,'']]],
+  ['numericaldiff_2ecpp_24680',['NumericalDiff.cpp',['../NumericalDiff_8cpp.html',1,'']]],
+  ['numericaldiff_2eh_24681',['NumericalDiff.h',['../NumericalDiff_8h.html',1,'']]],
+  ['numext_2ecpp_24682',['numext.cpp',['../numext_8cpp.html',1,'']]],
+  ['numtraits_2eh_24683',['NumTraits.h',['../NumTraits_8h.html',1,'']]]
 ];

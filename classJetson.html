@@ -118,7 +118,7 @@ Public Attributes</h2></td></tr>
 <div class="line"><a class="code" href="classJetson.html">Jetson</a> jetson(PC_12, PD_2);</div>
 <div class="line">Thread <a class="code" href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627">cv</a>;</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">int</span> <a class="code" href="imuExampleAllData_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main</a>() {</div>
+<div class="line"><span class="keywordtype">int</span> <a class="code" href="analyze-blocking-sizes_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97">main</a>() {</div>
 <div class="line">  <a class="code" href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627">cv</a>.start([]() {</div>
 <div class="line">    <span class="keywordflow">while</span> (<span class="keyword">true</span>) {</div>
 <div class="line">      jetson.read();</div>
@@ -130,12 +130,12 @@ Public Attributes</h2></td></tr>
 <div class="line">  <span class="keywordflow">while</span> (<span class="keyword">true</span>) {</div>
 <div class="line">    <a class="code" href="Hero_2main_8cpp.html#a689935c8d5f58c88c4dd8a44d5c6abc0">led</a> = !<a class="code" href="Hero_2main_8cpp.html#a689935c8d5f58c88c4dd8a44d5c6abc0">led</a>;</div>
 <div class="line">    <span class="comment">// Read some data</span></div>
-<div class="line">    printf(<span class="stringliteral">&quot;Data: %f, %f, %f\n&quot;</span>, jetson.get(Jetson::cv::X), jetson.get(Jetson::cv::Y), jetson.get(Jetson::cv::Z));</div>
+<div class="line">    printf(<span class="stringliteral">&quot;Data: %f, %f, %f\n&quot;</span>, jetson.get(<a class="code" href="icosphere_8cpp.html#a207fd5507206d307cd63f95374fcd00d">Jetson::cv::X</a>), jetson.get(<a class="code" href="test_2EulerAngles_8cpp.html#aecb7a48bf527ac0585250551f77b2657">Jetson::cv::Y</a>), jetson.get(<a class="code" href="test_2EulerAngles_8cpp.html#a362f1db478d8a44cc8f02cfd8c0cbad9">Jetson::cv::Z</a>));</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">// Send some data</span></div>
-<div class="line">    jetson.set(Jetson::cv::X, 1.0);</div>
-<div class="line">    jetson.set(Jetson::cv::Y, 2.0);</div>
-<div class="line">    jetson.set(Jetson::cv::Z, 3.0);</div>
+<div class="line">    jetson.set(<a class="code" href="icosphere_8cpp.html#a207fd5507206d307cd63f95374fcd00d">Jetson::cv::X</a>, 1.0);</div>
+<div class="line">    jetson.set(<a class="code" href="test_2EulerAngles_8cpp.html#aecb7a48bf527ac0585250551f77b2657">Jetson::cv::Y</a>, 2.0);</div>
+<div class="line">    jetson.set(<a class="code" href="test_2EulerAngles_8cpp.html#a362f1db478d8a44cc8f02cfd8c0cbad9">Jetson::cv::Z</a>, 3.0);</div>
 <div class="line"> </div>
 <div class="line">    ThisThread::sleep_for(500);</div>
 <div class="line">  }</div>
@@ -143,9 +143,12 @@ Public Attributes</h2></td></tr>
 <div class="line">}</div>
 <div class="ttc" id="aHero_2main_8cpp_html_a689935c8d5f58c88c4dd8a44d5c6abc0"><div class="ttname"><a href="Hero_2main_8cpp.html#a689935c8d5f58c88c4dd8a44d5c6abc0">led</a></div><div class="ttdeci">DigitalOut led(L26)</div></div>
 <div class="ttc" id="aJetson_8h_html"><div class="ttname"><a href="Jetson_8h.html">Jetson.h</a></div></div>
+<div class="ttc" id="aanalyze-blocking-sizes_8cpp_html_a0ddf1224851353fc92bfbff6f499fa97"><div class="ttname"><a href="analyze-blocking-sizes_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97">main</a></div><div class="ttdeci">int main(int argc, char *argv[])</div><div class="ttdef"><b>Definition:</b> analyze-blocking-sizes.cpp:810</div></div>
 <div class="ttc" id="aclassJetson_html"><div class="ttname"><a href="classJetson.html">Jetson</a></div><div class="ttdoc">A class for interfacing with the Jetson TX2 and receiving computer vision data over UART.</div><div class="ttdef"><b>Definition:</b> Jetson.h:58</div></div>
 <div class="ttc" id="aclassJetson_html_aa63103bffe77a5f527da3a3d8eb63627"><div class="ttname"><a href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627">Jetson::cv</a></div><div class="ttdeci">cv</div><div class="ttdef"><b>Definition:</b> Jetson.h:125</div></div>
-<div class="ttc" id="aimuExampleAllData_8cpp_html_ae66f6b31b5ad750f1fe042a706a4e3d4"><div class="ttname"><a href="imuExampleAllData_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main</a></div><div class="ttdeci">int main()</div><div class="ttdef"><b>Definition:</b> imuExampleAllData.cpp:27</div></div>
+<div class="ttc" id="aicosphere_8cpp_html_a207fd5507206d307cd63f95374fcd00d"><div class="ttname"><a href="icosphere_8cpp.html#a207fd5507206d307cd63f95374fcd00d">X</a></div><div class="ttdeci">#define X</div><div class="ttdef"><b>Definition:</b> icosphere.cpp:20</div></div>
+<div class="ttc" id="atest_2EulerAngles_8cpp_html_a362f1db478d8a44cc8f02cfd8c0cbad9"><div class="ttname"><a href="test_2EulerAngles_8cpp.html#a362f1db478d8a44cc8f02cfd8c0cbad9">Z</a></div><div class="ttdeci">const char Z</div><div class="ttdef"><b>Definition:</b> EulerAngles.cpp:32</div></div>
+<div class="ttc" id="atest_2EulerAngles_8cpp_html_aecb7a48bf527ac0585250551f77b2657"><div class="ttname"><a href="test_2EulerAngles_8cpp.html#aecb7a48bf527ac0585250551f77b2657">Y</a></div><div class="ttdeci">const char Y</div><div class="ttdef"><b>Definition:</b> EulerAngles.cpp:31</div></div>
 </div><!-- fragment --> </div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="aa63103bffe77a5f527da3a3d8eb63627"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa63103bffe77a5f527da3a3d8eb63627">&#9670;&nbsp;</a></span>cv</h2>
@@ -269,7 +272,7 @@ Public Attributes</h2></td></tr>
 <div class="line"> </div>
 <div class="line"><span class="keywordflow">while</span> (<span class="keyword">true</span>) {</div>
 <div class="line">  jetson.read();</div>
-<div class="line">  printf(<span class="stringliteral">&quot;X: %f, Y: %f, Z: %f\n&quot;</span>, jetson.get(Jetson::cv::X), jetson.get(Jetson::cv::Y), jetson.get(Jetson::cv::Z));</div>
+<div class="line">  printf(<span class="stringliteral">&quot;X: %f, Y: %f, Z: %f\n&quot;</span>, jetson.get(<a class="code" href="icosphere_8cpp.html#a207fd5507206d307cd63f95374fcd00d">Jetson::cv::X</a>), jetson.get(<a class="code" href="test_2EulerAngles_8cpp.html#aecb7a48bf527ac0585250551f77b2657">Jetson::cv::Y</a>), jetson.get(<a class="code" href="test_2EulerAngles_8cpp.html#a362f1db478d8a44cc8f02cfd8c0cbad9">Jetson::cv::Z</a>));</div>
 <div class="line">}</div>
 </div><!-- fragment --><p>Note that it is often preferred to do this in a separate thread. See the class header for a full example. </p>
 
@@ -328,9 +331,9 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>Should be called once per loop. Writes the next set of data to the serial port.</p>
 <p><b>Example usage</b> </p><div class="fragment"><div class="line"><span class="keywordflow">while</span> (<span class="keyword">true</span>) {</div>
-<div class="line"> jetson.set(Jetson::cv::X, 0.5);</div>
-<div class="line"> jetson.set(Jetson::cv::Y, 69);</div>
-<div class="line"> jetson.set(Jetson::cv::Z, 420);</div>
+<div class="line"> jetson.set(<a class="code" href="icosphere_8cpp.html#a207fd5507206d307cd63f95374fcd00d">Jetson::cv::X</a>, 0.5);</div>
+<div class="line"> jetson.set(<a class="code" href="test_2EulerAngles_8cpp.html#aecb7a48bf527ac0585250551f77b2657">Jetson::cv::Y</a>, 69);</div>
+<div class="line"> jetson.set(<a class="code" href="test_2EulerAngles_8cpp.html#a362f1db478d8a44cc8f02cfd8c0cbad9">Jetson::cv::Z</a>, 420);</div>
 <div class="line"> jetson.write();</div>
 <div class="line">}</div>
 </div><!-- fragment --><p>Note that it is often preferred to do this in a separate thread. See the class header for a full example. </p>

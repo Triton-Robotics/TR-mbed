@@ -94,8 +94,8 @@ $(function() {
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    time_t lastRead = 0;</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    uint8_t rxBuffer[<a class="code" href="Jetson_8h.html#aac7f4a6d26d0b66cdc6a6a445173762a">JETSON_BUF_LEN</a>]{0};</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    uint8_t cobsBuffer[<a class="code" href="Jetson_8h.html#aac7f4a6d26d0b66cdc6a6a445173762a">JETSON_BUF_LEN</a>]{0};</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <a class="code" href="namespaceEigen_1_1numext.html#a58c956967b2b3b326df2b220ae9b2274">uint8_t</a> rxBuffer[<a class="code" href="Jetson_8h.html#aac7f4a6d26d0b66cdc6a6a445173762a">JETSON_BUF_LEN</a>]{0};</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <a class="code" href="namespaceEigen_1_1numext.html#a58c956967b2b3b326df2b220ae9b2274">uint8_t</a> cobsBuffer[<a class="code" href="Jetson_8h.html#aac7f4a6d26d0b66cdc6a6a445173762a">JETSON_BUF_LEN</a>]{0};</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keywordtype">int</span> currentBufferIndex = 0;</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
@@ -107,15 +107,15 @@ $(function() {
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keywordtype">void</span> reset();</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    T find(uint8_t* buf, <span class="keywordtype">size_t</span> len, <span class="keywordtype">int</span> index);</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <a class="code" href="classEigen_1_1Triplet.html">T</a> find(<a class="code" href="namespaceEigen_1_1numext.html#a58c956967b2b3b326df2b220ae9b2274">uint8_t</a>* buf, <span class="keywordtype">size_t</span> len, <span class="keywordtype">int</span> index);</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    T pack(uint8_t* buf, T value, <span class="keywordtype">int</span> index);</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <a class="code" href="classEigen_1_1Triplet.html">T</a> pack(<a class="code" href="namespaceEigen_1_1numext.html#a58c956967b2b3b326df2b220ae9b2274">uint8_t</a>* buf, <a class="code" href="classEigen_1_1Triplet.html">T</a> value, <span class="keywordtype">int</span> index);</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    uint16_t crc16_byte(uint16_t crc, uint8_t data);</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    uint16_t crc16(uint8_t <span class="keyword">const</span> *buffer, <span class="keywordtype">size_t</span> length);</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <a class="code" href="namespaceEigen_1_1numext.html#a0841ad317de8d5642ab65d9c7cebc42f">uint16_t</a> crc16_byte(<a class="code" href="namespaceEigen_1_1numext.html#a0841ad317de8d5642ab65d9c7cebc42f">uint16_t</a> crc, <a class="code" href="namespaceEigen_1_1numext.html#a58c956967b2b3b326df2b220ae9b2274">uint8_t</a> <a class="code" href="Map__placement__new_8cpp.html#abe49a82806b5db2e012bc33839af03e6">data</a>);</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <a class="code" href="namespaceEigen_1_1numext.html#a0841ad317de8d5642ab65d9c7cebc42f">uint16_t</a> crc16(<a class="code" href="namespaceEigen_1_1numext.html#a58c956967b2b3b326df2b220ae9b2274">uint8_t</a> <span class="keyword">const</span> *buffer, <span class="keywordtype">size_t</span> length);</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    uint16_t <span class="keyword">const</span> crc16_table[256] = {</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <a class="code" href="namespaceEigen_1_1numext.html#a0841ad317de8d5642ab65d9c7cebc42f">uint16_t</a> <span class="keyword">const</span> crc16_table[256] = {</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;            0x0000, 0xC0C1, 0xC181, 0x0140, 0xC301, 0x03C0, 0x0280, 0xC241,</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;            0xC601, 0x06C0, 0x0780, 0xC741, 0x0500, 0xC5C1, 0xC481, 0x0440,</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;            0xCC01, 0x0CC0, 0x0D80, 0xCD41, 0x0F00, 0xCFC1, 0xCE81, 0x0E40,</div>
@@ -176,6 +176,8 @@ $(function() {
 <div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160; </div>
 <div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;<span class="preprocessor">#endif </span><span class="comment">//TR_MBED_JETSON_H</span></div>
 <div class="ttc" id="aJetson_8h_html_aac7f4a6d26d0b66cdc6a6a445173762a"><div class="ttname"><a href="Jetson_8h.html#aac7f4a6d26d0b66cdc6a6a445173762a">JETSON_BUF_LEN</a></div><div class="ttdeci">#define JETSON_BUF_LEN</div><div class="ttdef"><b>Definition:</b> Jetson.h:14</div></div>
+<div class="ttc" id="aMap__placement__new_8cpp_html_abe49a82806b5db2e012bc33839af03e6"><div class="ttname"><a href="Map__placement__new_8cpp.html#abe49a82806b5db2e012bc33839af03e6">data</a></div><div class="ttdeci">int data[]</div><div class="ttdef"><b>Definition:</b> Map_placement_new.cpp:1</div></div>
+<div class="ttc" id="aclassEigen_1_1Triplet_html"><div class="ttname"><a href="classEigen_1_1Triplet.html">Eigen::Triplet&lt; double &gt;</a></div></div>
 <div class="ttc" id="aclassJetson_html"><div class="ttname"><a href="classJetson.html">Jetson</a></div><div class="ttdoc">A class for interfacing with the Jetson TX2 and receiving computer vision data over UART.</div><div class="ttdef"><b>Definition:</b> Jetson.h:58</div></div>
 <div class="ttc" id="aclassJetson_html_a0da6dd80b8c8c3af02585f4fdaf49c49"><div class="ttname"><a href="classJetson.html#a0da6dd80b8c8c3af02585f4fdaf49c49">Jetson::JetsonStatus</a></div><div class="ttdeci">JetsonStatus</div><div class="ttdef"><b>Definition:</b> Jetson.h:131</div></div>
 <div class="ttc" id="aclassJetson_html_a0da6dd80b8c8c3af02585f4fdaf49c49a60030575332b250440f220ac41eb0821"><div class="ttname"><a href="classJetson.html#a0da6dd80b8c8c3af02585f4fdaf49c49a60030575332b250440f220ac41eb0821">Jetson::CONNECTED</a></div><div class="ttdeci">@ CONNECTED</div><div class="ttdef"><b>Definition:</b> Jetson.h:132</div></div>
@@ -191,6 +193,8 @@ $(function() {
 <div class="ttc" id="aclassJetson_html_aa63103bffe77a5f527da3a3d8eb63627a2a7ff166b192b1cad627c0ce2e13e51d"><div class="ttname"><a href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a2a7ff166b192b1cad627c0ce2e13e51d">Jetson::X</a></div><div class="ttdeci">@ X</div><div class="ttdef"><b>Definition:</b> Jetson.h:126</div></div>
 <div class="ttc" id="aclassJetson_html_aa63103bffe77a5f527da3a3d8eb63627a609f35c87579ac622ac058a124fb4ba4"><div class="ttname"><a href="classJetson.html#aa63103bffe77a5f527da3a3d8eb63627a609f35c87579ac622ac058a124fb4ba4">Jetson::Y</a></div><div class="ttdeci">@ Y</div><div class="ttdef"><b>Definition:</b> Jetson.h:127</div></div>
 <div class="ttc" id="aclassJetson_html_abe5d566811d83f624969fe48a8547ecb"><div class="ttname"><a href="classJetson.html#abe5d566811d83f624969fe48a8547ecb">Jetson::Jetson</a></div><div class="ttdeci">Jetson(PinName tx, PinName rx)</div><div class="ttdef"><b>Definition:</b> Jetson.cpp:98</div></div>
+<div class="ttc" id="anamespaceEigen_1_1numext_html_a0841ad317de8d5642ab65d9c7cebc42f"><div class="ttname"><a href="namespaceEigen_1_1numext.html#a0841ad317de8d5642ab65d9c7cebc42f">Eigen::numext::uint16_t</a></div><div class="ttdeci">::uint16_t uint16_t</div><div class="ttdef"><b>Definition:</b> Meta.h:54</div></div>
+<div class="ttc" id="anamespaceEigen_1_1numext_html_a58c956967b2b3b326df2b220ae9b2274"><div class="ttname"><a href="namespaceEigen_1_1numext.html#a58c956967b2b3b326df2b220ae9b2274">Eigen::numext::uint8_t</a></div><div class="ttdeci">::uint8_t uint8_t</div><div class="ttdef"><b>Definition:</b> Meta.h:52</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

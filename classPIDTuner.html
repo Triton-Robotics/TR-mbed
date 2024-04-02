@@ -76,11 +76,11 @@ $(function() {
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a5fe3bc8b786e96ae062ea2656c6575d7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPIDTuner.html#a5fe3bc8b786e96ae062ea2656c6575d7">PIDTuner</a> (<a class="el" href="classDJIMotor.html">DJIMotor</a> &amp;motor_, <a class="el" href="structPIDDataSet.html">PIDDataSet</a> population[], size_t populationSize, <a class="el" href="structPIDRanges.html">PIDRanges</a> ranges={0, 30, 0, 10, 0, 1000})</td></tr>
 <tr class="separator:a5fe3bc8b786e96ae062ea2656c6575d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a245f02095ef079f3d96267c17992d28b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPIDTuner.html#a245f02095ef079f3d96267c17992d28b">tune</a> (unsigned long time_s, size_t iterations, size_t generations, std::vector&lt; <a class="el" href="structPIDDataSet.html">PIDDataSet</a> &gt; &amp;best, double mutationRate=0.01, <a class="el" href="PIDTuner_8h.html#a2cb1044f980752c4132b3c28b5151a14">fitnessFunction</a> getFitness=[](double integral){return 1/integral;})</td></tr>
+<tr class="memitem:a245f02095ef079f3d96267c17992d28b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPIDTuner.html#a245f02095ef079f3d96267c17992d28b">tune</a> (unsigned long time_s, size_t iterations, size_t generations, std::vector&lt; <a class="el" href="structPIDDataSet.html">PIDDataSet</a> &gt; &amp;best, double mutationRate=0.01, <a class="el" href="PIDTuner_8h.html#a2cb1044f980752c4132b3c28b5151a14">fitnessFunction</a> getFitness=[](double integral){<a class="el" href="lapack_2lu_8cpp.html#a9717e7bbecb906637e86cef6da3d83c2">return</a> 1/integral;})</td></tr>
 <tr class="separator:a245f02095ef079f3d96267c17992d28b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a074d6ff9be7093d6d39039908b4a019b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPIDTuner.html#a074d6ff9be7093d6d39039908b4a019b">~PIDTuner</a> ()=default</td></tr>
 <tr class="separator:a074d6ff9be7093d6d39039908b4a019b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a927b9acb06fe3c0dedbbd0180371ce58"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPIDTuner.html#a927b9acb06fe3c0dedbbd0180371ce58">getRandomNumber</a> (double min, double max)</td></tr>
+<tr class="memitem:a927b9acb06fe3c0dedbbd0180371ce58"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPIDTuner.html#a927b9acb06fe3c0dedbbd0180371ce58">getRandomNumber</a> (double <a class="el" href="core_2util_2algorithms_2eigen-3_84_80_2test_2main_8h.html#a2d017cd3beb218080a7988e2deed2a11">min</a>, double <a class="el" href="core_2util_2algorithms_2eigen-3_84_80_2test_2main_8h.html#a24e753bacac6be5f30e18f8a2bdefda4">max</a>)</td></tr>
 <tr class="separator:a927b9acb06fe3c0dedbbd0180371ce58"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
@@ -218,7 +218,7 @@ Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="PIDTuner_8h.html#a2cb1044f980752c4132b3c28b5151a14">fitnessFunction</a>&#160;</td>
-          <td class="paramname"><em>getFitness</em> = <code>[](double&#160;integral){return&#160;1&#160;/&#160;integral;}</code>&#160;</td>
+          <td class="paramname"><em>getFitness</em> = <code>[](double&#160;integral){<a class="el" href="lapack_2lu_8cpp.html#a9717e7bbecb906637e86cef6da3d83c2">return</a>&#160;1&#160;/&#160;integral;}</code>&#160;</td>
         </tr>
         <tr>
           <td></td>

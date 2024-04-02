@@ -1,4 +1,12 @@
 var searchData=
 [
-  ['x_2016',['x',['../classChassisSpeeds.html#a23c1d0c296f780c9a7faa22e7a87abfc',1,'ChassisSpeeds::x()'],['../structekf__t.html#ac0b6f3adb0dde7b133417b7f3dbb5859',1,'ekf_t::x()'],['../structekf__t.html#ac1316031daf6fd9265301d3177d70d86',1,'ekf_t::x()'],['../classTinyEKF.html#a3bf1cf44824e216539ac4acbe782a41f',1,'TinyEKF::x()'],['../classPose2D.html#a4ea2a4d5ced468e718373ffe07732f60',1,'Pose2D::x()'],['../struct____packed.html#a433655e237107d381361cd9fae7bb643',1,'__packed::x()'],['../structBNO055__QUATERNION__TypeDef.html#adc4ea9cd9294f875b351498ee2b302a7',1,'BNO055_QUATERNION_TypeDef::x()'],['../structBNO055__VECTOR__TypeDef.html#a85c6261e3519de020de2947c7ca1d5e7',1,'BNO055_VECTOR_TypeDef::x()']]]
+  ['w_35800',['w',['../structBNO055__QUATERNION__TypeDef.html#ae197a4fdd344d5f8684b88ef3a6e7463',1,'BNO055_QUATERNION_TypeDef::w()'],['../Matrix__resize__int_8cpp.html#aab236ce080522c9832217fd5f157541b',1,'w():&#160;Matrix_resize_int.cpp'],['../MatrixBase__homogeneous_8cpp.html#ac113f8f869bb91568f6e6a4820414cbc',1,'w():&#160;MatrixBase_homogeneous.cpp']]],
+  ['wcrc_5ftable_35801',['wCRC_Table',['../crc_8cpp.html#a1f1756c7786010bcec22c6d4d8228732',1,'crc.cpp']]],
+  ['width_35802',['width',['../struct____packed.html#ad7f05b40e93a8e8d55719fa7e9aa6761',1,'__packed']]],
+  ['winner_35803',['winner',['../structext__game__result__t.html#acdeb089d1c4e64550c72583f0dde933f',1,'ext_game_result_t']]],
+  ['workloadperthreadc_35804',['WorkLoadPerThreadC',['../structEigen_1_1TensorSycl_1_1internal_1_1TVPanelSize.html#ab78373582a86ae581b10f708c2d38382',1,'Eigen::TensorSycl::internal::TVPanelSize']]],
+  ['workloadperthreadm_35805',['WorkLoadPerThreadM',['../structEigen_1_1TensorSycl_1_1internal_1_1TTPanelSize.html#a4e0f2a7179b2965263120ab82eab1eab',1,'Eigen::TensorSycl::internal::TTPanelSize']]],
+  ['workloadperthreadn_35806',['WorkLoadPerThreadN',['../structEigen_1_1TensorSycl_1_1internal_1_1TTPanelSize.html#a28202eff53323fc7c9de78f052e7d3ac',1,'Eigen::TensorSycl::internal::TTPanelSize']]],
+  ['workloadperthreadnc_35807',['WorkLoadPerThreadNC',['../structEigen_1_1TensorSycl_1_1internal_1_1TVPanelSize.html#abdbefcc1dcecdb9b96c323ba5988e081',1,'Eigen::TensorSycl::internal::TVPanelSize']]],
+  ['wrap_35808',['wrap',['../classAdafruit__GFX.html#a8c31e63d43f7285e47aa48c363d86ce9',1,'Adafruit_GFX']]]
 ];
