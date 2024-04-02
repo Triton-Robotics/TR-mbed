@@ -267,7 +267,22 @@ public:
      */
     Pose2D getPose();
 
+    /**
+     * gets motor speed based on location and speed unit
+     * @return motor speed in selected unit
+     *
+     * @param location location of the motor
+     * @param unit unit of speed
+     */
     double getMotorSpeed(MotorLocation location, SPEED_UNIT unit);
+
+    /**
+     * sets chassis speeds limits
+     *
+     * @param max_Vel maximum linear velocity of chassis
+     * @param max_vOmega maximum angular velocity of chassis
+     */
+    void setOmniKinematicsLimits(double max_Vel, double max_vOmega);
 
     /**
      * A helper method to read/update the IMU.
@@ -284,7 +299,7 @@ public:
     OmniKinematicsLimits m_OmniKinematicsLimits;
     WheelSpeeds chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds);
     ChassisSpeeds wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds);
-    char * MatrixtoString(Eigen::MatrixXd mat);
+    char *MatrixtoString(Eigen::MatrixXd mat);
 
     ChassisSpeeds m_chassisSpeeds;
     WheelSpeeds m_wheelSpeeds;

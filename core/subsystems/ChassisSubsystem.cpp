@@ -85,7 +85,7 @@ ChassisSpeeds ChassisSubsystem::getChassisSpeeds() const
 void ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode)
 {
     if (mode == YAW_ORIENTED)
-    {   
+    {
         // printf("%f\n", double(yaw->getData(ANGLE)));
         double yawCurrent = (1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
         desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yawCurrent);
@@ -200,6 +200,12 @@ int ChassisSubsystem::getHeadingDegrees() const
     return (int)imuAngles.yaw;
 }
 
+void ChassisSubsystem::setOmniKinematicsLimits(double max_Vel, double max_vOmega)
+{
+    m_OmniKinematicsLimits.max_Vel = max_Vel;
+    m_OmniKinematicsLimits.max_vOmega = max_vOmega;
+}
+
 void ChassisSubsystem::setOmniKinematics(double radius)
 {
     m_OmniKinematics.r1x = -sqrt(radius);
@@ -224,23 +230,23 @@ WheelSpeeds ChassisSubsystem::chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSp
 }
 
 ChassisSpeeds ChassisSubsystem::wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds)
-{   
-    Eigen::MatrixXd Inv_K(4,3);
-    float coef = 1/sqrt(2);
+{
+    Eigen::MatrixXd Inv_K(4, 3);
+    float coef = 1 / sqrt(2);
     Inv_K << coef, coef, coef * ((m_OmniKinematics.r1x) - (m_OmniKinematics.r1y)),
-             coef, -coef, -coef * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y)),
-             -coef, coef, coef * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y)),
-             -coef, -coef, -coef * ((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y));
-    Eigen::MatrixXd FWD_K(3,4);
+        coef, -coef, -coef * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y)),
+        -coef, coef, coef * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y)),
+        -coef, -coef, -coef * ((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y));
+    Eigen::MatrixXd FWD_K(3, 4);
     FWD_K = Inv_K.completeOrthogonalDecomposition().pseudoInverse();
-    Eigen::MatrixXd WS(4,1);
-    WS <<  wheelSpeeds.LF, wheelSpeeds.RF, wheelSpeeds.LB, wheelSpeeds.RB;
-    Eigen::MatrixXd CS(3,1);
+    Eigen::MatrixXd WS(4, 1);
+    WS << wheelSpeeds.LF, wheelSpeeds.RF, wheelSpeeds.LB, wheelSpeeds.RB;
+    Eigen::MatrixXd CS(3, 1);
     CS = FWD_K * WS;
-    return {CS(0,0), CS(1,0), CS(2,0)};
+    return {CS(0, 0), CS(1, 0), CS(2, 0)};
 }
 
-char * ChassisSubsystem::MatrixtoString(Eigen::MatrixXd mat)
+char *ChassisSubsystem::MatrixtoString(Eigen::MatrixXd mat)
 {
     std::stringstream ss;
     ss << mat;
