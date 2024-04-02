@@ -100,11 +100,10 @@ void ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRI
     setWheelSpeeds(wheelSpeeds);
 }
 
-void ChassisSubsystem::setChassisPower(ChassisSpeeds desiredChassisPower)
-{
-    WheelSpeeds wheelPower = chassisSpeedsToWheelSpeeds(desiredChassisPower); // in [-1, 1] (for now)
-    setWheelPower(wheelPower);
-}
+/**
+ * There's no setChassisPower because it doesn't make sense.
+ * Power (is not PWM voltage) saturates your motor speeds, and it's not related to motor speed. 
+ */
 
 ChassisSpeeds ChassisSubsystem::rotateChassisSpeed(ChassisSpeeds speeds, double yawCurrent)
 {
@@ -160,6 +159,11 @@ void ChassisSubsystem::setBrakeMode(BrakeMode brakeMode)
     this->brakeMode = brakeMode;
 }
 
+void ChassisSubsystem::initializeImu()
+{
+    imu.set_mounting_position(MT_P1);
+}
+
 double ChassisSubsystem::getMotorSpeed(MotorLocation location, SPEED_UNIT unit = RPM)
 {
     double speed = getMotor(location).getData(VELOCITY);
@@ -178,7 +182,8 @@ void ChassisSubsystem::readImu()
 }
 
 void ChassisSubsystem::periodic()
-{
+{   
+    readImu();
     m_wheelSpeeds = {getMotorSpeed(LEFT_FRONT, METER_PER_SECOND), getMotorSpeed(RIGHT_FRONT, METER_PER_SECOND),
                      getMotorSpeed(LEFT_BACK, METER_PER_SECOND), getMotorSpeed(RIGHT_BACK, METER_PER_SECOND)};
 

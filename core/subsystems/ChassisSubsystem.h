@@ -74,12 +74,10 @@ struct OmniKinematicsLimits
 };
 
 /**
- * The Chassis class is a wrapper for the DJIMotor class that allows for easy control of the chassis.
- * It also contains methods for controlling the chassis in a field relative manner, and for controlling the chassis
- * with an offset angle.
+ * The ChassisSubsystem class is a wrapper for the DJIMotor class that allows for easy control of the chassis.
  *
- * The Chassis class also contains methods for controlling the chassis with the IMU. The IMU is used to control the
- * chassis in a field relative manner, and to control the chassis with an offset angle.
+ * The ChassisSubsystem class also contains methods for controlling the chassis with the IMU. The IMU is used to control the
+ * chassis in a field-relative manner, and to control the chassis with an offset angle.
  */
 class ChassisSubsystem
 {
@@ -148,7 +146,7 @@ public:
     void setWheelPower(WheelSpeeds wheelPower);
 
     /**
-     * Gets the chassis's current ChassisSpeeds
+     * Gets the chassis's current ChassisSpeeds from odometry (only velocity state)
      * @return The chassis's current ChassisSpeeds
      */
     ChassisSpeeds getChassisSpeeds() const;
@@ -156,16 +154,9 @@ public:
     /**
      * The setChassisSpeeds method is used to drive the chassis in a chassis relative manner.
      *
-     * @param desiredChassisSpeeds The robot-relative speeds (vX, vY, and vOmega) in RPM
+     * @param desiredChassisSpeeds The robot-relative speeds (vX, vY, and vOmega) in m/s
      */
     void setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode = ROBOT_ORIENTED);
-
-    /**
-     * The setChassisPower method is used to drive the chassis in a chassis relative manner.
-     *
-     * @param desiredChassisPower The robot-relative power (vX, vY, and vOmega) in [-1, 1]
-     */
-    void setChassisPower(ChassisSpeeds desiredChassisPower);
 
     /**
      * The rotateChassisSpeed method
@@ -237,11 +228,6 @@ public:
     void periodic();
 
     /**
-     * Prints the current angles of the Chassis's motors, used for debugging
-     */
-    void printMotorAngle();
-
-    /**
      * Helper method to convert an angle from degrees to radians
      * @param radians An angle measurement in radians
      * @return The angle converted to degree
@@ -262,7 +248,7 @@ public:
     int getHeadingDegrees() const;
 
     /**
-     * Gets the chassis's current 2D position
+     * Gets the chassis's current 2D position (TO BE DONE)
      * @return The chassis's current 2D position
      */
     Pose2D getPose();
@@ -289,8 +275,14 @@ public:
      */
     void readImu();
 
-    bool allMotorsConnected();
-
+    /**
+     * Yaw motor is a motor that controls the Turret
+     * yawPhase is an initial offset of your Yaw Motor Angle
+     * (basically which direction you want your Heading to be w.r.t Yaw Motor)
+     * 
+     * @param motor your Yaw Motor reference as in `&{motor_name}`
+     * @param initial_offset_ticks initial offset of your Yaw Motor Angle in ticks (try pass it as double)
+     */
     void setYawReference(DJIMotor *motor, double initial_offset_ticks);
 
     ChassisSpeeds desiredChassisSpeeds;
@@ -307,6 +299,10 @@ public:
     // int8_t isInverted[4];
 
     double prevVel;
+
+    /**
+     * yawPhase is an initial offset of your Yaw Motor Angle (basically which direction you want your Heading to be w.r.t Yaw Motor)
+    */
     double yawPhase;
     int testData[300][4];
     int testDataIndex = 0;
