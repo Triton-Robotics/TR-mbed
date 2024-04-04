@@ -218,7 +218,7 @@ int main(){
             actualPosition = indexer.getData(MULTITURNANGLE);
             t = indexer.getData(TORQUE);
 
-            chassis_power = ext_power_heat_data.data.chassis_power;
+            chassis_power = ext_power_heat_data.data.chassis_power;    
             chassis_power_limit = ext_game_robot_state.data.chassis_power_limit;
             ref_yaw = int(ext_game_robot_pos.data.yaw);
 

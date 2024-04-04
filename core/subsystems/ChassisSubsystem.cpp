@@ -100,11 +100,28 @@ void ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRI
     setWheelSpeeds(wheelSpeeds);
 }
 
-void ChassisSubsystem::setChassisSpeedsPWR(double fwd, double strafe)
+void ChassisSubsystem::setChassisSpeedsPWR(double fwd, double strafe, double chassis_power, double chassis_power_limit)
 {
     double huiandward = 0;
-    if (fwd == 0 && strafe == 0) { // Robot is not moving
-        huiandward = rpmToRadPerSecond(10 * M3508_GEAR_RATIO); // Set turning speed - covert to rpm
+    double i = 5; 
+
+    if (fwd >= -5 && strafe >= -5 && fwd <= 5 && strafe <= 5) { // Robot is not moving
+
+        huiandward = rpmToRadPerSecond(10);   //set huiandward to a lower value
+
+    }
+    else if (fwd > 5 && strafe > 5) {     //if it is moving then our beyblade slows
+
+        huiandward = rpmToRadPerSecond(i); // Set turning speed - covert to rpm
+
+        if(chassis_power <= chassis_power_limit - 10) {
+            huiandward = rpmToRadPerSecond(i++);
+        }
+        else 
+        {
+            huiandward = rpmToRadPerSecond(i--);
+        }
+
     }
 
     setChassisSpeeds({strafe,fwd,huiandward});

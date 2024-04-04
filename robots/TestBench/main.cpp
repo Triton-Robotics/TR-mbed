@@ -31,6 +31,11 @@ int main()
     unsigned long loopTimer = us_ticker_read();
     int refLoop = 0;
 
+    
+    float chassis_power = ext_power_heat_data.data.chassis_power;    
+    float chassis_power_limit = ext_game_robot_state.data.chassis_power_limit;
+
+
     while (true)
     {
         timeStart = us_ticker_read();
@@ -123,6 +128,22 @@ int main()
                 //     printff("%f ", a[i]);
                 // }
                 // printff("\n");
+            }
+            else if (remote.rightSwitch() == Remote::SwitchState::DOWN)
+            {
+                double scalar = 1;
+                double jx = remote.leftX() / 660.0 * scalar;
+                double jy = remote.leftY() / 660.0 * scalar;
+
+                double tolerance = 0.05;
+                jx = (abs(jx) < tolerance) ? 0 : jx;
+                jy = (abs(jy) < tolerance) ? 0 : jy;
+
+                Chassis.setSpeedFF_Ks(0.065);
+                Chassis.setChassisSpeedsPWR(jx * Chassis.m_OmniKinematicsLimits.max_Vel, 
+                                          jy * Chassis.m_OmniKinematicsLimits.max_Vel, 
+                                          chassis_power, 
+                                          chassis_power_limit);
             }
             else
             {
