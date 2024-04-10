@@ -133,10 +133,10 @@ public:
 
     int multiTurn = 0;
     int outputCap = INT16_T_MAX;
-    bool useAbsEncoder = false;
     bool useAbsEncoder = true;
     bool printAngle = false;
 
+    motorType type = NONE;
 
     explicit DJIMotor(bool isErroneousMotor = false);
     DJIMotor(short motorID, CANHandler::CANBus canBus, motorType type = STANDARD, const std::string& name = "NO_NAME");

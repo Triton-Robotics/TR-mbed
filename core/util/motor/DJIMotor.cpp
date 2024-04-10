@@ -379,6 +379,5 @@ void DJIMotor::s_sendThread() {
         ThisThread::sleep_for(1ms);
     }
 }
-#pragma clang diagnostic pop
 
 #pragma clang diagnostic pop
