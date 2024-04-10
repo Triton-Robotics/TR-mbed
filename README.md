@@ -39,7 +39,7 @@ we've created setup guides for the major operating systems.
 git clone https://github.com/Triton-Robotics/TR-mbed.git
 ```
 
-### At this point, you may choose to diverge from the CLI setup guide and set up an IDE instead. Check out the setup instructions for [CLion](.md/ide/clion.md) or [VSCode](.md/ide/vscode.md).
+### At this point, you may choose to diverge from the CLI setup guide and set up an IDE instead. Check out the setup instructions for [CLion](.md/ide/clion.md) or [VSCode](.md/ide/vscode.md). We higly recommend [CLion](.md/ide/clion.md).
 
 2. Configure `CMake` project. This should only be done once per project, or after editing
    any `CMakeLists.txt`:

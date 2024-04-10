@@ -7,7 +7,7 @@ int DJIMotor::motorCount = 0;
 DJIMotor* DJIMotor::s_allMotors[2][3][4];
 bool DJIMotor::s_motorsExist[2][3][4];
 CANHandler* DJIMotor::s_canHandlers[2];
-bool DJIMotor::initializedWarning = true;
+bool DJIMotor::initializedWarning = false;
 
 DJIMotor::DJIMotor(bool isErroneousMotor){
     canID_0 = -1;
@@ -160,8 +160,8 @@ void DJIMotor::s_sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool de
             s_allMotors[canBus][sendIDindex][i] -> setOutput();
             int16_t powerOut = s_allMotors[canBus][sendIDindex][i] -> powerOut;
 
-            bytes[2 * i] =      int8_t(powerOut >> 8);
-            bytes[2 * i + 1] =  int8_t(powerOut);
+            bytes[2 * i] =      static_cast<int8_t>(powerOut >> 8);
+            bytes[2 * i + 1] =  static_cast<int8_t>(powerOut);
 
             anyMotors = true;
 
@@ -215,20 +215,47 @@ void DJIMotor::s_getFeedback(bool debug){
     s_updateMultiTurnPosition();
 }
 
-__attribute__((unused)) bool DJIMotor::s_allMotorsConnected(bool debug){
-    for(int canBus = 0; canBus < CAN_HANDLER_NUMBER; canBus++)
-        for(int c = 0; c < 4; c++)
-            for(int r = 0; r < 3; r++)
-                if(s_motorsExist[canBus][r][c]) {
-                    if (us_ticker_read() / 1000 - s_allMotors[canBus][r][c] -> timeOfLastFeedback > TIMEOUT_MS) {
-                        if(debug) {
-                            printf("Motor ID %d on bus: %d lost connection\n", s_allMotors[canBus][r][c] -> motorID_0 + 1, canBus + 1);
-                            printf("Motor [%d][%d][%d]\n", canBus, r, c);
-                        }
-                        return false;
+bool DJIMotor::s_theseConnected(DJIMotor* motors[], int size, bool debug) {
+    if(!debug) {
+        return std::all_of(motors, motors + size, [](DJIMotor *motor){
+            return motor -> isConnected();
+        });
+
+    }else{
+        bool allConnected = true;
+
+        for (int i = 0; i < size; i++) {
+            if (!motors[i] -> isConnected()) {
+                allConnected = false;
+                printf("Motor ID_1 %d on canBus_1: %d, \"%s\" lost connection\n", motors[i] -> motorID_0 + 1, motors[i] -> canBus + 1, motors[i] -> name.c_str());
+            }
+        }
+        return allConnected;
+    }
+}
+
+bool DJIMotor::s_allConnected(bool debug){
+    if(!debug){
+        return std::all_of(**s_allMotors, **s_allMotors + CAN_HANDLER_NUMBER * 3 * 4, [](DJIMotor *motor){
+            return motor -> isConnected();
+        });
+
+    }else {
+        bool allConnected = true;
+
+        for (int canBus = 0; canBus < CAN_HANDLER_NUMBER; canBus++) {
+            for (int r = 0; r < 3; r++) {
+                for (int c = 0; c < 4; c++) {
+                    if (s_motorsExist[canBus][r][c] && !s_allMotors[canBus][r][c] -> isConnected()) {
+                        allConnected = false;
+                        printf("Motor ID_1 %d on canBus_1: %d, \"%s\" lost connection\n", s_allMotors[canBus][r][c] -> motorID_0 + 1, canBus + 1, s_allMotors[canBus][r][c] -> name.c_str());
+                        printf("Motor [%d][%d][%d]\n", canBus, r, c);
                     }
                 }
-    return true;
+            }
+        }
+        return allConnected;
+    }
 }
 
 int DJIMotor::getData(motorDataType data) {
@@ -249,7 +276,7 @@ int DJIMotor::getData(motorDataType data) {
 }
 
 void DJIMotor::printAllMotorData() {
-    printf("TYPE:%d ANGL:%d MLTI:%d VELO:%d TORQ:%d TEMP:%d | PWR:%d canBus:%d ID:%d name:%s\n", type, getData(ANGLE), getData(MULTITURNANGLE), getData(VELOCITY), getData(TORQUE), getData(TEMPERATURE), powerOut, canBus + 1, motorID_0 + 1, name.c_str());
+    printf("TYPE:%d ANGL:%d MLTI:%d VELO:%d TORQ:%d TEMP:%d | PWR:%d canBus:%d ID:%d name:\"%s\"\n", type, getData(ANGLE), getData(MULTITURNANGLE), getData(VELOCITY), getData(TORQUE), getData(TEMPERATURE), powerOut, canBus + 1, motorID_0 + 1, name.c_str());
 }
 
 int DJIMotor::s_calculateDeltaPhase(int target, int current, int max) {
@@ -354,4 +381,4 @@ void DJIMotor::s_sendThread() {
 }
 #pragma clang diagnostic pop
 
-
+#pragma clang diagnostic pop

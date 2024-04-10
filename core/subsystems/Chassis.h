@@ -10,7 +10,7 @@
 #include <peripherals/imu/BNO055.h>
 #include <peripherals/oled/SSD1308.h>
 #include <subsystems/ChassisKalman.h>
-//#include <algorithms/WheelKalman.h>
+// #include <algorithms/WheelKalman.h>
 #include <algorithms/Pose2D.h>
 #include <algorithms/WheelSpeeds.h>
 #include <algorithms/ChassisSpeeds.h>
@@ -34,7 +34,8 @@
  * The Chassis class also contains methods for controlling the chassis with the IMU. The IMU is used to control the
  * chassis in a field relative manner, and to control the chassis with an offset angle.
  */
-class Chassis {
+class Chassis
+{
 public:
     /**
      * The Chassis constructor. This constructor takes in the CAN IDs of the four motors on the chassis.
@@ -48,7 +49,8 @@ public:
     /**
      * The BrakeMode enum is used to set the brake mode of the chassis.
      */
-    enum BrakeMode {
+    enum BrakeMode
+    {
         BRAKE,
         COAST
     };
@@ -66,11 +68,11 @@ public:
      */
     void driveXYR(ChassisSpeeds speeds);
 
-    void driveXYRPower(float chassis_power, uint16_t chassis_power_limit, double lX, double lY, double dt, bool beyblading,  double &rotationalPower);
-    
-    void driveOffsetAnglePower(float chassis_power, uint16_t chassis_power_limit, ChassisSpeeds speeds, double angleOffset, int dt,  double &rotationalPower);
-    
-    void driveTurretRelativePower(float chassis_power, uint16_t chassis_power_limit, ChassisSpeeds speeds, double turretAngleDegrees, int dt,  double &rotationalPower);
+    void driveXYRPower(float chassis_power, uint16_t chassis_power_limit, double lX, double lY, double dt, bool beyblading, double &rotationalPower);
+
+    void driveOffsetAnglePower(float chassis_power, uint16_t chassis_power_limit, ChassisSpeeds speeds, double angleOffset, int dt, double &rotationalPower);
+
+    void driveTurretRelativePower(float chassis_power, uint16_t chassis_power_limit, ChassisSpeeds speeds, double turretAngleDegrees, int dt, double &rotationalPower);
 
     /**
      * The driveFieldRelative method is used to drive the chassis in a field relative manner.
@@ -174,7 +176,7 @@ public:
      */
     Pose2D getPose();
 
-    /**
+        /**
      * Gets the chassis's current speeds
      * @return The chassis's current speeds
      */
@@ -228,4 +230,4 @@ private:
     short rbId;
 };
 
-#endif //TR_EMBEDDED_CHASSIS_H
+#endif // TR_EMBEDDED_CHASSIS_H
