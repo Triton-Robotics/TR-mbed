@@ -36,6 +36,8 @@ DigitalOut led(L26);
 DigitalOut led2(L27);
 DigitalOut led3(L25);
 
+BNO055_ANGULAR_POSITION_typedef imuAngles;
+
 void setFlyWheelSpeed(int speed)
 {
     LFLYWHEEL.setSpeed(-speed);
@@ -152,6 +154,9 @@ int main(){
     // pitch2.outputCap = 32760;
     // pitch2.useAbsEncoder = true;
 
+    PID yawBeyblade(1, 0, 200, 6000, 220);
+
+
     LFLYWHEEL.setSpeedPID(7.5, 0, 0.04);
     RFLYWHEEL.setSpeedPID(7.5, 0, 0.04);
 
@@ -222,6 +227,8 @@ int main(){
                 refereeThread(&referee);
                 refLoop = 0;
                 led2= !led2;
+                printff("%f %f %f\n", imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
+
             }
 
 
@@ -287,11 +294,26 @@ int main(){
                                           -1},
                                           ChassisSubsystem::ROBOT_ORIENTED);lastTime = time;
 //                pitchSetPosition();
-                yawSetPoint += remote.rightX() / 110;
-                yawSetPoint %= 360;
-                while(yawSetPoint < 0)
-                    yawSetPoint += 360;
-                yaw.setPower(yawIMU.calculatePeriodic(float(calculateDeltaYaw(ref_yaw, yawSetPoint)), us_ticker_read() - yawTime)); //
+                yawSetPoint -= remote.rightX() / 100;
+                yawSetPoint = (yawSetPoint+360) % 360;
+                timeSure = us_ticker_read();
+                //                 Determine which direction yaw should turn
+                //                 if ((yawSetPoint + 720 -  chassis.getHeadingDegreesYaw() - 180) % 360 < (yawSetPoint + 180 - chassis.getHeadingDegreesYaw())%360){
+                //                     //
+                //                 } else {
+                //
+                //                 }
+//                yaw.setSpeed(yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint, chassis.getHeadingDegreesYaw()+180, 360), timeSure - prevTimeSure)); //
+ChassisSpeeds cs = Chassis.m_chassisSpeeds;
+//printff("%f %f %f\n", cs.vX, cs.vY, cs.vOmega);
+    imu.get_angular_position_quat(&imuAngles);
+
+
+yaw.setSpeed(yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint, imuAngles.yaw+180, 360), timeSure - prevTimeSure)); //
+                prevTimeSure = timeSure;
+//                while(yawSetPoint < 0)
+//                    yawSetPoint += 360;
+//                yaw.setPower(yawIMU.calculatePeriodic(float(calculateDeltaYaw(ref_yaw, yawSetPoint)), us_ticker_read() - yawTime)); //
                 //printff("%dya imu:[%d] pwr%d\n",yawSetPoint,ref_yaw, yaw>>POWEROUT);
             }
             yawTime = us_ticker_read();
