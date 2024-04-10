@@ -322,8 +322,22 @@ double Chassis::degreesToRadians(double degrees) {
     return degrees * PI / 180.0;
 }
 
-int Chassis::getHeadingDegrees() {
+int Chassis::getHeadingDegreesYaw(){
     return (int) imuAngles.yaw;
+//    return (int) imuAngles.pitch;
+//    return (int) imuAngles.roll;
+}
+
+int Chassis::getHeadingDegreesPitch() {
+    return (int) imuAngles.pitch;
+//    return (int) imuAngles.pitch;
+//    return (int) imuAngles.roll;
+}
+
+int Chassis::getHeadingDegreesRoll() {
+    return (int) imuAngles.roll;
+//    return (int) imuAngles.pitch;
+//    return (int) imuAngles.roll;
 }
 
 

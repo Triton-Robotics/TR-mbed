@@ -17,15 +17,16 @@ private:
     float kI = 0;
     float kD = 0;
 
-    float integralCap = 0;
+    double integralCap = 0;
     float outputCap = 0;
 
     float lastError = 0;
     double errorIntegral = 0;
-    double savedD = 0;
 
 public:
     float feedForward = 0;
+
+    float pC, iC, dC = 0;
 
     /**
      * Creates a new PID object with the default control parameters
@@ -50,6 +51,10 @@ public:
      */
     void setPID(float p, float i, float d, float integralCap = 0, float outputCap = 0);
 
+    void resetPID(float kP, float kI, float kD, float integralCap = 0, float outputCap = 0);
+
+    void resetErrorIntegral();
+
 
     /**
      * Calculates an output power based on the current and desired measurement (speed/position)
@@ -63,7 +68,9 @@ public:
 
     int calculatePeriodic(float error, double dt);
 
-    void limitOutput(double &PIDCalc);
+    void limitOutput(double &PIDCalc) const;
+
+    void limitErrorIntegral();
 
     /**
      * Sets the integral cap
@@ -77,7 +84,6 @@ public:
      */
     void setOutputCap(float outCap);
 
-    double DPower();
 };
 
 

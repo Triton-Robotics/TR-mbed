@@ -162,7 +162,11 @@ public:
      * Gets the IMU's current angle reading in degrees
      * @return The IMU's current angle reading in degrees
      */
-    int getHeadingDegrees();
+    int getHeadingDegreesYaw();
+
+    int getHeadingDegreesPitch();
+
+    int getHeadingDegreesRoll();
 
     /**
      * Gets the chassis's current 2D position
@@ -180,6 +184,8 @@ public:
      */
     void readImu();
 
+
+
     bool allMotorsConnected();
 
     int8_t isInverted[4];
@@ -188,6 +194,7 @@ public:
 
     int testData[300][4];
     int testDataIndex = 0;
+
 
 private:
     DJIMotor LF, RF, LB, RB;

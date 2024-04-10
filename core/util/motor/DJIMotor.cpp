@@ -110,7 +110,7 @@ void DJIMotor::setOutput(){
             powerOut = calculatePositionPID(value, getData(MULTITURNANGLE), static_cast<double>(time - timeOfLastPID));
 
         else
-            powerOut = calculatePeriodicPosition(static_cast<float>(s_calculateDeltaTicks(value, getData(ANGLE))), static_cast<double>(time - timeOfLastPID));
+            powerOut = calculatePeriodicPosition(static_cast<float>(s_calculateDeltaPhase(value, getData(ANGLE))), static_cast<double>(time - timeOfLastPID));
 
     else if(mode == POW)
         powerOut = value;
@@ -238,8 +238,13 @@ int DJIMotor::getData(motorDataType data) {
     else if(data == MULTITURNANGLE)
         return multiTurn;
 
-    else
+    else if(data == POWEROUT)
         return powerOut;
+
+    else if(data == VALUE)
+        return value;
+
+    return 0;
 
 }
 
@@ -247,17 +252,19 @@ void DJIMotor::printAllMotorData() {
     printf("TYPE:%d ANGL:%d MLTI:%d VELO:%d TORQ:%d TEMP:%d | PWR:%d canBus:%d ID:%d name:%s\n", type, getData(ANGLE), getData(MULTITURNANGLE), getData(VELOCITY), getData(TORQUE), getData(TEMPERATURE), powerOut, canBus + 1, motorID_0 + 1, name.c_str());
 }
 
-int DJIMotor::s_calculateDeltaTicks(int target, int current) {
-    int deltaTicks = target - current;
+int DJIMotor::s_calculateDeltaPhase(int target, int current, int max) {
+    target %= max;
 
-    if(abs(deltaTicks) > TICKS_REVOLUTION / 2){
-        if(deltaTicks > 0)
-            deltaTicks -= TICKS_REVOLUTION;
+    int deltaPhase = target - current;
+
+    if(abs(deltaPhase) > max / 2){
+        if(deltaPhase > 0)
+            deltaPhase -= max;
 
         else
-            deltaTicks += TICKS_REVOLUTION;
+            deltaPhase += max;
     }
-    return deltaTicks;
+    return deltaPhase;
 }
 
 void DJIMotor::s_updateMultiTurnPosition() {
@@ -346,3 +353,5 @@ void DJIMotor::s_sendThread() {
     }
 }
 #pragma clang diagnostic pop
+
+

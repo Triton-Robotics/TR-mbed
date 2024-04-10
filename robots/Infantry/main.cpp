@@ -72,14 +72,26 @@ void runImuThread()
 
 void pitchSetPosition(){
     //int pitchSetPoint = (-remote.rightY() * 0.5) + 6200;
-    int pitchSetPoint = 5960 - (5960 - 5350)/660.0 * remote.rightY();
+    //1340 2900
+
+    int pitchSetPoint = 2120 - (2120 - 1340)/660.0 * remote.rightY();
 
     // low
-    if(pitchSetPoint > 6570)
-        pitchSetPoint = 6570;
+    if(pitchSetPoint > 2900)
+        pitchSetPoint = 2900;
         // high
-    else if(pitchSetPoint < 5350)
-        pitchSetPoint = 5350;
+    else if(pitchSetPoint < 1340)
+        pitchSetPoint = 1340;
+
+
+//    int pitchSetPoint = 5960 - (5960 - 5350)/660.0 * remote.rightY();
+//
+//    // low
+//    if(pitchSetPoint > 6570)
+//        pitchSetPoint = 6570;
+//        // high
+//    else if(pitchSetPoint < 5350)
+//        pitchSetPoint = 5350;
 
     pitch.setPosition(pitchSetPoint);
     //printff("%d.%d %d\n", pitchSetPoint, pitch.getData(ANGLE), pitch.powerOut);
@@ -238,7 +250,7 @@ int main(){
                 unsigned long time = us_ticker_read();
                 chassis.driveTurretRelativePower(chassis_power, chassis_power_limit, {remote.leftX() * 5.0, remote.leftY() * 5.0, 0}, yaw.getData(ANGLE) * 360.0 / 8192 + 180, int(time - lastTime), rotationalPower);
                 lastTime = time;
-                pitchSetPosition();
+//                pitchSetPosition();
                 yaw.setPower(-remote.rightX() * 10);
             } else if (remote.rightSwitch() == Remote::SwitchState::MID || remote.rightSwitch() == Remote::SwitchState::UNKNOWN){ // disable all the non-serializer components
                 chassis.driveFieldRelative({0, 0, 0});
@@ -249,7 +261,7 @@ int main(){
                 double r = 4000;
                 chassis.driveXYRPower(chassis_power, chassis_power_limit, 5 * remote.leftX(), 5 * remote.leftY(), int(time - lastTime), true, r);
                 lastTime = time;
-                pitchSetPosition();
+//                pitchSetPosition();
                 yawSetPoint += remote.rightX() / 110;
                 yawSetPoint %= 360;
                 while(yawSetPoint < 0)
