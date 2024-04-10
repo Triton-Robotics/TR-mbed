@@ -2,8 +2,10 @@
 #include "Infantry.h"
 // #include <jetson.h>
 #include <cstdlib>
-#include <commands/RamseteCommand.h>
+//#include <commands/RamseteCommand.h>
 #include <iostream>
+#include "subsystems/ChassisSubsystem.h"
+
 // #include " COMPONENT_SD/include/SD/SDBlockDevice.h"
 // #include "storage/blockdevice/COMPONENT_SD/include/SD/SDBlockDevice.h"
 // #include "SDBlockDevice.h"
@@ -17,7 +19,9 @@
 #define UPPERBOUND 2000
 
 I2C i2c(I2C_SDA, I2C_SCL);
-Chassis chassis(1, 2, 3, 4, &i2c);
+//Chassis chassis(1, 2, 3, 4, &i2c);
+BNO055 imu(i2c, IMU_RESET, MODE_IMU);
+ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
 DJIMotor yaw(5, CANHandler::CANBUS_1, GIMBLY);
 DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY); // right
 DJIMotor pitch2(6, CANHandler::CANBUS_2, GIMBLY); // left, not functioning
@@ -26,8 +30,8 @@ DJIMotor RFLYWHEEL(8, CANHandler::CANBUS_2, M3508);
 DJIMotor LFLYWHEEL(5, CANHandler::CANBUS_2, M3508);
 DJIMotor gearSwap(4, CANHandler::CANBUS_2, M2006); // gear swap
 
-RamseteCommand command(
-        Pose2D(0, 0, 0), Pose2D(20, 20, 0), 2, &chassis);
+//RamseteCommand command(
+//        Pose2D(0, 0, 0), Pose2D(20, 20, 0), 2, &chassis);
 DigitalOut led(L26);
 DigitalOut led2(L27);
 DigitalOut led3(L25);
@@ -62,10 +66,10 @@ Thread imuThread;
 
 void runImuThread()
 {
-    chassis.initializeImu();
+    //chassis.initializeImu();
     while (true)
     {
-        chassis.readImu();
+        //chassis.readImu();
         ThisThread::sleep_for(25);
     }
 }
@@ -124,7 +128,7 @@ void pitchSetPosition(){
 
 int main(){
 
-    imuThread.start(runImuThread);
+    //imuThread.start(runImuThread);
     float speedmultiplier = 3;
     float powmultiplier = 2;
     float translationalmultiplier = 1.5; // was 3
@@ -163,9 +167,9 @@ int main(){
     indexer.setSpeedPID(1, 0, 1);
     indexer.setSpeedIntegralCap(8000);
 
-    chassis.setBrakeMode(Chassis::COAST);
+//    chassis.setBrakeMode(Chassis::COAST);
 
-    command.initialize();
+//    command.initialize();
 
     unsigned long loopTimer = us_ticker_read();
 
@@ -211,7 +215,7 @@ int main(){
             led = !led;
             loopTimer = timeStart;
             remoteRead();
-            chassis.periodic();
+//            chassis.periodic();
 
             refLoop++;
             if (refLoop >= 5){
@@ -239,6 +243,17 @@ int main(){
             //printf("%d %d\n", lX, rX);
 
 
+
+            double scalar = 1;
+            double jx = remote.leftX() / 660.0 * scalar;
+            double jy = remote.leftY() / 660.0 * scalar;
+            double jr = remote.rightX() / 660.0 * scalar;
+
+            double tolerance = 0.05;
+            jx = (abs(jx) < tolerance) ? 0 : jx;
+            jy = (abs(jy) < tolerance) ? 0 : jy;
+            jr = (abs(jr) < tolerance) ? 0 : jr;
+
             /**
              * RightSwitch controls: Pitch, Yaw, Chassis
              * Up: Pitch enabled, yaw and chassis seperate
@@ -248,19 +263,29 @@ int main(){
             if (remote.rightSwitch() == Remote::SwitchState::UP){          // All non-serializer motors activated
                 led3 = 1;
                 unsigned long time = us_ticker_read();
-                chassis.driveTurretRelativePower(chassis_power, chassis_power_limit, {remote.leftX() * 5.0, remote.leftY() * 5.0, 0}, yaw.getData(ANGLE) * 360.0 / 8192 + 180, int(time - lastTime), rotationalPower);
+
+                Chassis.setSpeedFF_Ks(0.065);
+                Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
+                                          jy * Chassis.m_OmniKinematicsLimits.max_Vel,
+                                          0 * Chassis.m_OmniKinematicsLimits.max_vOmega},
+                                          ChassisSubsystem::ROBOT_ORIENTED);
+
                 lastTime = time;
 //                pitchSetPosition();
                 yaw.setPower(-remote.rightX() * 10);
             } else if (remote.rightSwitch() == Remote::SwitchState::MID || remote.rightSwitch() == Remote::SwitchState::UNKNOWN){ // disable all the non-serializer components
-                chassis.driveFieldRelative({0, 0, 0});
+                Chassis.setSpeedFF_Ks(0.065);
+                Chassis.setWheelPower({0,0,0,0});
                 yaw.setPower(0);
                 pitch.setPower(0);
             } else if (remote.rightSwitch() == Remote::SwitchState::DOWN){           // beyblade mode
                 unsigned long time = us_ticker_read(); //time for pid
                 double r = 4000;
-                chassis.driveXYRPower(chassis_power, chassis_power_limit, 5 * remote.leftX(), 5 * remote.leftY(), int(time - lastTime), true, r);
-                lastTime = time;
+                Chassis.setSpeedFF_Ks(0.065);
+                Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
+                                          jy * Chassis.m_OmniKinematicsLimits.max_Vel,
+                                          -1},
+                                          ChassisSubsystem::ROBOT_ORIENTED);lastTime = time;
 //                pitchSetPosition();
                 yawSetPoint += remote.rightX() / 110;
                 yawSetPoint %= 360;

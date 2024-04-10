@@ -295,7 +295,7 @@ int main(){
                 refLoop = 0;
                 led2= !led2;
                 //                 led3 = !led3;
-                //printff("Angle yaw: %d; Set point: %d; Power out: %d %\n", chassis.getHeadingDegreesYaw(), yawSetPoint, yaw>>POWEROUT);
+                printff("Angle yaw: %d; Set point: %d; Power out: %d %\n", chassis.getHeadingDegreesYaw(), yawSetPoint, yaw>>POWEROUT);
                 //                 printff("Yaw: %f, %f, %f %d %d\n", yaw.pidSpeed.pC, yaw.pidSpeed.iC, yaw.pidSpeed.dC, yaw>>VELOCITY, yaw>>VALUE);
 
                 }
