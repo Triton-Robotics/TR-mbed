@@ -71,8 +71,13 @@ int main()
                 // Eigen::MatrixXd Inv_K(4,3);
                 // Inv_K << 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12;
                 // printff("%s\n", Chassis.MatrixtoString(Inv_K));
-                ChassisSpeeds cs = Chassis.m_chassisSpeeds;
-                printff("%f %f %f\n", cs.vX, cs.vY, cs.vOmega);
+                // ChassisSpeeds cs = Chassis.m_chassisSpeeds;
+                // printff("%f %f %f\n", cs.vX, cs.vY, cs.vOmega);
+
+                // double chassis_power = ext_power_heat_data.data.chassis_power;
+                // double chassis_power_limit = ext_game_robot_state.data.chassis_power_limit;
+                float AHHH = Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(POWEROUT);
+                printff("%f \n", chassis_power);
 
                 // A = m.completeOrthogonalDecomposition().pseudoInverse();
                 // printff("%f %f\n%f %f\n", A(0,0), A(0,1), A(1,0), A(1,1));
@@ -140,7 +145,13 @@ int main()
                 jy = (abs(jy) < tolerance) ? 0 : jy;
 
                 Chassis.setSpeedFF_Ks(0.065);
-                Chassis.setChassisSpeedsPWR(jx * Chassis.m_OmniKinematicsLimits.max_Vel, 
+
+                // Chassis.setChassisSpeedsPWR(jx * Chassis.m_OmniKinematicsLimits.max_Vel, 
+                //                           jy * Chassis.m_OmniKinematicsLimits.max_Vel, 
+                //                           chassis_power, 
+                //                           chassis_power_limit);
+
+                Chassis.setChassisSpeedsPowerMovementLimit(jx * Chassis.m_OmniKinematicsLimits.max_Vel, 
                                           jy * Chassis.m_OmniKinematicsLimits.max_Vel, 
                                           chassis_power, 
                                           chassis_power_limit);

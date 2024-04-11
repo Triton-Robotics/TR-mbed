@@ -169,6 +169,14 @@ public:
     void setChassisSpeedsPWR(double fwd, double strafe, double chassis_power, double chassis_power_limit);
 
     /**
+     * 
+     * 
+     * 
+    */
+
+    void setChassisSpeedsPowerMovementLimit(double fwd, double strafe, double chassis_power, double chassis_power_limit);
+
+    /**
      * The setChassisPower method is used to drive the chassis in a chassis relative manner.
      *
      * @param desiredChassisPower The robot-relative power (vX, vY, and vOmega) in [-1, 1]

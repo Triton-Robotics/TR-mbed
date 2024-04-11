@@ -34,6 +34,11 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
     LB.setSpeedPID(2, 0, 0);
     RB.setSpeedPID(2, 0, 0);
 
+    LF.pidSpeed.setOutputCap(1800);
+    RF.pidSpeed.setOutputCap(1800);
+    LB.pidSpeed.setOutputCap(1800);
+    RB.pidSpeed.setOutputCap(1800);
+
     brakeMode = COAST;
 
     // isInverted[0] = 1; isInverted[1] = 1; isInverted[2] = 1; isInverted[3] = 1;
@@ -100,31 +105,85 @@ void ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRI
     setWheelSpeeds(wheelSpeeds);
 }
 
-void ChassisSubsystem::setChassisSpeedsPWR(double fwd, double strafe, double chassis_power, double chassis_power_limit)
+void ChassisSubsystem::setChassisSpeedsPWR(double fwd, double strafe, double chassis_power, double chassis_power_limit) //the edge algorithem
 {
     double huiandward = 0;
-    double i = 5; 
+
+    double still_edging;
+    double moving_edging_value;
 
     if (fwd >= -5 && strafe >= -5 && fwd <= 5 && strafe <= 5) { // Robot is not moving
 
-        huiandward = rpmToRadPerSecond(10);   //set huiandward to a lower value
+        huiandward = rpmToRadPerSecond(still_edging);   //set huiandward to a lower value
 
     }
     else if (fwd > 5 && strafe > 5) {     //if it is moving then our beyblade slows
 
-        huiandward = rpmToRadPerSecond(i); // Set turning speed - covert to rpm
+        huiandward = rpmToRadPerSecond(still_edging); // Set turning speed - covert to rpm
 
-        if(chassis_power <= chassis_power_limit - 10) {
-            huiandward = rpmToRadPerSecond(i++);
+        if(chassis_power < chassis_power_limit - 10) {
+            huiandward = rpmToRadPerSecond(moving_edging_value++);
         }
         else 
         {
-            huiandward = rpmToRadPerSecond(i--);
+            huiandward = rpmToRadPerSecond(moving_edging_value--);
         }
 
     }
 
+    //  if(chassis_power_limit == 60) {
+    //     if (fwd >= -5 && strafe >= -5 && fwd <= 5 && strafe <= 5) { // Robot is not moving
+
+    //         huiandward = rpmToRadPerSecond(22);   //set huiandward to a lower value
+
+    //     }
+    //     else if (fwd > 5 && strafe > 5) {     //if it is moving then our beyblade slows
+
+    //         huiandward = rpmToRadPerSecond(i); // Set turning speed - covert to rpm
+
+    //         if(chassis_power < chassis_power_limit - 10) {
+    //             huiandward = rpmToRadPerSecond(i++);
+    //         }
+    //         else 
+    //         {
+    //             huiandward = rpmToRadPerSecond(i--);
+    //         }
+
+    //     }
+    // }
+    // else if(chassis_power_limit == 80) {
+    //     if (fwd >= -5 && strafe >= -5 && fwd <= 5 && strafe <= 5) { // Robot is not moving
+
+    //         huiandward = rpmToRadPerSecond(25);   //set huiandward to a lower value
+
+    //     }
+    //     else if (fwd > 5 && strafe > 5) {     //if it is moving then our beyblade slows
+
+    //         huiandward = rpmToRadPerSecond(i); // Set turning speed - covert to rpm
+
+    //         if(chassis_power < chassis_power_limit - 10) {
+    //             huiandward = rpmToRadPerSecond(i++);
+    //         }
+    //         else 
+    //         {
+    //             huiandward = rpmToRadPerSecond(i--);
+    //         }
+
+    //     }
+    // }
+
     setChassisSpeeds({strafe,fwd,huiandward});
+}
+
+void ChassisSubsystem::setChassisSpeedsPowerMovementLimit(double fwd, double strafe, double chassis_power, double chassis_power_limit) {
+    double pwrPercent = chassis_power/chassis_power_limit;
+    if (pwrPercent > 0.7) {
+        strafe = strafe * 0.80;
+        fwd = fwd * 0.80;
+        setChassisSpeeds({strafe,fwd,0});
+    }
+
+    setChassisSpeeds({strafe,fwd,0});
 }
 
 void ChassisSubsystem::setChassisPower(ChassisSpeeds desiredChassisPower)
