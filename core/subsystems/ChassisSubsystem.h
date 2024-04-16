@@ -32,6 +32,7 @@
 #define MAX_BEYBLADE_SPEED 1800
 #define BEYBLADE_ACCELERATION 0.05
 
+
 struct OmniKinematics
 {
     double r1x, r1y, r2x, r2y, r3x, r3y, r4x, r4y;
