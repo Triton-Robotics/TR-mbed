@@ -389,16 +389,16 @@ ChassisSpeeds Chassis::getSpeeds()
         chassisKalman.getX(4)};
 }
 
-bool Chassis::allMotorsConnected()
-{
-    return (
-        (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, lfId)) &&
-        (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, rfId)) &&
-        (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, lbId)) &&
-        (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, rbId))
+// bool Chassis::allMotorsConnected()
+// {
+//     return (
+//         (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, lfId)) &&
+//         (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, rfId)) &&
+//         (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, lbId)) &&
+//         (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, rbId))
 
-    );
-}
+//     );
+// }
 
 // void Chassis::driveTurretRelativePower(ChassisSpeeds speeds, double turretAngleDegrees) {
 //     double robotHeading = imuAngles.yaw * PI / 180.0;
