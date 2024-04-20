@@ -295,13 +295,14 @@ int main(){
 //                                          ChassisSubsystem::ROBOT_ORIENTED);
 Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
                                           jy *
-                                          sis.m_OmniKinematicsLimits.max_Vel,
+                                          Chassis.m_OmniKinematicsLimits.max_Vel,
                                           0 * Chassis.m_OmniKinematicsLimits.max_vOmega},
                                           ChassisSubsystem::YAW_ORIENTED);
 
                 lastTime = time;
 //                pitchSetPosition();
-                yaw.setPower(-remote.rightX() * 10);
+//                yaw.setPower(-remote.rightX() * 10);
+                yaw.setSpeed(-remote.rightX() * 40);
             } else if (remote.rightSwitch() == Remote::SwitchState::MID || remote.rightSwitch() == Remote::SwitchState::UNKNOWN){ // disable all the non-serializer components
                 Chassis.setSpeedFF_Ks(0.065);
                 Chassis.setWheelPower({0,0,0,0});
