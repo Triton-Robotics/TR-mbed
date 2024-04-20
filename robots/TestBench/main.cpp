@@ -1,37 +1,157 @@
 #include "main.h"
+#include "subsystems/ChassisSubsystem.h"
+
+// #include "algorithms/eigen-3.4.0/Eigen/Dense"
 
 DigitalOut led(L27);
 DigitalOut led2(L26);
 DigitalOut led3(L25);
 
-int main(){
+I2C i2c(I2C_SDA, I2C_SCL);
+BNO055 imu(i2c, IMU_RESET, MODE_IMU);
+// DJIMotor ChassisOne(1, CANHandler::CANBUS_1, STANDARD, "testMotor");
+// DJIMotor ChassisTwo(2, CANHandler::CANBUS_1, STANDARD, "testMotor");
+// DJIMotor ChassisThree(3, CANHandler::CANBUS_1, STANDARD, "testMotor");
+// DJIMotor ChassisFour(4, CANHandler::CANBUS_1, STANDARD, "testMotor");
+DJIMotor yawOne(5, CANHandler::CANBUS_1, GM6020, "testMotor");
+// DJIMotor yawTwo(6, CANHandler::CANBUS_1, GM6020, "testMotor"); // not plugged
+ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
+
+int main()
+{
 
     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
     DJIMotor::s_sendValues();
     DJIMotor::s_getFeedback();
+    DJIMotor::initializedWarning = false;
 
-    DJIMotor yaw(5, CANHandler::CANBUS_1, GM6020, "YAW");
+    Chassis.setYawReference(&yawOne, 7167); // "7167" is the number of ticks of yawOne considered to be robot-front
 
     unsigned long timeStart;
     unsigned long loopTimer = us_ticker_read();
     int refLoop = 0;
 
-    while(true){
+    
+    float chassis_power = ext_power_heat_data.data.chassis_power;    
+    float chassis_power_limit = ext_game_robot_state.data.chassis_power_limit;
+
+
+    while (true)
+    {
         timeStart = us_ticker_read();
 
-        if ((timeStart - loopTimer) / 1000 > 25){
-            led = !led;
+        if ((timeStart - loopTimer) / 1000 > 25)
+        {
+            led2 = !led2;
 
             refLoop++;
-            if (refLoop >= 5){
+            if (refLoop >= 10)
+            {
                 refereeThread(&referee);
                 refLoop = 0;
-                led2 = !led2;
+                led = !led;
 
-                printff("%d\n",yaw>>ANGLE);
+                // printff("%f\n", Chassis.getMotorSpeed(ChassisSubsystem::LEFT_FRONT, ChassisSubsystem::METER_PER_SECOND));
+                // printff("%d\n", Chassis.getMotor(ChassisSubsystem::LEFT_FRONT)>>VELOCITY);
+                // printff("%s\n", Chassis.desiredWheelSpeeds.to_string());
+                WheelSpeeds ws = Chassis.desiredWheelSpeeds;
+
+                // printff("%d\n", Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(ANGLE));
+                // printff("%f\n", Chassis.getMotorSpeed(ChassisSubsystem::LEFT_BACK, ChassisSubsystem::RPM) / M3508_GEAR_RATIO);
+                // printff("%f ", Chassis.desiredWheelSpeeds.LB / M3508_GEAR_RATIO * 2 * PI / 60 * WHEEL_DIAMETER_METERS / 2);
+                // printff("%f\n",Chassis.getMotorSpeed(ChassisSubsystem::LEFT_BACK, ChassisSubsystem::METER_PER_SECOND));
+                // printff("LF: %4.2f RF: %4.2f LB: %4.2f RB: %4.2f\n", ws.LF, ws.RF, ws.LB, ws.RB);
+
+                // printff("a%f\n", sin(PI));
+                // printff("%d\n", yawOne.getData(ANGLE));
+                // printff("%d\n", yawTwo.getData(ANGLE));
+                // printff("yawPhase: %f\n",Chassis.yawPhase);
+                // Eigen::MatrixXd m(2,2);
+                // Eigen::MatrixXd A(2,2);
+                // Eigen::MatrixXd Inv_K(4,3);
+                // Inv_K << 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12;
+                // printff("%s\n", Chassis.MatrixtoString(Inv_K));
+                ChassisSpeeds cs = Chassis.m_chassisSpeeds;
+                printff("%f %f %f\n", cs.vX, cs.vY, cs.vOmega);
+
+                // A = m.completeOrthogonalDecomposition().pseudoInverse();
+                // printff("%f %f\n%f %f\n", A(0,0), A(0,1), A(1,0), A(1,1));
+
             }
 
             remoteRead();
+
+            // gets the angle off the chassis
+            BNO055_ANGULAR_POSITION_typedef imuAngle;
+            imu.get_angular_position_quat(&imuAngle);
+
+            // printff("%f\n", imuAngle.yaw);
+
+            // gets the angle of the motor
+
+            // printff("%d\n", yawOne.getData(ANGLE));
+            if (remote.rightSwitch() == Remote::SwitchState::UP)
+            {
+                double scalar = 1;
+                double jx = remote.leftX() / 660.0 * scalar;
+                double jy = remote.leftY() / 660.0 * scalar;
+                double jr = remote.rightX() / 660.0 * scalar;
+
+                double tolerance = 0.05;
+                jx = (abs(jx) < tolerance) ? 0 : jx;
+                jy = (abs(jy) < tolerance) ? 0 : jy;
+                jr = (abs(jr) < tolerance) ? 0 : jr;
+
+                Chassis.setSpeedFF_Ks(0.065);
+                Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel, 
+                                          jy * Chassis.m_OmniKinematicsLimits.max_Vel, 
+                                          -jr * Chassis.m_OmniKinematicsLimits.max_vOmega}, 
+                                          ChassisSubsystem::ROBOT_ORIENTED);
+                // Chassis.setChassisPower({jx, jy, jr});
+
+                // double LFa = (1 / sqrt(2)) * (jx + jy + jr * ((-0.228) - (0.228)));
+                // ChassisOne.setSpeed(LFa / (0.0254 * 2) / (2 * PI / 60) * M3508_GEAR_RATIO);
+                // // ChassisOne.setPower(LFa);
+                // double RFa = (1 / sqrt(2)) * (jx - jy - jr * ((0.228) + (0.228)));
+                // ChassisTwo.setSpeed(RFa / (0.0254 * 2) / (2 * PI / 60) * M3508_GEAR_RATIO);
+                // // ChassisTwo.setPower(RFa);
+                // double LBa = (1 / sqrt(2)) * (-jx + jy + jr * ((-0.228) + (-0.228)));
+                // ChassisThree.setSpeed(LBa / (0.0254 * 2) / (2 * PI / 60) * M3508_GEAR_RATIO);
+                // // ChassisThree.setPower(LBa);
+                // double RBa = (1 / sqrt(2)) * (-jx - jy - jr * ((0.228) - (-0.228)));
+                // ChassisFour.setSpeed(RBa / (0.0254 * 2) / (2 * PI / 60) * M3508_GEAR_RATIO);
+                // // ChassisFour.setPower(RBa);
+
+                // double a[4] = {LFa, RFa, LBa, RBa};
+                // for (int i = 0; i < 4; i++)
+                // {
+                //     printff("%f ", a[i]);
+                // }
+                // printff("\n");
+            }
+            else if (remote.rightSwitch() == Remote::SwitchState::DOWN)
+            {
+                double scalar = 1;
+                double jx = remote.leftX() / 660.0 * scalar;
+                double jy = remote.leftY() / 660.0 * scalar;
+
+                double tolerance = 0.05;
+                jx = (abs(jx) < tolerance) ? 0 : jx;
+                jy = (abs(jy) < tolerance) ? 0 : jy;
+
+                Chassis.setSpeedFF_Ks(0.065);
+                Chassis.setChassisSpeedsPWR(jx * Chassis.m_OmniKinematicsLimits.max_Vel, 
+                                          jy * Chassis.m_OmniKinematicsLimits.max_Vel, 
+                                          chassis_power, 
+                                          chassis_power_limit);
+            }
+            else
+            {
+                Chassis.setChassisSpeeds({0, 0, 0});
+            }
+            Chassis.periodic();
+
+            unsigned long time = us_ticker_read();
 
             loopTimer = timeStart;
             DJIMotor::s_sendValues();
@@ -40,416 +160,3 @@ int main(){
         ThisThread::sleep_for(1ms);
     }
 }
-
-
-
-
-
-// // increase speed --> p
-// // avoid swing --> d
-
-// // choose a p (< 50) and then tune d
-
-// #include "main.h"
-// #include "subsystems/ChassisSubsystem.h"
-// #include <cmath>
-
-// DigitalOut led(L27);
-// DigitalOut led2(L26);
-// DigitalOut led3(L25);
-
-// DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY, "PITCH");
-
-// I2C i2c(I2C_SDA, I2C_SCL);
-// BNO055 imu(i2c, IMU_RESET, MODE_IMU);
-
-// DJIMotor yaw(5, CANHandler::CANBUS_1, GM6020, "YAW");
-// ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
-
-// int main(){
-
-//     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
-//     DJIMotor::s_sendValues();
-//     DJIMotor::s_getFeedback();
-//     DJIMotor::initializedWarning = false;
-
-//     Chassis.setYawReference(&yaw, 2050); // "5604" is the number of ticks of yawOne considered to be robot-front
-//     Chassis.setSpeedFF_Ks(0.065);
-
-//     // yaw.useAbsEncoder = true;
-//     yaw.setSpeedPID(10, 0, 0);
-//     yaw.setSpeedOutputCap(32000);
-
-//     pitch.useAbsEncoder = true;
-//     pitch.setPositionPID(20, 0, 4000);
-//     pitch.setPositionOutputCap(32000);
-//     float currentPitch = 0;
-//     float desiredPitch = 0;
-//     float pitch_phase = -23 / 180.0 * PI;
-//     float InitialOffset_Ticks = 2500;
-
-//     // FeedForward Modeling: FF = K * sin(theta) , output: [-1,1]
-//     float K = 0.85;
-
-//     unsigned long start = us_ticker_read();
-//     unsigned long current = us_ticker_read();
-//     unsigned long timeStart;
-//     unsigned long loopTimer = us_ticker_read();
-//     unsigned long power = 0;
-//     int refLoop = 0;
-
-//     while (true)
-//     {
-//         timeStart = us_ticker_read();
-
-//         if ((timeStart - loopTimer) / 1000 > 25)
-//         {
-//             led2 = !led2;
-
-//             refLoop++;
-//             if (refLoop >= 5){              // prints in here, prints less often
-//                 refereeThread(&referee);
-//                 refLoop = 0;
-//                 led = !led;
-
-//                 // float pComponent = pitch.pidPosition.pComp;
-//                 // float iComponent = pitch.pidPosition.iComp;
-//                 // float dComponent = pitch.pidPosition.dComp;
-//                 // printff("P = %f, I = %f, D = %f\n", pComponent, iComponent, dComponent);
-
-//                 printff("Yaw_POS: %d\n", yaw.getData(ANGLE));
-//             }
-
-//             remoteRead(); 
-
-//             double scalar = 1;
-//             double jx = remote.leftX() / 660.0 * scalar;
-//             double jy = remote.leftY() / 660.0 * scalar;
-//             double jr = remote.rightX() / 660.0 * scalar;
-
-//             double tolerance = 0.05;
-//             jx = (abs(jx) < tolerance) ? 0 : jx;
-//             jy = (abs(jy) < tolerance) ? 0 : jy;
-//             jr = (abs(jr) < tolerance) ? 0 : jr;
-
-//             if (remote.rightSwitch() == Remote::SwitchState::UP)
-//             {           
-//                 Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel, 
-//                                           jy * Chassis.m_OmniKinematicsLimits.max_Vel, 
-//                                           -jr * Chassis.m_OmniKinematicsLimits.max_vOmega}, 
-//                                           ChassisSubsystem::YAW_ORIENTED);
-//                 yaw.setPower(0);
-//             }
-//             else if (remote.rightSwitch() == Remote::SwitchState::DOWN)
-//             {
-//                 Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel, 
-//                                           jy * Chassis.m_OmniKinematicsLimits.max_Vel, 
-//                                           0}, 
-//                                           ChassisSubsystem::YAW_ORIENTED);
-//                 yaw.setSpeed(int(-jr * 300));  
-//             }
-//             else
-//             {
-//                 Chassis.setChassisSpeeds({0, 0, 0});
-//                 yaw.setPower(0);
-//             }
-//             Chassis.periodic();
-
-//             // current = us_ticker_read();
-//             // if((current - start) / 1000 > 12000) {
-//             //     power += 1000;
-//             //     start = us_ticker_read();
-//             // }
-            
-            
-//             currentPitch = (double(pitch.getData(ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360; // degrees
-            
-//             // left switch state
-//             Remote::SwitchState leftSwitchState = remote.leftSwitch();
-
-//             // left stick value
-//             int stick = remote.rightY();
-
-//             // check switch mode
-//             if ( leftSwitchState == Remote::SwitchState::UP ) {
-//                 //pitch.setPower(leftStickValue / 20);
-//                 desiredPitch = stick / 20;
-//             }
-//             else if ( leftSwitchState == Remote::SwitchState::DOWN ) {
-//                 pitch.setPower(0);
-//                 yaw.setPower(0);
-//             }
-//             /*
-//             else if ( leftSwitchState == Remote::SwitchState::MID ) {
-//                 pitch.setSpeed(leftStickValue * 10);
-//             }
-//             else if ( leftSwitchState == Remote::SwitchState::MID ) {
-//                 pitch.setPosition(leftStickValue * 10);
-//             }
-//             */
-
-//             // want to have the desired pitch work based on the controller rather than manually setting it
-//             // desiredPitch = 45; // degrees
-//             float FF = K * sin((desiredPitch / 180 * PI) - pitch_phase); // output: [-1,1]
-//             pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
-//             pitch.setPosition(int((desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks));
-
-//             //printff("%d %f %f\n", pitch.getData(POWEROUT), currentPitch, FF);
-
-            
-//             loopTimer = timeStart;
-//             DJIMotor::s_sendValues();
-
-//         }
-//         DJIMotor::s_getFeedback();
-//         ThisThread::sleep_for(1ms);
-//     }
-// }
-
-
-
-
-
-
-// #include "main.h"
-// #include "subsystems/ChassisSubsystem.h"
-
-// // #include "algorithms/eigen-3.4.0/Eigen/Dense"
-
-// DigitalOut led(L27);
-// DigitalOut led2(L26);
-// DigitalOut led3(L25);
-
-// DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY, "PITCH");
-
-// I2C i2c(I2C_SDA, I2C_SCL);
-// BNO055 imu(i2c, IMU_RESET, MODE_IMU);
-// // DJIMotor ChassisOne(1, CANHandler::CANBUS_1, STANDARD, "testMotor");
-// // DJIMotor ChassisTwo(2, CANHandler::CANBUS_1, STANDARD, "testMotor");
-// // DJIMotor ChassisThree(3, CANHandler::CANBUS_1, STANDARD, "testMotor");
-// // DJIMotor ChassisFour(4, CANHandler::CANBUS_1, STANDARD, "testMotor");
-// DJIMotor yaw(6, CANHandler::CANBUS_2, GM6020, "testMotor");
-
-// DJIMotor indexer(2, CANHandler::CANBUS_2, M3508, "testMotor");
-// DJIMotor FLYT(4, CANHandler::CANBUS_2, M3508, "testMotor");
-// DJIMotor FLYB(1, CANHandler::CANBUS_2, M3508, "testMotor");
-// DJIMotor feeder(5, CANHandler::CANBUS_2, M2006, "testMotor");
-// // DJIMotor yawTwo(6, CANHandler::CANBUS_1, GM6020, "testMotor"); // not plugged
-// ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
-
-// int main()
-// {
-
-//     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
-//     DJIMotor::s_sendValues();
-//     DJIMotor::s_getFeedback();
-//     DJIMotor::initializedWarning = false;
-
-//     // Chassis.setYawReference(&yaw, 2050); // "5604" is the number of ticks of yawOne considered to be robot-front
-//     Chassis.setSpeedFF_Ks(0.065);
-    
-//     // yaw.useAbsEncoder = true;
-//     yaw.setSpeedPID(10, 0, 0);
-//     yaw.setSpeedOutputCap(32000);
-
-    
-//     float chassis_power = 0;    
-//     float chassis_power_limit = 0;
-
-//     pitch.useAbsEncoder = true;
-//     pitch.setPositionPID(20, 0, 4000);
-//     pitch.setPositionOutputCap(32000);
-//     float currentPitch = 0;
-//     float desiredPitch = 0;
-//     float pitch_phase = -23 / 180.0 * PI;
-//     float InitialOffset_Ticks = 2500;
-
-//     // FeedForward Modeling: FF = K * sin(theta) , output: [-1,1]
-//     float K = 0.85;
-
-//     unsigned long start = us_ticker_read();
-//     unsigned long current = us_ticker_read();
-//     unsigned long timeStart;
-//     unsigned long loopTimer = us_ticker_read();
-//     unsigned long power = 0;
-//     int refLoop = 0;
-
-
-//     while (true)
-//     {
-//         timeStart = us_ticker_read();
-
-//         if ((timeStart - loopTimer) / 1000 > 25)
-//         {
-//             led2 = !led2;
-
-//             refLoop++;
-//             if (refLoop >= 10)
-//             {
-//                 refereeThread(&referee);
-//                 refLoop = 0;
-//                 led = !led;
-
-//                 float chassis_power = ext_power_heat_data.data.chassis_power;    
-//                 float chassis_power_limit = ext_game_robot_state.data.chassis_power_limit;
-
-//                 // printff("%f\n", Chassis.getMotorSpeed(ChassisSubsystem::LEFT_FRONT, ChassisSubsystem::METER_PER_SECOND));
-//                 // printff("%d\n", Chassis.getMotor(ChassisSubsystem::LEFT_FRONT)>>VELOCITY);
-//                 // printff("%s\n", Chassis.desiredWheelSpeeds.to_string());
-//                 WheelSpeeds ws = Chassis.desiredWheelSpeeds;
-
-//                 // printff("%d\n", Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(ANGLE));
-//                 // printff("%f\n", Chassis.getMotorSpeed(ChassisSubsystem::LEFT_BACK, ChassisSubsystem::RPM) / M3508_GEAR_RATIO);
-//                 // printff("%f ", Chassis.desiredWheelSpeeds.LB / M3508_GEAR_RATIO * 2 * PI / 60 * WHEEL_DIAMETER_METERS / 2);
-//                 // printff("%f\n",Chassis.getMotorSpeed(ChassisSubsystem::LEFT_BACK, ChassisSubsystem::METER_PER_SECOND));
-//                 // printff("LF: %4.2f RF: %4.2f LB: %4.2f RB: %4.2f\n", ws.LF, ws.RF, ws.LB, ws.RB);
-
-//                 // printff("a%f\n", sin(PI));
-//                 // printff("%d\n", yawOne.getData(ANGLE));
-//                 // printff("%d\n", yawTwo.getData(ANGLE));
-//                 // printff("yawPhase: %f\n",Chassis.yawPhase);
-//                 // Eigen::MatrixXd m(2,2);
-//                 // Eigen::MatrixXd A(2,2);
-//                 // Eigen::MatrixXd Inv_K(4,3);
-//                 // Inv_K << 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12;
-//                 // printff("%s\n", Chassis.MatrixtoString(Inv_K));
-//                 // ChassisSpeeds cs = Chassis.m_chassisSpeeds;
-//                 // printff("%f %f %f\n", cs.vX, cs.vY, cs.vOmega);
-
-//                 // double chassis_power = ext_power_heat_data.data.chassis_power;
-//                 // double chassis_power_limit = ext_game_robot_state.data.chassis_power_limit;
-//                 float AHHH = Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(POWEROUT);
-//                 // printff("%f \n", chassis_power);
-//                 printff("%f\n",yaw>>ANGLE);
-
-//                 // A = m.completeOrthogonalDecomposition().pseudoInverse();
-//                 // printff("%f %f\n%f %f\n", A(0,0), A(0,1), A(1,0), A(1,1));
-
-//             }
-
-//             remoteRead();
-
-//             double scalar = 1;
-//             double jx = remote.leftX() / 660.0 * scalar;
-//             double jy = remote.leftY() / 660.0 * scalar;
-//             double jr = remote.rightX() / 660.0 * scalar;
-
-//             double tolerance = 0.05;
-//             jx = (abs(jx) < tolerance) ? 0 : jx;
-//             jy = (abs(jy) < tolerance) ? 0 : jy;
-//             jr = (abs(jr) < tolerance) ? 0 : jr;
-
-
-//             // gets the angle off the chassis
-//             BNO055_ANGULAR_POSITION_typedef imuAngle;
-//             imu.get_angular_position_quat(&imuAngle);
-
-//             // printff("%f\n", imuAngle.yaw);
-
-//             // gets the angle of the motor
-
-//             // printff("%d\n", yawOne.getData(ANGLE));
-//             if (remote.rightSwitch() == Remote::SwitchState::UP)
-//             {
-//                 double scalar = 1;
-//                 double jx = remote.leftX() / 660.0 * scalar;
-//                 double jy = remote.leftY() / 660.0 * scalar;
-//                 double jr = remote.rightX() / 660.0 * scalar;
-
-//                 double tolerance = 0.05;
-//                 jx = (abs(jx) < tolerance) ? 0 : jx;
-//                 jy = (abs(jy) < tolerance) ? 0 : jy;
-//                 jr = (abs(jr) < tolerance) ? 0 : jr;
-
-//                 Chassis.setSpeedFF_Ks(0.065);
-//                 Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel, 
-//                                           jy * Chassis.m_OmniKinematicsLimits.max_Vel, 
-//                                           -jr * Chassis.m_OmniKinematicsLimits.max_vOmega}, 
-//                                           ChassisSubsystem::YAW_ORIENTED);
-//                 // Chassis.setChassisPower({jx, jy, jr});
-
-//                 // double LFa = (1 / sqrt(2)) * (jx + jy + jr * ((-0.228) - (0.228)));
-//                 // ChassisOne.setSpeed(LFa / (0.0254 * 2) / (2 * PI / 60) * M3508_GEAR_RATIO);
-//                 // // ChassisOne.setPower(LFa);
-//                 // double RFa = (1 / sqrt(2)) * (jx - jy - jr * ((0.228) + (0.228)));
-//                 // ChassisTwo.setSpeed(RFa / (0.0254 * 2) / (2 * PI / 60) * M3508_GEAR_RATIO);
-//                 // // ChassisTwo.setPower(RFa);
-//                 // double LBa = (1 / sqrt(2)) * (-jx + jy + jr * ((-0.228) + (-0.228)));
-//                 // ChassisThree.setSpeed(LBa / (0.0254 * 2) / (2 * PI / 60) * M3508_GEAR_RATIO);
-//                 // // ChassisThree.setPower(LBa);
-//                 // double RBa = (1 / sqrt(2)) * (-jx - jy - jr * ((0.228) - (-0.228)));
-//                 // ChassisFour.setSpeed(RBa / (0.0254 * 2) / (2 * PI / 60) * M3508_GEAR_RATIO);
-//                 // // ChassisFour.setPower(RBa);
-
-//                 // double a[4] = {LFa, RFa, LBa, RBa};
-//                 // for (int i = 0; i < 4; i++)
-//                 // {
-//                 //     printff("%f ", a[i]);
-//                 // }
-//                 // printff("\n");
-//                 // yaw.setPower(jr * 8000); 
-
-//             }
-//             else if (remote.rightSwitch() == Remote::SwitchState::DOWN)
-//             {
-//                 double scalar = 1;
-//                 double jx = remote.leftX() / 660.0 * scalar;
-//                 double jy = remote.leftY() / 660.0 * scalar;
-
-//                 double tolerance = 0.05;
-//                 jx = (abs(jx) < tolerance) ? 0 : jx;
-//                 jy = (abs(jy) < tolerance) ? 0 : jy;
-
-//                 Chassis.setSpeedFF_Ks(0.065);
-
-//                 Chassis.setChassisSpeedsPWR(jx * Chassis.m_OmniKinematicsLimits.max_Vel, 
-//                                           jy * Chassis.m_OmniKinematicsLimits.max_Vel, 
-//                                           chassis_power, 
-//                                           chassis_power_limit);
-
-//                 // Chassis.setChassisSpeedsPowerMovementLimit(jx * Chassis.m_OmniKinematicsLimits.max_Vel, 
-//                 //                           jy * Chassis.m_OmniKinematicsLimits.max_Vel, 
-//                 //                           chassis_power, 
-//                 //                           chassis_power_limit);
-//             }
-//             else
-//             {
-//                 Chassis.setChassisSpeeds({0, 0, 0});
-//             }
-//             Chassis.periodic();
-
-
-
-//             // if (remote.leftSwitch() == Remote::SwitchState::UP)
-//             // {           
-//             //     // Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel, 
-//             //     //                           jy * Chassis.m_OmniKinematicsLimits.max_Vel, 
-//             //     //                           -jr * Chassis.m_OmniKinematicsLimits.max_vOmega}, 
-//             //     //                           ChassisSubsystem::YAW_ORIENTED);
-//             //     yaw.setPower(0);
-//             // }
-//             // else if (remote.leftSwitch() == Remote::SwitchState::DOWN)
-//             // {
-//             //     // Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel, 
-//             //     //                           jy * Chassis.m_OmniKinematicsLimits.max_Vel, 
-//             //     //                           0}, 
-//             //     //                           ChassisSubsystem::YAW_ORIENTED);
-                 
-//             // }
-//             // else
-//             // {
-//             //     // Chassis.setChassisSpeeds({0, 0, 0});
-//             //     yaw.setPower(0);
-//             // }
-//             Chassis.periodic();
-
-
-//             unsigned long time = us_ticker_read();
-
-//             loopTimer = timeStart;
-//             DJIMotor::s_sendValues();
-//         }
-//         DJIMotor::s_getFeedback();
-//         ThisThread::sleep_for(1ms);
-//     }
-// }
