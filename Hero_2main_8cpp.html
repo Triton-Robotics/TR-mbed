@@ -75,115 +75,87 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;main.h&quot;</code><br />
+<code>#include &quot;<a class="el" href="ChassisSubsystem_8h_source.html">subsystems/ChassisSubsystem.h</a>&quot;</code><br />
+<code>#include &lt;cmath&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a598a3330b3c21701223ee0ca14316eca"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#a598a3330b3c21701223ee0ca14316eca">PI</a>&#160;&#160;&#160;3.14159265</td></tr>
-<tr class="separator:a598a3330b3c21701223ee0ca14316eca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86776f7e9bb26c226d909f1e82d9501c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#a86776f7e9bb26c226d909f1e82d9501c">dr</a>&#160;&#160;&#160;(8191.0 / 9.0)</td></tr>
-<tr class="separator:a86776f7e9bb26c226d909f1e82d9501c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4f2dee4080c4fd2eb53dff63965932fa"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#a4f2dee4080c4fd2eb53dff63965932fa">IOFFSET</a>&#160;&#160;&#160;30</td></tr>
-<tr class="separator:a4f2dee4080c4fd2eb53dff63965932fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6210af1e79bb0c42c4e24f4d2753aa53"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#a6210af1e79bb0c42c4e24f4d2753aa53">smooth</a>&#160;&#160;&#160;true</td></tr>
-<tr class="separator:a6210af1e79bb0c42c4e24f4d2753aa53"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9e223a75cf21bf1b9ca1031b76d551b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#ae9e223a75cf21bf1b9ca1031b76d551b">feederburstlength</a>&#160;&#160;&#160;100</td></tr>
+<tr class="separator:ae9e223a75cf21bf1b9ca1031b76d551b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9793741adf7ede0552d1e9874a0db0eb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#a9793741adf7ede0552d1e9874a0db0eb">burstthreshold</a>&#160;&#160;&#160;0</td></tr>
+<tr class="separator:a9793741adf7ede0552d1e9874a0db0eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54b801e6791ec8237b864e0ca5e06cd4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#a54b801e6791ec8237b864e0ca5e06cd4">indexerburstend</a>&#160;&#160;&#160;500</td></tr>
+<tr class="separator:a54b801e6791ec8237b864e0ca5e06cd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a689935c8d5f58c88c4dd8a44d5c6abc0"><td class="memItemLeft" align="right" valign="top">DigitalOut&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#a689935c8d5f58c88c4dd8a44d5c6abc0">led</a> (<a class="el" href="robots_2main_8h.html#a3c2252c27e6e53c8c309e9ac192a75bf">L26</a>)</td></tr>
-<tr class="separator:a689935c8d5f58c88c4dd8a44d5c6abc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9aff7223480399d08d0951cb0e960186"><td class="memItemLeft" align="right" valign="top">DigitalOut&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#a9aff7223480399d08d0951cb0e960186">led2</a> (<a class="el" href="robots_2main_8h.html#abea9275de514cd10347816417777204d">L27</a>)</td></tr>
-<tr class="separator:a9aff7223480399d08d0951cb0e960186"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afeb9ad17704148332f0e3f99e197b162"><td class="memItemLeft" align="right" valign="top">DigitalOut&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#afeb9ad17704148332f0e3f99e197b162">led</a> (<a class="el" href="robots_2main_8h.html#abea9275de514cd10347816417777204d">L27</a>)</td></tr>
+<tr class="separator:afeb9ad17704148332f0e3f99e197b162"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c3155dd75ddc08cebaa6fcc6393cc84"><td class="memItemLeft" align="right" valign="top">DigitalOut&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#a3c3155dd75ddc08cebaa6fcc6393cc84">led2</a> (<a class="el" href="robots_2main_8h.html#a3c2252c27e6e53c8c309e9ac192a75bf">L26</a>)</td></tr>
+<tr class="separator:a3c3155dd75ddc08cebaa6fcc6393cc84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9756ad2c67a2edbf64dd523340b72f87"><td class="memItemLeft" align="right" valign="top">DigitalOut&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#a9756ad2c67a2edbf64dd523340b72f87">led3</a> (<a class="el" href="robots_2main_8h.html#a7020d96396a257c318459993defd50a3">L25</a>)</td></tr>
+<tr class="separator:a9756ad2c67a2edbf64dd523340b72f87"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae3e7ab47cd5395225bf7c67b8ee84976"><td class="memItemLeft" align="right" valign="top">I2C&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#ae3e7ab47cd5395225bf7c67b8ee84976">i2c</a> (<a class="el" href="ChassisSubsystem_8h.html#a18aefd12ad84d4c33dc97923cb821e47">I2C_SDA</a>, <a class="el" href="ChassisSubsystem_8h.html#a212ca328a6409c98f8c3dfbbe1ba561d">I2C_SCL</a>)</td></tr>
 <tr class="separator:ae3e7ab47cd5395225bf7c67b8ee84976"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aef26a6d9c4a1ad3203e835594bff0d08"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#aef26a6d9c4a1ad3203e835594bff0d08">runImuThread</a> ()</td></tr>
-<tr class="separator:aef26a6d9c4a1ad3203e835594bff0d08"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac58ef608652ac81f95b418cf494e28f2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#ac58ef608652ac81f95b418cf494e28f2">setFlyWheelPwr</a> (<a class="el" href="level1__real__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> pwr)</td></tr>
-<tr class="separator:ac58ef608652ac81f95b418cf494e28f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a726510b180af9a4eeb0a709779b2d2ae"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#a726510b180af9a4eeb0a709779b2d2ae">stopFLyWheels</a> ()</td></tr>
-<tr class="separator:a726510b180af9a4eeb0a709779b2d2ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7d983075b33b3c1c559855e8de6fd7cf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#a7d983075b33b3c1c559855e8de6fd7cf">indexerLoop</a> (bool &amp;previousMid, bool &amp;nowUp, bool &amp;nowDown, <a class="el" href="level1__real__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> &amp;actualPosition, float &amp;desiredPosition, <a class="el" href="level1__real__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> &amp;t)</td></tr>
-<tr class="separator:a7d983075b33b3c1c559855e8de6fd7cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f80ee0c02507de37689716f2f5ccc72"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#a3f80ee0c02507de37689716f2f5ccc72">pitchSetPosition</a> ()</td></tr>
-<tr class="separator:a3f80ee0c02507de37689716f2f5ccc72"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4fd1720696a65732a5e10834e316bc9d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="level1__real__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#a4fd1720696a65732a5e10834e316bc9d">calculateDeltaYaw</a> (<a class="el" href="level1__real__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> ref_yaw, <a class="el" href="level1__real__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> beforeBeybladeYaw)</td></tr>
-<tr class="separator:a4fd1720696a65732a5e10834e316bc9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac5b4e3d89a93e5ac7e4ddeddd014ef17"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#ac5b4e3d89a93e5ac7e4ddeddd014ef17">setMotorSettings</a> ()</td></tr>
-<tr class="separator:ac5b4e3d89a93e5ac7e4ddeddd014ef17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae66f6b31b5ad750f1fe042a706a4e3d4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="level1__real__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main</a> ()</td></tr>
 <tr class="separator:ae66f6b31b5ad750f1fe042a706a4e3d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a191b20daad7b699a798c76257f0366e4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classChassis.html">Chassis</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#a191b20daad7b699a798c76257f0366e4">chassis</a> (1, 2, 3, 4, &amp;<a class="el" href="TestBench_2main_8cpp.html#ae3e7ab47cd5395225bf7c67b8ee84976">i2c</a>)</td></tr>
-<tr class="separator:a191b20daad7b699a798c76257f0366e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab4500225be1029fe6e825e34e851f533"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDJIMotor.html">DJIMotor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#ab4500225be1029fe6e825e34e851f533">yaw</a> (5, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4">CANHandler::CANBUS_1</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a5ac5633b85d6640dcf5f424b967a77c6">GIMBLY</a>, &quot;YAW&quot;)</td></tr>
-<tr class="separator:ab4500225be1029fe6e825e34e851f533"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a785a8b28f91186ee67b6f8388372bccd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDJIMotor.html">DJIMotor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#a785a8b28f91186ee67b6f8388372bccd">indexer</a> (7, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4">CANHandler::CANBUS_1</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a5ac5633b85d6640dcf5f424b967a77c6">GIMBLY</a>, &quot;INDEXER&quot;)</td></tr>
-<tr class="separator:a785a8b28f91186ee67b6f8388372bccd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a33476f2977e0e9f244066391483cb42f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDJIMotor.html">DJIMotor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#a33476f2977e0e9f244066391483cb42f">pitch</a> (6, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a5ac5633b85d6640dcf5f424b967a77c6">GIMBLY</a>, &quot;PITCH&quot;)</td></tr>
-<tr class="separator:a33476f2977e0e9f244066391483cb42f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a80c47ae580fb0e0e8fe96bdecbd2f4c4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDJIMotor.html">DJIMotor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#a80c47ae580fb0e0e8fe96bdecbd2f4c4">RFLYWHEEL</a> (8, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a28474eec9dbe74a0107e8bfb33d0751f">M3508</a>, &quot;RFLYWHEEL&quot;)</td></tr>
-<tr class="separator:a80c47ae580fb0e0e8fe96bdecbd2f4c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a274141732086b259b9dc8ee822ada549"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDJIMotor.html">DJIMotor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#a274141732086b259b9dc8ee822ada549">LFLYWHEEL</a> (5, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a28474eec9dbe74a0107e8bfb33d0751f">M3508</a>, &quot;LFLYWHEEL&quot;)</td></tr>
-<tr class="separator:a274141732086b259b9dc8ee822ada549"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc6ec16348d6bb58da488feab2a05bee"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classRemote.html#affd0b019d5483d546bc29b07447649bb">Remote::SwitchState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#afc6ec16348d6bb58da488feab2a05bee">prevRS</a> = <a class="el" href="classRemote.html#affd0b019d5483d546bc29b07447649bba696b031073e74bf2cb98e5ef201d4aa3">Remote::SwitchState::UNKNOWN</a></td></tr>
-<tr class="separator:afc6ec16348d6bb58da488feab2a05bee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a85cee5741ab7d0687c1c4a258f1d7c59"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classRemote.html#affd0b019d5483d546bc29b07447649bb">Remote::SwitchState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#a85cee5741ab7d0687c1c4a258f1d7c59">prevLS</a> = <a class="el" href="classRemote.html#affd0b019d5483d546bc29b07447649bba696b031073e74bf2cb98e5ef201d4aa3">Remote::SwitchState::UNKNOWN</a></td></tr>
-<tr class="separator:a85cee5741ab7d0687c1c4a258f1d7c59"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a24aab2fd161ab4683f84da11342605fd"><td class="memItemLeft" align="right" valign="top">Thread&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#a24aab2fd161ab4683f84da11342605fd">imuThread</a></td></tr>
-<tr class="separator:a24aab2fd161ab4683f84da11342605fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40a835f00c269d472adc1fc56ddc9f49"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBNO055.html">BNO055</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#a40a835f00c269d472adc1fc56ddc9f49">imu</a> (<a class="el" href="TestBench_2main_8cpp.html#ae3e7ab47cd5395225bf7c67b8ee84976">i2c</a>, <a class="el" href="ChassisSubsystem_8h.html#afe5a31debea7f8fd3ee5e4c742c7500b">IMU_RESET</a>, <a class="el" href="BNO055_8h.html#a0d8bdfb104be01d28fb92b60c58bb3be">MODE_IMU</a>)</td></tr>
+<tr class="separator:a40a835f00c269d472adc1fc56ddc9f49"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8033141d6595ae1ad01709ea2cbdb6e5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDJIMotor.html">DJIMotor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#a8033141d6595ae1ad01709ea2cbdb6e5">yaw</a> (6, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4">CANHandler::CANBUS_1</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a2ae8c090db12e35b19e46886cc4b3cdc">GM6020</a>, &quot;YAW&quot;)</td></tr>
+<tr class="separator:a8033141d6595ae1ad01709ea2cbdb6e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2073998da90ee806d70cb3b99a0e469"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDJIMotor.html">DJIMotor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#af2073998da90ee806d70cb3b99a0e469">pitch</a> (5, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a5ac5633b85d6640dcf5f424b967a77c6">GIMBLY</a>, &quot;PITCH&quot;)</td></tr>
+<tr class="separator:af2073998da90ee806d70cb3b99a0e469"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae56945aecdd4b87f42dd239be3fe1f20"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDJIMotor.html">DJIMotor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#ae56945aecdd4b87f42dd239be3fe1f20">indexer</a> (2, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a28474eec9dbe74a0107e8bfb33d0751f">M3508</a>, &quot;INDEXER&quot;)</td></tr>
+<tr class="separator:ae56945aecdd4b87f42dd239be3fe1f20"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2bb7d451a41012279348a20cee80536e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDJIMotor.html">DJIMotor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#a2bb7d451a41012279348a20cee80536e">feeder</a> (5, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a5c09ef61e8b225afd4edbb87ffcbd4f0">C610</a>, &quot;FEEDER&quot;)</td></tr>
+<tr class="separator:a2bb7d451a41012279348a20cee80536e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53f24f03bf732e4ae77cc81f9d99c963"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDJIMotor.html">DJIMotor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#a53f24f03bf732e4ae77cc81f9d99c963">top_flywheel</a> (4, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a47b07b24e8713ed3866628ba407deb12">M3508_FLYWHEEL</a>, &quot;Top Flywheel&quot;)</td></tr>
+<tr class="separator:a53f24f03bf732e4ae77cc81f9d99c963"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a078fcb435bfaf7e1198e7e51c001a079"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDJIMotor.html">DJIMotor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#a078fcb435bfaf7e1198e7e51c001a079">bottom_flywheel</a> (1, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a47b07b24e8713ed3866628ba407deb12">M3508_FLYWHEEL</a>, &quot;Bottom Flywheel&quot;)</td></tr>
+<tr class="separator:a078fcb435bfaf7e1198e7e51c001a079"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f83706ad69bdc0edd38eb9db31462c9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classChassisSubsystem.html">ChassisSubsystem</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_2main_8cpp.html#a4f83706ad69bdc0edd38eb9db31462c9">Chassis</a> (1, 2, 3, 4, <a class="el" href="TestBench_2main_8cpp.html#a40a835f00c269d472adc1fc56ddc9f49">imu</a>, 0.29845)</td></tr>
+<tr class="separator:a4f83706ad69bdc0edd38eb9db31462c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="a86776f7e9bb26c226d909f1e82d9501c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a86776f7e9bb26c226d909f1e82d9501c">&#9670;&nbsp;</a></span>dr</h2>
+<a id="a9793741adf7ede0552d1e9874a0db0eb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9793741adf7ede0552d1e9874a0db0eb">&#9670;&nbsp;</a></span>burstthreshold</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define dr&#160;&#160;&#160;(8191.0 / 9.0)</td>
+          <td class="memname">#define burstthreshold&#160;&#160;&#160;0</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a4f2dee4080c4fd2eb53dff63965932fa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4f2dee4080c4fd2eb53dff63965932fa">&#9670;&nbsp;</a></span>IOFFSET</h2>
+<a id="ae9e223a75cf21bf1b9ca1031b76d551b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae9e223a75cf21bf1b9ca1031b76d551b">&#9670;&nbsp;</a></span>feederburstlength</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define IOFFSET&#160;&#160;&#160;30</td>
+          <td class="memname">#define feederburstlength&#160;&#160;&#160;100</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a598a3330b3c21701223ee0ca14316eca"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a598a3330b3c21701223ee0ca14316eca">&#9670;&nbsp;</a></span>PI</h2>
+<a id="a54b801e6791ec8237b864e0ca5e06cd4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a54b801e6791ec8237b864e0ca5e06cd4">&#9670;&nbsp;</a></span>indexerburstend</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define PI&#160;&#160;&#160;3.14159265</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a6210af1e79bb0c42c4e24f4d2753aa53"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6210af1e79bb0c42c4e24f4d2753aa53">&#9670;&nbsp;</a></span>smooth</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define smooth&#160;&#160;&#160;true</td>
+          <td class="memname">#define indexerburstend&#160;&#160;&#160;500</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -191,34 +163,6 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a4fd1720696a65732a5e10834e316bc9d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4fd1720696a65732a5e10834e316bc9d">&#9670;&nbsp;</a></span>calculateDeltaYaw()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="level1__real__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> calculateDeltaYaw </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="level1__real__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td>
-          <td class="paramname"><em>ref_yaw</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="level1__real__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td>
-          <td class="paramname"><em>beforeBeybladeYaw</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="ae3e7ab47cd5395225bf7c67b8ee84976"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae3e7ab47cd5395225bf7c67b8ee84976">&#9670;&nbsp;</a></span>i2c()</h2>
 
@@ -247,66 +191,32 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a7d983075b33b3c1c559855e8de6fd7cf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7d983075b33b3c1c559855e8de6fd7cf">&#9670;&nbsp;</a></span>indexerLoop()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void indexerLoop </td>
-          <td>(</td>
-          <td class="paramtype">bool &amp;&#160;</td>
-          <td class="paramname"><em>previousMid</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool &amp;&#160;</td>
-          <td class="paramname"><em>nowUp</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool &amp;&#160;</td>
-          <td class="paramname"><em>nowDown</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="level1__real__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> &amp;&#160;</td>
-          <td class="paramname"><em>actualPosition</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float &amp;&#160;</td>
-          <td class="paramname"><em>desiredPosition</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="level1__real__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> &amp;&#160;</td>
-          <td class="paramname"><em>t</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a689935c8d5f58c88c4dd8a44d5c6abc0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a689935c8d5f58c88c4dd8a44d5c6abc0">&#9670;&nbsp;</a></span>led()</h2>
+<a id="afeb9ad17704148332f0e3f99e197b162"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afeb9ad17704148332f0e3f99e197b162">&#9670;&nbsp;</a></span>led()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">DigitalOut led </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="robots_2main_8h.html#abea9275de514cd10347816417777204d">L27</a>&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3c3155dd75ddc08cebaa6fcc6393cc84"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3c3155dd75ddc08cebaa6fcc6393cc84">&#9670;&nbsp;</a></span>led2()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">DigitalOut led2 </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="robots_2main_8h.html#a3c2252c27e6e53c8c309e9ac192a75bf">L26</a>&#160;</td>
           <td class="paramname"></td><td>)</td>
@@ -317,16 +227,16 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a9aff7223480399d08d0951cb0e960186"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9aff7223480399d08d0951cb0e960186">&#9670;&nbsp;</a></span>led2()</h2>
+<a id="a9756ad2c67a2edbf64dd523340b72f87"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9756ad2c67a2edbf64dd523340b72f87">&#9670;&nbsp;</a></span>led3()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">DigitalOut led2 </td>
+          <td class="memname">DigitalOut led3 </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="robots_2main_8h.html#abea9275de514cd10347816417777204d">L27</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="robots_2main_8h.html#a7020d96396a257c318459993defd50a3">L25</a>&#160;</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
@@ -353,101 +263,55 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a3f80ee0c02507de37689716f2f5ccc72"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3f80ee0c02507de37689716f2f5ccc72">&#9670;&nbsp;</a></span>pitchSetPosition()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void pitchSetPosition </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aef26a6d9c4a1ad3203e835594bff0d08"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aef26a6d9c4a1ad3203e835594bff0d08">&#9670;&nbsp;</a></span>runImuThread()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void runImuThread </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ac58ef608652ac81f95b418cf494e28f2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac58ef608652ac81f95b418cf494e28f2">&#9670;&nbsp;</a></span>setFlyWheelPwr()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void setFlyWheelPwr </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="level1__real__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td>
-          <td class="paramname"><em>pwr</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ac5b4e3d89a93e5ac7e4ddeddd014ef17"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac5b4e3d89a93e5ac7e4ddeddd014ef17">&#9670;&nbsp;</a></span>setMotorSettings()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void setMotorSettings </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a726510b180af9a4eeb0a709779b2d2ae"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a726510b180af9a4eeb0a709779b2d2ae">&#9670;&nbsp;</a></span>stopFLyWheels()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void stopFLyWheels </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="a191b20daad7b699a798c76257f0366e4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a191b20daad7b699a798c76257f0366e4">&#9670;&nbsp;</a></span>chassis</h2>
+<a id="a078fcb435bfaf7e1198e7e51c001a079"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a078fcb435bfaf7e1198e7e51c001a079">&#9670;&nbsp;</a></span>bottom_flywheel</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classChassis.html">Chassis</a> chassis(1, 2, 3, 4, &amp;<a class="el" href="TestBench_2main_8cpp.html#ae3e7ab47cd5395225bf7c67b8ee84976">i2c</a>) </td>
+          <td class="memname"><a class="el" href="classDJIMotor.html">DJIMotor</a> bottom_flywheel(1, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a47b07b24e8713ed3866628ba407deb12">M3508_FLYWHEEL</a>, &quot;Bottom Flywheel&quot;) </td>
+          <td>(</td>
+          <td class="paramtype">1&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a>&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a47b07b24e8713ed3866628ba407deb12">M3508_FLYWHEEL</a>&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;Bottom Flywheel&quot;&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4f83706ad69bdc0edd38eb9db31462c9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4f83706ad69bdc0edd38eb9db31462c9">&#9670;&nbsp;</a></span>Chassis</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classChassisSubsystem.html">ChassisSubsystem</a> <a class="el" href="classChassis.html">Chassis</a>(1, 2, 3, 4, <a class="el" href="TestBench_2main_8cpp.html#a40a835f00c269d472adc1fc56ddc9f49">imu</a>, 0.29845) </td>
           <td>(</td>
           <td class="paramtype">1&#160;</td>
           <td class="paramname">, </td>
@@ -473,8 +337,14 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">&amp;&#160;</td>
-          <td class="paramname"><em>i2c</em>&#160;</td>
+          <td class="paramtype"><a class="el" href="TestBench_2main_8cpp.html#a40a835f00c269d472adc1fc56ddc9f49">imu</a>&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">0.&#160;</td>
+          <td class="paramname"><em>29845</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -486,42 +356,102 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a24aab2fd161ab4683f84da11342605fd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a24aab2fd161ab4683f84da11342605fd">&#9670;&nbsp;</a></span>imuThread</h2>
+<a id="a2bb7d451a41012279348a20cee80536e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2bb7d451a41012279348a20cee80536e">&#9670;&nbsp;</a></span>feeder</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">Thread imuThread</td>
+          <td class="memname"><a class="el" href="classDJIMotor.html">DJIMotor</a> feeder(5, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a5c09ef61e8b225afd4edbb87ffcbd4f0">C610</a>, &quot;FEEDER&quot;) </td>
+          <td>(</td>
+          <td class="paramtype">5&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a>&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a5c09ef61e8b225afd4edbb87ffcbd4f0">C610</a>&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;FEEDER&quot;&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a785a8b28f91186ee67b6f8388372bccd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a785a8b28f91186ee67b6f8388372bccd">&#9670;&nbsp;</a></span>indexer</h2>
+<a id="a40a835f00c269d472adc1fc56ddc9f49"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a40a835f00c269d472adc1fc56ddc9f49">&#9670;&nbsp;</a></span>imu</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classDJIMotor.html">DJIMotor</a> indexer(7, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4">CANHandler::CANBUS_1</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a5ac5633b85d6640dcf5f424b967a77c6">GIMBLY</a>, &quot;INDEXER&quot;) </td>
+          <td class="memname"><a class="el" href="classBNO055.html">BNO055</a> imu(<a class="el" href="TestBench_2main_8cpp.html#ae3e7ab47cd5395225bf7c67b8ee84976">i2c</a>, <a class="el" href="ChassisSubsystem_8h.html#afe5a31debea7f8fd3ee5e4c742c7500b">IMU_RESET</a>, <a class="el" href="BNO055_8h.html#a0d8bdfb104be01d28fb92b60c58bb3be">MODE_IMU</a>) </td>
           <td>(</td>
-          <td class="paramtype">7&#160;</td>
+          <td class="paramtype"><a class="el" href="TestBench_2main_8cpp.html#ae3e7ab47cd5395225bf7c67b8ee84976">i2c</a>&#160;</td>
           <td class="paramname">, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4">CANHandler::CANBUS_1</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="ChassisSubsystem_8h.html#afe5a31debea7f8fd3ee5e4c742c7500b">IMU_RESET</a>&#160;</td>
           <td class="paramname">, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a5ac5633b85d6640dcf5f424b967a77c6">GIMBLY</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="BNO055_8h.html#a0d8bdfb104be01d28fb92b60c58bb3be">MODE_IMU</a>&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae56945aecdd4b87f42dd239be3fe1f20"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae56945aecdd4b87f42dd239be3fe1f20">&#9670;&nbsp;</a></span>indexer</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classDJIMotor.html">DJIMotor</a> indexer(2, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a28474eec9dbe74a0107e8bfb33d0751f">M3508</a>, &quot;INDEXER&quot;) </td>
+          <td>(</td>
+          <td class="paramtype">2&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a>&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a28474eec9dbe74a0107e8bfb33d0751f">M3508</a>&#160;</td>
           <td class="paramname">, </td>
         </tr>
         <tr>
@@ -540,56 +470,16 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a274141732086b259b9dc8ee822ada549"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a274141732086b259b9dc8ee822ada549">&#9670;&nbsp;</a></span>LFLYWHEEL</h2>
+<a id="af2073998da90ee806d70cb3b99a0e469"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af2073998da90ee806d70cb3b99a0e469">&#9670;&nbsp;</a></span>pitch</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classDJIMotor.html">DJIMotor</a> LFLYWHEEL(5, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a28474eec9dbe74a0107e8bfb33d0751f">M3508</a>, &quot;LFLYWHEEL&quot;) </td>
+          <td class="memname"><a class="el" href="classDJIMotor.html">DJIMotor</a> pitch(5, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a5ac5633b85d6640dcf5f424b967a77c6">GIMBLY</a>, &quot;PITCH&quot;) </td>
           <td>(</td>
           <td class="paramtype">5&#160;</td>
-          <td class="paramname">, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a>&#160;</td>
-          <td class="paramname">, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a28474eec9dbe74a0107e8bfb33d0751f">M3508</a>&#160;</td>
-          <td class="paramname">, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&quot;LFLYWHEEL&quot;&#160;</td>
-          <td class="paramname">&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a33476f2977e0e9f244066391483cb42f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a33476f2977e0e9f244066391483cb42f">&#9670;&nbsp;</a></span>pitch</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classDJIMotor.html">DJIMotor</a> pitch(6, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a5ac5633b85d6640dcf5f424b967a77c6">GIMBLY</a>, &quot;PITCH&quot;) </td>
-          <td>(</td>
-          <td class="paramtype">6&#160;</td>
           <td class="paramname">, </td>
         </tr>
         <tr>
@@ -620,44 +510,16 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a85cee5741ab7d0687c1c4a258f1d7c59"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a85cee5741ab7d0687c1c4a258f1d7c59">&#9670;&nbsp;</a></span>prevLS</h2>
+<a id="a53f24f03bf732e4ae77cc81f9d99c963"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a53f24f03bf732e4ae77cc81f9d99c963">&#9670;&nbsp;</a></span>top_flywheel</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classRemote.html#affd0b019d5483d546bc29b07447649bb">Remote::SwitchState</a> prevLS = <a class="el" href="classRemote.html#affd0b019d5483d546bc29b07447649bba696b031073e74bf2cb98e5ef201d4aa3">Remote::SwitchState::UNKNOWN</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="afc6ec16348d6bb58da488feab2a05bee"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afc6ec16348d6bb58da488feab2a05bee">&#9670;&nbsp;</a></span>prevRS</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classRemote.html#affd0b019d5483d546bc29b07447649bb">Remote::SwitchState</a> prevRS = <a class="el" href="classRemote.html#affd0b019d5483d546bc29b07447649bba696b031073e74bf2cb98e5ef201d4aa3">Remote::SwitchState::UNKNOWN</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a80c47ae580fb0e0e8fe96bdecbd2f4c4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a80c47ae580fb0e0e8fe96bdecbd2f4c4">&#9670;&nbsp;</a></span>RFLYWHEEL</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classDJIMotor.html">DJIMotor</a> RFLYWHEEL(8, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a28474eec9dbe74a0107e8bfb33d0751f">M3508</a>, &quot;RFLYWHEEL&quot;) </td>
+          <td class="memname"><a class="el" href="classDJIMotor.html">DJIMotor</a> top_flywheel(4, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a47b07b24e8713ed3866628ba407deb12">M3508_FLYWHEEL</a>, &quot;Top Flywheel&quot;) </td>
           <td>(</td>
-          <td class="paramtype">8&#160;</td>
+          <td class="paramtype">4&#160;</td>
           <td class="paramname">, </td>
         </tr>
         <tr>
@@ -669,13 +531,13 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a28474eec9dbe74a0107e8bfb33d0751f">M3508</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a47b07b24e8713ed3866628ba407deb12">M3508_FLYWHEEL</a>&#160;</td>
           <td class="paramname">, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">&quot;RFLYWHEEL&quot;&#160;</td>
+          <td class="paramtype">&quot;Top Flywheel&quot;&#160;</td>
           <td class="paramname">&#160;</td>
         </tr>
         <tr>
@@ -688,16 +550,16 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="ab4500225be1029fe6e825e34e851f533"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab4500225be1029fe6e825e34e851f533">&#9670;&nbsp;</a></span>yaw</h2>
+<a id="a8033141d6595ae1ad01709ea2cbdb6e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8033141d6595ae1ad01709ea2cbdb6e5">&#9670;&nbsp;</a></span>yaw</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classDJIMotor.html">DJIMotor</a> yaw(5, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4">CANHandler::CANBUS_1</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a5ac5633b85d6640dcf5f424b967a77c6">GIMBLY</a>, &quot;YAW&quot;) </td>
+          <td class="memname"><a class="el" href="classDJIMotor.html">DJIMotor</a> yaw(6, <a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4">CANHandler::CANBUS_1</a>, <a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a2ae8c090db12e35b19e46886cc4b3cdc">GM6020</a>, &quot;YAW&quot;) </td>
           <td>(</td>
-          <td class="paramtype">5&#160;</td>
+          <td class="paramtype">6&#160;</td>
           <td class="paramname">, </td>
         </tr>
         <tr>
@@ -709,7 +571,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a5ac5633b85d6640dcf5f424b967a77c6">GIMBLY</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a2ae8c090db12e35b19e46886cc4b3cdc">GM6020</a>&#160;</td>
           <td class="paramname">, </td>
         </tr>
         <tr>
