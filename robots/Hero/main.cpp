@@ -49,25 +49,31 @@ int main(){
 
     long burstTimestamp = 0;
 
-    
+    top_flywheel.setSpeedPID(1.5,0,0);
+    bottom_flywheel.setSpeedPID(1.5,0,0);
+
+    indexer.setSpeedPID(3,0,0);
 
     unsigned long start = us_ticker_read();
     unsigned long current = us_ticker_read();
+
     unsigned long timeStart;
     unsigned long loopTimer = us_ticker_read();
+
     unsigned long power = 0;
     int refLoop = 0;
+    int burstTimer = 0;
 
     while (true)
     {
         timeStart = us_ticker_read();
 
-        if ((timeStart - loopTimer) / 1000 > 25)
+        if ((timeStart - loopTimer) / 1000 > 10)
         {
             led2 = !led2;
 
             refLoop++;
-            if (refLoop >= 5){              // prints in here, prints less often
+            if (refLoop >= 10){              // prints in here, prints less often
                 refereeThread(&referee);
                 refLoop = 0;
                 led2 = !led2;
@@ -77,7 +83,8 @@ int main(){
                 // float dComponent = pitch.pidPosition.dComp;
                 // printff("P = %f, I = %f, D = %f\n", pComponent, iComponent, dComponent);
 
-                printff("Yaw_POS: %d\n", yaw.getData(ANGLE));
+                // printff("Yaw_POS: %d\n", yaw>>ANGLE);
+                // printff("burst %d\n", us_ticker_read()-burstTimestamp);
             }
 
             remoteRead(); 
@@ -99,7 +106,7 @@ int main(){
                 Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel, 
                                           jy * Chassis.m_OmniKinematicsLimits.max_Vel, 
                                           -jr * Chassis.m_OmniKinematicsLimits.max_vOmega}, 
-                                          ChassisSubsystem::YAW_ORIENTED);
+                                          ChassisSubsystem::ROBOT_ORIENTED);
                 yaw.setPower(0);
             }
             else if (remote.rightSwitch() == Remote::SwitchState::DOWN)
@@ -107,7 +114,7 @@ int main(){
                 Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel, 
                                           jy * Chassis.m_OmniKinematicsLimits.max_Vel, 
                                           0}, 
-                                          ChassisSubsystem::YAW_ORIENTED);
+                                          ChassisSubsystem::ROBOT_ORIENTED);
                 yaw.setSpeed(int(-jr * 300));  
             }
             else
@@ -127,32 +134,66 @@ int main(){
             Chassis.periodic();
             //MOVEMENT CODE END
             
-
+            #define feederburstlength 100
+            #define burstthreshold 0
+            #define indexerburstend 500
             //SHOOTING CODE BEGIN
-            double mps = ext_game_robot_state.data.shooter_id1_17mm_speed_limit;
+            double mps = ext_game_robot_state.data.shooter_id1_42mm_speed_limit;
             double rpm = 60 * (mps / 0.03) / (3.14159 * 2);
+
+            if(mps == 0) rpm = 5400;
+            // printff("rpm: %f\n",rpm);
+            rpm = 4000;
+            
             // shooting code
             if (remote.leftSwitch() == Remote::SwitchState::UP ) {
+                // printff("shootin' ");
                 //pitch.setPower(leftStickValue / 20);
-                top_flywheel.setSpeed(rpm*0.9);
-                bottom_flywheel.setSpeed(-rpm*0.9);
-                if((us_ticker_read() - burstTimestamp)/1000 < 30){
-                    indexer.setSpeed(60/7.0 * M3508_GEAR_RATIO);
+
+                top_flywheel.setSpeed(rpm);
+                bottom_flywheel.setSpeed(-rpm);
+
+
+                burstTimer = (us_ticker_read() - burstTimestamp)/1000;
+                if(burstTimer < feederburstlength){
+                    feeder.setPower(8000);
+                }else{
+                    feeder.setPower(0);
+                }
+                if(burstTimer < indexerburstend){
+                    indexer.setSpeed(20 * M3508_GEAR_RATIO);
                 }else{
                     indexer.setPower(0);
                 }
             }
             else if (remote.leftSwitch() == Remote::SwitchState::MID ) {
+                // printff("revvin' up @%fRPM", rpm);
                 // pitch.setPower(0);
-                top_flywheel.setSpeed(rpm*0.8);
-                bottom_flywheel.setSpeed(-rpm*0.8);
+                top_flywheel.setSpeed(rpm*0.9);
+                bottom_flywheel.setSpeed(-rpm*0.9);
                 burstTimestamp = us_ticker_read();
+                indexer.setPower(0);
+                feeder.setPower(0);
             }else{
+                // printff("naaaaah ");
                 top_flywheel.setSpeed(0);
                 bottom_flywheel.setSpeed(0);
-                if(top_flywheel>>VELOCITY < 500) top_flywheel.setPower(0);
-                if(bottom_flywheel>>VELOCITY < 500) bottom_flywheel.setPower(0);
+                if(abs(top_flywheel>>VELOCITY) < 500) top_flywheel.setPower(0);
+                if(abs(bottom_flywheel>>VELOCITY) < 500) bottom_flywheel.setPower(0);
+                burstTimestamp = us_ticker_read();
             }
+
+            // printff("burst %d\n", (us_ticker_read()-burstTimestamp)/1000);
+            // int burstTimer = (us_ticker_read() - burstTimestamp)/1000;
+            // if(burstTimer > burstthreshold){
+                
+            // }
+            // if(burstTimer >= feederburstlength){
+            //     feeder.setPower(0);
+            // }
+            // if(burstTimer >= feederburstlength){
+            //     indexer.setPower(0);
+            // }
             //SHOOTING CODE END
             
             loopTimer = timeStart;
