@@ -12,7 +12,7 @@ var searchData=
   ['changedlines_34442',['changedlines',['../structcontributor.html#a566499dd20ecedf1c9af3bb945d1e9fc',1,'contributor']]],
   ['changesets_34443',['changesets',['../structcontributor.html#a197481a8a78c383d63782eb660fcfe2a',1,'contributor']]],
   ['chassis_34444',['Chassis',['../Hero_2main_8cpp.html#a4f83706ad69bdc0edd38eb9db31462c9',1,'Chassis():&#160;main.cpp'],['../TestBench_2main_8cpp.html#a217ccc782f0ca5d3eaa43f23d776e524',1,'Chassis():&#160;main.cpp']]],
-  ['chassis_34445',['chassis',['../Infantry_2main_8cpp.html#a191b20daad7b699a798c76257f0366e4',1,'chassis():&#160;main.cpp'],['../Sentry_2main_8cpp.html#a191b20daad7b699a798c76257f0366e4',1,'chassis():&#160;main.cpp']]],
+  ['chassis_34445',['chassis',['../Infantry_2main_8cpp.html#a55b089bd8840d81e0c47c1f1ca9f664e',1,'chassis():&#160;main.cpp'],['../Sentry_2main_8cpp.html#a3acd026f69a78682e29c56082fa8a3d9',1,'chassis():&#160;main.cpp']]],
   ['chassis_5fcurrent_34446',['chassis_current',['../structext__power__heat__data__t.html#ada31a4640b23fa383b7578b03b6cbace',1,'ext_power_heat_data_t']]],
   ['chassis_5fpower_34447',['chassis_power',['../structext__power__heat__data__t.html#af29ffc06098c2111d8ae64cef72b245e',1,'ext_power_heat_data_t']]],
   ['chassis_5fpower_5fbuffer_34448',['chassis_power_buffer',['../structext__power__heat__data__t.html#a7220cc08720e9d984c32d1838ea9b32f',1,'ext_power_heat_data_t']]],
