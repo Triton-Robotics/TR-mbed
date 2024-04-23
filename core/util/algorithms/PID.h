@@ -26,6 +26,10 @@ private:
 public:
     float feedForward = 0;
 
+    float pComp = 0;
+    float iComp = 0;
+    float dComp = 0;
+
     /**
      * Creates a new PID object with the default control parameters
      */

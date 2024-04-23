@@ -5,6 +5,10 @@ PID::PID(){
     integralCap = 0;
     outputCap = 0;
     feedForward = 0;
+
+    pComp = 0;
+    iComp = 0;
+    dComp = 0;
 }
 
 
@@ -57,7 +61,14 @@ int PID::calculatePeriodic(float error, double dt) {
         PIDCalc += (kD * (error - lastError) / dt);
     }
 
+    pComp = kP * error;
+    iComp = kI * errorIntegral;
+    dComp = (kD * (error - lastError) / dt);
+
     lastError = error;
+
+    printf("P = %f, I = %f, D = %f\n", pComp, iComp, dComp);
+
     limitOutput(PIDCalc);
     return static_cast<int>(PIDCalc);
 }
