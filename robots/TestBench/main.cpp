@@ -35,15 +35,15 @@ int main(){
     Chassis.setYawReference(&yawOne, 7167); // "7167" is the number of ticks of yawOne considered to be robot-front
 
     pitch.useAbsEncoder = true;
-    pitch.setPositionPID(5, 0, 10);
+    pitch.setPositionPID(15, 0, 1700);
     pitch.setPositionOutputCap(32000); 
     float currentPitch = 0;
     float desiredPitch = 0;
     float pitch_phase = 9.31 / 180.0 * PI; // 5.69 theoretical
-    float InitialOffset_Ticks = 2500;
+    float InitialOffset_Ticks = 2765;
 
     // FeedForward Modeling: FF = K * sin(theta) , output: [-1,1]
-    float K = 0.85;
+    float K = 0.75; //0.85
 
     unsigned long start = us_ticker_read();
     unsigned long current = us_ticker_read();
@@ -70,7 +70,9 @@ int main(){
             float iComponent = pitch.pidPosition.iComp;
             float dComponent = pitch.pidPosition.dComp;
 
-            //printff("P = %f, I = %f, D = %f\n", pComponent, iComponent, dComponent);
+            printff("P = %f, I = %f, D = %f", pComponent, iComponent, dComponent);
+            printff(" %d\n", pitch.getData(POWEROUT));
+ 
 
             }
 
@@ -99,7 +101,7 @@ int main(){
                 pitch.setPower(0);
             }
             else if ( leftSwitchState == Remote::SwitchState::DOWN ) {
-                desiredPitch = leftStickValue / 20;
+                desiredPitch = leftStickValue / 50;
                 float FF = K * sin((desiredPitch / 180 * PI) - pitch_phase); // output: [-1,1]
                 pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
                 pitch.setPosition(int((desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks));

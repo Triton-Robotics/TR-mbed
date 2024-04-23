@@ -205,8 +205,8 @@ void DJIMotor::s_getFeedback(bool debug){
                     motor -> printAllMotorData();
                 
                 if(motor -> motorData[TEMPERATURE] > 90)
-                    printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS %d DEGREES CELSIUS ON BUS [%d] ID [%d], \"%s\" \n", msgID, motor -> motorData[TEMPERATURE], canBus + 1, motor -> motorID_0 + 1, motor -> name.c_str());
-
+                    //printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS %d DEGREES CELSIUS ON BUS [%d] ID [%d], \"%s\" \n", msgID, motor -> motorData[TEMPERATURE], canBus + 1, motor -> motorID_0 + 1, motor -> name.c_str());
+                    continue;
             }else if(initializedWarning){
                 printf("[WARNING] YOU HAVE A MOTOR [0x%x] {%d}{%d}{%d} ATTACHED THAT IS NOT INITIALIZED.. WHY: \n", msgID, canBus, canID_0 / 4, canID_0 % 4);
             }

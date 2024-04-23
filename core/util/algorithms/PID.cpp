@@ -67,7 +67,7 @@ int PID::calculatePeriodic(float error, double dt) {
 
     lastError = error;
 
-    printf("P = %f, I = %f, D = %f\n", pComp, iComp, dComp);
+   // printf("P = %f, I = %f, D = %f\n", pComp, iComp, dComp);
 
     limitOutput(PIDCalc);
     return static_cast<int>(PIDCalc);
