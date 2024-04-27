@@ -29,10 +29,14 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
 
     FF_Ks = 0;
 
-    LF.setSpeedPID(2, 0, 0);
-    RF.setSpeedPID(2, 0, 0);
-    LB.setSpeedPID(2, 0, 0);
-    RB.setSpeedPID(2, 0, 0);
+//    LF.setSpeedPID(2, 0, 0);
+//    RF.setSpeedPID(2, 0, 0);
+//    LB.setSpeedPID(2, 0, 0);
+//    RB.setSpeedPID(2, 0, 0);
+    LF.setSpeedPID(3, 0, 0);
+    RF.setSpeedPID(3, 0, 0);
+    LB.setSpeedPID(3, 0, 0);
+    RB.setSpeedPID(3 , 0, 0);
 
     brakeMode = COAST;
 
@@ -87,7 +91,7 @@ void ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRI
     if (mode == YAW_ORIENTED)
     {
         // printf("%f\n", double(yaw->getData(ANGLE)));
-        double yawCurrent = (1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
+        double yawCurrent = -(1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
         desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yawCurrent);
     }
     else if (mode == ROBOT_ORIENTED)
