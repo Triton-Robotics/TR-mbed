@@ -3,6 +3,7 @@
 // #include <jetson.h>
 #include <cstdlib>
 //#include <commands/RamseteCommand.h>
+
 #include <iostream>
 #include "subsystems/ChassisSubsystem.h"
 
@@ -18,6 +19,9 @@
 #define LOWERBOUND 1000
 #define UPPERBOUND 2000
 
+// add radius measurement here
+#define RADIUS 0.5
+
 I2C i2c(I2C_SDA, I2C_SCL);
 //Chassis chassis(1, 2, 3, 4, &i2c);
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
@@ -25,10 +29,14 @@ ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
 DJIMotor yaw(5, CANHandler::CANBUS_1, GIMBLY);
 DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY); // right
 DJIMotor pitch2(6, CANHandler::CANBUS_2, GIMBLY); // left, not functioning
+
 DJIMotor indexer(7, CANHandler::CANBUS_2, C610);
 DJIMotor RFLYWHEEL(8, CANHandler::CANBUS_2, M3508);
 DJIMotor LFLYWHEEL(5, CANHandler::CANBUS_2, M3508);
 
+
+// RamseteCommand command(
+//     Pose2D(0, 0, 0), Pose2D(20, 20, 0), 2, &chassis);
 DigitalOut led(L26);
 DigitalOut led2(L27);
 DigitalOut led3(L25);
@@ -41,11 +49,13 @@ void setFlyWheelSpeed(int speed)
     RFLYWHEEL.setSpeed(speed);
 }
 
-int calculateDeltaYaw(int ref_yaw, int beforeBeybladeYaw){
+int calculateDeltaYaw(int ref_yaw, int beforeBeybladeYaw)
+{
     int deltaYaw = beforeBeybladeYaw - ref_yaw;
 
-    if(abs(deltaYaw) > 180){
-        if(deltaYaw > 0)
+    if (abs(deltaYaw) > 180)
+    {
+        if (deltaYaw > 0)
             deltaYaw -= 360;
         else
             deltaYaw += 360;
@@ -65,9 +75,20 @@ void runImuThread()
     }
 }
 
-void pitchSetPosition(){
+void pitchSetPosition()
+{
 
     int pitchSetPoint = 2120 - (2120 - 1340)/660.0 * remote.rightY();
+//    merge difference
+  //     int pitchSetPoint = (-remote.rightY() * 0.5) + 6200;
+
+    /* TODO: test min and max pitch position */
+
+    // if(pitchSetPoint > 9000)
+    //     pitchSetPoint = 9000;
+
+    // else if(pitchSetPoint < 5000)
+    //     pitchSetPoint = 5000;
 
     // low
     if(pitchSetPoint > 2900)
@@ -76,9 +97,13 @@ void pitchSetPosition(){
     else if(pitchSetPoint < 1340)
         pitchSetPoint = 1340;
     pitch.setPosition(pitchSetPoint);
+
+    // pitch2.setPower(-pitch.powerOut);
+    // printf("%d.%d %d\n", pitchSetPoint, pitch.getData(ANGLE), pitch.powerOut);
 }
 
-int main(){
+int main()
+{
 
     float speedmultiplier = 3;
     float powmultiplier = 2;
@@ -89,6 +114,10 @@ int main(){
 
     pitch.setPositionPID(18, 0.01, 850); //12.3 0.03 2.5 //mid is 13.3, 0.03, 7.5
     pitch.setPositionIntegralCap(6000);
+  //   merge difference:
+//     pitch.setPositionPID(17.3, 0.03, 8.5); // 12.3 0.03 2.5 //mid is 13.3, 0.03, 7.5
+//     pitch.setPositionIntegralCap(60000);
+//    pitch.setPositionOutputCap(100000);
     pitch.pidPosition.feedForward = 0;
     pitch.outputCap = 32760;
     pitch.useAbsEncoder = true;
@@ -105,6 +134,9 @@ int main(){
 
     LFLYWHEEL.setSpeedPID(7.5, 0, 0.04);
     RFLYWHEEL.setSpeedPID(7.5, 0, 0.04);
+//     merge difference
+//     PID yawIMU(200.0, 0.1, 150, 20000, 8000); // 7.0,0.02,15.0,20000,8000
+
 
     Chassis.setYawReference(&yaw, 2050); // "5604" is the number of ticks of yawOne considered to be robot-front
     Chassis.setSpeedFF_Ks(0.065);
@@ -115,9 +147,12 @@ int main(){
 
     yaw.setSpeedIntegralCap(1000);
     yaw.useAbsEncoder = false;
-
     indexer.setSpeedPID(1, 0, 1);
     indexer.setSpeedIntegralCap(8000);
+//  merge difference
+//   chassis.setBrakeMode(ChassisSubsystem::BrakeMode::COAST);
+
+    // command.initialize();
 
     unsigned long loopTimer = us_ticker_read();
 
@@ -154,11 +189,13 @@ int main(){
     unsigned long timeSure;
     unsigned long prevTimeSure;
 
-    while (true){
+    while (true)
+    {
         unsigned long timeStart = us_ticker_read();
 
         if ((timeStart - loopTimer) / 1000 > 25){
             led3 = !led3;
+
             loopTimer = timeStart;
             remoteRead();
             Chassis.periodic();
@@ -211,24 +248,17 @@ Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
 
                 lastTime = time;
 
-
-
                 desiredPitch = leftStickValue / 50;
                 float FF = K * sin((desiredPitch / 180 * PI) - pitch_phase); // output: [-1,1]
                 pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
                 pitch.setPosition(int((desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks));
-
-
-
 
                 yawSetPoint -= remote.rightX() / 90;
                 yawSetPoint = (yawSetPoint+360) % 360;
                 timeSure = us_ticker_read();
 
                 yaw.setSpeed(5 * yawNonBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
-
                 imu.get_angular_position_quat(&imuAngles);
-
 
                 prevTimeSure = timeSure;
                 imu.get_angular_position_quat(&imuAngles);
@@ -295,6 +325,68 @@ Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
                     shootReady = false;
                     shoot = true;
                     shootTargetPosition = 8192 * 12 + (indexer>>MULTITURNANGLE);
+//             if (remote.rightSwitch() == Remote::SwitchState::UP)
+//             { // All non-serializer motors activated
+
+//                 double scalar = 1;
+//                 double jx = remote.leftX() / 660.0 * scalar;
+//                 double jy = remote.leftY() / 660.0 * scalar;
+//                 double jr = remote.rightX() / 660.0 * scalar;
+
+//                 double tolerance = 0.05;
+//                 jx = (abs(jx) < tolerance) ? 0 : jx;
+//                 jy = (abs(jy) < tolerance) ? 0 : jy;
+//                 jr = (abs(jr) < tolerance) ? 0 : jr;
+
+//                 chassis.setSpeedFF_Ks(0.065);
+//                 chassis.setChassisSpeeds({jx * chassis.m_OmniKinematicsLimits.max_Vel,
+//                                           jy * chassis.m_OmniKinematicsLimits.max_Vel,
+//                                           -jr * chassis.m_OmniKinematicsLimits.max_vOmega},
+//                                          ChassisSubsystem::DRIVE_MODE::ROBOT_ORIENTED);
+
+//                 chassis.periodic();
+
+//                 unsigned long time = us_ticker_read();
+//             }
+//             else if (remote.rightSwitch() == Remote::SwitchState::MID || remote.rightSwitch() == Remote::SwitchState::UNKNOWN || remote.rightSwitch() == Remote::SwitchState::DOWN)
+//             { // disable all the non-serializer components
+//                 led3 = 0;
+//                 chassis.setWheelPower({0, 0, 0, 0});
+//                 yaw.setPower(0);
+//                 pitch.setPower(0);
+//                 pitch2.setPower(0);
+//                 yawSetPoint = int(ext_game_robot_pos.data.yaw);
+//                 pitchSetPosition();
+//             }
+//             yawTime = us_ticker_read();
+//             if (remote.leftSwitch() == Remote::SwitchState::MID)
+//             {
+//                 gearSwap.setPower(-1500);
+//                 double mps = ext_game_robot_state.data.shooter_id1_17mm_speed_limit * 0.9;
+//                 double rpm = 60 * (mps / 0.03) / (3.14159 * 2);
+//                 setFlyWheelSpeed(rpm);
+//                 indexer.setPower(0);
+//                 burstTimestamp = us_ticker_read();
+//             }
+//             else if (remote.leftSwitch() == Remote::SwitchState::DOWN || remote.leftSwitch() == Remote::SwitchState::UNKNOWN)
+//             { // disable serializer
+//                 indexer.setPower(0);
+//                 setFlyWheelSpeed(0);
+//             }
+//             else if (remote.leftSwitch() == Remote::SwitchState::UP)
+//             {
+//                 gearSwap.setPower(-1500);
+//                 double mps = ext_game_robot_state.data.shooter_id1_17mm_speed_limit;
+//                 double rpm = 60 * (mps / 0.03) / (3.14159 * 2);
+//                 setFlyWheelSpeed(rpm); // was 0 * 0/
+//                 if ((us_ticker_read() - burstTimestamp) / 1000 < 99)
+//                 {
+//                     indexer.setPower(8000);
+//                 }
+//                 else
+//                 {
+//                     indexer.setPower(0);
+//                 }
                 }
             } else {
                 //SwitchState state set to mid/down/unknown
@@ -318,3 +410,4 @@ Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
         ThisThread::sleep_for(1ms);
     }
 }
+
