@@ -33,6 +33,7 @@ int main(){
     // Initialize Speed Values
     int speedVal = SPEED_VAL;
     int desiredSpeed = 0;
+    int desiredAngle = 0;
     int power = 0;
 
     // Set PID to system
@@ -76,6 +77,11 @@ int main(){
                 serialLoop = 0;
                 printff("%d %d\n", desiredSpeed, LFLYWHEEL.getData(VELOCITY));
             }
+
+            //printff("%d %d\n", desiredAngle, indexer.getData(ANGLE)); //curr working on this
+
+            //Jing WIP
+            //printff("%d %d\n", pitch.getData(ANGLE), )
 
 //            if (remote.leftX() > 10) {
 //                speedVal = SPEED_BOOST_VAL;
