@@ -35,7 +35,7 @@ int main(){
     Chassis.setYawReference(&yawOne, 7167); // "7167" is the number of ticks of yawOne considered to be robot-front
 
     pitch.useAbsEncoder = true;
-    pitch.setPositionPID(15, 0, 1700);
+    pitch.setPositionPID(15, 0, 2000);
     pitch.setPositionOutputCap(32000); 
     float currentPitch = 0;
     float desiredPitch = 0;
@@ -51,6 +51,7 @@ int main(){
     unsigned long loopTimer = us_ticker_read();
     unsigned long power = 0;
     int refLoop = 0;
+    int lastPosition;
 
     while (true)
     {
@@ -94,8 +95,22 @@ int main(){
             int leftStickValue = remote.leftX();
 
             // check switch mode
+            // ground level = -5.69
+            // lower bound = 15
+            // upper bound = -25
             if ( leftSwitchState == Remote::SwitchState::UP ) {
-                pitch.setPower(leftStickValue * 25);
+                if (desiredPitch <= 15 and desiredPitch >= -25) {
+                    desiredPitch += leftStickValue / 150;
+                }
+                else if (desiredPitch > 15 && leftStickValue < 0) {
+                    desiredPitch = 15;
+                }
+                else if (desiredPitch < -25 && leftStickValue > 0) {
+                    desiredPitch = -25;
+                }
+                float FF = K * sin((desiredPitch / 180 * PI) - pitch_phase); // output: [-1,1]
+                pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
+                pitch.setPosition(int((desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks)); 
             }
             else if ( leftSwitchState == Remote::SwitchState::MID ) {
                 pitch.setPower(0);
