@@ -248,10 +248,22 @@ Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
 
                 lastTime = time;
 
-                desiredPitch = leftStickValue / 50;
+                // check switch mode
+                // ground level = -5.69
+                // lower bound = 15
+                // upper bound = -25
+                if (desiredPitch <= 15 and desiredPitch >= -25) {
+                    desiredPitch += leftStickValue / 150;
+                }
+                else if (desiredPitch > 15 && leftStickValue < 0) {
+                    desiredPitch = 15;
+                }
+                else if (desiredPitch < -25 && leftStickValue > 0) {
+                    desiredPitch = -25;
+                }
                 float FF = K * sin((desiredPitch / 180 * PI) - pitch_phase); // output: [-1,1]
                 pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
-                pitch.setPosition(int((desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks));
+                pitch.setPosition(int((desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks)); 
 
                 yawSetPoint -= remote.rightX() / 90;
                 yawSetPoint = (yawSetPoint+360) % 360;
@@ -277,10 +289,23 @@ Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
                 Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
                                           jy * Chassis.m_OmniKinematicsLimits.max_Vel,
                                           -0.5},ChassisSubsystem::YAW_ORIENTED);
-                desiredPitch = leftStickValue / 50;
+
+                // check switch mode
+                // ground level = -5.69
+                // lower bound = 15
+                // upper bound = -25
+                if (desiredPitch <= 15 and desiredPitch >= -25) {
+                    desiredPitch += leftStickValue / 150;
+                }
+                else if (desiredPitch > 15 && leftStickValue < 0) {
+                    desiredPitch = 15;
+                }
+                else if (desiredPitch < -25 && leftStickValue > 0) {
+                    desiredPitch = -25;
+                }
                 float FF = K * sin((desiredPitch / 180 * PI) - pitch_phase); // output: [-1,1]
                 pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
-                pitch.setPosition(int((desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks));
+                pitch.setPosition(int((desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks)); 
 
                 yawSetPoint -= remote.rightX() / 90;
                 yawSetPoint = (yawSetPoint+360) % 360;
