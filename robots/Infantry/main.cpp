@@ -21,6 +21,7 @@
 
 // add radius measurement here
 #define RADIUS 0.5
+#define RUNSPIN 1.0
 
 I2C i2c(I2C_SDA, I2C_SCL);
 //Chassis chassis(1, 2, 3, 4, &i2c);
@@ -288,7 +289,7 @@ Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
                 Chassis.setSpeedFF_Ks(0.065);
                 Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
                                           jy * Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          -0.5},ChassisSubsystem::YAW_ORIENTED);
+                                          -RUNSPIN },ChassisSubsystem::YAW_ORIENTED);
 
                 // check switch mode
                 // ground level = -5.69
@@ -310,7 +311,7 @@ Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
                 yawSetPoint -= remote.rightX() / 90;
                 yawSetPoint = (yawSetPoint+360) % 360;
                 timeSure = us_ticker_read();
-                yaw.setSpeed(-Chassis.getChassisSpeeds().vOmega * 8192 / 3.14 * 60 /8 + 5 * yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
+                yaw.setSpeed(-Chassis.getChassisSpeeds().vOmega * 8192 / 3.14 * 60 /8 + 15 * yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
                 imu.get_angular_position_quat(&imuAngles);
 
                 prevTimeSure = timeSure;
