@@ -181,11 +181,115 @@ void ChassisSubsystem::setChassisSpeedsPWR(double fwd, double strafe, double cha
 
 void ChassisSubsystem::setChassisSpeedsPowerMovementLimit(double fwd, double strafe, double chassis_power, double chassis_power_limit) {
     double pwrPercent = chassis_power/chassis_power_limit;
-    if (pwrPercent > 0.7) {
-        strafe = strafe * 0.80;
-        fwd = fwd * 0.80;
-        setChassisSpeeds({strafe,fwd,0});
+    printf("%f\n", pwrPercent);
+
+    double A = 0.25;
+    double B = 1;
+    double C = 0.85;
+    double x = pwrPercent;
+
+    int peakPower = 3600;
+
+    double mult = (B - (B/(C-A))*(x-A));   
+
+    if (pwrPercent < A) {
+        // strafe = strafe * B;
+        // fwd = fwd * B;
+        LF.setSpeedOutputCap(peakPower);
+        RF.setSpeedOutputCap(peakPower);
+        LB.setSpeedOutputCap(peakPower);
+        RB.setSpeedOutputCap(peakPower);
+    } 
+
+    else if (pwrPercent > C){
+        LF.setSpeedOutputCap(0);
+        RF.setSpeedOutputCap(0);
+        LB.setSpeedOutputCap(0);
+        RB.setSpeedOutputCap(0);
     }
+    else {
+        LF.setSpeedOutputCap(peakPower * mult);
+        RF.setSpeedOutputCap(peakPower * mult);
+        LB.setSpeedOutputCap(peakPower * mult);
+        RB.setSpeedOutputCap(peakPower * mult);
+        // strafe = strafe * mult;
+        // fwd = fwd * mult; 
+    }
+    // else if (pwrPercent < 0.30) {
+    //     strafe = strafe * 0.93334;
+    //     fwd = fwd * 0.93334;
+    //     setChassisSpeeds({strafe,fwd,0});
+    // }
+    // else if (pwrPercent < 0.35) {
+    //     strafe = strafe * 0.86668;
+    //     fwd = fwd * 0.86668;
+    //     setChassisSpeeds({strafe,fwd,0});
+    // }
+    // else if (pwrPercent < 0.40) {
+    //     strafe = strafe * 0.80002;
+    //     fwd = fwd * 0.80002;
+    //     setChassisSpeeds({strafe,fwd,0});
+    // }
+    // else if (pwrPercent < 0.45) {
+    //     strafe = strafe * 0.73336;
+    //     fwd = fwd * 0.73336;
+    //     setChassisSpeeds({strafe,fwd,0});
+    // }
+    // else if (pwrPercent < 0.50) {
+    //     strafe = strafe * 0.6667;
+    //     fwd = fwd * 0.6667;
+    //     setChassisSpeeds({strafe,fwd,0});
+    // }
+    // else if (pwrPercent < 0.55) {
+    //     strafe = strafe * 0.60004;
+    //     fwd = fwd * 0.60004;
+    //     setChassisSpeeds({strafe,fwd,0});
+    // }
+    // else if (pwrPercent < 0.60) {
+    //     strafe = strafe * 0.53338;
+    //     fwd = fwd * 0.53338;
+    //     setChassisSpeeds({strafe,fwd,0});
+    // }
+    // else if (pwrPercent < 0.65) {
+    //     strafe = strafe * 0.46672;
+    //     fwd = fwd * 0.46672;
+    //     setChassisSpeeds({strafe,fwd,0});
+    // }
+    // else if (pwrPercent < 0.70) {
+    //     strafe = strafe * 0.40006;
+    //     fwd = fwd * 0.40006;
+    //     setChassisSpeeds({strafe,fwd,0});
+    // }
+    // else if (pwrPercent < 0.75) {
+    //     strafe = strafe * 0.3334;
+    //     fwd = fwd * 0.3334;
+    //     setChassisSpeeds({strafe,fwd,0});
+    // }
+    // else if (pwrPercent < 0.80) {
+    //     strafe = strafe * 0.26674;
+    //     fwd = fwd * 0.26674;
+    //     setChassisSpeeds({strafe,fwd,0});
+    // }
+    // else if (pwrPercent < 0.85) {
+    //     strafe = strafe * 0.20008;
+    //     fwd = fwd * 0.20008;
+    //     setChassisSpeeds({strafe,fwd,0});
+    // }
+    // else if (pwrPercent < 0.90) {
+    //     strafe = strafe * 0.13342;
+    //     fwd = fwd * 0.13342;
+    //     setChassisSpeeds({strafe,fwd,0});
+    // }
+    // else if (pwrPercent < 0.95) {
+    //     strafe = strafe * 0.06676;
+    //     fwd = fwd * 0.06676;
+    //     setChassisSpeeds({strafe,fwd,0});
+    // }
+    // else {
+    //     strafe = strafe * 0.0001;
+    //     fwd = fwd * 0.0001;
+    //     setChassisSpeeds({strafe,fwd,0});
+    // }
 
     setChassisSpeeds({strafe,fwd,0});
 }
