@@ -27,7 +27,8 @@ enum motorDataType {
     TORQUE,
     TEMPERATURE,
     MULTITURNANGLE,
-    POWEROUT
+    POWEROUT,
+    VALUE
 };
 
 
@@ -115,10 +116,12 @@ private:
 
     static void s_updateMultiTurnPosition();
     static void s_sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool debug = false);
-
+//    static int s_calculateDeltaTicks(int target, int current);
     void setOutput();
 
 public:
+
+    static int s_calculateDeltaPhase(int target, int current, int max = TICKS_REVOLUTION);
 
     static int motorCount;
     static bool initializedWarning;
@@ -168,7 +171,7 @@ public:
     }
     static bool s_theseConnected(DJIMotor* motors[], int size, bool debug = false);
     static bool s_allConnected(bool debug = false);
-    static int s_calculateDeltaPhase(int target, int current, int max = TICKS_REVOLUTION);
+//    static int s_calculateDeltaPhase(int target, int current, int max = TICKS_REVOLUTION);
 
 
 

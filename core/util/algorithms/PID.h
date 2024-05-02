@@ -26,6 +26,8 @@ private:
 public:
     float feedForward = 0;
 
+    float pC, iC, dC = 0;
+
     /**
      * Creates a new PID object with the default control parameters
      */
