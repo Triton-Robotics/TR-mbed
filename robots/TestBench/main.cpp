@@ -3,6 +3,8 @@
 
 // choose a p (< 50) and then tune d
 
+// test on hero, yawMotorRatio = 2.0
+
 #include "main.h"
 #include "subsystems/ChassisSubsystem.h"
 #include <cmath>
@@ -16,7 +18,7 @@ DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY, "PITCH");
 I2C i2c(I2C_SDA, I2C_SCL);
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 
-DJIMotor yaw(5, CANHandler::CANBUS_1, GM6020, "YAW");
+DJIMotor yaw(6, CANHandler::CANBUS_1, GM6020, "YAW");
 ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
 
 int main(){
@@ -25,7 +27,7 @@ int main(){
     DJIMotor::s_sendValues();
     DJIMotor::s_getFeedback();
 
-    Chassis.setYawReference(&yaw, 2050); // "5604" is the number of ticks of yawOne considered to be robot-front
+    Chassis.setYawReference(&yaw, 4271, -2.0); // "5604" is the number of ticks of yawOne considered to be robot-front
     Chassis.setSpeedFF_Ks(0.065);
 
     // yaw.useAbsEncoder = true;
@@ -74,12 +76,12 @@ int main(){
 
             remoteRead(); 
 
-            double scalar = 1;
-            double jx = remote.leftX() / 660.0 * scalar;
-            double jy = remote.leftY() / 660.0 * scalar;
-            double jr = remote.rightX() / 660.0 * scalar;
+            float scalar = 1;
+            float jx = remote.leftX() / 660.0 * scalar;
+            float jy = remote.leftY() / 660.0 * scalar;
+            float jr = remote.rightX() / 660.0 * scalar;
 
-            double tolerance = 0.05;
+            float tolerance = 0.05;
             jx = (abs(jx) < tolerance) ? 0 : jx;
             jy = (abs(jy) < tolerance) ? 0 : jy;
             jr = (abs(jr) < tolerance) ? 0 : jr;
@@ -114,7 +116,7 @@ int main(){
             // }
             
             
-            currentPitch = (double(pitch.getData(ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360; // degrees
+            currentPitch = (float(pitch.getData(ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360; // degrees
             
             // left switch state
             Remote::SwitchState leftSwitchState = remote.leftSwitch();
