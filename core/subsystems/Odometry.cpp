@@ -1,4 +1,5 @@
 #include "Odometry.h"
+#include "ChassisSubsystem.h"
 #include <cmath>
 #include <stdexcept>
 
@@ -8,6 +9,7 @@
 Odometry::Odometry(ChassisSubsystem &chassis)
         : chassis(chassis)
 {
+    
     // LF.outputCap = 16000; // DJIMotor class has a max outputCap: 16384
     // RF.outputCap = 16000;
     // LB.outputCap = 16000;
