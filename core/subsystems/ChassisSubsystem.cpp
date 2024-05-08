@@ -5,7 +5,7 @@
 /**
  * @param radius radius in meters
  */
-ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbId, BNO055 &imu, double radius)
+ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbId, BNO055 &imu, float radius)
     : LF(lfId, CAN_BUS_TYPE, MOTOR_TYPE),
       RF(rfId, CAN_BUS_TYPE, MOTOR_TYPE),
       LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE),
@@ -22,6 +22,7 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
     this->rfId = rfId;
     this->lbId = lbId;
     this->rbId = rbId;
+    yawMotorRatio = 1.0;
 
     setOmniKinematics(radius);
     m_OmniKinematicsLimits.max_Vel = 2.92; // m/s
@@ -55,15 +56,15 @@ void ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
 
 WheelSpeeds ChassisSubsystem::normalizeWheelSpeeds(WheelSpeeds wheelSpeeds) const
 {
-    double speeds[4] = {wheelSpeeds.LF, wheelSpeeds.RF, wheelSpeeds.LB, wheelSpeeds.RB};
-    double max_speed = m_OmniKinematicsLimits.max_Vel;
+    float speeds[4] = {wheelSpeeds.LF, wheelSpeeds.RF, wheelSpeeds.LB, wheelSpeeds.RB};
+    float max_speed = m_OmniKinematicsLimits.max_Vel;
 
-    for (double speed : speeds)
+    for (float speed : speeds)
         if (speed > max_speed)
             max_speed = speed;
 
     if (max_speed > m_OmniKinematicsLimits.max_Vel)
-        for (double &speed : speeds)
+        for (float &speed : speeds)
             speed = speed / max_speed * m_OmniKinematicsLimits.max_Vel;
 
     return {speeds[0], speeds[1], speeds[2], speeds[3]};
@@ -86,8 +87,14 @@ void ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRI
 {
     if (mode == YAW_ORIENTED)
     {
-        // printf("%f\n", double(yaw->getData(ANGLE)));
-        double yawCurrent = (1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
+        // printf("%f\n", float(yawMotor->getData(ANGLE)));
+        float yawCurrent = (1.0 - (float(yawMotor->getData(ANGLE)) / TICKS_REVOLUTION) * yawMotorRatio) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
+        desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yawCurrent);
+    }
+    else if (mode == REVERSE_YAW_ORIENTED)
+    {
+        // printf("%f\n", float(yawMotor->getData(ANGLE)));
+        float yawCurrent = (1.0 - (-1 * float(yawMotor->getData(ANGLE)) / TICKS_REVOLUTION) * yawMotorRatio) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
         desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yawCurrent);
     }
     else if (mode == ROBOT_ORIENTED)
@@ -105,10 +112,10 @@ void ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRI
  * Power (is not PWM voltage) saturates your motor speeds, and it's not related to motor speed. 
  */
 
-ChassisSpeeds ChassisSubsystem::rotateChassisSpeed(ChassisSpeeds speeds, double yawCurrent)
+ChassisSpeeds ChassisSubsystem::rotateChassisSpeed(ChassisSpeeds speeds, float yawCurrent)
 {
     // rotate angle counter clockwise
-    double theta = (yawCurrent - yawPhase) / 180 * PI;
+    float theta = (yawCurrent - yawPhase) / 180 * PI;
     return {speeds.vX * cos(theta) - speeds.vY * sin(theta),
             speeds.vX * sin(theta) + speeds.vY * cos(theta),
             speeds.vOmega};
@@ -134,17 +141,17 @@ void ChassisSubsystem::setMotorSpeedPID(MotorLocation location, float kP, float 
     getMotor(location).setSpeedPID(kP, kI, kD);
 }
 
-void ChassisSubsystem::setSpeedIntegralCap(MotorLocation location, double cap)
+void ChassisSubsystem::setSpeedIntegralCap(MotorLocation location, float cap)
 {
     getMotor(location).setSpeedIntegralCap(cap);
 }
 
-void ChassisSubsystem::setSpeedFeedforward(MotorLocation location, double FF)
+void ChassisSubsystem::setSpeedFeedforward(MotorLocation location, float FF)
 {
     getMotor(location).pidSpeed.feedForward = FF * INT15_T_MAX;
 }
 
-void ChassisSubsystem::setSpeedFF_Ks(double Ks)
+void ChassisSubsystem::setSpeedFF_Ks(float Ks)
 {
     FF_Ks = Ks;
 }
@@ -164,9 +171,9 @@ void ChassisSubsystem::initializeImu()
     imu.set_mounting_position(MT_P1);
 }
 
-double ChassisSubsystem::getMotorSpeed(MotorLocation location, SPEED_UNIT unit = RPM)
+float ChassisSubsystem::getMotorSpeed(MotorLocation location, SPEED_UNIT unit = RPM)
 {
-    double speed = getMotor(location).getData(VELOCITY);
+    float speed = getMotor(location).getData(VELOCITY);
     switch (unit)
     {
     case RPM:
@@ -190,12 +197,12 @@ void ChassisSubsystem::periodic()
     m_chassisSpeeds = wheelSpeedsToChassisSpeeds(m_wheelSpeeds);
 }
 
-double ChassisSubsystem::degreesToRadians(double degrees)
+float ChassisSubsystem::degreesToRadians(float degrees)
 {
     return degrees * PI / 180.0;
 }
 
-double ChassisSubsystem::radiansToDegrees(double radians)
+float ChassisSubsystem::radiansToDegrees(float radians)
 {
     return radians / PI * 180.0;
 }
@@ -205,13 +212,13 @@ int ChassisSubsystem::getHeadingDegrees() const
     return (int)imuAngles.yaw;
 }
 
-void ChassisSubsystem::setOmniKinematicsLimits(double max_Vel, double max_vOmega)
+void ChassisSubsystem::setOmniKinematicsLimits(float max_Vel, float max_vOmega)
 {
     m_OmniKinematicsLimits.max_Vel = max_Vel;
     m_OmniKinematicsLimits.max_vOmega = max_vOmega;
 }
 
-void ChassisSubsystem::setOmniKinematics(double radius)
+void ChassisSubsystem::setOmniKinematics(float radius)
 {
     m_OmniKinematics.r1x = -sqrt(radius);
     m_OmniKinematics.r1y = sqrt(radius);
@@ -261,7 +268,7 @@ char *ChassisSubsystem::MatrixtoString(Eigen::MatrixXd mat)
     return strdup(a);
 }
 
-void ChassisSubsystem::setMotorPower(MotorLocation location, double power)
+void ChassisSubsystem::setMotorPower(MotorLocation location, float power)
 {
     if (brakeMode == COAST && power == 0) // Should be BRAKE
     {
@@ -272,7 +279,7 @@ void ChassisSubsystem::setMotorPower(MotorLocation location, double power)
     getMotor(location).setPower(power * INT15_T_MAX);
 }
 
-void ChassisSubsystem::setMotorSpeedRPM(MotorLocation location, double speed)
+void ChassisSubsystem::setMotorSpeedRPM(MotorLocation location, float speed)
 {
     if (brakeMode == COAST && speed == 0)
     {
@@ -281,32 +288,33 @@ void ChassisSubsystem::setMotorSpeedRPM(MotorLocation location, double speed)
         return;
     }
     getMotor(location).setSpeed(speed);
-    double sgn_speed = speed / abs(speed); // if speed is 0, it won't execute this line
+    float sgn_speed = speed / abs(speed); // if speed is 0, it won't execute this line
     setSpeedFeedforward(location, FF_Ks * sgn_speed);
 }
 
-void ChassisSubsystem::setYawReference(DJIMotor *motor, double initial_offset_ticks)
+void ChassisSubsystem::setYawReference(DJIMotor *motor, float initial_offset_ticks, float yawMotorRatio_)
 {
-    yaw = motor;
-    yawPhase = 360.0 * (1.0 - (initial_offset_ticks / TICKS_REVOLUTION)); // change Yaw to CCW +, and ranges from 0 to 360
+    yawMotorRatio = yawMotorRatio_;
+    yawMotor = motor;
+    yawPhase = 360.0 * (1.0 - (initial_offset_ticks / TICKS_REVOLUTION) * yawMotorRatio); // change Yaw to CCW +, and ranges from 0 to 360
 }
 
-double ChassisSubsystem::radiansToTicks(double radians)
+float ChassisSubsystem::radiansToTicks(float radians)
 {
     return radians / (2 * PI) * TICKS_PER_ROTATION;
 }
 
-double ChassisSubsystem::ticksToRadians(double ticks)
+float ChassisSubsystem::ticksToRadians(float ticks)
 {
     return ticks / TICKS_PER_ROTATION * (2 * PI);
 }
 
-double ChassisSubsystem::rpmToRadPerSecond(double RPM)
+float ChassisSubsystem::rpmToRadPerSecond(float RPM)
 {
     return RPM * (2 * PI) / SECONDS_PER_MINUTE;
 }
 
-double ChassisSubsystem::radPerSecondToRPM(double radPerSecond)
+float ChassisSubsystem::radPerSecondToRPM(float radPerSecond)
 {
     return radPerSecond / (2 * PI) * SECONDS_PER_MINUTE;
 }

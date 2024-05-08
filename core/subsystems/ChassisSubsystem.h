@@ -34,17 +34,17 @@
 
 struct OmniKinematics
 {
-    double r1x, r1y, r2x, r2y, r3x, r3y, r4x, r4y;
+    float r1x, r1y, r2x, r2y, r3x, r3y, r4x, r4y;
 };
 
 struct WheelSpeeds
 {
-    double LF;
-    double RF;
-    double LB;
-    double RB;
+    float LF;
+    float RF;
+    float LB;
+    float RB;
 
-    void operator*=(double scalar)
+    void operator*=(float scalar)
     {
         LF *= scalar;
         RF *= scalar;
@@ -62,15 +62,15 @@ struct WheelSpeeds
 
 struct ChassisSpeeds
 {
-    double vX;
-    double vY;
-    double vOmega;
+    float vX;
+    float vY;
+    float vOmega;
 };
 
 struct OmniKinematicsLimits
 {
-    double max_Vel;
-    double max_vOmega;
+    float max_Vel;
+    float max_vOmega;
 };
 
 /**
@@ -89,7 +89,7 @@ public:
      * @param lbId Left back motor CAN ID
      * @param rbId Right back motor CAN ID
      */
-    ChassisSubsystem(short lfId, short rfId, short lbId, short rbId, BNO055 &imu, double radius);
+    ChassisSubsystem(short lfId, short rfId, short lbId, short rbId, BNO055 &imu, float radius);
 
     /**
      * The BrakeMode enum is used to set the brake mode of the chassis.
@@ -118,6 +118,7 @@ public:
     enum DRIVE_MODE
     {
         YAW_ORIENTED,
+        REVERSE_YAW_ORIENTED,
         ROBOT_ORIENTED
     };
 
@@ -164,7 +165,7 @@ public:
      * @param speeds The relative speeds (vX, vY, and vOmega) in m/s
      * @param yawCurrent The CCW-positive angle in degrees
      */
-    ChassisSpeeds rotateChassisSpeed(ChassisSpeeds speeds, double yawCurrent);
+    ChassisSpeeds rotateChassisSpeed(ChassisSpeeds speeds, float yawCurrent);
 
     /**
      * A helper method to find a DJIMotor object from an index.
@@ -188,20 +189,20 @@ public:
      * @param location The MotorLocation of the motor (LF, RF, LB, RB)
      * @param cap The maximum integral that can be achieved, above which the integral will be capped
      */
-    void setSpeedIntegralCap(MotorLocation location, double cap);
+    void setSpeedIntegralCap(MotorLocation location, float cap);
 
     /**
      * Sets the Feedforward for the SpeedPID
      * @param location The MotorLocation of the motor (LF, RF, LB, RB)
      * @param FF The arbitrary Feedforward value ranges from [-1, 1]
      */
-    void setSpeedFeedforward(MotorLocation location, double FF);
+    void setSpeedFeedforward(MotorLocation location, float FF);
 
     /**
      * Sets the Friction Feedforward compensation for the SpeedPID
      * @param Ks The arbitrary Friction Feedforward Gain in [-1, 1]
      */
-    void setSpeedFF_Ks(double Ks);
+    void setSpeedFF_Ks(float Ks);
 
     /**
      * A helper method to find the brake mode of the chassis.
@@ -232,14 +233,14 @@ public:
      * @param radians An angle measurement in radians
      * @return The angle converted to degree
      */
-    static double radiansToDegrees(double radians);
+    static float radiansToDegrees(float radians);
 
     /**
      * Helper method to convert an angle from radians to degrees
      * @param degrees An angle measurement in degrees
      * @return The angle converted to radians
      */
-    static double degreesToRadians(double degrees);
+    static float degreesToRadians(float degrees);
 
     /**
      * Gets the IMU's current angle reading in degrees
@@ -260,7 +261,7 @@ public:
      * @param location location of the motor
      * @param unit unit of speed
      */
-    double getMotorSpeed(MotorLocation location, SPEED_UNIT unit);
+    float getMotorSpeed(MotorLocation location, SPEED_UNIT unit);
 
     /**
      * sets chassis speeds limits
@@ -268,7 +269,7 @@ public:
      * @param max_Vel maximum linear velocity of chassis
      * @param max_vOmega maximum angular velocity of chassis
      */
-    void setOmniKinematicsLimits(double max_Vel, double max_vOmega);
+    void setOmniKinematicsLimits(float max_Vel, float max_vOmega);
 
     /**
      * A helper method to read/update the IMU.
@@ -281,9 +282,9 @@ public:
      * (basically which direction you want your Heading to be w.r.t Yaw Motor)
      * 
      * @param motor your Yaw Motor reference as in `&{motor_name}`
-     * @param initial_offset_ticks initial offset of your Yaw Motor Angle in ticks (try pass it as double)
+     * @param initial_offset_ticks initial offset of your Yaw Motor Angle in ticks (try pass it as float)
      */
-    void setYawReference(DJIMotor *motor, double initial_offset_ticks);
+    void setYawReference(DJIMotor *motor, float initial_offset_ticks, float yawMotorRatio = 1.0);
 
     ChassisSpeeds desiredChassisSpeeds;
     WheelSpeeds desiredWheelSpeeds;
@@ -298,46 +299,49 @@ public:
 
     // int8_t isInverted[4];
 
-    double prevVel;
+    float prevVel;
 
     /**
      * yawPhase is an initial offset of your Yaw Motor Angle (basically which direction you want your Heading to be w.r.t Yaw Motor)
     */
-    double yawPhase;
+    float yawPhase;
+    float yawMotorRatio;
     int testData[300][4];
     int testDataIndex = 0;
 
-private:
-    DJIMotor LF, RF, LB, RB;
-    DJIMotor *yaw = 0;
-    // double yawPhase;
-    BrakeMode brakeMode;
-
-    // double beybladeSpeed;
-    // bool beybladeIncreasing;
     BNO055 imu;
     BNO055_ANGULAR_POSITION_typedef imuAngles;
-
-    static double radiansToTicks(double radians);
-    static double ticksToRadians(double ticks);
-
-    static double rpmToRadPerSecond(double RPM);
-    static double radPerSecondToRPM(double radPerSecond);
-
     OmniKinematics m_OmniKinematics;
-    void setOmniKinematics(double radius);
+
+private:
+    DJIMotor LF, RF, LB, RB;
+    DJIMotor *yawMotor = 0;
+    // float yawPhase;
+    BrakeMode brakeMode;
+
+    // float beybladeSpeed;
+    // bool beybladeIncreasing;
+
+    static float radiansToTicks(float radians);
+    static float ticksToRadians(float ticks);
+
+    static float rpmToRadPerSecond(float RPM);
+    static float radPerSecondToRPM(float radPerSecond);
+
+    // OmniKinematics m_OmniKinematics;
+    void setOmniKinematics(float radius);
     // Eigen::MatrixXd wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds);
 
-    double FF_Ks;
+    float FF_Ks;
 
-    void setMotorPower(MotorLocation location, double power);
-    void setMotorSpeedRPM(MotorLocation location, double speed);
-    // void setMotorSpeedTicksPerSecond(int index, double speed);
+    void setMotorPower(MotorLocation location, float power);
+    void setMotorSpeedRPM(MotorLocation location, float speed);
+    // void setMotorSpeedTicksPerSecond(int index, float speed);
 
-    double getMotorSpeedRPM(MotorLocation location);
+    float getMotorSpeedRPM(MotorLocation location);
 
     // ChassisKalman chassisKalman;
-    double testAngle;
+    float testAngle;
     int lastTimeMs;
 
     short lfId;
