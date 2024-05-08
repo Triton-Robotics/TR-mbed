@@ -88,13 +88,13 @@ void ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRI
     if (mode == YAW_ORIENTED)
     {
         // printf("%f\n", float(yawMotor->getData(ANGLE)));
-        float yawCurrent = (1.0 - (float(yawMotor->getData(ANGLE)) / TICKS_REVOLUTION) * yawMotorRatio) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
+        float yawCurrent = (1.0 - (float(yawMotor->getData(ANGLE)) / TICKS_REVOLUTION) / yawMotorRatio) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
         desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yawCurrent);
     }
     else if (mode == REVERSE_YAW_ORIENTED)
     {
         // printf("%f\n", float(yawMotor->getData(ANGLE)));
-        float yawCurrent = (1.0 - (-1 * float(yawMotor->getData(ANGLE)) / TICKS_REVOLUTION) * yawMotorRatio) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
+        float yawCurrent = (1.0 - (-1 * float(yawMotor->getData(ANGLE)) / TICKS_REVOLUTION) / yawMotorRatio) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
         desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yawCurrent);
     }
     else if (mode == ROBOT_ORIENTED)
@@ -296,7 +296,7 @@ void ChassisSubsystem::setYawReference(DJIMotor *motor, float initial_offset_tic
 {
     yawMotorRatio = yawMotorRatio_;
     yawMotor = motor;
-    yawPhase = 360.0 * (1.0 - (initial_offset_ticks / TICKS_REVOLUTION) * yawMotorRatio); // change Yaw to CCW +, and ranges from 0 to 360
+    yawPhase = 360.0 * (1.0 - (initial_offset_ticks / TICKS_REVOLUTION) / yawMotorRatio); // change Yaw to CCW +, and ranges from 0 to 360
 }
 
 float ChassisSubsystem::radiansToTicks(float radians)
