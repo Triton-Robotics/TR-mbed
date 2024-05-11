@@ -6,13 +6,6 @@
 #include <iostream>
 #include "subsystems/ChassisSubsystem.h"
 
-// #include " COMPONENT_SD/include/SD/SDBlockDevice.h"
-// #include "storage/blockdevice/COMPONENT_SD/include/SD/SDBlockDevice.h"
-// #include "SDBlockDevice.h"
-// #include "storage/blockdevice/COMPONENT_SD/source/SDBlockDevice.cpp"
-
-// SDBlockDevice sd(MBED_CONF_SD_SPI_MOSI, MBED_CONF_SD_SPI_MISO, MBED_CONF_SD_SPI_CLK, MBED_CONF_SD_SPI_CS);
-
 #define PI 3.14159265
 
 #define LOWERBOUND 1000
@@ -39,20 +32,12 @@ DJIMotor indexer(7, CANHandler::CANBUS_2, C610);
 DJIMotor RFLYWHEEL(8, CANHandler::CANBUS_2, M3508);
 DJIMotor LFLYWHEEL(5, CANHandler::CANBUS_2, M3508);
 
-
-
 DigitalOut led(L26);
 DigitalOut led2(L27);
 DigitalOut led3(L25);
 DigitalIn button(PC_13);
 
 BNO055_ANGULAR_POSITION_typedef imuAngles;
-
-void setFlyWheelSpeed(int speed)
-{
-    LFLYWHEEL.setSpeed(-speed);
-    RFLYWHEEL.setSpeed(speed);
-}
 
 int calculateDeltaYaw(int ref_yaw, int beforeBeybladeYaw)
 {
@@ -68,53 +53,8 @@ int calculateDeltaYaw(int ref_yaw, int beforeBeybladeYaw)
     return deltaYaw;
 }
 
-// Thread imuThread;
-
-// void runImuThread()
-// {
-//     //chassis.initializeImu();
-//     while (true)
-//     {
-//         //chassis.readImu();
-//         ThisThread::sleep_for(25);
-//     }
-// }
-
-//is this not needed? just commented it out, gonna try without
-// void pitchSetPosition()
-// {
-
-//     int pitchSetPoint = 2120 - (2120 - 1340)/660.0 * remote.rightY();
-// //    merge difference
-//   //     int pitchSetPoint = (-remote.rightY() * 0.5) + 6200;
-
-//     /* TODO: test min and max pitch position */
-
-//     // if(pitchSetPoint > 9000)
-//     //     pitchSetPoint = 9000;
-
-//     // else if(pitchSetPoint < 5000)
-//     //     pitchSetPoint = 5000;
-
-//     // low
-//     if(pitchSetPoint > 2900)
-//         pitchSetPoint = 2900;
-//         // high
-//     else if(pitchSetPoint < 1340)
-//         pitchSetPoint = 1340;
-//     pitch.setPosition(pitchSetPoint);
-
-//     // pitch2.setPower(-pitch.powerOut);
-//     // printf("%d.%d %d\n", pitchSetPoint, pitch.getData(ANGLE), pitch.powerOut);
-// }
-
 int main()
 {
-    //is this not needed? just commented it out, gonna try without
-    // float speedmultiplier = 3;
-    // float powmultiplier = 2;
-    // float translationalmultiplier = 1.5; // was 3
-    // float beybladespeedmult = 1;
 
     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
 
@@ -218,10 +158,6 @@ int main()
 
             }
 
-
-
-
-
             double scalar = 1;
             double jx = remote.leftX() / 660.0 * scalar;
             double jy = remote.leftY() / 660.0 * scalar;
@@ -279,23 +215,6 @@ int main()
                 Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
                                           jy * Chassis.m_OmniKinematicsLimits.max_Vel,
                                           -RUNSPIN },ChassisSubsystem::YAW_ORIENTED);
-
-                // // check switch mode
-                // // ground level = -5.69
-                // // lower bound = 15
-                // // upper bound = -25
-                // if (desiredPitch <= 15 and desiredPitch >= -25) {
-                //     desiredPitch += leftStickValue * JOYSTICK_SENSE_PITCH;
-                // }
-                // else if (desiredPitch > 15 && leftStickValue < 0) {
-                //     desiredPitch = 15;
-                // }
-                // else if (desiredPitch < -25 && leftStickValue > 0) {
-                //     desiredPitch = -25;
-                // }
-                // float FF = K * sin((desiredPitch / 180 * PI) - pitch_phase); // output: [-1,1]
-                // pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
-                // pitch.setPosition(int((desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks)); 
 
                 yawSetPoint -= remote.rightX() * JOYSTICK_SENSE_YAW;
                 yawSetPoint = (yawSetPoint+360) % 360;
