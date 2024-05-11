@@ -24,7 +24,7 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
     this->rbId = rbId;
 
     setOmniKinematics(radius);
-    m_OmniKinematicsLimits.max_Vel = 2.92; // m/s
+    m_OmniKinematicsLimits.max_Vel = MAX_VEL; // m/s
     m_OmniKinematicsLimits.max_vOmega = 2; // rad/s
 
     FF_Ks = 0;
@@ -108,6 +108,70 @@ void ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRI
  * There's no setChassisPower because it doesn't make sense.
  * Power (is not PWM voltage) saturates your motor speeds, and it's not related to motor speed. 
  */
+void ChassisSubsystem::setChassisSpeedsPowerMovementLimit(double fwd, double strafe, double chassis_power, double chassis_power_limit) {
+    double pwrPercent = chassis_power/chassis_power_limit;
+    printf("%f\n", pwrPercent);
+
+    double x = pwrPercent;
+
+// og algor
+
+    double A = 0.25;
+    double B = 1;
+    double C = 0.85;
+
+    int peakPower = 3000;
+
+    double mult = std::max(0.0, B - (B/(C-A)) * (x-A));
+
+// new algor for speed lim
+
+    double A1 = 0.25;
+    double B1 = 0.80;
+    // double v_max = 2.00;
+    double C1 = 0.85;
+
+    double mult1 = std::max(0.0, B1 - (B1/(C1-A1)) * (x-A1));
+
+
+    if (pwrPercent < A) {
+
+        m_OmniKinematicsLimits.max_Vel = MAX_VEL * B1;
+
+        LF.setSpeedOutputCap(peakPower);
+        RF.setSpeedOutputCap(peakPower);
+        LB.setSpeedOutputCap(peakPower);
+        RB.setSpeedOutputCap(peakPower);
+
+
+    //     // strafe = (strafe B);
+    //     // fwd = fwd * B;
+
+
+    } 
+
+    else if (pwrPercent > C){
+        LF.setSpeedOutputCap(0);
+        RF.setSpeedOutputCap(0);
+        LB.setSpeedOutputCap(0);
+        RB.setSpeedOutputCap(0);
+
+        //  m_OmniKinematicsLimits.max_Vel = 0;
+    }
+    else {
+
+        m_OmniKinematicsLimits.max_Vel = MAX_VEL * mult1;
+
+        // LF.setSpeedOutputCap(peakPower * mult);
+        // RF.setSpeedOutputCap(peakPower * mult);
+        // LB.setSpeedOutputCap(peakPower * mult);
+        // RB.setSpeedOutputCap(peakPower * mult);
+
+    //     // strafe = strafe * mult;
+    //     // fwd = fwd * mult; 
+    }
+    setChassisSpeeds({fwd,strafe,0});
+}
 
 ChassisSpeeds ChassisSubsystem::rotateChassisSpeed(ChassisSpeeds speeds, double yawCurrent)
 {

@@ -32,6 +32,8 @@
 #define MAX_BEYBLADE_SPEED 1800
 #define BEYBLADE_ACCELERATION 0.05
 
+#define MAX_VEL 2.92
+
 struct OmniKinematics
 {
     double r1x, r1y, r2x, r2y, r3x, r3y, r4x, r4y;
@@ -150,6 +152,8 @@ public:
      * @return The chassis's current ChassisSpeeds
      */
     ChassisSpeeds getChassisSpeeds() const;
+
+    void setChassisSpeedsPowerMovementLimit(double fwd, double strafe, double chassis_power, double chassis_power_limit);
 
     /**
      * The setChassisSpeeds method is used to drive the chassis in a chassis relative manner.
