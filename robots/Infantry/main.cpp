@@ -150,8 +150,13 @@ int main()
     yaw.useAbsEncoder = false;
     indexer.setSpeedPID(1, 0, 1);
     indexer.setSpeedIntegralCap(8000);
-//  merge difference
-//   chassis.setBrakeMode(ChassisSubsystem::BrakeMode::COAST);
+    //PID for indexer angle position control. Surely there are better names then "sure"...
+    PID sure(0.5,0,0.4);
+    sure.setOutputCap(4000);
+    unsigned long timeSure;
+    unsigned long prevTimeSure;
+    //  merge difference
+    //   chassis.setBrakeMode(ChassisSubsystem::BrakeMode::COAST);
 
     // command.initialize();
 
@@ -162,6 +167,8 @@ int main()
 
     int yawSetPoint = imuAngles.yaw;
     double rotationalPower = 0;
+
+
 
     DJIMotor::s_getFeedback();
     double beybladeSpeed = 2;
@@ -184,11 +191,6 @@ int main()
     //int shootPosition;
     int shootTargetPosition = 36*8190 ;
     bool shootReady = false;
-    //PID for indexer angle position control. Surely there are better names then "sure"...
-    PID sure(0.5,0,1);
-    sure.setOutputCap(4000);
-    unsigned long timeSure;
-    unsigned long prevTimeSure;
 
     while (true)
     {
@@ -311,7 +313,7 @@ Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
                 yawSetPoint -= remote.rightX() / 90;
                 yawSetPoint = (yawSetPoint+360) % 360;
                 timeSure = us_ticker_read();
-                yaw.setSpeed(-Chassis.getChassisSpeeds().vOmega * 8192 / 3.14 * 60 /8 + 15 * yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
+                yaw.setSpeed(-Chassis.getChassisSpeeds().vOmega * 8192 / 3.14 * 60 /8 + 15 * yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint-20,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
                 imu.get_angular_position_quat(&imuAngles);
 
                 prevTimeSure = timeSure;
