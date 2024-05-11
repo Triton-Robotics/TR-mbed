@@ -101,6 +101,11 @@ int main()
 
     indexer.setSpeedPID(1, 0, 1);
     indexer.setSpeedIntegralCap(8000);
+    //PID for indexer angle position control. Surely there are better names then "sure"...
+    PID sure(0.5,0,0.4);
+    sure.setOutputCap(4000);
+    unsigned long timeSure;
+    unsigned long prevTimeSure;
     //  merge difference
     //   chassis.setBrakeMode(ChassisSubsystem::BrakeMode::COAST);
 
@@ -116,6 +121,8 @@ int main()
 
     int yawSetPoint = imuAngles.yaw;
     double rotationalPower = 0;
+
+
 
     DJIMotor::s_getFeedback();
     double beybladeSpeed = 2;
@@ -138,12 +145,6 @@ int main()
     //int shootPosition;
     int shootTargetPosition = 36*8190 ;
     bool shootReady = false;
-
-    //PID for indexer angle position control. Surely there are better names then "sure"...
-    PID sure(0.5,0,1);
-    sure.setOutputCap(4000);
-    unsigned long timeSure;
-    unsigned long prevTimeSure;
 
     bool userButton;
     bool prev_userButton;
