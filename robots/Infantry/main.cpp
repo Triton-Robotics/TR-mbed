@@ -8,8 +8,8 @@
 
 #define PI 3.14159265
 
-#define LOWERBOUND 15.0
-#define UPPERBOUND -25.0
+#define LOWERBOUND 35.0
+#define UPPERBOUND -15.0
 
 // add radius measurement here
 #define RADIUS 0.5
@@ -76,13 +76,13 @@ int main()
 
 
     pitch.useAbsEncoder = true;
-    pitch.setPositionPID(15, 0, 1700);
+    pitch.setPositionPID(15, 0, 1700); //15, 0 1700
     pitch.setPositionOutputCap(32000);
     float currentPitch = 0;
     float desiredPitch = 0;
-    float pitch_phase = 9.31 / 180.0 * PI; // 5.69 theoretical
-    float InitialOffset_Ticks = 2765;
-    float K = 0.75; //0.85
+    float pitch_phase = 33 / 180.0 * PI; // 5.69 theoretical
+    float InitialOffset_Ticks = 2500;
+    float K = 0.38; // 0.75 //0.85
 
     LFLYWHEEL.setSpeedPID(7.5, 0, 0.04);
     RFLYWHEEL.setSpeedPID(7.5, 0, 0.04);
@@ -153,18 +153,6 @@ int main()
     while (true)
     {
         unsigned long timeStart = us_ticker_read();
-        // if(userButton & !prev_userButton){
-        //     if(driveMode == 'j'){
-        //         driveMode = 'm';
-        //         led = 1;
-        //     }else if(driveMode == 'm'){
-        //         driveMode = 'j';
-        //         led = 0;
-        //     }else{
-        //         driveMode = 'j';
-        //         led = 0;
-        //     }
-        // }
 
         if ((timeStart - loopTimer) / 1000 > 25){
             led3 = !led3;
@@ -190,7 +178,7 @@ int main()
                 // led4 = button;
 
                 // printff("%f %d %d %d\n", imuAngles.yaw, yawSetPoint, remote.getMouseX()*MOUSE_SENSE_YAW, yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
-
+                printff("ang%f t%d d%f FF%f\n", (((pitch>>ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360, pitch>>ANGLE, desiredPitch, K * sin((desiredPitch / 180 * PI) - pitch_phase)); //(desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks
             }
 
             double scalar = 1;
@@ -297,23 +285,24 @@ int main()
                 // lower bound = 15
                 // upper bound = -25
                 
-                printff("i%f\n",desiredPitch);
+                // printff("i%f\n",desiredPitch);
                 if(driveMode == 'm'){
                     desiredPitch += remote.getMouseY() * MOUSE_SENSE_PITCH;
                 }else{
-                    desiredPitch += leftStickValue * JOYSTICK_SENSE_PITCH;
+                    desiredPitch -= leftStickValue * JOYSTICK_SENSE_PITCH;
                 }
 
                 if (desiredPitch >= LOWERBOUND) {
-                    printff("u%f\n",desiredPitch);
+                    // printff("u%f\n",desiredPitch);
                     desiredPitch = LOWERBOUND;
                 }
                 else if (desiredPitch <= UPPERBOUND) {
-                    printff("d%f\n",desiredPitch);
+                    // printff("d%f\n",desiredPitch);
                     desiredPitch = UPPERBOUND;
                 }
 
                 float FF = K * sin((desiredPitch / 180 * PI) - pitch_phase); // output: [-1,1]
+                // printff("                          %f\n", FF);
                 pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
                 pitch.setPosition(int((desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks));
 
