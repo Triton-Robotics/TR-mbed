@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['mandelbrotthread_37669',['MandelbrotThread',['../classMandelbrotWidget.html#aea3b18347813176a783f937d82e810a7',1,'MandelbrotWidget']]],
-  ['mandelbrotwidget_37670',['MandelbrotWidget',['../classMandelbrotThread.html#ad40fa0573f6e2912d76c80dcc7cca898',1,'MandelbrotThread']]]
+  ['mandelbrotthread_37666',['MandelbrotThread',['../classMandelbrotWidget.html#aea3b18347813176a783f937d82e810a7',1,'MandelbrotWidget']]],
+  ['mandelbrotwidget_37667',['MandelbrotWidget',['../classMandelbrotThread.html#ad40fa0573f6e2912d76c80dcc7cca898',1,'MandelbrotThread']]]
 ];
