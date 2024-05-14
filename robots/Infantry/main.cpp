@@ -19,6 +19,7 @@
 #define JOYSTICK_SENSE_PITCH 1.0/150
 #define MOUSE_SENSE_YAW 1.0/3
 #define MOUSE_SENSE_PITCH 1.0/5
+#define MOUSE_KB_MULT 0.2
 
 I2C i2c(I2C_SDA, I2C_SCL);
 
@@ -122,7 +123,7 @@ int main()
     int yawSetPoint = imuAngles.yaw;
     double rotationalPower = 0;
 
-
+    jumper.mode(PullDown);
 
     DJIMotor::s_getFeedback();
     double beybladeSpeed = 2;
@@ -191,6 +192,11 @@ int main()
             jy = (abs(jy) < tolerance) ? 0 : jy;
             jr = (abs(jr) < tolerance) ? 0 : jr;
 
+            if(driveMode == 'm'){
+                jx = MOUSE_KB_MULT * ((remote.keyPressed(Remote::Key::D) ? 1 : 0) + (remote.keyPressed(Remote::Key::A) ? -1 : 0));
+                jy = MOUSE_KB_MULT * ((remote.keyPressed(Remote::Key::W) ? 1 : 0) + (remote.keyPressed(Remote::Key::S) ? -1 : 0));
+                jr = MOUSE_KB_MULT * ((remote.keyPressed(Remote::Key::E) ? 1 : 0) + (remote.keyPressed(Remote::Key::Q) ? -1 : 0));
+            }
 
             currentPitch = (double(pitch.getData(ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360; // degrees
 
@@ -302,7 +308,6 @@ int main()
                 }
 
                 float FF = K * sin((desiredPitch / 180 * PI) - pitch_phase); // output: [-1,1]
-                // printff("                          %f\n", FF);
                 pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
                 pitch.setPosition(int((desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks));
 
