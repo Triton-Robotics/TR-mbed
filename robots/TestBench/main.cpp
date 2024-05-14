@@ -23,7 +23,7 @@ DJIMotor yawOne(5, CANHandler::CANBUS_1, GM6020, "testMotor");
 // DJIMotor yawTwo(6, CANHandler::CANBUS_1, GM6020, "testMotor"); // not plugged
 ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
 
-DJIMotor pitch(7, CANHandler::CANBUS_2, GM6020, "PITCH");
+DJIMotor pitch(6, CANHandler::CANBUS_2, GM6020, "PITCH");
 
 int main(){
 
@@ -72,7 +72,8 @@ int main(){
             float dComponent = pitch.pidPosition.dComp;
 
             printff("P = %f, I = %f, D = %f", pComponent, iComponent, dComponent);
-            printff(" %d\n", pitch.getData(POWEROUT));
+            // printff(" %d\n", Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).getData(ANGLE));
+            printff(" %d %d\n", pitch.getData(ANGLE), pitch.getData(POWEROUT));
  
 
             }
@@ -96,17 +97,17 @@ int main(){
 
             // check switch mode
             // ground level = -5.69
-            // lower bound = 15
-            // upper bound = -25
+            // lower bound = -40
+            // upper bound = -10
             if ( leftSwitchState == Remote::SwitchState::UP ) {
-                if (desiredPitch <= 15 and desiredPitch >= -25) {
+                if (desiredPitch <= -40 and desiredPitch >= -10) {
                     desiredPitch += leftStickValue / 150;
                 }
-                else if (desiredPitch > 15 && leftStickValue < 0) {
-                    desiredPitch = 15;
+                else if (desiredPitch > -40 && leftStickValue < 0) {
+                    desiredPitch = -40;
                 }
-                else if (desiredPitch < -25 && leftStickValue > 0) {
-                    desiredPitch = -25;
+                else if (desiredPitch < -10 && leftStickValue > 0) {
+                    desiredPitch = -10;
                 }
                 float FF = K * sin((desiredPitch / 180 * PI) - pitch_phase); // output: [-1,1]
                 pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
@@ -116,7 +117,7 @@ int main(){
                 pitch.setPower(0);
             }
             else if ( leftSwitchState == Remote::SwitchState::DOWN ) {
-                desiredPitch = leftStickValue / 50;
+                desiredPitch = -30;
                 float FF = K * sin((desiredPitch / 180 * PI) - pitch_phase); // output: [-1,1]
                 pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
                 pitch.setPosition(int((desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks));
@@ -134,7 +135,7 @@ int main(){
 
             //printff("%d %f %f\n", pitch.getData(POWEROUT), currentPitch, FF);
 
-            
+
             loopTimer = timeStart;
             DJIMotor::s_sendValues();
 
@@ -144,7 +145,185 @@ int main(){
     }
 }
 
+// Sentry starts falling --> -25 degrees
+
+// Sentry needs full power counter --> -30 degrees
+
 // sentry starts falling at around -12 degrees
+
+
+
+// POST INFANTRY, PRE SENTRY
+
+// increase speed --> p
+// avoid swing --> d
+
+// choose a p (< 50) and then tune d
+
+// #include "main.h"
+// #include "subsystems/ChassisSubsystem.h"
+
+// // #include "algorithms/eigen-3.4.0/Eigen/Dense"
+// #include <cmath>
+
+// DigitalOut led(L27);
+// DigitalOut led2(L26);
+// DigitalOut led3(L25);
+
+// I2C i2c(I2C_SDA, I2C_SCL);
+// BNO055 imu(i2c, IMU_RESET, MODE_IMU);
+// // DJIMotor ChassisOne(1, CANHandler::CANBUS_1, STANDARD, "testMotor");
+// // DJIMotor ChassisTwo(2, CANHandler::CANBUS_1, STANDARD, "testMotor");
+// // DJIMotor ChassisThree(3, CANHandler::CANBUS_1, STANDARD, "testMotor");
+// // DJIMotor ChassisFour(4, CANHandler::CANBUS_1, STANDARD, "testMotor");
+// DJIMotor yawOne(5, CANHandler::CANBUS_1, GM6020, "testMotor");
+// // DJIMotor yawTwo(6, CANHandler::CANBUS_1, GM6020, "testMotor"); // not plugged
+// ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
+
+// DJIMotor pitch(6, CANHandler::CANBUS_2, GM6020, "PITCH");
+
+// int main(){
+
+//     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
+//     DJIMotor::s_sendValues();
+//     DJIMotor::s_getFeedback();
+//     DJIMotor::initializedWarning = false;
+
+//     Chassis.setYawReference(&yawOne, 7167); // "7167" is the number of ticks of yawOne considered to be robot-front
+
+//     pitch.useAbsEncoder = true;
+//     pitch.setPositionPID(15, 0, 2000);
+//     pitch.setPositionOutputCap(32000); 
+//     float currentPitch = 0;
+//     float desiredPitch = 0;
+//     float pitch_phase = 9.31 / 180.0 * PI; // 5.69 theoretical
+//     float InitialOffset_Ticks = 2765;
+
+//     // FeedForward Modeling: FF = K * sin(theta) , output: [-1,1]
+//     float K = 0.75; //0.85
+
+//     unsigned long start = us_ticker_read();
+//     unsigned long current = us_ticker_read();
+//     unsigned long timeStart;
+//     unsigned long loopTimer = us_ticker_read();
+//     unsigned long power = 0;
+//     int refLoop = 0;
+//     int lastPosition;
+
+//     while (true)
+//     {
+//         timeStart = us_ticker_read();
+
+//         if ((timeStart - loopTimer) / 1000 > 25)
+//         {
+//             led2 = !led2;
+
+//             refLoop++;
+//             if (refLoop >= 5){              // prints in here, prints less often
+//                 refereeThread(&referee);
+//                 refLoop = 0;
+//                 led2 = !led2;
+
+//             float pComponent = pitch.pidPosition.pComp;
+//             float iComponent = pitch.pidPosition.iComp;
+//             float dComponent = pitch.pidPosition.dComp;
+
+//             printff("P = %f, I = %f, D = %f", pComponent, iComponent, dComponent);
+//             // printff(" %d\n", Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).getData(ANGLE));
+//             printff(" %d %d\n", pitch.getData(ANGLE), pitch.getData(POWEROUT));
+ 
+
+//             }
+
+//             remoteRead(); 
+
+//             // current = us_ticker_read();
+//             // if((current - start) / 1000 > 12000) {
+//             //     power += 1000;
+//             //     start = us_ticker_read();
+//             // }
+            
+            
+//             currentPitch = (double(pitch.getData(ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360; // degrees
+            
+//             // left switch state
+//             Remote::SwitchState leftSwitchState = remote.leftSwitch();
+
+//             // left stick value
+//             int leftStickValue = remote.leftX();
+
+//             // check switch mode
+//             // ground level = -5.69
+//             // lower bound = 15
+//             // upper bound = -25
+//             if ( leftSwitchState == Remote::SwitchState::UP ) {
+//                 /*
+//                 if (desiredPitch <= 15 and desiredPitch >= -25) {
+//                     desiredPitch += leftStickValue / 150;
+//                 }
+//                 else if (desiredPitch > 15 && leftStickValue < 0) {
+//                     desiredPitch = 15;
+//                 }
+//                 else if (desiredPitch < -25 && leftStickValue > 0) {
+//                     desiredPitch = -25;
+//                 }
+//                 */
+//                 // desiredPitch += leftStickValue / 150;
+//                 // float FF = K * sin((desiredPitch / 180 * PI) - pitch_phase); // output: [-1,1]
+//                 // pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
+//                 // pitch.setPosition(int((desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks));
+//                 printff("anything\n");
+//                 pitch.setPower(leftStickValue * 10);
+//             }
+//             else if ( leftSwitchState == Remote::SwitchState::MID ) {
+//                 pitch.setPower(0);
+//             }
+//             else if ( leftSwitchState == Remote::SwitchState::DOWN ) {
+//                 desiredPitch = leftStickValue / 50;
+//                 float FF = K * sin((desiredPitch / 180 * PI) - pitch_phase); // output: [-1,1]
+//                 pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
+//                 pitch.setPosition(int((desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks));
+//             }
+//             /*
+//             else if ( leftSwitchState == Remote::SwitchState::MID ) {
+//                 pitch.setSpeed(leftStickValue * 10);
+//             }
+            
+//             */
+
+//             // want to have the desired pitch work based on the controller rather than manually setting it
+//             // desiredPitch = 45; // degrees
+            
+
+//             //printff("%d %f %f\n", pitch.getData(POWEROUT), currentPitch, FF);
+
+
+//             loopTimer = timeStart;
+//             DJIMotor::s_sendValues();
+
+//         }
+//         DJIMotor::s_getFeedback();
+//         ThisThread::sleep_for(1ms);
+//     }
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // #include "main.h"
