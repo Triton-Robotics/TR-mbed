@@ -78,10 +78,10 @@ int main(){
                 printff("%d %d\n", desiredSpeed, LFLYWHEEL.getData(VELOCITY));
             }
 
-            //printff("%d %d\n", desiredAngle, indexer.getData(ANGLE)); //curr working on this
-
-            //Jing WIP
-            //printff("%d %d\n", pitch.getData(ANGLE), )
+            // Debug prints
+            printf("Remote Left Switch: %d\n", (int)remote.leftSwitch());
+            printf("Desired Speed: %d, LFLYWHEEL Velocity: %d\n", desiredSpeed, LFLYWHEEL.getData(VELOCITY));
+            printf("Indexer Power: %d\n", power);
 
 //            if (remote.leftX() > 10) {
 //                speedVal = SPEED_BOOST_VAL;
