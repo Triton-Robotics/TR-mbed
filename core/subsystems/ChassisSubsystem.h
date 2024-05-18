@@ -32,7 +32,8 @@
 #define MAX_BEYBLADE_SPEED 1800
 #define BEYBLADE_ACCELERATION 0.05
 
-#define MAX_VEL 2.92
+#define MAX_VEL 1.8
+
 
 struct OmniKinematics
 {
@@ -316,6 +317,8 @@ private:
     DJIMotor *yaw = 0;
     // double yawPhase;
     BrakeMode brakeMode;
+    double PEAK_POWER = 3500;
+    double PEAK_POWER_THRESHOLD = PEAK_POWER * 4;
 
     // double beybladeSpeed;
     // bool beybladeIncreasing;
