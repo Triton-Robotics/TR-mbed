@@ -195,7 +195,7 @@ int main()
         unsigned long timeStart = us_ticker_read();
 
         if ((timeStart - loopTimer) / 1000 > 25){
-            led3 = !led3;
+            // led3 = !led3;
 
             loopTimer = timeStart;
             remoteRead();
@@ -206,9 +206,9 @@ int main()
             if (refLoop >= 5){
                 refereeThread(&referee);
                 refLoop = 0;
-                led2 = !led2;
+                // led2 = !led2;
 
-                printff("%f %d %d %d\n", imuAngles.yaw, yawSetPoint, remote.rightX()*80, yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
+                // printff("%f %d %d %d\n", imuAngles.yaw, yawSetPoint, remote.rightX()*80, yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
 
             }
 
@@ -238,10 +238,10 @@ int main()
              */
             int stick = remote.rightY();
             if (remote.rightSwitch() == Remote::SwitchState::UP){          // All non-serializer motors activated
-                led3 = 1;
+                // led3 = 1;
                 unsigned long time = us_ticker_read();
                 Chassis.setSpeedFF_Ks(0.065);
-Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
+                Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
                                           jy *
                                           Chassis.m_OmniKinematicsLimits.max_Vel,
                                           0 * Chassis.m_OmniKinematicsLimits.max_vOmega},
@@ -287,9 +287,18 @@ Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
                 unsigned long time = us_ticker_read(); //time for pid
                 pitch.setPower(0);
                 Chassis.setSpeedFF_Ks(0.065);
-                Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          jy * Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          -RUNSPIN },ChassisSubsystem::YAW_ORIENTED);
+                // Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
+                //                           jy * Chassis.m_OmniKinematicsLimits.max_Vel,
+                //                           -RUNSPIN },ChassisSubsystem::YAW_ORIENTED);
+                Chassis.setChassisSpeedsPowerMovementLimit(jx * Chassis.m_OmniKinematicsLimits.max_Vel, 
+                                          jy * Chassis.m_OmniKinematicsLimits.max_Vel, 
+                                          ext_power_heat_data.data.chassis_power, 
+                                          ext_game_robot_state.data.chassis_power_limit);
+                // printff("LF: %d\n", Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).getData(POWEROUT));
+                // printff("LB: %d\n", Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(POWEROUT));
+                // printff("RB: %d\n", Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).getData(POWEROUT));
+                // printff("RF: %d\n", Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).getData(POWEROUT));
+
 
                 // check switch mode
                 // ground level = -5.69
