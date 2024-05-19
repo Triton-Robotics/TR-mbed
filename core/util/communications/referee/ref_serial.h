@@ -154,13 +154,13 @@ typedef struct
        uint16_t red_outpost_HP;//红方前哨战血量
        uint16_t red_base_HP;//红方基地血量
        uint16_t blue_1_robot_HP;
-       uint16_t blue_2_robot_HP; 
-       uint16_t blue_3_robot_HP; 
-       uint16_t blue_4_robot_HP; 
+       uint16_t blue_2_robot_HP;
+       uint16_t blue_3_robot_HP;
+       uint16_t blue_4_robot_HP;
        uint16_t blue_5_robot_HP;
        uint16_t blue_7_robot_HP;
        uint16_t blue_outpost_HP;
-       uint16_t blue_base_HP;			
+       uint16_t blue_base_HP;
 		};
 	}data;
 	uint8_t InfoUpdataFlag;
@@ -194,9 +194,9 @@ typedef struct
 			uint8_t F2_zone_status:1;
 			uint8_t F2_zone_buff_debuff_status:3;
 			uint8_t F3_zone_status:1;
-			uint8_t F3_zone_buff_debuff_status:3; 
+			uint8_t F3_zone_buff_debuff_status:3;
 			uint8_t F4_zone_status:1;
-			uint8_t F4_zone_buff_debuff_status:3; 
+			uint8_t F4_zone_buff_debuff_status:3;
 			uint8_t F5_zone_status:1;
 			uint8_t F5_zone_buff_debuff_status:3;
 			uint8_t F6_zone_status:1;
@@ -234,7 +234,7 @@ typedef struct
 		{
 			uint8_t supply_projectile_id;  //补给站口 ID
 			uint8_t supply_robot_id;       //补弹机器人 ID
-			uint8_t supply_projectile_step;//出弹口开闭状态 
+			uint8_t supply_projectile_step;//出弹口开闭状态
 			uint8_t supply_projectile_num; //补弹数量
 		};
 	}data;
@@ -298,7 +298,7 @@ typedef struct
        2 bit：shooter 口输出：1 为有 24V 输出，0 为无 24v 输出；*/
       uint8_t mains_power_gimbal_output : 1;
       uint8_t mains_power_chassis_output : 1;
-      uint8_t mains_power_shooter_output : 1;	
+      uint8_t mains_power_shooter_output : 1;
 		};
 	}data;
 	uint8_t InfoUpdataFlag;
@@ -318,7 +318,7 @@ typedef struct
       uint16_t chassis_power_buffer;//底盘功率缓冲 单位 J 焦耳 备注：飞坡根据规则增加至 250J
       uint16_t shooter_id1_17mm_cooling_heat;//枪口热量
       uint16_t shooter_id2_17mm_cooling_heat;
-      uint16_t shooter_id1_42mm_cooling_heat;	
+      uint16_t shooter_id1_42mm_cooling_heat;
 		};
 	}data;
 	uint8_t InfoUpdataFlag;
