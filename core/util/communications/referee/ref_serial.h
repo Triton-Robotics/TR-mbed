@@ -110,6 +110,22 @@ typedef struct //__packed struct
 	
 }xFrameHeader;
 
+// 0x0303
+typedef struct
+{
+    union {
+        uint8_t dataBuff[15];
+        __packed struct {
+            float target_position_x;
+            float target_position_y;
+            uint8_t cmd_keyboard;
+            uint8_t target_robot_id;
+            uint8_t cmd_source;
+        };
+    }data;
+    uint8_t infoUpdateFlag;
+}ext_map_command_t;
+
 /* ID: 0x0001    Byte: 11     比赛状态数据 */
 typedef struct
 {
@@ -275,30 +291,20 @@ typedef struct
 {
 	union
 	{
-		uint8_t dataBuff[27];
+		uint8_t dataBuff[13];
 		__packed struct
 		{
-		  uint8_t robot_id;
+            uint8_t robot_id;
       uint8_t robot_level;
-      uint16_t remain_HP;//机器人剩余血量
-      uint16_t max_HP;//机器人上限血量
-      uint16_t shooter_id1_17mm_cooling_rate; //机器人 1 号 17mm 枪口每秒冷却值
-      uint16_t shooter_id1_17mm_cooling_limit;//机器人 1 号 17mm 枪口热量上限
-      uint16_t shooter_id1_17mm_speed_limit;  //机器人 1 号 17mm 枪口上限速度 单位 m/s
-      uint16_t shooter_id2_17mm_cooling_rate;
-      uint16_t shooter_id2_17mm_cooling_limit;
-      uint16_t shooter_id2_17mm_speed_limit;
-      uint16_t shooter_id1_42mm_cooling_rate;
-      uint16_t shooter_id1_42mm_cooling_limit;
-      uint16_t shooter_id1_42mm_speed_limit;
-      uint16_t chassis_power_limit;           //机器人底盘功率限制上限
-			/*主控电源输出情况：
-       0 bit：gimbal 口输出： 1 为有 24V 输出，0 为无 24v 输出；
-       1 bit：chassis 口输出：1 为有 24V 输出，0 为无 24v 输出；
-       2 bit：shooter 口输出：1 为有 24V 输出，0 为无 24v 输出；*/
-      uint8_t mains_power_gimbal_output : 1;
-      uint8_t mains_power_chassis_output : 1;
-      uint8_t mains_power_shooter_output : 1;	
+      uint16_t current_HP;//机器人剩余血量
+      uint16_t maximum_HP;//机器人上限血量
+      uint16_t shooter_barrel_cooling_value; //机器人 1 号 17mm 枪口每秒冷却值
+      uint16_t shooter_barrel_heat_limit;//机器人 1 号 17mm 枪口热量上限
+      uint16_t chassis_power_limit;  //机器人 1 号 17mm 枪口上限速度 单位 m/s
+      uint8_t power_management_gimbal_output : 1;
+      uint8_t power_management_chassis_output : 1;
+      uint8_t power_management_shooter_output : 1;
+
 		};
 	}data;
 	uint8_t InfoUpdataFlag;
@@ -334,8 +340,7 @@ typedef struct __packed
 		{
 		 float x;//位置 x 坐标
      float y;//位置 y 坐标
-     float z;//位置 z 坐标
-     float yaw;//位置枪口
+     float angle;//位置枪口
 		};
 	}data;
 	uint8_t InfoUpdataFlag;
@@ -454,19 +459,16 @@ typedef struct
 {
 	union
 	{
-		uint8_t dataBuff[12];
+		uint8_t dataBuff[6];
 		__packed struct
 		{
 		  uint8_t dart_launch_opening_status;//当前飞镖发射口的状态
-      uint8_t dart_attack_target;//飞镖的打击目标，默认为前哨站
+      uint8_t reserved;//飞镖的打击目标，默认为前哨站
       uint16_t target_change_time;//切换打击目标时的比赛剩余时间，单位秒，从未切换默认为 0。
-      uint8_t first_dart_speed; //检测到的第一枚飞镖速度，单位 0.1m/s/LSB, 未检测是为 0
-      uint8_t second_dart_speed;//检测到的第二枚飞镖速度，单位 0.1m/s/LSB, 未检测是为 0
-      uint8_t third_dart_speed; //检测到的第三枚飞镖速度，单位 0.1m/s/LSB, 未检测是为 0
-      uint8_t fourth_dart_speed;//检测到的第四枚飞镖速度，单位 0.1m/s/LSB, 未检测是为 0
-      uint16_t last_dart_launch_time;//最近一次的发射飞镖的比赛剩余时间，单位秒，初始值为 0。
-      uint16_t operate_launch_cmd_time;	//最近一次操作手确定发射指令时的比赛剩余时间，单位秒, 初始值为 0。
-		};
+      uint16_t latest_launch_cmd_time;
+
+
+        };
 	}data;
 	uint8_t InfoUpdataFlag;
 }ext_dart_client_cmd_t;
