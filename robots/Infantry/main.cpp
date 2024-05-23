@@ -139,7 +139,7 @@ int main()
 //     PID yawIMU(200.0, 0.1, 150, 20000, 8000); // 7.0,0.02,15.0,20000,8000
 
 
-    Chassis.setYawReference(&yaw, 2050); // "5604" is the number of ticks of yawOne considered to be robot-front
+    Chassis.setYawReference(&yaw, 2050 - 2048); // "5604" is the number of ticks of yawOne considered to be robot-front
     Chassis.setSpeedFF_Ks(0.065);
 
     yaw.setSpeedPID(0.5, 0, 200);
@@ -195,7 +195,7 @@ int main()
         unsigned long timeStart = us_ticker_read();
 
         if ((timeStart - loopTimer) / 1000 > 25){
-            // led3 = !led3;
+            led3 = !led3;
 
             loopTimer = timeStart;
             remoteRead();
@@ -206,13 +206,13 @@ int main()
             if (refLoop >= 5){
                 refereeThread(&referee);
                 refLoop = 0;
-                // led2 = !led2;
+                led2 = !led2;
 
                 // printff("%f %d %d %d\n", imuAngles.yaw, yawSetPoint, remote.rightX()*80, yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
 
             }
 
-
+            // printff("%f\n", imuAngles.yaw);
 
 
 

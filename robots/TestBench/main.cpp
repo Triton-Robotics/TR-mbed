@@ -38,6 +38,7 @@ int main()
 
     while (true)
     {
+        printff("imu: %d\n", imu.get_angular_position_quat(&imuAngle););
         timeStart = us_ticker_read();
 
         if ((timeStart - loopTimer) / 1000 > 25)
@@ -86,7 +87,7 @@ int main()
             BNO055_ANGULAR_POSITION_typedef imuAngle;
             imu.get_angular_position_quat(&imuAngle);
 
-            // printff("%f\n", imuAngle.yaw);
+            printff("%f\n", imuAngle.yaw);
 
             // gets the angle of the motor
 

@@ -75,23 +75,56 @@ WheelSpeeds ChassisSubsystem::normalizeWheelSpeeds(WheelSpeeds wheelSpeeds) cons
 
 void ChassisSubsystem::setWheelPower(WheelSpeeds wheelPower)
 {
-
-    double sum = wheelPower.LF + wheelPower.RF + wheelPower.LB + wheelPower.RB;
-
-    if (sum > PEAK_POWER_THRESHOLD) {
-        double ratio = PEAK_POWER_THRESHOLD/sum;
+    
+    if(PEAK_POWER_THRESHOLD != 0){
+        double sum = wheelPower.LF + wheelPower.RF + wheelPower.LB + wheelPower.RB;
+        if (sum > PEAK_POWER_THRESHOLD) {
+            double ratio = PEAK_POWER_THRESHOLD/sum;
+            setMotorPower(LEFT_FRONT, wheelPower.LF * ratio);
+            setMotorPower(RIGHT_FRONT, wheelPower.RF * ratio);
+            setMotorPower(LEFT_BACK, wheelPower.LB * ratio);
+            setMotorPower(RIGHT_BACK, wheelPower.RB * ratio);
+        }else{
+            setMotorPower(LEFT_FRONT, wheelPower.LF);
+            setMotorPower(RIGHT_FRONT, wheelPower.RF);
+            setMotorPower(LEFT_BACK, wheelPower.LB);
+            setMotorPower(RIGHT_BACK, wheelPower.RB);
+        }
+    }else if(PEAK_POWER_NORMAL != 0){
+        int pwrs[4] = {wheelPower.LF, wheelPower.RF, wheelPower.LB, wheelPower.RB};
+        double ratio = 1;
+        int greatest = 0;
+        for(int i = 0; i < 4; i ++){
+            if(pwrs[i] > PEAK_POWER_NORMAL && greatest < pwrs[i]){
+                ratio = PEAK_POWER_NORMAL/pwrs[i];
+                greatest = pwrs[i];
+            }
+        }
         setMotorPower(LEFT_FRONT, wheelPower.LF * ratio);
         setMotorPower(RIGHT_FRONT, wheelPower.RF * ratio);
         setMotorPower(LEFT_BACK, wheelPower.LB * ratio);
         setMotorPower(RIGHT_BACK, wheelPower.RB * ratio);
+    }else if(PEAK_POWER != 0){
+        if(wheelPower.LF > PEAK_POWER){
+            setMotorPower(LEFT_FRONT, PEAK_POWER);
+        }else{
+            setMotorPower(LEFT_FRONT, wheelPower.LF);
+        }if(wheelPower.RF > PEAK_POWER){
+            setMotorPower(RIGHT_FRONT, PEAK_POWER);
+        }else{
+            setMotorPower(RIGHT_FRONT, wheelPower.RF);
+        }if(wheelPower.LB > PEAK_POWER){
+            setMotorPower(LEFT_BACK, PEAK_POWER);
+        }else{
+            setMotorPower(LEFT_BACK, wheelPower.LB);
+        }if(wheelPower.RB > PEAK_POWER){
+            setMotorPower(RIGHT_BACK, PEAK_POWER);
+        }else{
+            setMotorPower(RIGHT_BACK, wheelPower.RB);
+        }
     }
     
-    else{
-        setMotorPower(LEFT_FRONT, wheelPower.LF);
-        setMotorPower(RIGHT_FRONT, wheelPower.RF);
-        setMotorPower(LEFT_BACK, wheelPower.LB);
-        setMotorPower(RIGHT_BACK, wheelPower.RB);
-    }
+    
     
 }
 
@@ -126,7 +159,6 @@ void ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRI
  */
 void ChassisSubsystem::setChassisSpeedsPowerMovementLimit(double fwd, double strafe, double chassis_power, double chassis_power_limit) {
     double pwrPercent = chassis_power/chassis_power_limit;
-    printf("%f %f\n", pwrPercent, m_OmniKinematicsLimits.max_Vel);
 
     double x = pwrPercent;
     DigitalOut led(PC_0);
@@ -136,55 +168,60 @@ void ChassisSubsystem::setChassisSpeedsPowerMovementLimit(double fwd, double str
     double A = 0.25;
     double B = 1;
     double C = 0.85;
-
+    
     double mult = std::max(0.0, B - (B/(C-A)) * (x-A));
 
-    double thresh = PEAK_POWER_THRESHOLD;
+    // double thresh = PEAK_POWER_THRESHOLD;
+    PEAK_POWER = 37 * chassis_power_limit; // 4000 for now
+    PEAK_POWER_THRESHOLD = 0;
+    PEAK_POWER_NORMAL = 0;
 
-    if (pwrPercent < A) {
-        LF.setSpeedOutputCap(PEAK_POWER);
-        RF.setSpeedOutputCap(PEAK_POWER);
-        LB.setSpeedOutputCap(PEAK_POWER);
-        RB.setSpeedOutputCap(PEAK_POWER);
+    // if (pwrPercent < A) {
+        // LF.setSpeedOutputCap(PEAK_POWER);
+        // RF.setSpeedOutputCap(PEAK_POWER);
+        // LB.setSpeedOutputCap(PEAK_POWER);
+        // RB.setSpeedOutputCap(PEAK_POWER);
         
-        led = 1;
+    //     // // led = 1;
+
+    //     m_OmniKinematicsLimits.max_Vel = MAX_VEL;
+
+    // //     // strafe = (strafe B);
+    // //     // fwd = fwd * B;
+    // //     PEAK_POWER_THRESHOLD = thresh;
+    // //     setChassisSpeeds({fwd,strafe,0}, YAW_ORIENTED);
+    // //     // printf("hmm %d\n", LF>>ANGLE);
+    // } 
 
 
-        m_OmniKinematicsLimits.max_Vel = MAX_VEL;
+    // else if (pwrPercent < C){
+    //     LF.setSpeedOutputCap(PEAK_POWER * mult);
+    //     RF.setSpeedOutputCap(PEAK_POWER * mult);
+    //     LB.setSpeedOutputCap(PEAK_POWER * mult);
+    //     RB.setSpeedOutputCap(PEAK_POWER * mult);
 
-        // strafe = (strafe B);
-        // fwd = fwd * B;
-        PEAK_POWER_THRESHOLD = thresh;
-        setChassisSpeeds({fwd,strafe,0}, YAW_ORIENTED);
-    } 
+    //     // led = 0;
 
-    else if (pwrPercent < C){
-        LF.setSpeedOutputCap(PEAK_POWER * mult);
-        RF.setSpeedOutputCap(PEAK_POWER * mult);
-        LB.setSpeedOutputCap(PEAK_POWER * mult);
-        RB.setSpeedOutputCap(PEAK_POWER * mult);
+    //     // m_OmniKinematicsLimits.max_Vel = MAX_VEL * mult1;
 
-        led = 0;
+    //     //     // strafe = strafe * mult;
+    //     //     // fwd = fwd * mult; 
+    //     // PEAK_POWER_THRESHOLD = PEAK_POWER_THRESHOLD * mult;
+    //     // printf("himmmm %d\n", LF>>ANGLE);
 
-        // m_OmniKinematicsLimits.max_Vel = MAX_VEL * mult1;
-
-        //     // strafe = strafe * mult;
-        //     // fwd = fwd * mult; 
-        PEAK_POWER_THRESHOLD = PEAK_POWER_THRESHOLD * mult;
-
-        setChassisSpeeds({fwd,strafe,0}, YAW_ORIENTED);
-    }
-    else {
+    // }
+    // else {
 
         
-        LF.setSpeedOutputCap(PEAK_POWER/2);
-        RF.setSpeedOutputCap(PEAK_POWER/2);
-        LB.setSpeedOutputCap(PEAK_POWER/2);
-        RB.setSpeedOutputCap(PEAK_POWER/2);
-        led = !led;
+    //     LF.setSpeedOutputCap(PEAK_POWER/2);
+    //     RF.setSpeedOutputCap(PEAK_POWER/2);
+    //     LB.setSpeedOutputCap(PEAK_POWER/2);
+    //     RB.setSpeedOutputCap(PEAK_POWER/2);
+    //     // led = !led;
+    //     // printf("hi %d\n", LF>>ANGLE);
 
-        // setWheelPower({0,0,0,0});
-    }
+    //     // setWheelPower({0,0,0,0});
+    // }
 
     // NORMALIZE WHEELSPEEDS IF NECESSARY
     if (abs(LF.getData(POWEROUT)) >= PEAK_POWER && getMotorSpeed(LEFT_FRONT, METER_PER_SECOND) > 0.75) {
@@ -212,7 +249,9 @@ void ChassisSubsystem::setChassisSpeedsPowerMovementLimit(double fwd, double str
     // if (pwrPercent < 0.4) { // False peak
     //     m_OmniKinematicsLimits.max_Vel = MAX_VEL;
     // }
-    setChassisSpeeds({fwd,strafe,0}, YAW_ORIENTED);
+    m_OmniKinematicsLimits.max_Vel = MAX_VEL;
+    printf("%f %f %f\n", pwrPercent, PEAK_POWER, m_OmniKinematicsLimits.max_Vel);
+    setChassisSpeeds({fwd,strafe,0.5}, YAW_ORIENTED);
 }
 
 ChassisSpeeds ChassisSubsystem::rotateChassisSpeed(ChassisSpeeds speeds, double yawCurrent)
