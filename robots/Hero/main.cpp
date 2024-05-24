@@ -6,6 +6,7 @@
 #include "main.h"
 #include "subsystems/ChassisSubsystem.h"
 #include <cmath>
+#define SPEED_VAL 6000
 
 DigitalOut led(L27);
 DigitalOut led2(L26);
@@ -115,7 +116,7 @@ int main(){
                                           jy * Chassis.m_OmniKinematicsLimits.max_Vel, 
                                           0}, 
                                           ChassisSubsystem::ROBOT_ORIENTED);
-                yaw.setSpeed(int(-jr * 300));  
+//                yaw.setSpeed(int(-jr * 300));
             }
             else
             {
@@ -136,22 +137,28 @@ int main(){
             
             #define feederburstlength 100
             #define burstthreshold 0
-            #define indexerburstend 500
+            #define indexerburstend 180
             //SHOOTING CODE BEGIN
             double mps = ext_game_robot_state.data.shooter_id1_42mm_speed_limit;
-            double rpm = 60 * (mps / 0.03) / (3.14159 * 2);
+            //60 seconds in a min, 30 mm, 2*pi*r
+            double rpm = (60 * mps) / (0.03 * 3.14159 * 2);
+            //double rpm = 60 * (mps / 0.03) / (3.14159 * 2);
 
-            if(mps == 0) rpm = 5400;
-            // printff("rpm: %f\n",rpm);
-            rpm = 4000;
+            if(mps == 0) rpm = 6000;
+             printff("rpm: %f\n",rpm);
+            //rpm = 4000;
             
             // shooting code
             if (remote.leftSwitch() == Remote::SwitchState::UP ) {
                 // printff("shootin' ");
                 //pitch.setPower(leftStickValue / 20);
 
+//                top_flywheel.setSpeed(rpm);
+//                bottom_flywheel.setSpeed(-rpm);'
+                // Sets Speed
                 top_flywheel.setSpeed(rpm);
                 bottom_flywheel.setSpeed(-rpm);
+//                indexer.setPower(6600);
 
 
                 burstTimer = (us_ticker_read() - burstTimestamp)/1000;
@@ -161,7 +168,7 @@ int main(){
                     feeder.setPower(0);
                 }
                 if(burstTimer < indexerburstend){
-                    indexer.setSpeed(20 * M3508_GEAR_RATIO);
+                    indexer.setSpeed(80 * M3508_GEAR_RATIO);
                 }else{
                     indexer.setPower(0);
                 }
@@ -169,8 +176,8 @@ int main(){
             else if (remote.leftSwitch() == Remote::SwitchState::MID ) {
                 // printff("revvin' up @%fRPM", rpm);
                 // pitch.setPower(0);
-                top_flywheel.setSpeed(rpm*0.9);
-                bottom_flywheel.setSpeed(-rpm*0.9);
+                top_flywheel.setSpeed(rpm);
+                bottom_flywheel.setSpeed(-rpm);
                 burstTimestamp = us_ticker_read();
                 indexer.setPower(0);
                 feeder.setPower(0);
