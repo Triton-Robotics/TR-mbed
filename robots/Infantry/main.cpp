@@ -21,7 +21,7 @@
 
 // add radius measurement here
 #define RADIUS 0.5
-#define RUNSPIN 1.0
+#define RUNSPIN 1.4
 
 I2C i2c(I2C_SDA, I2C_SCL);
 //Chassis chassis(1, 2, 3, 4, &i2c);

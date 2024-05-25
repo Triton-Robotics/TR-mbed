@@ -90,7 +90,7 @@ void ChassisSubsystem::setWheelPower(WheelSpeeds wheelPower)
             setMotorPower(LEFT_BACK, wheelPower.LB);
             setMotorPower(RIGHT_BACK, wheelPower.RB);
         }
-        printf("AAAA\n");
+        // printf("AAAA\n");
     }
     
     else if(PEAK_POWER_NORMAL != 0){
@@ -107,7 +107,7 @@ void ChassisSubsystem::setWheelPower(WheelSpeeds wheelPower)
         setMotorPower(RIGHT_FRONT, wheelPower.RF * ratio);
         setMotorPower(LEFT_BACK, wheelPower.LB * ratio);
         setMotorPower(RIGHT_BACK, wheelPower.RB * ratio);
-        printf("BBBB\n");
+        // printf("BBBB\n");
     }
     
     else if(PEAK_POWER != 0){
@@ -128,7 +128,7 @@ void ChassisSubsystem::setWheelPower(WheelSpeeds wheelPower)
         }else{
             setMotorPower(RIGHT_BACK, wheelPower.RB);
         }
-        printf("CCCC\n");
+        // printf("CCCC\n");
     }
     
     
@@ -166,12 +166,8 @@ void ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRI
  */
 void ChassisSubsystem::setChassisSpeedsPowerMovementLimit(double fwd, double strafe, double chassis_power, double chassis_power_limit) {
     double pwrPercent = chassis_power/chassis_power_limit;
-
+   
     double x = pwrPercent;
-    DigitalOut led(PC_0);
-
-// og algor
-
     double A = 0.25;
     double B = 1;
     double C = 0.85;
@@ -179,34 +175,35 @@ void ChassisSubsystem::setChassisSpeedsPowerMovementLimit(double fwd, double str
     double mult = std::max(0.0, B - (B/(C-A)) * (x-A));
 
     // double thresh = PEAK_POWER_THRESHOLD;
-    PEAK_POWER = 10 * chassis_power_limit; // 4000 for now
+    PEAK_POWER = 30 * chassis_power_limit; // 4000 for now
     PEAK_POWER_THRESHOLD = 0;
     PEAK_POWER_NORMAL = 0;
 
     double huiandward = 0;
     double i = 0.1 * chassis_power_limit; 
 
-    printf("pwr: %f /n" ,PEAK_POWER);
-
     LF.setSpeedOutputCap(PEAK_POWER);
     RF.setSpeedOutputCap(PEAK_POWER);
     LB.setSpeedOutputCap(PEAK_POWER);
     RB.setSpeedOutputCap(PEAK_POWER);
+    
 
-
-    if (fwd >= -5 && strafe >= -5 && fwd <= 5 && strafe <= 5) { // Robot is not moving
-
-        huiandward = rpmToRadPerSecond(i);   //set huiandward to a lower value
-
-
-
+    // printf("fwd: %f\tstrafe:%f\n",fwd,strafe);
+    // if (fwd >= -0.5 && strafe >= -0.5 && fwd <= 0.5 && strafe <= 0.5) { // Robot is not moving
+    //     huiandward = rpmToRadPerSecond(i);   //set huiandward to a lower value
+    // }
+    if (fwd == 0 && strafe == 0) {
+        huiandward = rpmToRadPerSecond(i);
+        printf("!!!!!!!!!!!!!!!!!!!!!\n");
     }
-    else if (fwd > 5 && strafe > 5) {     //if it is moving then our beyblade slows
+    else {
+    //else if (fwd > 5 && strafe > 5) {     //if it is moving then our beyblade slows
 
         // huiandward = rpmToRadPerSecond(i); // Set turning speed - covert to rpm
-
         // if(chassis_power <= chassis_power_limit - 10) {
-            huiandward = rpmToRadPerSecond(i * mult);
+        i = i * mult;
+        // i = i/(abs(fwd) + abs(strafe));
+        huiandward = rpmToRadPerSecond(i);
             
         // }
 
@@ -260,7 +257,7 @@ void ChassisSubsystem::setChassisSpeedsPowerMovementLimit(double fwd, double str
     // }
 
     // NORMALIZE WHEELSPEEDS IF NECESSARY
-    if (abs(LF.getData(POWEROUT)) >= PEAK_POWER && getMotorSpeed(LEFT_FRONT, METER_PER_SECOND) > 0.75) {
+    if (abs(LF.getData(POWEROUT )) >= PEAK_POWER && getMotorSpeed(LEFT_FRONT, METER_PER_SECOND) > 0.75) {
         printf("A\n");
         m_OmniKinematicsLimits.max_Vel = getMotorSpeed(LEFT_FRONT, METER_PER_SECOND);
     }
@@ -286,8 +283,8 @@ void ChassisSubsystem::setChassisSpeedsPowerMovementLimit(double fwd, double str
     //     m_OmniKinematicsLimits.max_Vel = MAX_VEL;
     // }
     m_OmniKinematicsLimits.max_Vel = MAX_VEL;
-    printf("%f %f %f\n", pwrPercent, PEAK_POWER, i);
-    setChassisSpeeds({fwd,strafe,huiandward}, YAW_ORIENTED);
+    printf("%f %f %f %f\n", pwrPercent, PEAK_POWER, i, chassis_power);
+    setChassisSpeeds({fwd,strafe,-huiandward}, YAW_ORIENTED);
 }
 
 ChassisSpeeds ChassisSubsystem::rotateChassisSpeed(ChassisSpeeds speeds, double yawCurrent)
