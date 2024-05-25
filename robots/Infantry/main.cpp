@@ -331,18 +331,18 @@ int main()
             // burst fire, turn the indexer to shoot 3-5 balls a time and stop indexer
             // only shoot when left switch changes from down/unknown/mid to up
             // if left switch remains at up state, indexer stops after 3-5 balls
-            if (shoot){
-                if (indexer>>MULTITURNANGLE >= shootTargetPosition){
-                    indexer.setSpeed(0);
-                    shoot = false;
-                } else {
-                    timeSure = us_ticker_read();
-                    indexer.setSpeed(sure.calculate(shootTargetPosition, indexer>>MULTITURNANGLE, timeSure - prevTimeSure)); //
-                    prevTimeSure = timeSure;
-                }
-            } else {
-                indexer.setSpeed(0);
-            }
+            // if (shoot){
+            //     if (indexer>>MULTITURNANGLE >= shootTargetPosition){
+            //         indexer.setSpeed(0);
+            //         shoot = false;
+            //     } else {
+            //         timeSure = us_ticker_read();
+            //         indexer.setSpeed(sure.calculate(shootTargetPosition, indexer>>MULTITURNANGLE, timeSure - prevTimeSure)); //
+            //         prevTimeSure = timeSure;
+            //     }
+            // } else {
+            //     indexer.setSpeed(0);
+            // }
 
 
             /**
@@ -360,72 +360,12 @@ int main()
                     shootReady = false;
                     shoot = true;
                     shootTargetPosition = 8192 * 12 + (indexer>>MULTITURNANGLE);
-//             if (remote.rightSwitch() == Remote::SwitchState::UP)
-//             { // All non-serializer motors activated
-
-//                 double scalar = 1;
-//                 double jx = remote.leftX() / 660.0 * scalar;
-//                 double jy = remote.leftY() / 660.0 * scalar;
-//                 double jr = remote.rightX() / 660.0 * scalar;
-
-//                 double tolerance = 0.05;
-//                 jx = (abs(jx) < tolerance) ? 0 : jx;
-//                 jy = (abs(jy) < tolerance) ? 0 : jy;
-//                 jr = (abs(jr) < tolerance) ? 0 : jr;
-
-//                 chassis.setSpeedFF_Ks(0.065);
-//                 chassis.setChassisSpeeds({jx * chassis.m_OmniKinematicsLimits.max_Vel,
-//                                           jy * chassis.m_OmniKinematicsLimits.max_Vel,
-//                                           -jr * chassis.m_OmniKinematicsLimits.max_vOmega},
-//                                          ChassisSubsystem::DRIVE_MODE::ROBOT_ORIENTED);
-
-//                 chassis.periodic();
-
-//                 unsigned long time = us_ticker_read();
-//             }
-//             else if (remote.rightSwitch() == Remote::SwitchState::MID || remote.rightSwitch() == Remote::SwitchState::UNKNOWN || remote.rightSwitch() == Remote::SwitchState::DOWN)
-//             { // disable all the non-serializer components
-//                 led3 = 0;
-//                 chassis.setWheelPower({0, 0, 0, 0});
-//                 yaw.setPower(0);
-//                 pitch.setPower(0);
-//                 pitch2.setPower(0);
-//                 yawSetPoint = int(ext_game_robot_pos.data.yaw);
-//                 pitchSetPosition();
-//             }
-//             yawTime = us_ticker_read();
-//             if (remote.leftSwitch() == Remote::SwitchState::MID)
-//             {
-//                 gearSwap.setPower(-1500);
-//                 double mps = ext_game_robot_state.data.shooter_id1_17mm_speed_limit * 0.9;
-//                 double rpm = 60 * (mps / 0.03) / (3.14159 * 2);
-//                 setFlyWheelSpeed(rpm);
-//                 indexer.setPower(0);
-//                 burstTimestamp = us_ticker_read();
-//             }
-//             else if (remote.leftSwitch() == Remote::SwitchState::DOWN || remote.leftSwitch() == Remote::SwitchState::UNKNOWN)
-//             { // disable serializer
-//                 indexer.setPower(0);
-//                 setFlyWheelSpeed(0);
-//             }
-//             else if (remote.leftSwitch() == Remote::SwitchState::UP)
-//             {
-//                 gearSwap.setPower(-1500);
-//                 double mps = ext_game_robot_state.data.shooter_id1_17mm_speed_limit;
-//                 double rpm = 60 * (mps / 0.03) / (3.14159 * 2);
-//                 setFlyWheelSpeed(rpm); // was 0 * 0/
-//                 if ((us_ticker_read() - burstTimestamp) / 1000 < 99)
-//                 {
-//                     indexer.setPower(8000);
-//                 }
-//                 else
-//                 {
-//                     indexer.setPower(0);
-//                 }
                 }
+                indexer.setSpeed(9*20*60);
             } else {
                 //SwitchState state set to mid/down/unknown
                 shootReady = true;
+                indexer.setSpeed(0);
             }
             if (remote.leftSwitch() != Remote::SwitchState::DOWN &&
                 remote.leftSwitch() != Remote::SwitchState::UNKNOWN){

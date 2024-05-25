@@ -90,7 +90,10 @@ void ChassisSubsystem::setWheelPower(WheelSpeeds wheelPower)
             setMotorPower(LEFT_BACK, wheelPower.LB);
             setMotorPower(RIGHT_BACK, wheelPower.RB);
         }
-    }else if(PEAK_POWER_NORMAL != 0){
+        printf("AAAA\n");
+    }
+    
+    else if(PEAK_POWER_NORMAL != 0){
         int pwrs[4] = {wheelPower.LF, wheelPower.RF, wheelPower.LB, wheelPower.RB};
         double ratio = 1;
         int greatest = 0;
@@ -104,7 +107,10 @@ void ChassisSubsystem::setWheelPower(WheelSpeeds wheelPower)
         setMotorPower(RIGHT_FRONT, wheelPower.RF * ratio);
         setMotorPower(LEFT_BACK, wheelPower.LB * ratio);
         setMotorPower(RIGHT_BACK, wheelPower.RB * ratio);
-    }else if(PEAK_POWER != 0){
+        printf("BBBB\n");
+    }
+    
+    else if(PEAK_POWER != 0){
         if(wheelPower.LF > PEAK_POWER){
             setMotorPower(LEFT_FRONT, PEAK_POWER);
         }else{
@@ -122,6 +128,7 @@ void ChassisSubsystem::setWheelPower(WheelSpeeds wheelPower)
         }else{
             setMotorPower(RIGHT_BACK, wheelPower.RB);
         }
+        printf("CCCC\n");
     }
     
     
@@ -172,9 +179,38 @@ void ChassisSubsystem::setChassisSpeedsPowerMovementLimit(double fwd, double str
     double mult = std::max(0.0, B - (B/(C-A)) * (x-A));
 
     // double thresh = PEAK_POWER_THRESHOLD;
-    PEAK_POWER = 37 * chassis_power_limit; // 4000 for now
+    PEAK_POWER = 10 * chassis_power_limit; // 4000 for now
     PEAK_POWER_THRESHOLD = 0;
     PEAK_POWER_NORMAL = 0;
+
+    double huiandward = 0;
+    double i = 0.1 * chassis_power_limit; 
+
+    printf("pwr: %f /n" ,PEAK_POWER);
+
+    LF.setSpeedOutputCap(PEAK_POWER);
+    RF.setSpeedOutputCap(PEAK_POWER);
+    LB.setSpeedOutputCap(PEAK_POWER);
+    RB.setSpeedOutputCap(PEAK_POWER);
+
+
+    if (fwd >= -5 && strafe >= -5 && fwd <= 5 && strafe <= 5) { // Robot is not moving
+
+        huiandward = rpmToRadPerSecond(i);   //set huiandward to a lower value
+
+
+
+    }
+    else if (fwd > 5 && strafe > 5) {     //if it is moving then our beyblade slows
+
+        // huiandward = rpmToRadPerSecond(i); // Set turning speed - covert to rpm
+
+        // if(chassis_power <= chassis_power_limit - 10) {
+            huiandward = rpmToRadPerSecond(i * mult);
+            
+        // }
+
+    }
 
     // if (pwrPercent < A) {
         // LF.setSpeedOutputCap(PEAK_POWER);
@@ -250,8 +286,8 @@ void ChassisSubsystem::setChassisSpeedsPowerMovementLimit(double fwd, double str
     //     m_OmniKinematicsLimits.max_Vel = MAX_VEL;
     // }
     m_OmniKinematicsLimits.max_Vel = MAX_VEL;
-    printf("%f %f %f\n", pwrPercent, PEAK_POWER, m_OmniKinematicsLimits.max_Vel);
-    setChassisSpeeds({fwd,strafe,0.5}, YAW_ORIENTED);
+    printf("%f %f %f\n", pwrPercent, PEAK_POWER, i);
+    setChassisSpeeds({fwd,strafe,huiandward}, YAW_ORIENTED);
 }
 
 ChassisSpeeds ChassisSubsystem::rotateChassisSpeed(ChassisSpeeds speeds, double yawCurrent)
