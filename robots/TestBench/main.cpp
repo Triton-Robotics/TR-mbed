@@ -13,7 +13,13 @@ BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 // DJIMotor ChassisTwo(2, CANHandler::CANBUS_1, STANDARD, "testMotor");
 // DJIMotor ChassisThree(3, CANHandler::CANBUS_1, STANDARD, "testMotor");
 // DJIMotor ChassisFour(4, CANHandler::CANBUS_1, STANDARD, "testMotor");
-DJIMotor yawOne(5, CANHandler::CANBUS_1, GM6020, "testMotor");
+DJIMotor yaw(6, CANHandler::CANBUS_1, GIMBLY, "YAW");
+DJIMotor indexer(2, CANHandler::CANBUS_2, M3508, "INDEXER");
+DJIMotor feeder(5, CANHandler::CANBUS_2, M3508, "FEEDER");
+
+DJIMotor pitch(5, CANHandler::CANBUS_2, GIMBLY, "PITCH");
+DJIMotor RFLYWHEEL(1, CANHandler::CANBUS_2,M3508, "RFLYWHEEL");
+DJIMotor LFLYWHEEL(4, CANHandler::CANBUS_2,M3508, "LFLYWHEEL");
 // DJIMotor yawTwo(6, CANHandler::CANBUS_1, GM6020, "testMotor"); // not plugged
 ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
 
@@ -25,7 +31,10 @@ int main()
     DJIMotor::s_getFeedback();
     DJIMotor::initializedWarning = false;
 
-    Chassis.setYawReference(&yawOne, 7167); // "7167" is the number of ticks of yawOne considered to be robot-front
+    Chassis.setYawReference(&yaw, 2486, 2); // "2486" is the number of ticks of yaw considered to be robot-front 
+    //hero seems to need an extra quarter turn 
+
+    yaw.setSpeedPID(80,0,0);
 
     unsigned long timeStart;
     unsigned long loopTimer = us_ticker_read();
@@ -58,7 +67,7 @@ int main()
                 // printff("LF: %4.2f RF: %4.2f LB: %4.2f RB: %4.2f\n", ws.LF, ws.RF, ws.LB, ws.RB);
 
                 // printff("a%f\n", sin(PI));
-                // printff("%d\n", yawOne.getData(ANGLE));
+                // printff("%d\n", yaw.getData(ANGLE));
                 // printff("%d\n", yawTwo.getData(ANGLE));
                 // printff("yawPhase: %f\n",Chassis.yawPhase);
                 // Eigen::MatrixXd m(2,2);
@@ -67,7 +76,8 @@ int main()
                 // Inv_K << 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12;
                 // printff("%s\n", Chassis.MatrixtoString(Inv_K));
                 ChassisSpeeds cs = Chassis.m_chassisSpeeds;
-                printff("%f %f %f\n", cs.vX, cs.vY, cs.vOmega);
+                // printff("%f %f %f\n", cs.vX, cs.vY, cs.vOmega);
+                printff("%d %d\n", yaw>>ANGLE, yaw>>MULTITURNANGLE);
 
                 // A = m.completeOrthogonalDecomposition().pseudoInverse();
                 // printff("%f %f\n%f %f\n", A(0,0), A(0,1), A(1,0), A(1,1));
@@ -84,15 +94,15 @@ int main()
 
             // gets the angle of the motor
 
-            // printff("%d\n", yawOne.getData(ANGLE));
+            // printff("%d\n", yaw.getData(ANGLE));
             if (remote.rightSwitch() == Remote::SwitchState::UP)
             {
-                double scalar = 1;
-                double jx = remote.leftX() / 660.0 * scalar;
-                double jy = remote.leftY() / 660.0 * scalar;
-                double jr = remote.rightX() / 660.0 * scalar;
+                float scalar = 1;
+                float jx = remote.leftX() / 660.0 * scalar;
+                float jy = remote.leftY() / 660.0 * scalar;
+                float jr = remote.rightX() / 660.0 * scalar;
 
-                double tolerance = 0.05;
+                float tolerance = 0.05;
                 jx = (abs(jx) < tolerance) ? 0 : jx;
                 jy = (abs(jy) < tolerance) ? 0 : jy;
                 jr = (abs(jr) < tolerance) ? 0 : jr;
@@ -100,8 +110,8 @@ int main()
                 Chassis.setSpeedFF_Ks(0.065);
                 Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel, 
                                           jy * Chassis.m_OmniKinematicsLimits.max_Vel, 
-                                          -jr * Chassis.m_OmniKinematicsLimits.max_vOmega}, 
-                                          ChassisSubsystem::ROBOT_ORIENTED);
+                                          0 * Chassis.m_OmniKinematicsLimits.max_vOmega}, 
+                                          ChassisSubsystem::REVERSE_YAW_ORIENTED);
                 // Chassis.setChassisPower({jx, jy, jr});
 
                 // double LFa = (1 / sqrt(2)) * (jx + jy + jr * ((-0.228) - (0.228)));
@@ -123,6 +133,7 @@ int main()
                 //     printff("%f ", a[i]);
                 // }
                 // printff("\n");
+                yaw.setSpeed(-jr * 120);
             }
             else
             {

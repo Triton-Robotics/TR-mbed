@@ -85,6 +85,18 @@ ChassisSpeeds ChassisSubsystem::getChassisSpeeds() const
 
 void ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode)
 {
+    float angle = 0;
+    if(yawMotorRatio == 1){
+        angle = yawMotor->getData(ANGLE);
+    }else{
+        angle = (yawMotor->getData(MULTITURNANGLE));
+        while(angle < 0){
+            angle += TICKS_REVOLUTION * yawMotorRatio;
+        }
+        while(angle > TICKS_REVOLUTION * yawMotorRatio){
+            angle += TICKS_REVOLUTION * yawMotorRatio;
+        }
+    }
     if (mode == YAW_ORIENTED)
     {
         // printf("%f\n", float(yawMotor->getData(ANGLE)));
@@ -96,6 +108,7 @@ void ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRI
         // printf("%f\n", float(yawMotor->getData(ANGLE)));
         float yawCurrent = (1.0 - (-1 * float(yawMotor->getData(ANGLE)) / TICKS_REVOLUTION) / yawMotorRatio) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
         desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yawCurrent);
+        printf("[%f]",yawCurrent);
     }
     else if (mode == ROBOT_ORIENTED)
     {
