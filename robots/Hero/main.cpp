@@ -488,18 +488,18 @@ int main()
             // burst fire, turn the indexer to shoot 3-5 balls a time and stop indexer
             // only shoot when left switch changes from down/unknown/mid to up
             // if left switch remains at up state, indexer stops after 3-5 balls
-            if (shoot){
-                if (indexer>>MULTITURNANGLE >= shootTargetPosition){
-                    indexer.setSpeed(0);
-                    shoot = false;
-                } else {
-                    timeSure = us_ticker_read();
-                    indexer.setSpeed(sure.calculate(shootTargetPosition, indexer>>MULTITURNANGLE, timeSure - prevTimeSure)); //
-                    prevTimeSure = timeSure;
-                }
-            } else {
-                indexer.setSpeed(0);
-            }
+            // if (shoot){
+            //     if (indexer>>MULTITURNANGLE >= shootTargetPosition){
+            //         // indexer.setSpeed(0);
+            //         shoot = false;
+            //     } else {
+            //         timeSure = us_ticker_read();
+            //         // indexer.setSpeed(0); //
+            //         // prevTimeSure = timeSure;
+            //     }
+            // } else {
+            //     // indexer.setSpeed(0);
+            // }
 
             //PITCH CODE, if remote is UP or DOWN, run pitch code, else off
             if (remote.rightSwitch() == Remote::SwitchState::UP ||
@@ -546,14 +546,18 @@ int main()
                 // if left switch was at other states, turn indexer on
                 // otherwise, continue the burstfire and stop after 3-5 shots
                 // $shootReady local to if block, $shoot variable used above
-                if (shootReady){
-                    shootReady = false;
-                    shoot = true;
-                    shootTargetPosition = 8192 * 12 + (indexer>>MULTITURNANGLE);
-                }
+                // if (shootReady){
+                //     shootReady = false;
+                //     shoot = true;
+                //     shootTargetPosition = 8192 * 12 + (indexer>>MULTITURNANGLE);
+                // }
+                indexer.setPower(5000);
+                feeder.setPower(1000);
             } else {
                 //SwitchState state set to mid/down/unknown
-                shootReady = true;
+                // shootReady = true;
+                indexer.setPower(0);
+                feeder.setPower(0);
             }
 
             if (remote.leftSwitch() != Remote::SwitchState::DOWN &&
