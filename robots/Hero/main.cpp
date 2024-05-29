@@ -312,9 +312,9 @@ int main()
     Chassis.setYawReference(&yaw, 2050); // "5604" is the number of ticks of yawOne considered to be robot-front
     Chassis.setSpeedFF_Ks(0.065);
 
-    yaw.setSpeedPID(0.5, 0, 200);
-    PID yawBeyblade(50, 0, 5);
-    PID yawNonBeyblade(100, 0, 50);
+    yaw.setSpeedPID(0.1, 0, 150);
+    PID yawBeyblade(40, 0, 5);
+    PID yawNonBeyblade(80, 0, 50);
 
     yaw.setSpeedIntegralCap(1000);
     yaw.useAbsEncoder = false;
@@ -427,15 +427,28 @@ int main()
              * Down: Pitch enabled, yaw and chassis Beyblade
              */
             int stick = remote.rightY();
+
+            float angle = -(yaw>>MULTITURNANGLE);
+            while(angle < 0){
+                angle += TICKS_REVOLUTION * 2;
+            }
+            while(angle > TICKS_REVOLUTION * 2){
+                angle -= TICKS_REVOLUTION * 2;
+            }
+            angle /= 2;
+            float currentAngle = (1.0 - (angle / TICKS_REVOLUTION)) * 360.0 + 180;
+
             if (remote.rightSwitch() == Remote::SwitchState::UP){          // All non-serializer motors activated
                 led3 = 1;
                 unsigned long time = us_ticker_read();
                 Chassis.setSpeedFF_Ks(0.065);
-                Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          jy *
-                                          Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          0 * Chassis.m_OmniKinematicsLimits.max_vOmega},
-                                          ChassisSubsystem::YAW_ORIENTED);
+                ChassisSpeeds cs = Chassis.rotateChassisSpeed({jx * Chassis.m_OmniKinematicsLimits.max_Vel, 
+                                          jy * Chassis.m_OmniKinematicsLimits.max_Vel, 
+                                          0 * Chassis.m_OmniKinematicsLimits.max_vOmega}, 
+                                          currentAngle // change Yaw to CCW +, and ranges from 0 to 360
+                );
+                Chassis.setChassisSpeeds(cs, 
+                                          ChassisSubsystem::ROBOT_ORIENTED);
 
                 lastTime = time; 
 
@@ -448,7 +461,7 @@ int main()
 
                 timeSure = us_ticker_read();
 
-                yaw.setSpeed(5 * yawNonBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
+                yaw.setSpeed(2 * 5 * yawNonBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
                 imu.get_angular_position_quat(&imuAngles);
 
                 prevTimeSure = timeSure;
@@ -464,9 +477,17 @@ int main()
                 unsigned long time = us_ticker_read(); //time for pid
                 pitch.setPower(0);
                 Chassis.setSpeedFF_Ks(0.065);
-                Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          jy * Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          -RUNSPIN },ChassisSubsystem::YAW_ORIENTED);
+                // Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
+                //                           jy * Chassis.m_OmniKinematicsLimits.max_Vel,
+                //                           -RUNSPIN },ChassisSubsystem::YAW_ORIENTED);
+
+                ChassisSpeeds cs = Chassis.rotateChassisSpeed({jx * Chassis.m_OmniKinematicsLimits.max_Vel, 
+                                          jy * Chassis.m_OmniKinematicsLimits.max_Vel, 
+                                          -RUNSPIN}, 
+                                          currentAngle // change Yaw to CCW +, and ranges from 0 to 360
+                );
+                Chassis.setChassisSpeeds(cs, 
+                                          ChassisSubsystem::ROBOT_ORIENTED);
 
                 if(driveMode == 'm'){
                     yawSetPoint -= remote.getMouseX() * MOUSE_SENSE_YAW;
@@ -477,7 +498,7 @@ int main()
                 
                 timeSure = us_ticker_read();
 
-                yaw.setSpeed(-Chassis.getChassisSpeeds().vOmega * 8192 / 3.14 * 60 /8 + 15 * yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
+                yaw.setSpeed(-2 * Chassis.getChassisSpeeds().vOmega * 8192 / 3.14 * 60 /8 + 15 * yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
                 imu.get_angular_position_quat(&imuAngles);
 
                 prevTimeSure = timeSure;
