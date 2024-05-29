@@ -142,7 +142,7 @@ int main()
     Chassis.setYawReference(&yaw, 2050 - 2048); // "5604" is the number of ticks of yawOne considered to be robot-front
     Chassis.setSpeedFF_Ks(0.065);
 
-    yaw.setSpeedPID(0.5, 0, 200);
+    yaw.setSpeedPID(0.1, 0, 200);
     PID yawBeyblade(50, 0, 5);
     PID yawNonBeyblade(100, 0, 50);
 
@@ -241,11 +241,16 @@ int main()
                 // led3 = 1;
                 unsigned long time = us_ticker_read();
                 Chassis.setSpeedFF_Ks(0.065);
+                Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).setSpeedOutputCap(16000);
+                Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).setSpeedOutputCap(16000);
+                Chassis.getMotor(ChassisSubsystem::LEFT_BACK).setSpeedOutputCap(16000);
+                Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).setSpeedOutputCap(16000);
                 Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
                                           jy *
                                           Chassis.m_OmniKinematicsLimits.max_Vel,
                                           0 * Chassis.m_OmniKinematicsLimits.max_vOmega},
                                           ChassisSubsystem::YAW_ORIENTED);
+                printff("%d\t%d\n", ext_power_heat_data.data.chassis_power_buffer, ext_game_robot_HP.data.red_3_robot_HP);
 
                 lastTime = time;
 
@@ -294,8 +299,7 @@ int main()
                                           jy * Chassis.m_OmniKinematicsLimits.max_Vel, 
                                           ext_power_heat_data.data.chassis_power, 
                                           ext_game_robot_state.data.chassis_power_limit);
-                                          printff("AAAAAAAAAAAAAAAA\n");
-                printff("%d\n", ext_power_heat_data.data.chassis_power_buffer);
+                printff("%d\t%d\n", ext_power_heat_data.data.chassis_power_buffer, ext_game_robot_HP.data.red_3_robot_HP);
                 // printff("LF: %d\n", Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).getData(POWEROUT));
                 // printff("LB: %d\n", Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(POWEROUT));
                 // printff("RB: %d\n", Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).getData(POWEROUT));

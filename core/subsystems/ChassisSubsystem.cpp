@@ -190,12 +190,12 @@ void ChassisSubsystem::setChassisSpeedsPowerMovementLimit(double fwd, double str
     double mult = std::max(0.0, B - (B/(C-A)) * (z-A));
 
     // double thresh = PEAK_POWER_THRESHOLD;
-    PEAK_POWER = 30 * chassis_power_limit; // 4000 for now
+    PEAK_POWER = 25 * chassis_power_limit; // 4000 for now
     PEAK_POWER_THRESHOLD = 0;
     PEAK_POWER_NORMAL = 0;
 
     double huiandward = 0;
-    double i = 0.15 * chassis_power_limit; 
+    double i = 0.17 * chassis_power_limit; 
 
     LF.setSpeedOutputCap(PEAK_POWER);
     RF.setSpeedOutputCap(PEAK_POWER);
