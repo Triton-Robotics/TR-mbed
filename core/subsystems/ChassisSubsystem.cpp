@@ -168,11 +168,26 @@ void ChassisSubsystem::setChassisSpeedsPowerMovementLimit(double fwd, double str
     double pwrPercent = chassis_power/chassis_power_limit;
    
     double x = pwrPercent;
-    double A = 0.25;
-    double B = 1;
-    double C = 0.85;
+    // double A = 0.25;
+    // double B = 1;
+    // double C = 0.85;
     
-    double mult = std::max(0.0, B - (B/(C-A)) * (x-A));
+    // double mult = std::max(0.0, B - (B/(C-A)) * (x-A));
+
+    /*FOR CHASSIS ROTATION*/
+    double A = 0;
+    double B = 1;
+    double C = 1;
+    
+
+    double forwardy = abs(m_chassisSpeeds.vX);
+    double strafey = abs(m_chassisSpeeds.vY);
+    double max_speeds = 4;
+    double speeds = forwardy + strafey;
+    double speed_percent = speeds/max_speeds;
+    double z = speed_percent;
+
+    double mult = std::max(0.0, B - (B/(C-A)) * (z-A));
 
     // double thresh = PEAK_POWER_THRESHOLD;
     PEAK_POWER = 30 * chassis_power_limit; // 4000 for now
@@ -180,31 +195,32 @@ void ChassisSubsystem::setChassisSpeedsPowerMovementLimit(double fwd, double str
     PEAK_POWER_NORMAL = 0;
 
     double huiandward = 0;
-    double i = 0.1 * chassis_power_limit; 
+    double i = 0.15 * chassis_power_limit; 
 
     LF.setSpeedOutputCap(PEAK_POWER);
     RF.setSpeedOutputCap(PEAK_POWER);
     LB.setSpeedOutputCap(PEAK_POWER);
     RB.setSpeedOutputCap(PEAK_POWER);
+
     
 
+    
+    
     // printf("fwd: %f\tstrafe:%f\n",fwd,strafe);
     // if (fwd >= -0.5 && strafe >= -0.5 && fwd <= 0.5 && strafe <= 0.5) { // Robot is not moving
     //     huiandward = rpmToRadPerSecond(i);   //set huiandward to a lower value
     // }
     if (fwd == 0 && strafe == 0) {
         huiandward = rpmToRadPerSecond(i);
-        printf("!!!!!!!!!!!!!!!!!!!!!\n");
     }
     else {
     //else if (fwd > 5 && strafe > 5) {     //if it is moving then our beyblade slows
 
         // huiandward = rpmToRadPerSecond(i); // Set turning speed - covert to rpm
         // if(chassis_power <= chassis_power_limit - 10) {
-        i = i * mult;
-        // i = i/(abs(fwd) + abs(strafe));
-        huiandward = rpmToRadPerSecond(i);
-            
+
+        huiandward = rpmToRadPerSecond(i*mult);
+
         // }
 
     }
@@ -257,33 +273,42 @@ void ChassisSubsystem::setChassisSpeedsPowerMovementLimit(double fwd, double str
     // }
 
     // NORMALIZE WHEELSPEEDS IF NECESSARY
-    if (abs(LF.getData(POWEROUT )) >= PEAK_POWER && getMotorSpeed(LEFT_FRONT, METER_PER_SECOND) > 0.75) {
-        printf("A\n");
-        m_OmniKinematicsLimits.max_Vel = getMotorSpeed(LEFT_FRONT, METER_PER_SECOND);
-    }
+    // if (abs(LF.getData(POWEROUT )) >= PEAK_POWER && getMotorSpeed(LEFT_FRONT, METER_PER_SECOND) > 0.75) {
+    //     printf("A\n");
+    //     m_OmniKinematicsLimits.max_Vel = getMotorSpeed(LEFT_FRONT, METER_PER_SECOND);
+    // }
 
-    else if (abs(RF.getData(POWEROUT)) >= PEAK_POWER && getMotorSpeed(RIGHT_FRONT, METER_PER_SECOND) > 0.75) {
-        printf("B\n");
-        m_OmniKinematicsLimits.max_Vel = getMotorSpeed(RIGHT_FRONT, METER_PER_SECOND);
-    }
+    // else if (abs(RF.getData(POWEROUT)) >= PEAK_POWER && getMotorSpeed(RIGHT_FRONT, METER_PER_SECOND) > 0.75) {
+    //     printf("B\n");
+    //     m_OmniKinematicsLimits.max_Vel = getMotorSpeed(RIGHT_FRONT, METER_PER_SECOND);
+    // }
 
-    else if (abs(RB.getData(POWEROUT)) >= PEAK_POWER && getMotorSpeed(RIGHT_BACK, METER_PER_SECOND) > 0.75) {
-        printf("C\n");
-        m_OmniKinematicsLimits.max_Vel = getMotorSpeed(RIGHT_BACK, METER_PER_SECOND);
-    }
+    // else if (abs(RB.getData(POWEROUT)) >= PEAK_POWER && getMotorSpeed(RIGHT_BACK, METER_PER_SECOND) > 0.75) {
+    //     printf("C\n");
+    //     m_OmniKinematicsLimits.max_Vel = getMotorSpeed(RIGHT_BACK, METER_PER_SECOND);
+    // }
 
-    else if (abs(LB.getData(POWEROUT)) >= PEAK_POWER && getMotorSpeed(LEFT_BACK, METER_PER_SECOND) > 0.75) {
-        printf("D\n");
-        m_OmniKinematicsLimits.max_Vel = getMotorSpeed(LEFT_BACK, METER_PER_SECOND);
-    }
+    // else if (abs(LB.getData(POWEROUT)) >= PEAK_POWER && getMotorSpeed(LEFT_BACK, METER_PER_SECOND) > 0.75) {
+    //     printf("D\n");
+    //     m_OmniKinematicsLimits.max_Vel = getMotorSpeed(LEFT_BACK, METER_PER_SECOND);
+    // }
 
 
 
     // if (pwrPercent < 0.4) { // False peak
     //     m_OmniKinematicsLimits.max_Vel = MAX_VEL;
     // }
-    m_OmniKinematicsLimits.max_Vel = MAX_VEL;
-    printf("%f %f %f %f\n", pwrPercent, PEAK_POWER, i, chassis_power);
+    // m_OmniKinematicsLimits.max_Vel = MAX_VEL;
+    if (pwrPercent >= 1) {
+        printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+        printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+        printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+        printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+        printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+        printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+
+    }
+    // printf("%f %f %f %f %f\n", pwrPercent, PEAK_POWER, i, chassis_power);
     setChassisSpeeds({fwd,strafe,-huiandward}, YAW_ORIENTED);
 }
 

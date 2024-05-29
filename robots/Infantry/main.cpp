@@ -294,6 +294,8 @@ int main()
                                           jy * Chassis.m_OmniKinematicsLimits.max_Vel, 
                                           ext_power_heat_data.data.chassis_power, 
                                           ext_game_robot_state.data.chassis_power_limit);
+                                          printff("AAAAAAAAAAAAAAAA\n");
+                printff("%d\n", ext_power_heat_data.data.chassis_power_buffer);
                 // printff("LF: %d\n", Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).getData(POWEROUT));
                 // printff("LB: %d\n", Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(POWEROUT));
                 // printff("RB: %d\n", Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).getData(POWEROUT));

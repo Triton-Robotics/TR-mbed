@@ -32,7 +32,7 @@
 #define MAX_BEYBLADE_SPEED 1800
 #define BEYBLADE_ACCELERATION 0.05
 
-#define MAX_VEL 1.8
+#define MAX_VEL 2.5
 
 #define PEAK_POWER_MAX 1000
 
