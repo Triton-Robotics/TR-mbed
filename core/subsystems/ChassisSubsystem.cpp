@@ -27,7 +27,7 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
     m_OmniKinematicsLimits.max_Vel = MAX_VEL; // m/s
     m_OmniKinematicsLimits.max_vOmega = 2; // rad/s
 
-    PEAK_POWER_ALL = 24000;
+    PEAK_POWER_ALL = 20000;
     PEAK_POWER_SINGLE = 8000;
 
     FF_Ks = 0;
@@ -62,13 +62,13 @@ void ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     int powers[4] = {0,0,0,0};
     uint32_t time = us_ticker_read();
     powers[0] = motorPIDtoPower(LEFT_FRONT,wheelSpeeds.LF, (time - lastPIDTime));
-    powers[1] = motorPIDtoPower(RIGHT_FRONT,wheelSpeeds.LF, (time - lastPIDTime));
-    powers[2] = motorPIDtoPower(LEFT_BACK,wheelSpeeds.LF, (time - lastPIDTime));
-    powers[3] = motorPIDtoPower(RIGHT_BACK,wheelSpeeds.LF, (time - lastPIDTime));
+    powers[1] = motorPIDtoPower(RIGHT_FRONT,wheelSpeeds.RF, (time - lastPIDTime));
+    powers[2] = motorPIDtoPower(LEFT_BACK,wheelSpeeds.LB, (time - lastPIDTime));
+    powers[3] = motorPIDtoPower(RIGHT_BACK,wheelSpeeds.RB, (time - lastPIDTime));
     lastPIDTime = time;
 
-    int sum = powers[0] + powers[1] + powers[2] + powers[3];
-    if(powers[0] + powers[1] + powers[2] + powers[3] > PEAK_POWER_ALL){
+    int sum = abs(powers[0]) + abs(powers[1]) + abs(powers[2]) + abs(powers[3]);
+    if(sum > PEAK_POWER_ALL){
         powers[0] = powers[0] * PEAK_POWER_ALL/sum;
         powers[1] = powers[1] * PEAK_POWER_ALL/sum;
         powers[2] = powers[2] * PEAK_POWER_ALL/sum;
@@ -327,14 +327,14 @@ int ChassisSubsystem::motorPIDtoPower(MotorLocation location, double speed, uint
     if (brakeMode == COAST && speed == 0)
     {
         setSpeedFeedforward(location, 0);
-        return 0;;
+        return 0;
     }
     
     int power = 0;
     PID pids[4] = {pid_LF,pid_RF,pid_LB,pid_RB};
-
     
     power = pids[location].calculate(speed, getMotor(location).getData(VELOCITY), dt);
+    // printf("[%d]",power);
 
     if(speed == 0) {
         setSpeedFeedforward(location, 0);
