@@ -369,4 +369,4 @@ double ChassisSubsystem::rpmToRadPerSecond(double RPM)
 double ChassisSubsystem::radPerSecondToRPM(double radPerSecond)
 {
     return radPerSecond / (2 * PI) * SECONDS_PER_MINUTE;
-}
+} 

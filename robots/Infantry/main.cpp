@@ -90,9 +90,9 @@ int main()
 
     //     merge difference
     //     PID yawIMU(200.0, 0.1, 150, 20000, 8000); // 7.0,0.02,15.0,20000,8000
-    Chassis.setYawReference(&yaw, 2050); // "5604" is the number of ticks of yawOne considered to be robot-front
+    Chassis.setYawReference(&yaw, 2); // "5604" is the number of ticks of yawOne considered to be robot-front
     Chassis.setSpeedFF_Ks(0.065);
-
+    
     yaw.setSpeedPID(0.5, 0, 200);
     PID yawBeyblade(50, 0, 5);
     PID yawNonBeyblade(100, 0, 50);
@@ -177,9 +177,11 @@ int main()
                 refLoop = 0;
                 led2 = !led2;
                 // led4 = button;
-
+                // printff("%f %f %d \n", ext_power_heat_data.data.chassis_power, ext_power_heat_data.data.chassis_power_buffer, ext_game_robot_state.data.chassis_power_limit);
                 // printff("%f %d %d %d\n", imuAngles.yaw, yawSetPoint, remote.getMouseX()*MOUSE_SENSE_YAW, yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
-                printff("ang%f t%d d%f FF%f\n", (((pitch>>ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360, pitch>>ANGLE, desiredPitch, K * sin((desiredPitch / 180 * PI) - pitch_phase)); //(desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks
+                // printff("ang%f t%d d%f FF%f\n", (((pitch>>ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360, pitch>>ANGLE, desiredPitch, K * sin((desiredPitch / 180 * PI) - pitch_phase)); //(desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks
+                Chassis.PEAK_POWER_ALL = 141 * ext_game_robot_state.data.chassis_power_limit;
+                printff("%d %d \n" , ext_power_heat_data.data.shooter_id1_17mm_cooling_heat, ext_game_robot_state.data.shooter_id1_17mm_cooling_limit);
             }
 
             double scalar = 1;
@@ -329,8 +331,14 @@ int main()
                 // $shootReady local to if block, $shoot variable used above
                 if (shootReady){
                     shootReady = false;
-                    shoot = true;
+                    // shoot = true;
                     shootTargetPosition = 8192 * 12 + (indexer>>MULTITURNANGLE);
+
+                    //shoot limit
+                    if(ext_power_heat_data.data.shooter_id1_17mm_cooling_heat < ext_game_robot_state.data.shooter_id1_17mm_cooling_limit - 40) {
+                        shoot = true;
+                    }
+                    
                 }
             } else {
                 //SwitchState state set to mid/down/unknown
