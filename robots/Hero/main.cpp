@@ -392,6 +392,7 @@ int main()
             refLoop++;
             imu.get_angular_position_quat(&imuAngles);
 
+
             float angle = -(yaw>>MULTITURNANGLE);
             while(angle < 0){
                 angle += TICKS_REVOLUTION * 2;
@@ -416,6 +417,7 @@ int main()
                     ,Chassis.getMotor(ChassisSubsystem::LEFT_BACK)>>POWEROUT
                     ,Chassis.getMotor(ChassisSubsystem::RIGHT_BACK)>>POWEROUT
                     ,currentAngle);
+                //printff("ang%f t%d d%f FF%f\n", (((pitch>>ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360, pitch>>ANGLE, desiredPitch, K * sin((desiredPitch / 180 * PI) - pitch_phase)); //(desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks
             }
 
             double scalar = 1;
@@ -432,6 +434,7 @@ int main()
                 jx = MOUSE_KB_MULT * ((remote.keyPressed(Remote::Key::D) ? 1 : 0) + (remote.keyPressed(Remote::Key::A) ? -1 : 0));
                 jy = MOUSE_KB_MULT * ((remote.keyPressed(Remote::Key::W) ? 1 : 0) + (remote.keyPressed(Remote::Key::S) ? -1 : 0));
                 jr = MOUSE_KB_MULT * ((remote.keyPressed(Remote::Key::E) ? 1 : 0) + (remote.keyPressed(Remote::Key::Q) ? -1 : 0));
+
             }
 
             currentPitch = (double(pitch.getData(ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360; // degrees
@@ -543,6 +546,7 @@ int main()
                     desiredPitch += remote.getMouseY() * MOUSE_SENSE_PITCH;
                 }else{
                     desiredPitch -= leftStickValue * JOYSTICK_SENSE_PITCH;
+
                 }
 
                 if (desiredPitch >= LOWERBOUND) {
@@ -596,9 +600,7 @@ int main()
                 // left SwitchState set to up/mid/unknown
                 RFLYWHEEL.setSpeed(0);
                 LFLYWHEEL.setSpeed(0);
-
             }
-
             DJIMotor::s_sendValues();
         }
         unsigned long timeEnd = us_ticker_read() / 1000;
@@ -608,3 +610,4 @@ int main()
         userButton = button;
     }
 }
+
