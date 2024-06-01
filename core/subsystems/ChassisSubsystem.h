@@ -11,6 +11,7 @@
 // #include <subsystems/ChassisKalman.h>
 // #include <algorithms/WheelKalman.h>
 #include <algorithms/Pose2D.h>
+#include <algorithms/PID.h>
 // #include <algorithms/WheelSpeeds.h>
 // #include <algorithms/ChassisSpeeds.h>
 #include "algorithms/eigen-3.4.0/Eigen/QR"
@@ -31,6 +32,7 @@
 
 #define MAX_BEYBLADE_SPEED 1800
 #define BEYBLADE_ACCELERATION 0.05
+#define MAX_VEL 2.92
 
 struct OmniKinematics
 {
@@ -295,6 +297,16 @@ public:
 
     ChassisSpeeds m_chassisSpeeds;
     WheelSpeeds m_wheelSpeeds;
+    
+    int PEAK_POWER_ALL;
+    int PEAK_POWER_SINGLE;
+
+    PID pid_LF;
+    PID pid_RF;
+    PID pid_LB;
+    PID pid_RB;
+
+    uint32_t lastPIDTime = 0;
 
     // int8_t isInverted[4];
 
@@ -335,6 +347,7 @@ private:
     // void setMotorSpeedTicksPerSecond(int index, double speed);
 
     double getMotorSpeedRPM(MotorLocation location);
+    int motorPIDtoPower(MotorLocation location, double speed, uint32_t dt);
 
     // ChassisKalman chassisKalman;
     double testAngle;
