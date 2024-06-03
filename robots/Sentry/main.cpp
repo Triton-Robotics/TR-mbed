@@ -184,7 +184,10 @@ int main()
 
                 // printff("%f %d %d %d\n", imuAngles.yaw, yawSetPoint, remote.getMouseX()*MOUSE_SENSE_YAW, yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
                 // printff("ang%f t%d d%f FF%f\n", (((pitch>>ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360, pitch>>ANGLE, desiredPitch, K * sin((desiredPitch / 180 * PI) - pitch_phase)); //(desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks
-                printff("imu angl")
+                //printff("imu angl\n");
+                printff("%d %d\n", indexer_R>>ANGLE, indexer_L>>ANGLE);
+                //indexer_L.setPower(5000);
+                //indexer_R.setPower(5000);
             }
 
             double scalar = 1;
@@ -259,27 +262,30 @@ int main()
                 prevTimeSure_R = timeSure_R;
             }
             yawTime = us_ticker_read();
-
+            indexer_L.setPower(3000);
+            indexer_R.setPower(3000);
 
             // burst fire, turn the indexer to shoot 3-5 balls a time and stop indexer
             // only shoot when left switch changes from down/unknown/mid to up
             // if left switch remains at up state, indexer stops after 3-5 balls
-            if (shoot_L){
-                if (indexer_L>>MULTITURNANGLE >= shootTargetPosition_L){
-                    indexer_L.setSpeed(0);
-                    shoot_L = false;
-                } else {
-                    timeSure_L = us_ticker_read();
-                    indexer_L.setSpeed(sure_L.calculate(shootTargetPosition_L, indexer_L>>MULTITURNANGLE, timeSure_L - prevTimeSure_L)); //
-                    prevTimeSure_L = timeSure_L;
-                }
+            if (1||shoot_L){
+                //indexer_L.setPower(3000);
+                //indexer_R.setPower(3000);
+                // if (indexer_L>>MULTITURNANGLE >= shootTargetPosition_L){
+                //     indexer_L.setSpeed(0);
+                //     shoot_L = false;
+                // } else {
+                //     timeSure_L = us_ticker_read();
+                //     indexer_L.setSpeed(sure_L.calculate(shootTargetPosition_L, indexer_L>>MULTITURNANGLE, timeSure_L - prevTimeSure_L)); //
+                //     prevTimeSure_L = timeSure_L;
+                // }
             } else {
                 indexer_L.setSpeed(0);
             }
 
             if (shoot_R){
                 if (indexer_R>>MULTITURNANGLE >= shootTargetPosition_R){
-                    indexer_R.setSpeed(0);
+                    //indexer_R.setSpeed(0);
                     shoot_R = false;
                 } else {
                     timeSure_R = us_ticker_read();
@@ -287,7 +293,7 @@ int main()
                     prevTimeSure_R = timeSure_R;
                 }
             } else {
-                indexer_R.setSpeed(0);
+                //indexer_R.setSpeed(0);
             }
 
             //PITCH CODE, if remote is UP or DOWN, run pitch code, else off

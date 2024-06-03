@@ -4,6 +4,9 @@ DigitalOut led(L27);
 DigitalOut led2(L26);
 DigitalOut led3(L25);
 DigitalOut ledbuiltin(LED1);
+DJIMotor indexer_L(8, CANHandler::CANBUS_2, C610);
+DJIMotor indexer_R(7, CANHandler::CANBUS_2, C610);
+
 
 DJIMotor testMot(4, CANHandler::CANBUS_1, M3508, "testbench_motor");
 
@@ -32,7 +35,10 @@ int main(){
                 refereeThread(&referee);
                 refLoop = 0;
                 led2 = !led2;
-                printff("datum:%d %d %d\n", testMot>>ANGLE, testMot>>VELOCITY, remote.leftX());
+                indexer_R.setPower(5000);
+                indexer_L.setPower(5000);
+                printff("%d %d\n",indexer_R>>ANGLE, indexer_L>>ANGLE );
+                //printff("datum:%d %d %d\n", testMot>>ANGLE, testMot>>VELOCITY, remote.leftX());
             }
 
             remoteRead();
