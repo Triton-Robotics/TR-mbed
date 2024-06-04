@@ -284,7 +284,8 @@ int main()
     * MOTORS SETUP AND PIDS
     */
 
-    pitch.setPositionPID(18, 0.01, 850); //12.3 0.03 2.5 //mid is 13.3, 0.03, 7.5
+    //TODO: tune pitch pid
+    pitch.setPositionPID(1, 0.01, 500); //12.3 0.03 2.5 //mid is 13.3, 0.03, 7.5
     pitch.setPositionIntegralCap(6000);
   //   merge difference:
 //     pitch.setPositionPID(17.3, 0.03, 8.5); // 12.3 0.03 2.5 //mid is 13.3, 0.03, 7.5
@@ -293,6 +294,13 @@ int main()
     pitch.pidPosition.feedForward = 0;
     pitch.outputCap = 32760;
     pitch.useAbsEncoder = true;
+
+    //Variables & PID for burst fire
+    bool shoot = false;
+    //int shootPosition;
+    int shootTargetPosition = 36*8190 ;
+    unsigned long shootTimer;
+    bool shootReady = false;
 
 
     // pitch.useAbsEncoder = true;
@@ -307,6 +315,7 @@ int main()
     LFLYWHEEL.setSpeedPID(7.5, 0, 0.04);
     RFLYWHEEL.setSpeedPID(7.5, 0, 0.04);
 
+    feeder.setSpeedPID(1, 0, 1);
     //     merge difference
     //     PID yawIMU(200.0, 0.1, 150, 20000, 8000); // 7.0,0.02,15.0,20000,8000
     Chassis.setYawReference(&yaw, 2050); // "5604" is the number of ticks of yawOne considered to be robot-front
@@ -319,7 +328,7 @@ int main()
     yaw.setSpeedIntegralCap(1000);
     yaw.useAbsEncoder = false;
 
-    indexer.setSpeedPID(1, 0, 1);
+    indexer.setSpeedPID(2, 0, 0);
     indexer.setSpeedIntegralCap(8000);
     //PID for indexer angle position control. Surely there are better names then "sure"...
     PID sure(0.5,0,0.4);
@@ -360,11 +369,6 @@ int main()
     unsigned long lastTime = 0;
     unsigned long yawTime = us_ticker_read();
 
-    //Variables & PID for burst fire
-    bool shoot = false;
-    //int shootPosition;
-    int shootTargetPosition = 36*8190 ;
-    bool shootReady = false;
 
     bool userButton;
     bool prev_userButton;
@@ -403,6 +407,8 @@ int main()
             angle /= 2;
             float currentAngle = (1.0 - (angle / TICKS_REVOLUTION)) * 360.0 - 120;
 
+            imu.get_angular_position_quat(&imuAngles);
+
             if (refLoop >= 5){
                 refereeThread(&referee);
                 refLoop = 0;
@@ -411,12 +417,13 @@ int main()
 
                 // printff("%f %d %d %d\n", imuAngles.yaw, yawSetPoint, remote.getMouseX()*MOUSE_SENSE_YAW, yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
                 // printff("ang%f t%d d%f FF%f\n", (((pitch>>ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360, pitch>>ANGLE, desiredPitch, K * sin((desiredPitch / 180 * PI) - pitch_phase)); //(desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks
-                printff("%d %d %d %d [%f]\n"
-                    ,Chassis.getMotor(ChassisSubsystem::LEFT_FRONT)>>POWEROUT
-                    ,Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT)>>POWEROUT
-                    ,Chassis.getMotor(ChassisSubsystem::LEFT_BACK)>>POWEROUT
-                    ,Chassis.getMotor(ChassisSubsystem::RIGHT_BACK)>>POWEROUT
-                    ,currentAngle);
+//                printff("%d %d %d %d [%f]\n"
+//                    ,Chassis.getMotor(ChassisSubsystem::LEFT_FRONT)>>POWEROUT
+//                    ,Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT)>>POWEROUT
+//                    ,Chassis.getMotor(ChassisSubsystem::LEFT_BACK)>>POWEROUT
+//                    ,Chassis.getMotor(ChassisSubsystem::RIGHT_BACK)>>POWEROUT
+//                    ,currentAngle);
+                printff("i: %f, p: %d, p_P: %d \n", imuAngles.yaw, pitch>>ANGLE, pitch>>POWEROUT);
                 //printff("ang%f t%d d%f FF%f\n", (((pitch>>ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360, pitch>>ANGLE, desiredPitch, K * sin((desiredPitch / 180 * PI) - pitch_phase)); //(desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks
             }
 
@@ -457,7 +464,7 @@ int main()
                                           0 * Chassis.m_OmniKinematicsLimits.max_vOmega}, 
                                           currentAngle // change Yaw to CCW +, and ranges from 0 to 360
                 );
-                Chassis.setChassisSpeeds(cs, 
+                Chassis.setChassisSpeeds(cs,
                                           ChassisSubsystem::ROBOT_ORIENTED);
 
                 lastTime = time; 
@@ -471,8 +478,8 @@ int main()
 
                 timeSure = us_ticker_read();
 
-                // yaw.setSpeed(2 * 5 * yawNonBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
-                imu.get_angular_position_quat(&imuAngles);
+                yaw.setSpeed(2 * 5 * yawNonBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
+
 
                 prevTimeSure = timeSure;
                 // imu.get_angular_position_quat(&imuAngles);
@@ -485,7 +492,7 @@ int main()
                 yawSetPoint = yawSetPoint % 360;
             } else if (remote.rightSwitch() == Remote::SwitchState::DOWN){           // beyblade mode
                 unsigned long time = us_ticker_read(); //time for pid
-                pitch.setPower(0);
+//                pitch.setPower(0);
                 Chassis.setSpeedFF_Ks(0.065);
                 // Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
                 //                           jy * Chassis.m_OmniKinematicsLimits.max_Vel,
@@ -508,7 +515,7 @@ int main()
                 
                 timeSure = us_ticker_read();
 
-                // yaw.setSpeed(-2 * Chassis.getChassisSpeeds().vOmega * 8192 / 3.14 * 60 /8 + 15 * yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
+                 yaw.setSpeed(-2 * Chassis.getChassisSpeeds().vOmega * 8192 / 3.14 * 60 /8 + 15 * yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
                 imu.get_angular_position_quat(&imuAngles);
 
                 prevTimeSure = timeSure;
@@ -519,18 +526,39 @@ int main()
             // burst fire, turn the indexer to shoot 3-5 balls a time and stop indexer
             // only shoot when left switch changes from down/unknown/mid to up
             // if left switch remains at up state, indexer stops after 3-5 balls
-            // if (shoot){
-            //     if (indexer>>MULTITURNANGLE >= shootTargetPosition){
-            //         // indexer.setSpeed(0);
-            //         shoot = false;
-            //     } else {
-            //         timeSure = us_ticker_read();
-            //         // indexer.setSpeed(0); //
-            //         // prevTimeSure = timeSure;
-            //     }
-            // } else {
-            //     // indexer.setSpeed(0);
-            // }
+             if (shoot){
+//                 if (indexer>>MULTITURNANGLE >= shootTargetPosition){
+//                     // indexer.setSpeed(0);
+//                     shoot = false;
+//                 } else {
+//                     timeSure = us_ticker_read();
+//                     // indexer.setSpeed(0); //
+//                     // prevTimeSure = timeSure;
+//                 }
+                //feeder
+                bool feederOn = false;
+                bool indexerOn = false;
+                if (us_ticker_read()/1000 - shootTimer <200){
+                    feeder.setSpeed(6000);
+                } else {
+                    feeder.setSpeed(0);
+                    feederOn = true;
+                }
+                //indexer
+                if (us_ticker_read()/1000 - shootTimer <500){
+                    indexer.setSpeed(4000);
+                } else {
+                    indexer.setSpeed(100);
+                    indexerOn = true;
+                }
+                if (indexerOn && feederOn){
+                    shoot = false;
+                }
+
+             } else {
+                 indexer.setSpeed(100);
+                 feeder.setSpeed(0);
+             }
 
             //PITCH CODE, if remote is UP or DOWN, run pitch code, else off
             if (remote.rightSwitch() == Remote::SwitchState::UP ||
@@ -559,12 +587,15 @@ int main()
                 }
 
                 float FF = K * sin((desiredPitch / 180 * PI) - pitch_phase); // output: [-1,1]
-                pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
-                // pitch.setPosition(int((desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks));
+//                pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
+                    pitch.setPower(0);
+//                pitch.setPosition(int((desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks));
 
             } else{
                 pitch.setPower(0);
             }
+
+
 
 
             /**
@@ -578,16 +609,22 @@ int main()
                 // if left switch was at other states, turn indexer on
                 // otherwise, continue the burstfire and stop after 3-5 shots
                 // $shootReady local to if block, $shoot variable used above
-                // if (shootReady){
-                //     shootReady = false;
-                //     shoot = true;
-                //     shootTargetPosition = 8192 * 12 + (indexer>>MULTITURNANGLE);
-                // }
-                indexer.setPower(5000);
-                feeder.setPower(1000);
+//                feeder.setSpeed(1000);
+                 if (shootReady){
+                     shootReady = false;
+//                     shoot = true;
+                     shootTargetPosition = 8192 * 12 + (indexer>>MULTITURNANGLE);
+//                    if(ext_power_heat_data.data.shooter_id1_17mm_cooling_heat < ext_game_robot_state.data.shooter_id1_17mm_cooling_limit - 40) {
+                        shoot = true;
+                        shootTimer = us_ticker_read()/1000;
+//                    }
+                 }
+
+//                indexer.setPower(5000);
+//                feeder.setPower(1000);
             } else {
                 //SwitchState state set to mid/down/unknown
-                // shootReady = true;
+                 shootReady = true;
                 indexer.setPower(0);
                 feeder.setPower(0);
             }
