@@ -242,7 +242,7 @@ $(function() {
 <div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    <span class="comment">// objects in the same vector.</span></div>
 <div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    EIGEN_ALIGN_TO_BOUNDARY(128) <a class="code" href="namespacestd.html">std</a>::atomic&lt;<a class="code" href="namespaceEigen_1_1numext.html#a0259c31cd34e096be5056e9d88ae0500">uint64_t</a>&gt; next;</div>
 <div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    <a class="code" href="namespacestd.html">std</a>::mutex mu;</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    <a class="code" href="namespacestd.html">std</a>::condition_variable <a class="code" href="Sentry_2main_8cpp.html#a90ce0e462e8e1fec812ecb00d5f5008b">cv</a>;</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    <a class="code" href="namespacestd.html">std</a>::condition_variable cv;</div>
 <div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    <a class="code" href="namespaceEigen_1_1numext.html#a0259c31cd34e096be5056e9d88ae0500">uint64_t</a> epoch = 0;</div>
 <div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    <span class="keywordtype">unsigned</span> state = kNotSignaled;</div>
 <div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    enum {</div>
@@ -321,7 +321,6 @@ $(function() {
 <div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">// EIGEN_CXX11_THREADPOOL_EVENTCOUNT_H_</span></div>
 <div class="ttc" id="aMacros_8h_html_a000d296c3fca8ba6e784bdcc7d01d91d"><div class="ttname"><a href="Macros_8h.html#a000d296c3fca8ba6e784bdcc7d01d91d">eigen_plain_assert</a></div><div class="ttdeci">#define eigen_plain_assert(x)</div><div class="ttdef"><b>Definition:</b> Macros.h:1007</div></div>
 <div class="ttc" id="aMatrix__resize__int_8cpp_html_aab236ce080522c9832217fd5f157541b"><div class="ttname"><a href="Matrix__resize__int_8cpp.html#aab236ce080522c9832217fd5f157541b">w</a></div><div class="ttdeci">RowVector3d w</div><div class="ttdef"><b>Definition:</b> Matrix_resize_int.cpp:3</div></div>
-<div class="ttc" id="aSentry_2main_8cpp_html_a90ce0e462e8e1fec812ecb00d5f5008b"><div class="ttname"><a href="Sentry_2main_8cpp.html#a90ce0e462e8e1fec812ecb00d5f5008b">cv</a></div><div class="ttdeci">Thread cv</div><div class="ttdef"><b>Definition:</b> main.cpp:7</div></div>
 <div class="ttc" id="aclassEigen_1_1EventCount_1_1Waiter_html"><div class="ttname"><a href="classEigen_1_1EventCount_1_1Waiter.html">Eigen::EventCount::Waiter</a></div><div class="ttdef"><b>Definition:</b> EventCount.h:167</div></div>
 <div class="ttc" id="aclassEigen_1_1EventCount_html"><div class="ttname"><a href="classEigen_1_1EventCount.html">Eigen::EventCount</a></div><div class="ttdef"><b>Definition:</b> EventCount.h:49</div></div>
 <div class="ttc" id="aclassEigen_1_1EventCount_html_a0d8e7a05e1e87ca91da77e301947a60c"><div class="ttname"><a href="classEigen_1_1EventCount.html#a0d8e7a05e1e87ca91da77e301947a60c">Eigen::EventCount::EventCount</a></div><div class="ttdeci">EventCount(MaxSizeVector&lt; Waiter &gt; &amp;waiters)</div><div class="ttdef"><b>Definition:</b> EventCount.h:53</div></div>
