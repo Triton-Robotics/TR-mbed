@@ -226,15 +226,15 @@
 
 #define PI 3.14159265
 
-#define LOWERBOUND 35.0
-#define UPPERBOUND -15.0
+#define LOWERBOUND 155.0
+#define UPPERBOUND -35.0
 
 // add radius measurement here
 #define RADIUS 0.5
 #define RUNSPIN 1.0
 
 #define JOYSTICK_SENSE_YAW 1.0/90
-#define JOYSTICK_SENSE_PITCH 1.0/150
+#define JOYSTICK_SENSE_PITCH 1.0/100
 #define MOUSE_SENSE_YAW 1.0/3
 #define MOUSE_SENSE_PITCH 1.0/5
 #define MOUSE_KB_MULT 0.2
@@ -275,42 +275,78 @@ int calculateDeltaYaw(int ref_yaw, int beforeBeybladeYaw)
     return deltaYaw;
 }
 
-int main()
-{
+bool shoot = false;
+unsigned long shootTimer;
+bool shootReady = false;
 
+float currentPitch = 0;
+float desiredPitch = 0;
+float pitch_phase = 33 / 180.0 * PI; // 5.69 theoretical
+float InitialOffset_Ticks = 2500;
+float K = 0.38; // 0.75 //0.85
+
+    //PID for indexer angle position control. Surely there are better names then "sure"...
+PID sure(0.5,0,0.4);
+unsigned long timeSure;
+unsigned long prevTimeSure;
+
+unsigned long loopTimer;
+int refLoop;
+int ref_yaw;
+
+int yawSetPoint;
+double rotationalPower;
+
+double beybladeSpeed;
+bool beybladeIncreasing;
+
+float chassis_power;
+uint16_t chassis_power_limit;
+uint16_t ref_chassis_temp1;
+uint16_t ref_chassis_temp2;
+uint16_t heatMax1;
+uint16_t heatMax2;
+
+int counter ;
+int shootTargetPosition;
+
+unsigned long lastTime;
+unsigned long yawTime;
+
+
+bool usrButton;
+bool prev_userButton;
+char driveMode;
+
+PID yawBeyblade(10, 0, 5);
+PID yawNonBeyblade(80, 0, 50);
+
+unsigned long timeStart;
+
+void setup(){
     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
-
     /*
     * MOTORS SETUP AND PIDS
     */
-
-    //TODO: tune pitch pid
-    pitch.setPositionPID(1, 0.01, 500); //12.3 0.03 2.5 //mid is 13.3, 0.03, 7.5
+    pitch.setPositionPID(10, 0.01, 200); //12.3 0.03 2.5 //mid is 13.3, 0.03, 7.5
     pitch.setPositionIntegralCap(6000);
-  //   merge difference:
-//     pitch.setPositionPID(17.3, 0.03, 8.5); // 12.3 0.03 2.5 //mid is 13.3, 0.03, 7.5
-//     pitch.setPositionIntegralCap(60000);
-//    pitch.setPositionOutputCap(100000);
+    //   merge difference:
+    //     pitch.setPositionPID(17.3, 0.03, 8.5); // 12.3 0.03 2.5 //mid is 13.3, 0.03, 7.5
+    //     pitch.setPositionIntegralCap(60000);
+    //    pitch.setPositionOutputCap(100000);
     pitch.pidPosition.feedForward = 0;
     pitch.outputCap = 32760;
     pitch.useAbsEncoder = true;
 
     //Variables & PID for burst fire
-    bool shoot = false;
+    shoot = false;
     //int shootPosition;
-    int shootTargetPosition = 36*8190 ;
-    unsigned long shootTimer;
-    bool shootReady = false;
-
+    shootTargetPosition = 36*8190 ;
+    shootReady = false;
 
     // pitch.useAbsEncoder = true;
-    pitch.setPositionPID(15, 0, 1700); //15, 0 1700
+    pitch.setPositionPID(10, 0, 50); //15, 0 1700
     pitch.setPositionOutputCap(32000);
-    float currentPitch = 0;
-    float desiredPitch = 0;
-    float pitch_phase = 33 / 180.0 * PI; // 5.69 theoretical
-    float InitialOffset_Ticks = 2500;
-    float K = 0.38; // 0.75 //0.85
 
     LFLYWHEEL.setSpeedPID(7.5, 0, 0.04);
     RFLYWHEEL.setSpeedPID(7.5, 0, 0.04);
@@ -318,65 +354,57 @@ int main()
     feeder.setSpeedPID(1, 0, 1);
     //     merge difference
     //     PID yawIMU(200.0, 0.1, 150, 20000, 8000); // 7.0,0.02,15.0,20000,8000
-    Chassis.setYawReference(&yaw, 2050); // "5604" is the number of ticks of yawOne considered to be robot-front
+//    Chassis.setYawReference(&yaw, 2050); // "5604" is the number of ticks of yawOne considered to be robot-front
+    Chassis.setYawReference(&yaw, 4098);
     Chassis.setSpeedFF_Ks(0.065);
 
     yaw.setSpeedPID(0.1, 0, 150);
-    PID yawBeyblade(40, 0, 5);
-    PID yawNonBeyblade(80, 0, 50);
+
 
     yaw.setSpeedIntegralCap(1000);
     yaw.useAbsEncoder = false;
 
     indexer.setSpeedPID(2, 0, 0);
     indexer.setSpeedIntegralCap(8000);
-    //PID for indexer angle position control. Surely there are better names then "sure"...
-    PID sure(0.5,0,0.4);
-    sure.setOutputCap(4000);
-    unsigned long timeSure;
-    unsigned long prevTimeSure;
+
     //  merge difference
     //   chassis.setBrakeMode(ChassisSubsystem::BrakeMode::COAST);
+    sure.setOutputCap(4000);
 
     // command.initialize();
 
     /*
     * OPERATIONAL VARIABLES
     */
-    unsigned long loopTimer = us_ticker_read();
+    loopTimer = us_ticker_read();
 
-    int refLoop = 0;
-    int ref_yaw;
+    refLoop = 0;
 
-    int yawSetPoint = imuAngles.yaw;
-    double rotationalPower = 0;
+    yawSetPoint = imuAngles.yaw;
+    rotationalPower = 0;
 
     jumper.mode(PullDown);
 
     DJIMotor::s_getFeedback();
-    double beybladeSpeed = 2;
-    bool beybladeIncreasing = true;
+    beybladeSpeed = 2;
+    beybladeIncreasing = true;
 
-    float chassis_power;
-    uint16_t chassis_power_limit;
-    uint16_t ref_chassis_temp1;
-    uint16_t ref_chassis_temp2;
-    uint16_t heatMax1;
-    uint16_t heatMax2;
+    counter = 0;
 
-    int counter = 0;
+    lastTime = 0;
+    yawTime = us_ticker_read();
 
-    unsigned long lastTime = 0;
-    unsigned long yawTime = us_ticker_read();
+    driveMode = 'j';
+}
 
 
-    bool userButton;
-    bool prev_userButton;
-    char driveMode = 'j';
+int main()
+{
+    setup();
 
     while (true)
     {
-        unsigned long timeStart = us_ticker_read();
+        timeStart = us_ticker_read();
 
         if ((timeStart - loopTimer) / 1000 > 25){
             led3 = !led3;
@@ -423,7 +451,7 @@ int main()
 //                    ,Chassis.getMotor(ChassisSubsystem::LEFT_BACK)>>POWEROUT
 //                    ,Chassis.getMotor(ChassisSubsystem::RIGHT_BACK)>>POWEROUT
 //                    ,currentAngle);
-                printff("i: %f, p: %d, p_P: %d \n", imuAngles.yaw, pitch>>ANGLE, pitch>>POWEROUT);
+                printff("pitch:%f imu: %d\n", desiredPitch, imuAngles.yaw);
                 //printff("ang%f t%d d%f FF%f\n", (((pitch>>ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360, pitch>>ANGLE, desiredPitch, K * sin((desiredPitch / 180 * PI) - pitch_phase)); //(desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks
             }
 
@@ -459,15 +487,15 @@ int main()
                 // led3 = 1;
                 unsigned long time = us_ticker_read();
                 Chassis.setSpeedFF_Ks(0.065);
-                ChassisSpeeds cs = Chassis.rotateChassisSpeed({jx * Chassis.m_OmniKinematicsLimits.max_Vel, 
-                                          jy * Chassis.m_OmniKinematicsLimits.max_Vel, 
-                                          0 * Chassis.m_OmniKinematicsLimits.max_vOmega}, 
+                ChassisSpeeds cs = Chassis.rotateChassisSpeed({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
+                                          jy * Chassis.m_OmniKinematicsLimits.max_Vel,
+                                          0 * Chassis.m_OmniKinematicsLimits.max_vOmega},
                                           currentAngle // change Yaw to CCW +, and ranges from 0 to 360
                 );
                 Chassis.setChassisSpeeds(cs,
                                           ChassisSubsystem::ROBOT_ORIENTED);
 
-                lastTime = time; 
+                lastTime = time;
 
                 if(driveMode == 'm'){
                     yawSetPoint -= remote.getMouseX() * MOUSE_SENSE_YAW;
@@ -498,12 +526,12 @@ int main()
                 //                           jy * Chassis.m_OmniKinematicsLimits.max_Vel,
                 //                           -RUNSPIN },ChassisSubsystem::YAW_ORIENTED);
 
-                ChassisSpeeds cs = Chassis.rotateChassisSpeed({jx * Chassis.m_OmniKinematicsLimits.max_Vel, 
-                                          jy * Chassis.m_OmniKinematicsLimits.max_Vel, 
-                                          -RUNSPIN}, 
+                ChassisSpeeds cs = Chassis.rotateChassisSpeed({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
+                                          jy * Chassis.m_OmniKinematicsLimits.max_Vel,
+                                          -RUNSPIN},
                                           currentAngle // change Yaw to CCW +, and ranges from 0 to 360
                 );
-                Chassis.setChassisSpeeds(cs, 
+                Chassis.setChassisSpeeds(cs,
                                           ChassisSubsystem::ROBOT_ORIENTED);
 
                 if(driveMode == 'm'){
@@ -512,7 +540,7 @@ int main()
                     yawSetPoint -= remote.rightX() * JOYSTICK_SENSE_YAW;
                 }
                 yawSetPoint = (yawSetPoint+360) % 360;
-                
+
                 timeSure = us_ticker_read();
 
                  yaw.setSpeed(-2 * Chassis.getChassisSpeeds().vOmega * 8192 / 3.14 * 60 /8 + 15 * yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
@@ -568,13 +596,12 @@ int main()
                 // ground level = -5.69
                 // lower bound = 15
                 // upper bound = -25
-                
+
                 // printff("i%f\n",desiredPitch);
                 if(driveMode == 'm'){
                     desiredPitch += remote.getMouseY() * MOUSE_SENSE_PITCH;
                 }else{
                     desiredPitch -= leftStickValue * JOYSTICK_SENSE_PITCH;
-
                 }
 
                 if (desiredPitch >= LOWERBOUND) {
@@ -588,8 +615,8 @@ int main()
 
                 float FF = K * sin((desiredPitch / 180 * PI) - pitch_phase); // output: [-1,1]
 //                pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
-                    pitch.setPower(0);
-//                pitch.setPosition(int((desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks));
+//                    pitch.setPower(0);
+                pitch.setPosition(int((desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks));
 
             } else{
                 pitch.setPower(0);
@@ -642,9 +669,9 @@ int main()
         }
         unsigned long timeEnd = us_ticker_read() / 1000;
         DJIMotor::s_getFeedback();
-        prev_userButton = userButton;
+        prev_userButton = usrButton;
         ThisThread::sleep_for(1ms);
-        userButton = button;
+        usrButton = button;
     }
 }
 
