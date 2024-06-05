@@ -379,7 +379,7 @@ uint8_t get_robot_id(void)
 }
 uint8_t get_remain_hp(void)
 {
-    return ext_game_robot_state.data.remain_HP;
+    return ext_game_robot_state.data.current_HP;
 }
 
 

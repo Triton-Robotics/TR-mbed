@@ -85,6 +85,9 @@ int main(){
 
                 // printff("Yaw_POS: %d\n", yaw>>ANGLE);
                 // printff("burst %d\n", us_ticker_read()-burstTimestamp);
+
+                printff("%f %f %d \n", ext_power_heat_data.data.chassis_power, ext_power_heat_data.data.chassis_power_buffer, 
+                ext_game_robot_state.data.chassis_power_limit);
             }
 
             remoteRead(); 
@@ -138,7 +141,7 @@ int main(){
             #define burstthreshold 0
             #define indexerburstend 500
             //SHOOTING CODE BEGIN
-            double mps = ext_game_robot_state.data.shooter_id1_42mm_speed_limit;
+            double mps = ext_game_robot_state.data.shooter_barrel_heat_limit;
             double rpm = 60 * (mps / 0.03) / (3.14159 * 2);
 
             if(mps == 0) rpm = 5400;
