@@ -352,8 +352,8 @@ void DJIMotor::s_updateMultiTurnPosition() {
                     curMotor->lastMotorAngle = curAngle;
                     curMotor->lastIntegrationTime = long(time);
 
-                    if (curMotor->printAngle)
-                        printf("Integ multi: %i %i\n", curMotor->integratedAngle, curMotor->multiTurn);
+                    //if (curMotor->printAngle)
+                        //printf("Integ multi: %i %i\n", curMotor->integratedAngle, curMotor->multiTurn);
 
                 }
 }
