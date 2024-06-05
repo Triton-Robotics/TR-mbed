@@ -82,13 +82,13 @@ private:
 #define       JudgeLength_Event_Data             13
 #define       JudgeLength_Supply_Station         13
 //#define       JudgeLength_Request_Recharge       11(对抗赛未开放)
-#define       JudgeLength_Referee_Warning        11
-#define       JudgeLength_Dart_Countdown         10
-#define       JudgeLength_Robot_State            36
+#define       JudgeLength_Referee_Warning        12
+#define       JudgeLength_Dart_Countdown         12
+#define       JudgeLength_Robot_State            22
 #define       JudgeLength_Power_Heat             25
 #define       JudgeLength_Robot_Position         25
-#define       JudgeLength_Robot_Buff             10
-#define       JudgeLength_Aerial_Energy          10
+#define       JudgeLength_Robot_Buff             15
+#define       JudgeLength_Aerial_Energy          11
 #define       JudgeLength_Injury_State           10
 #define       JudgeLength_RealTime_Shoot         16
 #define       JudgeLength_Remaining_Rounds       15
@@ -319,12 +319,12 @@ typedef struct
 		__packed struct
 		{
 			uint16_t chassis_volt; //底盘输出电压 单位 毫伏
-      uint16_t chassis_current; //底盘输出电流 单位 毫安
-      float chassis_power;//底盘输出功率 单位 W 瓦
-      uint16_t chassis_power_buffer;//底盘功率缓冲 单位 J 焦耳 备注：飞坡根据规则增加至 250J
-      uint16_t shooter_id1_17mm_cooling_heat;//枪口热量
-      uint16_t shooter_id2_17mm_cooling_heat;
-      uint16_t shooter_id1_42mm_cooling_heat;	
+			uint16_t chassis_current; //底盘输出电流 单位 毫安
+			float chassis_power;//底盘输出功率 单位 W 瓦
+			uint16_t chassis_power_buffer;//底盘功率缓冲 单位 J 焦耳 备注：飞坡根据规则增加至 250J
+			uint16_t shooter_id1_17mm_cooling_heat;//枪口热量
+			uint16_t shooter_id2_17mm_cooling_heat;
+			uint16_t shooter_id1_42mm_cooling_heat;	
 		};
 	}data;
 	uint8_t InfoUpdataFlag;

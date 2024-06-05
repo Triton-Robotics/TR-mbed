@@ -70,7 +70,7 @@ int main(){
 
         if ((timeStart - loopTimer) / 1000 > 10)
         {
-            led2 = !led2;
+            led = !led;
 
             refLoop++;
             if (refLoop >= 10){              // prints in here, prints less often
@@ -86,8 +86,22 @@ int main(){
                 // printff("Yaw_POS: %d\n", yaw>>ANGLE);
                 // printff("burst %d\n", us_ticker_read()-burstTimestamp);
 
-                printff("%f %f %d \n", ext_power_heat_data.data.chassis_power, ext_power_heat_data.data.chassis_power_buffer, 
-                ext_game_robot_state.data.chassis_power_limit);
+                printff("%f %f %d %d %d %d %d\n", ext_power_heat_data.data.chassis_power, ext_power_heat_data.data.chassis_power_buffer, 
+                ext_game_robot_state.data.robot_level, ext_game_robot_state.data.current_HP, ext_game_robot_state.data.maximum_HP,
+                ext_game_robot_state.data.shooter_barrel_cooling_value, ext_game_robot_state.data.shooter_barrel_heat_limit);
+            
+                // printf("%f %f %f \n", ext_game_robot_state.data.power_management_gimbal_output, ext_game_robot_state.data.power_management_chassis_output,
+                // ext_game_robot_state.data.power_management_shooter_output);
+
+                // printff("%f ", ext_power_heat_data.data.chassis_power);
+
+                // printff("%d %d %d \n", ext_power_heat_data.data.shooter_id1_17mm_cooling_heat, ext_power_heat_data.data.shooter_id2_17mm_cooling_heat,
+                // ext_power_heat_data.data.shooter_id1_42mm_cooling_heat);
+
+                // printff("%d %d %d %d\n", ext_game_robot_HP.data.red_3_robot_HP, ext_game_robot_HP.data.blue_3_robot_HP);
+                // printff("%d %d %d %d\n");
+
+           
             }
 
             remoteRead(); 

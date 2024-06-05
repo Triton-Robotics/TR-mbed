@@ -101,13 +101,21 @@ uint8_t Robot_Commute[26];
 
 void Judge_GetMessage(uint16_t Data_Length)
 {
+    for (int i = 0; i < Data_Length;i++)
+    {
+        printf("%x ", JudgeSystem_rxBuff[i]);
+    }
+    printf("\n");
+    // printf("[%d]\n",Data_Length);
     for (int n = 0; n < Data_Length;)
     {
+        
         if (JudgeSystem_rxBuff[n] == JUDGE_FRAME_HEADER)
         {
             switch (JudgeSystem_rxBuff[n + 5] | JudgeSystem_rxBuff[n + 6] << 8)
             {
             case Judge_Game_StatusData: //比赛状态数据
+                printf("ST[%d]\n", n);
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Game_StatusData))
                 {
                     memcpy(ext_game_status.data.dataBuff, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[11]));
@@ -118,6 +126,7 @@ void Judge_GetMessage(uint16_t Data_Length)
                     n++;
                 break;
             case Judge_Game_ResultData: //比赛结果
+                printf("GR[%d]\n", n);
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Game_ResultData))
                 {
                     memcpy(ext_game_result.data.dataBuff, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[1]));
@@ -128,6 +137,7 @@ void Judge_GetMessage(uint16_t Data_Length)
                     n++;
                 break;
             case Judge_Robot_HP: //机器人血量数据
+                printf("HP[%d]\n", n);
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Robot_HP))
                 {
                     memcpy(&ext_game_robot_HP.data.dataBuff, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[32]));
@@ -138,6 +148,7 @@ void Judge_GetMessage(uint16_t Data_Length)
                     n++;
                 break;
             case Judge_Dart_Launch: //飞镖发射状态
+                printf("DL[%d]\n", n);
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Dart_Launch))
                 {
                     memcpy(&ext_dart_status.data.dataBuff, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[3]));
@@ -148,6 +159,7 @@ void Judge_GetMessage(uint16_t Data_Length)
                     n++;
                 break;
             case Judge_AI_ChallengeBuff: //AI加成与惩罚
+                printf("AI[%d]\n", n);
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_AI_ChallengeBuff))
                 {
                     memcpy(&ext_ICRA_buff_debuff_zone_status.data.dataBuff, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[11]));
@@ -158,6 +170,7 @@ void Judge_GetMessage(uint16_t Data_Length)
                     n++;
                 break;
             case Judge_Event_Data: //场地事件数据
+                printf("EV[%d]\n", n);
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Event_Data))
                 {
                     memcpy(&ext_even_data.data.dataBuff, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[4]));
@@ -168,6 +181,7 @@ void Judge_GetMessage(uint16_t Data_Length)
                     n++;
                 break;
             case Judge_Supply_Station: //补给站动作标识
+                printf("SS[%d]\n", n);
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Supply_Station))
                 {
                     memcpy(&ext_supply_projectile_action.data.dataBuff, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[4]));
@@ -198,6 +212,7 @@ void Judge_GetMessage(uint16_t Data_Length)
                     n++;
                 break;
             case Judge_Robot_State: //比赛机器人状态
+                printf("RS[%d]\n", n);
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Robot_State))
                 {
                     memcpy(&ext_game_robot_state.data.dataBuff, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[27]));
@@ -208,6 +223,7 @@ void Judge_GetMessage(uint16_t Data_Length)
                     n++;
                 break;
             case Judge_Power_Heat: //实时功率热量
+                printf("PH[%d]\n", n);
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Power_Heat))
                 {
                     memcpy(&ext_power_heat_data.data.dataBuff, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[16]));
@@ -307,9 +323,10 @@ void Judge_GetMessage(uint16_t Data_Length)
                     n++;
                 break;
             default:
+                printf("[none %x]\n", JudgeSystem_rxBuff[n + 5] | JudgeSystem_rxBuff[n + 6] << 8);
                 n++;
                 break;
-            }
+            } 
         }
         else
             n++;
