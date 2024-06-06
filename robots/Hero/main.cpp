@@ -396,7 +396,6 @@ int main()
             refLoop++;
             imu.get_angular_position_quat(&imuAngles);
 
-
             float angle = -(yaw>>MULTITURNANGLE);
             while(angle < 0){
                 angle += TICKS_REVOLUTION * 2;

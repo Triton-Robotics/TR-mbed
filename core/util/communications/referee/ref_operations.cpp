@@ -25,7 +25,7 @@ void refereeThread(BufferedSerial* referee){
             }
             // printf("robot hp: %d  ", ext_game_robot_state.data.remain_HP);
             // printf("max hp: %d  ", ext_game_robot_state.data.max_HP);
-            printf("angle: %d  \n", (int)ext_game_robot_pos.data.yaw);
+            // printf("angle: %d  \n", (int)ext_game_robot_pos.data.yaw);
             // cout << "angle: "<< ext_game_robot_pos.data.yaw;
             output += "robot hp: %d  max hp: %d  angle: %d  power: %d  current: %d  volt: %d \n";
 
@@ -123,8 +123,8 @@ void refereeThread(BufferedSerial* referee){
         string powerStr = "power: " + to_string((int)ext_power_heat_data.data.chassis_power);
         ui_graph_characters(referee, 1, powerStr, SCREEN_LENGTH/2 +100, SCREEN_WIDTH/2 +100, 99);
 
-        string angleStr = "angle: " + to_string((int)ext_game_robot_pos.data.yaw);
-        ui_graph_characters(referee, 1, angleStr, SCREEN_LENGTH/2 +100, SCREEN_WIDTH/2 +150, 10);
+        // // string angleStr = "angle: " + to_string((int)ext_game_robot_pos.data.yaw);
+        // ui_graph_characters(referee, 1, angleStr, SCREEN_LENGTH/2 +100, SCREEN_WIDTH/2 +150, 10);
 
         /* Robot communication to be worked on in the future */
         /*
