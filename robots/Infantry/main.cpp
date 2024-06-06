@@ -177,11 +177,11 @@ int main()
                 refLoop = 0;
                 led2 = !led2;
                 // led4 = button;
-                // printff("%f %f %d \n", ext_power_heat_data.data.chassis_power, ext_power_heat_data.data.chassis_power_buffer, ext_game_robot_state.data.chassis_power_limit);
+                printff("%f %f %d \n", power_heat_data.chassis_power, power_heat_data.buffer_energy, robot_status.chassis_power_limit);
                 // printff("%f %d %d %d\n", imuAngles.yaw, yawSetPoint, remote.getMouseX()*MOUSE_SENSE_YAW, yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
                 // printff("ang%f t%d d%f FF%f\n", (((pitch>>ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360, pitch>>ANGLE, desiredPitch, K * sin((desiredPitch / 180 * PI) - pitch_phase)); //(desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks
-                Chassis.PEAK_POWER_ALL = 141 * ext_game_robot_state.data.chassis_power_limit;
-                printff("%d %d \n" , ext_power_heat_data.data.shooter_id1_17mm_cooling_heat, ext_game_robot_state.data.shooter_id1_17mm_cooling_limit);
+                Chassis.PEAK_POWER_ALL = 141 *  robot_status.chassis_power_limit;
+                // printff("%d %d \n" , ext_power_heat_data.data.shooter_id1_17mm_cooling_heat, ext_game_robot_state.data.shooter_id1_17mm_cooling_limit);
             }
 
             double scalar = 1;
@@ -335,7 +335,7 @@ int main()
                     shootTargetPosition = 8192 * 12 + (indexer>>MULTITURNANGLE);
 
                     //shoot limit
-                    if(ext_power_heat_data.data.shooter_id1_17mm_cooling_heat < ext_game_robot_state.data.shooter_id1_17mm_cooling_limit - 40) {
+                    if(power_heat_data.shooter_17mm_1_barrel_heat < robot_status.shooter_barrel_heat_limit - 40) {
                         shoot = true;
                     }
                     
