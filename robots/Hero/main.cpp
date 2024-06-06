@@ -422,8 +422,10 @@ int main()
 //                    ,Chassis.getMotor(ChassisSubsystem::LEFT_BACK)>>POWEROUT
 //                    ,Chassis.getMotor(ChassisSubsystem::RIGHT_BACK)>>POWEROUT
 //                    ,currentAngle);
-                printff("i: %f, p: %d, p_P: %d \n", imuAngles.yaw, pitch>>ANGLE, pitch>>POWEROUT);
+                // printff("i: %f, p: %d, p_P: %d \n", imuAngles.yaw, pitch>>ANGLE, pitch>>POWEROUT);
                 //printff("ang%f t%d d%f FF%f\n", (((pitch>>ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360, pitch>>ANGLE, desiredPitch, K * sin((desiredPitch / 180 * PI) - pitch_phase)); //(desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks
+                // printff("%d %d %d %d\n", robot_status.robot_id, robot_status.robot_level, robot_status.current_HP, robot_status.maximum_HP);
+                printff("%d %d %d %d\n", robot_status.chassis_power_limit, robot_status.shooter_barrel_heat_limit, robot_status.current_HP, robot_status.maximum_HP);
             }
 
             double scalar = 1;
