@@ -180,8 +180,12 @@ int main()
                 // printff("%f %f %d \n", ext_power_heat_data.data.chassis_power, ext_power_heat_data.data.chassis_power_buffer, ext_game_robot_state.data.chassis_power_limit);
                 // printff("%f %d %d %d\n", imuAngles.yaw, yawSetPoint, remote.getMouseX()*MOUSE_SENSE_YAW, yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
                 // printff("ang%f t%d d%f FF%f\n", (((pitch>>ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360, pitch>>ANGLE, desiredPitch, K * sin((desiredPitch / 180 * PI) - pitch_phase)); //(desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks
-                Chassis.PEAK_POWER_ALL = 141 * ext_game_robot_state.data.chassis_power_limit;
-                printff("%d %d \n" , ext_power_heat_data.data.shooter_id1_17mm_cooling_heat, ext_game_robot_state.data.shooter_id1_17mm_cooling_limit);
+                if(chassis_power_limit < 10){
+                    Chassis.PEAK_POWER_ALL = 141 * robot_status.chassis_power_limit;
+                }else{
+                    Chassis.PEAK_POWER_ALL = 8500;
+                }
+                // printff("%d %d \n" , ext_power_heat_data.data.shooter_id1_17mm_cooling_heat, ext_game_robot_state.data.shooter_id1_17mm_cooling_limit);
             }
 
             double scalar = 1;
@@ -194,11 +198,16 @@ int main()
             jy = (abs(jy) < tolerance) ? 0 : jy;
             jr = (abs(jr) < tolerance) ? 0 : jr;
 
-            if(driveMode == 'm'){
-                jx = MOUSE_KB_MULT * ((remote.keyPressed(Remote::Key::D) ? 1 : 0) + (remote.keyPressed(Remote::Key::A) ? -1 : 0));
-                jy = MOUSE_KB_MULT * ((remote.keyPressed(Remote::Key::W) ? 1 : 0) + (remote.keyPressed(Remote::Key::S) ? -1 : 0));
-                jr = MOUSE_KB_MULT * ((remote.keyPressed(Remote::Key::E) ? 1 : 0) + (remote.keyPressed(Remote::Key::Q) ? -1 : 0));
-            }
+            // if(driveMode == 'm'){
+            //     jx = MOUSE_KB_MULT * ((remote.keyPressed(Remote::Key::D) ? 1 : 0) + (remote.keyPressed(Remote::Key::A) ? -1 : 0));
+            //     jy = MOUSE_KB_MULT * ((remote.keyPressed(Remote::Key::W) ? 1 : 0) + (remote.keyPressed(Remote::Key::S) ? -1 : 0));
+            //     jr = MOUSE_KB_MULT * ((remote.keyPressed(Remote::Key::E) ? 1 : 0) + (remote.keyPressed(Remote::Key::Q) ? -1 : 0));
+            // }
+
+            jx += MOUSE_KB_MULT * ((remote.keyPressed(Remote::Key::D) ? 1 : 0) + (remote.keyPressed(Remote::Key::A) ? -1 : 0));
+            jy += MOUSE_KB_MULT * ((remote.keyPressed(Remote::Key::W) ? 1 : 0) + (remote.keyPressed(Remote::Key::S) ? -1 : 0));
+            jr += MOUSE_KB_MULT * ((remote.keyPressed(Remote::Key::E) ? 1 : 0) + (remote.keyPressed(Remote::Key::Q) ? -1 : 0));
+
 
             currentPitch = (double(pitch.getData(ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360; // degrees
 
@@ -222,11 +231,15 @@ int main()
 
                 lastTime = time; 
 
-                if(driveMode == 'm'){
-                    yawSetPoint -= remote.getMouseX() * MOUSE_SENSE_YAW;
-                }else{
-                    yawSetPoint -= remote.rightX() * JOYSTICK_SENSE_YAW;
-                }
+                // if(driveMode == 'm'){
+                //     yawSetPoint -= remote.getMouseX() * MOUSE_SENSE_YAW;
+                // }else{
+                //     yawSetPoint -= remote.rightX() * JOYSTICK_SENSE_YAW;
+                // }
+
+                yawSetPoint -= remote.getMouseX() * MOUSE_SENSE_YAW;
+                yawSetPoint -= remote.rightX() * JOYSTICK_SENSE_YAW;
+
                 yawSetPoint = (yawSetPoint+360) % 360;
 
                 timeSure = us_ticker_read();
@@ -251,11 +264,15 @@ int main()
                                           jy * Chassis.m_OmniKinematicsLimits.max_Vel,
                                           -RUNSPIN },ChassisSubsystem::YAW_ORIENTED);
 
-                if(driveMode == 'm'){
-                    yawSetPoint -= remote.getMouseX() * MOUSE_SENSE_YAW;
-                }else{
-                    yawSetPoint -= remote.rightX() * JOYSTICK_SENSE_YAW;
-                }
+                // if(driveMode == 'm'){
+                //     yawSetPoint -= remote.getMouseX() * MOUSE_SENSE_YAW;
+                // }else{
+                //     yawSetPoint -= remote.rightX() * JOYSTICK_SENSE_YAW;
+                // }
+
+                yawSetPoint -= remote.getMouseX() * MOUSE_SENSE_YAW;
+                yawSetPoint -= remote.rightX() * JOYSTICK_SENSE_YAW;
+
                 yawSetPoint = (yawSetPoint+360) % 360;
                 
                 timeSure = us_ticker_read();
@@ -294,11 +311,14 @@ int main()
                 // upper bound = -25
                 
                 // printff("i%f\n",desiredPitch);
-                if(driveMode == 'm'){
-                    desiredPitch += remote.getMouseY() * MOUSE_SENSE_PITCH;
-                }else{
-                    desiredPitch -= leftStickValue * JOYSTICK_SENSE_PITCH;
-                }
+                // if(driveMode == 'm'){
+                //     desiredPitch += remote.getMouseY() * MOUSE_SENSE_PITCH;
+                // }else{
+                //     desiredPitch -= leftStickValue * JOYSTICK_SENSE_PITCH;
+                // }
+
+                desiredPitch += remote.getMouseY() * MOUSE_SENSE_PITCH;
+                desiredPitch -= leftStickValue * JOYSTICK_SENSE_PITCH;
 
                 if (desiredPitch >= LOWERBOUND) {
                     // printff("u%f\n",desiredPitch);
@@ -324,7 +344,7 @@ int main()
              * state mid: flywheels running, resetting shoot state
              * state up: flywheels continues running, turn indexer if state set by state mid
              */
-            if (remote.leftSwitch() == Remote::SwitchState::UP ){
+            if (remote.leftSwitch() == Remote::SwitchState::UP || remote.getMouseL()){
                 // Monitors state of left switch at previous loop and determine whether to turn indexer on
                 // if left switch was at other states, turn indexer on
                 // otherwise, continue the burstfire and stop after 3-5 shots
@@ -335,7 +355,7 @@ int main()
                     shootTargetPosition = 8192 * 12 + (indexer>>MULTITURNANGLE);
 
                     //shoot limit
-                    if(ext_power_heat_data.data.shooter_id1_17mm_cooling_heat < ext_game_robot_state.data.shooter_id1_17mm_cooling_limit - 40) {
+                    if(robot_status.shooter_barrel_heat_limit < 10 || power_heat_data.shooter_17mm_1_barrel_heat < robot_status.shooter_barrel_heat_limit - 40) {
                         shoot = true;
                     }
                     

@@ -227,6 +227,7 @@ void Judge_GetMessage(uint16_t Data_Length)
                 {
                     // printf("RS[%d]\n", n);
                     memcpy(&robot_status, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_Robot_State - JUDGE_EXTRA]));
+                    
                     n += JudgeLength_Robot_State;
                     ext_game_robot_state.InfoUpdataFlag = 1;
                 }
