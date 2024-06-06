@@ -30,7 +30,7 @@ DJIMotor indexer_L(8, CANHandler::CANBUS_2, C610);
 DJIMotor UP_FLYWHEEL_L(4, CANHandler::CANBUS_2, M3508);
 DJIMotor DOWN_FLYWHEEL_L(3, CANHandler::CANBUS_2, M3508);
 
-DJIMotor indexer_R(7, CANHandler::CANBUS_2, C610);
+DJIMotor indexer_R(5, CANHandler::CANBUS_2, C610);
 DJIMotor UP_FLYWHEEL_R(1, CANHandler::CANBUS_2, M3508);
 DJIMotor DOWN_FLYWHEEL_R(2, CANHandler::CANBUS_2, M3508);
 
@@ -82,8 +82,8 @@ int main()
     pitch.setPositionOutputCap(32000);
     float currentPitch = 0;
     float desiredPitch = 0;
-    float pitch_phase = -51 / 180.0 * PI; // 5.69 theoretical
-    float InitialOffset_Ticks = 1361;
+    float pitch_phase = 50 / 180.0 * PI; // 5.69 theoretical
+    float InitialOffset_Ticks = 4200;
     float K = 0.38; // 0.75 //0.85
 
     UP_FLYWHEEL_L.setSpeedPID(7.5, 0, 0.04);
@@ -262,8 +262,8 @@ int main()
                 prevTimeSure_R = timeSure_R;
             }
             yawTime = us_ticker_read();
-            indexer_L.setPower(3000);
-            indexer_R.setPower(3000);
+            //indexer_L.setPower(3000);
+            //indexer_R.setPower(3000);
 
             // burst fire, turn the indexer to shoot 3-5 balls a time and stop indexer
             // only shoot when left switch changes from down/unknown/mid to up
