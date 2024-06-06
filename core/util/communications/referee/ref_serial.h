@@ -72,6 +72,8 @@ private:
 #define       Judge_Client_Map                   0x0305
 
 /***************************DATA_Length*************************/
+
+#define       JUDGE_EXTRA						9
 /*Calculation:frame_header(5-byte)+cmd_id(2-byte)+data(n-byte)+frame_tail(2-byte,CRC16)*/
 
 #define       JudgeLength_Game_StatusData        20
@@ -135,6 +137,7 @@ typedef struct
 			uint8_t game_type : 4;             //比赛类型
 			uint8_t game_progress : 4;         //当前比赛阶段
 			uint16_t stage_remain_time;        //当前阶段剩余时间  单位s
+			uint64_t SyncTimeStamp;
 		};
 	}data;
 	uint8_t infoUpdateFlag;
@@ -295,15 +298,13 @@ typedef struct
 		__packed struct
 		{
             uint8_t robot_id;
-      uint8_t robot_level;
-      uint16_t current_HP;//机器人剩余血量
-      uint16_t maximum_HP;//机器人上限血量
-      uint16_t shooter_barrel_cooling_value; //机器人 1 号 17mm 枪口每秒冷却值
-      uint16_t shooter_barrel_heat_limit;//机器人 1 号 17mm 枪口热量上限
-      uint16_t chassis_power_limit;  //机器人 1 号 17mm 枪口上限速度 单位 m/s
-      uint8_t power_management_gimbal_output : 1;
-      uint8_t power_management_chassis_output : 1;
-      uint8_t power_management_shooter_output : 1;
+			uint8_t robot_level;
+			uint16_t current_HP;//机器人剩余血量
+			uint16_t maximum_HP;//机器人上限血量
+			uint16_t shooter_barrel_cooling_value; //机器人 1 号 17mm 枪口每秒冷却值
+			uint16_t shooter_barrel_heat_limit;//机器人 1 号 17mm 枪口热量上限
+			uint16_t chassis_power_limit;  //机器人 1 号 17mm 枪口上限速度 单位 m/s
+			uint8_t power_management_output;
 
 		};
 	}data;
@@ -339,8 +340,8 @@ typedef struct __packed
 		__packed struct
 		{
 		 float x;//位置 x 坐标
-     float y;//位置 y 坐标
-     float angle;//位置枪口
+			float y;//位置 y 坐标
+			float angle;//位置枪口
 		};
 	}data;
 	uint8_t InfoUpdataFlag;
