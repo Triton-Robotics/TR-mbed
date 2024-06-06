@@ -212,7 +212,7 @@ $(function() {
 <div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;  }</div>
 <div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160; </div>
 <div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;  <span class="keyword">typename</span> pointerMap_t::iterator get_node(<span class="keyword">const</span> virtual_pointer_t ptr) {</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;    <span class="keywordflow">if</span> (this-&gt;count() == 0) {</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;    <span class="keywordflow">if</span> (this-&gt;<a class="code" href="ref__serial_8h.html#a20302e2c99a60d3f612dba57e3f6333b">count</a>() == 0) {</div>
 <div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;      m_pointerMap.clear();</div>
 <div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;      <a class="code" href="Macros_8h.html#affd73ff76188dafd9367852f91d0ce42">EIGEN_THROW_X</a>(std::out_of_range(<span class="stringliteral">&quot;There are no pointers allocated\n&quot;</span>));</div>
 <div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160; </div>
@@ -394,7 +394,7 @@ $(function() {
 <div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;<span class="comment">   * Return the number of active pointers (i.e, pointers that</span></div>
 <div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;<span class="comment">   * have been malloc but not freed).</span></div>
 <div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;<span class="comment">   */</span></div>
-<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;  <span class="keywordtype">size_t</span> count()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> (m_pointerMap.size() - m_freeList.size()); }</div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;  <span class="keywordtype">size_t</span> <a class="code" href="ref__serial_8h.html#a20302e2c99a60d3f612dba57e3f6333b">count</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> (m_pointerMap.size() - m_freeList.size()); }</div>
 <div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160; </div>
 <div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160; <span class="keyword">private</span>:</div>
 <div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;  <span class="comment">/* add_pointer_impl.</span></div>
@@ -516,9 +516,9 @@ $(function() {
 <div class="line"><a name="l00560"></a><span class="lineno">  560</span>&#160;                                                    std::intptr_t virtual_ptr)</div>
 <div class="line"><a name="l00561"></a><span class="lineno">  561</span>&#160;      : access_(access), offset_(<a class="code" href="gnuplot__common__settings_8hh.html#a855fbae0ff7d592163aaf60fd0b22f71">offset</a>), virtual_ptr_(virtual_ptr) {}</div>
 <div class="line"><a name="l00562"></a><span class="lineno">  562</span>&#160; </div>
-<div class="line"><a name="l00563"></a><span class="lineno">  563</span>&#160;  RangeAccess(cl::sycl::buffer&lt;scalar_t, 1&gt; buff =</div>
+<div class="line"><a name="l00563"></a><span class="lineno">  563</span>&#160;  RangeAccess(cl::sycl::buffer&lt;scalar_t, 1&gt; <a class="code" href="ref__serial_8cpp.html#ab98eb192adf03007dabffcde03c67ac0">buff</a> =</div>
 <div class="line"><a name="l00564"></a><span class="lineno">  564</span>&#160;                  cl::sycl::buffer&lt;scalar_t, 1&gt;(cl::sycl::range&lt;1&gt;(1)))</div>
-<div class="line"><a name="l00565"></a><span class="lineno">  565</span>&#160;      : access_{accessor{buff}}, offset_(0), virtual_ptr_(-1) {}</div>
+<div class="line"><a name="l00565"></a><span class="lineno">  565</span>&#160;      : access_{accessor{<a class="code" href="ref__serial_8cpp.html#ab98eb192adf03007dabffcde03c67ac0">buff</a>}}, offset_(0), virtual_ptr_(-1) {}</div>
 <div class="line"><a name="l00566"></a><span class="lineno">  566</span>&#160; </div>
 <div class="line"><a name="l00567"></a><span class="lineno">  567</span>&#160;  <span class="comment">// This should be only used for null constructor on the host side</span></div>
 <div class="line"><a name="l00568"></a><span class="lineno">  568</span>&#160;  RangeAccess(std::nullptr_t) : RangeAccess() {}</div>
@@ -677,6 +677,8 @@ $(function() {
 <div class="ttc" id="anamespaceEigen_html_ac68300b75c56dfbd0ca4031feb17daa9"><div class="ttname"><a href="namespaceEigen.html#ac68300b75c56dfbd0ca4031feb17daa9">Eigen::operator-</a></div><div class="ttdeci">EIGEN_STRONG_INLINE const CwiseBinaryOp&lt; internal::scalar_difference_op&lt; typename DenseDerived::Scalar, typename SparseDerived::Scalar &gt;, const DenseDerived, const SparseDerived &gt; operator-(const MatrixBase&lt; DenseDerived &gt; &amp;a, const SparseMatrixBase&lt; SparseDerived &gt; &amp;b)</div><div class="ttdef"><b>Definition:</b> SparseCwiseBinaryOp.h:708</div></div>
 <div class="ttc" id="anamespaceEigen_html_ace833e9164de024e7c73ca411c7aff92"><div class="ttname"><a href="namespaceEigen.html#ace833e9164de024e7c73ca411c7aff92">Eigen::operator+</a></div><div class="ttdeci">EIGEN_STRONG_INLINE const CwiseBinaryOp&lt; internal::scalar_sum_op&lt; typename DenseDerived::Scalar, typename SparseDerived::Scalar &gt;, const DenseDerived, const SparseDerived &gt; operator+(const MatrixBase&lt; DenseDerived &gt; &amp;a, const SparseMatrixBase&lt; SparseDerived &gt; &amp;b)</div><div class="ttdef"><b>Definition:</b> SparseCwiseBinaryOp.h:694</div></div>
 <div class="ttc" id="anamespaceinternal_html"><div class="ttname"><a href="namespaceinternal.html">internal</a></div><div class="ttdef"><b>Definition:</b> BandTriangularSolver.h:13</div></div>
+<div class="ttc" id="aref__serial_8cpp_html_ab98eb192adf03007dabffcde03c67ac0"><div class="ttname"><a href="ref__serial_8cpp.html#ab98eb192adf03007dabffcde03c67ac0">buff</a></div><div class="ttdeci">buff_t buff</div><div class="ttdef"><b>Definition:</b> ref_serial.cpp:59</div></div>
+<div class="ttc" id="aref__serial_8h_html_a20302e2c99a60d3f612dba57e3f6333b"><div class="ttname"><a href="ref__serial_8h.html#a20302e2c99a60d3f612dba57e3f6333b">count</a></div><div class="ttdeci">uint8_t count</div><div class="ttdef"><b>Definition:</b> ref_serial.h:294</div></div>
 <div class="ttc" id="asecond__NONE_8f_html_ae9f971a8b343bd2fcb85c3b16da97f10"><div class="ttname"><a href="second__NONE_8f.html#ae9f971a8b343bd2fcb85c3b16da97f10">second</a></div><div class="ttdeci">real function second()</div><div class="ttdoc">SECOND returns nothing</div><div class="ttdef"><b>Definition:</b> second_NONE.f:39</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

@@ -245,8 +245,8 @@ $(function() {
 <div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;      ;</div>
 <div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    } <span class="keywordflow">else</span> {</div>
 <div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;      <span class="keywordflow">for</span> (<span class="keyword">auto</span> it = scratch_buffers.begin(); it != scratch_buffers.end();) {</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;        <span class="keyword">auto</span> buff = pMapper.get_buffer(*it);</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;        <span class="keywordflow">if</span> (buff.get_size() &gt;= num_bytes) {</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;        <span class="keyword">auto</span> <a class="code" href="ref__serial_8cpp.html#ab98eb192adf03007dabffcde03c67ac0">buff</a> = pMapper.get_buffer(*it);</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="ref__serial_8cpp.html#ab98eb192adf03007dabffcde03c67ac0">buff</a>.get_size() &gt;= num_bytes) {</div>
 <div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;          <span class="keyword">auto</span> ptr = *it;</div>
 <div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;          scratch_buffers.erase(it);</div>
 <div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;          <span class="keywordflow">return</span> ptr;</div>
@@ -1075,6 +1075,7 @@ $(function() {
 <div class="ttc" id="anamespaceEigen_html_a62e77e0933482dafde8fe197d9a2cfde"><div class="ttname"><a href="namespaceEigen.html#a62e77e0933482dafde8fe197d9a2cfde">Eigen::Index</a></div><div class="ttdeci">EIGEN_DEFAULT_DENSE_INDEX_TYPE Index</div><div class="ttdoc">The Index type as used for the API.</div><div class="ttdef"><b>Definition:</b> Meta.h:74</div></div>
 <div class="ttc" id="anamespacecl_html"><div class="ttname"><a href="namespacecl.html">cl</a></div><div class="ttdef"><b>Definition:</b> cxx11_tensor_builtins_sycl.cpp:30</div></div>
 <div class="ttc" id="anamespaceinternal_html"><div class="ttname"><a href="namespaceinternal.html">internal</a></div><div class="ttdef"><b>Definition:</b> BandTriangularSolver.h:13</div></div>
+<div class="ttc" id="aref__serial_8cpp_html_ab98eb192adf03007dabffcde03c67ac0"><div class="ttname"><a href="ref__serial_8cpp.html#ab98eb192adf03007dabffcde03c67ac0">buff</a></div><div class="ttdeci">buff_t buff</div><div class="ttdef"><b>Definition:</b> ref_serial.cpp:59</div></div>
 <div class="ttc" id="astdlist__overload_8cpp_html_a120a90058439faee14791b33f94c0693"><div class="ttname"><a href="stdlist__overload_8cpp.html#a120a90058439faee14791b33f94c0693">get</a></div><div class="ttdeci">Container::iterator get(Container &amp;c, Position position)</div><div class="ttdef"><b>Definition:</b> stdlist_overload.cpp:29</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

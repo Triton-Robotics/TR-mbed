@@ -388,12 +388,12 @@ $(function() {
 <div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;    ParallelForAsyncContext(<a class="code" href="namespaceEigen.html#a62e77e0933482dafde8fe197d9a2cfde">Index</a> block_count,</div>
 <div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;                            std::function&lt;<span class="keywordtype">void</span>(<a class="code" href="namespaceEigen.html#a62e77e0933482dafde8fe197d9a2cfde">Index</a>, <a class="code" href="namespaceEigen.html#a62e77e0933482dafde8fe197d9a2cfde">Index</a>)&gt; block_f,</div>
 <div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;                            std::function&lt;<span class="keywordtype">void</span>()&gt; done_callback)</div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;        : count(block_count),</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;        : <a class="code" href="ref__serial_8h.html#a20302e2c99a60d3f612dba57e3f6333b">count</a>(block_count),</div>
 <div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;          f(<a class="code" href="namespacestd.html">std</a>::move(block_f)),</div>
 <div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;          done(<a class="code" href="namespacestd.html">std</a>::move(done_callback)) {}</div>
 <div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;    ~ParallelForAsyncContext() { done(); }</div>
 <div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160; </div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;    std::atomic&lt;Index&gt; count;</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;    std::atomic&lt;Index&gt; <a class="code" href="ref__serial_8h.html#a20302e2c99a60d3f612dba57e3f6333b">count</a>;</div>
 <div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;    std::function&lt;void(<a class="code" href="namespaceEigen.html#a62e77e0933482dafde8fe197d9a2cfde">Index</a>, <a class="code" href="namespaceEigen.html#a62e77e0933482dafde8fe197d9a2cfde">Index</a>)&gt; f;</div>
 <div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    std::function&lt;void()&gt; done;</div>
 <div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160; </div>
@@ -402,7 +402,7 @@ $(function() {
 <div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160; </div>
 <div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;  <span class="keyword">struct </span>ParallelForBlock {</div>
 <div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;    <a class="code" href="namespaceEigen.html#a62e77e0933482dafde8fe197d9a2cfde">Index</a> <a class="code" href="benchVecAdd_8cpp.html#acc017e1f28bf1b83809251a830f315c3">size</a>;   <span class="comment">// block size</span></div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;    <a class="code" href="namespaceEigen.html#a62e77e0933482dafde8fe197d9a2cfde">Index</a> count;  <span class="comment">// number of blocks</span></div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;    <a class="code" href="namespaceEigen.html#a62e77e0933482dafde8fe197d9a2cfde">Index</a> <a class="code" href="ref__serial_8h.html#a20302e2c99a60d3f612dba57e3f6333b">count</a>;  <span class="comment">// number of blocks</span></div>
 <div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;  };</div>
 <div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160; </div>
 <div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;  <span class="comment">// Calculates block size based on (1) the iteration cost and (2) parallel</span></div>
@@ -500,6 +500,7 @@ $(function() {
 <div class="ttc" id="anamespaceEigen_html_a62e77e0933482dafde8fe197d9a2cfde"><div class="ttname"><a href="namespaceEigen.html#a62e77e0933482dafde8fe197d9a2cfde">Eigen::Index</a></div><div class="ttdeci">EIGEN_DEFAULT_DENSE_INDEX_TYPE Index</div><div class="ttdoc">The Index type as used for the API.</div><div class="ttdef"><b>Definition:</b> Meta.h:74</div></div>
 <div class="ttc" id="anamespaceEigen_html_ae2efa4852ea90c2d47b7dcec5b40ba2b"><div class="ttname"><a href="namespaceEigen.html#ae2efa4852ea90c2d47b7dcec5b40ba2b">Eigen::l3CacheSize</a></div><div class="ttdeci">std::ptrdiff_t l3CacheSize()</div><div class="ttdef"><b>Definition:</b> GeneralBlockPanelKernel.h:2626</div></div>
 <div class="ttc" id="anamespacestd_html"><div class="ttname"><a href="namespacestd.html">std</a></div><div class="ttdef"><b>Definition:</b> BFloat16.h:88</div></div>
+<div class="ttc" id="aref__serial_8h_html_a20302e2c99a60d3f612dba57e3f6333b"><div class="ttname"><a href="ref__serial_8h.html#a20302e2c99a60d3f612dba57e3f6333b">count</a></div><div class="ttdeci">uint8_t count</div><div class="ttdef"><b>Definition:</b> ref_serial.h:294</div></div>
 <div class="ttc" id="astdlist__overload_8cpp_html_a120a90058439faee14791b33f94c0693"><div class="ttname"><a href="stdlist__overload_8cpp.html#a120a90058439faee14791b33f94c0693">get</a></div><div class="ttdeci">Container::iterator get(Container &amp;c, Position position)</div><div class="ttdef"><b>Definition:</b> stdlist_overload.cpp:29</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

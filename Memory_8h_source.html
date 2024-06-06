@@ -573,8 +573,8 @@ $(function() {
 <div class="line"><a name="l00560"></a><span class="lineno">  560</span>&#160;    }</div>
 <div class="line"><a name="l00561"></a><span class="lineno">  561</span>&#160;    <span class="keywordflow">else</span></div>
 <div class="line"><a name="l00562"></a><span class="lineno">  562</span>&#160;    {</div>
-<div class="line"><a name="l00563"></a><span class="lineno">  563</span>&#160;      std::ptrdiff_t count = (std::ptrdiff_t(end)-std::ptrdiff_t(start)) / <span class="keyword">sizeof</span>(<a class="code" href="classEigen_1_1Triplet.html">T</a>);</div>
-<div class="line"><a name="l00564"></a><span class="lineno">  564</span>&#160;      std::copy_backward(start, end, target + count);</div>
+<div class="line"><a name="l00563"></a><span class="lineno">  563</span>&#160;      std::ptrdiff_t <a class="code" href="ref__serial_8h.html#a20302e2c99a60d3f612dba57e3f6333b">count</a> = (std::ptrdiff_t(end)-std::ptrdiff_t(start)) / <span class="keyword">sizeof</span>(<a class="code" href="classEigen_1_1Triplet.html">T</a>);</div>
+<div class="line"><a name="l00564"></a><span class="lineno">  564</span>&#160;      std::copy_backward(start, end, target + <a class="code" href="ref__serial_8h.html#a20302e2c99a60d3f612dba57e3f6333b">count</a>);</div>
 <div class="line"><a name="l00565"></a><span class="lineno">  565</span>&#160;    }</div>
 <div class="line"><a name="l00566"></a><span class="lineno">  566</span>&#160;  }</div>
 <div class="line"><a name="l00567"></a><span class="lineno">  567</span>&#160;};</div>
@@ -1217,6 +1217,7 @@ $(function() {
 <div class="ttc" id="anamespaceEigen_html_ad81fa7195215a0ce30017dfac309f0b2"><div class="ttname"><a href="namespaceEigen.html#ad81fa7195215a0ce30017dfac309f0b2">Eigen::Dynamic</a></div><div class="ttdeci">const int Dynamic</div><div class="ttdef"><b>Definition:</b> Constants.h:22</div></div>
 <div class="ttc" id="anamespaceinternal_html"><div class="ttname"><a href="namespaceinternal.html">internal</a></div><div class="ttdef"><b>Definition:</b> BandTriangularSolver.h:13</div></div>
 <div class="ttc" id="anamespacestd_html"><div class="ttname"><a href="namespacestd.html">std</a></div><div class="ttdef"><b>Definition:</b> BFloat16.h:88</div></div>
+<div class="ttc" id="aref__serial_8h_html_a20302e2c99a60d3f612dba57e3f6333b"><div class="ttname"><a href="ref__serial_8h.html#a20302e2c99a60d3f612dba57e3f6333b">count</a></div><div class="ttdeci">uint8_t count</div><div class="ttdef"><b>Definition:</b> ref_serial.h:294</div></div>
 <div class="ttc" id="astructEigen_1_1GenericNumTraits_html_ad9f2803e5056cc413fc94d4613ff056fa3076e038003ec0a60ff43bffdcddc2bc"><div class="ttname"><a href="structEigen_1_1GenericNumTraits.html#ad9f2803e5056cc413fc94d4613ff056fa3076e038003ec0a60ff43bffdcddc2bc">Eigen::GenericNumTraits::RequireInitialization</a></div><div class="ttdeci">@ RequireInitialization</div><div class="ttdef"><b>Definition:</b> NumTraits.h:158</div></div>
 <div class="ttc" id="astructEigen_1_1NumTraits_html"><div class="ttname"><a href="structEigen_1_1NumTraits.html">Eigen::NumTraits</a></div><div class="ttdoc">Holds information about the various numeric (i.e. scalar) types allowed by Eigen.</div><div class="ttdef"><b>Definition:</b> NumTraits.h:233</div></div>
 <div class="ttc" id="astructEigen_1_1aligned__allocator_1_1rebind_html"><div class="ttname"><a href="structEigen_1_1aligned__allocator_1_1rebind.html">Eigen::aligned_allocator::rebind</a></div><div class="ttdef"><b>Definition:</b> Memory.h:891</div></div>

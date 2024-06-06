@@ -105,7 +105,7 @@ $(function() {
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;  <span class="comment">// Start a series of r trials:</span></div>
 <div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classSTL__Timer.html#a8a846f3c68550604fb0635fcf13acd9a">   34</a></span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classSTL__Timer.html#a8a846f3c68550604fb0635fcf13acd9a">start</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> r){</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    reps = r;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    count = 0;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <a class="code" href="ref__serial_8h.html#a20302e2c99a60d3f612dba57e3f6333b">count</a> = 0;</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    iterations.clear();</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    iterations.reserve(reps);</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    initial = time(0);</div>
@@ -119,12 +119,12 @@ $(function() {
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;  <span class="comment">// Returns true if the trials have been completed, else false</span></div>
 <div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="classSTL__Timer.html#aba5a9baee107eeb12f85f1ec8bc8a16d">   48</a></span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classSTL__Timer.html#aba5a9baee107eeb12f85f1ec8bc8a16d">check</a>()</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;  {</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    ++count;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    ++<a class="code" href="ref__serial_8h.html#a20302e2c99a60d3f612dba57e3f6333b">count</a>;</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keyword">final</span> = time(0);</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keywordflow">if</span> (initial &lt; <span class="keyword">final</span>) {</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;      iterations.push_back(count);  </div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;      iterations.push_back(<a class="code" href="ref__serial_8h.html#a20302e2c99a60d3f612dba57e3f6333b">count</a>);  </div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;      initial = <span class="keyword">final</span>;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;      count = 0;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;      <a class="code" href="ref__serial_8h.html#a20302e2c99a60d3f612dba57e3f6333b">count</a> = 0;</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    }</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keywordflow">return</span> (iterations.size() &lt; reps);</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  };</div>
@@ -141,7 +141,7 @@ $(function() {
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;  <span class="comment">// For saving initial and final times of a trial</span></div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;  time_t initial, <span class="keyword">final</span>;</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  <span class="comment">// For counting loop iterations of a trial</span></div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> count;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <a class="code" href="ref__serial_8h.html#a20302e2c99a60d3f612dba57e3f6333b">count</a>;</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  <span class="comment">// true if this is a baseline computation, false otherwise</span></div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;  <span class="keywordtype">bool</span> baseline;</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;  <span class="comment">// For recording the baseline time </span></div>
@@ -155,6 +155,7 @@ $(function() {
 <div class="ttc" id="aclassSTL__Timer_html_aba5a9baee107eeb12f85f1ec8bc8a16d"><div class="ttname"><a href="classSTL__Timer.html#aba5a9baee107eeb12f85f1ec8bc8a16d">STL_Timer::check</a></div><div class="ttdeci">bool check()</div><div class="ttdef"><b>Definition:</b> STL_timer.hh:48</div></div>
 <div class="ttc" id="aclassSTL__Timer_html_ae8e9237dc39609429c5a76823d8ccac2"><div class="ttname"><a href="classSTL__Timer.html#ae8e9237dc39609429c5a76823d8ccac2">STL_Timer::start_baseline</a></div><div class="ttdeci">void start_baseline(unsigned int r)</div><div class="ttdef"><b>Definition:</b> STL_timer.hh:42</div></div>
 <div class="ttc" id="anamespacestd_html"><div class="ttname"><a href="namespacestd.html">std</a></div><div class="ttdef"><b>Definition:</b> BFloat16.h:88</div></div>
+<div class="ttc" id="aref__serial_8h_html_a20302e2c99a60d3f612dba57e3f6333b"><div class="ttname"><a href="ref__serial_8h.html#a20302e2c99a60d3f612dba57e3f6333b">count</a></div><div class="ttdeci">uint8_t count</div><div class="ttdef"><b>Definition:</b> ref_serial.h:294</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
