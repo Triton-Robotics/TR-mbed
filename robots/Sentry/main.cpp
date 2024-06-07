@@ -13,7 +13,7 @@
 
 // add radius measurement here
 #define RADIUS 0.5
-#define RUNSPIN 1.0
+#define RUNSPIN 3.0
 
 #define JOYSTICK_SENSE_YAW 1.0/90
 #define JOYSTICK_SENSE_PITCH 1.0/150
@@ -185,7 +185,7 @@ int main()
                 // printff("%f %d %d %d\n", imuAngles.yaw, yawSetPoint, remote.getMouseX()*MOUSE_SENSE_YAW, yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
                 // printff("ang%f t%d d%f FF%f\n", (((pitch>>ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360, pitch>>ANGLE, desiredPitch, K * sin((desiredPitch / 180 * PI) - pitch_phase)); //(desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks
                 //printff("imu angl\n");
-                printff("%d %d\n", indexer_R>>ANGLE, indexer_L>>ANGLE);
+                printff("%d %d\n", yaw2>>ANGLE, Chassis.getChassisSpeeds().vOmega);
                 //indexer_L.setPower(5000);
                 //indexer_R.setPower(5000);
             }
@@ -228,7 +228,9 @@ int main()
                 timeSure_L = us_ticker_read();
                 timeSure_R = us_ticker_read();
 
-                yaw.setSpeed(5 * yawNonBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure_L - prevTimeSure_L));
+//                yaw.setSpeed(5 * yawNonBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure_L - prevTimeSure_L));
+//                yaw2.setPower(0);
+                yaw2.setSpeed(remote.rightX()/100);
                 imu.get_angular_position_quat(&imuAngles);
 
                 prevTimeSure_L = timeSure_L;
@@ -237,7 +239,7 @@ int main()
             } else if (remote.rightSwitch() == Remote::SwitchState::MID || remote.rightSwitch() == Remote::SwitchState::UNKNOWN){ // disable all the non-serializer components
                 Chassis.setSpeedFF_Ks(0.065);
                 Chassis.setWheelPower({0,0,0,0});
-                yaw.setPower(0);
+                yaw2.setPower(0);
 
                 yawSetPoint = (imuAngles.yaw + 180) ;
                 yawSetPoint = yawSetPoint % 360;
@@ -247,7 +249,7 @@ int main()
                 Chassis.setSpeedFF_Ks(0.065);
                 Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
                                           jy * Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          -RUNSPIN },ChassisSubsystem::YAW_ORIENTED);
+                                          -RUNSPIN + sin(us_ticker_read() * 2 * PI / 2000000)},ChassisSubsystem::YAW_ORIENTED);
 
                 yawSetPoint -= remote.rightX() * JOYSTICK_SENSE_YAW;
                 yawSetPoint = (yawSetPoint+360) % 360;
@@ -255,7 +257,8 @@ int main()
                 timeSure_L = us_ticker_read();
                 timeSure_R = us_ticker_read();
 
-                yaw.setSpeed(-Chassis.getChassisSpeeds().vOmega * 8192 / 3.14 * 60 /8 + 15 * yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure_L - prevTimeSure_L));
+                yaw2.setSpeed(-Chassis.getChassisSpeeds().vOmega * 8192 / 3.14 * 60 /8);
+//                15 * yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure_L - prevTimeSure_L)
                 imu.get_angular_position_quat(&imuAngles);
 
                 prevTimeSure_L = timeSure_L;
