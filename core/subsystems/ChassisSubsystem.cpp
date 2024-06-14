@@ -300,7 +300,7 @@ char *ChassisSubsystem::MatrixtoString(Eigen::MatrixXd mat)
 
 void ChassisSubsystem::setMotorPower(MotorLocation location, double power)
 {
-    if (brakeMode == COAST && power == 0) // Should be BRAKE
+    if (brakeMode == BRAKE && power == 0) // Should be BRAKE
     {
         getMotor(location).setSpeed(0);
         setSpeedFeedforward(location, 0);
