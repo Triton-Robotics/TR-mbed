@@ -226,15 +226,15 @@
 
 #define PI 3.14159265
 
-#define LOWERBOUND 35.0
-#define UPPERBOUND -15.0
+#define LOWERBOUND 155.0
+#define UPPERBOUND -35.0
 
 // add radius measurement here
 #define RADIUS 0.5
 #define RUNSPIN 1.0
 
-#define JOYSTICK_SENSE_YAW 1.0/90
-#define JOYSTICK_SENSE_PITCH 1.0/150
+#define JOYSTICK_SENSE_YAW 1.0/180
+#define JOYSTICK_SENSE_PITCH 1.0/60
 #define MOUSE_SENSE_YAW 1.0/3
 #define MOUSE_SENSE_PITCH 1.0/5
 #define MOUSE_KB_MULT 0.2
@@ -285,8 +285,8 @@ int main()
     */
 
     //TODO: tune pitch pid
-    pitch.setPositionPID(1, 0.01, 500); //12.3 0.03 2.5 //mid is 13.3, 0.03, 7.5
-    pitch.setPositionIntegralCap(6000);
+//    pitch.setPositionPID(1, 0.01, 200); //12.3 0.03 2.5 //mid is 13.3, 0.03, 7.5
+//    pitch.setPositionIntegralCap(6000);
   //   merge difference:
 //     pitch.setPositionPID(17.3, 0.03, 8.5); // 12.3 0.03 2.5 //mid is 13.3, 0.03, 7.5
 //     pitch.setPositionIntegralCap(60000);
@@ -305,7 +305,7 @@ int main()
     char drive = 'o';
 
     // pitch.useAbsEncoder = true;
-    pitch.setPositionPID(15, 0, 1700); //15, 0 1700
+    pitch.setPositionPID(10, 0, 70); //15, 0 1700
     pitch.setPositionOutputCap(32000);
     float currentPitch = 0;
     float desiredPitch = 0;
@@ -319,10 +319,10 @@ int main()
     feeder.setSpeedPID(1, 0, 1);
     //     merge difference
     //     PID yawIMU(200.0, 0.1, 150, 20000, 8000); // 7.0,0.02,15.0,20000,8000
-    Chassis.setYawReference(&yaw, 2050); // "5604" is the number of ticks of yawOne considered to be robot-front
+    Chassis.setYawReference(&yaw, 2050+ 2048*3+ 4096);
     Chassis.setSpeedFF_Ks(0.065);
 
-    yaw.setSpeedPID(0.1, 0, 150);
+    yaw.setSpeedPID(0.3, 0, 150);
     PID yawBeyblade(40, 0, 5);
     PID yawNonBeyblade(80, 0, 50);
 
@@ -430,6 +430,14 @@ int main()
 //                    ,Chassis.getMotor(ChassisSubsystem::LEFT_BACK)>>POWEROUT
 //                    ,Chassis.getMotor(ChassisSubsystem::RIGHT_BACK)>>POWEROUT
 //                    ,currentAngle);
+                // printff("i: %f, p: %d, p_P: %d \n", imuAngles.yaw, pitch>>ANGLE, pitch>>POWEROUT);
+                mbed_reset_reboot_count();
+
+                Chassis.PEAK_POWER_ALL = 141 * robot_status.chassis_power_limit;
+
+
+//                printff("\n");
+
                 // printff("i: %f, p: %d, p_P: %d \n", imuAngles.yaw, pitch>>ANGLE, pitch>>POWEROUT);
                 //printff("ang%f t%d d%f FF%f\n", (((pitch>>ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360, pitch>>ANGLE, desiredPitch, K * sin((desiredPitch / 180 * PI) - pitch_phase)); //(desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks
                 // printff("%d %d %d %d\n", robot_status.robot_id, robot_status.robot_level, robot_status.current_HP, robot_status.maximum_HP);
@@ -559,15 +567,15 @@ int main()
                 //feeder
                 bool feederOn = false;
                 bool indexerOn = false;
-                if (us_ticker_read()/1000 - shootTimer <200){
+                if (us_ticker_read()/1000 - shootTimer <140){
                     feeder.setSpeed(6000);
                 } else {
                     feeder.setSpeed(0);
                     feederOn = true;
                 }
                 //indexer
-                if (us_ticker_read()/1000 - shootTimer <500){
-                    indexer.setSpeed(4000);
+                if (us_ticker_read()/1000 - shootTimer < 300){
+                    indexer.setSpeed(5000);
                 } else {
                     indexer.setSpeed(100);
                     indexerOn = true;
@@ -577,8 +585,9 @@ int main()
                 }
 
              } else {
-                 indexer.setSpeed(100);
-                 feeder.setSpeed(0);
+                 indexer.setSpeed(200);
+//                 feeder.setSpeed(0);
+                feeder.setPower(-1000);
              }
 
             //PITCH CODE, if remote is UP or DOWN, run pitch code, else off
@@ -611,8 +620,8 @@ int main()
 
                 float FF = K * sin((desiredPitch / 180 * PI) - pitch_phase); // output: [-1,1]
 //                pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
-                    pitch.setPower(0);
-//                pitch.setPosition(int((desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks));
+//                    pitch.setPower(0);
+                pitch.setPosition(int((desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks));
 
             } else{
                 pitch.setPower(0);
@@ -635,11 +644,17 @@ int main()
 //                feeder.setSpeed(1000);
                  if (shootReady){
                      shootReady = false;
+                    if(robot_status.shooter_barrel_heat_limit < 10 || power_heat_data.shooter_42mm_barrel_heat < robot_status.shooter_barrel_heat_limit - 110) {
+                        shoot = true;
+                    }else {
+                        shoot = false;
+                    }
+
 //                     shoot = true;
                      shootTargetPosition = 8192 * 12 + (indexer>>MULTITURNANGLE);
 //                    if(ext_power_heat_data.data.shooter_id1_17mm_cooling_heat < ext_game_robot_state.data.shooter_id1_17mm_cooling_limit - 40) {
-                        shoot = true;
-                        shootTimer = us_ticker_read()/1000;
+//                    shoot = true;
+                    shootTimer = us_ticker_read()/1000;
 //                    }
                  }
 
@@ -649,13 +664,14 @@ int main()
                 //SwitchState state set to mid/down/unknown
                  shootReady = true;
                 indexer.setPower(0);
-                feeder.setPower(0);
+//                feeder.setPower(0);
+                feeder.setSpeed(0);
             }
 
             if (remote.leftSwitch() != Remote::SwitchState::DOWN &&
                 remote.leftSwitch() != Remote::SwitchState::UNKNOWN){
-                RFLYWHEEL.setSpeed(7000);
-                LFLYWHEEL.setSpeed(-7000);
+                RFLYWHEEL.setSpeed(5750);
+                LFLYWHEEL.setSpeed(-5750);
             } else{
                 // left SwitchState set to up/mid/unknown
                 RFLYWHEEL.setSpeed(0);
