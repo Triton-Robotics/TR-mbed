@@ -90,10 +90,10 @@ int main()
 
     //     merge difference
     //     PID yawIMU(200.0, 0.1, 150, 20000, 8000); // 7.0,0.02,15.0,20000,8000
-    Chassis.setYawReference(&yaw, 2); // "5604" is the number of ticks of yawOne considered to be robot-front
+    Chassis.setYawReference(&yaw, 4098); // "5604" is the number of ticks of yawOne considered to be robot-front
     Chassis.setSpeedFF_Ks(0.065);
     
-    yaw.setSpeedPID(0.5, 0, 200);
+    yaw.setSpeedPID(1.5, 0, 200);
     PID yawBeyblade(50, 0, 5);
     PID yawNonBeyblade(100, 0, 50);
 
@@ -147,6 +147,9 @@ int main()
     int shootTargetPosition = 36*8190 ;
     bool shootReady = false;
 
+    char drive = 'o';
+    char shot = 'o';
+
     bool userButton;
     bool prev_userButton;
     char driveMode = 'j';
@@ -164,10 +167,24 @@ int main()
 
             if(jumper){
                 driveMode = 'm';
-                led = 1;
+                // led = 1;
             }else{
                 driveMode = 'j';
-                led = 0;
+                // led = 0;
+            }
+            if(remote.keyPressed(Remote::Key::R)){
+                drive = 'm';
+            }else if(remote.keyPressed(Remote::Key::E)){
+                drive = 'u';
+            }else if(remote.keyPressed(Remote::Key::Q)){
+                drive = 'd';        
+            }
+            if(remote.keyPressed(Remote::Key::C)){
+                shot = 'm';
+            }else if(remote.keyPressed(Remote::Key::V)){
+                shot = 'u';
+            }else if(remote.keyPressed(Remote::Key::B)){
+                shot = 'd';        
             }
 
             refLoop++;
@@ -180,13 +197,22 @@ int main()
                 // printff("%f %f %d \n", ext_power_heat_data.data.chassis_power, ext_power_heat_data.data.chassis_power_buffer, ext_game_robot_state.data.chassis_power_limit);
                 // printff("%f %d %d %d\n", imuAngles.yaw, yawSetPoint, remote.getMouseX()*MOUSE_SENSE_YAW, yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
                 // printff("ang%f t%d d%f FF%f\n", (((pitch>>ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360, pitch>>ANGLE, desiredPitch, K * sin((desiredPitch / 180 * PI) - pitch_phase)); //(desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks
-                if(chassis_power_limit < 10){
-                    Chassis.PEAK_POWER_ALL = 141 * robot_status.chassis_power_limit;
+                
+                if(remote.keyPressed(Remote::Key::E)){
+                    Chassis.PEAK_POWER_ALL = 60000;
+                    // led = 1;
                 }else{
-                    Chassis.PEAK_POWER_ALL = 8500;
+                    // led = 0;
+                    if(robot_status.chassis_power_limit < 10){
+                        Chassis.PEAK_POWER_ALL = 8000;
+                    }else{
+                        Chassis.PEAK_POWER_ALL = 141 * robot_status.chassis_power_limit;
+                    }
                 }
+
                 // printff("%d %d \n" , ext_power_heat_data.data.shooter_id1_17mm_cooling_heat, ext_game_robot_state.data.shooter_id1_17mm_cooling_limit);
             }
+
 
             double scalar = 1;
             double jx = remote.leftX() / 660.0 * scalar;
@@ -204,9 +230,14 @@ int main()
             //     jr = MOUSE_KB_MULT * ((remote.keyPressed(Remote::Key::E) ? 1 : 0) + (remote.keyPressed(Remote::Key::Q) ? -1 : 0));
             // }
 
-            jx += MOUSE_KB_MULT * ((remote.keyPressed(Remote::Key::D) ? 1 : 0) + (remote.keyPressed(Remote::Key::A) ? -1 : 0));
-            jy += MOUSE_KB_MULT * ((remote.keyPressed(Remote::Key::W) ? 1 : 0) + (remote.keyPressed(Remote::Key::S) ? -1 : 0));
-            jr += MOUSE_KB_MULT * ((remote.keyPressed(Remote::Key::E) ? 1 : 0) + (remote.keyPressed(Remote::Key::Q) ? -1 : 0));
+            float mult = 1;
+            if(remote.keyPressed(Remote::Key::SHIFT)){
+                mult = 0.5;
+            }
+
+            jx += mult * ((remote.keyPressed(Remote::Key::D) ? 1 : 0) + (remote.keyPressed(Remote::Key::A) ? -1 : 0));
+            jy += mult * ((remote.keyPressed(Remote::Key::W) ? 1 : 0) + (remote.keyPressed(Remote::Key::S) ? -1 : 0));
+            jr += mult * ((remote.keyPressed(Remote::Key::E) ? 1 : 0) + (remote.keyPressed(Remote::Key::Q) ? -1 : 0));
 
 
             currentPitch = (double(pitch.getData(ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360; // degrees
@@ -219,7 +250,7 @@ int main()
              * Down: Pitch enabled, yaw and chassis Beyblade
              */
             int stick = remote.rightY();
-            if (remote.rightSwitch() == Remote::SwitchState::UP){          // All non-serializer motors activated
+            if (drive == 'u' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::UP)){          // All non-serializer motors activated
                 led3 = 1;
                 unsigned long time = us_ticker_read();
                 Chassis.setSpeedFF_Ks(0.065);
@@ -249,14 +280,14 @@ int main()
 
                 prevTimeSure = timeSure;
                 // imu.get_angular_position_quat(&imuAngles);
-            } else if (remote.rightSwitch() == Remote::SwitchState::MID || remote.rightSwitch() == Remote::SwitchState::UNKNOWN){ // disable all the non-serializer components
+            } else if (drive == 'm' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::MID || remote.rightSwitch() == Remote::SwitchState::UNKNOWN)){ // disable all the non-serializer components
                 Chassis.setSpeedFF_Ks(0.065);
                 Chassis.setWheelPower({0,0,0,0});
                 yaw.setPower(0);
 
                 yawSetPoint = (imuAngles.yaw + 180) ;
                 yawSetPoint = yawSetPoint % 360;
-            } else if (remote.rightSwitch() == Remote::SwitchState::DOWN){           // beyblade mode
+            } else if (drive == 'd' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::DOWN)){           // beyblade mode
                 unsigned long time = us_ticker_read(); //time for pid
                 pitch.setPower(0);
                 Chassis.setSpeedFF_Ks(0.065);
@@ -302,8 +333,8 @@ int main()
             }
 
             //PITCH CODE, if remote is UP or DOWN, run pitch code, else off
-            if (remote.rightSwitch() == Remote::SwitchState::UP ||
-                remote.rightSwitch() == Remote::SwitchState::DOWN){
+            if (drive == 'u' || drive == 'd' || (drive == 'o' && (remote.rightSwitch() == Remote::SwitchState::UP ||
+                remote.rightSwitch() == Remote::SwitchState::DOWN))){
 
                 // check switch mode
                 // ground level = -5.69

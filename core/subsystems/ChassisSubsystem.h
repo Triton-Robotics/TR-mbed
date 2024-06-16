@@ -120,6 +120,7 @@ public:
     enum DRIVE_MODE
     {
         YAW_ORIENTED,
+        REVERSE_YAW_ORIENTED,
         ROBOT_ORIENTED
     };
 

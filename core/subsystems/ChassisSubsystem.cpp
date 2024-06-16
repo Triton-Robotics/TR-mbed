@@ -69,10 +69,10 @@ void ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
 
     int sum = abs(powers[0]) + abs(powers[1]) + abs(powers[2]) + abs(powers[3]);
     if(sum > PEAK_POWER_ALL){
-        powers[0] = powers[0] * PEAK_POWER_ALL/sum;
-        powers[1] = powers[1] * PEAK_POWER_ALL/sum;
-        powers[2] = powers[2] * PEAK_POWER_ALL/sum;
-        powers[3] = powers[3] * PEAK_POWER_ALL/sum;
+        powers[0] = (powers[0] * PEAK_POWER_ALL)/sum;
+        powers[1] = (powers[1] * PEAK_POWER_ALL)/sum;
+        powers[2] = (powers[2] * PEAK_POWER_ALL)/sum;
+        powers[3] = (powers[3] * PEAK_POWER_ALL)/sum;
     }
     LF.setPower(powers[0]);
     RF.setPower(powers[1]);
@@ -112,7 +112,13 @@ ChassisSpeeds ChassisSubsystem::getChassisSpeeds() const
 
 void ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode)
 {
-    if (mode == YAW_ORIENTED)
+    if (mode == REVERSE_YAW_ORIENTED)
+    {
+        // printf("%f\n", double(yaw->getData(ANGLE)));
+        double yawCurrent = (1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
+        desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yawCurrent);
+    }
+    else if (mode == YAW_ORIENTED)
     {
         // printf("%f\n", double(yaw->getData(ANGLE)));
         double yawCurrent = -(1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
