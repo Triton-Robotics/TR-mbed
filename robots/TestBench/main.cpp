@@ -20,7 +20,7 @@ int main(){
     unsigned long loopTimer = us_ticker_read();
     int refLoop = 0;
 
-    testMot.setSpeedPID(0.5,0,0);
+    testMot.setSpeedPID(1.5,0,200);
 
     bool prevL = false;
     bool switL = false;

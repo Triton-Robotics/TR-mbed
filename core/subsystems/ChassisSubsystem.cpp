@@ -25,7 +25,7 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
 
     setOmniKinematics(radius);
     m_OmniKinematicsLimits.max_Vel = MAX_VEL; // m/s
-    m_OmniKinematicsLimits.max_vOmega = 2; // rad/s
+    m_OmniKinematicsLimits.max_vOmega = 8; // rad/s
 
     PEAK_POWER_ALL = 10000;
     PEAK_POWER_SINGLE = 8000;

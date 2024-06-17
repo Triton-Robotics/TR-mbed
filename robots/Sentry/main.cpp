@@ -13,7 +13,7 @@
 
 // add radius measurement here
 #define RADIUS 0.5
-#define RUNSPIN 3.0
+#define RUNSPIN 4.0
 
 #define JOYSTICK_SENSE_YAW 1.0/90
 #define JOYSTICK_SENSE_PITCH 1.0/150
