@@ -12,12 +12,12 @@ brew install ninja
 
 ### mbed-tools & Dependencies
 ```shell
-pip3 install  \
-mbed-tools    \
-prettytable   \
-future        \
-jinja2        \
-intelhex
+pip3 install mbed-tools
+pip3 install prettytable
+pip3 install future
+pip3 install jinja2
+pip3 install intelhex
+pip3 install setuptools
 ```
 
 ### Enable mbed-tools via command line
