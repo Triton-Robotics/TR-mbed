@@ -1,7 +1,7 @@
 {
     "target_overrides": {
         "*": {
-            "platform.crash-capture-enabled": true,
+            "target.crash-capture-enabled": true,
             "platform.fatal-error-auto-reboot-enabled": true,
             "platform.stdio-baud-rate": 115200,
             "platform.stdio-buffered-serial": 1,

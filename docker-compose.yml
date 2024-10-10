@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  testbench:
+    image: ghcr.io/triton-robotics/tr-mbed/build-env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app  # Mount the current directory to /app in the container
+      - ./build:/app/build  # Use an output directory to store build artifacts
+    working_dir: /app/build
+    restart: no
+    command: /bin/bash -c "cmake .. && cmake --build . --target TR-TestBench"
+
+  infantry:
+    image: ghcr.io/triton-robotics/tr-mbed/build-env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app  # Mount the current directory to /app in the container
+      - ./build:/app/build  # Use an output directory to store build artifacts
+    working_dir: /app/build
+    restart: no
+    command: /bin/bash -c "cmake .. && cmake --build . --target TR-Infantry"
+
