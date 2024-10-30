@@ -1,6 +1,7 @@
 #include "ChassisSubsystem.h"
 #include <cmath>
 #include <stdexcept>
+#include <vector>
 
 /**
  * @param radius radius in meters
@@ -279,19 +280,80 @@ WheelSpeeds ChassisSubsystem::chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSp
 
 ChassisSpeeds ChassisSubsystem::wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds)
 {
+    // Inverse kinematics matrix (relate wheel to chassis speeds)
     Eigen::MatrixXd Inv_K(4, 3);
+    // Scale matrix (constant depending on omni-wheel configuration)
     float coef = 1 / sqrt(2);
+    // Account for robot radius and wheel positions
     Inv_K << coef, coef, coef * ((m_OmniKinematics.r1x) - (m_OmniKinematics.r1y)),
         coef, -coef, -coef * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y)),
         -coef, coef, coef * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y)),
         -coef, -coef, -coef * ((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y));
+    // Convert wheel speed to chassis speed
     Eigen::MatrixXd FWD_K(3, 4);
     FWD_K = Inv_K.completeOrthogonalDecomposition().pseudoInverse();
+    // Vector of wheel speeds 
     Eigen::MatrixXd WS(4, 1);
     WS << wheelSpeeds.LF, wheelSpeeds.RF, wheelSpeeds.LB, wheelSpeeds.RB;
+    // Get chassis speeds
     Eigen::MatrixXd CS(3, 1);
     CS = FWD_K * WS;
     return {CS(0, 0), CS(1, 0), CS(2, 0)};
+
+    /* Code rewrite strategy
+         - pseudoInverse() is computationally intensive, since doesn't change
+           frequently, can precompute FWD_K
+         - kinematics values fixed (for each robot)
+            --> can precompute matrix, avoid runtime computation
+         - use vectors/arrays instead of Eigen::MatrixXd
+    
+    */
+
+   /* Code information
+        - FWD_K --> M+
+        - Inv_K --> 1/(sqrt(2)*MATRIX)
+        - WS --> wheel speeds
+   */
+}
+
+std::vector<std::vector<double>> calculatePseudoinverseMatrix(double a, double b, double c, double d) {
+    // First row
+    double first_row_first = (-a*b + a*c + 2*a*d + b*b + 2*b*c - b*d + c*c + c*d + 2*d*d) / 
+                             (4*a*a + 8*a*d + 4*b*b + 8*b*c + 4*c*c + 4*d*d);
+    double first_row_second = 0.25 * (a*a - a*b - a*c + 2*a*d + 2*b*c + b*d + 2*c*c + c*d + d*d) / 
+                              (a*a + 2*a*d + b*b + 2*b*c + c*c + d*d);
+    double first_row_third = (-a*a - a*b - a*c - 2*a*d - 2*b*b - 2*b*c + b*d + c*d - d*d) / 
+                             (4*a*a + 8*a*d + 4*b*b + 8*b*c + 4*c*c + 4*d*d);
+    double first_row_fourth = (-2*a*a - a*b + a*c - 2*a*d - b*b - 2*b*c - b*d - c*c + c*d) / 
+                              (4*a*a + 8*a*d + 4*b*b + 8*b*c + 4*c*c + 4*d*d);
+    
+    // Second row
+    double second_row_first = 0.25 * (a*b - a*c + 2*a*d + b*b + 2*b*c + b*d + c*c - c*d + 2*d*d) / 
+                              (a*a + 2*a*d + b*b + 2*b*c + c*c + d*d);
+    double second_row_second = (-a*a - a*b - a*c - 2*a*d - 2*b*c + b*d - 2*c*c + c*d - d*d) / 
+                               (4*a*a + 8*a*d + 4*b*b + 8*b*c + 4*c*c + 4*d*d);
+    double second_row_third = 0.25 * (a*a - a*b - a*c + 2*a*d + 2*b*b + 2*b*c + b*d + c*d + d*d) / 
+                              (a*a + 2*a*d + b*b + 2*b*c + c*c + d*d);
+    double second_row_fourth = (-2*a*a + a*b - a*c - 2*a*d - b*b - 2*b*c + b*d - c*c - c*d) / // from -bd to +bd
+                               (4*a*a + 8*a*d + 4*b*b + 8*b*c + 4*c*c + 4*d*d);
+
+    // Third row
+    double third_row_first = (a + d) / 
+                             (a*a + 2*a*d + b*b + 2*b*c + c*c + d*d);
+    double third_row_second = (b + c) / 
+                              (a*a + 2*a*d + b*b + 2*b*c + c*c + d*d);
+    double third_row_third = (b + c) / 
+                             (a*a + 2*a*d + b*b + 2*b*c + c*c + d*d);
+    double third_row_fourth = (a + d) / 
+                              (a*a + 2*a*d + b*b + 2*b*c + c*c + d*d);
+
+    // Construct matrix
+    std::vector<std::vector<double>> matrix = {
+        {first_row_first, first_row_second, first_row_third, first_row_fourth},
+        {second_row_first, second_row_second, second_row_third, second_row_fourth},
+        {third_row_first, third_row_second, third_row_third, third_row_fourth}
+    };
+    return matrix;
 }
 
 char *ChassisSubsystem::MatrixtoString(Eigen::MatrixXd mat)
