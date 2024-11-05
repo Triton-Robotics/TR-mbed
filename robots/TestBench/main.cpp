@@ -8,8 +8,8 @@
 DigitalOut led(L27);
 DigitalOut led2(L26);
 DigitalOut led3(L25);
-//static BufferedSerial bcJetson(PA_0, PA_1, 115200);
-static BufferedSerial bcJetson(PC_12, PD_2, 115200);
+static BufferedSerial bcJetson(PA_0, PA_1, 115200);
+// static BufferedSerial bcJetson(PC_12, PD_2, 115200);
 I2C i2c(I2C_SDA, I2C_SCL);
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 DJIMotor yawOne(7, CANHandler::CANBUS_1, GM6020, "testMotor");
@@ -172,7 +172,7 @@ void write_and_print(float &pitch_move, float & yaw_move){
     uint8_t checkSum;
     decode_toSTM32(jetson_value, pitch_move, yaw_move, checkSum);
 //    pitch.setPosition(pitch_value);
-//    printf("pitch: %f, yaw: %f, checkSum: %d\n", pitch_move, yaw_move, checkSum);
+     printf("pitch: %f, yaw: %f, checkSum: %d\n", pitch_move, yaw_move, checkSum);
 
 
 }
@@ -288,7 +288,7 @@ int main(){
                 //
 
 
-                write_and_print(pitch_value, yaw_value);
+                // write_and_print(pitch_value, yaw_value);
                 float pitch_ANGLE;
                 float yaw_ANGLE;
                 //from the jetson
@@ -301,6 +301,9 @@ int main(){
                     yaw_in_degrees -= 360;
                 }
 
+                pitch.setPosition(pitch_in_ticks);
+                // yawOne.setPosition(yaw_in_degrees);
+
 
                 //int yaw_in_ticks_test = imuAngles.pitch;
 
@@ -312,10 +315,11 @@ int main(){
                 //desiredPitch = pitch_in_ticks_test; //need to be in regular angle, degrees
                 //printf("pitch angle: %f, yaw angle: %f \n", pitch.getData(ANGLE), yawOne.getData(ANGLE));
 
-/*
-                printf("pitch_m value: %f\n", pitch_move);
-                pitch.setPosition(pitch_move);
-*/
+
+                // printf("pitch_m value: %f\n", pitch_move);
+                // pitch.setPosition(pitch_move);
+
+
 /*
                 yawOne.setPosition(20);
                 printf("yaw_m value: %f\n", yaw_move)
@@ -336,16 +340,16 @@ int main(){
 //                pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
 //                pitch.setPosition(int((desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks));
 //
-//                yawSetPoint = yaw_in_degrees;
-//                //yawSetPoint -= (remote.rightX() / 90 + 360) % 360;
-//                yawOne.setSpeed(5 * yawNonBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
+            //    yawSetPoint = yaw_in_degrees;
+            //    yawSetPoint -= (remote.rightX() / 90 + 360) % 360;
+            //    yawOne.setSpeed(5 * yawNonBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
 
                 //BEYBLADE CODE
 
 
-                imu.get_angular_position_quat(&imuAngles);
+                // imu.get_angular_position_quat(&imuAngles);
 
-                //pitch.setPosition(yaw_value); //need to be a value between like 2000 - 8000s, in ticks
+                // pitch.setPosition(yaw_value); //need to be a value between like 2000 - 8000s, in ticks
                 //yaw_in_ticks = 0;
                 //pitch_in_ticks = 0;
                 //printf("yaw value: %d, pitch value: %d \n", yawOne.getData(ANGLE), pitch.getData(ANGLE)); //the value ticks is in int
