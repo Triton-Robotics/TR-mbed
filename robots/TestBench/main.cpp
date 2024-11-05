@@ -8,8 +8,8 @@
 DigitalOut led(L27);
 DigitalOut led2(L26);
 DigitalOut led3(L25);
-//static BufferedSerial bcJetson(PA_0, PA_1, 115200);
-static BufferedSerial bcJetson(PC_12, PD_2, 115200);
+static BufferedSerial bcJetson(PA_0, PA_1, 115200);
+// static BufferedSerial bcJetson(PC_12, PD_2, 115200);
 I2C i2c(I2C_SDA, I2C_SCL);
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 DJIMotor yawOne(7, CANHandler::CANBUS_1, GM6020, "testMotor");
@@ -49,6 +49,11 @@ void getBytesFromFloat(char* byteArr, float value) {
     std::memcpy(byteArr, &value, sizeof(float));
 }
 
+/**
+ * Writes 9 bytes of read_buf into received_one and received_two as floats for pitch, yaw positions
+ * @param read_buf - Holds
+ * @param received_one - 
+ */
 void decode_toSTM32(char *read_buf, float &received_one, float &received_two, uint8_t &checksum){
     memcpy(&received_one, read_buf, sizeof(float));
     memcpy(&received_two, read_buf + 4, sizeof(float));
@@ -164,17 +169,19 @@ float read_and_print(){ //read mine
 
 }
 
-
+/**
+ * Data from CV.
+ */
 void write_and_print(float &pitch_move, float & yaw_move){
-    bcJetson.set_blocking(false);
+    bcJetson.set_blocking(false); // this should have some check that we're not reading empty values
     //char temp[50] = {0};
-    bcJetson.read(jetson_value, 30);
-    uint8_t checkSum;
-    decode_toSTM32(jetson_value, pitch_move, yaw_move, checkSum);
-//    pitch.setPosition(pitch_value);
-//    printf("pitch: %f, yaw: %f, checkSum: %d\n", pitch_move, yaw_move, checkSum);
-
-
+    ssize_t result = bcJetson.read(jetson_value, 30);
+    if (result != -EAGAIN) { // If buffer not empty, decode data. Else do nothing
+        uint8_t checkSum;
+        decode_toSTM32(jetson_value, pitch_move, yaw_move, checkSum);
+        // pitch.setPosition(pitch_value);
+        printf("pitch: %f, yaw: %f, checkSum: %d\n", pitch_move, yaw_move, checkSum);
+    }
 }
 
 
@@ -254,7 +261,7 @@ int main(){
     float InitialOffset_Ticks = 2500;
     float K = 0.38; //0.75 //0.85
 
-
+    float pitch_ANGLE = 0.0;
 
     while(true){
         timeStart = us_ticker_read();
@@ -288,8 +295,8 @@ int main(){
                 //
 
 
-                write_and_print(pitch_value, yaw_value);
-                float pitch_ANGLE;
+
+                
                 float yaw_ANGLE;
                 //from the jetson
                 write_and_print(pitch_ANGLE, yaw_ANGLE);
@@ -307,11 +314,18 @@ int main(){
 
                 desiredPitch = pitch_in_ticks;
 //NEED THISSSS, write from our robot
-                read_and_print();
+                read_and_print(); // Send values to CV
 
                 //desiredPitch = pitch_in_ticks_test; //need to be in regular angle, degrees
                 //printf("pitch angle: %f, yaw angle: %f \n", pitch.getData(ANGLE), yawOne.getData(ANGLE));
-
+                if (pitch_in_ticks < 3112) {
+                    pitch_in_ticks = 3112;
+                }
+                else if (pitch_in_ticks > 4930) {
+                    pitch_in_ticks = 4930;
+                }
+                // pitch.setPosition(pitch_in_ticks);
+                pitch.setPower(0);
 /*
                 printf("pitch_m value: %f\n", pitch_move);
                 pitch.setPosition(pitch_move);
