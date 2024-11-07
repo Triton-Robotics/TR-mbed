@@ -1,7 +1,6 @@
 #include "ChassisSubsystem.h"
 #include <cmath>
 #include <stdexcept>
-#include <vector>
 
 /**
  * @param radius radius in meters
@@ -316,7 +315,7 @@ ChassisSpeeds ChassisSubsystem::wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpee
    */
 }
 
-std::vector<std::vector<double>> calculatePseudoinverseMatrix(double a, double b, double c, double d) {
+std::vector<std::vector<double>> ChassisSubsystem::calculatePseudoinverseMatrix(double a, double b, double c, double d) {
     // First row
     double first_row_first = (-a*b + a*c + 2*a*d + b*b + 2*b*c - b*d + c*c + c*d + 2*d*d) / 
                              (4*a*a + 8*a*d + 4*b*b + 8*b*c + 4*c*c + 4*d*d);
