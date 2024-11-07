@@ -297,7 +297,7 @@ ChassisSpeeds ChassisSubsystem::wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpee
     // Get chassis speeds
     Eigen::MatrixXd CS(3, 1);
     CS = FWD_K * WS;
-    return {CS(0, 0), CS(1, 0), CS(2, 0)};
+    // return {CS(0, 0), CS(1, 0), CS(2, 0)};
 
     /* Code rewrite strategy
          - pseudoInverse() is computationally intensive, since doesn't change
@@ -307,6 +307,15 @@ ChassisSpeeds ChassisSubsystem::wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpee
          - use vectors/arrays instead of Eigen::MatrixXd
     
     */
+    std::vector<std::vector<double>> FWD_Kine = calculatePseudoinverseMatrix(((m_OmniKinematics.r1x) - (m_OmniKinematics.r1y)),
+                                                                             -((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y)),
+                                                                             ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y)),
+                                                                             -((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y)));
+    return {
+        FWD_Kine[0][0] * wheelSpeeds.LF + FWD_Kine[0][1] * wheelSpeeds.RF + FWD_Kine[0][2] * wheelSpeeds.LB + FWD_Kine[0][3] * wheelSpeeds.RB,
+        FWD_Kine[1][0] * wheelSpeeds.LF + FWD_Kine[1][1] * wheelSpeeds.RF + FWD_Kine[1][2] * wheelSpeeds.LB + FWD_Kine[1][3] * wheelSpeeds.RB,
+        FWD_Kine[2][0] * wheelSpeeds.LF + FWD_Kine[2][1] * wheelSpeeds.RF + FWD_Kine[2][2] * wheelSpeeds.LB + FWD_Kine[2][3] * wheelSpeeds.RB
+    };
 
    /* Code information
         - FWD_K --> M+
