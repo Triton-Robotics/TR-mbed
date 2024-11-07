@@ -279,24 +279,24 @@ WheelSpeeds ChassisSubsystem::chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSp
 
 ChassisSpeeds ChassisSubsystem::wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds)
 {
-    // Inverse kinematics matrix (relate wheel to chassis speeds)
-    Eigen::MatrixXd Inv_K(4, 3);
-    // Scale matrix (constant depending on omni-wheel configuration)
-    float coef = 1 / sqrt(2);
-    // Account for robot radius and wheel positions
-    Inv_K << coef, coef, coef * ((m_OmniKinematics.r1x) - (m_OmniKinematics.r1y)),
-        coef, -coef, -coef * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y)),
-        -coef, coef, coef * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y)),
-        -coef, -coef, -coef * ((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y));
-    // Convert wheel speed to chassis speed
-    Eigen::MatrixXd FWD_K(3, 4);
-    FWD_K = Inv_K.completeOrthogonalDecomposition().pseudoInverse();
-    // Vector of wheel speeds 
-    Eigen::MatrixXd WS(4, 1);
-    WS << wheelSpeeds.LF, wheelSpeeds.RF, wheelSpeeds.LB, wheelSpeeds.RB;
-    // Get chassis speeds
-    Eigen::MatrixXd CS(3, 1);
-    CS = FWD_K * WS;
+    // // Inverse kinematics matrix (relate wheel to chassis speeds)
+    // Eigen::MatrixXd Inv_K(4, 3);
+    // // Scale matrix (constant depending on omni-wheel configuration)
+    // float coef = 1 / sqrt(2);
+    // // Account for robot radius and wheel positions
+    // Inv_K << coef, coef, coef * ((m_OmniKinematics.r1x) - (m_OmniKinematics.r1y)),
+    //     coef, -coef, -coef * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y)),
+    //     -coef, coef, coef * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y)),
+    //     -coef, -coef, -coef * ((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y));
+    // // Convert wheel speed to chassis speed
+    // Eigen::MatrixXd FWD_K(3, 4);
+    // FWD_K = Inv_K.completeOrthogonalDecomposition().pseudoInverse();
+    // // Vector of wheel speeds 
+    // Eigen::MatrixXd WS(4, 1);
+    // WS << wheelSpeeds.LF, wheelSpeeds.RF, wheelSpeeds.LB, wheelSpeeds.RB;
+    // // Get chassis speeds
+    // Eigen::MatrixXd CS(3, 1);
+    // CS = FWD_K * WS;
     // return {CS(0, 0), CS(1, 0), CS(2, 0)};
 
     /* Code rewrite strategy
@@ -364,15 +364,15 @@ std::vector<std::vector<double>> ChassisSubsystem::calculatePseudoinverseMatrix(
     return matrix;
 }
 
-char *ChassisSubsystem::MatrixtoString(Eigen::MatrixXd mat)
-{
-    std::stringstream ss;
-    ss << mat;
-    ss << '\0';
-    ss << '\n';
-    const char *a = ss.str().c_str();
-    return strdup(a);
-}
+// char *ChassisSubsystem::MatrixtoString(Eigen::MatrixXd mat)
+// {
+//     std::stringstream ss;
+//     ss << mat;
+//     ss << '\0';
+//     ss << '\n';
+//     const char *a = ss.str().c_str();
+//     return strdup(a);
+// }
 
 void ChassisSubsystem::setMotorPower(MotorLocation location, double power)
 {

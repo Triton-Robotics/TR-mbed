@@ -14,7 +14,7 @@
 #include <algorithms/PID.h>
 // #include <algorithms/WheelSpeeds.h>
 // #include <algorithms/ChassisSpeeds.h>
-#include "algorithms/eigen-3.4.0/Eigen/QR"
+// #include "algorithms/eigen-3.4.0/Eigen/QR"
 #include <vector>
 
 #define CAN_BUS_TYPE CANHandler::CANBUS_1
@@ -295,7 +295,7 @@ public:
     OmniKinematicsLimits m_OmniKinematicsLimits;
     WheelSpeeds chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds);
     ChassisSpeeds wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds);
-    char *MatrixtoString(Eigen::MatrixXd mat);
+    // char *MatrixtoString(Eigen::MatrixXd mat);
 
     std::vector<std::vector<double>> calculatePseudoinverseMatrix(double a, double b, double c, double d);
 
