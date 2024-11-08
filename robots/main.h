@@ -36,11 +36,19 @@
 
 DigitalIn userButton(BUTTON1);
 TRMutex printer;
-static BufferedSerial bc(PA_0, PA_1, 115200);
+static BufferedSerial bc(PC_12, PD_2, 115200);
 
 void updatePriority(priorityLevels desiredLevel)
 {
     printer.updatePriority(desiredLevel);
+}
+
+void printfESP(const char *format, ...){
+    char temp[100];
+    va_list args;
+    va_start(args, format);
+    vsnprintf(temp, 100, format, args);
+    bc.write(temp, 100);
 }
 
 void print(char statement[], priorityLevels priority = DEFAULT)
