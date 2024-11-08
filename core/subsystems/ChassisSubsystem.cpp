@@ -41,10 +41,10 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
     // LB.setSpeedPID(3, 0, 0);
     // RB.setSpeedPID(3 , 0, 0);
 
-    pid_LF.setPID(3, 0, 0);
-    pid_RF.setPID(3, 0, 0);
-    pid_LB.setPID(3, 0, 0);
-    pid_RB.setPID(3, 0, 0);
+    pid_LF.setPID(1.5, 0, 200);
+    pid_RF.setPID(1.5, 0, 200);
+    pid_LB.setPID(1.5, 0, 200);
+    pid_RB.setPID(1.5, 0, 200);
 
     brakeMode = COAST;
 
