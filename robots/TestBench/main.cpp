@@ -9,7 +9,10 @@ DigitalOut led2(L26);
 DigitalOut led3(L25);
 DigitalOut ledbuiltin(LED1);
 
-// DJIMotor testMot(3, CANHandler::CANBUS_1, STANDARD, "testMotor");
+DJIMotor testMot1(1, CANHandler::CANBUS_1, STANDARD, "testMotor1");
+DJIMotor testMot2(2, CANHandler::CANBUS_1, STANDARD, "testMotor2");
+DJIMotor testMot3(3, CANHandler::CANBUS_1, STANDARD, "testMotor3");
+DJIMotor testMot4(4, CANHandler::CANBUS_1, STANDARD, "testMotor4");
 
 I2C i2c(I2C_SDA, I2C_SCL);
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
@@ -20,7 +23,18 @@ ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286);
 #define POWER 1000
 
 
+float power_theory(float give_current, float rotor_speed) {
 
+    float It = (20/16384) * give_current;
+    float Kt = 0.01562;
+    float torquee = It + Kt;
+
+    float mechPower = (torquee * rotor_speed)/9.55;
+    float theory_in = mechPower + ((0.000000162) * (rotor_speed * rotor_speed)) + (6448.8) * (torquee * torquee) + 2.77;
+
+    return theory_in;
+
+}
 
 int main(){
 
@@ -101,21 +115,53 @@ int main(){
                                               0  * Chassis.m_OmniKinematicsLimits.max_vOmega},
                                               ChassisSubsystem::YAW_ORIENTED);
 
-                    float chassis_power = power_heat_data.chassis_power; 
-                    float It = abs((Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).getData(POWEROUT) + 
-                                Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).getData(POWEROUT) + 
-                                Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(POWEROUT) + 
-                                Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).getData(POWEROUT))*(20/16384));
-                    float Kt = 0.01562;
-                    float torque = It + Kt;
-                    float rotorSpeed = abs(Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).getData(VELOCITY) + 
-                                        Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).getData(VELOCITY) + 
-                                        Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(VELOCITY) + 
-                                        Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).getData(VELOCITY));
-                    float mechPower = (torque*rotorSpeed)/9.55;
-                    float theory_in = mechPower + ((0.000000162)*(rotorSpeed*rotorSpeed)) + (6448.8)*(torque*torque) + 2.77;    
-                    printff("P_in:%.4f\tP_theory:%.4f\n",chassis_power,theory_in);
+                    // float chassis_power = power_heat_data.chassis_power; 
+                    // float It = abs((Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).getData(POWEROUT) + 
+                    //             Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).getData(POWEROUT) + 
+                    //             Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(POWEROUT) + 
+                    //             Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).getData(POWEROUT))*(20/16384));
+                    // float Kt = 0.01562;
+                    // float torque = It + Kt;
+                    // float rotorSpeed = abs(Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).getData(VELOCITY) + 
+                    //                     Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).getData(VELOCITY) + 
+                    //                     Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(VELOCITY) + 
+                    //                     Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).getData(VELOCITY));
+                    // float mechPower = (torque*rotorSpeed)/9.55;
+                    // float theory_in = mechPower + ((0.000000162)*(rotorSpeed*rotorSpeed)) + (6448.8)*(torque*torque) + 2.77;    
+                    // printff("P_in:%.4f\tP_theory:%.4f\n",chassis_power,theory_in);
 
+                    uint16_t chassis_power_limit;
+
+                    float Pmax = ext_game_robot_state.data.chassis_power_limit;
+
+                    float give_current_M1 = 20*testMot1.getData(POWEROUT)/IMPULSE_STRENGTH;
+                    float give_current_M2 = 20*testMot2.getData(POWEROUT)/IMPULSE_STRENGTH;
+                    float give_current_M3 = 20*testMot3.getData(POWEROUT)/IMPULSE_STRENGTH;
+                    float give_current_M4 = 20*testMot4.getData(POWEROUT)/IMPULSE_STRENGTH;
+
+                    float rotor_speed_Motor1 = abs(Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).getData(VELOCITY));
+                    float rotor_speed_Motor2 = abs(Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).getData(VELOCITY));
+                    float rotor_speed_Motor3 = abs(Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(VELOCITY));
+                    float rotor_speed_Motor4 = abs(Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).getData(VELOCITY));
+
+
+                    float P_cmd_1 = power_theory(give_current_M1,rotor_speed_Motor1);
+                    float P_cmd_2 = power_theory(give_current_M2,rotor_speed_Motor2);
+                    float P_cmd_3 = power_theory(give_current_M3,rotor_speed_Motor3);
+                    float P_cmd_4 = power_theory(give_current_M4,rotor_speed_Motor4);
+
+                    float sum_Pcmd = P_cmd_1 + P_cmd_2 + P_cmd_3 + P_cmd_1;
+                    float k = Pmax/sum_Pcmd;
+
+                    float Pout_motor1 = k * testMot1.getData(POWEROUT); 
+                    float Pout_motor2 = k * testMot2.getData(POWEROUT); 
+                    float Pout_motor3 = k * testMot3.getData(POWEROUT); 
+                    float Pout_motor4 = k * testMot4.getData(POWEROUT); 
+
+                    Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).setPower(Pout_motor1); 
+                    Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).setPower(Pout_motor2);
+                    Chassis.getMotor(ChassisSubsystem::LEFT_BACK).setPower(Pout_motor3);
+                    Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).setPower(Pout_motor4);
 
                 }
 
@@ -162,3 +208,37 @@ int main(){
         ThisThread::sleep_for(1ms);
     }
 }
+
+
+// float power_theory(float give_current, float rotor_speed) {
+
+//     It = (20/16384) * give_current;
+//     Kt = 0.01562;
+//     torquee = It + Kt;
+
+//     float mechPower = (torqueerotor_speed)/9.55;
+//     float theory_in = mechPower + ((0.000000162)(rotor_speedrotor_speed)) + (6448.8)(torqueetorquee) + 2.77;
+
+//     return theory_in;
+
+// }
+
+
+// P_cmd_1 = power_theory(give_current_M1,rotor_speed_Motor1);
+// P_cmd_2 = power_theory(give_current_M2,rotor_speed_Motor2);
+// P_cmd_3 = power_theory(give_current_M3,rotor_speed_Motor3);
+// P_cmd_4 = power_theory(give_current_M4,rotor_speed_Motor4);
+
+// sum_Pcmd = P_cmd_1 + P_cmd_2 + P_cmd_3 + P_cmd_1;
+// k = Pmax/sum_Pcmd;
+
+
+// float Pout_motor1 = k * P_cmd_1;
+// float Pout_motor2 = k * P_cmd_2;
+// float Pout_motor3 = k * P_cmd_3;
+// float Pout_motor4 = k * P_cmd_4;
+
+// motor1.setmotorpower(Pout_motor1);
+// motor2.setmotorpower(Pout_motor2);
+// motor3.setmotorpower(Pout_motor3);
+// motor4.setmotorpower(Pout_motor4);
