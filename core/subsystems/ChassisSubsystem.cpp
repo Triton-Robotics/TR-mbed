@@ -41,10 +41,10 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
     // LB.setSpeedPID(3, 0, 0);
     // RB.setSpeedPID(3 , 0, 0);
 
-    pid_LF.setPID(1.5, 0, 200);
-    pid_RF.setPID(1.5, 0, 200);
-    pid_LB.setPID(1.5, 0, 200);
-    pid_RB.setPID(1.5, 0, 200);
+    pid_LF.setPID(1.5, 0, 0);
+    pid_RF.setPID(1.5, 0, 0);
+    pid_LB.setPID(1.5, 0, 0);
+    pid_RB.setPID(1.5, 0, 0);
 
     brakeMode = COAST;
 
@@ -58,6 +58,7 @@ WheelSpeeds ChassisSubsystem::getWheelSpeeds() const
 
 void ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
 {
+
     desiredWheelSpeeds = wheelSpeeds; // WheelSpeeds in RPM
     int powers[4] = {0,0,0,0};
     uint32_t time = us_ticker_read();
@@ -79,6 +80,85 @@ void ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     LB.setPower(powers[2]);
     RB.setPower(powers[3]);
 }
+
+void ChassisSubsystem::setWheelSpeedsPWR(float Pmax, WheelSpeeds wheelSpeeds)
+{   
+    desiredWheelSpeeds = wheelSpeeds; // WheelSpeeds in RPM
+    int powers[4] = {0,0,0,0};
+    uint32_t time = us_ticker_read();
+    powers[0] = motorPIDtoPower(LEFT_FRONT,wheelSpeeds.LF, (time - lastPIDTime));
+    powers[1] = motorPIDtoPower(RIGHT_FRONT,wheelSpeeds.RF, (time - lastPIDTime));
+    powers[2] = motorPIDtoPower(LEFT_BACK,wheelSpeeds.LB, (time - lastPIDTime));
+    powers[3] = motorPIDtoPower(RIGHT_BACK,wheelSpeeds.RB, (time - lastPIDTime));
+    lastPIDTime = time;
+
+    // printf("%d , %d , %d , %d\n", powers[0], powers[1], powers[2], powers[3]);
+
+
+
+    int IMPULSE_STRENGTH = 16384;
+    float give_current_M1 = 20*powers[0]/IMPULSE_STRENGTH;
+    float give_current_M2 = 20*powers[1]/IMPULSE_STRENGTH;
+    float give_current_M3 = 20*powers[2]/IMPULSE_STRENGTH;
+    float give_current_M4 = 20*powers[3]/IMPULSE_STRENGTH;
+   
+    float rotor_speed_Motor1 = getMotor(LEFT_FRONT).getData(VELOCITY);
+    float rotor_speed_Motor2 = getMotor(RIGHT_FRONT).getData(VELOCITY);
+    float rotor_speed_Motor3 = getMotor(LEFT_BACK).getData(VELOCITY);
+    float rotor_speed_Motor4 = getMotor(RIGHT_BACK).getData(VELOCITY);
+
+    float P_cmd_1 = power_theory(give_current_M1,rotor_speed_Motor1);
+    float P_cmd_2 = power_theory(give_current_M2,rotor_speed_Motor2);
+    float P_cmd_3 = power_theory(give_current_M3,rotor_speed_Motor3);
+    float P_cmd_4 = power_theory(give_current_M4,rotor_speed_Motor4);
+
+    float sum_Pcmd = P_cmd_1 + P_cmd_2 + P_cmd_3 + P_cmd_1;
+
+    // printf("%.2f\n", sum_Pcmd);
+
+    if (sum_Pcmd < Pmax) {
+
+        LF.setPower(powers[0]);
+        RF.setPower(powers[1]);
+        LB.setPower(powers[2]);
+        RB.setPower(powers[3]);
+    }
+
+    else {
+
+        float k = Pmax/sum_Pcmd;
+
+        
+
+
+        float Pout_motor1 = k * powers[0]; 
+        float Pout_motor2 = k * powers[1]; 
+        float Pout_motor3 = k * powers[2]; 
+        float Pout_motor4 = k * powers[3]; 
+
+        // printf("%.5f\n", k);
+        // printf("%d\t%d\t%d\t%d\t%.2f\n", Pout_motor1, Pout_motor2, Pout_motor3, Pout_motor4, k);
+
+        getMotor(LEFT_FRONT).setPower(Pout_motor1); 
+        getMotor(RIGHT_FRONT).setPower(Pout_motor2);
+        getMotor(LEFT_BACK).setPower(Pout_motor3);
+        getMotor(RIGHT_BACK).setPower(Pout_motor4);
+    }
+    
+}
+
+float ChassisSubsystem::power_theory(float give_current, float rotor_speed) {
+
+    float It = (20/16384) * give_current;
+    float Kt = 0.01562;
+    float torquee = It + Kt;
+
+    float mechPower = (torquee * rotor_speed)/9.55;
+    float theory_in = mechPower + ((0.000000162) * (rotor_speed * rotor_speed)) + (6448.8) * (torquee * torquee) + 2.77;
+
+    return theory_in;
+
+    }
 
 WheelSpeeds ChassisSubsystem::normalizeWheelSpeeds(WheelSpeeds wheelSpeeds) const
 {
@@ -138,6 +218,29 @@ void ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRI
  * There's no setChassisPower because it doesn't make sense.
  * Power (is not PWM voltage) saturates your motor speeds, and it's not related to motor speed. 
  */
+void ChassisSubsystem::setChassisSpeedsPWR(float Pmax, ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode)
+{
+    if (mode == REVERSE_YAW_ORIENTED)
+    {
+        // printf("%f\n", double(yaw->getData(ANGLE)));
+        double yawCurrent = (1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
+        desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yawCurrent);
+    }
+    else if (mode == YAW_ORIENTED)
+    {
+        // printf("%f\n", double(yaw->getData(ANGLE)));
+        double yawCurrent = -(1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
+        desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yawCurrent);
+    }
+    else if (mode == ROBOT_ORIENTED)
+    {
+        desiredChassisSpeeds = desiredChassisSpeeds_; // ChassisSpeeds in m/s
+    }
+    WheelSpeeds wheelSpeeds = chassisSpeedsToWheelSpeeds(desiredChassisSpeeds); // in m/s (for now)
+    wheelSpeeds = normalizeWheelSpeeds(wheelSpeeds);
+    wheelSpeeds *= (1 / (WHEEL_DIAMETER_METERS / 2) / (2 * PI / 60) * M3508_GEAR_RATIO);
+    setWheelSpeedsPWR(Pmax, wheelSpeeds);
+}
 
 ChassisSpeeds ChassisSubsystem::rotateChassisSpeed(ChassisSpeeds speeds, double yawCurrent)
 {

@@ -140,6 +140,19 @@ public:
      * The normalizeWheelSpeeds method normalizes each motor with respect to m_OmniKinematicsLimits.max_Vel
      * @param wheelSpeeds The speeds in m/s to drive each motor at
      */
+
+    void setWheelSpeedsPWR(float Pmax, WheelSpeeds wheelSpeeds);
+
+    /**
+     * power theory
+     */
+    float power_theory(float give_current, float rotor_speed);
+
+    /**
+     * The normalizeWheelSpeeds method normalizes each motor with respect to m_OmniKinematicsLimits.max_Vel
+     * @param wheelSpeeds The speeds in m/s to drive each motor at
+     */
+
     WheelSpeeds normalizeWheelSpeeds(WheelSpeeds wheelSpeeds) const;
 
     /**
@@ -167,6 +180,18 @@ public:
      * @param speeds The relative speeds (vX, vY, and vOmega) in m/s
      * @param yawCurrent The CCW-positive angle in degrees
      */
+
+
+    void setChassisSpeedsPWR(float Pmax, ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode = ROBOT_ORIENTED);
+
+    /**
+     * The rotateChassisSpeed method
+     *
+     * @param speeds The relative speeds (vX, vY, and vOmega) in m/s
+     * @param yawCurrent The CCW-positive angle in degrees
+     */
+
+
     ChassisSpeeds rotateChassisSpeed(ChassisSpeeds speeds, double yawCurrent);
 
     /**

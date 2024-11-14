@@ -9,11 +9,6 @@ DigitalOut led2(L26);
 DigitalOut led3(L25);
 DigitalOut ledbuiltin(LED1);
 
-DJIMotor testMot1(1, CANHandler::CANBUS_1, STANDARD, "testMotor1");
-DJIMotor testMot2(2, CANHandler::CANBUS_1, STANDARD, "testMotor2");
-DJIMotor testMot3(3, CANHandler::CANBUS_1, STANDARD, "testMotor3");
-DJIMotor testMot4(4, CANHandler::CANBUS_1, STANDARD, "testMotor4");
-
 I2C i2c(I2C_SDA, I2C_SCL);
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286);
@@ -105,12 +100,20 @@ int main(){
                 // }
                 if (remote.leftSwitch() == Remote::SwitchState::MID) {
 
+                    float Pmax = robot_status.chassis_power_limit;
+
                     double jx = remote.leftX() / 660.0;
                     double jy = remote.leftY() / 660.0;
                     double jr = remote.rightX() / 660.0;
 
+                    
+                    double tolerance = 0.05;
+                    jx = (abs(jx) < tolerance) ? 0 : jx;
+                    jy = (abs(jy) < tolerance) ? 0 : jy;
+                    jr = (abs(jr) < tolerance) ? 0 : jr;
+
                     Chassis.setSpeedFF_Ks(0.065);
-                    Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
+                    Chassis.setChassisSpeedsPWR(Pmax, {jx * Chassis.m_OmniKinematicsLimits.max_Vel,
                                               jy * Chassis.m_OmniKinematicsLimits.max_Vel,
                                               0  * Chassis.m_OmniKinematicsLimits.max_vOmega},
                                               ChassisSubsystem::YAW_ORIENTED);
@@ -130,46 +133,52 @@ int main(){
                     // float theory_in = mechPower + ((0.000000162)*(rotorSpeed*rotorSpeed)) + (6448.8)*(torque*torque) + 2.77;    
                     // printff("P_in:%.4f\tP_theory:%.4f\n",chassis_power,theory_in);
 
-                    uint16_t chassis_power_limit;
-
-                    float Pmax = ext_game_robot_state.data.chassis_power_limit;
-
-                    float give_current_M1 = 20*testMot1.getData(POWEROUT)/IMPULSE_STRENGTH;
-                    float give_current_M2 = 20*testMot2.getData(POWEROUT)/IMPULSE_STRENGTH;
-                    float give_current_M3 = 20*testMot3.getData(POWEROUT)/IMPULSE_STRENGTH;
-                    float give_current_M4 = 20*testMot4.getData(POWEROUT)/IMPULSE_STRENGTH;
-
-                    float rotor_speed_Motor1 = abs(Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).getData(VELOCITY));
-                    float rotor_speed_Motor2 = abs(Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).getData(VELOCITY));
-                    float rotor_speed_Motor3 = abs(Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(VELOCITY));
-                    float rotor_speed_Motor4 = abs(Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).getData(VELOCITY));
 
 
-                    float P_cmd_1 = power_theory(give_current_M1,rotor_speed_Motor1);
-                    float P_cmd_2 = power_theory(give_current_M2,rotor_speed_Motor2);
-                    float P_cmd_3 = power_theory(give_current_M3,rotor_speed_Motor3);
-                    float P_cmd_4 = power_theory(give_current_M4,rotor_speed_Motor4);
 
-                    float sum_Pcmd = P_cmd_1 + P_cmd_2 + P_cmd_3 + P_cmd_1;
-                    float k = Pmax/sum_Pcmd;
+                    // float give_current_M1 = 20*Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).getData(POWEROUT)/IMPULSE_STRENGTH;
+                    // float give_current_M2 = 20*Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).getData(POWEROUT)/IMPULSE_STRENGTH;
+                    // float give_current_M3 = 20*Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(POWEROUT)/IMPULSE_STRENGTH;
+                    // float give_current_M4 = 20*Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).getData(POWEROUT)/IMPULSE_STRENGTH;
 
-                    float Pout_motor1 = k * testMot1.getData(POWEROUT); 
-                    float Pout_motor2 = k * testMot2.getData(POWEROUT); 
-                    float Pout_motor3 = k * testMot3.getData(POWEROUT); 
-                    float Pout_motor4 = k * testMot4.getData(POWEROUT); 
+                    // float rotor_speed_Motor1 = Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).getData(VELOCITY);
+                    // float rotor_speed_Motor2 = Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).getData(VELOCITY);
+                    // float rotor_speed_Motor3 = Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(VELOCITY);
+                    // float rotor_speed_Motor4 = Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).getData(VELOCITY);
 
-                    Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).setPower(Pout_motor1); 
-                    Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).setPower(Pout_motor2);
-                    Chassis.getMotor(ChassisSubsystem::LEFT_BACK).setPower(Pout_motor3);
-                    Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).setPower(Pout_motor4);
+
+                    // float P_cmd_1 = power_theory(give_current_M1,rotor_speed_Motor1);
+                    // float P_cmd_2 = power_theory(give_current_M2,rotor_speed_Motor2);
+                    // float P_cmd_3 = power_theory(give_current_M3,rotor_speed_Motor3);
+                    // float P_cmd_4 = power_theory(give_current_M4,rotor_speed_Motor4);
+
+                    // float sum_Pcmd = P_cmd_1 + P_cmd_2 + P_cmd_3 + P_cmd_1;
+                    // float k = Pmax/sum_Pcmd;
+
+                    // printff("%.5f\n", k);
+
+                    // float Pout_motor1 = k * Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).getData(POWEROUT); 
+                    // float Pout_motor2 = k * Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).getData(POWEROUT); 
+                    // float Pout_motor3 = k * Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(POWEROUT); 
+                    // float Pout_motor4 = k * Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).getData(POWEROUT); 
+
+                    // printff("%d\t%d\t%d\t%d\n", Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).getData(POWEROUT),
+                    //                             Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).getData(POWEROUT),
+                    //                             Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(POWEROUT),
+                    //                             Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).getData(POWEROUT));
+
+                    // Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).setPower(Pout_motor1); 
+                    // Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).setPower(Pout_motor2);
+                    // Chassis.getMotor(ChassisSubsystem::LEFT_BACK).setPower(Pout_motor3);
+                    // Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).setPower(Pout_motor4);
 
                 }
 
                 else {
-                    Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).setPower(0); 
-                    Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).setPower(0);
-                    Chassis.getMotor(ChassisSubsystem::LEFT_BACK).setPower(0);
-                    Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).setPower(0);
+                    Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).setSpeed(0); 
+                    Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).setSpeed(0);
+                    Chassis.getMotor(ChassisSubsystem::LEFT_BACK).setSpeed(0);
+                    Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).setSpeed(0);
                     printff("off\n");
                 }
             }
@@ -242,3 +251,135 @@ int main(){
 // motor2.setmotorpower(Pout_motor2);
 // motor3.setmotorpower(Pout_motor3);
 // motor4.setmotorpower(Pout_motor4);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
