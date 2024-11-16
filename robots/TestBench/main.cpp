@@ -5,16 +5,50 @@
 #include "subsystems/ChassisSubsystem.h"
 #include <algorithm>
 #include <cstdint>  // For uint64_t
+
+
+#define PI 3.14159265
+
+#define UPPERBOUND 50.0 // Bound of how high turret can point in degrees
+#define LOWERBOUND -30.0 // Bound of how low turret can point in degrees
+
+#define UPPERBOUND_TICKS (UPPERBOUND/360.0) * 8192 // Upperbound ticks relative to 0 (4250) ticks: 1137 ticks CCW to 4250, ie 4250-1137 = 3112 absolute pos
+#define LOWERBOUND_TICKS (LOWERBOUND/360.0) * 8192 // 682 ticks below/CW to 4250. ie 4932
+
+#define PITCH_LEVEL_TICKS 4160 // The tick value of level turret pitch. Also used for initial offset
+
+
+#define PITCH_SPEED_JOYSTICK_SENSE 10.0/330
+// [8129/360] = ticks per deg
+
+// add radius measurement here
+#define RADIUS 0.5
+#define RUNSPIN 1.0
+
+#define JOYSTICK_SENSE_YAW 1.0/90
+#define JOYSTICK_SENSE_PITCH 1.0/150
+#define MOUSE_SENSE_YAW 1.0/5
+#define MOUSE_SENSE_PITCH 1.0/5
+#define MOUSE_KB_MULT 0.2
+
+#define PID_POS 1 // Use pitch speed PID
+#define PID_SPD 0 // Use pitch position PID
+
+
 DigitalOut led(L27);
 DigitalOut led2(L26);
 DigitalOut led3(L25);
+
 static BufferedSerial bcJetson(PA_0, PA_1, 115200);
 // static BufferedSerial bcJetson(PC_12, PD_2, 115200);
 I2C i2c(I2C_SDA, I2C_SCL);
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 DJIMotor yawOne(7, CANHandler::CANBUS_1, GM6020, "testMotor");
 //DJIMotor yaw(5, CANHandler::CANBUS_1, GIMBLY);
-DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY); // right
+
+// DJIMotor yaw(7, CANHandler::CANBUS_1, GIMBLY,"Yeah");
+DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY);
+
 BufferedSerial pc(USBTX, USBRX); // tx, rx
 float yaw_angle;
 float yaw_velocity;
@@ -24,8 +58,8 @@ float Pitch_value;
 float Yaw;
 char nucleo_value[30] = {0};
 char jetson_value[30] = {0};
-#define LOWERBOUND 35.0
-#define UPPERBOUND -15.0
+
+
 
 
 ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
@@ -37,7 +71,7 @@ char yaw_velocity_char[4];
 char pitch_angle_char[4];
 char pitch_velocity_char[4];
 
-
+// idk what this is
 static void rotatePoint(float x, float y, double theta, float &xOut, float &yOut) {
     float rad = theta * M_PI / 180.0; // Convert theta to radians
     xOut = x * cos(rad) - y * sin(rad);
@@ -50,9 +84,11 @@ void getBytesFromFloat(char* byteArr, float value) {
 }
 
 /**
- * Writes 9 bytes of read_buf into received_one and received_two as floats for pitch, yaw positions
- * @param read_buf - Holds
- * @param received_one - 
+ * Writes 9 bytes of read_buf into received_one and received_two as floats for pitch & yaw positions
+ * Used for receiving desired position data from CV in read_buf, write out as 
+ * floats to received_one/two.
+ * @param read_buf - Source data
+ * @param received_one - Destination buffer
  */
 void decode_toSTM32(char *read_buf, float &received_one, float &received_two, uint8_t &checksum){
     memcpy(&received_one, read_buf, sizeof(float));
@@ -66,8 +102,9 @@ void copy4Char(char* toCopy, char* copyInto, int begin){
     }
 }
 
-
-
+/**
+ * Longitudinal Redundancy Check
+ */
 static uint8_t calculateLRC(const char* data, size_t length) {
     unsigned char lrc = 0;
     for (size_t i = 0; i < length; ++i) {
@@ -82,7 +119,6 @@ static uint8_t calculateLRC(const char* data, size_t length) {
 void read_and_print_simple(){
     char temp[50] = {0};
     //imu.get_angular_position_quat(&imuAngles);
-
 
     //ChassisSpeeds cs = Chassis.m_chassisSpeeds;
     //rotatePoint(cs.vX, cs.vY, imuAngles.yaw, xRotated, yRotated);
@@ -126,7 +162,6 @@ float read_and_print(){ //read mine
     float pitch_angle = ChassisSubsystem::ticksToRadians(pitch.getData(ANGLE));
     float pitch_velocity = pitch.getData(VELOCITY)/60.0;
 
-
     printf("yaw A: %f | yaw v: %f | pitch a: %f | pitch v: %f\n", yaw_angle, yaw_velocity, pitch_angle, pitch_velocity);
 
     char yaw_angle_char[4];
@@ -160,32 +195,32 @@ float read_and_print(){ //read mine
     nucleo_value[24] = lrc_char;
     //printf("lrc: %d\n", temp[24]);
 
-
-
     bcJetson.set_blocking(false);
     bcJetson.write(nucleo_value, 30);
     //printf("Rx: %f | Ry: %f | p_a: %f | y_a: %f | p_v: %f | y_v: %f | lrc: %d \n", xRotated, yRotated, pitch_angle, yaw_angle, pitch_velocity, yaw_velocity, lrc);
     return yaw_angle;
-
 }
 
 /**
- * Data from CV.
+ * Read desired pitch and yaw position data from Jetson
+ * 
+ * @param pitch_move buffer to store desired pitch position
+ * @param yaw_move buffer to store desired yaw position
  */
-void write_and_print(float &pitch_move, float & yaw_move){
-    bcJetson.set_blocking(false); // this should have some check that we're not reading empty values
-    //char temp[50] = {0};
+void read_jetson(float &pitch_move, float & yaw_move){
+    bcJetson.set_blocking(false);
+
     ssize_t result = bcJetson.read(jetson_value, 30);
     if (result != -EAGAIN) { // If buffer not empty, decode data. Else do nothing
         uint8_t checkSum;
         decode_toSTM32(jetson_value, pitch_move, yaw_move, checkSum);
-        // pitch.setPosition(pitch_value);
+
         printf("pitch: %f, yaw: %f, checkSum: %d\n", pitch_move, yaw_move, checkSum);
     }
 }
 
 
-
+// think this is bad copy of read_jetson
 void eccode_value(char *buf, float &received_one, float &received_two, uint8_t &checksum) {
     memcpy(buf, &received_one, sizeof(float));   // 4 bytes
     //memcpy(received_one, buf, sizeof(float));
@@ -213,7 +248,6 @@ int calculateDeltaYaw(int ref_yaw, int beforeBeybladeYaw)
 
 
 int main(){
-
     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
     DJIMotor::s_sendValues();
     DJIMotor::s_getFeedback();
@@ -224,8 +258,22 @@ int main(){
     //read_and_print();
     int counter = 1;
 
-    //pitch.setPositionPID(18, 0.01, 850); //12.3 0.03 2.5 //mid is 13.3, 0.03, 7.5
-    pitch.setPositionIntegralCap(6000);
+    /* Pitch Position PID*/
+    pitch.setPositionPID(29, 0.17, 6200); // think about D-cap and potentially raising FF. if the setpoint is always higher than actual,
+    // then could try to up FF to get there
+    // pitch.setSpeedPID(0,0,0);
+    pitch.setPositionIntegralCap(3000);
+
+    // /* Yaw Position PID */
+    // yaw.setPositionPID(5, 0, 0); // Very simple for now
+
+    /* Yaw Speed PID */
+    // yaw.setSpeedPID(3.5, 0, 150);
+    // yaw.setSpeedIntegralCap(1000);
+
+    // Old tune
+    // pitch.setPositionPID(15, 0, 1700);
+    // pitch.setPositionOutputCap(32000);
 
     Chassis.setYawReference(&yawOne, 2050); // "5604" is the number of ticks of yawOne considered to be robot-front
 //    Chassis.setSpeedFF_Ks(0.065);
@@ -252,9 +300,6 @@ int main(){
     pitch.outputCap = 32760;
     pitch.useAbsEncoder = true;
 
-
-    pitch.setPositionPID(15, 0, 1700);
-    pitch.setPositionOutputCap(32000);
     float currentPitch = 0;
     float desiredPitch = 0;
     float pitch_phase = 33 / 180.0 * PI; // 5.69 theoretical
@@ -269,8 +314,10 @@ int main(){
         if ((timeStart - loopTimer) / 1000 > 25){
             led = !led;
 
+
             refLoop++;
             int arr[5] = {1, 2, 3, 4, 5};
+            // remoteRead();
 
             if (refLoop >= 5){
                 refereeThread(&referee);
@@ -299,7 +346,7 @@ int main(){
                 
                 float yaw_ANGLE;
                 //from the jetson
-                write_and_print(pitch_ANGLE, yaw_ANGLE);
+                read_jetson(pitch_ANGLE, yaw_ANGLE);
                 //desire = ChassisSubsystem::radiansToTicks(read_and_print());
                 int pitch_in_ticks = ChassisSubsystem::radiansToTicks(pitch_ANGLE);
                 float yaw_in_degrees = (ChassisSubsystem::radiansToTicks(yaw_ANGLE)/8192)*360;
@@ -325,7 +372,11 @@ int main(){
                     pitch_in_ticks = 4930;
                 }
                 // pitch.setPosition(pitch_in_ticks);
-                pitch.setPower(0);
+                pitch.setPosition(pitch_in_ticks);
+                // yaw.setPosition(yaw_in_degrees * (360.0/8192));
+
+
+                // printf("%d %d %d %d\n", pitch>>POWEROUT, yaw>>POWEROUT, pitch_in_ticks, yaw_in_degrees);
 /*
                 printf("pitch_m value: %f\n", pitch_move);
                 pitch.setPosition(pitch_move);
