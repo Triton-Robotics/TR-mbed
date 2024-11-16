@@ -43,10 +43,11 @@ static BufferedSerial bcJetson(PA_0, PA_1, 115200);
 // static BufferedSerial bcJetson(PC_12, PD_2, 115200);
 I2C i2c(I2C_SDA, I2C_SCL);
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
-DJIMotor yawOne(7, CANHandler::CANBUS_1, GM6020, "testMotor");
+// DJIMotor yaw(7, CANHandler::CANBUS_1, GM6020, "testMotor");
+DJIMotor yaw(7, CANHandler::CANBUS_1, GIMBLY, "yaw");
 //DJIMotor yaw(5, CANHandler::CANBUS_1, GIMBLY);
 
-// DJIMotor yaw(7, CANHandler::CANBUS_1, GIMBLY,"Yeah");
+// DJIMotor yaw(7, CANHandler::CANBUS_1, GIMBLY,"Yea`h");
 DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY);
 
 BufferedSerial pc(USBTX, USBRX); // tx, rx
@@ -122,7 +123,7 @@ void read_and_print_simple(){
 
     //ChassisSpeeds cs = Chassis.m_chassisSpeeds;
     //rotatePoint(cs.vX, cs.vY, imuAngles.yaw, xRotated, yRotated);
-    //float yaw_angle = ChassisSubsystem::ticksToRadians(yawOne.getData(ANGLE));
+    //float yaw_angle = ChassisSubsystem::ticksToRadians(yaw.getData(ANGLE));
 
     bcJetson.set_blocking(false);
     temp[0] = 'W';
@@ -142,7 +143,7 @@ float read_and_print(){ //read mine
     ChassisSpeeds cs = Chassis.m_chassisSpeeds;
     imu.get_angular_position_quat(&imuAngles);
     //printf("chassis:%f|%f imu:%f\n", cs.vX, cs.vY, imuAngles.yaw);
-    //printf("yaw angle %f, yaw velocity %f\n", yawOne.getData(ANGLE), yawOne.getData(VELOCITY));
+    //printf("yaw angle %f, yaw velocity %f\n", yaw.getData(ANGLE), yaw.getData(VELOCITY));
     //printf("pitch angle %f, pitch velocity %f \n", pitch.getData(ANGLE), pitch.getData(VELOCITY));
     //printf("IMU Angle: %f\n", float(imuAngles.yaw));
 
@@ -156,8 +157,8 @@ float read_and_print(){ //read mine
     getBytesFromFloat(rotate_y_char, yRotated);
 
     //GET yaw and pitch data
-    float yaw_angle = ChassisSubsystem::ticksToRadians(yawOne.getData(ANGLE)); //Ticks
-    float yaw_velocity = yawOne.getData(VELOCITY)/60.0; //RPM
+    float yaw_angle = ChassisSubsystem::ticksToRadians(yaw.getData(ANGLE)); //Ticks
+    float yaw_velocity = yaw.getData(VELOCITY)/60.0; //RPM
 
     float pitch_angle = ChassisSubsystem::ticksToRadians(pitch.getData(ANGLE));
     float pitch_velocity = pitch.getData(VELOCITY)/60.0;
@@ -275,15 +276,15 @@ int main(){
     // pitch.setPositionPID(15, 0, 1700);
     // pitch.setPositionOutputCap(32000);
 
-    Chassis.setYawReference(&yawOne, 2050); // "5604" is the number of ticks of yawOne considered to be robot-front
+    Chassis.setYawReference(&yaw, 2050); // "5604" is the number of ticks of yaw considered to be robot-front
 //    Chassis.setSpeedFF_Ks(0.065);
 
-    yawOne.setSpeedPID(0.5, 0, 200);
+    yaw.setSpeedPID(0.5, 0, 200);
     PID yawBeyblade(50, 0, 5);
     PID yawNonBeyblade(100, 0, 50);
 
-    yawOne.setSpeedIntegralCap(1000);
-    yawOne.useAbsEncoder = false;
+    yaw.setSpeedIntegralCap(1000);
+    yaw.useAbsEncoder = false;
 
     int ref_yaw;
 
@@ -364,7 +365,7 @@ int main(){
                 read_and_print(); // Send values to CV
 
                 //desiredPitch = pitch_in_ticks_test; //need to be in regular angle, degrees
-                //printf("pitch angle: %f, yaw angle: %f \n", pitch.getData(ANGLE), yawOne.getData(ANGLE));
+                //printf("pitch angle: %f, yaw angle: %f \n", pitch.getData(ANGLE), yaw.getData(ANGLE));
                 if (pitch_in_ticks < 3112) {
                     pitch_in_ticks = 3112;
                 }
@@ -372,8 +373,10 @@ int main(){
                     pitch_in_ticks = 4930;
                 }
                 // pitch.setPosition(pitch_in_ticks);
-                pitch.setPosition(pitch_in_ticks);
+                // pitch.setPosition(pitch_in_ticks);
                 // yaw.setPosition(yaw_in_degrees * (360.0/8192));
+                pitch.setPower(0);
+                yaw.setPower(0);
 
 
                 // printf("%d %d %d %d\n", pitch>>POWEROUT, yaw>>POWEROUT, pitch_in_ticks, yaw_in_degrees);
@@ -382,7 +385,7 @@ int main(){
                 pitch.setPosition(pitch_move);
 */
 /*
-                yawOne.setPosition(20);
+                yaw.setPosition(20);
                 printf("yaw_m value: %f\n", yaw_move)
 */
                 //remote.Y returned value: (-6600, 6600)
@@ -403,7 +406,7 @@ int main(){
 //
 //                yawSetPoint = yaw_in_degrees;
 //                //yawSetPoint -= (remote.rightX() / 90 + 360) % 360;
-//                yawOne.setSpeed(5 * yawNonBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
+//                yaw.setSpeed(5 * yawNonBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
 
                 //BEYBLADE CODE
 
@@ -413,15 +416,15 @@ int main(){
                 //pitch.setPosition(yaw_value); //need to be a value between like 2000 - 8000s, in ticks
                 //yaw_in_ticks = 0;
                 //pitch_in_ticks = 0;
-                //printf("yaw value: %d, pitch value: %d \n", yawOne.getData(ANGLE), pitch.getData(ANGLE)); //the value ticks is in int
+                //printf("yaw value: %d, pitch value: %d \n", yaw.getData(ANGLE), pitch.getData(ANGLE)); //the value ticks is in int
                 //pitch.setPosition(pitch_in_ticks);
 
                 /*
                 pitch.setPosition(pitch_in_ticks);
-                yawOne.setPosition(yaw_in_ticks);
+                yaw.setPosition(yaw_in_ticks);
                  */
                 //pitch.setPosition(1800);
-                //yawOne.setPosition(1800);
+                //yaw.setPosition(1800);
 
 
 

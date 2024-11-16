@@ -18,7 +18,6 @@
 
 
 #define PITCH_SPEED_JOYSTICK_SENSE 10.0/330
-// 360 deg/8192
 // [8129/360] = ticks per deg
 
 // add radius measurement here
@@ -52,7 +51,8 @@ DigitalIn jumper(PC_9);
 
 BNO055_ANGULAR_POSITION_typedef imuAngles;
 
-
+#define PID_POS 1 // Use pitch speed PID
+#define PID_SPD 0 // Use pitch position PID
 
 int calculateDeltaYaw(int ref_yaw, int beforeBeybladeYaw)
 {
