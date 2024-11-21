@@ -24,6 +24,10 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
     this->rbId = rbId;
 
     setOmniKinematics(radius);
+    calculatePseudoinverseMatrix(((m_OmniKinematics.r1x) - (m_OmniKinematics.r1y)),
+                                            -((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y)),
+                                            ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y)),
+                                            -((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y)));
     m_OmniKinematicsLimits.max_Vel = MAX_VEL; // m/s
     m_OmniKinematicsLimits.max_vOmega = 8; // rad/s
 
@@ -307,10 +311,6 @@ ChassisSpeeds ChassisSubsystem::wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpee
          - use vectors/arrays instead of Eigen::MatrixXd
     
     */
-    std::vector<std::vector<double>> FWD_Kine = calculatePseudoinverseMatrix(((m_OmniKinematics.r1x) - (m_OmniKinematics.r1y)),
-                                                                             -((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y)),
-                                                                             ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y)),
-                                                                             -((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y)));
     return {
         FWD_Kine[0][0] * wheelSpeeds.LF + FWD_Kine[0][1] * wheelSpeeds.RF + FWD_Kine[0][2] * wheelSpeeds.LB + FWD_Kine[0][3] * wheelSpeeds.RB,
         FWD_Kine[1][0] * wheelSpeeds.LF + FWD_Kine[1][1] * wheelSpeeds.RF + FWD_Kine[1][2] * wheelSpeeds.LB + FWD_Kine[1][3] * wheelSpeeds.RB,
@@ -324,44 +324,44 @@ ChassisSpeeds ChassisSubsystem::wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpee
    */
 }
 
-std::vector<std::vector<double>> ChassisSubsystem::calculatePseudoinverseMatrix(double a, double b, double c, double d) {
+void ChassisSubsystem::calculatePseudoinverseMatrix(double a, double b, double c, double d) {
     // First row
-    double first_row_first = (-a*b + a*c + 2*a*d + b*b + 2*b*c - b*d + c*c + c*d + 2*d*d) / 
+    FWD_Kine[0][0] = (-a*b + a*c + 2*a*d + b*b + 2*b*c - b*d + c*c + c*d + 2*d*d) / 
                              (4*a*a + 8*a*d + 4*b*b + 8*b*c + 4*c*c + 4*d*d);
-    double first_row_second = 0.25 * (a*a - a*b - a*c + 2*a*d + 2*b*c + b*d + 2*c*c + c*d + d*d) / 
+    FWD_Kine[0][1] = 0.25 * (a*a - a*b - a*c + 2*a*d + 2*b*c + b*d + 2*c*c + c*d + d*d) / 
                               (a*a + 2*a*d + b*b + 2*b*c + c*c + d*d);
-    double first_row_third = (-a*a - a*b - a*c - 2*a*d - 2*b*b - 2*b*c + b*d + c*d - d*d) / 
+    FWD_Kine[0][2] = (-a*a - a*b - a*c - 2*a*d - 2*b*b - 2*b*c + b*d + c*d - d*d) / 
                              (4*a*a + 8*a*d + 4*b*b + 8*b*c + 4*c*c + 4*d*d);
-    double first_row_fourth = (-2*a*a - a*b + a*c - 2*a*d - b*b - 2*b*c - b*d - c*c + c*d) / 
+    FWD_Kine[0][3] = (-2*a*a - a*b + a*c - 2*a*d - b*b - 2*b*c - b*d - c*c + c*d) / 
                               (4*a*a + 8*a*d + 4*b*b + 8*b*c + 4*c*c + 4*d*d);
     
     // Second row
-    double second_row_first = 0.25 * (a*b - a*c + 2*a*d + b*b + 2*b*c + b*d + c*c - c*d + 2*d*d) / 
+    FWD_Kine[1][0] = 0.25 * (a*b - a*c + 2*a*d + b*b + 2*b*c + b*d + c*c - c*d + 2*d*d) / 
                               (a*a + 2*a*d + b*b + 2*b*c + c*c + d*d);
-    double second_row_second = (-a*a - a*b - a*c - 2*a*d - 2*b*c + b*d - 2*c*c + c*d - d*d) / 
+    FWD_Kine[1][1] = (-a*a - a*b - a*c - 2*a*d - 2*b*c + b*d - 2*c*c + c*d - d*d) / 
                                (4*a*a + 8*a*d + 4*b*b + 8*b*c + 4*c*c + 4*d*d);
-    double second_row_third = 0.25 * (a*a - a*b - a*c + 2*a*d + 2*b*b + 2*b*c + b*d + c*d + d*d) / 
+    FWD_Kine[1][2] = 0.25 * (a*a - a*b - a*c + 2*a*d + 2*b*b + 2*b*c + b*d + c*d + d*d) / 
                               (a*a + 2*a*d + b*b + 2*b*c + c*c + d*d);
-    double second_row_fourth = (-2*a*a + a*b - a*c - 2*a*d - b*b - 2*b*c + b*d - c*c - c*d) / // from -bd to +bd
+    FWD_Kine[1][3] = (-2*a*a + a*b - a*c - 2*a*d - b*b - 2*b*c + b*d - c*c - c*d) / // from -bd to +bd
                                (4*a*a + 8*a*d + 4*b*b + 8*b*c + 4*c*c + 4*d*d);
 
     // Third row
-    double third_row_first = (a + d) / 
+    FWD_Kine[2][0] = (a + d) / 
                              (a*a + 2*a*d + b*b + 2*b*c + c*c + d*d);
-    double third_row_second = (b + c) / 
+    FWD_Kine[2][1] = (b + c) / 
                               (a*a + 2*a*d + b*b + 2*b*c + c*c + d*d);
-    double third_row_third = (b + c) / 
+    FWD_Kine[2][2] = (b + c) / 
                              (a*a + 2*a*d + b*b + 2*b*c + c*c + d*d);
-    double third_row_fourth = (a + d) / 
+    FWD_Kine[2][3] = (a + d) / 
                               (a*a + 2*a*d + b*b + 2*b*c + c*c + d*d);
 
     // Construct matrix
-    std::vector<std::vector<double>> matrix = {
-        {first_row_first, first_row_second, first_row_third, first_row_fourth},
-        {second_row_first, second_row_second, second_row_third, second_row_fourth},
-        {third_row_first, third_row_second, third_row_third, third_row_fourth}
-    };
-    return matrix;
+    // double matrix[3][4] = {
+    //     (first_row_first, first_row_second, first_row_third, first_row_fourth),
+    //     (second_row_first, second_row_second, second_row_third, second_row_fourth),
+    //     (third_row_first, third_row_second, third_row_third, third_row_fourth)
+    // };
+    // return matrix;
 }
 
 // char *ChassisSubsystem::MatrixtoString(Eigen::MatrixXd mat)

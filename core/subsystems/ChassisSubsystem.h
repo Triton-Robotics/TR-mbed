@@ -297,7 +297,7 @@ public:
     ChassisSpeeds wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds);
     // char *MatrixtoString(Eigen::MatrixXd mat);
 
-    std::vector<std::vector<double>> calculatePseudoinverseMatrix(double a, double b, double c, double d);
+    void calculatePseudoinverseMatrix(double a, double b, double c, double d);
 
     ChassisSpeeds m_chassisSpeeds;
     WheelSpeeds m_wheelSpeeds;
@@ -341,6 +341,7 @@ private:
     static double radPerSecondToRPM(double radPerSecond);
 
     OmniKinematics m_OmniKinematics;
+    double FWD_Kine[3][4];
     void setOmniKinematics(double radius);
     // Eigen::MatrixXd wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds);
 
