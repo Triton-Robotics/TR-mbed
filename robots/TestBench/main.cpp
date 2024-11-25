@@ -322,6 +322,12 @@ int main(){
 
     float pitch_ANGLE = 0.0;
 
+
+    float FF = -8500 * cos(desiredPitchPos * PI/180);
+    
+    // pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF); // 
+    pitch.pidPosition.feedForward = FF;
+
     while(true){
         timeStart = us_ticker_read();
 
