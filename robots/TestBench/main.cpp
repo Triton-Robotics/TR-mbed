@@ -9,11 +9,14 @@
 
 #define PI 3.14159265
 
-#define UPPERBOUND 50.0 // Bound of how high turret can point in degrees
-#define LOWERBOUND -30.0 // Bound of how low turret can point in degrees
+#define UPPERBOUND_DEG 45.0 // Bound of how high turret can point in degrees
+#define LOWERBOUND_DEG -30.0 // Bound of how low turret can point in degrees
 
-#define UPPERBOUND_TICKS (UPPERBOUND/360.0) * 8192 // Upperbound ticks relative to 0 (4250) ticks: 1137 ticks CCW to 4250, ie 4250-1137 = 3112 absolute pos
-#define LOWERBOUND_TICKS (LOWERBOUND/360.0) * 8192 // 682 ticks below/CW to 4250. ie 4932
+#define UPPERBOUND_RAD 0.785
+#define LOWERBOUND_RAD - 0.524
+
+#define UPPERBOUND_TICKS (UPPERBOUND/360.0) * 8192 // 1137 ticks above/CCW to 4250, ie 4250-1137 = 3112 absolute position in ticks
+#define LOWERBOUND_TICKS (LOWERBOUND/360.0) * 8192 // 682 ticks below/CW to 4250. ie 4932 abs pos in ticks
 
 #define PITCH_LEVEL_TICKS 4160 // The tick value of level turret pitch. Also used for initial offset
 
@@ -127,7 +130,7 @@ static uint8_t calculateLRC(const char* data, size_t length) {
 }
 
 
-void write_feedback_jetson_simple(){
+void jetson_send_feedback_simple(){
     char temp[50] = {0};
     //imu.get_angular_position_quat(&imuAngles);
 
@@ -151,7 +154,7 @@ void write_feedback_jetson_simple(){
 /**
  * Read motor values and send to CV
  */
-float write_feedback_jetson() {
+float jetson_send_feedback() {
     //char temp[50] = {0};
     // ChassisSpeeds cs = Chassis.m_chassisSpeeds;
     // imu.get_angular_position_quat(&imuAngles);
@@ -221,7 +224,7 @@ float write_feedback_jetson() {
  * @param pitch_move buffer to store desired pitch position
  * @param yaw_move buffer to store desired yaw position
  */
-void read_jetson(float &pitch_move, float & yaw_move){
+void jetson_read_values(float &pitch_move, float & yaw_move){
     bcJetson.set_blocking(false);
 
     ssize_t result = bcJetson.read(jetson_value, 30);
@@ -234,7 +237,7 @@ void read_jetson(float &pitch_move, float & yaw_move){
 }
 
 
-// think this is bad copy of read_jetson
+// think this is bad copy of jetson_read_values
 void eccode_value(char *buf, float &received_one, float &received_two, uint8_t &checksum) {
     memcpy(buf, &received_one, sizeof(float));   // 4 bytes
     //memcpy(received_one, buf, sizeof(float));
@@ -269,7 +272,7 @@ int main(){
     unsigned long timeStart;
     unsigned long loopTimer = us_ticker_read();
     int refLoop = 0;
-    //write_feedback_jetson();
+    //jetson_send_feedback();
     int counter = 1;
 
     /* Pitch Position PID*/
@@ -341,77 +344,43 @@ int main(){
             if (refLoop >= 5){
                 refereeThread(&referee);
                 refLoop = 0;
-                //led = !led;
-
-                //counter = counter ;
-                //move_yaw(100);
-                //printf("moved to this degree %d\n", counter*20);
-
-                /* WORKED CODE
-                bcJetson.set_blocking(false);
-                char temp[50] = {0};
-                bcJetson.read(temp, 50);
-                float pitch = 0;
-                float yaw = 0;
-                uint8_t checkSum;
-                decode_toSTM32(temp, pitch, yaw, checkSum);
-                printf("pitch: %f, yaw: %f, checkSum: %d\n", pitch, yaw, checkSum);
-*/
-                //printf("%f\n", 999.9);
-                //
 
                 
                 float yaw_ANGLE;
 
-                read_jetson(pitch_ANGLE, yaw_ANGLE);
+                jetson_read_values(pitch_ANGLE, yaw_ANGLE);
 
-                //desire = ChassisSubsystem::radiansToTicks(write_feedback_jetson());
+                //desire = ChassisSubsystem::radiansToTicks(jetson_send_feedback());
 
                 int pitch_in_ticks = ChassisSubsystem::radiansToTicks(pitch_ANGLE);
+
+                /* Original code idk what this is about */
                 float yaw_in_degrees = (ChassisSubsystem::radiansToTicks(yaw_ANGLE)/8192)*360;
                 yaw_in_degrees += 360;
                 while(yaw_in_degrees>360){
                     yaw_in_degrees -= 360;
                 }
+                /* ****** */
 
 
+                jetson_send_feedback();
 
-    
-                // pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF); // 
+                /* Catch pitch beyond thresholds*/
+                if (pitch_in_ticks <= LOWERBOUND_TICKS) {
+                    pitch_in_ticks = LOWERBOUND_TICKS;
+                }
+                else if (pitch_in_ticks >= UPPERBOUND_TICKS) {
+                    pitch_in_ticks = UPPERBOUND_TICKS;
+                }
+
+                /* Feed forward to account for gravity*/
+                float FF = -8500 * cos(pitch_ANGLE);
                 pitch.pidPosition.feedForward = FF;
-//NEED THISSSS, write from our robot
-                write_feedback_jetson(); // Send values to CV
 
-                //desiredPitchPos = pitch_in_ticks_test; //need to be in regular angle, degrees
-                //printf("pitch angle: %f, yaw angle: %f \n", pitch.getData(ANGLE), yaw.getData(ANGLE));
-                if (pitch_in_ticks < 3112) {
-                    pitch_in_ticks = 3112;
-                }
-                else if (pitch_in_ticks > 4930) {
-                    pitch_in_ticks = 4930;
-                }
-
-                //int yaw_in_ticks_test = imuAngles.pitch;
-
-                desiredPitchPos = pitch_in_ticks;
-
-                float FF = -8500 * cos(desiredPitchPos * PI/180);
+                // pitch_in_ticks is relative to level = 0 ticks. PITCH_LEVEL_TICKS - pitch_in_ticks = abs position in ticks
+                pitch.setPosition(PITCH_LEVEL_TICKS - pitch_in_ticks);
                 
-                // pitch.setPosition(pitch_in_ticks);
-                pitch.setPosition(pitch_in_ticks);
                 yaw.setPosition(yaw_in_degrees * (360.0/8192));
-
-
-                // printf("%d %d %d %d\n", pitch>>POWEROUT, yaw>>POWEROUT, pitch_in_ticks, yaw_in_degrees);
-/*
-                printf("pitch_m value: %f\n", pitch_move);
-                pitch.setPosition(pitch_move);
-*/
-/*
-                yaw.setPosition(20);
-                printf("yaw_m value: %f\n", yaw_move)
-*/
-                //remote.Y returned value: (-6600, 6600)
 
 
                 //BEYBLADE CODE
@@ -458,14 +427,7 @@ int main(){
                 //PRINTFF doesn't WROK
                 //printff("ang%f t%d d%f FF%f\n", (((pitch>>ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360, pitch>>ANGLE, desiredPitchPos, K * sin((desiredPitchPos / 180 * PI) - pitch_phase)); //(desiredPitchPos / 360) * TICKS_REVOLUTION + InitialOffset_Ticks
 
-
-
-
-
-
             }
-
-
 
             remoteRead();
             // Chassis.periodic();
