@@ -42,12 +42,9 @@ DigitalOut led3(L25);
 static BufferedSerial bcJetson(PA_0, PA_1, 115200);
 // static BufferedSerial bcJetson(PC_12, PD_2, 115200);
 I2C i2c(I2C_SDA, I2C_SCL);
-BNO055 imu(i2c, IMU_RESET, MODE_IMU);
-// DJIMotor yaw(7, CANHandler::CANBUS_1, GM6020, "testMotor");
-DJIMotor yaw(7, CANHandler::CANBUS_1, GIMBLY, "yaw");
-//DJIMotor yaw(5, CANHandler::CANBUS_1, GIMBLY);
+// BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 
-// DJIMotor yaw(7, CANHandler::CANBUS_1, GIMBLY,"Yea`h");
+DJIMotor yaw(7, CANHandler::CANBUS_1, GIMBLY, "yaw");
 DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY);
 
 BufferedSerial pc(USBTX, USBRX); // tx, rx
@@ -63,9 +60,9 @@ char jetson_value[30] = {0};
 
 
 
-ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
+// ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
 float xRotated, yRotated;
-BNO055_ANGULAR_POSITION_typedef imuAngles; //(-180) - (180)
+// BNO055_ANGULAR_POSITION_typedef imuAngles; //(-180) - (180)
 
 char yaw_angle_char[4];
 char yaw_velocity_char[4];
@@ -80,6 +77,11 @@ static void rotatePoint(float x, float y, double theta, float &xOut, float &yOut
 }
 
 
+/**
+ * Copy float `value` bytes into single bytes in `byteArr` array
+ * @param byteArr destination char array for value individual bytes
+ * @param value float value to copy into byteArr
+ */
 void getBytesFromFloat(char* byteArr, float value) {
     std::memcpy(byteArr, &value, sizeof(float));
 }
@@ -97,14 +99,22 @@ void decode_toSTM32(char *read_buf, float &received_one, float &received_two, ui
     checksum = read_buf[8];
 }
 
-void copy4Char(char* toCopy, char* copyInto, int begin){
+/**
+ * Coipes 4 bytes from srcBuf[0] into destBuf[offset]
+ * @param srcBuf source buffer
+ * @param destBuf destination buffer
+ * @param offset the starting position into destBuf
+ */
+void copy4Char(char* srcBuf, char* destBuf, int offset){
     for(int i = 0; i < 4; i ++){
-        copyInto[begin+i] = toCopy[i];
+        destBuf[offset+i] = srcBuf[i];
     }
 }
 
 /**
- * Longitudinal Redundancy Check
+ * Performs a Longitudinal Redundancy Check
+ * @param data the data to compute the checksum on
+ * @param length the length of data
  */
 static uint8_t calculateLRC(const char* data, size_t length) {
     unsigned char lrc = 0;
@@ -117,7 +127,7 @@ static uint8_t calculateLRC(const char* data, size_t length) {
 }
 
 
-void read_and_print_simple(){
+void write_feedback_jetson_simple(){
     char temp[50] = {0};
     //imu.get_angular_position_quat(&imuAngles);
 
@@ -138,17 +148,20 @@ void read_and_print_simple(){
     //printff("formatted output %f\n", 9.0);
 }
 
-float read_and_print(){ //read mine
+/**
+ * Read motor values and send to CV
+ */
+float write_feedback_jetson() {
     //char temp[50] = {0};
-    ChassisSpeeds cs = Chassis.m_chassisSpeeds;
-    imu.get_angular_position_quat(&imuAngles);
+    // ChassisSpeeds cs = Chassis.m_chassisSpeeds;
+    // imu.get_angular_position_quat(&imuAngles);
     //printf("chassis:%f|%f imu:%f\n", cs.vX, cs.vY, imuAngles.yaw);
     //printf("yaw angle %f, yaw velocity %f\n", yaw.getData(ANGLE), yaw.getData(VELOCITY));
     //printf("pitch angle %f, pitch velocity %f \n", pitch.getData(ANGLE), pitch.getData(VELOCITY));
     //printf("IMU Angle: %f\n", float(imuAngles.yaw));
 
     //GET the x, y value from chassis
-    rotatePoint(cs.vX, cs.vY, imuAngles.yaw, xRotated, yRotated);
+    // rotatePoint(cs.vX, cs.vY, imuAngles.yaw, xRotated, yRotated);
     //printf("Rx: %f | Ry: %f", xRotated, yRotated);
 
     char rotate_x_char[sizeof(float)];
@@ -256,7 +269,7 @@ int main(){
     unsigned long timeStart;
     unsigned long loopTimer = us_ticker_read();
     int refLoop = 0;
-    //read_and_print();
+    //write_feedback_jetson();
     int counter = 1;
 
     /* Pitch Position PID*/
@@ -276,7 +289,7 @@ int main(){
     // pitch.setPositionPID(15, 0, 1700);
     // pitch.setPositionOutputCap(32000);
 
-    Chassis.setYawReference(&yaw, 2050); // "5604" is the number of ticks of yaw considered to be robot-front
+    // Chassis.setYawReference(&yaw, 2050); // "5604" is the number of ticks of yaw considered to be robot-front
 //    Chassis.setSpeedFF_Ks(0.065);
 
     yaw.setSpeedPID(0.5, 0, 200);
@@ -288,7 +301,7 @@ int main(){
 
     int ref_yaw;
 
-    int yawSetPoint = imuAngles.yaw;
+    // int yawSetPoint = imuAngles.yaw;
     double rotationalPower = 0;
 
     unsigned long yawTime = us_ticker_read();
@@ -317,7 +330,6 @@ int main(){
 
 
             refLoop++;
-            int arr[5] = {1, 2, 3, 4, 5};
             // remoteRead();
 
             if (refLoop >= 5){
@@ -342,13 +354,13 @@ int main(){
                 //printf("%f\n", 999.9);
                 //
 
-
-
                 
                 float yaw_ANGLE;
-                //from the jetson
+
                 read_jetson(pitch_ANGLE, yaw_ANGLE);
-                //desire = ChassisSubsystem::radiansToTicks(read_and_print());
+
+                //desire = ChassisSubsystem::radiansToTicks(write_feedback_jetson());
+
                 int pitch_in_ticks = ChassisSubsystem::radiansToTicks(pitch_ANGLE);
                 float yaw_in_degrees = (ChassisSubsystem::radiansToTicks(yaw_ANGLE)/8192)*360;
                 yaw_in_degrees += 360;
@@ -362,7 +374,7 @@ int main(){
 
                 desiredPitch = pitch_in_ticks;
 //NEED THISSSS, write from our robot
-                read_and_print(); // Send values to CV
+                write_feedback_jetson(); // Send values to CV
 
                 //desiredPitch = pitch_in_ticks_test; //need to be in regular angle, degrees
                 //printf("pitch angle: %f, yaw angle: %f \n", pitch.getData(ANGLE), yaw.getData(ANGLE));
@@ -373,10 +385,8 @@ int main(){
                     pitch_in_ticks = 4930;
                 }
                 // pitch.setPosition(pitch_in_ticks);
-                // pitch.setPosition(pitch_in_ticks);
-                // yaw.setPosition(yaw_in_degrees * (360.0/8192));
-                pitch.setPower(0);
-                yaw.setPower(0);
+                pitch.setPosition(pitch_in_ticks);
+                yaw.setPosition(yaw_in_degrees * (360.0/8192));
 
 
                 // printf("%d %d %d %d\n", pitch>>POWEROUT, yaw>>POWEROUT, pitch_in_ticks, yaw_in_degrees);
@@ -411,7 +421,7 @@ int main(){
                 //BEYBLADE CODE
 
 
-                imu.get_angular_position_quat(&imuAngles);
+                // imu.get_angular_position_quat(&imuAngles);
 
                 //pitch.setPosition(yaw_value); //need to be a value between like 2000 - 8000s, in ticks
                 //yaw_in_ticks = 0;
@@ -445,7 +455,7 @@ int main(){
 
 
             remoteRead();
-            Chassis.periodic();
+            // Chassis.periodic();
 
             loopTimer = timeStart;
             DJIMotor::s_sendValues();
