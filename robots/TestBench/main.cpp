@@ -315,7 +315,7 @@ int main(){
     pitch.useAbsEncoder = true;
 
     float currentPitch = 0;
-    float desiredPitch = 0;
+    float desiredPitchPos = 0;
     float pitch_phase = 33 / 180.0 * PI; // 5.69 theoretical
     float InitialOffset_Ticks = 2500;
     float K = 0.38; //0.75 //0.85
@@ -323,10 +323,10 @@ int main(){
     float pitch_ANGLE = 0.0;
 
 
-    float FF = -8500 * cos(desiredPitchPos * PI/180);
-    
-    // pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF); // 
-    pitch.pidPosition.feedForward = FF;
+    pitch.setPositionPID(22, 0.12, 4000);
+    pitch.setPositionIntegralCap(3800);
+
+
 
     while(true){
         timeStart = us_ticker_read();
@@ -378,11 +378,16 @@ int main(){
                 //int yaw_in_ticks_test = imuAngles.pitch;
 
 
-                desiredPitch = pitch_in_ticks;
+                desiredPitchPos = pitch_in_ticks;
+
+                float FF = -8500 * cos(desiredPitchPos * PI/180);
+    
+                // pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF); // 
+                pitch.pidPosition.feedForward = FF;
 //NEED THISSSS, write from our robot
                 write_feedback_jetson(); // Send values to CV
 
-                //desiredPitch = pitch_in_ticks_test; //need to be in regular angle, degrees
+                //desiredPitchPos = pitch_in_ticks_test; //need to be in regular angle, degrees
                 //printf("pitch angle: %f, yaw angle: %f \n", pitch.getData(ANGLE), yaw.getData(ANGLE));
                 if (pitch_in_ticks < 3112) {
                     pitch_in_ticks = 3112;
@@ -409,16 +414,16 @@ int main(){
 
                 //BEYBLADE CODE
 
-//                if (desiredPitch >= LOWERBOUND) {
-//                    desiredPitch = LOWERBOUND;
+//                if (desiredPitchPos >= LOWERBOUND) {
+//                    desiredPitchPos = LOWERBOUND;
 //                }
-//                else if (desiredPitch <= UPPERBOUND) {
-//                    desiredPitch = UPPERBOUND;
+//                else if (desiredPitchPos <= UPPERBOUND) {
+//                    desiredPitchPos = UPPERBOUND;
 //                }
 //
-//                float FF = K * sin((desiredPitch / 180 * PI) - pitch_phase); // output: [-1,1]
+//                float FF = K * sin((desiredPitchPos / 180 * PI) - pitch_phase); // output: [-1,1]
 //                pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
-//                pitch.setPosition(int((desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks));
+//                pitch.setPosition(int((desiredPitchPos / 360) * TICKS_REVOLUTION + InitialOffset_Ticks));
 //
 //                yawSetPoint = yaw_in_degrees;
 //                //yawSetPoint -= (remote.rightX() / 90 + 360) % 360;
@@ -449,7 +454,7 @@ int main(){
            //printf("TEST");
 
                 //PRINTFF doesn't WROK
-                //printff("ang%f t%d d%f FF%f\n", (((pitch>>ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360, pitch>>ANGLE, desiredPitch, K * sin((desiredPitch / 180 * PI) - pitch_phase)); //(desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks
+                //printff("ang%f t%d d%f FF%f\n", (((pitch>>ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360, pitch>>ANGLE, desiredPitchPos, K * sin((desiredPitchPos / 180 * PI) - pitch_phase)); //(desiredPitchPos / 360) * TICKS_REVOLUTION + InitialOffset_Ticks
 
 
 
