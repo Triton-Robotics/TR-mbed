@@ -375,12 +375,7 @@ int main(){
                 }
 
 
-                //int yaw_in_ticks_test = imuAngles.pitch;
 
-
-                desiredPitchPos = pitch_in_ticks;
-
-                float FF = -8500 * cos(desiredPitchPos * PI/180);
     
                 // pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF); // 
                 pitch.pidPosition.feedForward = FF;
@@ -395,6 +390,13 @@ int main(){
                 else if (pitch_in_ticks > 4930) {
                     pitch_in_ticks = 4930;
                 }
+
+                //int yaw_in_ticks_test = imuAngles.pitch;
+
+                desiredPitchPos = pitch_in_ticks;
+
+                float FF = -8500 * cos(desiredPitchPos * PI/180);
+                
                 // pitch.setPosition(pitch_in_ticks);
                 pitch.setPosition(pitch_in_ticks);
                 yaw.setPosition(yaw_in_degrees * (360.0/8192));
