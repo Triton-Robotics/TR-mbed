@@ -15,8 +15,8 @@
 #define UPPERBOUND_RAD 0.785
 #define LOWERBOUND_RAD - 0.524
 
-#define UPPERBOUND_TICKS (UPPERBOUND/360.0) * 8192 // 1137 ticks above/CCW to 4250, ie 4250-1137 = 3112 absolute position in ticks
-#define LOWERBOUND_TICKS (LOWERBOUND/360.0) * 8192 // 682 ticks below/CW to 4250. ie 4932 abs pos in ticks
+#define UPPERBOUND_TICKS (UPPERBOUND_DEG/360.0) * 8192 // 1137 ticks above/CCW to 4250, ie 4250-1137 = 3112 absolute position in ticks
+#define LOWERBOUND_TICKS (LOWERBOUND_DEG/360.0) * 8192 // 682 ticks below/CW to 4250. ie 4932 abs pos in ticks
 
 #define PITCH_LEVEL_TICKS 4160 // The tick value of level turret pitch. Also used for initial offset
 
@@ -295,12 +295,15 @@ int main(){
     // Chassis.setYawReference(&yaw, 2050); // "5604" is the number of ticks of yaw considered to be robot-front
 //    Chassis.setSpeedFF_Ks(0.065);
 
-    yaw.setSpeedPID(0.5, 0, 200);
-    PID yawBeyblade(50, 0, 5);
-    PID yawNonBeyblade(100, 0, 50);
+    yaw.setSpeedPID(540, 0, 400);
+
+    PID yawBeyblade(0.32, 0, 550);
+    PID yawNonBeyblade(0.15, 0, 550);
 
     yaw.setSpeedIntegralCap(1000);
     yaw.useAbsEncoder = false;
+
+    yaw.setSpeedOutputCap(24000);
 
     int ref_yaw;
 
