@@ -231,8 +231,13 @@ void jetson_read_values(float &pitch_move, float & yaw_move){
     if (result != -EAGAIN) { // If buffer not empty, decode data. Else do nothing
         uint8_t checkSum;
         decode_toSTM32(jetson_value, pitch_move, yaw_move, checkSum);
+        if (checkSum == 0) {
+            pitch_move = 0;
+            yaw_move = 0;
+        }
 
-        printf("pitch: %f, yaw: %f, checkSum: %d\n", pitch_move, yaw_move, checkSum);
+        printf("*** pitch: %f, yaw: %f, checkSum: %d\n",pitch_move, yaw_move, (int)checkSum);
+
     }
 }
 
@@ -332,6 +337,7 @@ int main(){
     pitch.setPositionPID(22, 0.12, 4000);
     pitch.setPositionIntegralCap(3800);
 
+    int pitch_in_ticks = 0;
 
 
     while(true){
@@ -352,17 +358,18 @@ int main(){
                 float yaw_ANGLE;
 
                 jetson_read_values(pitch_ANGLE, yaw_ANGLE);
-
                 //desire = ChassisSubsystem::radiansToTicks(jetson_send_feedback());
 
-                int pitch_in_ticks = ChassisSubsystem::radiansToTicks(pitch_ANGLE);
+                pitch_in_ticks += ChassisSubsystem::radiansToTicks(pitch_ANGLE);
 
                 /* Original code idk what this is about */
                 float yaw_in_degrees = (ChassisSubsystem::radiansToTicks(yaw_ANGLE)/8192)*360;
+                
                 yaw_in_degrees += 360;
                 while(yaw_in_degrees>360){
                     yaw_in_degrees -= 360;
                 }
+                
                 /* ****** */
 
 
@@ -385,6 +392,7 @@ int main(){
                 
                 yaw.setPosition(yaw_in_degrees * (360.0/8192));
 
+                printf("%d, %d\n", (int)yaw_in_degrees, yaw>>POWEROUT);
 
                 //BEYBLADE CODE
 
