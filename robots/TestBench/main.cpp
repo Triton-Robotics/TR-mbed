@@ -231,11 +231,9 @@ void jetson_read_values(float &pitch_move, float & yaw_move){
     if (result != -EAGAIN) { // If buffer not empty, decode data. Else do nothing
         uint8_t checkSum;
         decode_toSTM32(jetson_value, pitch_move, yaw_move, checkSum);
-        if (checkSum == 0) {
+        if (pitch_move > 100) {
             pitch_move = 0;
-            yaw_move = 0;
         }
-
         printf("*** pitch: %f, yaw: %f, checkSum: %d\n",pitch_move, yaw_move, (int)checkSum);
 
     }
@@ -250,7 +248,6 @@ void eccode_value(char *buf, float &received_one, float &received_two, uint8_t &
     // Copy the uint8_t
     checksum = buf[8];   // 1 byte
 }
-
 
 
 //Yaw Incorporated
@@ -337,8 +334,10 @@ int main(){
     pitch.setPositionPID(22, 0.12, 4000);
     pitch.setPositionIntegralCap(3800);
 
+    int des_pitch_in_ticks = 0;
     int pitch_in_ticks = 0;
 
+    float des_yaw_speed = 0;
 
     while(true){
         timeStart = us_ticker_read();
@@ -356,8 +355,11 @@ int main(){
 
                 
                 float yaw_ANGLE;
-
-                jetson_read_values(pitch_ANGLE, yaw_ANGLE);
+                float yaw_speed;
+                
+                // jetson_read_values(pitch_ANGLE, yaw_ANGLE);
+                jetson_read_values(pitch_ANGLE, yaw_speed);
+                des_yaw_speed += yaw_speed;
                 //desire = ChassisSubsystem::radiansToTicks(jetson_send_feedback());
 
                 pitch_in_ticks += ChassisSubsystem::radiansToTicks(pitch_ANGLE);
@@ -390,9 +392,11 @@ int main(){
                 // pitch_in_ticks is relative to level = 0 ticks. PITCH_LEVEL_TICKS - pitch_in_ticks = abs position in ticks
                 pitch.setPosition(PITCH_LEVEL_TICKS - pitch_in_ticks);
                 
-                yaw.setPosition(yaw_in_degrees * (360.0/8192));
+                // yaw.setPosition(yaw_in_degrees * (360.0/8192));
+                des_yaw_speed = 0;
+                yaw.setSpeed(des_yaw_speed * 100);
 
-                printf("%d, %d\n", (int)yaw_in_degrees, yaw>>POWEROUT);
+                printf("%d, %d\n", (int)(des_yaw_speed * 100), yaw>>POWEROUT);
 
                 //BEYBLADE CODE
 

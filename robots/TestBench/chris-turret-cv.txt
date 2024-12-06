@@ -53,6 +53,8 @@ BNO055_ANGULAR_POSITION_typedef imuAngles;
 
 #define PID_POS 1 // Use pitch speed PID
 #define PID_SPD 0 // Use pitch position PID
+#define YAW_SPD 1
+#define YAW_POS 0
 
 int calculateDeltaYaw(int ref_yaw, int beforeBeybladeYaw)
 {
@@ -111,13 +113,15 @@ int main()
     Chassis.setYawReference(&yaw, 4098); // "5604" is the number of ticks of yawOne considered to be robot-front
     Chassis.setSpeedFF_Ks(0.065);
     
-    yaw.setSpeedPID(3.5, 0, 200);
+    yaw.setSpeedPID(540, 0, 400);
+
     PID yawBeyblade(0.32, 0, 550);
     PID yawNonBeyblade(0.15, 0, 550);
 
     yaw.setSpeedIntegralCap(1000);
     yaw.useAbsEncoder = false;
 
+    yaw.setSpeedOutputCap(24000);
     indexer.setSpeedPID(1, 0, 1);
     indexer.setSpeedIntegralCap(8000);
     //PID for indexer angle position control. Surely there are better names then "sure"...
@@ -174,10 +178,14 @@ int main()
 
     int yawVelo = 0;
 
-    pitch.setPositionPID(29, 0.17, 6200); // think about D-cap and potentially raising FF. if the setpoint is always higher than actual,
+    // pitch.setPositionPID(29, 0.17, 6200); // think about D-cap and potentially raising FF. if the setpoint is always higher than actual,
+    pitch.setPositionPID(22, 0.12, 4000);
+    // pitch.setPositionPID(15, 0, 1700); //15, 0 1700
     // then could try to up FF to get there
     // pitch.setSpeedPID(0,0,0);
-    pitch.setPositionIntegralCap(3000);
+    pitch.setPositionIntegralCap(3800);
+
+    // pitch.setSpeedPID(3, 0, 0);
 
     // TRY SPEEDPID, much easier to tune anshal said
 
@@ -246,22 +254,7 @@ int main()
 
             currentPitch = (double(pitch.getData(ANGLE) - PITCH_LEVEL_TICKS) / TICKS_REVOLUTION) * 360; // degrees
 
-            /* Yaw */
-            if (remote.rightSwitch() == Remote::SwitchState::UP) {
-                unsigned long time = us_ticker_read();
-                lastTime = time;
-
-                timeSure = us_ticker_read();
-                
-                // yaw.pidSpeed.feedForward = dir * (874 + (73.7 * abs(yawVelo)) + (0.0948 * yawVelo * yawVelo)); // saturation of gimbly power to velocity
-                desiredYaw += rightStickX * (1.0/300);
-
-                // printff("jr: %f, PO: %d, angle: %d\n", jr, yaw>>POWEROUT, yaw>>ANGLE);
-                yaw.setPower(0);
-
-                prevTimeSure = timeSure;
-            }
-            else if (drive == 'm' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::MID || remote.rightSwitch() == Remote::SwitchState::UNKNOWN)){ // disable all the non-serializer components
+            if (drive == 'm' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::MID || remote.rightSwitch() == Remote::SwitchState::UNKNOWN)){ // disable all the non-serializer components
                 Chassis.setSpeedFF_Ks(0.065);
                 Chassis.setWheelPower({0,0,0,0});
                 yaw.setPower(0);
@@ -325,6 +318,7 @@ int main()
             } else {
                 indexer.setSpeed(0);
             }
+            indexer.setPower(0);
 
             // joystick down raises ticks, joystick up lessens ticks
             // joystick down, -660 so desired pitch -= (-660) * 1/300 = += 2 deg at a time full
@@ -343,12 +337,12 @@ int main()
                  * des_pitch_ticks - desired pitch relative to the level in 
                  */
                 // rightStickY is like [-660, 660]. This should map to some amount of angle above and below the equilibrium
-                float pitch_pos_joystick_sense = 1.0/300;
+                float pitch_pos_joystick_sense = 2.0/300;
 
                 float change_in_angle_deg = remote.getMouseY() * MOUSE_SENSE_PITCH - rightStickY * pitch_pos_joystick_sense;
 
-                desiredPitchPos += change_in_angle_deg;
 #if PID_POS                
+                desiredPitchPos += change_in_angle_deg;
                 
 
 
@@ -371,7 +365,8 @@ int main()
                 // pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF); // 
                 pitch.pidPosition.feedForward = FF;
                 // pitch.setPosition(int((desiredPitchPos / 360) * TICKS_REVOLUTION + PITCH_LEVEL_TICKS)); // desiredPitchPos (deg) to ticks
-                printff("%d %d %d %d\n", PITCH_LEVEL_TICKS - des_pitch_ticks_rel, pitch>>ANGLE, (int)pitch.pidPosition.dC, (int)pitch.pidPosition.iC); // des, angle, atual
+                // printff("%d %d %d %d\n", PITCH_LEVEL_TICKS - des_pitch_ticks_rel, pitch>>ANGLE, (int)pitch.pidPosition.dC, (int)pitch.pidPosition.iC); // des, angle, atual
+                printff("%d %d %d %d\n", PITCH_LEVEL_TICKS - des_pitch_ticks_rel, pitch>>ANGLE, pitch>>POWEROUT, (int)pitch.pidPosition.iC); // des, angle, atual
                 // printff("%d %d %d %d\n", PITCH_LEVEL_TICKS - des_pitch_ticks_rel, pitch>>ANGLE, (int)pitch.pidPosition.pC, (int)pitch.pidPosition.iC);
                 // printff("%d %d %d\n", pitch>>POWEROUT, pitch.pidPosition.pC, pitch.pidPosition.iC);
                 pitch.setPosition(PITCH_LEVEL_TICKS - des_pitch_ticks_rel);
@@ -406,9 +401,36 @@ int main()
                 pitch.pidSpeed.feedForward = FF_gravity + FF_speed;
                 // pitch.setPosition(int((desiredPitchPos / 360) * TICKS_REVOLUTION + PITCH_LEVEL_TICKS)); // desiredPitchPos (deg) to ticks
                 printff("%d %d %d %d\n", rightStickY, ((int)desiredPitchSpeed), pitch>>VELOCITY, pitch>>POWEROUT); // des, angle, atual
-                pitch.setSpeed(desiredPitchSpeed);
+                pitch.setSpeed(0);
 #endif
 
+#if YAW_POS
+                float yaw_spd_joystick_sens = 3.0/330;
+
+#endif
+
+#if YAW_SPD
+                /**
+                 * right is positive on both remote & motor.
+                 */
+                pitch.setPower(0);
+                float yaw_spd_joystick_sens = 30.0/330;
+
+                int8_t dir = 1;
+                if (rightStickX < 0) {
+                    dir = -1;
+                }
+
+                float yaw_des_spd = rightStickX * yaw_spd_joystick_sens;
+
+                float FF_speed = dir * ( /*(874)*/ + (73.7 * abs(yaw_des_spd)) + (0.0948 * yaw_des_spd * yaw_des_spd ) ); // saturation of gimbly power to velocity
+                
+                yaw.pidSpeed.feedForward = FF_speed;
+                printff("%d %d %d %d\n", (int)yaw_des_spd, yaw>>VELOCITY, (int)yaw.pidSpeed.pC, (int)yaw.pidSpeed.dC);
+
+                yaw.setSpeed(yaw_des_spd);
+
+#endif
                 // pitch.setPower(-8500);
             } else{
                 pitch.setPower(0);
