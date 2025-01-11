@@ -2,7 +2,10 @@
 #include <cmath>
 
 Chassis::Chassis(short lfId, short rfId, short lbId, short rbId, I2C *i2c) : LF(lfId, CAN_BUS_TYPE, MOTOR_TYPE), RF(rfId, CAN_BUS_TYPE, MOTOR_TYPE),
-                                                                             LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE), imu(*i2c, IMU_RESET, MODE_IMU), chassisKalman()
+//                                                                             LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE), imu(), chassisKalman()
+//                                                                             LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE), imu(int32_t(55), uint8_t(0x29), i2c), chassisKalman()
+                                                                             LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE), imu(*i2c, int32_t(55), 0x28), chassisKalman()
+//                                                                             LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE), RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE), imu(*i2c, IMU_RESET, MODE_IMU), chassisKalman()
 {
     LF.outputCap = 16000;
     RF.outputCap = 16000;
