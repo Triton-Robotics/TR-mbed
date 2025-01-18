@@ -1,6 +1,7 @@
 #include "main.h"
 #include <cstdlib>
 
+
 #include <iostream>
 #include "subsystems/ChassisSubsystem.h"
 
@@ -8,6 +9,7 @@ DigitalOut led(L27);
 DigitalOut led2(L26);
 DigitalOut led3(L25);
 DigitalOut ledbuiltin(LED1);
+// AnalogIn curr(PA_7);
 
 I2C i2c(I2C_SDA, I2C_SCL);
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
@@ -16,20 +18,6 @@ ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286);
 #define IMPULSE_DT 100
 #define IMPULSE_STRENGTH 16383
 #define POWER 1000
-
-
-float power_theory(float give_current, float rotor_speed) {
-
-    float It = (20/16384) * give_current;
-    float Kt = 0.01562;
-    float torquee = It + Kt;
-
-    float mechPower = (torquee * rotor_speed)/9.55;
-    float theory_in = mechPower + ((0.000000162) * (rotor_speed * rotor_speed)) + (6448.8) * (torquee * torquee) + 2.77;
-
-    return theory_in;
-
-}
 
 int main(){
 
@@ -45,6 +33,7 @@ int main(){
 
     bool prevL = false;
     bool switL = false;
+    bool newData = true;
 
     int motorSpeed = 0;
 
@@ -58,6 +47,13 @@ int main(){
 
             refLoop++;
             if (refLoop >= 5){
+                if (referee.readable()){
+                    newData = true;
+                }
+
+                else {
+                    newData = false;
+                }
                 refereeThread(&referee);
                 refLoop = 0;
                 led2 = !led2;
@@ -102,9 +98,9 @@ int main(){
 
                     float Pmax = robot_status.chassis_power_limit;
 
-                    double jx = remote.leftX() / 660.0;
-                    double jy = remote.leftY() / 660.0;
-                    double jr = remote.rightX() / 660.0;
+                    double jx = remote.leftX() / 1000.0; //was 660
+                    double jy = remote.leftY() / 1000.0; //was 600
+                    double jr = remote.rightX() / 1000.0; //was 600
 
                     
                     double tolerance = 0.05;
@@ -113,12 +109,19 @@ int main(){
                     jr = (abs(jr) < tolerance) ? 0 : jr;
 
                     Chassis.setSpeedFF_Ks(0.065);
-                    Chassis.setChassisSpeedsPWR(Pmax, {jx * Chassis.m_OmniKinematicsLimits.max_Vel,
+                    float P_Theory = Chassis.setChassisSpeedsPWR(Pmax, {jx * Chassis.m_OmniKinematicsLimits.max_Vel,
                                               jy * Chassis.m_OmniKinematicsLimits.max_Vel,
                                               0  * Chassis.m_OmniKinematicsLimits.max_vOmega},
                                               ChassisSubsystem::YAW_ORIENTED);
+                    
+                    printff("%d\t%.3f\n", power_heat_data.buffer_energy, P_Theory);
+                    // printff("%.2f\n", curr.read());
 
                     // float chassis_power = power_heat_data.chassis_power; 
+                    // if (newData) {
+                    //     printff("P_actual: %.2f\tP_theory: %.2f\n", chassis_power, P_Theory);
+                    // }
+
                     // float It = abs((Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).getData(POWEROUT) + 
                     //             Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).getData(POWEROUT) + 
                     //             Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(POWEROUT) + 

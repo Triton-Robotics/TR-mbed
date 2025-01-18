@@ -15,6 +15,7 @@
 // #include <algorithms/WheelSpeeds.h>
 // #include <algorithms/ChassisSpeeds.h>
 #include "algorithms/eigen-3.4.0/Eigen/QR"
+#include "algorithms/TRMutex.h"
 
 #define CAN_BUS_TYPE CANHandler::CANBUS_1
 #define MOTOR_TYPE M3508
@@ -141,7 +142,7 @@ public:
      * @param wheelSpeeds The speeds in m/s to drive each motor at
      */
 
-    void setWheelSpeedsPWR(float Pmax, WheelSpeeds wheelSpeeds);
+    float setWheelSpeedsPWR(float Pmax, WheelSpeeds wheelSpeeds);
 
     /**
      * power theory
@@ -182,7 +183,7 @@ public:
      */
 
 
-    void setChassisSpeedsPWR(float Pmax, ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode = ROBOT_ORIENTED);
+    float setChassisSpeedsPWR(float Pmax, ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode = ROBOT_ORIENTED);
 
     /**
      * The rotateChassisSpeed method

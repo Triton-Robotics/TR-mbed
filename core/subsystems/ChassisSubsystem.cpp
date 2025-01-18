@@ -13,10 +13,10 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
       imu(imu)
 // chassisKalman()
 {
-    LF.outputCap = 16000; // DJIMotor class has a max outputCap: 16384
-    RF.outputCap = 16000;
-    LB.outputCap = 16000;
-    RB.outputCap = 16000;
+    LF.outputCap = 4000; // DJIMotor class has a max outputCap: 16384
+    RF.outputCap = 4000;
+    LB.outputCap = 4000;
+    RB.outputCap = 4000;
 
     this->lfId = lfId;
     this->rfId = rfId;
@@ -81,7 +81,7 @@ void ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     RB.setPower(powers[3]);
 }
 
-void ChassisSubsystem::setWheelSpeedsPWR(float Pmax, WheelSpeeds wheelSpeeds)
+float ChassisSubsystem::setWheelSpeedsPWR(float Pmax, WheelSpeeds wheelSpeeds)
 {   
     desiredWheelSpeeds = wheelSpeeds; // WheelSpeeds in RPM
     int powers[4] = {0,0,0,0};
@@ -97,10 +97,10 @@ void ChassisSubsystem::setWheelSpeedsPWR(float Pmax, WheelSpeeds wheelSpeeds)
 
 
     int IMPULSE_STRENGTH = 16384;
-    float give_current_M1 = 20*powers[0]/IMPULSE_STRENGTH;
-    float give_current_M2 = 20*powers[1]/IMPULSE_STRENGTH;
-    float give_current_M3 = 20*powers[2]/IMPULSE_STRENGTH;
-    float give_current_M4 = 20*powers[3]/IMPULSE_STRENGTH;
+    float give_current_M1 = 2*powers[0]/IMPULSE_STRENGTH;
+    float give_current_M2 = 2*powers[1]/IMPULSE_STRENGTH;
+    float give_current_M3 = 2*powers[2]/IMPULSE_STRENGTH;
+    float give_current_M4 = 2*powers[3]/IMPULSE_STRENGTH;
    
     float rotor_speed_Motor1 = getMotor(LEFT_FRONT).getData(VELOCITY);
     float rotor_speed_Motor2 = getMotor(RIGHT_FRONT).getData(VELOCITY);
@@ -114,22 +114,20 @@ void ChassisSubsystem::setWheelSpeedsPWR(float Pmax, WheelSpeeds wheelSpeeds)
 
     float sum_Pcmd = P_cmd_1 + P_cmd_2 + P_cmd_3 + P_cmd_1;
 
-    // printf("%.2f\n", sum_Pcmd);
+    // printf("P_theory: %.2f ", sum_Pcmd);
 
-    if (sum_Pcmd < Pmax) {
+    if ( (sum_Pcmd) < Pmax) {
 
         LF.setPower(powers[0]);
         RF.setPower(powers[1]);
         LB.setPower(powers[2]);
         RB.setPower(powers[3]);
+        return sum_Pcmd;
     }
 
     else {
 
-        float k = Pmax/sum_Pcmd;
-
-        
-
+        float k = Pmax/(3*sum_Pcmd);
 
         float Pout_motor1 = k * powers[0]; 
         float Pout_motor2 = k * powers[1]; 
@@ -143,18 +141,19 @@ void ChassisSubsystem::setWheelSpeedsPWR(float Pmax, WheelSpeeds wheelSpeeds)
         getMotor(RIGHT_FRONT).setPower(Pout_motor2);
         getMotor(LEFT_BACK).setPower(Pout_motor3);
         getMotor(RIGHT_BACK).setPower(Pout_motor4);
+        return sum_Pcmd;
     }
     
 }
 
 float ChassisSubsystem::power_theory(float give_current, float rotor_speed) {
 
-    float It = (20/16384) * give_current;
+    float It = give_current;
     float Kt = 0.01562;
-    float torquee = It + Kt;
+    float torquee = It * Kt;
 
     float mechPower = (torquee * rotor_speed)/9.55;
-    float theory_in = mechPower + ((0.000000162) * (rotor_speed * rotor_speed)) + (6448.8) * (torquee * torquee) + 2.77;
+    float theory_in = mechPower + ((0.00000161804) * (rotor_speed * rotor_speed)) + (64488.00929) * (torquee * torquee) + 0.6925;
 
     return theory_in;
 
@@ -218,7 +217,7 @@ void ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRI
  * There's no setChassisPower because it doesn't make sense.
  * Power (is not PWM voltage) saturates your motor speeds, and it's not related to motor speed. 
  */
-void ChassisSubsystem::setChassisSpeedsPWR(float Pmax, ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode)
+float ChassisSubsystem::setChassisSpeedsPWR(float Pmax, ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode)
 {
     if (mode == REVERSE_YAW_ORIENTED)
     {
@@ -239,7 +238,7 @@ void ChassisSubsystem::setChassisSpeedsPWR(float Pmax, ChassisSpeeds desiredChas
     WheelSpeeds wheelSpeeds = chassisSpeedsToWheelSpeeds(desiredChassisSpeeds); // in m/s (for now)
     wheelSpeeds = normalizeWheelSpeeds(wheelSpeeds);
     wheelSpeeds *= (1 / (WHEEL_DIAMETER_METERS / 2) / (2 * PI / 60) * M3508_GEAR_RATIO);
-    setWheelSpeedsPWR(Pmax, wheelSpeeds);
+    return setWheelSpeedsPWR(Pmax, wheelSpeeds);
 }
 
 ChassisSpeeds ChassisSubsystem::rotateChassisSpeed(ChassisSpeeds speeds, double yawCurrent)
