@@ -25,7 +25,7 @@ I2C i2c(I2C_SDA, I2C_SCL);
 
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
-DJIMotor yaw(5, CANHandler::CANBUS_1, GIMBLY,"Yeah");
+DJIMotor yaw(7, CANHandler::CANBUS_1, GIMBLY,"Yeah");
 DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY,"Peach"); // right
 DJIMotor pitch2(6, CANHandler::CANBUS_2, GIMBLY,"useless"); // left, not functioning
 
@@ -82,7 +82,7 @@ int main()
     float currentPitch = 0;
     float desiredPitch = 0;
     float pitch_phase = 33 / 180.0 * PI; // 5.69 theoretical
-    float InitialOffset_Ticks = 2500;
+    float InitialOffset_Ticks = 4180;
     float K = 0.38; // 0.75 //0.85
 
     LFLYWHEEL.setSpeedPID(7.5, 0, 0.04);
@@ -282,7 +282,7 @@ int main()
 
                 timeSure = us_ticker_read();
                 
-                yawVelo = 5 * yawNonBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure);
+                yawVelo = yawNonBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure);
 
                 int dir = 0;
                 if(yawVelo > 0){
