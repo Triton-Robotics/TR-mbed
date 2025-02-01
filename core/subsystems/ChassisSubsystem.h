@@ -321,6 +321,7 @@ public:
     WheelSpeeds chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds);
     ChassisSpeeds wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds);
     char *MatrixtoString(Eigen::MatrixXd mat);
+    static double rpmToRadPerSecond(double RPM);
 
     ChassisSpeeds m_chassisSpeeds;
     WheelSpeeds m_wheelSpeeds;
@@ -360,7 +361,6 @@ private:
     static double radiansToTicks(double radians);
     static double ticksToRadians(double ticks);
 
-    static double rpmToRadPerSecond(double RPM);
     static double radPerSecondToRPM(double radPerSecond);
 
     OmniKinematics m_OmniKinematics;

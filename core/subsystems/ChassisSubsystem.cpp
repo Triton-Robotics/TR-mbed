@@ -2,6 +2,8 @@
 #include <cmath>
 #include <stdexcept>
 
+DigitalOut led(PC_1);
+
 /**
  * @param radius radius in meters
  */
@@ -116,31 +118,34 @@ float ChassisSubsystem::setWheelSpeedsPWR(float Pmax, WheelSpeeds wheelSpeeds)
 
     // printf("P_theory: %.2f ", sum_Pcmd);
 
-    if ( (sum_Pcmd) < Pmax) {
+    if (0.8*(sum_Pcmd) < Pmax) {
 
         LF.setPower(powers[0]);
         RF.setPower(powers[1]);
         LB.setPower(powers[2]);
         RB.setPower(powers[3]);
+        led = 0;
         return sum_Pcmd;
     }
 
     else {
+        led = 1;
 
-        float k = Pmax/(3*sum_Pcmd);
+        float k = Pmax/(2*sum_Pcmd);
 
         float Pout_motor1 = k * powers[0]; 
         float Pout_motor2 = k * powers[1]; 
         float Pout_motor3 = k * powers[2]; 
         float Pout_motor4 = k * powers[3]; 
 
+
         // printf("%.5f\n", k);
         // printf("%d\t%d\t%d\t%d\t%.2f\n", Pout_motor1, Pout_motor2, Pout_motor3, Pout_motor4, k);
 
-        getMotor(LEFT_FRONT).setPower(Pout_motor1); 
-        getMotor(RIGHT_FRONT).setPower(Pout_motor2);
-        getMotor(LEFT_BACK).setPower(Pout_motor3);
-        getMotor(RIGHT_BACK).setPower(Pout_motor4);
+        LF.setPower(Pout_motor1); 
+        RF.setPower(Pout_motor2);
+        LB.setPower(Pout_motor3);
+        RB.setPower(Pout_motor4);
         return sum_Pcmd;
     }
     
