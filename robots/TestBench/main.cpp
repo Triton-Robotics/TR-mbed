@@ -241,7 +241,7 @@ void jetson_read_values(float &pitch_move, float & yaw_move) {
         if (pitch_move > 100) {
             pitch_move = 0;
         }
-        // printf("*** pitch: %f, yaw: %f, checkSum: %d\n", pitch_move, yaw_move, (int)checkSum);
+        printf("*** pitch: %f, yaw: %f, checkSum: %d\n", pitch_move, yaw_move, (int)checkSum);
     }
     else{
         // printf("result was empty \n");
@@ -378,7 +378,7 @@ int main(){
                 //desire = ChassisSubsystem::radiansToTicks(jetson_send_feedback());
 
                 // calculate desired delta pitch ticks
-                pitch_in_ticks += ChassisSubsystem::radiansToTicks(pitch_ANGLE);
+                pitch_in_ticks = ChassisSubsystem::radiansToTicks(pitch_ANGLE) + ChassisSubsystem::ticksToRadians(pitch.getData(ANGLE));
 
                 /* Original code idk what this is about */
                 float yaw_in_degrees = (ChassisSubsystem::radiansToTicks(yaw_ANGLE)/8192)*360;
@@ -403,7 +403,9 @@ int main(){
                 pitch.pidPosition.feedForward = FF;
 
                 // pitch_in_ticks is relative to level = 0 ticks. PITCH_LEVEL_TICKS - pitch_in_ticks = abs position in ticks
-                pitch.setPosition(PITCH_LEVEL_TICKS - pitch_in_ticks);
+                if(pitch_ANGLE != 0.0){
+                    pitch.setPosition(PITCH_LEVEL_TICKS - pitch_in_ticks);
+                }
                 
                 // yaw.setPosition(yaw_in_degrees * (360.0/8192));
                 // des_yaw_speed = 0;
