@@ -5,6 +5,8 @@
 #include "subsystems/ChassisSubsystem.h"
 #include <algorithm>
 #include <cstdint>  // For uint64_t
+#include <iostream>
+#include <chrono>
 
 
 #define PI 3.14159265
@@ -179,7 +181,7 @@ float jetson_send_feedback() {
     float pitch_angle = ChassisSubsystem::ticksToRadians(pitch.getData(ANGLE));
     float pitch_velocity = pitch.getData(VELOCITY)/60.0;
 
-    printf("yaw A: %f | yaw v: %f | pitch a: %f | pitch v: %f\n", yaw_angle, yaw_velocity, pitch_angle, pitch_velocity);
+    // printf("yaw A: %f | yaw v: %f | pitch a: %f | pitch v: %f\n", yaw_angle, yaw_velocity, pitch_angle, pitch_velocity);
 
     char yaw_angle_char[4];
     char yaw_velocity_char[4];
@@ -214,7 +216,7 @@ float jetson_send_feedback() {
 
     bcJetson.set_blocking(false);
     bcJetson.write(nucleo_value, 30);
-    //printf("Rx: %f | Ry: %f | p_a: %f | y_a: %f | p_v: %f | y_v: %f | lrc: %d \n", xRotated, yRotated, pitch_angle, yaw_angle, pitch_velocity, yaw_velocity, lrc);
+    printf("Rx: %f | Ry: %f | p_a: %f | y_a: %f | p_v: %f | y_v: %f | lrc: %d \n", xRotated, yRotated, pitch_angle, yaw_angle, pitch_velocity, yaw_velocity, lrc);
     return yaw_angle;
 }
 
@@ -224,18 +226,25 @@ float jetson_send_feedback() {
  * @param pitch_move buffer to store desired pitch position
  * @param yaw_move buffer to store desired yaw position
  */
-void jetson_read_values(float &pitch_move, float & yaw_move){
+void jetson_read_values(float &pitch_move, float & yaw_move) {
     bcJetson.set_blocking(false);
 
     ssize_t result = bcJetson.read(jetson_value, 30);
     if (result != -EAGAIN) { // If buffer not empty, decode data. Else do nothing
+        // Print raw buffer bytes as decimal integers
+        // printf("Raw buffer data: ");
+        // printf("\n");
+
         uint8_t checkSum;
         decode_toSTM32(jetson_value, pitch_move, yaw_move, checkSum);
+
         if (pitch_move > 100) {
             pitch_move = 0;
         }
-        printf("*** pitch: %f, yaw: %f, checkSum: %d\n",pitch_move, yaw_move, (int)checkSum);
-
+        // printf("*** pitch: %f, yaw: %f, checkSum: %d\n", pitch_move, yaw_move, (int)checkSum);
+    }
+    else{
+        // printf("result was empty \n");
     }
 }
 
@@ -273,6 +282,7 @@ int main(){
 
     unsigned long timeStart;
     unsigned long loopTimer = us_ticker_read();
+    printf("Current timestamp (us): %lu\n", timeStart);  // Print the timestamp
     int refLoop = 0;
     //jetson_send_feedback();
     int counter = 1;
@@ -340,7 +350,12 @@ int main(){
     float des_yaw_speed = 0;
 
     while(true){
+        pitch_ANGLE = 0.0;
         timeStart = us_ticker_read();
+
+        if ((timeStart - loopTimer) / 1000 > 12){
+            jetson_send_feedback();
+        }
 
         if ((timeStart - loopTimer) / 1000 > 25){
             led = !led;
@@ -362,6 +377,7 @@ int main(){
                 des_yaw_speed += yaw_speed;
                 //desire = ChassisSubsystem::radiansToTicks(jetson_send_feedback());
 
+                // calculate desired delta pitch ticks
                 pitch_in_ticks += ChassisSubsystem::radiansToTicks(pitch_ANGLE);
 
                 /* Original code idk what this is about */
@@ -373,9 +389,6 @@ int main(){
                 }
                 
                 /* ****** */
-
-
-                jetson_send_feedback();
 
                 /* Catch pitch beyond thresholds*/
                 if (pitch_in_ticks <= LOWERBOUND_TICKS) {
@@ -393,10 +406,10 @@ int main(){
                 pitch.setPosition(PITCH_LEVEL_TICKS - pitch_in_ticks);
                 
                 // yaw.setPosition(yaw_in_degrees * (360.0/8192));
-                des_yaw_speed = 0;
-                yaw.setSpeed(des_yaw_speed * 100);
+                // des_yaw_speed = 0;
+                // yaw.setSpeed(des_yaw_speed * 100);
 
-                printf("%d, %d\n", (int)(des_yaw_speed * 100), yaw>>POWEROUT);
+                // printf("%d, %d\n", (int)(des_yaw_speed * 100), yaw>>POWEROUT);
 
                 //BEYBLADE CODE
 
@@ -423,7 +436,7 @@ int main(){
                 //pitch.setPosition(yaw_value); //need to be a value between like 2000 - 8000s, in ticks
                 //yaw_in_ticks = 0;
                 //pitch_in_ticks = 0;
-                //printf("yaw value: %d, pitch value: %d \n", yaw.getData(ANGLE), pitch.getData(ANGLE)); //the value ticks is in int
+                printf("yaw value: %d, pitch value: %d \n", yaw.getData(ANGLE), pitch.getData(ANGLE)); //the value ticks is in int
                 //pitch.setPosition(pitch_in_ticks);
 
                 /*
@@ -451,7 +464,10 @@ int main(){
             DJIMotor::s_sendValues();
         }
         DJIMotor::s_getFeedback();
+
+        unsigned long timeEnd = us_ticker_read();
         ThisThread::sleep_for(1ms);
+        // printf("Loop execution time: %lu us (%.2f ms)\n", (timeEnd - timeStart), (timeEnd - timeStart) / 1000.0);
     }
 }
 
