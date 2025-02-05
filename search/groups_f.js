@@ -1,26 +1,4 @@
 var searchData=
 [
-  ['topicaliasing_41129',['TopicAliasing',['../group__TopicAliasing.html',1,'']]],
-  ['topicfixedsizevectorizable_41130',['TopicFixedSizeVectorizable',['../group__TopicFixedSizeVectorizable.html',1,'']]],
-  ['topiclinearalgebradecompositions_41131',['TopicLinearAlgebraDecompositions',['../group__TopicLinearAlgebraDecompositions.html',1,'']]],
-  ['topicpassingbyvalue_41132',['TopicPassingByValue',['../group__TopicPassingByValue.html',1,'']]],
-  ['topicsparsesystems_41133',['TopicSparseSystems',['../group__TopicSparseSystems.html',1,'']]],
-  ['topicstlcontainers_41134',['TopicStlContainers',['../group__TopicStlContainers.html',1,'']]],
-  ['topicstorageorders_41135',['TopicStorageOrders',['../group__TopicStorageOrders.html',1,'']]],
-  ['topicstructhavingeigenmembers_41136',['TopicStructHavingEigenMembers',['../group__TopicStructHavingEigenMembers.html',1,'']]],
-  ['topicunalignedarrayassert_41137',['TopicUnalignedArrayAssert',['../group__TopicUnalignedArrayAssert.html',1,'']]],
-  ['topicwrongstackalignment_41138',['TopicWrongStackAlignment',['../group__TopicWrongStackAlignment.html',1,'']]],
-  ['tutorialadvancedinitialization_41139',['TutorialAdvancedInitialization',['../group__TutorialAdvancedInitialization.html',1,'']]],
-  ['tutorialarrayclass_41140',['TutorialArrayClass',['../group__TutorialArrayClass.html',1,'']]],
-  ['tutorialblockoperations_41141',['TutorialBlockOperations',['../group__TutorialBlockOperations.html',1,'']]],
-  ['tutorialgeometry_41142',['TutorialGeometry',['../group__TutorialGeometry.html',1,'']]],
-  ['tutoriallinearalgebra_41143',['TutorialLinearAlgebra',['../group__TutorialLinearAlgebra.html',1,'']]],
-  ['tutorialmapclass_41144',['TutorialMapClass',['../group__TutorialMapClass.html',1,'']]],
-  ['tutorialmatrixarithmetic_41145',['TutorialMatrixArithmetic',['../group__TutorialMatrixArithmetic.html',1,'']]],
-  ['tutorialmatrixclass_41146',['TutorialMatrixClass',['../group__TutorialMatrixClass.html',1,'']]],
-  ['tutorialreductionsvisitorsbroadcasting_41147',['TutorialReductionsVisitorsBroadcasting',['../group__TutorialReductionsVisitorsBroadcasting.html',1,'']]],
-  ['tutorialreshape_41148',['TutorialReshape',['../group__TutorialReshape.html',1,'']]],
-  ['tutorialslicingindexing_41149',['TutorialSlicingIndexing',['../group__TutorialSlicingIndexing.html',1,'']]],
-  ['tutorialsparse_41150',['TutorialSparse',['../group__TutorialSparse.html',1,'']]],
-  ['tutorialstl_41151',['TutorialSTL',['../group__TutorialSTL.html',1,'']]]
+  ['reference_0',['reference',['../group__DenseMatrixManipulation__Reference.html',1,'Reference'],['../group__DenseLinearSolvers__Reference.html',1,'Reference'],['../group__Sparse__Reference.html',1,'Reference'],['../group__Geometry__Reference.html',1,'Reference']]]
 ];

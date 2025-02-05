@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['matrix_20manipulation_20via_20nullary_2dexpressions_41166',['Matrix manipulation via nullary-expressions',['../TopicCustomizing_NullaryExpr.html',1,'UserManual_CustomizingEigen']]],
-  ['motors_41167',['motors',['../md_core_util_motor_motors.html',1,'']]]
+  ['happens_20inside_20eigen_20on_20a_20simple_20example_0',['What happens inside Eigen, on a simple example',['../TopicInsideEigenExample.html',1,'UserManual_UnderstandingEigen']]],
+  ['hierarchy_1',['The class hierarchy',['../TopicClassHierarchy.html',1,'UserManual_UnderstandingEigen']]]
 ];

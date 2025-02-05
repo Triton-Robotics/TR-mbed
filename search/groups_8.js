@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['jacobi_5fmodule_41111',['Jacobi_Module',['../group__Jacobi__Module.html',1,'']]]
+  ['inplacedecomposition_0',['InplaceDecomposition',['../group__InplaceDecomposition.html',1,'']]],
+  ['issues_1',['Alignment issues',['../group__DenseMatrixManipulation__Alignement.html',1,'']]],
+  ['iterativelinearsolvers_5fmodule_2',['IterativeLinearSolvers_Module',['../group__IterativeLinearSolvers__Module.html',1,'']]]
 ];

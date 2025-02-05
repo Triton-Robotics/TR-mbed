@@ -1,6 +1,10 @@
 var searchData=
 [
-  ['what_20happens_20inside_20eigen_2c_20on_20a_20simple_20example_41182',['What happens inside Eigen, on a simple example',['../TopicInsideEigenExample.html',1,'UserManual_UnderstandingEigen']]],
-  ['writing_20efficient_20matrix_20product_20expressions_41183',['Writing efficient matrix product expressions',['../TopicWritingEfficientProductExpression.html',1,'UnclassifiedPages']]],
-  ['writing_20functions_20taking_20_25eigen_20types_20as_20parameters_41184',['Writing Functions Taking %Eigen Types as Parameters',['../TopicFunctionTakingEigenTypes.html',1,'UserManual_Generalities']]]
+  ['pages_0',['Unclassified pages',['../UnclassifiedPages.html',1,'']]],
+  ['parameters_1',['Writing Functions Taking Eigen Types as Parameters',['../TopicFunctionTakingEigenTypes.html',1,'UserManual_Generalities']]],
+  ['parts_20of_20eigen_2',['Experimental parts of Eigen',['../Experimental.html',1,'UnclassifiedPages']]],
+  ['pitfalls_3',['Common pitfalls',['../TopicPitfalls.html',1,'UserManual_Generalities']]],
+  ['preprocessor_20directives_4',['Preprocessor directives',['../TopicPreprocessorDirectives.html',1,'UserManual_Generalities']]],
+  ['product_20expressions_5',['Writing efficient matrix product expressions',['../TopicWritingEfficientProductExpression.html',1,'UnclassifiedPages']]],
+  ['projects_6',['Using Eigen in CMake Projects',['../TopicCMakeGuide.html',1,'UserManual_Generalities']]]
 ];

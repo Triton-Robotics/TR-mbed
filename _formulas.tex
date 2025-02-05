@@ -2,10 +2,26 @@
 \usepackage{ifthen}
 \usepackage{epsfig}
 \usepackage[utf8]{inputenc}
+\usepackage{xcolor}
 \usepackage{newunicodechar}
-  \newunicodechar{⁻}{${}^{-}$}% Superscript minus
-  \newunicodechar{²}{${}^{2}$}% Superscript two
-  \newunicodechar{³}{${}^{3}$}% Superscript three
+  \makeatletter
+    \def\doxynewunicodechar#1#2{%
+    \@tempswafalse
+    \edef\nuc@tempa{\detokenize{#1}}%
+    \if\relax\nuc@tempa\relax
+      \nuc@emptyargerr
+    \else
+      \edef\@tempb{\expandafter\@car\nuc@tempa\@nil}%
+      \nuc@check
+      \if@tempswa
+        \@namedef{u8:\nuc@tempa}{#2}%
+      \fi
+    \fi
+  }
+  \makeatother
+  \doxynewunicodechar{⁻}{${}^{-}$}% Superscript minus
+  \doxynewunicodechar{²}{${}^{2}$}% Superscript two
+  \doxynewunicodechar{³}{${}^{3}$}% Superscript three
 
 \pagestyle{empty}
 \begin{document}
@@ -69,13 +85,26 @@ $ \Gamma(a_i,x_i) = \frac{1}{|a_i|} \int_{x_i}^{\infty}e^{\text{-}t} t^{a_i-1} \
 $ \zeta(a_i,b_i)=\sum_{k=0}^{\infty}(b_i+k)^{\text{-}a_i} $
 \pagebreak
 
-\[ \begin{bmatrix} 1 & 8 & 4 & 2 \\ 2 & 1 & 8 & 4 \\ 4 & 2 & 1 & 8 \\ 8 & 4 & 2 & 1 \end{bmatrix} \]
+\[ \begin{bmatrix}
+    1 & 8 & 4 & 2 \\
+    2 & 1 & 8 & 4 \\
+    4 & 2 & 1 & 8 \\
+    8 & 4 & 2 & 1
+\end{bmatrix} \]
 \pagebreak
 
 $ A^T A $
 \pagebreak
 
 $ C.noalias() += \alpha op1(A) op2(B) $
+\pagebreak
+
+\[ \begin{bmatrix} 
+    1 & 8 & 4 & 2 \\ 
+    2 & 1 & 8 & 4 \\
+    4 & 2 & 1 & 8 \\
+    8 & 4 & 2 & 1
+\end{bmatrix} \]
 \pagebreak
 
 $ M_2 := L_1^{-1} M_2 $
@@ -99,10 +128,23 @@ $ M \mathrel{{+}{=}} s u v^* + s v u^* $
 $ M_2 := M_1^{-1} M_2 $
 \pagebreak
 
-\[ v = \begin{bmatrix} 1 \\ 2 \\ 3 \end{bmatrix}. \]
+\[
+v =
+\begin{bmatrix}
+  1 \\
+  2 \\
+  3
+\end{bmatrix}.
+\]
 \pagebreak
 
-\[ A = \begin{bmatrix} 8 & 2 & 2 & 9 \\ 9 & 1 & 4 & 4 \\ 3 & 5 & 4 & 5 \end{bmatrix}. \]
+\[
+A = \begin{bmatrix}
+8 & 2 & 2 & 9 \\
+9 & 1 & 4 & 4 \\
+3 & 5 & 4 & 5
+\end{bmatrix}.
+\]
 \pagebreak
 
 $ A $
@@ -162,19 +204,39 @@ $\ell^\infty$
 $\infty$
 \pagebreak
 
-\[ \mbox{m} = \begin{bmatrix} 1 & 2 & 6 & 9 \\ 3 & 1 & 7 & 2 \end{bmatrix} \]
+\[
+\mbox{m} = \begin{bmatrix} 1 & 2 & 6 & 9 \\
+                    3 & 1 & 7 & 2 \end{bmatrix}
+\]
 \pagebreak
 
-\[ \mbox{m.colwise().sum()} = \begin{bmatrix} 4 & 3 & 13 & 11 \end{bmatrix} \]
+\[
+\mbox{m.colwise().sum()} = \begin{bmatrix} 4 & 3 & 13 & 11 \end{bmatrix}
+\]
 \pagebreak
 
-\[ \begin{bmatrix} 1 & 2 & 6 & 9 \\ 3 & 1 & 7 & 2 \end{bmatrix} + \begin{bmatrix} 0 & 0 & 0 & 0 \\ 1 & 1 & 1 & 1 \end{bmatrix} = \begin{bmatrix} 1 & 2 & 6 & 9 \\ 4 & 2 & 8 & 3 \end{bmatrix}. \]
+\[
+\begin{bmatrix} 1 & 2 & 6 & 9 \\ 3 & 1 & 7 & 2 \end{bmatrix}
++ \begin{bmatrix} 0 & 0 & 0 & 0 \\ 1 & 1 & 1 & 1 \end{bmatrix}
+= \begin{bmatrix} 1 & 2 & 6 & 9 \\ 4 & 2 & 8 & 3 \end{bmatrix}.
+\]
 \pagebreak
 
-\[ \mbox{m.colwise() - v} = \begin{bmatrix} -1 & 21 & 4 & 7 \\ 0 & 8 & 4 & -1 \end{bmatrix} \]
+\[
+  \mbox{m.colwise() - v} = 
+  \begin{bmatrix}
+    -1 & 21 & 4 & 7 \\
+     0 & 8  & 4 & -1
+  \end{bmatrix}
+\]
 \pagebreak
 
-\[ \mbox{(m.colwise() - v).colwise().squaredNorm()} = \begin{bmatrix} 1 & 505 & 32 & 50 \end{bmatrix} \]
+\[
+  \mbox{(m.colwise() - v).colwise().squaredNorm()} =
+  \begin{bmatrix}
+     1 & 505 & 32 & 50
+  \end{bmatrix}
+\]
 \pagebreak
 
 $ \Delta u = 0 $
@@ -198,7 +260,7 @@ $ A^T + A $
 $ A^T $
 \pagebreak
 
-$ A = P^TLDL^*P $
+$ A =  P^TLDL^*P $
 \pagebreak
 
 $ a_0, a_1, a_2, ..., a_{n-1}$
@@ -306,7 +368,8 @@ $ BAx = \lambda x $
 $ \lambda $
 \pagebreak
 
-$ Av = \lambda v $
+$ Av = \lambda v
+$
 \pagebreak
 
 $ D $
@@ -318,10 +381,19 @@ $ V $
 $ A V = V D $
 \pagebreak
 
-$ A = V D V^{-1} $
+$ A = V D V^{-1}
+$
 \pagebreak
 
 $ k $
+\pagebreak
+
+$ k
+$
+\pagebreak
+
+$ A = V D
+V^{-1} $
 \pagebreak
 
 $ O(n^3) $
@@ -337,6 +409,20 @@ $25n^3$
 \pagebreak
 
 $10n^3$
+\pagebreak
+
+$ Av = \lambda v $
+\pagebreak
+
+$ A V =
+V D $
+\pagebreak
+
+$ A = V D V^{-1} $
+\pagebreak
+
+$ D
+$
 \pagebreak
 
 \[ \begin{bmatrix} u & v \\ -v & u \end{bmatrix} \]
@@ -363,7 +449,8 @@ $ 10n^3 $
 $ Av = \lambda Bv $
 \pagebreak
 
-$ A V = B V D $
+$ A V =
+B V D $
 \pagebreak
 
 $ A = B V D V^{-1} $
@@ -387,7 +474,7 @@ $ \mu = \beta_i / \alpha_i$
 $ \mu_i A v_i = B v_i $
 \pagebreak
 
-$ \mu_i u_i^T A = u_i^T B $
+$ \mu_i u_i^T A  = u_i^T B $
 \pagebreak
 
 $ u_i $
@@ -414,7 +501,8 @@ $ Q $
 $ H $
 \pagebreak
 
-$ A = Q H Q^T $
+$ A = Q H
+Q^T $
 \pagebreak
 
 $ Q^{-1} = Q^T $
@@ -525,22 +613,40 @@ $ t \in \mathbf{R} $
 $ w+xi+yj+zk $
 \pagebreak
 
-$ \left( \begin{array}{cc} linear & translation\\ 0 ... 0 & 1 \end{array} \right) $
+$ \left( \begin{array}{cc}
+ linear & translation\\
+ 0 ... 0 & 1
+ \end{array} \right) $
 \pagebreak
 
-$ \left( \begin{array}{cc} I & t \\ 0\,...\,0 & 1 \end{array} \right) $
+$ \left( \begin{array}{cc}
+ I & t \\
+ 0\,...\,0 & 1
+ \end{array} \right) $
 \pagebreak
 
-$ \left( \begin{array}{cc} R & 0\\ 0\,...\,0 & 1 \end{array} \right) $
+$ \left( \begin{array}{cc}
+ R & 0\\
+ 0\,...\,0 & 1
+ \end{array} \right) $
 \pagebreak
 
-$ \left( \begin{array}{cc} S & 0\\ 0\,...\,0 & 1 \end{array} \right) $
+$ \left( \begin{array}{cc}
+ S & 0\\
+ 0\,...\,0 & 1
+ \end{array} \right) $
 \pagebreak
 
-$ \left( \begin{array}{c} v\\ 1 \end{array} \right) $
+$ \left( \begin{array}{c}
+ v\\
+ 1
+ \end{array} \right) $
 \pagebreak
 
-$ \left( \begin{array}{ccc} v_1 & ... & v_n\\ 1 & ... & 1 \end{array} \right) $
+$ \left( \begin{array}{ccc}
+ v_1 & ... & v_n\\
+ 1 & ... & 1
+ \end{array} \right) $
 \pagebreak
 
 $ c, \mathbf{R}, $
@@ -549,7 +655,9 @@ $ c, \mathbf{R}, $
 $ \mathbf{t} $
 \pagebreak
 
-\begin{align*} \frac{1}{n} \sum_{i=1}^n \vert\vert y_i - (c\mathbf{R}x_i + \mathbf{t}) \vert\vert_2^2 \end{align*}
+\begin{align*}
+  \frac{1}{n} \sum_{i=1}^n \vert\vert y_i - (c\mathbf{R}x_i + \mathbf{t}) \vert\vert_2^2
+\end{align*}
 \pagebreak
 
 $ \Sigma_{\mathbf{x}\mathbf{y}} \in \mathbb{R}^{d \times d} $
@@ -582,7 +690,9 @@ $ \mathbf{y} = \left( y_1, \hdots, y_n \right) $
 $ c=1 $
 \pagebreak
 
-\begin{align*} T = \begin{bmatrix} c\mathbf{R} & \mathbf{t} \\ \mathbf{0} & 1 \end{bmatrix} \end{align*}
+\begin{align*}
+  T = \begin{bmatrix} c\mathbf{R} & \mathbf{t} \\ \mathbf{0} & 1 \end{bmatrix}
+\end{align*}
 \pagebreak
 
 $ H *this = [ beta 0 ... 0]^T $
@@ -600,10 +710,17 @@ $ n \times n $
 $ H = \prod_{i=0}^{n-1} H_i $
 \pagebreak
 
-$ H_i = I - h_i v_i v_i^* $
+$ H_i = I - h_i v_i
+v_i^* $
 \pagebreak
 
-\[ v_i = [\underbrace{0, \ldots, 0}_{i-1\mbox{ zeros}}, 1, \underbrace{*, \ldots,*}_{n-i\mbox{ arbitrary entries}} ]. \]
+$
+v_i $
+\pagebreak
+
+\[
+v_i = [\underbrace{0, \ldots, 0}_{i-1\mbox{ zeros}}, 1, \underbrace{*, \ldots,*}_{n-i\mbox{ arbitrary entries}} ].
+\]
 \pagebreak
 
 $ n-i $
@@ -621,7 +738,8 @@ $ HM $
 $ H = H_0 H_1 \ldots H_{n-1} $
 \pagebreak
 
-$ H = H_{\mathrm{shift}} H_{\mathrm{shift}+1} \ldots H_{n-1} $
+$ H = H_{\mathrm{shift}}
+H_{\mathrm{shift}+1} \ldots H_{n-1} $
 \pagebreak
 
 $ S P A P' S \approx L L' $
@@ -642,7 +760,7 @@ $ \sigma = 10^{-3} $
 $ \theta $
 \pagebreak
 
-$ J = \left ( \begin{array}{cc} c & \overline s \\ -s & \overline c \end{array} \right ) $
+$ J = \left ( \begin{array}{cc} c & \overline s \\ -s  & \overline c \end{array} \right ) $
 \pagebreak
 
 $ v = J^* v $
@@ -672,7 +790,7 @@ $ B = \left ( \begin{array}{cc} \text{*this.row}(p) \\ \text{*this.row}(q) \end{
 $ B = \left ( \begin{array}{cc} \text{*this.col}(p) & \text{*this.col}(q) \end{array} \right ) $
 \pagebreak
 
-$ \left ( \begin{array}{cc} x \\ y \end{array} \right ) = J \left ( \begin{array}{cc} x \\ y \end{array} \right ) $
+$ \left ( \begin{array}{cc} x \\ y \end{array} \right )  =  J \left ( \begin{array}{cc} x \\ y \end{array} \right ) $
 \pagebreak
 
 $ A = P^{-1} L U Q^{-1} $
@@ -684,10 +802,16 @@ $ P^{-1} L U Q^{-1} $
 $ \vert pivot \vert \leqslant threshold \times \vert maxpivot \vert $
 \pagebreak
 
-\[ \mathbf{A} \, \mathbf{P} = \mathbf{Q} \, \mathbf{R} \]
+\[
+ \mathbf{A} \, \mathbf{P} = \mathbf{Q} \, \mathbf{R}
+\]
 \pagebreak
 
-\[ \mathbf{A} \, \mathbf{P} = \mathbf{Q} \, \begin{bmatrix} \mathbf{T} & \mathbf{0} \\ \mathbf{0} & \mathbf{0} \end{bmatrix} \, \mathbf{Z} \]
+\[
+ \mathbf{A} \, \mathbf{P} = \mathbf{Q} \,
+                    \begin{bmatrix} \mathbf{T} &  \mathbf{0} \\
+                                    \mathbf{0} & \mathbf{0} \end{bmatrix} \, \mathbf{Z}
+\]
 \pagebreak
 
 $ \mathbf{Z} * \mathbf{rhs} $
@@ -699,10 +823,14 @@ $ \mathbf{\overline Z} * \mathbf{rhs} $
 $ \mathbf{Z}^* * \mathbf{rhs} $
 \pagebreak
 
-\[ \mathbf{P} \, \mathbf{A} \, \mathbf{P}' = \mathbf{Q} \, \mathbf{R} \]
+\[
+ \mathbf{P} \, \mathbf{A} \, \mathbf{P}' = \mathbf{Q} \, \mathbf{R}
+\]
 \pagebreak
 
-\[ \mathbf{A} = \mathbf{Q} \, \mathbf{R} \]
+\[
+ \mathbf{A} = \mathbf{Q} \, \mathbf{R}
+\]
 \pagebreak
 
 $ P_r $
@@ -765,10 +893,15 @@ $ \exp(2^{-\mbox{squarings}}M) $
 $ M = 0 $
 \pagebreak
 
-\[ \sum_{k=i}^m A_{ik} X_{kj} + \sum_{k=1}^j X_{ik} B_{kj} = C_{ij}. \]
+\[ 
+    \sum_{k=i}^m A_{ik} X_{kj} + \sum_{k=1}^j X_{ik} B_{kj} = C_{ij}. 
+\]
 \pagebreak
 
-\[ X_{ij} = \frac{1}{A_{ii} + B_{jj}} \Bigl( C_{ij} - \sum_{k=i+1}^m A_{ik} X_{kj} - \sum_{k=1}^{j-1} X_{ik} B_{kj} \Bigr). \]
+\[ 
+    X_{ij} = \frac{1}{A_{ii} + B_{jj}} \Bigl( C_{ij}
+    - \sum_{k=i+1}^m A_{ik} X_{kj} - \sum_{k=1}^{j-1} X_{ik} B_{kj} \Bigr).
+\]
 \pagebreak
 
 $ i=m,\ldots,1 $
@@ -783,7 +916,8 @@ $ (-1, 1) $
 $ A^p $
 \pagebreak
 
-$ \exp(p \log(A)) $
+$
+\exp(p \log(A)) $
 \pagebreak
 
 $ 1 + 3x^2 $
@@ -801,19 +935,25 @@ $ 3 + x^2 $
 $ [ 3, 0, 1 ] $
 \pagebreak
 
-\begin{align*} C(u) & = \sum_{i=0}^{n}N_{i,p}(u)P_i \end{align*}
+\begin{align*}
+  C(u) & = \sum_{i=0}^{n}N_{i,p}(u)P_i
+\end{align*}
 \pagebreak
 
 $u$
 \pagebreak
 
-\begin{align*} C(u) & = \sum_{i=0}^{n}N_{i,p}P_i \end{align*}
+\begin{align*}
+  C(u) & = \sum_{i=0}^{n}N_{i,p}P_i
+\end{align*}
 \pagebreak
 
 $u \in [0;1]$
 \pagebreak
 
-\begin{align*} \frac{d^i}{du^i}C(u) & = \sum_{i=0}^{n} \frac{d^i}{du^i} N_{i,p}(u)P_i \end{align*}
+\begin{align*}
+  \frac{d^i}{du^i}C(u) & = \sum_{i=0}^{n} \frac{d^i}{du^i} N_{i,p}(u)P_i
+\end{align*}
 \pagebreak
 
 $p+1$
@@ -825,13 +965,21 @@ $P_i$
 $p$
 \pagebreak
 
-\begin{align*} N_{i,p}(u), \hdots, N_{i+p+1,p}(u) \end{align*}
+\begin{align*}
+  N_{i,p}(u), \hdots, N_{i+p+1,p}(u)
+\end{align*}
 \pagebreak
 
-\begin{align*} \frac{d^i}{du^i} N_{i,p}(u), \hdots, \frac{d^i}{du^i} N_{i+p+1,p}(u) \end{align*}
+\begin{align*}
+  \frac{d^i}{du^i} N_{i,p}(u), \hdots, \frac{d^i}{du^i} N_{i+p+1,p}(u)
+\end{align*}
 \pagebreak
 
-\begin{align*} u_0 & = \hdots = u_p = 0 \\ u_{m-p} & = \hdots = u_{m} = 1 \\ u_{j+p} & = \frac{1}{p}\sum_{i=j}^{j+p-1}\bar{u}_i \quad\quad j=1,\hdots,n-p \end{align*}
+\begin{align*}
+ u_0 & = \hdots = u_p = 0 \\
+ u_{m-p} & = \hdots = u_{m} = 1 \\
+ u_{j+p} & = \frac{1}{p}\sum_{i=j}^{j+p-1}\bar{u}_i \quad\quad j=1,\hdots,n-p
+\end{align*}
 \pagebreak
 
 $m+1$

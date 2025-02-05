@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['lazy_20evaluation_20and_20aliasing_41165',['Lazy Evaluation and Aliasing',['../TopicLazyEvaluation.html',1,'UserManual_UnderstandingEigen']]]
+  ['general_20topics_0',['General topics',['../UserManual_Generalities.html',1,'index']]],
+  ['getting_20started_1',['Getting started',['../GettingStarted.html',1,'UnclassifiedPages']]]
 ];

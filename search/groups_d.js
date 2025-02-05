@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['reference_41118',['Reference',['../group__DenseLinearSolvers__Reference.html',1,'(Global Namespace)'],['../group__DenseMatrixManipulation__Reference.html',1,'(Global Namespace)'],['../group__Geometry__Reference.html',1,'(Global Namespace)'],['../group__Sparse__Reference.html',1,'(Global Namespace)']]]
+  ['problems_20and_20decompositions_0',['Dense linear problems and decompositions',['../group__DenseLinearSolvers__chapter.html',1,'']]]
 ];

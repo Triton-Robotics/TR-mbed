@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['cl_23863',['cl',['../namespacecl.html',1,'']]],
-  ['sycl_23864',['sycl',['../namespacecl_1_1sycl.html',1,'cl']]]
+  ['cl_0',['cl',['../namespacecl.html',1,'']]],
+  ['cl_3a_3asycl_1',['sycl',['../namespacecl_1_1sycl.html',1,'cl']]]
 ];
