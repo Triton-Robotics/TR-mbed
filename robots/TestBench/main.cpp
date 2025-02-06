@@ -1,6 +1,5 @@
 //mbed-tools sterm -b 115200
 
-
 #include "main.h"
 #include "subsystems/ChassisSubsystem.h"
 #include <algorithm>
@@ -15,7 +14,7 @@
 #define LOWERBOUND_DEG -30.0 // Bound of how low turret can point in degrees
 
 #define UPPERBOUND_RAD 0.785
-#define LOWERBOUND_RAD - 0.524
+#define LOWERBOUND_RAD -0.524
 
 #define UPPERBOUND_TICKS (UPPERBOUND_DEG/360.0) * 8192 // 1137 ticks above/CCW to 4250, ie 4250-1137 = 3112 absolute position in ticks
 #define LOWERBOUND_TICKS (LOWERBOUND_DEG/360.0) * 8192 // 682 ticks below/CW to 4250. ie 4932 abs pos in ticks
@@ -149,7 +148,7 @@ void jetson_send_feedback_simple(){
     bcJetson.write(temp, 50);
 
     //bcJetson.read(temp, 50);
-    printff("%s\n",temp);
+    //printff("%s\n",temp);
     //printff("formatted output %f\n", 9.0);
 }
 
@@ -216,7 +215,7 @@ float jetson_send_feedback() {
 
     bcJetson.set_blocking(false);
     bcJetson.write(nucleo_value, 30);
-    printf("Rx: %f | Ry: %f | p_a: %f | y_a: %f | p_v: %f | y_v: %f | lrc: %d \n", xRotated, yRotated, pitch_angle, yaw_angle, pitch_velocity, yaw_velocity, lrc);
+    //printf("Rx: %f | Ry: %f | p_a: %f | y_a: %f | p_v: %f | y_v: %f | lrc: %d \n", xRotated, yRotated, pitch_angle, yaw_angle, pitch_velocity, yaw_velocity, lrc);
     return yaw_angle;
 }
 
@@ -241,7 +240,7 @@ void jetson_read_values(float &pitch_move, float & yaw_move) {
         if (pitch_move > 100) {
             pitch_move = 0;
         }
-        printf("*** pitch: %f, yaw: %f, checkSum: %d\n", pitch_move, yaw_move, (int)checkSum);
+        //printf("*** pitch: %f, yaw: %f, checkSum: %d\n", pitch_move, yaw_move, (int)checkSum);
     }
     else{
         // printf("result was empty \n");
@@ -282,7 +281,7 @@ int main(){
 
     unsigned long timeStart;
     unsigned long loopTimer = us_ticker_read();
-    printf("Current timestamp (us): %lu\n", timeStart);  // Print the timestamp
+    //printf("Current timestamp (us): %lu\n", timeStart);  // Print the timestamp
     int refLoop = 0;
     //jetson_send_feedback();
     int counter = 1;
@@ -349,6 +348,23 @@ int main(){
 
     float des_yaw_speed = 0;
 
+    //debug
+    float prevPitchAngle = 0;           // updates after calculations
+    float currPitchAngle = 0;           //updates before calculations
+    float prevToCurrChange = 0;         //curr - prev : tells us how the pitch has shifted
+
+    float currDesiredChange = 0;        // jetson pitch now
+    float prevDesiredChange = 0;        // (jetson pitch) after prints
+    float diffRealExpectedPitch = 0;    //prevToCurrChange - currExpectedChange : difference in expected change and actual change
+    
+    int printCount = 0;                 //used to control rate of pitch debug
+
+    float radianConvDebug = 0;          //used to test a range of radian conversions
+    float pitch_in_deg = 0;
+    int ticks_to_motor = 0;
+
+    pitch.setPosition(PITCH_LEVEL_TICKS);
+
     while(true){
         pitch_ANGLE = 0.0;
         timeStart = us_ticker_read();
@@ -368,7 +384,6 @@ int main(){
                 refereeThread(&referee);
                 refLoop = 0;
 
-                
                 float yaw_ANGLE;
                 float yaw_speed;
                 
@@ -377,18 +392,60 @@ int main(){
                 des_yaw_speed += yaw_speed;
                 //desire = ChassisSubsystem::radiansToTicks(jetson_send_feedback());
 
-                // calculate desired delta pitch ticks
-                pitch_in_ticks = ChassisSubsystem::radiansToTicks(pitch_ANGLE) + ChassisSubsystem::ticksToRadians(pitch.getData(ANGLE));
 
-                /* Original code idk what this is about */
-                float yaw_in_degrees = (ChassisSubsystem::radiansToTicks(yaw_ANGLE)/8192)*360;
+                // calculate desired delta pitch ticks
+                pitch_in_ticks = ChassisSubsystem::radiansToTicks(radianConvDebug); // + pitch.getData(ANGLE); //changing to absolute positioning
+                pitch_in_deg = (pitch_in_ticks/8192.0) * 360;
+                ticks_to_motor = PITCH_LEVEL_TICKS - pitch_in_ticks;
+
+        
                 
-                yaw_in_degrees += 360;
-                while(yaw_in_degrees>360){
-                    yaw_in_degrees -= 360;
+                
+
+                //-----------DEBUG PITCH DATA RECIEVED-------------------------
+
+                // //prevPitch determined after
+                // currPitchAngle = (pitch.getData(ANGLE)/8192.0)*360.0;
+                // currDesiredChange = (ChassisSubsystem::radiansToTicks(pitch_ANGLE)/8192.0)*360;
+
+                // //actual change
+                // prevToCurrChange = currPitchAngle - prevPitchAngle;
+
+                // //actual change - expected change. negative means absolutely undershooting, positive means overshooting.
+                // diffRealExpectedPitch =  abs(prevToCurrChange) - abs(prevDesiredChange);
+
+                // //print
+                 if (printCount >= 2) {
+                //     printf("paP: %f cuP: %f cuDeCh: %f dReExP: %f \n", prevPitchAngle, currPitchAngle, diffRealExpectedPitch);
+                //     printCount = 0;
+                printf("pitch in radians: %f  \n", radianConvDebug);
+                printf("pitch in ticks: %i  \n", pitch_in_ticks);
+                printf("pitch in degrees: %f  \n", pitch_in_deg);
+                printf("ticks to motor: %i \n \n \n", ticks_to_motor);
+                radianConvDebug = radianConvDebug + 0.01;
+                if ( radianConvDebug >= UPPERBOUND_RAD ) {
+                    radianConvDebug = LOWERBOUND_RAD;
                 }
+                printCount = 0;
+                 }
+
+                printCount++;
+
+                // //prev angle and expected change
+                // prevDesiredChange = (ChassisSubsystem::radiansToTicks(pitch_ANGLE)/8192.0)*360;
+                // prevPitchAngle = (pitch.getData(ANGLE)/8192.0)*360;
+
+                //-------------DEBUG END--------------------
+
+                // /* Original code idk what this is about */
+                // float yaw_in_degrees = (ChassisSubsystem::radiansToTicks(yaw_ANGLE)/8192.0)*360;
                 
-                /* ****** */
+                // yaw_in_degrees += 360;
+                // while(yaw_in_degrees>360){
+                //     yaw_in_degrees -= 360;
+                // }
+                
+                // /* ****** */
 
                 /* Catch pitch beyond thresholds*/
                 if (pitch_in_ticks <= LOWERBOUND_TICKS) {
@@ -403,9 +460,9 @@ int main(){
                 pitch.pidPosition.feedForward = FF;
 
                 // pitch_in_ticks is relative to level = 0 ticks. PITCH_LEVEL_TICKS - pitch_in_ticks = abs position in ticks
-                if(pitch_ANGLE != 0.0){
+             //   if(pitch_ANGLE != 0.0){
                     pitch.setPosition(PITCH_LEVEL_TICKS - pitch_in_ticks);
-                }
+               // }
                 
                 // yaw.setPosition(yaw_in_degrees * (360.0/8192));
                 // des_yaw_speed = 0;
@@ -438,7 +495,7 @@ int main(){
                 //pitch.setPosition(yaw_value); //need to be a value between like 2000 - 8000s, in ticks
                 //yaw_in_ticks = 0;
                 //pitch_in_ticks = 0;
-                printf("yaw value: %d, pitch value: %d \n", yaw.getData(ANGLE), pitch.getData(ANGLE)); //the value ticks is in int
+            //printf("yaw value: %d, pitch value: %d \n", yaw.getData(ANGLE), pitch.getData(ANGLE)); //the value ticks is in int
                 //pitch.setPosition(pitch_in_ticks);
 
                 /*
@@ -448,8 +505,7 @@ int main(){
                 //pitch.setPosition(1800);
                 //yaw.setPosition(1800);
 
-
-
+                
 
                 // ad_and_print();
            //printf("TEST");
