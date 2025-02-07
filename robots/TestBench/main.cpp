@@ -177,7 +177,7 @@ float jetson_send_feedback() {
     float yaw_angle = ChassisSubsystem::ticksToRadians(yaw.getData(ANGLE)); //Ticks
     float yaw_velocity = yaw.getData(VELOCITY)/60.0; //RPM
 
-    float pitch_angle = ChassisSubsystem::ticksToRadians(pitch.getData(ANGLE));
+    float pitch_angle = ChassisSubsystem::ticksToRadians(PITCH_LEVEL_TICKS - pitch.getData(ANGLE));
     float pitch_velocity = pitch.getData(VELOCITY)/60.0;
 
     // printf("yaw A: %f | yaw v: %f | pitch a: %f | pitch v: %f\n", yaw_angle, yaw_velocity, pitch_angle, pitch_velocity);
