@@ -178,7 +178,7 @@ float jetson_send_feedback() {
     float yaw_angle = ChassisSubsystem::ticksToRadians(yaw.getData(ANGLE)); //Ticks
     float yaw_velocity = yaw.getData(VELOCITY)/60.0; //RPM
 
-    float pitch_angle = ChassisSubsystem::ticksToRadians(pitch.getData(ANGLE));
+    float pitch_angle = ChassisSubsystem::ticksToRadians(PITCH_LEVEL_TICKS - pitch.getData(ANGLE));
     float pitch_velocity = pitch.getData(VELOCITY)/60.0;
 
     // printf("yaw A: %f | yaw v: %f | pitch a: %f | pitch v: %f\n", yaw_angle, yaw_velocity, pitch_angle, pitch_velocity);
@@ -241,7 +241,7 @@ void jetson_read_values(float &pitch_move, float & yaw_move) {
         if (pitch_move > 100) {
             pitch_move = 0;
         }
-        printf("*** pitch: %f, yaw: %f, checkSum: %d\n", pitch_move, yaw_move, (int)checkSum);
+        //printf("*** pitch: %f, yaw: %f, checkSum: %d\n", pitch_move, yaw_move, (int)checkSum);
     }
     else{
         // printf("result was empty \n");
@@ -378,8 +378,9 @@ int main(){
                 //desire = ChassisSubsystem::radiansToTicks(jetson_send_feedback());
 
                 // calculate desired delta pitch ticks
-                pitch_in_ticks = ChassisSubsystem::radiansToTicks(pitch_ANGLE) + ChassisSubsystem::ticksToRadians(pitch.getData(ANGLE));
-
+                if (pitch_ANGLE != 0) {
+                    pitch_in_ticks = ChassisSubsystem::radiansToTicks(pitch_ANGLE);
+                }
                 /* Original code idk what this is about */
                 float yaw_in_degrees = (ChassisSubsystem::radiansToTicks(yaw_ANGLE)/8192)*360;
                 
@@ -403,9 +404,7 @@ int main(){
                 pitch.pidPosition.feedForward = FF;
 
                 // pitch_in_ticks is relative to level = 0 ticks. PITCH_LEVEL_TICKS - pitch_in_ticks = abs position in ticks
-                if(pitch_ANGLE != 0.0){
-                    pitch.setPosition(PITCH_LEVEL_TICKS - pitch_in_ticks);
-                }
+                pitch.setPosition(PITCH_LEVEL_TICKS - pitch_in_ticks);
                 
                 // yaw.setPosition(yaw_in_degrees * (360.0/8192));
                 // des_yaw_speed = 0;
