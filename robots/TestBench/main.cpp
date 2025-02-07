@@ -214,7 +214,11 @@ float jetson_send_feedback() {
 
     bcJetson.set_blocking(false);
     bcJetson.write(nucleo_value, 30);
+<<<<<<< Updated upstream
     //printf("Rx: %f | Ry: %f | p_a: %f | y_a: %f | p_v: %f | y_v: %f | lrc: %d \n", xRotated, yRotated, pitch_angle, yaw_angle, pitch_velocity, yaw_velocity, lrc);
+=======
+    // printf("Rx: %f | Ry: %f | p_a: %f | y_a: %f | p_v: %f | y_v: %f | lrc: %d \n", xRotated, yRotated, pitch_angle, yaw_angle, pitch_velocity, yaw_velocity, lrc);
+>>>>>>> Stashed changes
     return yaw_angle;
 }
 
@@ -339,6 +343,8 @@ int main(){
 
     float des_yaw_speed = 0;
 
+    pitch.setPosition(PITCH_LEVEL_TICKS);
+
     while(true){
         timeStart = us_ticker_read();
 
@@ -362,7 +368,13 @@ int main(){
                 des_yaw_speed += yaw_speed;
                 //desire = ChassisSubsystem::radiansToTicks(jetson_send_feedback());
 
+<<<<<<< Updated upstream
                 pitch_in_ticks += ChassisSubsystem::radiansToTicks(pitch_ANGLE);
+=======
+                // calculate desired delta pitch ticks
+                printf("desired change in ticks: %f rad = %d ticks \n", pitch_ANGLE, (int)ChassisSubsystem::radiansToTicks(pitch_ANGLE));
+                pitch_in_ticks = (int)ChassisSubsystem::radiansToTicks(pitch_ANGLE) + (pitch.getData(ANGLE));
+>>>>>>> Stashed changes
 
                 /* Original code idk what this is about */
                 float yaw_in_degrees = (ChassisSubsystem::radiansToTicks(yaw_ANGLE)/8192)*360;
