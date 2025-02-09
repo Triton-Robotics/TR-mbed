@@ -214,7 +214,7 @@ float jetson_send_feedback() {
     uint8_t lrc = calculateLRC(nucleo_value, 24);
     char lrc_char = static_cast<uint8_t>(lrc);
     //printf("lrc: %d\n", lrc);
-    //nucleo_value[24] = lrc_char;
+    nucleo_value[24] = lrc_char;
     //printf("lrc: %d\n", temp[24]);
 
     bcJetson.set_blocking(false);
