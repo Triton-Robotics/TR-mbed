@@ -216,7 +216,10 @@ float jetson_send_feedback() {
 
     bcJetson.set_blocking(false);
     bcJetson.write(nucleo_value, 30);
-    printf("Rx: %f | Ry: %f | p_a: %f | y_a: %f | p_v: %f | y_v: %f | lrc: %d \n", xRotated, yRotated, pitch_angle, yaw_angle, pitch_velocity, yaw_velocity, lrc);
+    //printf("Rx: %f | Ry: %f | p_a: %f | y_a: %f | p_v: %f | y_v: %f | lrc: %d \n", xRotated, yRotated, pitch_angle, yaw_angle, pitch_velocity, yaw_velocity, lrc);
+    
+    //make a struct to send data
+    ThisThread::sleep_for(3);
     return yaw_angle;
 }
 
@@ -280,9 +283,11 @@ int main(){
     DJIMotor::s_sendValues();
     DJIMotor::s_getFeedback();
 
+    printf("DesiredPosition CurrentPosition DesiredPitchDegrees");
+
     unsigned long timeStart;
     unsigned long loopTimer = us_ticker_read();
-    printf("Current timestamp (us): %lu\n", timeStart);  // Print the timestamp
+    //printf("Current timestamp (us): %lu\n", timeStart);  // Print the timestamp
     int refLoop = 0;
     //jetson_send_feedback();
     int counter = 1;
@@ -348,39 +353,73 @@ int main(){
     int pitch_in_ticks = 0;
 
     float des_yaw_speed = 0;
+    float yaw_ANGLE;
+    float yaw_speed;
+
+    //debug
+    float pitch_in_deg = 0;
+    int ticks_to_motor = 0;
+    float currPitch = 0;
+    float desiredPosition = 0;
+    float diffRealExpectedPitch = 0;
 
     while(true){
         pitch_ANGLE = 0.0;
         timeStart = us_ticker_read();
 
-        if ((timeStart - loopTimer) / 1000 > 12){
-            jetson_send_feedback();
-        }
 
-        if ((timeStart - loopTimer) / 1000 > 25){
+        if ((timeStart - loopTimer) / 1000 > 15){
             led = !led;
+
+            //int sizePacket = bcJetson.available();
+
+            jetson_read_values(pitch_ANGLE, yaw_speed);
+            //printf("pitchAngle %X  %.3f size %i  \n", pitch_ANGLE, pitch_ANGLE, sizePacket);
+                // calculate desired 
+                if (pitch_ANGLE != 0) {
+                    pitch_in_ticks = ChassisSubsystem::radiansToTicks(pitch_ANGLE);
+                }
+                pitch_in_deg = (pitch_in_ticks/8192.0) * 360;
+                ticks_to_motor = PITCH_LEVEL_TICKS - pitch_in_ticks;
 
 
             refLoop++;
             // remoteRead();
 
             if (refLoop >= 5){
+                
                 refereeThread(&referee);
                 refLoop = 0;
-
-                
-                float yaw_ANGLE;
-                float yaw_speed;
                 
                 // jetson_read_values(pitch_ANGLE, yaw_ANGLE);
-                jetson_read_values(pitch_ANGLE, yaw_speed);
+                
                 des_yaw_speed += yaw_speed;
                 //desire = ChassisSubsystem::radiansToTicks(jetson_send_feedback());
 
-                // calculate desired delta pitch ticks
+                // calculate desired 
                 if (pitch_ANGLE != 0) {
                     pitch_in_ticks = ChassisSubsystem::radiansToTicks(pitch_ANGLE);
                 }
+                pitch_in_deg = (pitch_in_ticks/8192.0) * 360;
+                ticks_to_motor = PITCH_LEVEL_TICKS - pitch_in_ticks;
+
+                //-----------DEBUG PITCH DATA RECIEVED-------------------------
+
+                //current angle and desired change
+                currPitch = (pitch.getData(ANGLE)/8192.0)*360.0;
+                desiredPosition = ( (PITCH_LEVEL_TICKS - pitch_in_ticks ) /8192.0)*360;
+
+                // // //actual change - expected change. negative means absolutely undershooting, positive means overshooting.
+                diffRealExpectedPitch =  abs(currPitch) - abs(desiredPosition);
+
+                // //print
+                // if (printCount >= 2) {
+                    printf("%.3f %.3f %.3f \n", desiredPosition, currPitch, pitch_in_deg);
+                    //printf("DeP: %.3f CuP: %.3f DiReExP: %.3f \n", desiredPosition, currPitch, diffRealExpectedPitch);
+                    //printf("pitch in ticks: %i  \n", pitch_in_ticks);
+                    //printf("pitch in degrees: %f  \n", pitch_in_deg);
+                    //printf("ticks to motor: %i \n \n \n", ticks_to_motor);
+
                 /* Original code idk what this is about */
                 float yaw_in_degrees = (ChassisSubsystem::radiansToTicks(yaw_ANGLE)/8192)*360;
                 
@@ -437,7 +476,7 @@ int main(){
                 //pitch.setPosition(yaw_value); //need to be a value between like 2000 - 8000s, in ticks
                 //yaw_in_ticks = 0;
                 //pitch_in_ticks = 0;
-                printf("yaw value: %d, pitch value: %d \n", yaw.getData(ANGLE), pitch.getData(ANGLE)); //the value ticks is in int
+                //printf("yaw value: %d, pitch value: %d \n", yaw.getData(ANGLE), pitch.getData(ANGLE)); //the value ticks is in int
                 //pitch.setPosition(pitch_in_ticks);
 
                 /*
@@ -465,6 +504,7 @@ int main(){
             DJIMotor::s_sendValues();
         }
         DJIMotor::s_getFeedback();
+        jetson_send_feedback();
 
         unsigned long timeEnd = us_ticker_read();
         ThisThread::sleep_for(1ms);
