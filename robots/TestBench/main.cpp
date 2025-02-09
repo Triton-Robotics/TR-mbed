@@ -62,8 +62,11 @@ float Yaw;
 char nucleo_value[30] = {0};
 char jetson_value[30] = {0};
 
-
-
+struct fromJetson{
+    float pitch_angle;
+    float yaw_angle;
+    uint8_t checksum;
+};
 
 // ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
 float xRotated, yRotated;
@@ -195,7 +198,7 @@ float jetson_send_feedback() {
 
 
     //put the data into temp
-    int startPositions[7] = {0, 4, 8,12, 16, 20, 24};
+    int startPositions[7] = {0, 4, 8, 12, 16, 20, 24};
     copy4Char(rotate_x_char, nucleo_value, startPositions[0]);
     copy4Char(rotate_y_char, nucleo_value, startPositions[1]);
     copy4Char(pitch_angle_char, nucleo_value, startPositions[2]);
@@ -211,7 +214,7 @@ float jetson_send_feedback() {
     uint8_t lrc = calculateLRC(nucleo_value, 24);
     char lrc_char = static_cast<uint8_t>(lrc);
     //printf("lrc: %d\n", lrc);
-    nucleo_value[24] = lrc_char;
+    //nucleo_value[24] = lrc_char;
     //printf("lrc: %d\n", temp[24]);
 
     bcJetson.set_blocking(false);
@@ -219,7 +222,7 @@ float jetson_send_feedback() {
     //printf("Rx: %f | Ry: %f | p_a: %f | y_a: %f | p_v: %f | y_v: %f | lrc: %d \n", xRotated, yRotated, pitch_angle, yaw_angle, pitch_velocity, yaw_velocity, lrc);
     
     //make a struct to send data
-    ThisThread::sleep_for(3);
+    // ThisThread::sleep_for(3);
     return yaw_angle;
 }
 
@@ -232,14 +235,19 @@ float jetson_send_feedback() {
 void jetson_read_values(float &pitch_move, float & yaw_move) {
     bcJetson.set_blocking(false);
 
-    ssize_t result = bcJetson.read(jetson_value, 30);
+    ssize_t result = bcJetson.read(jetson_value, 9);
     if (result != -EAGAIN) { // If buffer not empty, decode data. Else do nothing
         // Print raw buffer bytes as decimal integers
         // printf("Raw buffer data: ");
         // printf("\n");
 
-        uint8_t checkSum;
-        decode_toSTM32(jetson_value, pitch_move, yaw_move, checkSum);
+        uint8_t checkSum = jetson_value[8];
+        uint8_t theoryCheck = calculateLRC(jetson_value,8);
+        if(checkSum == theoryCheck){
+            decode_toSTM32(jetson_value, pitch_move, yaw_move, checkSum);
+        }else{
+            led3 = !led3;
+        }        
 
         if (pitch_move > 100) {
             pitch_move = 0;
@@ -277,7 +285,28 @@ int calculateDeltaYaw(int ref_yaw, int beforeBeybladeYaw)
     return deltaYaw;
 }
 
+void basic_bitch_read(){
+    bool yes = false;
+    fromJetson in = {0};
+    int point = 0;
+    while(bcJetson.readable()){
+        yes = true;
+        // char inByte;
+        // bcJetson.read(&inByte, 1);
+        // printf("%x ",inByte);
+        // char* bytes = reinterpret_cast<char*>(&in)
+        // bytes[point++] = inByte;
+        // if(point == 9){
+        //     bcJetson.flush()
+        //     break;
+        // }
+        bcJetson.read(&in, 9);
+    }
+    if(yes)
+        printf("\n");
+}
 
+#if 1
 int main(){
     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
     DJIMotor::s_sendValues();
@@ -287,6 +316,7 @@ int main(){
 
     unsigned long timeStart;
     unsigned long loopTimer = us_ticker_read();
+    unsigned long loopTimerCV = us_ticker_read();
     //printf("Current timestamp (us): %lu\n", timeStart);  // Print the timestamp
     int refLoop = 0;
     //jetson_send_feedback();
@@ -363,28 +393,29 @@ int main(){
     float desiredPosition = 0;
     float diffRealExpectedPitch = 0;
 
+    //PRINTLOOP
+    int printLoop = 0;
+
     while(true){
         pitch_ANGLE = 0.0;
         timeStart = us_ticker_read();
 
+        //CV loop runs every 2ms
+        if((timeStart - loopTimerCV) / 1000 > 2) { 
+            loopTimerCV = timeStart;
+            jetson_send_feedback();
+            //basic_bitch_read();
+            led2 = !led2;
+        }
 
         if ((timeStart - loopTimer) / 1000 > 15){
             led = !led;
 
             //int sizePacket = bcJetson.available();
-
-            jetson_read_values(pitch_ANGLE, yaw_speed);
-            //printf("pitchAngle %X  %.3f size %i  \n", pitch_ANGLE, pitch_ANGLE, sizePacket);
-                // calculate desired 
-                if (pitch_ANGLE != 0) {
-                    pitch_in_ticks = ChassisSubsystem::radiansToTicks(pitch_ANGLE);
-                }
-                pitch_in_deg = (pitch_in_ticks/8192.0) * 360;
-                ticks_to_motor = PITCH_LEVEL_TICKS - pitch_in_ticks;
-
-
             refLoop++;
             // remoteRead();
+            remoteRead();
+            // Chassis.periodic();
 
             if (refLoop >= 5){
                 
@@ -395,55 +426,6 @@ int main(){
                 
                 des_yaw_speed += yaw_speed;
                 //desire = ChassisSubsystem::radiansToTicks(jetson_send_feedback());
-
-                // calculate desired 
-                if (pitch_ANGLE != 0) {
-                    pitch_in_ticks = ChassisSubsystem::radiansToTicks(pitch_ANGLE);
-                }
-                pitch_in_deg = (pitch_in_ticks/8192.0) * 360;
-                ticks_to_motor = PITCH_LEVEL_TICKS - pitch_in_ticks;
-
-                //-----------DEBUG PITCH DATA RECIEVED-------------------------
-
-                //current angle and desired change
-                currPitch = (pitch.getData(ANGLE)/8192.0)*360.0;
-                desiredPosition = ( (PITCH_LEVEL_TICKS - pitch_in_ticks ) /8192.0)*360;
-
-                // // //actual change - expected change. negative means absolutely undershooting, positive means overshooting.
-                diffRealExpectedPitch =  abs(currPitch) - abs(desiredPosition);
-
-                // //print
-                // if (printCount >= 2) {
-                    printf("%.3f %.3f %.3f \n", desiredPosition, currPitch, pitch_in_deg);
-                    //printf("DeP: %.3f CuP: %.3f DiReExP: %.3f \n", desiredPosition, currPitch, diffRealExpectedPitch);
-                    //printf("pitch in ticks: %i  \n", pitch_in_ticks);
-                    //printf("pitch in degrees: %f  \n", pitch_in_deg);
-                    //printf("ticks to motor: %i \n \n \n", ticks_to_motor);
-
-                /* Original code idk what this is about */
-                float yaw_in_degrees = (ChassisSubsystem::radiansToTicks(yaw_ANGLE)/8192)*360;
-                
-                yaw_in_degrees += 360;
-                while(yaw_in_degrees>360){
-                    yaw_in_degrees -= 360;
-                }
-                
-                /* ****** */
-
-                /* Catch pitch beyond thresholds*/
-                if (pitch_in_ticks <= LOWERBOUND_TICKS) {
-                    pitch_in_ticks = LOWERBOUND_TICKS;
-                }
-                else if (pitch_in_ticks >= UPPERBOUND_TICKS) {
-                    pitch_in_ticks = UPPERBOUND_TICKS;
-                }
-
-                /* Feed forward to account for gravity*/
-                float FF = -8500 * cos(pitch_ANGLE);
-                pitch.pidPosition.feedForward = FF;
-
-                // pitch_in_ticks is relative to level = 0 ticks. PITCH_LEVEL_TICKS - pitch_in_ticks = abs position in ticks
-                pitch.setPosition(PITCH_LEVEL_TICKS - pitch_in_ticks);
                 
                 // yaw.setPosition(yaw_in_degrees * (360.0/8192));
                 // des_yaw_speed = 0;
@@ -490,28 +472,167 @@ int main(){
 
 
                 // ad_and_print();
-           //printf("TEST");
+                //printf("TEST");
 
                 //PRINTFF doesn't WROK
                 //printff("ang%f t%d d%f FF%f\n", (((pitch>>ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360, pitch>>ANGLE, desiredPitchPos, K * sin((desiredPitchPos / 180 * PI) - pitch_phase)); //(desiredPitchPos / 360) * TICKS_REVOLUTION + InitialOffset_Ticks
 
             }
 
-            remoteRead();
-            // Chassis.periodic();
+            //-----------DEBUG PITCH DATA RECIEVED-------------------------
+
+            jetson_read_values(pitch_ANGLE, yaw_speed);
+            //basic_bitch_read();
+            //printf("pitchAngle %X  %.3f size %i  \n", pitch_ANGLE, pitch_ANGLE, sizePacket);
+            // calculate desired 
+            if (pitch_ANGLE != 0) {
+                pitch_in_ticks = ChassisSubsystem::radiansToTicks(pitch_ANGLE);
+            }
+            pitch_in_deg = (pitch_in_ticks/8192.0) * 360;
+            ticks_to_motor = PITCH_LEVEL_TICKS - pitch_in_ticks;
+
+            //current angle and desired change
+            currPitch = (pitch.getData(ANGLE)/8192.0)*360.0;
+            desiredPosition = ( ticks_to_motor /8192.0)*360;
+
+            // // //actual change - expected change. negative means absolutely undershooting, positive means overshooting.
+            diffRealExpectedPitch =  abs(currPitch) - abs(desiredPosition);
+
+            // // //print
+            // // if (printCount >= 2) {
+            //     printf("%.3f %.3f %.3f \n", desiredPosition, currPitch, pitch_in_deg);
+            //     //printf("DeP: %.3f CuP: %.3f DiReExP: %.3f \n", desiredPosition, currPitch, diffRealExpectedPitch);
+            //     //printf("pitch in ticks: %i  \n", pitch_in_ticks);
+            //     //printf("pitch in degrees: %f  \n", pitch_in_deg);
+            //     //printf("ticks to motor: %i \n \n \n", ticks_to_motor);
+
+            /* Original code idk what this is about */
+            float yaw_in_degrees = (ChassisSubsystem::radiansToTicks(yaw_ANGLE)/8192)*360;
+            
+            yaw_in_degrees += 360;
+            while(yaw_in_degrees>360){
+                yaw_in_degrees -= 360;
+            }
+
+            /* Catch pitch beyond thresholds*/
+            if (pitch_in_ticks <= LOWERBOUND_TICKS) {
+                pitch_in_ticks = LOWERBOUND_TICKS;
+            }
+            else if (pitch_in_ticks >= UPPERBOUND_TICKS) {
+                pitch_in_ticks = UPPERBOUND_TICKS;
+            }
+
+            /* Feed forward to account for gravity*/
+            float FF = -8500 * cos(pitch_ANGLE);
+            pitch.pidPosition.feedForward = FF;
+
+            // pitch_in_ticks is relative to level = 0 ticks. PITCH_LEVEL_TICKS - pitch_in_ticks = abs position in ticks
+            pitch.setPosition(PITCH_LEVEL_TICKS - pitch_in_ticks);
+
+            printLoop ++;
+            if(printLoop > 5){
+                printLoop = 0;
+                printf("%.3f %.3f %.3f %.3f \n", desiredPosition, pitch_ANGLE, currPitch, pitch_in_deg);
+                //printf("DeP: %.3f CuP: %.3f DiReExP: %.3f \n", desiredPosition, currPitch, diffRealExpectedPitch);
+                //printf("pitch in ticks: %i  \n", pitch_in_ticks);
+                //printf("pitch in degrees: %f  \n", pitch_in_deg);
+                //printf("ticks to motor: %i \n \n \n", ticks_to_motor);
+            }
 
             loopTimer = timeStart;
             DJIMotor::s_sendValues();
         }
         DJIMotor::s_getFeedback();
-        jetson_send_feedback();
+        // jetson_send_feedback();
 
         unsigned long timeEnd = us_ticker_read();
         ThisThread::sleep_for(1ms);
         // printf("Loop execution time: %lu us (%.2f ms)\n", (timeEnd - timeStart), (timeEnd - timeStart) / 1000.0);
     }
 }
+#endif
 
+//CV PACKET DESCRIPTION
+//EMBED TO CV:
+//4 ChassisXVelo
+//4 ChassisYVelo
+//4 Pitch f32
+//4 Yaw f32
+//4 PitchVelo
+//4 YawVelo
+//ADD 4 IMUHeading
+//ADD 12 XYZAccel
+
+
+
+
+//DEFINE MOTORS, ETC
+
+// void basic_bitch_read(){
+//     bool
+//     while(bcJetson.readable()){
+
+//     }
+// }
+#if 0
+int main(){
+
+    //assigning can handler objects to motor class.
+    DJIMotor::s_setCANHandlers(&canHandler1,&canHandler2, false, false); 
+
+    //getting initial feedback.
+    DJIMotor::s_getFeedback();
+
+    unsigned long loopTimer_u = us_ticker_read();
+    unsigned long timeEnd_u;
+    unsigned long timeStart_u;
+
+    unsigned long loopTimerCV_u = us_ticker_read();
+
+    int refLoop = 0;
+
+    //DEFINE PIDs AND OTHER CONSTANTS
+
+    while(true){ //main loop
+        timeStart_u = us_ticker_read();
+
+        //CV loop runs every 2ms
+        if((timeStart_u - loopTimerCV_u) / 1000 > 2) { 
+            loopTimerCV_u = timeStart_u;
+            jetson_send_feedback();
+        }
+
+        //inner loop runs every 25ms
+        if((timeStart_u - loopTimer_u) / 1000 > 15) { 
+            loopTimer_u = timeStart_u;
+            led = !led; //led blink tells us how fast the inner loop is running
+            // long long beforehand = us_ticker_read();
+
+            // printf("af %lld\n", (us_ticker_read() - beforehand));
+            if (refLoop >= 5) { //ref code runs 5 of every inner loop, 
+                refLoop = 0;
+                refereeThread(&referee);
+            }
+            refLoop++;
+
+            remoteRead(); //reading data from remote
+
+            //MAIN CODE 
+
+            timeEnd_u = us_ticker_read();
+
+            DJIMotor::s_sendValues();
+        }
+
+        //FEEDBACK CODE DOES NEED TO RUN FASTER THAN 1MS
+        //OTHER QUICK AND URGENT TASKS GO HERE
+
+        DJIMotor::s_getFeedback();
+        
+        ThisThread::sleep_for(1ms);
+    }
+}
+#endif
 
 //mbed-tools sterm -b 115200
 
