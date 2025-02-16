@@ -2,7 +2,7 @@
 #include <cmath>
 #include <stdexcept>
 
-DigitalOut led(PC_1);
+// DigitalOut led(PC_1);
 
 /**
  * @param radius radius in meters
@@ -15,10 +15,10 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
       imu(imu)
 // chassisKalman()
 {
-    LF.outputCap = 4000; // DJIMotor class has a max outputCap: 16384
-    RF.outputCap = 4000;
-    LB.outputCap = 4000;
-    RB.outputCap = 4000;
+    LF.outputCap = 8000; //DJIMotor class has a max outputCap: 16384
+    RF.outputCap = 8000;
+    LB.outputCap = 8000;
+    RB.outputCap = 8000;
 
     this->lfId = lfId;
     this->rfId = rfId;
@@ -29,7 +29,7 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
     m_OmniKinematicsLimits.max_Vel = MAX_VEL; // m/s
     m_OmniKinematicsLimits.max_vOmega = 8; // rad/s
 
-    PEAK_POWER_ALL = 10000;
+    PEAK_POWER_ALL = 32000;
     PEAK_POWER_SINGLE = 8000;
 
     FF_Ks = 0;
@@ -124,12 +124,12 @@ float ChassisSubsystem::setWheelSpeedsPWR(float Pmax, WheelSpeeds wheelSpeeds)
         RF.setPower(powers[1]);
         LB.setPower(powers[2]);
         RB.setPower(powers[3]);
-        led = 0;
+        // led = 0;
         return sum_Pcmd;
     }
 
     else {
-        led = 1;
+        // led = 1;
 
         float k = Pmax/(2*sum_Pcmd);
 

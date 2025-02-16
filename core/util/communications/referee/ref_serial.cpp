@@ -37,7 +37,7 @@ void JudgeSystem_USART_Receive_DMA(BufferedSerial* b) // modified
     b->read(JudgeSystem_rxBuff, JUDGESYSTEM_PACKSIZE);
 }
 
-ext_game_status_t ext_game_status; //
+ext_game_status_t ext_game_status; // if (//) means to be removed
 game_status_t game_status;
 ext_game_result_t ext_game_result; //
 game_result_t game_result;
