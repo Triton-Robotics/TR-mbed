@@ -18,7 +18,7 @@ var searchData=
   ['chbmv_2ec_15',['chbmv.c',['../chbmv_8c.html',1,'']]],
   ['check_5fcache_5fqueries_2ecpp_16',['check_cache_queries.cpp',['../check__cache__queries_8cpp.html',1,'']]],
   ['chkder_2eh_17',['chkder.h',['../chkder_8h.html',1,'']]],
-  ['cholesky_2ecpp_18',['cholesky.cpp',['../test_2cholesky_8cpp.html',1,'(Global Namespace)'],['../lapack_2cholesky_8cpp.html',1,'(Global Namespace)']]],
+  ['cholesky_2ecpp_18',['cholesky.cpp',['../lapack_2cholesky_8cpp.html',1,'(Global Namespace)'],['../test_2cholesky_8cpp.html',1,'(Global Namespace)']]],
   ['cholmod_5fsupport_2ecpp_19',['cholmod_support.cpp',['../cholmod__support_8cpp.html',1,'']]],
   ['cholmodsupport_2eh_20',['CholmodSupport.h',['../CholmodSupport_8h.html',1,'']]],
   ['chpmv_2ec_21',['chpmv.c',['../chpmv_8c.html',1,'']]],
