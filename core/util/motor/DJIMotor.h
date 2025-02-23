@@ -154,6 +154,7 @@ public:
     inline void setPower(int power){
         value = power;
         mode = POW;
+        powerOut = power;
     }
 
     inline void setSpeed(int speed){

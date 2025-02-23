@@ -124,6 +124,14 @@ public:
         ROBOT_ORIENTED
     };
 
+    float previousRPM[4] = {0, 0, 0, 0};
+
+    static float limitAcceleration(float desiredRPM, float previousRPM);
+
+    static float p_theory(int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm);
+
+    static float Bisection(int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm, float chassisPowerLimit);
+
     /**
      * Gets the chassis's current WheelSpeeds
      * @return The chassis's current WheelSpeeds
@@ -134,7 +142,7 @@ public:
      * The setWheelSpeeds method drives each motor at a specific speed
      * @param wheelSpeeds The speeds in RPM to drive each motor at
      */
-    void setWheelSpeeds(WheelSpeeds wheelSpeeds);
+    float setWheelSpeeds(WheelSpeeds wheelSpeeds);
 
     /**
      * The normalizeWheelSpeeds method normalizes each motor with respect to m_OmniKinematicsLimits.max_Vel
@@ -159,7 +167,7 @@ public:
      *
      * @param desiredChassisSpeeds The robot-relative speeds (vX, vY, and vOmega) in m/s
      */
-    void setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode = ROBOT_ORIENTED);
+    float setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode = ROBOT_ORIENTED);
 
     /**
      * The rotateChassisSpeed method
