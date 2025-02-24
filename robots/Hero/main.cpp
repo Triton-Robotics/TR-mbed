@@ -243,7 +243,7 @@ I2C i2c(I2C_SDA, I2C_SCL);
 
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
-DJIMotor yaw(7, CANHandler::CANBUS_1, GIMBLY);
+DJIMotor yaw(5, CANHandler::CANBUS_1, GIMBLY);
 DJIMotor pitch(5, CANHandler::CANBUS_2, GIMBLY); // right
 // DJIMotor pitch2(6, CANHandler::CANBUS_2, GIMBLY); // left, not functioning
 
@@ -302,7 +302,7 @@ int main()
     unsigned long shootTimer;
     bool shootReady = false;
 
-    char drive = 'u';
+    char drive = 'o';
 
     // pitch.useAbsEncoder = true;
     pitch.setPositionPID(10, 0, 70); //15, 0 1700
@@ -501,13 +501,6 @@ int main()
             jy = (abs(jy) < tolerance) ? 0 : jy;
             jr = (abs(jr) < tolerance) ? 0 : jr;
 
-            // if(driveMode == 'm'){
-            //     jx = MOUSE_KB_MULT * ((remote.keyPressed(Remote::Key::D) ? 1 : 0) + (remote.keyPressed(Remote::Key::A) ? -1 : 0));
-            //     jy = MOUSE_KB_MULT * ((remote.keyPressed(Remote::Key::W) ? 1 : 0) + (remote.keyPressed(Remote::Key::S) ? -1 : 0));
-            //     jr = MOUSE_KB_MULT * ((remote.keyPressed(Remote::Key::E) ? 1 : 0) + (remote.keyPressed(Remote::Key::Q) ? -1 : 0));
-
-            // }
-
             float mult = 1;
             if(remote.keyPressed(Remote::Key::SHIFT)){
                 mult = 0.5;
@@ -520,6 +513,7 @@ int main()
             currentPitch = (double(pitch.getData(ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360; // degrees
 
             int leftStickValue = remote.rightY();
+
             /**
              * RightSwitch controls: Pitch, Yaw, Chassis
              * Up: Pitch enabled, yaw and chassis seperate
@@ -527,9 +521,6 @@ int main()
              * Down: Pitch enabled, yaw and chassis Beyblade
              */
             int stick = remote.rightY();
-
-
-
             if (drive == 'u' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::UP)){          // All non-serializer motors activated
                 // led3 = 1;
                 unsigned long time = us_ticker_read();
@@ -544,14 +535,8 @@ int main()
 
                 lastTime = time; 
 
-                // if(driveMode == 'm'){
-                //     yawSetPoint -= remote.getMouseX() * MOUSE_SENSE_YAW;
-                // }else{
-                //     yawSetPoint -= remote.rightX() * JOYSTICK_SENSE_YAW;
-                // }
-
                 yawSetPoint -= remote.getMouseX() * MOUSE_SENSE_YAW;
-                if(remote.rightX() > 10 || remote.rightX() < -10){
+                if(remote.rightX() > 33 || remote.rightX() < -1){
                     yawSetPoint -= remote.rightX() * JOYSTICK_SENSE_YAW;
                 }
                 yawSetPoint = (yawSetPoint+360) % 360;
