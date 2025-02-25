@@ -60,17 +60,43 @@ float ChassisSubsystem::limitAcceleration(float desiredRPM, float previousRPM)
 {
     float maxAccel = 100;
     float diff = desiredRPM - previousRPM;
-    if (diff > maxAccel)   // if the difference is greater than the max acceleration
+    
+    // if (diff > maxAccel)   // if the difference is greater than the max acceleration
 
-        return previousRPM + maxAccel; // if motor spinning forwards, add 500 "forwards"
+    //     return previousRPM + maxAccel; // if motor spinning forwards, add 500 "forwards"
 
-    else if (diff < -maxAccel) // If motor spinning backwards, add 500 "backwards"
+    // else if (diff < -maxAccel) // If motor spinning backwards, add 500 "backwards"
 
-        return previousRPM - maxAccel;
+    //     return previousRPM - maxAccel;
 
-    else
+    // else
 
-        return desiredRPM;
+    //     return desiredRPM;
+    if(desiredRPM > 0){
+        float maxRPMthisFrame = previousRPM + maxAccel;
+        if(desiredRPM > 0){
+            if(desiredRPM > maxRPMthisFrame){
+                return maxRPMthisFrame;
+            }else {
+                return desiredRPM;
+            }
+        }else {
+            return 0;
+        }
+    }else if(desiredRPM < 0){
+        float minRPMthisFrame = previousRPM - maxAccel;
+        if(desiredRPM < 0){
+            if(desiredRPM < minRPMthisFrame){
+                return minRPMthisFrame;
+            }else {
+                return desiredRPM;
+            }
+        }else{
+            return 0;
+        }
+    }else{
+        return 0;
+    }
 }
 
 float ChassisSubsystem::p_theory(int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm){

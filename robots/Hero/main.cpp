@@ -450,7 +450,7 @@ int main()
                 angleOffset = (1.0 - (angle / TICKS_REVOLUTION)) * 360.0;
             }
 
-            if (refLoop >= 5){
+            if (refLoop >= 10){
                 refereeThread(&referee);
                 refLoop = 0;
                 led2 = !led2;
@@ -472,6 +472,8 @@ int main()
                 }else{
                     Chassis.PEAK_POWER_ALL = 200 * robot_status.chassis_power_limit;
                 }
+
+                printff("%d %d %.1f %d\n", remote.rightX(), DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), imuAngles.yaw + 180, yaw>>POWEROUT);
 //                printff("\n");
 
                 // printff("i: %f, p: %d, p_P: %d \n", imuAngles.yaw, pitch>>ANGLE, pitch>>POWEROUT);
@@ -536,7 +538,7 @@ int main()
                 lastTime = time; 
 
                 yawSetPoint -= remote.getMouseX() * MOUSE_SENSE_YAW;
-                if(remote.rightX() > 33 || remote.rightX() < -1){
+                if(remote.rightX() > 40 || remote.rightX() < -1){
                     yawSetPoint -= remote.rightX() * JOYSTICK_SENSE_YAW;
                 }
                 yawSetPoint = (yawSetPoint+360) % 360;
@@ -587,7 +589,9 @@ int main()
                 
                 timeSure = us_ticker_read();
 
-                 yaw.setSpeed(-2 * Chassis.getChassisSpeeds().vOmega * 8192 / 3.14 * 60 /8 + 15 * yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
+                int yawVelo = 2 * 5 * yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure);
+
+                yaw.setSpeed(-2 * Chassis.getChassisSpeeds().vOmega * 8192 / 3.14 * 30 + yawVelo);
                 imu.get_angular_position_quat(&imuAngles);
 
                 prevTimeSure = timeSure;
