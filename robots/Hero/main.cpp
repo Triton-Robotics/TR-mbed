@@ -386,11 +386,13 @@ int main()
     yawSetPoint = (imuAngles.yaw + 180) ;
     yawSetPoint = yawSetPoint % 360;
 
+    float p_theory_tot_c = 0;
+
     while (true)
     {
         unsigned long timeStart = us_ticker_read();
 
-        if ((timeStart - loopTimer) / 1000 > 25){
+        if ((timeStart - loopTimer) / 1000 > 15){
             led3 = !led3;
 
             loopTimer = timeStart;
@@ -472,8 +474,10 @@ int main()
                 }else{
                     Chassis.PEAK_POWER_ALL = 200 * robot_status.chassis_power_limit;
                 }
-
-                printff("%d %d %.1f %d\n", remote.rightX(), DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), imuAngles.yaw + 180, yaw>>POWEROUT);
+                
+                printff("%.3f\t%.3f\t%d\n", p_theory_tot_c, power_heat_data.chassis_power, 60);
+                                     
+                // printff("%d %d %.1f %d\n", remote.rightX(), DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), imuAngles.yaw + 180, yaw>>POWEROUT);
 //                printff("\n");
 
                 // printff("i: %f, p: %d, p_P: %d \n", imuAngles.yaw, pitch>>ANGLE, pitch>>POWEROUT);
@@ -535,10 +539,14 @@ int main()
                 Chassis.setChassisSpeeds(cs,
                                           ChassisSubsystem::ROBOT_ORIENTED);
 
+
+                    
+     
+
                 lastTime = time; 
 
                 yawSetPoint -= remote.getMouseX() * MOUSE_SENSE_YAW;
-                if(remote.rightX() > 40 || remote.rightX() < -1){
+                if(remote.rightX() > 55 || remote.rightX() < -5){
                     yawSetPoint -= remote.rightX() * JOYSTICK_SENSE_YAW;
                 }
                 yawSetPoint = (yawSetPoint+360) % 360;
@@ -581,7 +589,7 @@ int main()
 
                 yawSetPoint -= remote.getMouseX() * MOUSE_SENSE_YAW;
                 // yawSetPoint -= remote.rightX() * JOYSTICK_SENSE_YAW;
-                if(remote.rightX() > 10 || remote.rightX() < -10){
+                if(remote.rightX() > 45 || remote.rightX() < -5){
                     yawSetPoint -= remote.rightX() * JOYSTICK_SENSE_YAW;
                 }
 
@@ -598,6 +606,17 @@ int main()
             }
             yawTime = us_ticker_read();
 
+            int t1 = abs(Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).getData(POWEROUT));
+            int t2 = abs(Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).getData(POWEROUT));
+            int t3 = abs(Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(POWEROUT));
+            int t4 = abs(Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).getData(POWEROUT));
+
+            int r1 = abs(Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).getData(VELOCITY));
+            int r2 = abs(Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).getData(VELOCITY));
+            int r3 = abs(Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(VELOCITY));
+            int r4 = abs(Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).getData(VELOCITY));
+
+            p_theory_tot_c = ChassisSubsystem::p_theory(t1, t2, t3, t4, r1, r2, r3, r4);
 
             // burst fire, turn the indexer to shoot 3-5 balls a time and stop indexer
             // only shoot when left switch changes from down/unknown/mid to up
@@ -734,4 +753,3 @@ int main()
         userButton = button;
     }
 }
-

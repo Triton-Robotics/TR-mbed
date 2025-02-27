@@ -56,47 +56,109 @@ WheelSpeeds ChassisSubsystem::getWheelSpeeds() const
     return m_wheelSpeeds;
 }
 
-float ChassisSubsystem::limitAcceleration(float desiredRPM, float previousRPM)
+float ChassisSubsystem::limitAcceleration(float desiredRPM, float previousRPM, int power)
 {
     float maxAccel = 100;
     float diff = desiredRPM - previousRPM;
+
     
-    // if (diff > maxAccel)   // if the difference is greater than the max acceleration
-
-    //     return previousRPM + maxAccel; // if motor spinning forwards, add 500 "forwards"
-
-    // else if (diff < -maxAccel) // If motor spinning backwards, add 500 "backwards"
-
-    //     return previousRPM - maxAccel;
-
-    // else
-
-    //     return desiredRPM;
-    if(desiredRPM > 0){
-        float maxRPMthisFrame = previousRPM + maxAccel;
-        if(desiredRPM > 0){
-            if(desiredRPM > maxRPMthisFrame){
-                return maxRPMthisFrame;
-            }else {
-                return desiredRPM;
-            }
-        }else {
-            return 0;
-        }
-    }else if(desiredRPM < 0){
-        float minRPMthisFrame = previousRPM - maxAccel;
-        if(desiredRPM < 0){
-            if(desiredRPM < minRPMthisFrame){
-                return minRPMthisFrame;
-            }else {
-                return desiredRPM;
-            }
-        }else{
-            return 0;
-        }
-    }else{
+    if ((desiredRPM > 0 && previousRPM < 0) || (desiredRPM < 0 && previousRPM > 0)) { // if robot trying to sudden change direction
         return 0;
     }
+    
+    
+    if (diff > maxAccel){   // if the difference is greater than the max acceleration
+
+
+        if(power == 0) {
+            return desiredRPM; // let robot do its thing b/c it wont take power
+        }
+
+        return previousRPM + maxAccel;
+
+    }
+    else if (diff < -maxAccel) {
+        if(power == 0) {
+            return desiredRPM; // let robot do its thing b/c it wont take power
+        }
+
+        return previousRPM - maxAccel;
+    }
+
+    else {
+        return desiredRPM; // under acceleration cap
+    }
+
+
+
+
+    // if (diff > maxAccel){   // if the difference is greater than the max acceleration
+
+    //     if(power > 0) { // power: + rpm: + (acceleraiton)
+    //         return previousRPM + maxAccel;
+    //     }
+
+    //     else if(power < 0 && desiredRPM > 0) { // power: - rpm: + (deceleration)
+    //         return previousRPM + maxAccel; // ignore diff, just decelerate 
+    //     }
+
+    //     else if(power == 0) {
+    //         return desiredRPM; // let robot do its thing b/c it wont take power
+    //     }
+
+    // }
+    // else if (diff < -maxAccel) {
+        
+    //     if(power < 0 && desiredRPM < 0) { // power: - rpm: - (acceleration)
+    //         return previousRPM - maxAccel; 
+    //     }
+
+    //     else if(power > 0 && desiredRPM < 0) { // power: + rpm: - (deceleration)
+    //         return previousRPM - maxAccel; // ignore diff, just decelerate
+    //     }
+
+    //     else if(power == 0) {
+    //         return desiredRPM; // let robot do its thing b/c it wont take power
+    //     }
+
+    // }
+    // else {
+    //     return desiredRPM; // under acceleration
+    // }
+
+
+
+
+
+
+
+
+
+    // if(previousRPM > 0){
+    //     float maxRPMthisFrame = previousRPM + maxAccel;
+    //     if(desiredRPM > 0){
+    //         if(desiredRPM > maxRPMthisFrame){
+    //             return maxRPMthisFrame;
+    //         }else {
+    //             return desiredRPM;
+    //         }
+    //     }else {
+    //         return 0;
+    //     }
+    // }else if(previousRPM < 0){
+    //     float minRPMthisFrame = previousRPM - maxAccel;
+    //     if(desiredRPM < 0){
+    //         if(desiredRPM < minRPMthisFrame){
+    //             return minRPMthisFrame;
+    //         }else {
+    //             return desiredRPM;
+    //         }
+    //     }else{
+    //         return 0;
+    //     }
+    // }else{
+    //     return 0;
+    // }
 }
 
 float ChassisSubsystem::p_theory(int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm){
@@ -168,13 +230,27 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     uint32_t time = us_ticker_read();
 
 
-
+    powers[0] = motorPIDtoPower(LEFT_FRONT,wheelSpeeds.LF, (time - lastPIDTime));
+    powers[1] = motorPIDtoPower(RIGHT_FRONT,wheelSpeeds.RF, (time - lastPIDTime));
+    powers[2] = motorPIDtoPower(LEFT_BACK,wheelSpeeds.LB, (time - lastPIDTime));
+    powers[3] = motorPIDtoPower(RIGHT_BACK,wheelSpeeds.RB, (time - lastPIDTime));
     
 
-    float LFrpm = limitAcceleration(wheelSpeeds.LF, previousRPM[0]);
-    float RFrpm = limitAcceleration(wheelSpeeds.RF, previousRPM[1]);
-    float LBrpm = limitAcceleration(wheelSpeeds.LB, previousRPM[2]);
-    float RBrpm = limitAcceleration(wheelSpeeds.RB, previousRPM[3]);
+    float LFrpm = limitAcceleration(wheelSpeeds.LF, previousRPM[0], powers[0]);
+    float RFrpm = limitAcceleration(wheelSpeeds.RF, previousRPM[1], powers[1]);
+    float LBrpm = limitAcceleration(wheelSpeeds.LB, previousRPM[2], powers[2]);
+    float RBrpm = limitAcceleration(wheelSpeeds.RB, previousRPM[3], powers[3]);
+
+    // float LFrpm = wheelSpeeds.LF;
+    // float RFrpm = wheelSpeeds.RF;
+    // float LBrpm = wheelSpeeds.LB;
+    // float RBrpm = wheelSpeeds.RB;
+
+    
+    // float LFrpm = limitAcceleration(wheelSpeeds.LF, previousRPM[0], LF.getData(POWEROUT));
+    // float RFrpm = limitAcceleration(wheelSpeeds.RF, previousRPM[1], RF.getData(POWEROUT));
+    // float LBrpm = limitAcceleration(wheelSpeeds.LB, previousRPM[2], LB.getData(POWEROUT));
+    // float RBrpm = limitAcceleration(wheelSpeeds.RB, previousRPM[3], RB.getData(POWEROUT));
 
     previousRPM[0] = LFrpm;
     previousRPM[1] = RFrpm;
@@ -211,7 +287,7 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     int r3 = abs(LB.getData(VELOCITY));
     int r4 = abs(RB.getData(VELOCITY));
 
-    float scale = Bisection(p1, p2, p3, p4, r1, r2, r3, r4, 60.0);
+    float scale = Bisection(p1, p2, p3, p4, r1, r2, r3, r4, 50.0);
 
 
 
