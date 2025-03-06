@@ -258,11 +258,6 @@ void jetson_read_values(float &pitch_move, float & yaw_move) {
         uint8_t theoryCheck;                  //calculated check from 8 bits of results
         uint8_t checkSum;                     //last bit in results array              
         char result[9] = {0};                 //array containing lastest jetson_value data
-
-        for (shiftOffset = 18 ; shiftOffset < 26 ; ++shiftOffset) {
-            jetson_value[shiftOffset] = 1;
-        }
-        jetson_value[26] = 256;
     
         while ( check == 0) {
             resultShift = 9;                  //resets every loop to refill results
