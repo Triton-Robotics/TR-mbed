@@ -232,70 +232,31 @@ float jetson_send_feedback() {
  * @param pitch_move buffer to store desired pitch position
  * @param yaw_move buffer to store desired yaw position
  */
-
-
-
 void jetson_read_values(float &pitch_move, float & yaw_move) {
     bcJetson.set_blocking(false);
 
-
-    ssize_t emptyCheck = bcJetson.read(jetson_value, 9);
-
-    if (emptyCheck != -EAGAIN) { // If buffer not empty, decode data. Else do nothing
+    ssize_t result = bcJetson.read(jetson_value, 9);
+    if (result != -EAGAIN) { // If buffer not empty, decode data. Else do nothing
         // Print raw buffer bytes as decimal integers
         // printf("Raw buffer data: ");
         // printf("\n");
-        
-        //old code as of 3/5
-        //final byte is checksum
-        //uint8_t checkSum = jetson_value[8];
-        //uint8_t theoryCheck = calculateLRC(jetson_value,8); //excluding checksum size
 
-        bool check = 0;
-        unsigned int jetsonIndexShift = 29;            //relates to index of  jetson_values, 30 bytes
-        unsigned int resultShift;             //cycles final results array, 9 bytes
-        unsigned int shiftOffset;             //cycles increments through 9 bytes relative to jetsonIndexShift
-        uint8_t theoryCheck;                  //calculated check from 8 bits of results
-        uint8_t checkSum;                     //last bit in results array              
-        char result[9] = {0};                 //array containing lastest jetson_value data
-    
-        while ( check == 0) {
-            resultShift = 9;                  //resets every loop to refill results
-    
-            //fill results array with latest data
-            for (shiftOffset = jetsonIndexShift; shiftOffset >= (jetsonIndexShift - 9) ; --shiftOffset) {
-                result[resultShift] = jetson_value[shiftOffset];
-                --resultShift; //decrement towards index 0
-            }
-            
-            //extract check sum and expected check, relabled for ease of understanding
-            theoryCheck = calculateLRC(result, 8);
-            checkSum = result[8];
-    
-            //comparing final bit to the theoretical to check for complete packet
-            if ( checkSum == theoryCheck ) {
-                printf("latest data found \n");
-                check == 1;
-            }
-            else { 
-                printf(" not correct \n");
-                led3 = !led3;
-            }
-    
-            if (jetsonIndexShift > 8) {
-                --jetsonIndexShift;
-            }
-        }
-        decode_toSTM32(jetson_value, pitch_move, yaw_move, checkSum);
+        uint8_t checkSum = jetson_value[8];
+        uint8_t theoryCheck = calculateLRC(jetson_value,8);
+        if(checkSum == theoryCheck){
+            decode_toSTM32(jetson_value, pitch_move, yaw_move, checkSum);
+        }else{
+            led3 = !led3;
+        }        
 
-     if (pitch_move > 100) {
+        if (pitch_move > 100) {
             pitch_move = 0;
+        }
+        //printf("*** pitch: %f, yaw: %f, checkSum: %d\n", pitch_move, yaw_move, (int)checkSum);
     }
+    else{
+        // printf("result was empty \n");
     }
-    else {
-
-    }
-    //printf("*** pitch: %f, yaw: %f, checkSum: %d\n", pitch_move, yaw_move, (int)checkSum);
 }
 
 
@@ -330,6 +291,15 @@ void basic_bitch_read(){
     int point = 0;
     while(bcJetson.readable()){
         yes = true;
+        // char inByte;
+        // bcJetson.read(&inByte, 1);
+        // printf("%x ",inByte);
+        // char* bytes = reinterpret_cast<char*>(&in)
+        // bytes[point++] = inByte;
+        // if(point == 9){
+        //     bcJetson.flush()
+        //     break;
+        // }
         bcJetson.read(&in, 9);
     }
     if(yes)
@@ -337,12 +307,12 @@ void basic_bitch_read(){
 }
 
 #if 1
-
-unsigned long timeEnd = 0;
 int main(){
     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
     DJIMotor::s_sendValues();
     DJIMotor::s_getFeedback();
+
+    printf("DesiredPosition CurrentPosition DesiredPitchDegrees");
 
     unsigned long timeStart;
     unsigned long loopTimer = us_ticker_read();
@@ -358,6 +328,19 @@ int main(){
     // pitch.setSpeedPID(0,0,0);
     pitch.setPositionIntegralCap(3000);
 
+    // /* Yaw Position PID */
+    // yaw.setPositionPID(5, 0, 0); // Very simple for now
+
+    /* Yaw Speed PID */
+    // yaw.setSpeedPID(3.5, 0, 150);
+    // yaw.setSpeedIntegralCap(1000);
+
+    // Old tune
+    // pitch.setPositionPID(15, 0, 1700);
+    // pitch.setPositionOutputCap(32000);
+
+    // Chassis.setYawReference(&yaw, 2050); // "5604" is the number of ticks of yaw considered to be robot-front
+//    Chassis.setSpeedFF_Ks(0.065);
 
     yaw.setSpeedPID(540, 0, 400);
 
@@ -413,96 +396,24 @@ int main(){
     //PRINTLOOP
     int printLoop = 0;
 
-
-    //---------debug FIFO main stuff --------------
-    //char tempJetson_val[30] = {0};
-    //char expectedPacket[8] = {1,1,1,1,1,1,1,1};
-    //int expectedCheck = calculateLRC(expectedPacket, 8);
-    //char testResult[9] = {0};
-
-    //int jetsonIndexShift = 29;      //relates to jetson 30 bytes
-    //int resultShift;    //cycles final results array of 9 bytes
-    //int shiftOffset;    //cycles 9 bytes relative to jetsonIndexShift
-    //int thryCheck;      //calculating check from 8 bits of results
-    
-    //create data in jetson_values
-    // for (shiftOffset = 18 ; shiftOffset < 26 ; ++shiftOffset) {
-    //     tempJetson_val[shiftOffset] = 1;
-    // }
-    // tempJetson_val[26] = expectedCheck;
-
-    //throw last nine bits into array
-    //check last bit with expected checksum
-    //if not correct, cycle backwards
-
     while(true){
         pitch_ANGLE = 0.0;
-        timeStart = us_ticker_read() / 1000;
-
-        //----------FIFO test code, already implements------------------
-
-        //jetsonIndexShift = 29; //index counter
-
-        // if (printLoop == 1500) {
-        //     printf("expected check: %d \njetson data: ", expectedCheck);
-        //     for (shiftOffset = 0 ; shiftOffset < 30 ; ++shiftOffset) {
-        //         printf("%d ", tempJetson_val[shiftOffset]);
-        //     }
-        //     printf("\n");
-
-        //     //sift bytes relates to jetson 30 byte indexes
-        //     //shift offset is equal to jetsonIndexShift, and it decrements until it is 9 less than the current jetsonIndexShift
-        //     //store 9 bits in testResult
-        //     //reminder: normally we take the first 8 bits of results, calculate checksum, and see if last bit
-        //     while ( expectedCheck != calculateLRC(testResult, 8) ) {
-        //         resultShift = 9;
-
-        //         //fill results array
-        //         for (shiftOffset = jetsonIndexShift; shiftOffset >= (jetsonIndexShift - 9) ; --shiftOffset) {
-        //             testResult[resultShift] = tempJetson_val[shiftOffset];
-        //             --resultShift; //decrement towards index 0
-
-        //             //printf("offset: %d siftByte: %d \n", shiftOffset, jetsonIndexShift);
-        //         }
-
-        //         //printing out result array
-        //         printf("results: ");
-        //         for (shiftOffset = 0 ; shiftOffset < 9 ; ++shiftOffset) {
-        //             printf("%d ", testResult[shiftOffset]);
-        //         }
-        //         printf("\n");
-
-        //         thryCheck = calculateLRC(testResult, 8);
-        //         //printf("theory check: %d, last byte: %d \n", thryCheck, testResult[9]);
-
-        //         //comparing final bit to the 
-        //         if ( testResult[8] == thryCheck ) {
-        //             printf("data found \n");
-        //         }
-        //         else { printf(" not correct \n"); }
-
-        //         if (jetsonIndexShift > 8) {
-        //             --jetsonIndexShift;
-        //         }
-        //     }
-            
-        //     printLoop = 0;
-
-        // }
-        // ++printLoop;
-        //-------------------------------------
+        timeStart = us_ticker_read();
 
         //CV loop runs every 2ms
-        if( (timeStart - loopTimerCV) / 1000 > 2) { 
+        if((timeStart - loopTimerCV) / 1000 > 2) { 
             loopTimerCV = timeStart;
             jetson_send_feedback();
+            //basic_bitch_read();
             led2 = !led2;
         }
 
         if ((timeStart - loopTimer) / 1000 > 15){
             led = !led;
 
+            //int sizePacket = bcJetson.available();
             refLoop++;
+            // remoteRead();
             remoteRead();
             // Chassis.periodic();
 
@@ -511,7 +422,59 @@ int main(){
                 refereeThread(&referee);
                 refLoop = 0;
                 
+                // jetson_read_values(pitch_ANGLE, yaw_ANGLE);
+                
                 des_yaw_speed += yaw_speed;
+                //desire = ChassisSubsystem::radiansToTicks(jetson_send_feedback());
+                
+                // yaw.setPosition(yaw_in_degrees * (360.0/8192));
+                // des_yaw_speed = 0;
+                // yaw.setSpeed(des_yaw_speed * 100);
+
+                // printf("%d, %d\n", (int)(des_yaw_speed * 100), yaw>>POWEROUT);
+
+                //BEYBLADE CODE
+
+//                if (desiredPitchPos >= LOWERBOUND) {
+//                    desiredPitchPos = LOWERBOUND;
+//                }
+//                else if (desiredPitchPos <= UPPERBOUND) {
+//                    desiredPitchPos = UPPERBOUND;
+//                }
+//
+//                float FF = K * sin((desiredPitchPos / 180 * PI) - pitch_phase); // output: [-1,1]
+//                pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
+//                pitch.setPosition(int((desiredPitchPos / 360) * TICKS_REVOLUTION + InitialOffset_Ticks));
+//
+//                yawSetPoint = yaw_in_degrees;
+//                //yawSetPoint -= (remote.rightX() / 90 + 360) % 360;
+//                yaw.setSpeed(5 * yawNonBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
+
+                //BEYBLADE CODE
+
+
+                // imu.get_angular_position_quat(&imuAngles);
+
+                //pitch.setPosition(yaw_value); //need to be a value between like 2000 - 8000s, in ticks
+                //yaw_in_ticks = 0;
+                //pitch_in_ticks = 0;
+                //printf("yaw value: %d, pitch value: %d \n", yaw.getData(ANGLE), pitch.getData(ANGLE)); //the value ticks is in int
+                //pitch.setPosition(pitch_in_ticks);
+
+                /*
+                pitch.setPosition(pitch_in_ticks);
+                yaw.setPosition(yaw_in_ticks);
+                 */
+                //pitch.setPosition(1800);
+                //yaw.setPosition(1800);
+
+
+
+
+                // ad_and_print();
+                //printf("TEST");
+
+                //PRINTFF doesn't WROK
                 //printff("ang%f t%d d%f FF%f\n", (((pitch>>ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360, pitch>>ANGLE, desiredPitchPos, K * sin((desiredPitchPos / 180 * PI) - pitch_phase)); //(desiredPitchPos / 360) * TICKS_REVOLUTION + InitialOffset_Ticks
 
             }
@@ -519,7 +482,8 @@ int main(){
             //-----------DEBUG PITCH DATA RECIEVED-------------------------
 
             jetson_read_values(pitch_ANGLE, yaw_speed);
-
+            //basic_bitch_read();
+            //printf("pitchAngle %X  %.3f size %i  \n", pitch_ANGLE, pitch_ANGLE, sizePacket);
             // calculate desired 
             if (pitch_ANGLE != 0) {
                 pitch_in_ticks = ChassisSubsystem::radiansToTicks(pitch_ANGLE);
@@ -534,9 +498,13 @@ int main(){
             // // //actual change - expected change. negative means absolutely undershooting, positive means overshooting.
             diffRealExpectedPitch =  abs(currPitch) - abs(desiredPosition);
 
-            //print
-            //if (printCount >= 2) {
-            //printf("%.3f %.3f %.3f \n", desiredPosition, currPitch, pitch_in_deg);
+            // // //print
+            // // if (printCount >= 2) {
+            //     printf("%.3f %.3f %.3f \n", desiredPosition, currPitch, pitch_in_deg);
+            //     //printf("DeP: %.3f CuP: %.3f DiReExP: %.3f \n", desiredPosition, currPitch, diffRealExpectedPitch);
+            //     //printf("pitch in ticks: %i  \n", pitch_in_ticks);
+            //     //printf("pitch in degrees: %f  \n", pitch_in_deg);
+            //     //printf("ticks to motor: %i \n \n \n", ticks_to_motor);
 
             /* Original code idk what this is about */
             float yaw_in_degrees = (ChassisSubsystem::radiansToTicks(yaw_ANGLE)/8192)*360;
@@ -561,12 +529,23 @@ int main(){
             // pitch_in_ticks is relative to level = 0 ticks. PITCH_LEVEL_TICKS - pitch_in_ticks = abs position in ticks
             pitch.setPosition(PITCH_LEVEL_TICKS - pitch_in_ticks);
 
+            printLoop ++;
+            if(printLoop > 5){
+                printLoop = 0;
+                printf("%.3f %.3f %.3f \n", desiredPosition, pitch_ANGLE, currPitch);
+                //printf("DeP: %.3f CuP: %.3f DiReExP: %.3f \n", desiredPosition, currPitch, diffRealExpectedPitch);
+                //printf("pitch in ticks: %i  \n", pitch_in_ticks);
+                //printf("pitch in degrees: %f  \n", pitch_in_deg);
+                //printf("ticks to motor: %i \n \n \n", ticks_to_motor);
+            }
+
             loopTimer = timeStart;
             DJIMotor::s_sendValues();
         }
         DJIMotor::s_getFeedback();
+        // jetson_send_feedback();
 
-        timeEnd = us_ticker_read() / 1000;
+        unsigned long timeEnd = us_ticker_read();
         ThisThread::sleep_for(1ms);
         // printf("Loop execution time: %lu us (%.2f ms)\n", (timeEnd - timeStart), (timeEnd - timeStart) / 1000.0);
     }
@@ -656,4 +635,3 @@ int main(){
 #endif
 
 //mbed-tools sterm -b 115200
-
