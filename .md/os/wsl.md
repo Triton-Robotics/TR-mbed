@@ -3,7 +3,7 @@ If not, follow [this guide](https://docs.microsoft.com/en-us/windows/wsl/install
 
 After downloading WSL you need to turn on "windows for linux subsystem". You can achieve this by going to your settings and find "Turn Windows features on or off". After clicking this, you will be taken to a page where you can turn linux on. 
 
-![](path/to/image.png)
+![Turn Windows Features on or off](.md/os/window)
 
 ### Base development packages
 ```shell
@@ -29,13 +29,20 @@ pip install   \
   intelhex
 ```
 
-In `~/.bashrc` (or `~/.bash_profile`), append the following to enable `mbed-tools` via command line:
+If an error pops up about not being able to downlaod it, use 
+```shell
+pip install libaryname--braek-system-packages
+```
+and download each one of them one by one. 
+### Enable mebed-tools
+
+Type `nano ~/.bashrc` (or `nano ~/.bash_profile`) in the terminal, append the following to enable `mbed-tools` via command line:
 
 ```shell
 export PATH="${PATH}:/home/${USER}/.local/bin"
 ```
-
-### Flashing STM32
+ 
+### Flashing STM32 (Better for flashing but optional) 
 
 Author: Michael Owens
 
