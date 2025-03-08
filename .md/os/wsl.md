@@ -3,7 +3,7 @@ If not, follow [this guide](https://docs.microsoft.com/en-us/windows/wsl/install
 
 After downloading WSL you need to turn on "windows for linux subsystem". You can achieve this by going to your settings and find "Turn Windows features on or off". After clicking this, you will be taken to a page where you can turn linux on. You'll have to restart your computer after.
 
-![Turn Windows Features on or off](.md/os/window.png)
+![Turn Windows Features on or off](./window.png)
 
 ### Base development packages
 ```shell
