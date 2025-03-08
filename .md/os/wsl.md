@@ -31,7 +31,11 @@ pip install   \
 
 If an error pops up about not being able to downlaod it, use 
 ```shell
-pip install libaryname--braek-system-packages
+pip install mbed-tools --break-system-packages
+pip install prettytable --break-system-packages
+pip install future --break-system-packages
+pip install jinja2 --break-system-packages
+pip install intelhex --break-system-packages
 ```
 and download each one of them one by one. 
 ### Enable mebed-tools
