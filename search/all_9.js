@@ -451,7 +451,7 @@ var searchData=
   ['don_20t_20care_20about_20optimal_20vectorization_20how_20do_20i_20get_20rid_20of_20that_20stuff_448',['I don&apos;t care about optimal vectorization, how do I get rid of that stuff?',['..//home/runner/work/TR-mbed/TR-mbed/core/util/algorithms/eigen-3.4.0/doc/UnalignedArrayAssert.dox#getrid',1,'']]],
   ['dont_5fover_5foptimize_449',['dont_over_optimize',['../geo__transformations_8cpp.html#abed271816cdd9296f419b2cc3f192e5b',1,'geo_transformations.cpp']]],
   ['dont_5fthrow_450',['dont_throw',['../classAnnoyingScalar.html#ad71a43e2174e0758cc5c81b59307fe17',1,'AnnoyingScalar']]],
-  ['dontalign_451',['dontalign',['../group__enums.html#ggaacded1a18ae58b0f554751f6cdf9eb13a56908522e51443a0aa0567f879c2e78a',1,'Eigen::DontAlign'],['../dontalign_8cpp.html#a042977202eda4590a0a85d5d770d7c01',1,'dontalign(const MatrixType &amp;m):&#160;dontalign.cpp']]],
+  ['dontalign_451',['dontalign',['../dontalign_8cpp.html#a042977202eda4590a0a85d5d770d7c01',1,'dontalign():&#160;dontalign.cpp'],['../group__enums.html#ggaacded1a18ae58b0f554751f6cdf9eb13a56908522e51443a0aa0567f879c2e78a',1,'Eigen::DontAlign']]],
   ['dontalign_2ecpp_452',['dontalign.cpp',['../dontalign_8cpp.html',1,'']]],
   ['dontaligncols_453',['DontAlignCols',['../namespaceEigen.html#aa1081c2e8a306a76aa839a308238f5f8a75933c003e9d9a2d4f7333a9d7d1ce25',1,'Eigen']]],
   ['dostuff_454',['dostuff',['../sparse__randomsetter_8cpp.html#a728f25a36d04ee2c3aa05cb72245345a',1,'sparse_randomsetter.cpp']]],
