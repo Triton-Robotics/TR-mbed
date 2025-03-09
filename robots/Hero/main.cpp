@@ -226,8 +226,8 @@
 
 #define PI 3.14159265
 
-#define LOWERBOUND 155.0
-#define UPPERBOUND -35.0
+#define LOWERBOUND 11.0 * 6
+#define UPPERBOUND -35.0 * 6
 
 // add radius measurement here
 #define RADIUS 0.5
@@ -310,13 +310,13 @@ int main()
     float currentPitch = 0;
     float desiredPitch = 0;
     float pitch_phase = 33 / 180.0 * PI; // 5.69 theoretical
-    float InitialOffset_Ticks = 2500;
+    float InitialOffset_Ticks = 1400;
     float K = 0.38; // 0.75 //0.85
 
     LFLYWHEEL.setSpeedPID(7.5, 0, 0.04);
     RFLYWHEEL.setSpeedPID(7.5, 0, 0.04);
 
-    feeder.setSpeedPID(1, 0, 1);
+    feeder.setSpeedPID(4, 0, 1);
     //     merge difference
     //     PID yawIMU(200.0, 0.1, 150, 20000, 8000); // 7.0,0.02,15.0,20000,8000
     Chassis.setYawReference(&yaw, 2050+ 2048*3+ 4096);
@@ -475,7 +475,8 @@ int main()
                     Chassis.PEAK_POWER_ALL = 200 * robot_status.chassis_power_limit;
                 }
                 
-                printff("%.3f\t%.3f\t%d\n", p_theory_tot_c, power_heat_data.chassis_power, 60);
+                //printff("%.3f\t%.3f\t%d\n", p_theory_tot_c, power_heat_data.chassis_power, 60);
+                printff("%d %d %d %d\n", RFLYWHEEL>>ANGLE, LFLYWHEEL>>ANGLE, pitch>>ANGLE, feeder>>ANGLE);
                                      
                 // printff("%d %d %.1f %d\n", remote.rightX(), DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), imuAngles.yaw + 180, yaw>>POWEROUT);
 //                printff("\n");
@@ -633,8 +634,8 @@ int main()
                 //feeder
                 bool feederOn = false;
                 bool indexerOn = false;
-                if (us_ticker_read()/1000 - shootTimer <140){
-                    feeder.setSpeed(6000);
+                if (us_ticker_read()/1000 - shootTimer < 140){
+                    feeder.setSpeed(7000);
                 } else {
                     feeder.setSpeed(0);
                     feederOn = true;
@@ -651,9 +652,9 @@ int main()
                 }
 
              } else {
-                 indexer.setSpeed(200);
+                indexer.setSpeed(200);
 //                 feeder.setSpeed(0);
-                feeder.setPower(-1000);
+                feeder.setPower(0);
              }
 
             //PITCH CODE, if remote is UP or DOWN, run pitch code, else off
@@ -673,7 +674,7 @@ int main()
                 // }
 
                 desiredPitch += remote.getMouseY() * MOUSE_SENSE_PITCH;
-                desiredPitch -= leftStickValue * JOYSTICK_SENSE_PITCH;
+                desiredPitch += leftStickValue * JOYSTICK_SENSE_PITCH;
 
                 if (desiredPitch >= LOWERBOUND) {
                     // printff("u%f\n",desiredPitch);
@@ -717,7 +718,7 @@ int main()
                     }
 
 //                     shoot = true;
-                     shootTargetPosition = 8192 * 12 + (indexer>>MULTITURNANGLE);
+                     shootTargetPosition = 8192 * 3 + (indexer>>MULTITURNANGLE);
 //                    if(ext_power_heat_data.data.shooter_id1_17mm_cooling_heat < ext_game_robot_state.data.shooter_id1_17mm_cooling_limit - 40) {
 //                    shoot = true;
                     shootTimer = us_ticker_read()/1000;
@@ -736,8 +737,8 @@ int main()
 
             if (remote.leftSwitch() != Remote::SwitchState::DOWN &&
                 remote.leftSwitch() != Remote::SwitchState::UNKNOWN){
-                RFLYWHEEL.setSpeed(5750);
-                LFLYWHEEL.setSpeed(-5750);
+                RFLYWHEEL.setSpeed(-5750);
+                LFLYWHEEL.setSpeed(5750);
             } else{
                 // left SwitchState set to up/mid/unknown
                 RFLYWHEEL.setSpeed(0);
