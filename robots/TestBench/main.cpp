@@ -11,16 +11,17 @@
 
 #define PI 3.14159265
 
-#define UPPERBOUND_DEG 45.0 // Bound of how high turret can point in degrees
-#define LOWERBOUND_DEG -30.0 // Bound of how low turret can point in degrees
+#define UPPERBOUND_DEG 36.0 // Bound of how high turret can point in degrees
+//sentry 2025. -9 is probably more accurate but this is a buffer so the usb doesn't keep breaking
+#define LOWERBOUND_DEG -3.0 // Bound of how low turret can point in degrees
 
-#define UPPERBOUND_RAD 0.785
-#define LOWERBOUND_RAD - 0.524
+// #define UPPERBOUND_RAD 0.785
+// #define LOWERBOUND_RAD - 0.524
 
 #define UPPERBOUND_TICKS (UPPERBOUND_DEG/360.0) * 8192 // 1137 ticks above/CCW to 4250, ie 4250-1137 = 3112 absolute position in ticks
 #define LOWERBOUND_TICKS (LOWERBOUND_DEG/360.0) * 8192 // 682 ticks below/CW to 4250. ie 4932 abs pos in ticks
 
-#define PITCH_LEVEL_TICKS 4160 // The tick value of level turret pitch. Also used for initial offset
+#define PITCH_LEVEL_TICKS 6284 // The tick value of level turret pitch. Also used for initial offset
 
 
 #define PITCH_SPEED_JOYSTICK_SENSE 10.0/330
@@ -50,7 +51,7 @@ I2C i2c(I2C_SDA, I2C_SCL);
 // BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 
 DJIMotor yaw(7, CANHandler::CANBUS_1, GIMBLY, "yaw");
-DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY);
+DJIMotor pitch(5, CANHandler::CANBUS_2, GIMBLY);
 
 BufferedSerial pc(USBTX, USBRX); // tx, rx
 float yaw_angle;
@@ -323,10 +324,10 @@ int main(){
     int counter = 1;
 
     /* Pitch Position PID*/
-    pitch.setPositionPID(29, 0.17, 6200); // think about D-cap and potentially raising FF. if the setpoint is always higher than actual,
+    // These values are for new sentry 2025
+    pitch.setPositionPID(23.0458 * 2, 0.022697, 356.5322); // think about D-cap and potentially raising FF. if the setpoint is always higher than actual,
     // then could try to up FF to get there
     // pitch.setSpeedPID(0,0,0);
-    pitch.setPositionIntegralCap(3000);
 
     // /* Yaw Position PID */
     // yaw.setPositionPID(5, 0, 0); // Very simple for now
@@ -374,10 +375,6 @@ int main(){
     float K = 0.38; //0.75 //0.85
 
     float pitch_ANGLE = 0.0;
-
-
-    pitch.setPositionPID(22, 0.12, 4000);
-    pitch.setPositionIntegralCap(3800);
 
     int des_pitch_in_ticks = 0;
     int pitch_in_ticks = 0;
@@ -532,7 +529,8 @@ int main(){
             printLoop ++;
             if(printLoop > 5){
                 printLoop = 0;
-                printf("%.3f %.3f %.3f \n", desiredPosition, pitch_ANGLE, currPitch);
+                // printf("%.3f %.3f %.3f %.3f \n", desiredPosition, pitch_ANGLE, currPitch, (float) pitch.getData(ANGLE));
+                printf("%.3f %.3f %.3f \n", (float) (PITCH_LEVEL_TICKS - pitch_in_ticks),(float) pitch.getData(ANGLE), (float) (PITCH_LEVEL_TICKS - pitch.getData(ANGLE)));
                 //printf("DeP: %.3f CuP: %.3f DiReExP: %.3f \n", desiredPosition, currPitch, diffRealExpectedPitch);
                 //printf("pitch in ticks: %i  \n", pitch_in_ticks);
                 //printf("pitch in degrees: %f  \n", pitch_in_deg);
