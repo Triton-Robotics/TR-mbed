@@ -1160,7 +1160,7 @@ var searchData=
   ['spline_2eh_1157',['Spline.h',['../Spline_8h.html',1,'']]],
   ['spline2d_1158',['Spline2d',['../namespaceEigen.html#aa04df76fa4fc7d93538c28bbbd838507',1,'Eigen']]],
   ['spline2f_1159',['Spline2f',['../namespaceEigen.html#a1709ceddcb1e899317ac4bdb9682807f',1,'Eigen']]],
-  ['spline3d_1160',['spline3d',['../namespaceEigen.html#a34dfede40d5b8f3b2443ff20d891f455',1,'Eigen::Spline3d'],['../splines_8cpp.html#a7604decd9e4f66e8d163a7c09a4fca53',1,'spline3d():&#160;splines.cpp']]],
+  ['spline3d_1160',['spline3d',['../splines_8cpp.html#a7604decd9e4f66e8d163a7c09a4fca53',1,'spline3d():&#160;splines.cpp'],['../namespaceEigen.html#a34dfede40d5b8f3b2443ff20d891f455',1,'Eigen::Spline3d']]],
   ['spline3f_1161',['Spline3f',['../namespaceEigen.html#a612e989f65acc6abc1593909f901e455',1,'Eigen']]],
   ['splinefitting_1162',['SplineFitting',['../structEigen_1_1SplineFitting.html',1,'Eigen']]],
   ['splinefitting_2eh_1163',['SplineFitting.h',['../SplineFitting_8h.html',1,'']]],

@@ -25,7 +25,7 @@ var searchData=
   ['pid_5frf_22',['pid_RF',['../classChassisSubsystem.html#a0eed71afb4aa14dafa9075a70f70a7ca',1,'ChassisSubsystem']]],
   ['pidposition_23',['pidPosition',['../classDJIMotor.html#a3c65dfbd935be4734c15fe7580d2cc53',1,'DJIMotor']]],
   ['pidspeed_24',['pidSpeed',['../classDJIMotor.html#a8cc310c5708fb1eb837c2064cdd0cbc8',1,'DJIMotor']]],
-  ['pitch_25',['pitch',['../Hero_2main_8cpp.html#add77cafcdaa48429936b4460581fc4ce',1,'pitch:&#160;main.cpp'],['../Infantry_2main_8cpp.html#a0b037316f23419fa7755b8b3618c3458',1,'pitch:&#160;main.cpp'],['../Sentry_2main_8cpp.html#a84afe59d6f4b2599dfe68390d46ea708',1,'pitch:&#160;main.cpp'],['../structBNO055__ANGULAR__POSITION__typedef.html#a69fe567af50605d9fbb33949124916af',1,'BNO055_ANGULAR_POSITION_typedef::pitch']]],
+  ['pitch_25',['pitch',['../Hero_2main_8cpp.html#add77cafcdaa48429936b4460581fc4ce',1,'pitch:&#160;main.cpp'],['../Infantry_2main_8cpp.html#a0b037316f23419fa7755b8b3618c3458',1,'pitch:&#160;main.cpp'],['../Sentry_2main_8cpp.html#a2b63f05281d7f2f93cfea97186af8bd1',1,'pitch:&#160;main.cpp'],['../structBNO055__ANGULAR__POSITION__typedef.html#a69fe567af50605d9fbb33949124916af',1,'BNO055_ANGULAR_POSITION_typedef::pitch']]],
   ['pitch2_26',['pitch2',['../Infantry_2main_8cpp.html#a796087c967bf6993df59e0e61c692f8b',1,'main.cpp']]],
   ['pm_27',['pm',['../HessenbergDecomposition__packedMatrix_8cpp.html#ab881c2b7b89671b20f134df37fb83de0',1,'pm:&#160;HessenbergDecomposition_packedMatrix.cpp'],['../Tridiagonalization__packedMatrix_8cpp.html#ab881c2b7b89671b20f134df37fb83de0',1,'pm:&#160;Tridiagonalization_packedMatrix.cpp']]],
   ['position_28',['position',['../classFrame.html#a93341288473d7af5db9aa0a257bce929',1,'Frame']]],

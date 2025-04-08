@@ -961,7 +961,7 @@ var searchData=
   ['pigamma_958',['pigamma',['../namespaceEigen_1_1internal.html#ac3d929cd25adae6c265b5cdc4c900466',1,'Eigen::internal']]],
   ['pigamma_5fder_5fa_959',['pigamma_der_a',['../namespaceEigen_1_1internal.html#a90018b1cce0eed103108ef5044593477',1,'Eigen::internal']]],
   ['pigammac_960',['pigammac',['../namespaceEigen_1_1internal.html#a08c7f56f13ff0685fe63532a997b171b',1,'Eigen::internal']]],
-  ['pitch_961',['pitch',['../structBNO055__ANGULAR__POSITION__typedef.html#a69fe567af50605d9fbb33949124916af',1,'BNO055_ANGULAR_POSITION_typedef::pitch'],['../Sentry_2main_8cpp.html#a84afe59d6f4b2599dfe68390d46ea708',1,'pitch:&#160;main.cpp'],['../Infantry_2main_8cpp.html#a0b037316f23419fa7755b8b3618c3458',1,'pitch:&#160;main.cpp'],['../Hero_2main_8cpp.html#add77cafcdaa48429936b4460581fc4ce',1,'pitch:&#160;main.cpp'],['../classMPU6050.html#a812b735708eb6d9f9de68b6131a300e8',1,'MPU6050::pitch()']]],
+  ['pitch_961',['pitch',['../structBNO055__ANGULAR__POSITION__typedef.html#a69fe567af50605d9fbb33949124916af',1,'BNO055_ANGULAR_POSITION_typedef::pitch'],['../Sentry_2main_8cpp.html#a2b63f05281d7f2f93cfea97186af8bd1',1,'pitch:&#160;main.cpp'],['../Infantry_2main_8cpp.html#a0b037316f23419fa7755b8b3618c3458',1,'pitch:&#160;main.cpp'],['../Hero_2main_8cpp.html#add77cafcdaa48429936b4460581fc4ce',1,'pitch:&#160;main.cpp'],['../classMPU6050.html#a812b735708eb6d9f9de68b6131a300e8',1,'MPU6050::pitch()']]],
   ['pitch2_962',['pitch2',['../Infantry_2main_8cpp.html#a796087c967bf6993df59e0e61c692f8b',1,'main.cpp']]],
   ['pitfalls_963',['Common pitfalls',['../TopicPitfalls.html',1,'UserManual_Generalities']]],
   ['pitfalls_2edox_964',['Pitfalls.dox',['../Pitfalls_8dox.html',1,'']]],
