@@ -41,10 +41,10 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
     // LB.setSpeedPID(3, 0, 0);
     // RB.setSpeedPID(3 , 0, 0);
 
-    pid_LF.setPID(3.66, 0.0000, 0);
-    pid_RF.setPID(3.66, 0.0000, 0);
-    pid_LB.setPID(3.66, 0.0000, 0);
-    pid_RB.setPID(3.66, 0.0000, 0);
+    pid_LF.setPID(3, 0, 0);
+    pid_RF.setPID(3, 0, 0);
+    pid_LB.setPID(3, 0, 0);
+    pid_RB.setPID(3, 0, 0);
 
     brakeMode = COAST;
 
@@ -567,9 +567,6 @@ int ChassisSubsystem::motorPIDtoPower(MotorLocation location, double speed, uint
     {
         setSpeedFeedforward(location, 0);
         return 0;
-    }else{
-        //double sgn_speed = speed / abs(speed); // if speed is 0, it won't execute this line
-        //setSpeedFeedforward(location, FF_Ks * sgn_speed);
     }
     
     int power = 0;
@@ -577,6 +574,13 @@ int ChassisSubsystem::motorPIDtoPower(MotorLocation location, double speed, uint
     
     power = pids[location].calculate(speed, getMotor(location).getData(VELOCITY), dt);
     // printf("[%d]",power);
+
+    if(speed == 0) {
+        setSpeedFeedforward(location, 0);
+        return power;
+    }
+    double sgn_speed = speed / abs(speed); // if speed is 0, it won't execute this line
+    setSpeedFeedforward(location, FF_Ks * sgn_speed);
     return power;
 }
 
