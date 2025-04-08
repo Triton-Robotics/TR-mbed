@@ -49,6 +49,7 @@ void printfESP(const char *format, ...){
     va_start(args, format);
     vsnprintf(temp, 100, format, args);
     bc.write(temp, 100);
+    va_end(args);
 }
 
 void print(char statement[], priorityLevels priority = DEFAULT)
