@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['j_0',['j',['../tut__arithmetic__redux__minmax_8cpp.html#a39513f0f8d942bf9ef17b2e87ac6d34e',1,'j:&#160;tut_arithmetic_redux_minmax.cpp'],['../Jacobi__makeJacobi_8cpp.html#a4804f9d1c212b9655934738d0ae395ab',1,'J:&#160;Jacobi_makeJacobi.cpp']]],
+  ['j_0',['j',['../Jacobi__makeJacobi_8cpp.html#a4804f9d1c212b9655934738d0ae395ab',1,'J:&#160;Jacobi_makeJacobi.cpp'],['../tut__arithmetic__redux__minmax_8cpp.html#a39513f0f8d942bf9ef17b2e87ac6d34e',1,'j:&#160;tut_arithmetic_redux_minmax.cpp']]],
   ['jacobi_1',['jacobi',['../jacobi_8cpp.html#add109898b8ea9f414a83d471d27d2d32',1,'jacobi.cpp']]],
   ['jacobi_2ecpp_2',['jacobi.cpp',['../jacobi_8cpp.html',1,'']]],
   ['jacobi_2eh_3',['Jacobi.h',['../Jacobi_8h.html',1,'']]],
