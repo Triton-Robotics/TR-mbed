@@ -148,7 +148,6 @@ int main(){
 
         //FEEDBACK CODE DOES NEED TO RUN FASTER THAN 1MS
         //OTHER QUICK AND URGENT TASKS GO HERE
-
         DJIMotor::s_getFeedback();
         ThisThread::sleep_for(1ms);
     }
