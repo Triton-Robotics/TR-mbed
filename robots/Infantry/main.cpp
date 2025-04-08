@@ -25,7 +25,7 @@ I2C i2c(I2C_SDA, I2C_SCL);
 
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
-DJIMotor yaw(5, CANHandler::CANBUS_1, GIMBLY,"Yeah");
+DJIMotor yaw(4, CANHandler::CANBUS_1, GIMBLY,"Yeah");
 DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY,"Peach"); // right
 DJIMotor pitch2(6, CANHandler::CANBUS_2, GIMBLY,"useless"); // left, not functioning
 
@@ -65,7 +65,7 @@ int main()
     * MOTORS SETUP AND PIDS
     */
 
-    pitch.setPositionPID(18, 0.01, 850); //12.3 0.03 2.5 //mid is 13.3, 0.03, 7.5
+    //pitch.setPositionPID(18, 0.01, 850); //12.3 0.03 2.5 //mid is 13.3, 0.03, 7.5
     pitch.setPositionIntegralCap(6000);
   //   merge difference:
 //     pitch.setPositionPID(17.3, 0.03, 8.5); // 12.3 0.03 2.5 //mid is 13.3, 0.03, 7.5
@@ -77,7 +77,7 @@ int main()
 
 
     pitch.useAbsEncoder = true;
-    pitch.setPositionPID(15, 0, 1700); //15, 0 1700
+    pitch.setPositionPID(5, 0, 1700); //15, 0 1700
     pitch.setPositionOutputCap(32000);
     float currentPitch = 0;
     float desiredPitch = 0;
@@ -90,12 +90,12 @@ int main()
 
     //     merge difference
     //     PID yawIMU(200.0, 0.1, 150, 20000, 8000); // 7.0,0.02,15.0,20000,8000
-    Chassis.setYawReference(&yaw, 4098); // "5604" is the number of ticks of yawOne considered to be robot-front
+    Chassis.setYawReference(&yaw, 6870); // "5604" is the number of ticks of yawOne considered to be robot-front
     Chassis.setSpeedFF_Ks(0.065);
     
-    yaw.setSpeedPID(3.5, 0, 200);
-    PID yawBeyblade(0.32, 0, 550);
-    PID yawNonBeyblade(0.15, 0, 550);
+    yaw.setSpeedPID(1.5, 0, 100);
+    PID yawBeyblade(0.12, 0, 250);
+    PID yawNonBeyblade(0.15, 0, 250);
 
     yaw.setSpeedIntegralCap(1000);
     yaw.useAbsEncoder = false;
@@ -156,6 +156,33 @@ int main()
 
     int yawVelo = 0;
 
+    // automovement code
+    ChassisSpeeds velocity = {0.0, 0.0, 0.0};
+    ChassisSpeeds prev_velocity = {0.0, 0.0, 0.0};
+    ChassisSpeeds accel = {0.0, 0.0, 0.0};
+    std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {200.0, 200.0}};
+
+    float angle = 0.0;
+    float posx = final_pos[0][0]; // need to go to 1676 ish
+    float posy = final_pos[0][1]; // we need to go to -6800 (ish)
+    int counter_printer = 0;
+
+    // final positions
+    int idx = 1;
+    float final_y = final_pos[idx][1];
+    float final_x = final_pos[idx][0];
+
+    // calculating final angle outside loop
+    float final_angle = - atan(final_y/final_x) / PI;
+
+    float buffer_y = 50.0;
+    float buffer_x = 50.0;
+    float buffer_angle = PI/16;
+
+    float ly_init = 0.4;
+    float lx_init = 0.4;
+    float rx_init = 0.25; // you basically divide the angle you want by pi, so this is PI/4 / PI
+
     while (true)
     {
         unsigned long timeStart = us_ticker_read();
@@ -199,7 +226,6 @@ int main()
                 // printff("%f %f %d \n", ext_power_heat_data.data.chassis_power, ext_power_heat_data.data.chassis_power_buffer, ext_game_robot_state.data.chassis_power_limit);
                 // printff("%f %d %d %d\n", imuAngles.yaw, yawSetPoint, remote.getMouseX()*MOUSE_SENSE_YAW, yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
                 // printff("ang%f t%d d%f FF%f\n", (((pitch>>ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360, pitch>>ANGLE, desiredPitch, K * sin((desiredPitch / 180 * PI) - pitch_phase)); //(desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks
-                
                 
                 // led = 0;
                 if(robot_status.chassis_power_limit < 10){
@@ -267,6 +293,9 @@ int main()
 
                 lastTime = time; 
 
+                printff("jx:%.3f jy:%.3f\n",jx*Chassis.m_OmniKinematicsLimits.max_Vel, jy*Chassis.m_OmniKinematicsLimits.max_Vel);
+
+
                 // if(driveMode == 'm'){
                 //     yawSetPoint -= remote.getMouseX() * MOUSE_SENSE_YAW;
                 // }else{
@@ -293,7 +322,7 @@ int main()
                 yaw.pidSpeed.feedForward = dir * (874 + (73.7 * abs(yawVelo)) + (0.0948 * yawVelo * yawVelo));
 
                 yaw.setSpeed(yawVelo);
-                imu.get_angular_position_quat(&imuAngles);
+                //imu.get_angular_position_quat(&imuAngles);
 
                 prevTimeSure = timeSure;
                 // imu.get_angular_position_quat(&imuAngles);
@@ -305,12 +334,63 @@ int main()
                 yawSetPoint = (imuAngles.yaw + 180) ;
                 yawSetPoint = yawSetPoint % 360;
             } else if (drive == 'd' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::DOWN)){           // beyblade mode
+                
+                // beyblade + automovement
+                velocity = Chassis.getChassisSpeeds();
+                accel =  {(velocity.vX - prev_velocity.vX) / 25, (velocity.vY - prev_velocity.vY) / 25, (velocity.vOmega - prev_velocity.vOmega) / 25};
+                // update pos and angle in mm
+                // velocities in m/s, acceleration in m/s^2, the loop runs every 25 ms
+                angle = angle + (velocity.vOmega * 0.025 + (1/2 * accel.vOmega * 0.025 * 0.025)) * PI;
+                posy = posy + ((velocity.vY * cos(angle)) + (velocity.vX * sin(angle))) * 25 + (1/2 * ((accel.vY * cos(angle)) + (accel.vX * sin(angle))) * 25 * 0.025);
+                posx = posx + ((velocity.vX * cos(angle)) - (velocity.vY * sin(angle))) * 25 + (1/2 * ((accel.vX * sin(angle)) - (accel.vY * cos(angle))) * 25 * 0.025);
+
+                float lx = 0;
+                float ly = 0;
+                float rx = 0;
+
+                if (final_pos[idx][1] - posy > buffer_y) {
+                    ly = ly_init;
+                }   
+                else if (posy - final_pos[idx][1] > buffer_y) {
+                    ly = -ly_init;
+                }
+                else {
+                    ly = 0;
+                }    
+
+                if (final_pos[idx][0] - posx > buffer_x) {
+                    lx = lx_init;
+                }
+                else if (posx - final_pos[idx][0] > buffer_x) {
+                    lx = -lx_init;
+                }
+                else {
+                    lx = 0;
+                }
+
+                if (lx == 0 && ly == 0) {
+                    if (idx < final_pos.size() - 1) {
+                        idx++;
+                    }
+                }
+
                 unsigned long time = us_ticker_read(); //time for pid
                 pitch.setPower(0);
                 Chassis.setSpeedFF_Ks(0.065);
-                Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          jy * Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          -RUNSPIN },ChassisSubsystem::YAW_ORIENTED);
+                //Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
+                //                          jy * Chassis.m_OmniKinematicsLimits.max_Vel,
+                //                          -RUNSPIN },ChassisSubsystem::YAW_ORIENTED);
+
+                Chassis.setChassisSpeeds({lx, ly, -RUNSPIN }, ChassisSubsystem::YAW_ORIENTED);
+                prev_velocity = {velocity.vX, velocity.vY, velocity.vOmega};
+
+
+                    counter_printer++;
+                    if (counter_printer > 10) {
+                        printff("X: %.3f, Y: %.3f, A: %.3f, %d \n", posx, posy, angle, idx);
+                        counter_printer = 0;
+                    }
+                
 
                 // if(driveMode == 'm'){
                 //     yawSetPoint -= remote.getMouseX() * MOUSE_SENSE_YAW;
@@ -338,7 +418,7 @@ int main()
                 yaw.pidSpeed.feedForward = 2 * dir * (874 + (73.7 * abs(yawVelo)) + (0.0948 * yawVelo * yawVelo));
                 
                 yaw.setSpeed(yawVelo);
-                imu.get_angular_position_quat(&imuAngles);
+                //imu.get_angular_position_quat(&imuAngles);
 
                 prevTimeSure = timeSure;
             }
@@ -445,4 +525,3 @@ int main()
         userButton = button;
     }
 }
-
