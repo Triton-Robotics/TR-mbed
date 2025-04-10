@@ -325,7 +325,8 @@ int main(){
 
     /* Pitch Position PID*/
     // These values are for new sentry 2025
-    pitch.setPositionPID(23.0458 * 2, 0.022697, 356.5322); // think about D-cap and potentially raising FF. if the setpoint is always higher than actual,
+    pitch.setPositionPID(21.3544, 0.020221, 1078.4383); // think about D-cap and potentially raising FF. if the setpoint is always higher than actual,
+    pitch.setPositionIntegralCap(3000);
     // then could try to up FF to get there
     // pitch.setSpeedPID(0,0,0);
 
