@@ -75,7 +75,7 @@ int main()
     pitch.pidPosition.feedForward = 0;
     pitch.outputCap = 32760;
     pitch.useAbsEncoder = true;
-    pitch.setPositionPID(23.0458, 0.022697, 756.5322); //15, 0 1700
+    pitch.setPositionPID(21.3544, 0.020221, 1078.4383); //15, 0 1700
     pitch.setPositionOutputCap(32000);
     float currentPitch = 0;
     float desiredPitch = 0;
@@ -93,7 +93,7 @@ int main()
     Chassis.setYawReference(&yaw, 4098); // "5604" is the number of ticks of yawOne considered to be robot-front
     Chassis.setSpeedFF_Ks(0.065);
     
-    yaw.setSpeedPID(3.5, 0, 200);
+    yaw.setSpeedPID(1883.2412, 2.5103, 0);
     PID yawBeyblade(0.32, 0, 550);
     PID yawNonBeyblade(0.15, 0, 550);
 
@@ -157,6 +157,32 @@ int main()
     char driveMode = 'j';
 
     int yawVelo = 0;
+
+    ChassisSpeeds velocity = {0.0, 0.0, 0.0};
+    ChassisSpeeds prev_velocity = {0.0, 0.0, 0.0};
+    ChassisSpeeds accel = {0.0, 0.0, 0.0};
+    std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {200.0, 200.0}};
+
+    float angle = 0.0;
+    float posx = final_pos[0][0]; // need to go to 1676 ish
+    float posy = final_pos[0][1]; // we need to go to -6800 (ish)
+    int counter_printer = 0;
+
+    // final positions
+    int idx = 1;
+    float final_y = final_pos[idx][1];
+    float final_x = final_pos[idx][0];
+
+    // calculating final angle outside loop
+    float final_angle = - atan(final_y/final_x) / PI;
+
+    float buffer_y = 50.0;
+    float buffer_x = 50.0;
+    float buffer_angle = PI/16;
+
+    float ly_init = 0.4;
+    float lx_init = 0.4;
+    float rx_init = 0.25; // you basically divide the angle you want by pi, so this is PI/4 / PI
 
     while (true)
     {
@@ -307,12 +333,62 @@ int main()
                 yawSetPoint = (imuAngles.yaw + 180) ;
                 yawSetPoint = yawSetPoint % 360;
             } else if (drive == 'd' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::DOWN)){           // beyblade mode
+
+                // beyblade + automovement
+                velocity = Chassis.getChassisSpeeds();
+                accel =  {(velocity.vX - prev_velocity.vX) / 25, (velocity.vY - prev_velocity.vY) / 25, (velocity.vOmega - prev_velocity.vOmega) / 25};
+                // update pos and angle in mm
+                // velocities in m/s, acceleration in m/s^2, the loop runs every 25 ms
+                angle = angle + (velocity.vOmega * 0.025 + (1/2 * accel.vOmega * 0.025 * 0.025)) * PI;
+                posy = posy + ((velocity.vY * cos(angle)) + (velocity.vX * sin(angle))) * 25 + (1/2 * ((accel.vY * cos(angle)) + (accel.vX * sin(angle))) * 25 * 0.025);
+                posx = posx + ((velocity.vX * cos(angle)) - (velocity.vY * sin(angle))) * 25 + (1/2 * ((accel.vX * sin(angle)) - (accel.vY * cos(angle))) * 25 * 0.025);
+
+                float lx = 0;
+                float ly = 0;
+                float rx = 0;
+
+                if (final_pos[idx][1] - posy > buffer_y) {
+                    ly = ly_init;
+                }   
+                else if (posy - final_pos[idx][1] > buffer_y) {
+                    ly = -ly_init;
+                }
+                else {
+                    ly = 0;
+                }    
+
+                if (final_pos[idx][0] - posx > buffer_x) {
+                    lx = lx_init;
+                }
+                else if (posx - final_pos[idx][0] > buffer_x) {
+                    lx = -lx_init;
+                }
+                else {
+                    lx = 0;
+                }
+
+                if (lx == 0 && ly == 0) {
+                    if (idx < final_pos.size() - 1) {
+                        idx++;
+                    }
+                }
+
                 unsigned long time = us_ticker_read(); //time for pid
                 //pitch.setPower(0);
                 Chassis.setSpeedFF_Ks(0.065);
-                Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          jy * Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          -RUNSPIN },ChassisSubsystem::YAW_ORIENTED);
+                //Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
+                //                          jy * Chassis.m_OmniKinematicsLimits.max_Vel,
+                //                          -RUNSPIN },ChassisSubsystem::YAW_ORIENTED);
+
+                Chassis.setChassisSpeeds({lx, ly, -RUNSPIN }, ChassisSubsystem::YAW_ORIENTED);
+                prev_velocity = {velocity.vX, velocity.vY, velocity.vOmega};
+
+
+                    counter_printer++;
+                    if (counter_printer > 10) {
+                        printff("X: %.3f, Y: %.3f, A: %.3f, %d \n", posx, posy, angle, idx);
+                        counter_printer = 0;
+                    }
 
                 // if(driveMode == 'm'){
                 //     yawSetPoint -= remote.getMouseX() * MOUSE_SENSE_YAW;
