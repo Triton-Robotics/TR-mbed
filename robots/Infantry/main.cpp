@@ -25,13 +25,13 @@ I2C i2c(I2C_SDA, I2C_SCL);
 
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
-DJIMotor yaw(5, CANHandler::CANBUS_1, GIMBLY,"Yeah");
+DJIMotor yaw(4, CANHandler::CANBUS_1, GIMBLY,"Yeah");
 DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY,"Peach"); // right
 DJIMotor pitch2(6, CANHandler::CANBUS_2, GIMBLY,"useless"); // left, not functioning
 
 DJIMotor indexer(7, CANHandler::CANBUS_2, C610,"Indexer");
-DJIMotor RFLYWHEEL(8, CANHandler::CANBUS_2, M3508,"RightFly");
-DJIMotor LFLYWHEEL(5, CANHandler::CANBUS_2, M3508,"LeftFly");
+DJIMotor RFLYWHEEL(1, CANHandler::CANBUS_2, M3508,"RightFly");
+DJIMotor LFLYWHEEL(2, CANHandler::CANBUS_2, M3508,"LeftFly");
 
 DigitalOut led(L26);
 DigitalOut led2(L27);
@@ -90,7 +90,7 @@ int main()
 
     //     merge difference
     //     PID yawIMU(200.0, 0.1, 150, 20000, 8000); // 7.0,0.02,15.0,20000,8000
-    Chassis.setYawReference(&yaw, 4098); // "5604" is the number of ticks of yawOne considered to be robot-front
+    Chassis.setYawReference(&yaw, 6147); // "5604" is the number of ticks of yawOne considered to be robot-front
     Chassis.setSpeedFF_Ks(0.065);
     
     yaw.setSpeedPID(3.5, 0, 200);
