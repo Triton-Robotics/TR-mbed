@@ -11,9 +11,9 @@
 
 #define PI 3.14159265
 
-#define UPPERBOUND_DEG 36.0 // Bound of how high turret can point in degrees
+#define UPPERBOUND_DEG 10.0 // Bound of how high turret can point in degrees
 //sentry 2025. -9 is probably more accurate but this is a buffer so the usb doesn't keep breaking
-#define LOWERBOUND_DEG -3.0 // Bound of how low turret can point in degrees
+#define LOWERBOUND_DEG -26.0 // Bound of how low turret can point in degrees
 
 // #define UPPERBOUND_RAD 0.785
 // #define LOWERBOUND_RAD - 0.524
@@ -21,7 +21,8 @@
 #define UPPERBOUND_TICKS (UPPERBOUND_DEG/360.0) * 8192 // 1137 ticks above/CCW to 4250, ie 4250-1137 = 3112 absolute position in ticks
 #define LOWERBOUND_TICKS (LOWERBOUND_DEG/360.0) * 8192 // 682 ticks below/CW to 4250. ie 4932 abs pos in ticks
 
-#define PITCH_LEVEL_TICKS 6284 // The tick value of level turret pitch. Also used for initial offset
+#define GEAR_RATIO 2
+#define PITCH_LEVEL_TICKS 6445 // The tick value of level turret pitch. Also used for initial offset
 
 
 #define PITCH_SPEED_JOYSTICK_SENSE 10.0/330
@@ -325,7 +326,7 @@ int main(){
 
     /* Pitch Position PID*/
     // These values are for new sentry 2025
-    pitch.setPositionPID(21.3544, 0.020221, 1078.4383); // think about D-cap and potentially raising FF. if the setpoint is always higher than actual,
+    pitch.setPositionPID(20.3544, 0.020221, 1078.4383); // think about D-cap and potentially raising FF. if the setpoint is always higher than actual,
     pitch.setPositionIntegralCap(3000);
     // then could try to up FF to get there
     // pitch.setSpeedPID(0,0,0);
@@ -416,126 +417,37 @@ int main(){
             // Chassis.periodic();
 
             if (refLoop >= 5){
-                
                 refereeThread(&referee);
                 refLoop = 0;
-                
-                // jetson_read_values(pitch_ANGLE, yaw_ANGLE);
-                
-                des_yaw_speed += yaw_speed;
-                //desire = ChassisSubsystem::radiansToTicks(jetson_send_feedback());
-                
-                // yaw.setPosition(yaw_in_degrees * (360.0/8192));
-                // des_yaw_speed = 0;
-                // yaw.setSpeed(des_yaw_speed * 100);
-
-                // printf("%d, %d\n", (int)(des_yaw_speed * 100), yaw>>POWEROUT);
-
-                //BEYBLADE CODE
-
-//                if (desiredPitchPos >= LOWERBOUND) {
-//                    desiredPitchPos = LOWERBOUND;
-//                }
-//                else if (desiredPitchPos <= UPPERBOUND) {
-//                    desiredPitchPos = UPPERBOUND;
-//                }
-//
-//                float FF = K * sin((desiredPitchPos / 180 * PI) - pitch_phase); // output: [-1,1]
-//                pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
-//                pitch.setPosition(int((desiredPitchPos / 360) * TICKS_REVOLUTION + InitialOffset_Ticks));
-//
-//                yawSetPoint = yaw_in_degrees;
-//                //yawSetPoint -= (remote.rightX() / 90 + 360) % 360;
-//                yaw.setSpeed(5 * yawNonBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
-
-                //BEYBLADE CODE
-
-
-                // imu.get_angular_position_quat(&imuAngles);
-
-                //pitch.setPosition(yaw_value); //need to be a value between like 2000 - 8000s, in ticks
-                //yaw_in_ticks = 0;
-                //pitch_in_ticks = 0;
-                //printf("yaw value: %d, pitch value: %d \n", yaw.getData(ANGLE), pitch.getData(ANGLE)); //the value ticks is in int
-                //pitch.setPosition(pitch_in_ticks);
-
-                /*
-                pitch.setPosition(pitch_in_ticks);
-                yaw.setPosition(yaw_in_ticks);
-                 */
-                //pitch.setPosition(1800);
-                //yaw.setPosition(1800);
-
-
-
-
-                // ad_and_print();
-                //printf("TEST");
-
-                //PRINTFF doesn't WROK
-                //printff("ang%f t%d d%f FF%f\n", (((pitch>>ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360, pitch>>ANGLE, desiredPitchPos, K * sin((desiredPitchPos / 180 * PI) - pitch_phase)); //(desiredPitchPos / 360) * TICKS_REVOLUTION + InitialOffset_Ticks
-
             }
 
             //-----------DEBUG PITCH DATA RECIEVED-------------------------
 
             jetson_read_values(pitch_ANGLE, yaw_speed);
-            //basic_bitch_read();
-            //printf("pitchAngle %X  %.3f size %i  \n", pitch_ANGLE, pitch_ANGLE, sizePacket);
-            // calculate desired 
             if (pitch_ANGLE != 0) {
                 pitch_in_ticks = ChassisSubsystem::radiansToTicks(pitch_ANGLE);
-            }
-            pitch_in_deg = (pitch_in_ticks/8192.0) * 360;
-            ticks_to_motor = PITCH_LEVEL_TICKS - pitch_in_ticks;
+                printf("%d ticks here\n", pitch_in_ticks);
+                /* Catch pitch beyond thresholds*/
+                if (pitch_in_ticks <= LOWERBOUND_TICKS) {
+                    pitch_in_ticks = LOWERBOUND_TICKS;
+                }
+                else if (pitch_in_ticks >= UPPERBOUND_TICKS) {
+                    pitch_in_ticks = UPPERBOUND_TICKS;
+                }
 
-            //current angle and desired change
-            currPitch = (pitch.getData(ANGLE)/8192.0)*360.0;
-            desiredPosition = ( ticks_to_motor /8192.0)*360;
-
-            // // //actual change - expected change. negative means absolutely undershooting, positive means overshooting.
-            diffRealExpectedPitch =  abs(currPitch) - abs(desiredPosition);
-
-            // // //print
-            // // if (printCount >= 2) {
-            //     printf("%.3f %.3f %.3f \n", desiredPosition, currPitch, pitch_in_deg);
-            //     //printf("DeP: %.3f CuP: %.3f DiReExP: %.3f \n", desiredPosition, currPitch, diffRealExpectedPitch);
-            //     //printf("pitch in ticks: %i  \n", pitch_in_ticks);
-            //     //printf("pitch in degrees: %f  \n", pitch_in_deg);
-            //     //printf("ticks to motor: %i \n \n \n", ticks_to_motor);
-
-            /* Original code idk what this is about */
-            float yaw_in_degrees = (ChassisSubsystem::radiansToTicks(yaw_ANGLE)/8192)*360;
-            
-            yaw_in_degrees += 360;
-            while(yaw_in_degrees>360){
-                yaw_in_degrees -= 360;
+                pitch_in_ticks *= GEAR_RATIO; //gear ratio;
             }
 
-            /* Catch pitch beyond thresholds*/
-            if (pitch_in_ticks <= LOWERBOUND_TICKS) {
-                pitch_in_ticks = LOWERBOUND_TICKS;
-            }
-            else if (pitch_in_ticks >= UPPERBOUND_TICKS) {
-                pitch_in_ticks = UPPERBOUND_TICKS;
-            }
-
-            /* Feed forward to account for gravity*/
-            float FF = -8500 * cos(pitch_ANGLE);
-            pitch.pidPosition.feedForward = FF;
 
             // pitch_in_ticks is relative to level = 0 ticks. PITCH_LEVEL_TICKS - pitch_in_ticks = abs position in ticks
-            pitch.setPosition(PITCH_LEVEL_TICKS - pitch_in_ticks);
+            pitch.setPosition(PITCH_LEVEL_TICKS - pitch_in_ticks );
 
             printLoop ++;
             if(printLoop > 5){
                 printLoop = 0;
-                // printf("%.3f %.3f %.3f %.3f \n", desiredPosition, pitch_ANGLE, currPitch, (float) pitch.getData(ANGLE));
-                printf("%.3f %.3f %.3f \n", (float) (PITCH_LEVEL_TICKS - pitch_in_ticks),(float) pitch.getData(ANGLE), (float) (PITCH_LEVEL_TICKS - pitch.getData(ANGLE)));
-                //printf("DeP: %.3f CuP: %.3f DiReExP: %.3f \n", desiredPosition, currPitch, diffRealExpectedPitch);
-                //printf("pitch in ticks: %i  \n", pitch_in_ticks);
-                //printf("pitch in degrees: %f  \n", pitch_in_deg);
-                //printf("ticks to motor: %i \n \n \n", ticks_to_motor);
+                currPitch = ((PITCH_LEVEL_TICKS - pitch.getData(ANGLE))/8192.0)*360.0 /2.0;
+                printf("%d, %d, %.5f, %d\n", PITCH_LEVEL_TICKS - pitch_in_ticks, pitch.getData(ANGLE), currPitch, pitch_in_ticks); 
+                
             }
 
             loopTimer = timeStart;
@@ -545,8 +457,7 @@ int main(){
         // jetson_send_feedback();
 
         unsigned long timeEnd = us_ticker_read();
-        ThisThread::sleep_for(1ms);
-        // printf("Loop execution time: %lu us (%.2f ms)\n", (timeEnd - timeStart), (timeEnd - timeStart) / 1000.0);
+        // ThisThread::sleep_for(1ms);
     }
 }
 #endif
@@ -562,75 +473,3 @@ int main(){
 //ADD 4 IMUHeading
 //ADD 12 XYZAccel
 
-
-
-
-//DEFINE MOTORS, ETC
-
-// void basic_bitch_read(){
-//     bool
-//     while(bcJetson.readable()){
-
-//     }
-// }
-#if 0
-int main(){
-
-    //assigning can handler objects to motor class.
-    DJIMotor::s_setCANHandlers(&canHandler1,&canHandler2, false, false); 
-
-    //getting initial feedback.
-    DJIMotor::s_getFeedback();
-
-    unsigned long loopTimer_u = us_ticker_read();
-    unsigned long timeEnd_u;
-    unsigned long timeStart_u;
-
-    unsigned long loopTimerCV_u = us_ticker_read();
-
-    int refLoop = 0;
-
-    //DEFINE PIDs AND OTHER CONSTANTS
-
-    while(true){ //main loop
-        timeStart_u = us_ticker_read();
-
-        //CV loop runs every 2ms
-        if((timeStart_u - loopTimerCV_u) / 1000 > 2) { 
-            loopTimerCV_u = timeStart_u;
-            jetson_send_feedback();
-        }
-
-        //inner loop runs every 25ms
-        if((timeStart_u - loopTimer_u) / 1000 > 15) { 
-            loopTimer_u = timeStart_u;
-            led = !led; //led blink tells us how fast the inner loop is running
-            // long long beforehand = us_ticker_read();
-
-            // printf("af %lld\n", (us_ticker_read() - beforehand));
-            if (refLoop >= 5) { //ref code runs 5 of every inner loop, 
-                refLoop = 0;
-                refereeThread(&referee);
-            }
-            refLoop++;
-
-            remoteRead(); //reading data from remote
-
-            //MAIN CODE 
-
-            timeEnd_u = us_ticker_read();
-
-            DJIMotor::s_sendValues();
-        }
-
-        //FEEDBACK CODE DOES NEED TO RUN FASTER THAN 1MS
-        //OTHER QUICK AND URGENT TASKS GO HERE
-
-        DJIMotor::s_getFeedback();
-        
-        ThisThread::sleep_for(1ms);
-    }
-}
-#endif
-
-//mbed-tools sterm -b 115200
