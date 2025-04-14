@@ -25,13 +25,13 @@ I2C i2c(I2C_SDA, I2C_SCL);
 
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
-DJIMotor yaw(5, CANHandler::CANBUS_1, GIMBLY,"Yeah");
+DJIMotor yaw(4, CANHandler::CANBUS_1, GIMBLY,"Yeah");
 DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY,"Peach"); // right
 DJIMotor pitch2(6, CANHandler::CANBUS_2, GIMBLY,"useless"); // left, not functioning
 
 DJIMotor indexer(7, CANHandler::CANBUS_2, C610,"Indexer");
-DJIMotor RFLYWHEEL(8, CANHandler::CANBUS_2, M3508,"RightFly");
-DJIMotor LFLYWHEEL(5, CANHandler::CANBUS_2, M3508,"LeftFly");
+DJIMotor RFLYWHEEL(1, CANHandler::CANBUS_2, M3508,"RightFly");
+DJIMotor LFLYWHEEL(2, CANHandler::CANBUS_2, M3508,"LeftFly");
 
 DigitalOut led(L26);
 DigitalOut led2(L27);
@@ -90,7 +90,7 @@ int main()
 
     //     merge difference
     //     PID yawIMU(200.0, 0.1, 150, 20000, 8000); // 7.0,0.02,15.0,20000,8000
-    Chassis.setYawReference(&yaw, 4098); // "5604" is the number of ticks of yawOne considered to be robot-front
+    Chassis.setYawReference(&yaw, 6200); // "5604" is the number of ticks of yawOne considered to be robot-front
     Chassis.setSpeedFF_Ks(0.065);
     
     yaw.setSpeedPID(3.5, 0, 200);
@@ -156,6 +156,37 @@ int main()
 
     int yawVelo = 0;
 
+    // automovement code
+    ChassisSpeeds velocity = {0.0, 0.0, 0.0};
+    ChassisSpeeds prev_velocity = {0.0, 0.0, 0.0};
+    ChassisSpeeds accel = {0.0, 0.0, 0.0};
+
+    std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {0.0, 3000.0}, {-300.0, 3000.0}};
+
+    int init_yaw_angle_ticks = (yaw>>ANGLE);
+
+    float angle = ChassisSubsystem::ticksToRadians((yaw>>ANGLE)-init_yaw_angle_ticks);
+    float posx = final_pos[0][0];
+    float posy = final_pos[0][1];
+    int print_counter = 0;
+
+    // final positions
+    int idx = 1;
+    float final_y = final_pos[idx][1];
+    float final_x = final_pos[idx][0];
+
+    // calculating final angle outside loop
+    float final_angle = 0; //- atan((final_pos[idx - 1][1] - final_pos[idx][1])/(final_pos[idx - 1][0] - final_pos[idx][0])) / PI;
+
+    float buffer_y = 50.0;
+    float buffer_x = 50.0;
+    float buffer_angle = PI/8;
+
+
+    float ly_init = 0.4;
+    float lx_init = 0.4;
+    float rx_init = 1; // just do 1 degrees
+
     while (true)
     {
         unsigned long timeStart = us_ticker_read();
@@ -166,6 +197,28 @@ int main()
             loopTimer = timeStart;
             remoteRead();
             Chassis.periodic();
+
+            // automovement positional code!
+            velocity = Chassis.getChassisSpeeds();
+            accel =  {(velocity.vX - prev_velocity.vX) / 25, (velocity.vY - prev_velocity.vY) / 25, (velocity.vOmega - prev_velocity.vOmega) / 25};
+
+            if ((yaw>>ANGLE) > init_yaw_angle_ticks) {
+                angle = ChassisSubsystem::ticksToRadians((yaw>>ANGLE)-init_yaw_angle_ticks);
+            }
+            else {
+                angle = - ChassisSubsystem::ticksToRadians(init_yaw_angle_ticks - (yaw>>ANGLE));
+            }
+
+            if (angle < 0) {
+                angle += 2 * PI;
+            }
+            
+            posy = posy + ((velocity.vY * cos(angle)) - (velocity.vX * sin(angle))) * 25 + (1/2 * ((accel.vY * cos(angle)) + (accel.vX * sin(angle))) * 25 * 0.025);
+        
+            posx = posx + ((velocity.vX * cos(angle)) + (velocity.vY * sin(angle))) * 25 + (1/2 * ((accel.vX * sin(angle)) - (accel.vY * cos(angle))) * 25 * 0.025);
+
+            float lx = 0;
+            float ly = 0;
 
             if(jumper){
                 driveMode = 'm';
@@ -259,12 +312,46 @@ int main()
                 led3 = 1;
                 unsigned long time = us_ticker_read();
                 Chassis.setSpeedFF_Ks(0.065);
-                Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          jy *
-                                          Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          0 * Chassis.m_OmniKinematicsLimits.max_vOmega},
-                                          ChassisSubsystem::YAW_ORIENTED);
 
+                final_angle = -atan((posx - final_pos[idx][0])/(posy - final_pos[idx][1])); // final angle radians YIPPEE
+
+                if (final_angle < 0) {
+                    final_angle += 2 * PI;
+                }
+
+                if (angle < final_angle - buffer_angle) {
+                    yawSetPoint += rx_init;
+                }
+                else if (angle > final_angle + buffer_angle) {
+                    yawSetPoint -= rx_init;
+                }
+                else {
+                    // move to our point
+                    if (final_y - posy > buffer_y) {
+                        ly = ly_init;
+                    }   
+                    else if (posy - final_y > buffer_y) {
+                        ly = -ly_init;
+                    }
+                    else {
+                        // if we are close enough to the point, move to the next point
+                        if (idx < final_pos.size() - 1) {
+                            idx += 1;
+                        }
+                        else {
+                            ly = 0;
+                        }
+                    }
+                }
+
+                Chassis.setChassisSpeeds({lx, ly, 0}, ChassisSubsystem::YAW_ORIENTED);
+
+                // Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
+                //                           jy *
+                //                           Chassis.m_OmniKinematicsLimits.max_Vel,
+                //                           0 * Chassis.m_OmniKinematicsLimits.max_vOmega},
+                //                           ChassisSubsystem::YAW_ORIENTED);
+                
                 lastTime = time; 
 
                 // if(driveMode == 'm'){
@@ -273,10 +360,10 @@ int main()
                 //     yawSetPoint -= remote.rightX() * JOYSTICK_SENSE_YAW;
                 // }
 
-                yawSetPoint -= remote.getMouseX() * MOUSE_SENSE_YAW;
-                if(remote.rightX() > 10 || remote.rightX() < -10){
-                    yawSetPoint -= remote.rightX() * JOYSTICK_SENSE_YAW;
-                }
+                // yawSetPoint -= remote.getMouseX() * MOUSE_SENSE_YAW;
+                // if(remote.rightX() > 10 || remote.rightX() < -10){
+                //     yawSetPoint -= remote.rightX() * JOYSTICK_SENSE_YAW;
+                // }
 
                 yawSetPoint = (yawSetPoint+360) % 360;
 
@@ -342,6 +429,15 @@ int main()
 
                 prevTimeSure = timeSure;
             }
+
+            prev_velocity = {velocity.vX, velocity.vY, velocity.vOmega};
+
+            print_counter++;
+            if (print_counter > 10) {
+                printff("X: %.3f, Y: %.3f, A: %.3f, %.3f \n", posx, posy, angle, angle - final_angle);
+                print_counter = 0;
+            }
+
             yawTime = us_ticker_read();
 
 

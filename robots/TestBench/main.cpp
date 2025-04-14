@@ -48,10 +48,10 @@ int main(){
     float final_x = final_pos[idx][0];
 
     // calculating final angle outside loop
-    float final_angle = - atan(final_y/final_x) / PI;
+    float final_angle = 0; //- atan((final_pos[idx - 1][1] - final_pos[idx][1])/(final_pos[idx - 1][0] - final_pos[idx][0])) / PI;
 
-    float buffer_y = 10.0;
-    float buffer_x = 10.0;
+    float buffer_y = 50.0;
+    float buffer_x = 50.0;
     float buffer_angle = PI/16;
 
 
@@ -82,53 +82,107 @@ int main(){
 
             // update pos and angle in mm
             // velocities in m/s, acceleration in m/s^2, the loop runs every 25 ms
-            angle = angle + (velocity.vOmega * 0.025 + (1/2 * accel.vOmega * 0.025 * 0.025)) * PI;
+            angle = (angle + (velocity.vOmega * 0.025 + (1/2 * accel.vOmega * 0.025 * 0.025)) * PI);
+            while (angle > 2*PI) {
+                angle -= 2*PI;
+            }
+            while (angle < -2*PI) {
+                angle += 2*PI;
+            }
+            
             posy = posy + ((velocity.vY * cos(angle)) + (velocity.vX * sin(angle))) * 25 + (1/2 * ((accel.vY * cos(angle)) + (accel.vX * sin(angle))) * 25 * 0.025);
+            
             posx = posx + ((velocity.vX * cos(angle)) - (velocity.vY * sin(angle))) * 25 + (1/2 * ((accel.vX * sin(angle)) - (accel.vY * cos(angle))) * 25 * 0.025);
 
             float lx = 0;
             float ly = 0;
             float rx = 0;
 
-            // Purely changing x and y speeds, not rotation yet!
-            //if (final_pos[idx][1] - posy > buffer_y) {
-            //    ly = ly_init;
-            //}   
-            //else if (posy - final_pos[idx][1] > buffer_y) {
-            //    ly = -ly_init;
-            //}
-            //else {
-            //    ly = 0;
-            //}
+            if (remote.rightSwitch() == Remote::SwitchState::MID || remote.rightSwitch() == Remote::SwitchState::UNKNOWN) {
+                lx = (remote.leftX() / 660.0) * Chassis.m_OmniKinematicsLimits.max_Vel;
+                ly = (remote.leftY() / 660.0) * Chassis.m_OmniKinematicsLimits.max_Vel;
 
-            //if (final_pos[idx][0] - posx > buffer_x) {
-            //    lx = lx_init;
-            //}
-            //else if (posx - final_pos[idx][0] > buffer_x) {
-            //    lx = -lx_init;
-            //}
-            //else {
-            //    lx = 0;
-            //}
-            //if (lx == 0 && ly == 0) {
-            //    if (idx < final_pos.size() - 1) {
-            //        idx++;
-            //    }
-            //}
-            //if (abs(remote.leftX()) < 150 && inc_counter == 0) {
-            //    lx = remote.leftX();
-            //}
-            //if (abs(remote.rightX()) < 45) {
-            //   rx = remote.rightX();
-            //}
-            lx = remote.leftX() / 660.0;
-            ly = remote.leftY() / 660.0;
-            Chassis.setChassisSpeeds({lx*Chassis.m_OmniKinematicsLimits.max_Vel, ly*Chassis.m_OmniKinematicsLimits.max_Vel, rx}); // changing angle is faster, but we havent made that code yet T_T
+                Chassis.setChassisSpeeds({lx, ly, rx});
+            }
+            else if (remote.rightSwitch() == Remote::SwitchState::UP) {
+                // Purely changing x and y speeds, not rotation yet!
+                // if (final_pos[idx][1] - posy > buffer_y) {
+                //     ly = ly_init;
+                //     printff("Moving forward: %.3f\n", ly);
+                // }   
+                // else if (posy - final_pos[idx][1] > buffer_y) {
+                //     ly = -ly_init;
+                //     printff("Moving backward (should never be reached): %.3f\n", lx);
+                // }
+                // else {
+                //     ly = 0;
+                // }
+
+                // if (final_pos[idx][0] - posx > buffer_x) {
+                //     lx = lx_init;
+                //     printff("Moving right: %.3f\n", lx);
+                // }
+                // else if (posx - final_pos[idx][0] > buffer_x) {
+                //     lx = -lx_init;
+                //     printff("Moving left (should never be reached): %.3f\n", lx);
+                // }
+                // else {
+                //     lx = 0;
+                // }
+                // if (lx == 0 && ly == 0) {
+                //     if (idx < final_pos.size() - 1) {
+                //         idx++;
+                // }
+                // }
+                // if (abs(remote.leftX()) < 150 && inc_counter == 0) {
+                //    lx = remote.leftX();
+                // }
+                // if (abs(remote.rightX()) < 45) {
+                //    rx = remote.rightX();
+                // }
+                // lx = remote.leftX() / 660.0;
+                // ly = remote.leftY() / 660.0;
+
+                final_angle =- atan((posy - final_pos[idx][1])/(posx - final_pos[idx][0])) / PI;
+
+                if (final_angle - angle > buffer_angle) {
+                    rx = rx_init;
+                }
+                else if (angle - final_angle > buffer_angle) {
+                    rx = -rx_init;
+                }
+                else {
+                    rx = 0;
+
+                    if (final_y - posy > buffer_y) {
+                        ly = ly_init;
+                    }   
+                    else if (posy - final_y > buffer_y) {
+                        ly = - ly_init;
+                    }
+                    else {
+                        // if we are close enough to the point, move to the next point
+                        if (idx < final_pos.size() - 1) {
+                            idx += 1;
+                        }
+                        else {
+                            ly = 0;
+                        }
+                    }
+                }
+
+                Chassis.setChassisSpeeds({lx, ly, rx}); 
+                // changing angle is faster, but we havent made that code yet T_T
+            }
+            else if (remote.rightSwitch() == Remote::SwitchState::UP) {
+
+            }
+            
             prev_velocity = {velocity.vX, velocity.vY, velocity.vOmega};
 
             counter++;
             if (counter > 10) {
-                printff("X: %.3f, Y: %.3f, A: %.3f, % \n", posx, posy, angle, idx);
+                printff("X: %.3f, Y: %.3f, A: %.3f, %d \n", posx, posy, angle, idx);
                 counter = 0;
             }
             //MOST CODE DOESNT NEED TO RUN FASTER THAN EVERY 25ms
