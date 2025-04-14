@@ -183,7 +183,7 @@ float jetson_send_feedback() {
     float yaw_angle = ChassisSubsystem::ticksToRadians(yaw.getData(ANGLE)); //Ticks
     float yaw_velocity = yaw.getData(VELOCITY)/60.0; //RPM
 
-    float pitch_angle = ChassisSubsystem::ticksToRadians(PITCH_LEVEL_TICKS - pitch.getData(ANGLE));
+    float pitch_angle = ChassisSubsystem::ticksToRadians((PITCH_LEVEL_TICKS - pitch.getData(ANGLE)) / GEAR_RATIO);
     float pitch_velocity = pitch.getData(VELOCITY)/60.0;
 
     // printf("yaw A: %f | yaw v: %f | pitch a: %f | pitch v: %f\n", yaw_angle, yaw_velocity, pitch_angle, pitch_velocity);
@@ -236,6 +236,7 @@ float jetson_send_feedback() {
  */
 void jetson_read_values(float &pitch_move, float & yaw_move) {
     bcJetson.set_blocking(false);
+    char dumbByte;
 
     ssize_t result = bcJetson.read(jetson_value, 9);
     if (result != -EAGAIN) { // If buffer not empty, decode data. Else do nothing
@@ -247,17 +248,19 @@ void jetson_read_values(float &pitch_move, float & yaw_move) {
         uint8_t theoryCheck = calculateLRC(jetson_value,8);
         if(checkSum == theoryCheck){
             decode_toSTM32(jetson_value, pitch_move, yaw_move, checkSum);
-        }else{
-            led3 = !led3;
-        }        
-
-        if (pitch_move > 100) {
-            pitch_move = 0;
         }
-        //printf("*** pitch: %f, yaw: %f, checkSum: %d\n", pitch_move, yaw_move, (int)checkSum);
-    }
-    else{
-        // printf("result was empty \n");
+        else{
+            led3 = !led3;
+        }  
+
+        while ( bcJetson.readable() ) {
+            ssize_t resultClear = bcJetson.read(&dumbByte, 1);
+            printf("%d ", dumbByte);
+        }
+    } 
+
+    else {
+        printf("Err\n");
     }
 }
 
@@ -392,6 +395,12 @@ int main(){
     float desiredPosition = 0;
     float diffRealExpectedPitch = 0;
 
+
+    //Buffer stuff
+    char jetsonByte;
+    int numBytes = 0;
+    int totalBytes = 0;
+
     //PRINTLOOP
     int printLoop = 0;
 
@@ -418,15 +427,36 @@ int main(){
 
             if (refLoop >= 5){
                 refereeThread(&referee);
+
                 refLoop = 0;
             }
 
             //-----------DEBUG PITCH DATA RECIEVED-------------------------
+            // uint8_t data[100];
+
+
+            // for (uint8_t i = 0; i < 100 ; i++) {
+            //     data[i] = i;
+            //     ssize_t bytesBuffer = bcJetson.write(&data[i], 1);
+            //     printf("number: %d bytes: %d \n", data[i], bytesBuffer);
+            // }
+            // ThisThread::sleep_for(100ms);
+
+            // while (bcJetson.readable()) {
+            //     ssize_t result = bcJetson.read(&jetsonByte, 1);
+            //     printf("%d ", jetsonByte);
+            //     ++numBytes;
+            //     ++totalBytes;
+            // }
+            // printf("\n num: %d total: %d result:  \n \n", numBytes, totalBytes);
+            // numBytes = 0;
+            //-----------DEBUG PITCH DATA RECIEVED-------------------------
+    
 
             jetson_read_values(pitch_ANGLE, yaw_speed);
             if (pitch_ANGLE != 0) {
                 pitch_in_ticks = ChassisSubsystem::radiansToTicks(pitch_ANGLE);
-                printf("%d ticks here\n", pitch_in_ticks);
+                //printf("%d ticks here\n", pitch_in_ticks);
                 /* Catch pitch beyond thresholds*/
                 if (pitch_in_ticks <= LOWERBOUND_TICKS) {
                     pitch_in_ticks = LOWERBOUND_TICKS;
@@ -440,13 +470,13 @@ int main(){
 
 
             // pitch_in_ticks is relative to level = 0 ticks. PITCH_LEVEL_TICKS - pitch_in_ticks = abs position in ticks
-            pitch.setPosition(PITCH_LEVEL_TICKS - pitch_in_ticks );
+            pitch.setPosition(PITCH_LEVEL_TICKS - pitch_in_ticks);
 
             printLoop ++;
             if(printLoop > 5){
                 printLoop = 0;
                 currPitch = ((PITCH_LEVEL_TICKS - pitch.getData(ANGLE))/8192.0)*360.0 /2.0;
-                printf("%d, %d, %.5f, %d\n", PITCH_LEVEL_TICKS - pitch_in_ticks, pitch.getData(ANGLE), currPitch, pitch_in_ticks); 
+                //printf("%d, %d, %.5f, %d\n", PITCH_LEVEL_TICKS - pitch_in_ticks, pitch.getData(ANGLE), currPitch, pitch_in_ticks); 
                 
             }
 
