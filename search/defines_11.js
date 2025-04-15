@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['radius_0',['radius',['../Infantry_2main_8cpp.html#aa4f8ea40228c3c3a9a7143b1d1ad8956',1,'RADIUS:&#160;main.cpp'],['../Hero_2main_8cpp.html#aa4f8ea40228c3c3a9a7143b1d1ad8956',1,'RADIUS:&#160;main.cpp'],['../Sentry_2main_8cpp.html#aa4f8ea40228c3c3a9a7143b1d1ad8956',1,'RADIUS:&#160;main.cpp']]],
+  ['radius_0',['radius',['../Sentry_2main_8cpp.html#aa4f8ea40228c3c3a9a7143b1d1ad8956',1,'RADIUS:&#160;main.cpp'],['../Hero_2main_8cpp.html#aa4f8ea40228c3c3a9a7143b1d1ad8956',1,'RADIUS:&#160;main.cpp']]],
   ['real_5fscalar_5fsuffix_1',['real_scalar_suffix',['../blas_2complex__double_8cpp.html#ab5196ef162f86143c3d67bb5d2275f91',1,'REAL_SCALAR_SUFFIX:&#160;complex_double.cpp'],['../blas_2complex__single_8cpp.html#ab5196ef162f86143c3d67bb5d2275f91',1,'REAL_SCALAR_SUFFIX:&#160;complex_single.cpp'],['../lapack_2complex__double_8cpp.html#ab5196ef162f86143c3d67bb5d2275f91',1,'REAL_SCALAR_SUFFIX:&#160;complex_double.cpp'],['../lapack_2complex__single_8cpp.html#ab5196ef162f86143c3d67bb5d2275f91',1,'REAL_SCALAR_SUFFIX:&#160;complex_single.cpp']]],
   ['real_5ftype_2',['REAL_TYPE',['../bench__parameter_8hh.html#a7db5e8ee7c27e6fb5c9caf9d674ea949',1,'bench_parameter.hh']]],
   ['red_3',['RED',['../ref__serial_8h.html#a8d23feea868a983c8c2b661e1e16972f',1,'ref_serial.h']]],
@@ -11,5 +11,5 @@ var searchData=
   ['run_5ftrans_8',['run_trans',['../benchGeometry_8cpp.html#a298ff1347b328ea713aa3eff86ef3843',1,'benchGeometry.cpp']]],
   ['run_5funary_5ftest_9',['RUN_UNARY_TEST',['../cxx11__tensor__builtins__sycl_8cpp.html#a7d9422702ac9f3c9f2002146dd2c00b7',1,'cxx11_tensor_builtins_sycl.cpp']]],
   ['run_5fvec_10',['run_vec',['../benchGeometry_8cpp.html#a03dc436a1c2a33cad5cdb3052f58e6ea',1,'benchGeometry.cpp']]],
-  ['runspin_11',['runspin',['../Hero_2main_8cpp.html#a1e0a4463716a5a18b794abd884593f10',1,'RUNSPIN:&#160;main.cpp'],['../Infantry_2main_8cpp.html#a1e0a4463716a5a18b794abd884593f10',1,'RUNSPIN:&#160;main.cpp'],['../Sentry_2main_8cpp.html#a1e0a4463716a5a18b794abd884593f10',1,'RUNSPIN:&#160;main.cpp']]]
+  ['runspin_11',['runspin',['../Hero_2main_8cpp.html#a1e0a4463716a5a18b794abd884593f10',1,'RUNSPIN:&#160;main.cpp'],['../Sentry_2main_8cpp.html#a1e0a4463716a5a18b794abd884593f10',1,'RUNSPIN:&#160;main.cpp']]]
 ];

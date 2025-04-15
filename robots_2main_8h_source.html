@@ -222,7 +222,20 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span><span class="comment">// Thread threadingPrint(osPriorityBelowNormal);</span></div>
 <div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span><span class="comment">// Thread threadingLogger(osPriorityLow);</span></div>
 <div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span> </div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span><span class="preprocessor">#endif </span><span class="comment">// TR_EMBEDDED_MAIN_H</span></div>
+<div class="foldopen" id="foldopen00126" data-start="{" data-end="}">
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno"><a class="line" href="robots_2main_8h.html#ae1a26925eaeee687df82e3a001a3f8cc">  126</a></span><span class="keywordtype">float</span> <a class="code hl_function" href="robots_2main_8h.html#ae1a26925eaeee687df82e3a001a3f8cc">floatmod</a>(<span class="keywordtype">float</span> input, <span class="keywordtype">float</span> mod){</div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>    <span class="keywordtype">float</span> f = input;</div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>    <span class="keywordflow">while</span>(f &lt; 0){</div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>        f += mod;</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>    }</div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>    <span class="keywordflow">while</span>(f &gt;= mod){</div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>        f -= mod;</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>    }</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>    <span class="keywordflow">return</span> f;</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>}</div>
+</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span> </div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span><span class="preprocessor">#endif </span><span class="comment">// TR_EMBEDDED_MAIN_H</span></div>
 <div class="ttc" id="aBNO055_8h_html"><div class="ttname"><a href="BNO055_8h.html">BNO055.h</a></div></div>
 <div class="ttc" id="aCANHandler_8h_html"><div class="ttname"><a href="CANHandler_8h.html">CANHandler.h</a></div></div>
 <div class="ttc" id="aChassisSubsystem_8h_html"><div class="ttname"><a href="ChassisSubsystem_8h.html">ChassisSubsystem.h</a></div></div>
@@ -263,6 +276,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="ttc" id="arobots_2main_8h_html_a920f65fe2819c44153149b5f15932d1c"><div class="ttname"><a href="robots_2main_8h.html#a920f65fe2819c44153149b5f15932d1c">print</a></div><div class="ttdeci">void print(char statement[], priorityLevels priority=DEFAULT)</div><div class="ttdef"><b>Definition</b> main.h:55</div></div>
 <div class="ttc" id="arobots_2main_8h_html_a97d893b2f9de657923179b1b0ed66e05"><div class="ttname"><a href="robots_2main_8h.html#a97d893b2f9de657923179b1b0ed66e05">userButton</a></div><div class="ttdeci">DigitalIn userButton(BUTTON1)</div></div>
 <div class="ttc" id="arobots_2main_8h_html_abd563ade3b59c39a7610036484f5ad81"><div class="ttname"><a href="robots_2main_8h.html#abd563ade3b59c39a7610036484f5ad81">printff</a></div><div class="ttdeci">void printff(const char *format,...)</div><div class="ttdef"><b>Definition</b> main.h:65</div></div>
+<div class="ttc" id="arobots_2main_8h_html_ae1a26925eaeee687df82e3a001a3f8cc"><div class="ttname"><a href="robots_2main_8h.html#ae1a26925eaeee687df82e3a001a3f8cc">floatmod</a></div><div class="ttdeci">float floatmod(float input, float mod)</div><div class="ttdef"><b>Definition</b> main.h:126</div></div>
 <div class="ttc" id="arobots_2main_8h_html_aea18a93d4816c3da7d8468fa3600b755"><div class="ttname"><a href="robots_2main_8h.html#aea18a93d4816c3da7d8468fa3600b755">printfESP</a></div><div class="ttdeci">void printfESP(const char *format,...)</div><div class="ttdef"><b>Definition</b> main.h:46</div></div>
 <div class="ttc" id="arobots_2main_8h_html_aee5523542bbb75fc9e1053ed3fc7f214"><div class="ttname"><a href="robots_2main_8h.html#aee5523542bbb75fc9e1053ed3fc7f214">updatePriority</a></div><div class="ttdeci">void updatePriority(priorityLevels desiredLevel)</div><div class="ttdef"><b>Definition</b> main.h:41</div></div>
 </div><!-- fragment --></div><!-- contents -->
