@@ -132,6 +132,8 @@ public:
 
     static float Bisection(int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm, float chassisPowerLimit);
 
+    float power_limit;
+
     /**
      * Gets the chassis's current WheelSpeeds
      * @return The chassis's current WheelSpeeds

@@ -10,7 +10,8 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
       RF(rfId, CAN_BUS_TYPE, MOTOR_TYPE),
       LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE),
       RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE),
-      imu(imu)
+      imu(imu),
+      power_limit(50.0F)
 // chassisKalman()
 {
     LF.outputCap = 16000; // DJIMotor class has a max outputCap: 16384
@@ -287,7 +288,7 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     int r3 = abs(LB.getData(VELOCITY));
     int r4 = abs(RB.getData(VELOCITY));
 
-    float scale = Bisection(p1, p2, p3, p4, r1, r2, r3, r4, 50.0);
+    float scale = Bisection(p1, p2, p3, p4, r1, r2, r3, r4, power_limit);
 
 
 

@@ -123,4 +123,15 @@ static void remotePrint()
 // Thread threadingPrint(osPriorityBelowNormal);
 // Thread threadingLogger(osPriorityLow);
 
+float floatmod(float input, float mod){
+    float f = input;
+    while(f < 0){
+        f += mod;
+    }
+    while(f >= mod){
+        f -= mod;
+    }
+    return f;
+}
+
 #endif // TR_EMBEDDED_MAIN_H
