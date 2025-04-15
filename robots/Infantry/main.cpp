@@ -287,6 +287,49 @@ int main(){
                 pitch.setPower(0);
             }
 
+            //INDEXER CODE
+            if (remote.leftSwitch() == Remote::SwitchState::UP || remote.getMouseL()){
+                if (shootReady){
+                    shootReady = false;
+                    shootTargetPosition = 8192 * 12 + (indexer>>MULTITURNANGLE);
+
+                    //shoot limit
+                    if(robot_status.shooter_barrel_heat_limit < 10 || power_heat_data.shooter_17mm_1_barrel_heat < robot_status.shooter_barrel_heat_limit - 40) {
+                        shoot = true;
+                    }
+                    
+                }
+            } else {
+                //SwitchState state set to mid/down/unknown
+                shootReady = true;
+            }
+
+            // burst fire, turn the indexer to shoot 3-5 balls a time and stop indexer
+            // only shoot when left switch changes from down/unknown/mid to up
+            // if left switch remains at up state, indexer stops after 3-5 balls
+            if (shoot){
+                if (indexer>>MULTITURNANGLE >= shootTargetPosition){
+                    indexer.setSpeed(0);
+                    shoot = false;
+                } else {
+                    timeSure = us_ticker_read();
+                    indexer.setSpeed(sure.calculate(shootTargetPosition, indexer>>MULTITURNANGLE, timeSure - prevTimeSure)); //
+                    prevTimeSure = timeSure;
+                }
+            } else {
+                indexer.setSpeed(0);
+            }
+
+            //FLYWHEELS
+            if (remote.leftSwitch() != Remote::SwitchState::DOWN &&
+                remote.leftSwitch() != Remote::SwitchState::UNKNOWN){
+                RFLYWHEEL.setSpeed(7000);
+                LFLYWHEEL.setSpeed(-7000);
+            } else{
+                // left SwitchState set to up/mid/unknown
+                RFLYWHEEL.setSpeed(0);
+                LFLYWHEEL.setSpeed(0);
+            }
 
             printLoop ++;
             if (printLoop >= PRINT_FREQUENCY){
