@@ -35,8 +35,6 @@ constexpr float CHASSIS_FF_KICK = 0.065;
 I2C i2c(I2C_SDA, I2C_SCL);
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
-
-//MOTOR DEFINING
 DJIMotor yaw(4, CANHandler::CANBUS_1, GIMBLY,"Yeah");
 DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY,"Peach"); // right
 
