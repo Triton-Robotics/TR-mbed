@@ -6,6 +6,8 @@
 #include <iostream>
 #include "subsystems/ChassisSubsystem.h"
 
+#define LOOP_TIME 25
+
 #define PI 3.14159265
 
 #define LOWERBOUND 35.0
@@ -93,9 +95,9 @@ int main()
     Chassis.setYawReference(&yaw, 6200); // "5604" is the number of ticks of yawOne considered to be robot-front
     Chassis.setSpeedFF_Ks(0.065);
     
-    yaw.setSpeedPID(3.5, 0, 200);
+    yaw.setSpeedPID(1.5, 0, 200);
     PID yawBeyblade(0.32, 0, 550);
-    PID yawNonBeyblade(0.15, 0, 550);
+    PID yawNonBeyblade(0.1, 0, 550);
 
     yaw.setSpeedIntegralCap(1000);
     yaw.useAbsEncoder = false;
@@ -161,7 +163,7 @@ int main()
     ChassisSpeeds prev_velocity = {0.0, 0.0, 0.0};
     ChassisSpeeds accel = {0.0, 0.0, 0.0};
 
-    std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {0.0, 3000.0}, {-300.0, 3000.0}};
+    std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {0.0, 100.0}, {0.0, 0.0}};
 
     int init_yaw_angle_ticks = (yaw>>ANGLE);
 
@@ -178,20 +180,22 @@ int main()
     // calculating final angle outside loop
     float final_angle = 0; //- atan((final_pos[idx - 1][1] - final_pos[idx][1])/(final_pos[idx - 1][0] - final_pos[idx][0])) / PI;
 
+    final_angle = PI + atan2((posx - final_pos[idx][0]),(posy - final_pos[idx][1])); // final angle radians YIPPEE
+
     float buffer_y = 50.0;
     float buffer_x = 50.0;
     float buffer_angle = PI/8;
 
 
-    float ly_init = 0.4;
-    float lx_init = 0.4;
-    float rx_init = 1; // just do 1 degrees
+    float ly_init = 0.5;
+    float lx_init = 0.5;
+    float rx_init = 2; // just do 1 degrees
 
     while (true)
     {
         unsigned long timeStart = us_ticker_read();
 
-        if ((timeStart - loopTimer) / 1000 > 25){
+        if ((timeStart - loopTimer) / 1000 > LOOP_TIME){
             led3 = !led3;
 
             loopTimer = timeStart;
@@ -200,22 +204,28 @@ int main()
 
             // automovement positional code!
             velocity = Chassis.getChassisSpeeds();
-            accel =  {(velocity.vX - prev_velocity.vX) / 25, (velocity.vY - prev_velocity.vY) / 25, (velocity.vOmega - prev_velocity.vOmega) / 25};
+            accel =  {(velocity.vX - prev_velocity.vX) / LOOP_TIME, (velocity.vY - prev_velocity.vY) / LOOP_TIME, (velocity.vOmega - prev_velocity.vOmega) / LOOP_TIME};
 
-            if ((yaw>>ANGLE) > init_yaw_angle_ticks) {
-                angle = ChassisSubsystem::ticksToRadians((yaw>>ANGLE)-init_yaw_angle_ticks);
-            }
-            else {
-                angle = - ChassisSubsystem::ticksToRadians(init_yaw_angle_ticks - (yaw>>ANGLE));
-            }
+            // if ((yaw>>ANGLE) > init_yaw_angle_ticks) {
+            //     angle = ChassisSubsystem::ticksToRadians((yaw>>ANGLE)-init_yaw_angle_ticks);
+            // }
+            // else {
+            //     angle = - ChassisSubsystem::ticksToRadians(init_yaw_angle_ticks - (yaw>>ANGLE));
+            // }
 
-            if (angle < 0) {
+            angle = ChassisSubsystem::ticksToRadians((yaw>>ANGLE)-init_yaw_angle_ticks);
+
+            if (angle < - PI) {
                 angle += 2 * PI;
             }
+
+            if (angle > PI) {
+                angle -= 2 * PI;
+            }
             
-            posy = posy + ((velocity.vY * cos(angle)) - (velocity.vX * sin(angle))) * 25 + (1/2 * ((accel.vY * cos(angle)) + (accel.vX * sin(angle))) * 25 * 0.025);
+            posy = posy + ((velocity.vY * cos(angle)) - (velocity.vX * sin(angle))) * LOOP_TIME + (1/2 * ((accel.vY * cos(angle)) + (accel.vX * sin(angle))) * LOOP_TIME * LOOP_TIME * 0.001);
         
-            posx = posx + ((velocity.vX * cos(angle)) + (velocity.vY * sin(angle))) * 25 + (1/2 * ((accel.vX * sin(angle)) - (accel.vY * cos(angle))) * 25 * 0.025);
+            posx = posx + ((velocity.vX * cos(angle)) + (velocity.vY * sin(angle))) * LOOP_TIME + (1/2 * ((accel.vX * sin(angle)) - (accel.vY * cos(angle))) * LOOP_TIME * LOOP_TIME * 0.001);
 
             float lx = 0;
             float ly = 0;
@@ -313,33 +323,39 @@ int main()
                 unsigned long time = us_ticker_read();
                 Chassis.setSpeedFF_Ks(0.065);
 
-                final_angle = -atan((posx - final_pos[idx][0])/(posy - final_pos[idx][1])); // final angle radians YIPPEE
+                // final_angle = PI-atan2((posx - final_pos[idx][0]), (posy - final_pos[idx][1])); // final angle radians YIPPEE
 
-                if (final_angle < 0) {
+                if ((final_angle - buffer_angle) < - PI) {
                     final_angle += 2 * PI;
                 }
 
-                if (angle < final_angle - buffer_angle) {
-                    yawSetPoint += rx_init;
+                if ((final_angle + buffer_angle) > PI) {
+                    final_angle -= 2 * PI;
                 }
-                else if (angle > final_angle + buffer_angle) {
+
+                if (angle > (final_angle + buffer_angle)) {
                     yawSetPoint -= rx_init;
+                }
+                else if (angle < (final_angle - buffer_angle)) {
+                    yawSetPoint += rx_init;
                 }
                 else {
                     // move to our point
-                    if (final_y - posy > buffer_y) {
+                    if ((final_y - posy) > buffer_y) {
                         ly = ly_init;
                     }   
-                    else if (posy - final_y > buffer_y) {
+                    else if ((posy - final_y) > buffer_y) {
                         ly = -ly_init;
                     }
                     else {
                         // if we are close enough to the point, move to the next point
                         if (idx < final_pos.size() - 1) {
                             idx += 1;
+                            final_angle = PI + atan2((posx - final_pos[idx][0]),(posy - final_pos[idx][1]));
                         }
                         else {
                             ly = 0;
+                            
                         }
                     }
                 }
@@ -434,7 +450,7 @@ int main()
 
             print_counter++;
             if (print_counter > 10) {
-                printff("X: %.3f, Y: %.3f, A: %.3f, %.3f \n", posx, posy, angle, angle - final_angle);
+                printfESP("X: %.3f, Y: %.3f, A: %.3f, %.3f \n", posx, posy, angle, angle - final_angle);
                 print_counter = 0;
             }
 
