@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['j_0',['j',['../Jacobi__makeJacobi_8cpp.html#a4804f9d1c212b9655934738d0ae395ab',1,'J:&#160;Jacobi_makeJacobi.cpp'],['../tut__arithmetic__redux__minmax_8cpp.html#a39513f0f8d942bf9ef17b2e87ac6d34e',1,'j:&#160;tut_arithmetic_redux_minmax.cpp']]],
+  ['j_0',['j',['../tut__arithmetic__redux__minmax_8cpp.html#a39513f0f8d942bf9ef17b2e87ac6d34e',1,'j:&#160;tut_arithmetic_redux_minmax.cpp'],['../Jacobi__makeJacobi_8cpp.html#a4804f9d1c212b9655934738d0ae395ab',1,'J:&#160;Jacobi_makeJacobi.cpp']]],
   ['jacobi_1',['jacobi',['../jacobi_8cpp.html#add109898b8ea9f414a83d471d27d2d32',1,'jacobi.cpp']]],
   ['jacobi_2ecpp_2',['jacobi.cpp',['../jacobi_8cpp.html',1,'']]],
   ['jacobi_2eh_3',['Jacobi.h',['../Jacobi_8h.html',1,'']]],
@@ -30,10 +30,10 @@ var searchData=
   ['jetsonstatus_27',['JetsonStatus',['../classJetson.html#a0da6dd80b8c8c3af02585f4fdaf49c49',1,'Jetson']]],
   ['job_20dependecies_28',['Job dependecies',['..//home/runner/work/TR-mbed/TR-mbed/core/util/algorithms/eigen-3.4.0/ci/README.md#autotoc_md16',1,'']]],
   ['jointalignment_29',['JointAlignment',['../structEigen_1_1internal_1_1copy__using__evaluator__traits.html#a5a4cc671de2658f24c41172fdcd16699aa2ad39f87fd4a2b8e94178bfb05afd09',1,'Eigen::internal::copy_using_evaluator_traits']]],
-  ['joystick_5fsense_5fpitch_30',['joystick_sense_pitch',['../Sentry_2main_8cpp.html#ac82edf55af0a8c46c8beeac6e39c087b',1,'JOYSTICK_SENSE_PITCH:&#160;main.cpp'],['../Hero_2main_8cpp.html#ac82edf55af0a8c46c8beeac6e39c087b',1,'JOYSTICK_SENSE_PITCH:&#160;main.cpp']]],
-  ['joystick_5fsense_5fyaw_31',['joystick_sense_yaw',['../Hero_2main_8cpp.html#aeb76c8cda07f509bdccd2825e4753264',1,'JOYSTICK_SENSE_YAW:&#160;main.cpp'],['../Sentry_2main_8cpp.html#aeb76c8cda07f509bdccd2825e4753264',1,'JOYSTICK_SENSE_YAW:&#160;main.cpp']]],
-  ['joystick_5fsensitivity_5fpitch_5fdps_32',['JOYSTICK_SENSITIVITY_PITCH_DPS',['../Infantry_2main_8cpp.html#acd17a8d477498342ee090e24666474b3',1,'main.cpp']]],
-  ['joystick_5fsensitivity_5fyaw_5fdps_33',['JOYSTICK_SENSITIVITY_YAW_DPS',['../Infantry_2main_8cpp.html#a02a02c2ae76915c8d7f1318ba9514d35',1,'main.cpp']]],
+  ['joystick_5fsense_5fpitch_30',['JOYSTICK_SENSE_PITCH',['../Sentry_2main_8cpp.html#ac82edf55af0a8c46c8beeac6e39c087b',1,'main.cpp']]],
+  ['joystick_5fsense_5fyaw_31',['JOYSTICK_SENSE_YAW',['../Sentry_2main_8cpp.html#aeb76c8cda07f509bdccd2825e4753264',1,'main.cpp']]],
+  ['joystick_5fsensitivity_5fpitch_5fdps_32',['joystick_sensitivity_pitch_dps',['../Hero_2main_8cpp.html#acd17a8d477498342ee090e24666474b3',1,'JOYSTICK_SENSITIVITY_PITCH_DPS:&#160;main.cpp'],['../Infantry_2main_8cpp.html#acd17a8d477498342ee090e24666474b3',1,'JOYSTICK_SENSITIVITY_PITCH_DPS:&#160;main.cpp']]],
+  ['joystick_5fsensitivity_5fyaw_5fdps_33',['joystick_sensitivity_yaw_dps',['../Infantry_2main_8cpp.html#a02a02c2ae76915c8d7f1318ba9514d35',1,'JOYSTICK_SENSITIVITY_YAW_DPS:&#160;main.cpp'],['../Hero_2main_8cpp.html#a02a02c2ae76915c8d7f1318ba9514d35',1,'JOYSTICK_SENSITIVITY_YAW_DPS:&#160;main.cpp']]],
   ['judge_5faerial_5fenergy_34',['Judge_Aerial_Energy',['../ref__serial_8h.html#a6b872e34b318814af46b961962a6fec5',1,'ref_serial.h']]],
   ['judge_5fai_5fchallengebuff_35',['Judge_AI_ChallengeBuff',['../ref__serial_8h.html#ad8c87a7593de05edf5a184a757b806d5',1,'ref_serial.h']]],
   ['judge_5fclient_5fmap_36',['Judge_Client_Map',['../ref__serial_8h.html#ae81b19967fee025a5246b379d3e01fbe',1,'ref_serial.h']]],
@@ -88,5 +88,5 @@ var searchData=
   ['judgesystem_5fpacksize_85',['JUDGESYSTEM_PACKSIZE',['../ref__serial_8h.html#a4d1c10e05c3cc545d5350dcab655db88',1,'ref_serial.h']]],
   ['judgesystem_5frxbuff_86',['JudgeSystem_rxBuff',['../ref__serial_8cpp.html#a577e6d96f905b4888a4bdb521c253182',1,'ref_serial.cpp']]],
   ['judgesystem_5fusart_5freceive_5fdma_87',['judgesystem_usart_receive_dma',['../ref__serial_8cpp.html#abf07e9fa5d29093dae2bd395b90c1085',1,'JudgeSystem_USART_Receive_DMA(BufferedSerial *b):&#160;ref_serial.cpp'],['../ref__serial_8h.html#abf07e9fa5d29093dae2bd395b90c1085',1,'JudgeSystem_USART_Receive_DMA(BufferedSerial *b):&#160;ref_serial.cpp']]],
-  ['jumper_88',['jumper',['../Hero_2main_8cpp.html#a514cb705ed3d1e9d4933e0fb95febba7',1,'jumper(PC_9):&#160;main.cpp'],['../Sentry_2main_8cpp.html#a514cb705ed3d1e9d4933e0fb95febba7',1,'jumper(PC_9):&#160;main.cpp']]]
+  ['jumper_88',['jumper',['../Sentry_2main_8cpp.html#a514cb705ed3d1e9d4933e0fb95febba7',1,'main.cpp']]]
 ];

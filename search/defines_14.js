@@ -15,7 +15,7 @@ var searchData=
   ['unusable_12',['Unusable',['../ReturnByValue_8h.html#ad82b14391d23eab65b6e3ac4b831a923',1,'ReturnByValue.h']]],
   ['up_13',['UP',['../common_8h.html#a1965eaca47dbf3f87acdafc2208f04eb',1,'common.h']]],
   ['uplo_14',['UPLO',['../common_8h.html#aede440fdc60eff8db8599716ca73b449',1,'common.h']]],
-  ['upperbound_15',['upperbound',['../Hero_2main_8cpp.html#ad3d72467bd78e4b87c376f6341367087',1,'UPPERBOUND:&#160;main.cpp'],['../Sentry_2main_8cpp.html#ad3d72467bd78e4b87c376f6341367087',1,'UPPERBOUND:&#160;main.cpp']]],
+  ['upperbound_15',['UPPERBOUND',['../Sentry_2main_8cpp.html#ad3d72467bd78e4b87c376f6341367087',1,'main.cpp']]],
   ['usec_5fin_5fsec_16',['USEC_IN_SEC',['../portable__timer_8hh.html#a72467fb3c401ef8777d20cf99416e39e',1,'portable_timer.hh']]],
   ['user_5fctrl_17',['USER_CTRL',['../MPU6050_8h.html#abd9eebb35aad7616fe0414952e2d477d',1,'MPU6050.h']]]
 ];

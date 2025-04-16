@@ -10,5 +10,5 @@ var searchData=
   ['judge_5fgetmessage_7',['judge_getmessage',['../ref__serial_8cpp.html#a9928b6cec4f060bd1cf3ad27f144a68f',1,'Judge_GetMessage(uint16_t Data_Length):&#160;ref_serial.cpp'],['../ref__serial_8h.html#a9928b6cec4f060bd1cf3ad27f144a68f',1,'Judge_GetMessage(uint16_t Data_Length):&#160;ref_serial.cpp']]],
   ['judge_5fsendpc_8',['Judge_sendPC',['../ref__serial_8h.html#ab7847bffe21ae3045bb6eea64f94c40a',1,'ref_serial.h']]],
   ['judgesystem_5fusart_5freceive_5fdma_9',['judgesystem_usart_receive_dma',['../ref__serial_8cpp.html#abf07e9fa5d29093dae2bd395b90c1085',1,'JudgeSystem_USART_Receive_DMA(BufferedSerial *b):&#160;ref_serial.cpp'],['../ref__serial_8h.html#abf07e9fa5d29093dae2bd395b90c1085',1,'JudgeSystem_USART_Receive_DMA(BufferedSerial *b):&#160;ref_serial.cpp']]],
-  ['jumper_10',['jumper',['../Hero_2main_8cpp.html#a514cb705ed3d1e9d4933e0fb95febba7',1,'jumper(PC_9):&#160;main.cpp'],['../Sentry_2main_8cpp.html#a514cb705ed3d1e9d4933e0fb95febba7',1,'jumper(PC_9):&#160;main.cpp']]]
+  ['jumper_10',['jumper',['../Sentry_2main_8cpp.html#a514cb705ed3d1e9d4933e0fb95febba7',1,'main.cpp']]]
 ];
