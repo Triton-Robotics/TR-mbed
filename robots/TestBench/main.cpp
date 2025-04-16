@@ -46,12 +46,12 @@ DigitalOut led(L27);
 DigitalOut led2(L26);
 DigitalOut led3(L25);
 
-static BufferedSerial bcJetson(PA_0, PA_1, 115200);
+static BufferedSerial bcJetson(PC_12, PD_2, 115200);  //JETSON PORT
 // static BufferedSerial bcJetson(PC_12, PD_2, 115200);
 I2C i2c(I2C_SDA, I2C_SCL);
 // BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 
-DJIMotor yaw(7, CANHandler::CANBUS_1, GIMBLY, "yaw");
+DJIMotor yaw(6, CANHandler::CANBUS_1, GIMBLY, "yaw");
 DJIMotor pitch(5, CANHandler::CANBUS_2, GIMBLY);
 
 BufferedSerial pc(USBTX, USBRX); // tx, rx
@@ -252,7 +252,6 @@ void jetson_read_values(float &pitch_move, float & yaw_move) {
         else{
             led3 = !led3;
         }  
-
         while ( bcJetson.readable() ) {
             ssize_t resultClear = bcJetson.read(&dumbByte, 1);
             printf("%d ", dumbByte);
@@ -260,7 +259,7 @@ void jetson_read_values(float &pitch_move, float & yaw_move) {
     } 
 
     else {
-        printf("Err\n");
+        //printf("Err\n");
     }
 }
 
@@ -317,8 +316,6 @@ int main(){
     DJIMotor::s_sendValues();
     DJIMotor::s_getFeedback();
 
-    printf("DesiredPosition CurrentPosition DesiredPitchDegrees");
-
     unsigned long timeStart;
     unsigned long loopTimer = us_ticker_read();
     unsigned long loopTimerCV = us_ticker_read();
@@ -348,12 +345,12 @@ int main(){
     // Chassis.setYawReference(&yaw, 2050); // "5604" is the number of ticks of yaw considered to be robot-front
 //    Chassis.setSpeedFF_Ks(0.065);
 
-    yaw.setSpeedPID(540, 0, 400);
+    yaw.setSpeedPID(10, 0, 0);
 
-    PID yawBeyblade(0.32, 0, 550);
+    PID yawBeyblade(1.5, 0, 550);
     PID yawNonBeyblade(0.15, 0, 550);
 
-    yaw.setSpeedIntegralCap(1000);
+    yaw.setSpeedIntegralCap(0);
     yaw.useAbsEncoder = false;
 
     yaw.setSpeedOutputCap(24000);
@@ -384,9 +381,15 @@ int main(){
     int des_pitch_in_ticks = 0;
     int pitch_in_ticks = 0;
 
-    float des_yaw_speed = 0;
-    float yaw_ANGLE;
-    float yaw_speed;
+    //yaw
+    float yaw_in_deg;
+    int yaw_in_ticks;
+    float yaw_angle;
+    float curr_yaw_angle;
+    int yawVelo = 0;
+
+    float yaw_test_radians = 0;
+    bool yaw_direction = 0;
 
     //debug
     float pitch_in_deg = 0;
@@ -394,12 +397,14 @@ int main(){
     float currPitch = 0;
     float desiredPosition = 0;
     float diffRealExpectedPitch = 0;
+    
 
 
     //Buffer stuff
     char jetsonByte;
     int numBytes = 0;
     int totalBytes = 0;
+    
 
     //PRINTLOOP
     int printLoop = 0;
@@ -453,7 +458,8 @@ int main(){
             //-----------DEBUG PITCH DATA RECIEVED-------------------------
     
 
-            jetson_read_values(pitch_ANGLE, yaw_speed);
+            jetson_read_values(pitch_ANGLE, yaw_angle);
+
             if (pitch_ANGLE != 0) {
                 pitch_in_ticks = ChassisSubsystem::radiansToTicks(pitch_ANGLE);
                 //printf("%d ticks here\n", pitch_in_ticks);
@@ -467,6 +473,53 @@ int main(){
 
                 pitch_in_ticks *= GEAR_RATIO; //gear ratio;
             }
+
+            //Regular Yaw Code
+            prevTimeSure = timeSure;
+            timeSure = us_ticker_read();
+
+            if ( yaw_direction == 0) {
+                yaw_test_radians += 0.01;
+                if (yaw_test_radians >= 2){
+                    yaw_direction = -1;
+                }
+            }
+            else {
+                yaw_test_radians -= 0.01;
+                if (yaw_test_radians <= -2){
+                    yaw_direction = 0;
+                } 
+            }
+
+            //yaw_in_deg = yaw_angle * 180 / 3.14;
+            yaw_in_ticks = ChassisSubsystem::radiansToTicks(yaw_angle);
+            //yaw_in_ticks = ChassisSubsystem::radiansToTicks(yaw_test_radians);
+            //curr_yaw_angle = yaw.getData(ANGLE);
+            
+            //printf("desPitch currPitch desYaw currYaw\n"); //comment out for arduino data  
+            printf("%d %d %d %d\n", pitch_in_ticks, pitch.getData(ANGLE), yaw_in_ticks, yaw.getData(ANGLE));
+
+            //yawVelo = yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yaw_in_deg, curr_yaw_angle, 360), timeSure - prevTimeSure);
+            //printf("yawVelo:%d \n", yawVelo);
+
+            // int dir = 0;
+            // if(yawVelo > 0){
+            //     dir = 1;
+            // }else if(yawVelo < 0){
+            //     dir = -1;
+            // }
+            
+            // if (yawVelo != 0) {
+            //     //yaw.pidSpeed.feedForward = dir * (874 + (73.7 * abs(yawVelo)) + (0.0948 * yawVelo * yawVelo));
+            //     yaw.setSpeed(yawVelo);
+            // }
+            // else {
+            //     yaw.pidSpeed.feedForward = 0;
+            //     yaw.setSpeed(0);
+            // }
+
+            yaw.setPosition(yaw_in_ticks);
+
 
 
             // pitch_in_ticks is relative to level = 0 ticks. PITCH_LEVEL_TICKS - pitch_in_ticks = abs position in ticks
