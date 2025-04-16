@@ -460,7 +460,7 @@ void ChassisSubsystem::readImu()
 
 void ChassisSubsystem::periodic()
 {   
-    readImu();
+    // readImu();
     m_wheelSpeeds = {getMotorSpeed(LEFT_FRONT, METER_PER_SECOND), getMotorSpeed(RIGHT_FRONT, METER_PER_SECOND),
                      getMotorSpeed(LEFT_BACK, METER_PER_SECOND), getMotorSpeed(RIGHT_BACK, METER_PER_SECOND)};
 

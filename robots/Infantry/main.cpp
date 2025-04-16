@@ -18,8 +18,8 @@ constexpr float BEYBLADE_OMEGA = 1.0;
 // constexpr float MOUSE_SENSITIVITY_PITCH = 1.0/5;
 
 //DEGREES PER SECOND AT MAX
-constexpr float JOYSTICK_SENSITIVITY_YAW_DPS = 90.0; 
-constexpr float JOYSTICK_SENSITIVITY_PITCH_DPS = 90.0;
+constexpr float JOYSTICK_SENSITIVITY_YAW_DPS = 180.0; 
+constexpr float JOYSTICK_SENSITIVITY_PITCH_DPS = 180.0;
 constexpr float MOUSE_SENSITIVITY_YAW_DPS = 1.0;
 constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 1.0;
 
@@ -69,10 +69,11 @@ int main(){
     * MOTORS SETUP AND PIDS
     */
     //YAW
-    PID yawBeyblade(1.5, 0, 550); //yaw PID is cascading, so there are external position PIDs for yaw control
+    PID yawBeyblade(1.0, 0, 150); //yaw PID is cascading, so there are external position PIDs for yaw control
     // PID yawNonBeyblade(0.15, 0, 550);
-    yaw.setSpeedPID(2.5, 0, 100);
-    pitch.setSpeedOutputCap(32000);
+    yaw.setSpeedPID(37.5, 0.2, 100);
+    yaw.setSpeedIntegralCap(8000);
+    yaw.setSpeedOutputCap(32000);
     yaw.outputCap = 16000;
     yaw.useAbsEncoder = false;
 
@@ -142,6 +143,8 @@ int main(){
     int refLoop = 0;
     int printLoop = 0;
 
+    ChassisSpeeds cs;
+
     while(true){
         timeStart = us_ticker_read();
 
@@ -163,6 +166,8 @@ int main(){
                 }
                 
             }
+            Chassis.periodic();
+            cs = Chassis.getChassisSpeeds();
             remoteRead();
 
             #ifdef USE_IMU
@@ -233,6 +238,9 @@ int main(){
 
             //YAW CODE
             if (drive == 'u' || drive == 'd' || (drive =='o' && (remote.rightSwitch() == Remote::SwitchState::UP || remote.rightSwitch() == Remote::SwitchState::DOWN))){
+                float chassis_rotation_radps = cs.vOmega;
+                int chassis_rotation_rpm = chassis_rotation_radps * 60 / (2*M_PI) * 4; //I added this 4 but I don't know why.
+                
                 //Regular Yaw Code
                 yaw_desired_angle -= jyaw * MOUSE_SENSITIVITY_YAW_DPS * elapsedms / 1000;
                 yaw_desired_angle -= jyaw * JOYSTICK_SENSITIVITY_YAW_DPS * elapsedms / 1000;
@@ -244,8 +252,10 @@ int main(){
                 #ifdef USE_IMU
                 yawVelo = yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yaw_desired_angle, imuAngles.yaw + 180, 360), timeSure - prevTimeSure);
                 #else
-                yawVelo = yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yaw_desired_angle, yaw_current_angle, 360), timeSure - prevTimeSure);
+                yawVelo = -jyaw * JOYSTICK_SENSITIVITY_YAW_DPS / 360.0 * 60;
                 #endif
+                //yawVelo = 0;
+                yawVelo -= chassis_rotation_rpm;
 
                 int dir = 0;
                 if(yawVelo > 0){
@@ -342,7 +352,7 @@ int main(){
                 printff("yaw_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
                 printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
                 #endif
-                printff("elap:%.5fms\n", elapsedms);
+                printff("cX%.1f cY%.1f cOmega%.3f cRPM%.1f\n", cs.vX, cs.vY, cs.vOmega, cs.vOmega * 60 / (2*M_PI) * 4);
                 // printff("Chassis: LF:%c RF:%c LB:%c RB:%c Yaw:%c Pitch:%c Flywheel_L:%c Flywheel_R:%c Indexer:%c\n", 
                 //     Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).isConnected() ? 'y' : 'n', 
                 //     Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).isConnected() ? 'y' : 'n', 
@@ -356,6 +366,7 @@ int main(){
                 #ifdef USE_IMU
                 //printff("IMU %.3f %.3f %.3f\n",imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
                 #endif
+                printff("elap:%.5fms\n", elapsedms);
             }
 
             DJIMotor::s_sendValues();
