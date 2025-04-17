@@ -70,8 +70,8 @@ int main(){
     // calculating final angle outside loop
     float final_angle = atan2((final_pos[idx][1] - posy), (final_pos[idx][0] - posx));
     float final_angle_previous = 0.0;
-    float buffer_y = 10.0;
-    float buffer_x = 10.0;
+    float buffer_y = 20.0;
+    float buffer_x = 20.0;
     float buffer_angle = PI/16;
 
     float ly_init = 0.4;
@@ -178,11 +178,11 @@ int main(){
                     rx = -rx_init;
                 } 
                 else {
-                    if (final_y - posy > buffer_y || posy - final_y > buffer_y) {
+                    if ((final_y - posy > buffer_y || posy - final_y > buffer_y) && (end == false)) {
                         ly = ly_init;
                     }
                     else {
-                        if ((final_x - posx > buffer_x || posx - final_x > buffer_x)) {
+                        if ((final_x - posx > buffer_x || posx - final_x > buffer_x) && (end == false)) {
                             ly = ly_init;
                         }
                         else {
