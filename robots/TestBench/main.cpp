@@ -22,7 +22,7 @@
 #define LOWERBOUND_TICKS (LOWERBOUND_DEG/360.0) * 8192 // 682 ticks below/CW to 4250. ie 4932 abs pos in ticks
 
 #define GEAR_RATIO 2
-#define PITCH_LEVEL_TICKS 6445 // The tick value of level turret pitch. Also used for initial offset
+#define PITCH_LEVEL_TICKS 6445 + 50 // The tick value of level turret pitch. Also used for initial offset
 
 
 #define PITCH_SPEED_JOYSTICK_SENSE 10.0/330
@@ -53,6 +53,12 @@ I2C i2c(I2C_SDA, I2C_SCL);
 
 DJIMotor yaw(6, CANHandler::CANBUS_1, GIMBLY, "yaw");
 DJIMotor pitch(5, CANHandler::CANBUS_2, GIMBLY);
+
+DJIMotor indexer(6, CANHandler::CANBUS_2, C610,"Indexer");
+DJIMotor RFLYWHEEL_U(2, CANHandler::CANBUS_2, M3508,"RightFlyU");
+DJIMotor LFLYWHEEL_U(3, CANHandler::CANBUS_2, M3508,"LeftFlyD");
+DJIMotor RFLYWHEEL_D(1, CANHandler::CANBUS_2, M3508,"RightFlyU");
+DJIMotor LFLYWHEEL_D(4, CANHandler::CANBUS_2, M3508,"LeftFlyD");
 
 BufferedSerial pc(USBTX, USBRX); // tx, rx
 float yaw_angle;
@@ -362,10 +368,6 @@ int main(){
 
     unsigned long yawTime = us_ticker_read();
 
-    PID sure(0.5,0,1);
-    sure.setOutputCap(4000);
-    unsigned long timeSure;
-    unsigned long prevTimeSure;
     pitch.pidPosition.feedForward = 0;
     pitch.outputCap = 32760;
     pitch.useAbsEncoder = true;
@@ -397,8 +399,25 @@ int main(){
     float currPitch = 0;
     float desiredPosition = 0;
     float diffRealExpectedPitch = 0;
-    
 
+    //FLYWHEELS
+    LFLYWHEEL_U.setSpeedPID(7.1849, 0.000042634, 0);
+    RFLYWHEEL_U.setSpeedPID(7.1849, 0.000042634, 0);
+    LFLYWHEEL_D.setSpeedPID(7.1849, 0.000042634, 0);
+    RFLYWHEEL_D.setSpeedPID(7.1849, 0.000042634, 0);
+
+    //Indexer 
+    indexer.setSpeedPID(1, 0, 1);
+    indexer.setSpeedIntegralCap(8000);
+    //Cascading PID for indexer angle position control. Surely there are better names then "sure"...
+    PID sure(0.5,0,0.4);
+    sure.setOutputCap(4000);
+    //Variables for burst fire
+    unsigned long timeSure;
+    unsigned long prevTimeSure;
+    bool shoot = false;
+    int shootTargetPosition = 36*8190 ;
+    bool shootReady = false;
 
     //Buffer stuff
     char jetsonByte;
@@ -497,7 +516,7 @@ int main(){
             //curr_yaw_angle = yaw.getData(ANGLE);
             
             //printf("desPitch currPitch desYaw currYaw\n"); //comment out for arduino data  
-            printf("%d %d %d %d\n", pitch_in_ticks, pitch.getData(ANGLE), yaw_in_ticks, yaw.getData(ANGLE));
+            //printf("%d %d %d %d\n", pitch_in_ticks, pitch.getData(ANGLE), yaw_in_ticks, yaw.getData(ANGLE));
 
             //yawVelo = yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yaw_in_deg, curr_yaw_angle, 360), timeSure - prevTimeSure);
             //printf("yawVelo:%d \n", yawVelo);
@@ -518,9 +537,56 @@ int main(){
             //     yaw.setSpeed(0);
             // }
 
-            yaw.setPosition(yaw_in_ticks);
+            // yaw.setPosition(yaw_in_ticks);
 
+            //INDEXER CODE
+            if (remote.leftSwitch() == Remote::SwitchState::UP || remote.getMouseL()){
+                if (shootReady){
+                    shootReady = false;
+                    shootTargetPosition = 8192 * 12 + (indexer>>MULTITURNANGLE);
 
+                    //shoot limit
+                    // if(robot_status.shooter_barrel_heat_limit < 10 || power_heat_data.shooter_17mm_1_barrel_heat < robot_status.shooter_barrel_heat_limit - 40) {
+                        
+                    // }
+                    shoot = true;
+                    
+                }
+            } else {
+                //SwitchState state set to mid/down/unknown
+                shootReady = true;
+            }
+
+            // burst fire, turn the indexer to shoot 3-5 balls a time and stop indexer
+            // only shoot when left switch changes from down/unknown/mid to up
+            // if left switch remains at up state, indexer stops after 3-5 balls
+            if (shoot){
+                if (indexer>>MULTITURNANGLE >= shootTargetPosition){
+                    indexer.setSpeed(0);
+                    shoot = false;
+                } else {
+                    timeSure = us_ticker_read();
+                    indexer.setSpeed(sure.calculate(shootTargetPosition, indexer>>MULTITURNANGLE, timeSure - prevTimeSure)); //
+                    prevTimeSure = timeSure;
+                }
+            } else {
+                indexer.setSpeed(0);
+            }
+
+            //FLYWHEELS
+            if (remote.leftSwitch() != Remote::SwitchState::DOWN &&
+                remote.leftSwitch() != Remote::SwitchState::UNKNOWN){
+                RFLYWHEEL_U.setSpeed(-7000);
+                LFLYWHEEL_U.setSpeed(-7000);
+                RFLYWHEEL_D.setSpeed(7000);
+                LFLYWHEEL_D.setSpeed(7000);
+            } else{
+                // left SwitchState set to up/mid/unknown
+                RFLYWHEEL_U.setSpeed(0);
+                LFLYWHEEL_U.setSpeed(0);
+                RFLYWHEEL_D.setSpeed(0);
+                LFLYWHEEL_D.setSpeed(0);
+            }
 
             // pitch_in_ticks is relative to level = 0 ticks. PITCH_LEVEL_TICKS - pitch_in_ticks = abs position in ticks
             pitch.setPosition(PITCH_LEVEL_TICKS - pitch_in_ticks);
@@ -530,7 +596,16 @@ int main(){
                 printLoop = 0;
                 currPitch = ((PITCH_LEVEL_TICKS - pitch.getData(ANGLE))/8192.0)*360.0 /2.0;
                 //printf("%d, %d, %.5f, %d\n", PITCH_LEVEL_TICKS - pitch_in_ticks, pitch.getData(ANGLE), currPitch, pitch_in_ticks); 
-                
+                // printff("Y:%c P:%c F_LU:%c F_RU:%c F_LD:%c F_RD:%c I:%c\n", 
+                //     yaw.isConnected() ? 'y' : 'n', 
+                //     pitch.isConnected() ? 'y' : 'n', 
+                //     LFLYWHEEL_U.isConnected() ? 'y' : 'n', 
+                //     RFLYWHEEL_U.isConnected() ? 'y' : 'n',
+                //     LFLYWHEEL_D.isConnected() ? 'y' : 'n', 
+                //     RFLYWHEEL_D.isConnected() ? 'y' : 'n',
+                //     indexer.isConnected() ? 'y' : 'n');
+
+                printff("%d %d %d %d\n", shoot, shootReady, shootTargetPosition, indexer>>MULTITURNANGLE);
             }
 
             loopTimer = timeStart;
