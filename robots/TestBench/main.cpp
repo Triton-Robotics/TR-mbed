@@ -1,6 +1,9 @@
 #include "main.h"
+#include "TestBench.h"
 #include "subsystems/ChassisSubsystem.h"
 #include <math.h>
+
+#define PI 3.14159265
 
 DigitalOut led(L26);
 DigitalOut led2(L27);
@@ -13,6 +16,21 @@ const int RPM_MAX = 9000;
 const int REMOTE_MAX = 660;
 const int RPM_REMOTE_RATIO = RPM_MAX / REMOTE_MAX;
 
+float calculateDeltaYaw(float actual, float desired)
+{
+    float deltaYaw = desired - actual;
+
+    //
+
+    if (abs(deltaYaw) > PI)
+    {
+        if (deltaYaw > 0)
+            deltaYaw -= 2*PI;
+        else
+            deltaYaw += 2*PI;
+    }
+    return deltaYaw;
+}
 
 int main(){
 
@@ -31,11 +49,12 @@ int main(){
     //DEFINE PIDs AND OTHER CONSTANTS
     BNO055 imu(i2c, IMU_RESET, MODE_IMU);
     ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 inch
+    
     ChassisSpeeds velocity = {0.0, 0.0, 0.0};
     ChassisSpeeds prev_velocity = {0.0, 0.0, 0.0};
     ChassisSpeeds accel = {0.0, 0.0, 0.0};
 
-    std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {0.0, 200.0}, {200.0, 200.0}};
+    std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {200.0, 0.0}, {200.0, -100.0}};
 
     float angle = 0.0;
     float posx = final_pos[0][0]; // need to go to 1676 ish
@@ -44,20 +63,20 @@ int main(){
 
     // final positions
     int idx = 1;
+    bool end = false;
     float final_y = final_pos[idx][1];
     float final_x = final_pos[idx][0];
 
     // calculating final angle outside loop
-    float final_angle = 0; //- atan((final_pos[idx - 1][1] - final_pos[idx][1])/(final_pos[idx - 1][0] - final_pos[idx][0])) / PI;
-
-    float buffer_y = 50.0;
-    float buffer_x = 50.0;
+    float final_angle = atan2((final_pos[idx][1] - posy), (final_pos[idx][0] - posx));
+    float final_angle_previous = 0.0;
+    float buffer_y = 10.0;
+    float buffer_x = 10.0;
     float buffer_angle = PI/16;
-
 
     float ly_init = 0.4;
     float lx_init = 0.4;
-    float rx_init = 0.25; // you basically divide the angle you want by pi, so this is PI/4 / PI
+    float rx_init = 0.3; // you basically divide the angle you want by pi, so this is PI/4 / PI
 
     while(true){ //main loop
         timeStart_u = us_ticker_read();
@@ -83,16 +102,20 @@ int main(){
             // update pos and angle in mm
             // velocities in m/s, acceleration in m/s^2, the loop runs every 25 ms
             angle = (angle + (velocity.vOmega * 0.025 + (1/2 * accel.vOmega * 0.025 * 0.025)) * PI);
-            while (angle > 2*PI) {
+            while (angle > PI) {
                 angle -= 2*PI;
             }
-            while (angle < -2*PI) {
+            while (angle < -PI) {
                 angle += 2*PI;
             }
             
-            posy = posy + ((velocity.vY * cos(angle)) + (velocity.vX * sin(angle))) * 25 + (1/2 * ((accel.vY * cos(angle)) + (accel.vX * sin(angle))) * 25 * 0.025);
+            posy = posy + ((velocity.vY * sin(angle)) - (velocity.vX * cos(angle))) * 25 + (1/2 * ((accel.vY * sin(angle)) - (accel.vX * cos(angle))) * 25 * 0.025);
             
-            posx = posx + ((velocity.vX * cos(angle)) - (velocity.vY * sin(angle))) * 25 + (1/2 * ((accel.vX * sin(angle)) - (accel.vY * cos(angle))) * 25 * 0.025);
+            posx = posx + ((velocity.vX * sin(angle)) + (velocity.vY * cos(angle))) * 25 + (1/2 * ((accel.vX * sin(angle)) + (accel.vY * cos(angle))) * 25 * 0.025);
+
+            // posy = posy + ((velocity.vY * sin(angle))) * 25 + (1/2 * ((accel.vY * sin(angle))) * 25 * 0.025);
+            
+            // posx = posx + ((velocity.vY * cos(angle))) * 25 + (1/2 * ((accel.vY * cos(angle))) * 25 * 0.025);
 
             float lx = 0;
             float ly = 0;
@@ -101,6 +124,7 @@ int main(){
             if (remote.rightSwitch() == Remote::SwitchState::MID || remote.rightSwitch() == Remote::SwitchState::UNKNOWN) {
                 lx = (remote.leftX() / 660.0) * Chassis.m_OmniKinematicsLimits.max_Vel;
                 ly = (remote.leftY() / 660.0) * Chassis.m_OmniKinematicsLimits.max_Vel;
+                rx = (remote.rightX() / 660.0);
 
                 Chassis.setChassisSpeeds({lx, ly, rx});
             }
@@ -143,46 +167,50 @@ int main(){
                 // lx = remote.leftX() / 660.0;
                 // ly = remote.leftY() / 660.0;
 
-                final_angle =- atan((posy - final_pos[idx][1])/(posx - final_pos[idx][0])) / PI;
+                final_angle = atan2((final_pos[idx][1] - posy), (final_pos[idx][0] - posx));
 
-                if (final_angle - angle > buffer_angle) {
+                float deltayaw = calculateDeltaYaw(angle, final_angle);
+
+                if (deltayaw > buffer_angle && (end == false)) {
                     rx = rx_init;
                 }
-                else if (angle - final_angle > buffer_angle) {
+                else if (deltayaw < -buffer_angle && (end == false)) {
                     rx = -rx_init;
-                }
+                } 
                 else {
-                    rx = 0;
-
-                    if (final_y - posy > buffer_y) {
+                    if (final_y - posy > buffer_y || posy - final_y > buffer_y) {
                         ly = ly_init;
-                    }   
-                    else if (posy - final_y > buffer_y) {
-                        ly = - ly_init;
                     }
                     else {
-                        // if we are close enough to the point, move to the next point
-                        if (idx < final_pos.size() - 1) {
-                            idx += 1;
+                        if ((final_x - posx > buffer_x || posx - final_x > buffer_x)) {
+                            ly = ly_init;
                         }
                         else {
-                            ly = 0;
+                            // if we are close enough to the point, move to the next point
+                            if (idx < final_pos.size() - 1) {
+                                idx += 1;
+                                final_y = final_pos[idx][1];
+                                final_x = final_pos[idx][0];
+                                final_angle = atan2((final_pos[idx][1] - posy), (final_pos[idx][0] - posx));
+                            }
+                            else {
+                                end = true;
+                                ly = 0;
+                                rx = 0.5;
+                            }
                         }
                     }
                 }
 
                 Chassis.setChassisSpeeds({lx, ly, rx}); 
-                // changing angle is faster, but we havent made that code yet T_T
-            }
-            else if (remote.rightSwitch() == Remote::SwitchState::UP) {
-
             }
             
             prev_velocity = {velocity.vX, velocity.vY, velocity.vOmega};
+            final_angle_previous = final_angle;
 
             counter++;
             if (counter > 10) {
-                printff("X: %.3f, Y: %.3f, A: %.3f, %d \n", posx, posy, angle, idx);
+                printfESP("X: %.3f, Y: %.3f, A: %.3f, %.3f\n", posx, posy, angle, final_angle);
                 counter = 0;
             }
             //MOST CODE DOESNT NEED TO RUN FASTER THAN EVERY 25ms
