@@ -54,7 +54,7 @@ int main(){
     ChassisSpeeds prev_velocity = {0.0, 0.0, 0.0};
     ChassisSpeeds accel = {0.0, 0.0, 0.0};
 
-    std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {200.0, 0.0}, {200.0, -100.0}};
+    std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {1000.0, 0.0}, {0.0, 0.0}, {1000.0, 0.0}, {0.0, 0.0}};
 
     float angle = 0.0;
     float posx = final_pos[0][0]; // need to go to 1676 ish
@@ -101,7 +101,7 @@ int main(){
 
             // update pos and angle in mm
             // velocities in m/s, acceleration in m/s^2, the loop runs every 25 ms
-            angle = (angle + (velocity.vOmega * 0.025 + (1/2 * accel.vOmega * 0.025 * 0.025)) * PI);
+            angle = (angle + (velocity.vOmega * 0.025 + (1/2 * accel.vOmega * 25 * 0.025)) * PI);
             while (angle > PI) {
                 angle -= 2*PI;
             }
