@@ -4,7 +4,7 @@ var searchData=
   ['y_5ffine_5fgain_1',['Y_FINE_GAIN',['../MPU6050_8h.html#ab332d8fef934cfcd0ef9941ea6755f18',1,'MPU6050.h']]],
   ['ya_5foffset_5fh_2',['YA_OFFSET_H',['../MPU6050_8h.html#a539098400cb39fa2ba99fb17b407e4f1',1,'MPU6050.h']]],
   ['ya_5foffset_5fl_5ftc_3',['YA_OFFSET_L_TC',['../MPU6050_8h.html#a8cd8dfd54a40c1d83848866759237fbf',1,'MPU6050.h']]],
-  ['yaw_4',['yaw',['../Hero_2main_8cpp.html#ac00eba117233a91ba384295e0f957445',1,'yaw:&#160;main.cpp'],['../Infantry_2main_8cpp.html#a7072efb49dd93a5caa6f241a8b1f362c',1,'yaw:&#160;main.cpp'],['../Sentry_2main_8cpp.html#ad17c9cab47656882a1f4ac8d56d6368e',1,'yaw:&#160;main.cpp'],['../classMPU6050.html#a08a229023987effec9564b6a64c522be',1,'MPU6050::yaw()'],['../structBNO055__ANGULAR__POSITION__typedef.html#a42048f25bf51137e0b5c8a0b5ee04bdd',1,'BNO055_ANGULAR_POSITION_typedef::yaw']]],
+  ['yaw_4',['yaw',['../Hero_2main_8cpp.html#a583f3a9b67b400c6b50f740c7d13ce26',1,'yaw:&#160;main.cpp'],['../Infantry_2main_8cpp.html#a7072efb49dd93a5caa6f241a8b1f362c',1,'yaw:&#160;main.cpp'],['../Sentry_2main_8cpp.html#ad17c9cab47656882a1f4ac8d56d6368e',1,'yaw:&#160;main.cpp'],['../classMPU6050.html#a08a229023987effec9564b6a64c522be',1,'MPU6050::yaw()'],['../structBNO055__ANGULAR__POSITION__typedef.html#a42048f25bf51137e0b5c8a0b5ee04bdd',1,'BNO055_ANGULAR_POSITION_typedef::yaw']]],
   ['yaw2_5',['yaw2',['../Sentry_2main_8cpp.html#a536562d4d30c1023028b33d76437f2d9',1,'main.cpp']]],
   ['yaw_5foriented_6',['YAW_ORIENTED',['../classChassisSubsystem.html#a16e8ea4a14a3a2ae416a52db8d31ca36afd5cac9fdc8103802794047469e00313',1,'ChassisSubsystem']]],
   ['yawphase_7',['yawPhase',['../classChassisSubsystem.html#ab608584bfbfe827aa736cffd0fa15662',1,'ChassisSubsystem']]],
