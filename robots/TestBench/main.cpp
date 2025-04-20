@@ -369,7 +369,7 @@ int main(){
 
     /* Pitch Position PID*/
     // These values are for new sentry 2025
-    pitch.setPositionPID(20.3544, 0.020221, 278.4383); // think about D-cap and potentially raising FF. if the setpoint is always higher than actual,
+    pitch.setPositionPID(20.3544, 0.0000020221, 678.4383); // think about D-cap and potentially raising FF. if the setpoint is always higher than actual,
     pitch.setPositionIntegralCap(3000);
     // then could try to up FF to get there
     // pitch.setSpeedPID(0,0,0);
@@ -494,12 +494,10 @@ int main(){
         if ((timeStart - loopTimer) / 1000 > 15){
             led = !led;
 
-            //int sizePacket = bcJetson.available();
             refLoop++;
-            // remoteRead();
             remoteRead();
-            Chassis.periodic();
-            cs = Chassis.getChassisSpeeds();
+            //Chassis.periodic();
+            //cs = Chassis.getChassisSpeeds();
 
             if (refLoop >= 5){
                 refereeThread(&referee);
@@ -507,104 +505,13 @@ int main(){
                 refLoop = 0;
             }
 
-            //-----------Sending data to myself-------------------------
-            // uint8_t data[100];
-
-
-            // for (uint8_t i = 0; i < 100 ; i++) {
-            //     data[i] = i;
-            //     ssize_t bytesBuffer = bcJetson.write(&data[i], 1);
-            //     printf("number: %d bytes: %d \n", data[i], bytesBuffer);
-            // }
-            // ThisThread::sleep_for(100ms);
-
-            // while (bcJetson.readable()) {
-            //     ssize_t result = bcJetson.read(&jetsonByte, 1);
-            //     printf("%d ", jetsonByte);
-            //     ++numBytes;
-            //     ++totalBytes;
-            // }
-            // printf("\n num: %d total: %d result:  \n \n", numBytes, totalBytes);
-            // numBytes = 0;
-            //-----------sending data to myself w/ buffer-------------------------
-
-
-
-            //incrementing pitch and Yaw myself Code--------------
-            // if ( test_direction == 0) {
-            //     yaw_test_radians += 0.01;
-            //     pitch_test_radians += 0.001; //don't need to worry about bounds, handled below
-
-            //     if (yaw_test_radians >= 1){
-            //         test_direction = 1;
-            //     }
-            // }
-            // else {
-            //     yaw_test_radians -= 0.01;
-            //     pitch_test_radians -= 0.001;
-            //     if (yaw_test_radians <= -1){
-            //         test_direction = 0;
-            //     } 
-            // }
-
-            // //Forming packet
-            // memcpy(testPacketTx, &pitch_test_radians, sizeof(float));
-            // memcpy(testPacketTx + 4, &yaw_test_radians, sizeof(float));
-            // memcpy(testPacketTx + 8, &test_shoot, sizeof(char)); // shooting indicator
-
-            // //checksum
-            // testChecksumTx = calculateLRC(testPacketTx,9);
-            // memcpy(testPacketTx + 9, &testChecksumTx, sizeof(char)); // shooting indicator
-            
-
-            //printff("\n------SENDING-----\n");
-            // for (int i = 0 ; i < 10 ; ++i ) {
-            //     printf("%d ", testPacketTx[i]);
-            // }
-            //printff("Tx pitch: %.3f yaw: %.3f shoot: %d Check: %d\n", pitch_test_radians, yaw_test_radians, test_shoot, testChecksumTx);
-
-
-            // //CLEARING BUFFER
-            // printf("\n\nclearing buffer: ");
-            // while ( bcJetson.readable() ) {
-            //     ssize_t resultClear = bcJetson.read(&jetsonByte, 1);
-            //     printf("%d ", jetsonByte);
-            // }
-            // printf("\n------CLEARED------\n");
-
-            //fill buffer with packet
             bcJetson.write( &testPacketTx, 10);
             bcJetson.sync();
 
-
-            //RECIEVING----
-            //printff("\n------RECIEVING-----\n");
-            // ssize_t resultClear = bcJetson.read(&testPacketRx, 10);
-            // for (int i = 0 ; i < 10 ; ++i ) {
-            //     printf("%d ", testPacketRx[i]);
-            // }
-            // printf("\n");
-
-
-            // if (resultClear == 10) {
-            //     memcpy(&test_pitch_Rx, testPacketRx, sizeof(float));   //memcpy( destination, source, size)
-            //     memcpy(&test_yaw_Rx, testPacketRx + 4, sizeof(float));
-            //     memcpy(&test_shoot_Rx, testPacketRx + 8, sizeof(char));
-            //     memcpy(&testChecksumRx, testPacketRx + 9, sizeof(char));
-            
-            //     printf("Rx Pitch: %.3f Yaw: %.3f Shoot: %d Check: %d\nFIN\n\n", test_pitch_Rx, test_yaw_Rx, test_shoot_Rx, testChecksumRx);
-            // } else {
-            //     printf("Read failed or incomplete. Bytes read: %d\n", (int)resultClear);
-            // }
-
-
             int readResult = jetson_read_values(pitch_ANGLE, yaw_angle, shoot_toggle);
-            //printf("Rx Pitch: %.3f Yaw: %.3f Shoot: %d\n\n\n", pitch_ANGLE, yaw_angle, shoot_toggle);
-
+            
             if (readResult != 0) {
                 pitch_in_ticks = ChassisSubsystem::radiansToTicks(pitch_ANGLE);
-                //printf("%d ticks here\n", pitch_in_ticks);
-                /* Catch pitch beyond thresholds*/
                 if (pitch_in_ticks <= LOWERBOUND_TICKS) {
                     pitch_in_ticks = LOWERBOUND_TICKS;
                 }
@@ -614,11 +521,11 @@ int main(){
 
                 pitch_in_ticks *= GEAR_RATIO; //gear ratio;
             }
+            //ISSUE IS ABOVE THIS
 
             //Regular Yaw Code
             yaw_angle = floatmod(yaw_angle, 2 * M_PI);
             yaw_in_ticks = ChassisSubsystem::radiansToTicks(yaw_angle);
-            // yaw.setPosition(yaw_in_ticks);
 
             float chassis_rotation_radps = cs.vOmega;
             int chassis_rotation_rpm = chassis_rotation_radps * 60 / (2*M_PI) * 4; //I added this 4 but I don't know why.
@@ -640,10 +547,9 @@ int main(){
             }
             yaw.pidSpeed.feedForward = dir * (874 + (73.7 * abs(yawVelo)) + (0.0948 * yawVelo * yawVelo));
             yaw.setSpeed(yawVelo);
-            
+            //ISSUE IS ABOVE THIS
 
             //----------------------------CV SHOOTING------------------------
-
             if ( (remote.leftSwitch() == Remote::SwitchState::UP) )
             {
                 //              indexerL.setSpeed(-2000);
@@ -677,45 +583,6 @@ int main(){
                 LBOTTOMFLYWHEEL.setSpeed(0);
             }
 
-            // //INDEXER CODE
-            // if ( (remote.leftSwitch() == Remote::SwitchState::UP || remote.getMouseL() ) || (shoot_toggle != 0) ){
-            //     if (shootReady){
-            //         shootReady = false;
-            //         shootTargetPosition = 8192 * 12 + (indexerR>>MULTITURNANGLE);
-
-            //         //shoot limit
-            //         // if(robot_status.shooter_barrel_heat_limit < 10 || power_heat_data.shooter_17mm_1_barrel_heat < robot_status.shooter_barrel_heat_limit - 40) {
-            //         // }
-
-            //         shoot = true;
-            //         printff("FIRE\n");
-            //     }
-            // } else {
-            //     //SwitchState state set to mid/down/unknown
-            //     //shootReady = true;
-            // }
-
-            // // burst fire, turn the indexer to shoot 3-5 balls a time and stop indexer
-            // // only shoot when left switch changes from down/unknown/mid to up
-            // // if left switch remains at up state, indexer stops after 3-5 balls
-            // if (shoot){
-            //     if ( indexerR>>MULTITURNANGLE >= shootTargetPosition ) {
-            //         indexerR.setSpeed(0); 
-            //         shoot = false;
-            //         shootReady = true;
-            //     } else {
-            //         timeSure = us_ticker_read();
-            //         debugShooting = sure.calculatePeriodic((float)(shootTargetPosition - (indexerR>>MULTITURNANGLE)), timeSure - prevTimeSure);
-            //         //indexerR.setSpeed(debugShooting);
-            //         indexerR.setSpeed(30 * 36);
-
-            //         prevTimeSure = timeSure;
-            //     }
-            // } else {
-            //     indexerR.setSpeed(0);
-            // }
-
-
             //FLYWHEELS
             if (remote.leftSwitch() != Remote::SwitchState::DOWN &&
                 remote.leftSwitch() != Remote::SwitchState::UNKNOWN){
@@ -732,7 +599,6 @@ int main(){
             }
 
             //------------------CV SHOOTING---------------------------
-
             ++printLoop;
             if( printLoop >= 15){   //use for slower printing
                 printLoop = 0;
@@ -758,7 +624,7 @@ int main(){
         // jetson_send_feedback();
 
         unsigned long timeEnd = us_ticker_read();
-        // ThisThread::sleep_for(1ms);
+        ThisThread::sleep_for(1ms);
     }
 }
 #endif

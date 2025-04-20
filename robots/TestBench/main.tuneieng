@@ -1,0 +1,71 @@
+#include "main.h"
+
+DigitalOut led(L27);
+DigitalOut led2(L26);
+DigitalOut led3(L25);
+DigitalOut ledbuiltin(LED1);
+
+DJIMotor testMot(5, CANHandler::CANBUS_2, GM6020, "testbench_motor");
+
+#define IMPULSE_DT 100
+#define IMPULSE_STRENGTH 16383
+
+int main(){
+
+    DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
+    DJIMotor::s_sendValues();
+    DJIMotor::s_getFeedback();
+
+    unsigned long timeStart;
+    unsigned long loopTimer = us_ticker_read();
+    int refLoop = 0;
+
+    //testMot.setSpeedPID(1.5,0,200);
+    testMot.setPositionPID(21.3544, 0.040221, 1078.4383);
+    testMot.setPositionIntegralCap(2000);
+
+    bool prevL = false;
+    bool switL = false;
+
+    int motorSpeed = 0;
+
+    int pos = 0;
+
+    while(true){
+        timeStart = us_ticker_read();
+
+        if ((timeStart - loopTimer) / 1000 > 15){
+            loopTimer = timeStart;
+            led = !led;
+            ledbuiltin = !ledbuiltin;
+
+            refLoop++;
+            if (refLoop >= 5){
+                refereeThread(&referee);
+                refLoop = 0;
+                led2 = !led2;
+
+                printff("%d %d %d\n", pos, testMot>>ANGLE, testMot>>POWEROUT);
+            }
+            prevL = switL;
+            remoteRead();
+            // switL = (remote.leftSwitch() == Remote::SwitchState::UP);
+
+            pos = 6500 - (((int)remote.leftSwitch() - 2) * 800);
+
+            // testMot.setPower(remote.leftX() * 3);
+            // if(!prevL && switL){
+            //     motorSpeed += 10;
+            // }
+
+            if(remote.leftSwitch() != Remote::SwitchState::UNKNOWN){
+                testMot.setPosition(pos);
+            }
+            
+
+            DJIMotor::s_sendValues();
+        }
+        DJIMotor::s_getFeedback();
+        ThisThread::sleep_for(1ms);
+    }
+}
