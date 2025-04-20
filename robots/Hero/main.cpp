@@ -106,7 +106,7 @@ int main(){
     feeder.setSpeedPID(4, 0, 1);
 
     //INDEXER
-    indexer.setSpeedPID(1, 0, 1);
+    indexer.setSpeedPID(1.5, 0, 1);
     indexer.setSpeedIntegralCap(8000);
     //Cascading PID for indexer angle position control. Surely there are better names then "sure"...
     PID sure(0.5,0,0.4);
@@ -273,17 +273,17 @@ int main(){
                 pitch_desired_angle += jpitch * MOUSE_SENSITIVITY_PITCH_DPS * elapsedms / 1000;
                 pitch_desired_angle -= jpitch * JOYSTICK_SENSITIVITY_PITCH_DPS * elapsedms / 1000;
 
-                if (pitch_desired_angle >= LOWERBOUND) {
-                    pitch_desired_angle = LOWERBOUND;
-                }
-                else if (pitch_desired_angle <= UPPERBOUND) {
-                    pitch_desired_angle = UPPERBOUND;
-                }
+                // if (pitch_desired_angle >= LOWERBOUND) {
+                //     pitch_desired_angle = LOWERBOUND;
+                // }
+                // else if (pitch_desired_angle <= UPPERBOUND) {
+                //     pitch_desired_angle = UPPERBOUND;
+                // }
 
                 //float FF = K * sin((desiredPitch / 180 * PI) - pitch_phase); // output: [-1,1]
                 //float FF = K * cos(pitch_desired_angle / 180 * PI);
                 //pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
-                pitch.setPosition(int((pitch_desired_angle / 360) * TICKS_REVOLUTION + pitch_zero_offset_ticks));
+                pitch.setPosition(int((pitch_desired_angle / 60) * TICKS_REVOLUTION + pitch_zero_offset_ticks));
             }else{
                 //Off
                 pitch.setPower(0);
@@ -329,7 +329,7 @@ int main(){
                 //feeder
                 bool feederOn = false;
                 bool indexerOn = false;
-                if (us_ticker_read()/1000 - shootTimer < 165){
+                if (us_ticker_read()/1000 - shootTimer < 180){
                     feeder.setSpeed(5500);
                 } else {
                     feeder.setSpeed(0);
@@ -339,7 +339,7 @@ int main(){
                 if (us_ticker_read()/1000 - shootTimer < 300){
                     indexer.setSpeed(8000);
                 } else {
-                    indexer.setSpeed(100);
+                    indexer.setSpeed(300);
                     indexerOn = true;
                 }
                 if (indexerOn && feederOn){
