@@ -56,12 +56,14 @@ DigitalOut led3(L25);
 static BufferedSerial bcJetson(PC_12, PD_2, 115200);  //JETSON PORT
 // static BufferedSerial bcJetson(PC_12, PD_2, 115200);
 I2C i2c(I2C_SDA, I2C_SCL);
-// BNO055 imu(i2c, IMU_RESET, MODE_IMU);
+BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 
 DJIMotor yaw(6, CANHandler::CANBUS_1, GIMBLY, "yaw");
 DJIMotor pitch(5, CANHandler::CANBUS_2, GIMBLY);
 DJIMotor indexerL(5, CANHandler::CANBUS_2, C610);
 DJIMotor indexerR(6, CANHandler::CANBUS_2, C610);
+
+ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
 
 DJIMotor RTOPFLYWHEEL(1, CANHandler::CANBUS_2, M3508_FLYWHEEL);
 DJIMotor LTOPFLYWHEEL(2, CANHandler::CANBUS_2, M3508_FLYWHEEL);
@@ -265,7 +267,7 @@ float jetson_send_feedback() {
  * @param pitch_move buffer to store desired pitch position
  * @param yaw_move buffer to store desired yaw position
  */
-void jetson_read_values(float &pitch_move, float & yaw_move, char &shoot_switch) {
+ssize_t jetson_read_values(float &pitch_move, float & yaw_move, char &shoot_switch) {
     bcJetson.set_blocking(false);
     char dumbByte;
 
@@ -299,8 +301,9 @@ void jetson_read_values(float &pitch_move, float & yaw_move, char &shoot_switch)
     } 
 
     else {
-        printf("Err\n");
+        //printf("Err\n");
     }
+    return result;
 }
 
 
@@ -366,7 +369,7 @@ int main(){
 
     /* Pitch Position PID*/
     // These values are for new sentry 2025
-    pitch.setPositionPID(20.3544, 0.020221, 1078.4383); // think about D-cap and potentially raising FF. if the setpoint is always higher than actual,
+    pitch.setPositionPID(20.3544, 0.020221, 278.4383); // think about D-cap and potentially raising FF. if the setpoint is always higher than actual,
     pitch.setPositionIntegralCap(3000);
     // then could try to up FF to get there
     // pitch.setSpeedPID(0,0,0);
@@ -385,17 +388,13 @@ int main(){
     // Chassis.setYawReference(&yaw, 2050); // "5604" is the number of ticks of yaw considered to be robot-front
 //    Chassis.setSpeedFF_Ks(0.065);
 
-    yaw.setSpeedPID(10, 0, 0);
-
-    PID yawBeyblade(1.5, 0, 550);
-    PID yawNonBeyblade(0.15, 0, 550);
-    yaw.setSpeedIntegralCap(0);
+    PID yawBeyblade(0.5, 0, 0);
+    // PID yawNonBeyblade(0.15, 0, 550);
+    yaw.setSpeedPID(5.5, 0, 0);
+    yaw.setSpeedIntegralCap(8000);
+    yaw.setSpeedOutputCap(32000);
+    yaw.outputCap = 16000;
     yaw.useAbsEncoder = false;
-
-    yaw.setSpeedIntegralCap(0);
-    yaw.useAbsEncoder = false;
-
-    yaw.setSpeedOutputCap(24000);
 
     int ref_yaw;
 
@@ -476,14 +475,18 @@ int main(){
     //PRINTLOOP
     int printLoop = 0;
 
+    ChassisSpeeds cs;
+
+    int dticks = 0;
+
     while(true){
-        pitch_ANGLE = 0.0;
+        // pitch_ANGLE = 0.0;
         timeStart = us_ticker_read();
 
         //CV loop runs every 2ms
-        if((timeStart - loopTimerCV) / 1000 > 2) { 
+        if((timeStart - loopTimerCV) / 1000 > 0) { 
             loopTimerCV = timeStart;
-            //jetson_send_feedback();   __COMENTED OUT LOOLOOKOKOLOOOOKO HERHEHRERHEHRHE
+            jetson_send_feedback(); //  __COMENTED OUT LOOLOOKOKOLOOOOKO HERHEHRERHEHRHE
             //basic_bitch_read();
             led2 = !led2;
         }
@@ -495,7 +498,8 @@ int main(){
             refLoop++;
             // remoteRead();
             remoteRead();
-            // Chassis.periodic();
+            Chassis.periodic();
+            cs = Chassis.getChassisSpeeds();
 
             if (refLoop >= 5){
                 refereeThread(&referee);
@@ -527,30 +531,30 @@ int main(){
 
 
             //incrementing pitch and Yaw myself Code--------------
-            if ( test_direction == 0) {
-                yaw_test_radians += 0.01;
-                pitch_test_radians += 0.001; //don't need to worry about bounds, handled below
+            // if ( test_direction == 0) {
+            //     yaw_test_radians += 0.01;
+            //     pitch_test_radians += 0.001; //don't need to worry about bounds, handled below
 
-                if (yaw_test_radians >= 1){
-                    test_direction = 1;
-                }
-            }
-            else {
-                yaw_test_radians -= 0.01;
-                pitch_test_radians -= 0.001;
-                if (yaw_test_radians <= -1){
-                    test_direction = 0;
-                } 
-            }
+            //     if (yaw_test_radians >= 1){
+            //         test_direction = 1;
+            //     }
+            // }
+            // else {
+            //     yaw_test_radians -= 0.01;
+            //     pitch_test_radians -= 0.001;
+            //     if (yaw_test_radians <= -1){
+            //         test_direction = 0;
+            //     } 
+            // }
 
-            //Forming packet
-            memcpy(testPacketTx, &pitch_test_radians, sizeof(float));
-            memcpy(testPacketTx + 4, &yaw_test_radians, sizeof(float));
-            memcpy(testPacketTx + 8, &test_shoot, sizeof(char)); // shooting indicator
+            // //Forming packet
+            // memcpy(testPacketTx, &pitch_test_radians, sizeof(float));
+            // memcpy(testPacketTx + 4, &yaw_test_radians, sizeof(float));
+            // memcpy(testPacketTx + 8, &test_shoot, sizeof(char)); // shooting indicator
 
-            //checksum
-            testChecksumTx = calculateLRC(testPacketTx,9);
-            memcpy(testPacketTx + 9, &testChecksumTx, sizeof(char)); // shooting indicator
+            // //checksum
+            // testChecksumTx = calculateLRC(testPacketTx,9);
+            // memcpy(testPacketTx + 9, &testChecksumTx, sizeof(char)); // shooting indicator
             
 
             //printff("\n------SENDING-----\n");
@@ -594,10 +598,10 @@ int main(){
             // }
 
 
-            jetson_read_values(pitch_ANGLE, yaw_angle, shoot_toggle);
+            int readResult = jetson_read_values(pitch_ANGLE, yaw_angle, shoot_toggle);
             //printf("Rx Pitch: %.3f Yaw: %.3f Shoot: %d\n\n\n", pitch_ANGLE, yaw_angle, shoot_toggle);
 
-            if (pitch_ANGLE != 0) {
+            if (readResult != 0) {
                 pitch_in_ticks = ChassisSubsystem::radiansToTicks(pitch_ANGLE);
                 //printf("%d ticks here\n", pitch_in_ticks);
                 /* Catch pitch beyond thresholds*/
@@ -612,17 +616,30 @@ int main(){
             }
 
             //Regular Yaw Code
+            yaw_angle = floatmod(yaw_angle, 2 * M_PI);
+            yaw_in_ticks = ChassisSubsystem::radiansToTicks(yaw_angle);
+            // yaw.setPosition(yaw_in_ticks);
+
+            float chassis_rotation_radps = cs.vOmega;
+            int chassis_rotation_rpm = chassis_rotation_radps * 60 / (2*M_PI) * 4; //I added this 4 but I don't know why.
+            
+            
+
             prevTimeSure = timeSure;
             timeSure = us_ticker_read();
+            dticks = DJIMotor::s_calculateDeltaPhase(yaw_in_ticks, yaw>>ANGLE, 8192);
+            yawVelo = yawBeyblade.calculatePeriodic(dticks, timeSure - prevTimeSure);
+            //yawVelo = 0;
+            //yawVelo -= chassis_rotation_rpm;
 
-            yaw_in_ticks = ChassisSubsystem::radiansToTicks(yaw_angle);
-            yaw.setPosition(yaw_in_ticks);
-
-            //yaw_in_ticks = ChassisSubsystem::radiansToTicks(yaw_test_radians); //same as above but for self buffer
-            //curr_yaw_angle = yaw.getData(ANGLE);
-            //printf("desPitch currPitch desYaw currYaw\n"); //comment out for arduino data  
-            //printf("%d %d %d %d\n", pitch_in_ticks, pitch.getData(ANGLE), yaw_in_ticks, yaw.getData(ANGLE));
-
+            int dir = 0;
+            if(yawVelo > 0){
+                dir = 1;
+            }else if(yawVelo < 0){
+                dir = -1;
+            }
+            yaw.pidSpeed.feedForward = dir * (874 + (73.7 * abs(yawVelo)) + (0.0948 * yawVelo * yawVelo));
+            yaw.setSpeed(yawVelo);
             
 
             //----------------------------CV SHOOTING------------------------
@@ -717,7 +734,7 @@ int main(){
             //------------------CV SHOOTING---------------------------
 
             ++printLoop;
-            if( printLoop >= 100){   //use for slower printing
+            if( printLoop >= 15){   //use for slower printing
                 printLoop = 0;
                 if (test_shoot == 0) { ++test_shoot; }
                 else { test_shoot = 0; }
@@ -727,7 +744,9 @@ int main(){
                 //     shootTargetPosition - (indexerR >> MULTITURNANGLE),
                 //     debugShooting,
                 //     timeSure - prevTimeSure);
-                printff("%d %d %d %d\n", test_shoot, shootReady, shootTargetPosition, indexerR>>MULTITURNANGLE);
+                //printff("%d %d %d %d\n", test_shoot, shootReady, shootTargetPosition, indexerR>>MULTITURNANGLE);
+                //printff("%.3f %.3f %d\n", yaw_angle, pitch_ANGLE, shoot_toggle);
+                printff("Y: %d %d ,%d [%d] P: %d %d ,%d\n", yaw_in_ticks, yaw>>ANGLE, yaw>>POWEROUT, dticks, pitch_in_ticks, pitch>>ANGLE, pitch>>POWEROUT);
             }
 
             // pitch_in_ticks is relative to level = 0 ticks. PITCH_LEVEL_TICKS - pitch_in_ticks = abs position in ticks
