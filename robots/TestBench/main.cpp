@@ -316,6 +316,54 @@ void eccode_value(char *buf, float &received_one, float &received_two, uint8_t &
     checksum = buf[8];   // 1 byte
 }
 
+//Send yourself packets through buffer
+void self_sending_data() {
+    static float test_yaw = 0;
+    static float test_pitch = 0;
+    static bool direction = 0;
+    static char test_packet[10] = {0};
+    static char shoot_on = 0;
+    static int loop_count = 0;
+    uint8_t check_sum;
+
+    if (loop_count == 100) {
+        if (shoot_on == 0) {
+            ++shoot_on;
+        }
+        else { shoot_on = 1; }
+        loop_count = 0;
+    }
+
+    // //incrementing pitch and Yaw myself Code--------------
+    if ( direction == 0) {
+        test_yaw += 0.01;
+        test_pitch += 0.001; //don't need to worry about bounds, handled below
+
+        if (test_yaw >= 1){
+            direction = 1;
+        }
+    }
+    else {
+        test_yaw -= 0.01;
+        test_pitch -= 0.001;
+        if (test_yaw <= -1){
+            direction = 0;
+        } 
+    }
+
+    //Forming packet
+    memcpy(test_packet, &test_pitch, sizeof(float));
+    memcpy(test_packet + 4, &test_yaw, sizeof(float));
+    memcpy(test_packet + 8, &shoot_on, sizeof(char)); // shooting indicator
+
+    // //checksum
+    check_sum = calculateLRC(test_packet,9);
+    memcpy(test_packet + 9, &check_sum, sizeof(char)); // shooting indicator
+
+    //fill buffer
+    bcJetson.write( &test_packet, 10);
+    bcJetson.sync();
+}
 
 //Yaw Incorporated
 int calculateDeltaYaw(int ref_yaw, int beforeBeybladeYaw)
@@ -429,7 +477,7 @@ int main(){
     //yaw
     float yaw_in_deg;
     int yaw_in_ticks;
-    float yaw_angle;
+    float yaw_CV_angle;
     float curr_yaw_angle;
     int yawVelo = 0;
 
@@ -506,100 +554,20 @@ int main(){
 
                 refLoop = 0;
             }
+          
+            int readResult = jetson_read_values(pitch_ANGLE, yaw_CV_angle, shoot_toggle);
+            //printf("Rx Pitch: %.3f Yaw: %.3f Shoot: %d\n\n\n", pitch_ANGLE, yaw_CV_angle, shoot_toggle);
 
-            //-----------Sending data to myself-------------------------
-            // uint8_t data[100];
-
-
-            // for (uint8_t i = 0; i < 100 ; i++) {
-            //     data[i] = i;
-            //     ssize_t bytesBuffer = bcJetson.write(&data[i], 1);
-            //     printf("number: %d bytes: %d \n", data[i], bytesBuffer);
-            // }
-            // ThisThread::sleep_for(100ms);
-
-            // while (bcJetson.readable()) {
-            //     ssize_t result = bcJetson.read(&jetsonByte, 1);
-            //     printf("%d ", jetsonByte);
-            //     ++numBytes;
-            //     ++totalBytes;
-            // }
-            // printf("\n num: %d total: %d result:  \n \n", numBytes, totalBytes);
-            // numBytes = 0;
-            //-----------sending data to myself w/ buffer-------------------------
-
-
-
-            //incrementing pitch and Yaw myself Code--------------
-            // if ( test_direction == 0) {
-            //     yaw_test_radians += 0.01;
-            //     pitch_test_radians += 0.001; //don't need to worry about bounds, handled below
-
-            //     if (yaw_test_radians >= 1){
-            //         test_direction = 1;
-            //     }
-            // }
-            // else {
-            //     yaw_test_radians -= 0.01;
-            //     pitch_test_radians -= 0.001;
-            //     if (yaw_test_radians <= -1){
-            //         test_direction = 0;
-            //     } 
-            // }
-
-            // //Forming packet
-            // memcpy(testPacketTx, &pitch_test_radians, sizeof(float));
-            // memcpy(testPacketTx + 4, &yaw_test_radians, sizeof(float));
-            // memcpy(testPacketTx + 8, &test_shoot, sizeof(char)); // shooting indicator
-
-            // //checksum
-            // testChecksumTx = calculateLRC(testPacketTx,9);
-            // memcpy(testPacketTx + 9, &testChecksumTx, sizeof(char)); // shooting indicator
+            //like idk why ig floats are fucked oop
+            if ( abs(yaw_CV_angle) <= 0.001 ) {
+                //printf("you are now zero\n");
+                yaw_CV_angle = 0;
+            }
             
+            if ( abs(pitch_ANGLE) <= 0.001 ) {
+                yaw_CV_angle = 0;
+            }
 
-            //printff("\n------SENDING-----\n");
-            // for (int i = 0 ; i < 10 ; ++i ) {
-            //     printf("%d ", testPacketTx[i]);
-            // }
-            //printff("Tx pitch: %.3f yaw: %.3f shoot: %d Check: %d\n", pitch_test_radians, yaw_test_radians, test_shoot, testChecksumTx);
-
-
-            // //CLEARING BUFFER
-            // printf("\n\nclearing buffer: ");
-            // while ( bcJetson.readable() ) {
-            //     ssize_t resultClear = bcJetson.read(&jetsonByte, 1);
-            //     printf("%d ", jetsonByte);
-            // }
-            // printf("\n------CLEARED------\n");
-
-            //fill buffer with packet
-            bcJetson.write( &testPacketTx, 10);
-            bcJetson.sync();
-
-
-            //RECIEVING----
-            //printff("\n------RECIEVING-----\n");
-            // ssize_t resultClear = bcJetson.read(&testPacketRx, 10);
-            // for (int i = 0 ; i < 10 ; ++i ) {
-            //     printf("%d ", testPacketRx[i]);
-            // }
-            // printf("\n");
-
-
-            // if (resultClear == 10) {
-            //     memcpy(&test_pitch_Rx, testPacketRx, sizeof(float));   //memcpy( destination, source, size)
-            //     memcpy(&test_yaw_Rx, testPacketRx + 4, sizeof(float));
-            //     memcpy(&test_shoot_Rx, testPacketRx + 8, sizeof(char));
-            //     memcpy(&testChecksumRx, testPacketRx + 9, sizeof(char));
-            
-            //     printf("Rx Pitch: %.3f Yaw: %.3f Shoot: %d Check: %d\nFIN\n\n", test_pitch_Rx, test_yaw_Rx, test_shoot_Rx, testChecksumRx);
-            // } else {
-            //     printf("Read failed or incomplete. Bytes read: %d\n", (int)resultClear);
-            // }
-
-
-            int readResult = jetson_read_values(pitch_ANGLE, yaw_angle, shoot_toggle);
-            //printf("Rx Pitch: %.3f Yaw: %.3f Shoot: %d\n\n\n", pitch_ANGLE, yaw_angle, shoot_toggle);
 
             if (readResult != 0) {
                 pitch_in_ticks = ChassisSubsystem::radiansToTicks(pitch_ANGLE);
@@ -616,8 +584,8 @@ int main(){
             }
 
             //Regular Yaw Code
-            yaw_angle = floatmod(yaw_angle, 2 * M_PI);
-            yaw_in_ticks = ChassisSubsystem::radiansToTicks(yaw_angle);
+            yaw_CV_angle = floatmod(yaw_CV_angle, 2 * M_PI);
+            yaw_in_ticks = ChassisSubsystem::radiansToTicks(yaw_CV_angle);
             // yaw.setPosition(yaw_in_ticks);
 
             float chassis_rotation_radps = cs.vOmega;
@@ -745,7 +713,7 @@ int main(){
                 //     debugShooting,
                 //     timeSure - prevTimeSure);
                 //printff("%d %d %d %d\n", test_shoot, shootReady, shootTargetPosition, indexerR>>MULTITURNANGLE);
-                //printff("%.3f %.3f %d\n", yaw_angle, pitch_ANGLE, shoot_toggle);
+                //printff("%.3f %.3f %d\n", yaw_CV_angle, pitch_ANGLE, shoot_toggle);
                 printff("Y: %d %d ,%d [%d] P: %d %d ,%d\n", yaw_in_ticks, yaw>>ANGLE, yaw>>POWEROUT, dticks, pitch_in_ticks, pitch>>ANGLE, pitch>>POWEROUT);
             }
 
