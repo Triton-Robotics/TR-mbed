@@ -20,8 +20,6 @@ float calculateDeltaYaw(float actual, float desired)
 {
     float deltaYaw = desired - actual;
 
-    //
-
     if (abs(deltaYaw) > PI)
     {
         if (deltaYaw > 0)
@@ -30,6 +28,10 @@ float calculateDeltaYaw(float actual, float desired)
             deltaYaw += 2*PI;
     }
     return deltaYaw;
+}
+
+float calculateDeltaPos (float actual, float desired) {
+    return abs (desired - actual);
 }
 
 int main(){
@@ -54,7 +56,7 @@ int main(){
     ChassisSpeeds prev_velocity = {0.0, 0.0, 0.0};
     ChassisSpeeds accel = {0.0, 0.0, 0.0};
 
-    std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {1000.0, 0.0}, {0.0, 0.0}, {1000.0, 0.0}, {0.0, 0.0}};
+    std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {200.0, 0.0}, {200.0, 200.0}, {0.0, 200.0}, {0.0, 0.0}};
 
     float angle = 0.0;
     float posx = final_pos[0][0]; // need to go to 1676 ish
@@ -74,9 +76,9 @@ int main(){
     float buffer_x = 20.0;
     float buffer_angle = PI/16;
 
-    float ly_init = 0.4;
-    float lx_init = 0.4;
-    float rx_init = 0.3; // you basically divide the angle you want by pi, so this is PI/4 / PI
+    float ly_init = 0.8;
+    float lx_init = 0.8;
+    float rx_init = 0.4; // you basically divide the angle you want by pi, so this is PI/4 / PI
 
     while(true){ //main loop
         timeStart_u = us_ticker_read();
@@ -84,7 +86,7 @@ int main(){
         //inner loop runs every 25ms
         if((timeStart_u - loopTimer_u) / 1000 > 25) { 
             loopTimer_u = timeStart_u;
-            led = !led; //led blink tells us how fast the inner loop is running
+            led2 = !led2; //led blink tells us how fast the inner loop is running
 
             if (refLoop >= 5) { //ref code runs 5 of every inner loop, 
                 refLoop = 0;
@@ -101,7 +103,7 @@ int main(){
 
             // update pos and angle in mm
             // velocities in m/s, acceleration in m/s^2, the loop runs every 25 ms
-            angle = (angle + (velocity.vOmega * 0.025 + (1/2 * accel.vOmega * 25 * 0.025)) * PI);
+            angle = angle + ((velocity.vOmega * 0.025 + (1/2 * accel.vOmega * 25 * 0.025)) * PI);
             while (angle > PI) {
                 angle -= 2*PI;
             }
@@ -113,15 +115,12 @@ int main(){
             
             posx = posx + ((velocity.vX * sin(angle)) + (velocity.vY * cos(angle))) * 25 + (1/2 * ((accel.vX * sin(angle)) + (accel.vY * cos(angle))) * 25 * 0.025);
 
-            // posy = posy + ((velocity.vY * sin(angle))) * 25 + (1/2 * ((accel.vY * sin(angle))) * 25 * 0.025);
-            
-            // posx = posx + ((velocity.vY * cos(angle))) * 25 + (1/2 * ((accel.vY * cos(angle))) * 25 * 0.025);
-
             float lx = 0;
             float ly = 0;
             float rx = 0;
 
             if (remote.rightSwitch() == Remote::SwitchState::MID || remote.rightSwitch() == Remote::SwitchState::UNKNOWN) {
+                led = 1;
                 lx = (remote.leftX() / 660.0) * Chassis.m_OmniKinematicsLimits.max_Vel;
                 ly = (remote.leftY() / 660.0) * Chassis.m_OmniKinematicsLimits.max_Vel;
                 rx = (remote.rightX() / 660.0);
@@ -129,6 +128,7 @@ int main(){
                 Chassis.setChassisSpeeds({lx, ly, rx});
             }
             else if (remote.rightSwitch() == Remote::SwitchState::UP) {
+                led = 0;
                 // Purely changing x and y speeds, not rotation yet!
                 // if (final_pos[idx][1] - posy > buffer_y) {
                 //     ly = ly_init;
@@ -171,6 +171,9 @@ int main(){
 
                 float deltayaw = calculateDeltaYaw(angle, final_angle);
 
+                float deltax = calculateDeltaPos(posx, final_x);
+                float deltay = calculateDeltaPos(posy, final_y);
+
                 if (deltayaw > buffer_angle && (end == false)) {
                     rx = rx_init;
                 }
@@ -178,12 +181,19 @@ int main(){
                     rx = -rx_init;
                 } 
                 else {
-                    if ((final_y - posy > buffer_y || posy - final_y > buffer_y) && (end == false)) {
+                    if ((deltay > buffer_y)) {
                         ly = ly_init;
+                        if (idx > final_pos.size() - 1) {
+                            idx --;
+                            end = false;
+                        }
                     }
                     else {
-                        if ((final_x - posx > buffer_x || posx - final_x > buffer_x) && (end == false)) {
+                        if ((deltax > buffer_x)) {
                             ly = ly_init;
+                            if (idx == final_pos.size() - 1) {
+                                end = false;
+                            }
                         }
                         else {
                             // if we are close enough to the point, move to the next point
@@ -210,7 +220,7 @@ int main(){
 
             counter++;
             if (counter > 10) {
-                printfESP("X: %.3f, Y: %.3f, A: %.3f, %.3f\n", posx, posy, angle, final_angle);
+                printfESP("X: %.3f, Y: %.3f, A: %.3f, %.3f %d\n", posx, posy, angle, final_angle, idx);
                 counter = 0;
             }
             //MOST CODE DOESNT NEED TO RUN FASTER THAN EVERY 25ms
