@@ -106,7 +106,7 @@ int main(){
     feeder.setSpeedPID(4, 0, 1);
 
     //INDEXER
-    indexer.setSpeedPID(1.5, 0, 1);
+    indexer.setSpeedPID(1.65, 0, 1);
     indexer.setSpeedIntegralCap(8000);
     //Cascading PID for indexer angle position control. Surely there are better names then "sure"...
     PID sure(0.5,0,0.4);
@@ -339,7 +339,7 @@ int main(){
                 if (us_ticker_read()/1000 - shootTimer < 300){
                     indexer.setSpeed(8000);
                 } else {
-                    indexer.setSpeed(300);
+                    indexer.setSpeed(350);
                     indexerOn = true;
                 }
                 if (indexerOn && feederOn){
@@ -355,8 +355,8 @@ int main(){
             //FLYWHEELS
             if (remote.leftSwitch() != Remote::SwitchState::DOWN &&
                 remote.leftSwitch() != Remote::SwitchState::UNKNOWN){
-                RFLYWHEEL.setSpeed(-5750);
-                LFLYWHEEL.setSpeed(5750);
+                RFLYWHEEL.setSpeed(-7475);
+                LFLYWHEEL.setSpeed(7475);
             } else{
                 // left SwitchState set to up/mid/unknown
                 RFLYWHEEL.setSpeed(0);
