@@ -5,7 +5,7 @@ var searchData=
   ['gemv_2ecpp_2',['gemv.cpp',['../gemv_8cpp.html',1,'']]],
   ['gemv_5fcommon_2eh_3',['gemv_common.h',['../gemv__common_8h.html',1,'']]],
   ['gemvt_2ecpp_4',['gemvt.cpp',['../gemvt_8cpp.html',1,'']]],
-  ['generalblockpanelkernel_2eh_5',['generalblockpanelkernel.h',['../arch_2NEON_2GeneralBlockPanelKernel_8h.html',1,'(Global Namespace)'],['../products_2GeneralBlockPanelKernel_8h.html',1,'(Global Namespace)']]],
+  ['generalblockpanelkernel_2eh_5',['generalblockpanelkernel.h',['../products_2GeneralBlockPanelKernel_8h.html',1,'(Global Namespace)'],['../arch_2NEON_2GeneralBlockPanelKernel_8h.html',1,'(Global Namespace)']]],
   ['generalizedeigensolver_2ecpp_6',['GeneralizedEigenSolver.cpp',['../GeneralizedEigenSolver_8cpp.html',1,'']]],
   ['generalizedeigensolver_2eh_7',['GeneralizedEigenSolver.h',['../GeneralizedEigenSolver_8h.html',1,'']]],
   ['generalizedselfadjointeigensolver_2eh_8',['GeneralizedSelfAdjointEigenSolver.h',['../GeneralizedSelfAdjointEigenSolver_8h.html',1,'']]],
