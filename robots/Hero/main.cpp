@@ -220,14 +220,14 @@ int main(){
             //Chassis Code
             if (drive == 'u' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::UP)){
                 //REGULAR DRIVING CODE
-                Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          jy * Chassis.m_OmniKinematicsLimits.max_Vel,
+                Chassis.setChassisSpeeds({jx * 0.5,
+                                          jy * 0.5,
                                           0 * Chassis.m_OmniKinematicsLimits.max_vOmega},
                                           ChassisSubsystem::YAW_ORIENTED);
             }else if (drive == 'd' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::DOWN)){
                 //BEYBLADE DRIVING CODE
-                Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          jy * Chassis.m_OmniKinematicsLimits.max_Vel,
+                Chassis.setChassisSpeeds({jx * 0.5,
+                                          jy * 0.5,
                                           -BEYBLADE_OMEGA},
                                           ChassisSubsystem::YAW_ORIENTED);
             }else{
