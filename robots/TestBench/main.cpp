@@ -419,22 +419,7 @@ int main(){
     // These values are for new sentry 2025
     pitch.setPositionPID(20.3544, 0.020221, 278.4383); // think about D-cap and potentially raising FF. if the setpoint is always higher than actual,
     pitch.setPositionIntegralCap(3000);
-    // then could try to up FF to get there
-    // pitch.setSpeedPID(0,0,0);
 
-    // /* Yaw Position PID */
-    // yaw.setPositionPID(5, 0, 0); // Very simple for now
-
-    /* Yaw Speed PID */
-    // yaw.setSpeedPID(3.5, 0, 150);
-    // yaw.setSpeedIntegralCap(1000);
-
-    // Old tune
-    // pitch.setPositionPID(15, 0, 1700);
-    // pitch.setPositionOutputCap(32000);
-
-    // Chassis.setYawReference(&yaw, 2050); // "5604" is the number of ticks of yaw considered to be robot-front
-//    Chassis.setSpeedFF_Ks(0.065);
 
     PID yawBeyblade(0.5, 0, 0);
     // PID yawNonBeyblade(0.15, 0, 550);
@@ -482,9 +467,14 @@ int main(){
     int yawVelo = 0;
 
 
-
     //shooting
     char shoot_toggle;
+
+    //shooting mechanics
+    bool shoot = 0;
+    int shootTargetPosition = 36*8190 ;
+    bool shootReady = false;
+    int debugShooting;
 
     //debug
     float pitch_in_deg = 0;
@@ -494,31 +484,42 @@ int main(){
     float diffRealExpectedPitch = 0;
     
 
-
     //Buffer stuff
-    char jetsonByte;
     int numBytes = 0;
     int totalBytes = 0;
+    int packetLoopCount = 0;
     char testPacketTx[10] = {0}, testChecksumTx;       //Tx self test
+    char orderPacket[9] = {0};
+    char orderPacketRx[9] = {0};
+
+        //more Buffer stuff
+        char bufferClear;
+        char testValues[9] = {0};
+    
+        char nineByteIndicator = 65;
+        char SecondByteIndicator = 65;
+        char fillerByte = 42;
+        ssize_t readResult;
+        ssize_t fillBufferDebug;
+        ssize_t readBufferDebug;
     
     //Rx
     char testPacketRx[10] = {0}, test_shoot_Rx, testChecksumRx;         //Rx self test
     float test_pitch_Rx, test_yaw_Rx;
 
-        //buffer packet testing  -test_... is for writing data to myself
-        float yaw_test_radians = 0;
-        bool test_direction = 0;
+    //buffer packet testing  -test_... is for writing data to myself
+    float yaw_test_radians = 0;
+    bool test_direction = 0;
 
-        float pitch_test_radians = 0;
-        char test_shoot = 0;
+    float pitch_test_radians = 0;
+    char test_shoot = 0;
 
-        //shooting mechanics
-        bool shoot = 0;
-        int shootTargetPosition = 36*8190 ;
-        bool shootReady = false;
-        int debugShooting;
 
-    
+
+    //-----------DEBUG PITCH DATA RECIEVED-------------------------
+    //REMEMBER YOU COMMENTED OUT THE SEND FEED BACK WRITING OF 30 BITS
+
+ 
 
     //PRINTLOOP
     int printLoop = 0;
@@ -534,7 +535,36 @@ int main(){
         //CV loop runs every 2ms
         if((timeStart - loopTimerCV) / 1000 > 0) { 
             loopTimerCV = timeStart;
-            jetson_send_feedback(); //  __COMENTED OUT LOOLOOKOKOLOOOOKO HERHEHRERHEHRHE
+            //jetson_send_feedback(); //  __COMENTED OUT LOOLOOKOKOLOOOOKO HERHEHRERHEHRHE
+
+            //write two order indicator bytes, then fill the rest with nothing
+            orderPacket[0] = SecondByteIndicator;
+            orderPacket[1] = nineByteIndicator;
+            orderPacket[2] = '*';
+            orderPacket[3] = '*';
+            orderPacket[4] = '*';
+            orderPacket[5] = '*';
+            orderPacket[6] = '*';
+            orderPacket[7] = '*';
+            orderPacket[8] = '*';
+
+            for (int i = 0 ; i < 9 ; ++i) {
+                printf("%c", orderPacket[i]);
+            }
+
+            fillBufferDebug = bcJetson.write(&orderPacket, 9);
+            printf(" ");
+            bcJetson.sync();
+
+            ++nineByteIndicator;
+            if (nineByteIndicator > 90) {
+                nineByteIndicator = 65;
+                ++SecondByteIndicator;
+                if ( SecondByteIndicator > 90 ) {
+                    SecondByteIndicator = 65;
+                }
+            }
+
             //basic_bitch_read();
             led2 = !led2;
         }
@@ -554,8 +584,37 @@ int main(){
 
                 refLoop = 0;
             }
+
+
+
+        //read 9 bytes of buffer, first two being indicators
+        ++packetLoopCount;
+
+        printf("\n\nReceived: ");
+        readBufferDebug = bcJetson.read(&orderPacketRx, 9);
+        for (int i = 0 ; i < 9 ; ++i) {
+            printf("%c", orderPacketRx[i]);
+        }
+        printf("\n\n");
+
+        //clear the buffer every 
+        if ( packetLoopCount >= 12 ) {
+            printf("\n\n CLEARING \n");
+            while ( bcJetson.readable() ) {
+                readBufferDebug = bcJetson.read(&orderPacketRx, 9);
+                for (int i = 0 ; i < 9 ; ++i) {
+                    printf("%c", orderPacketRx[i]);
+                }
+                printf(" ");
+                totalBytes += 9;
+            }
+            printf("total: %d\n\n", totalBytes);
+            totalBytes = 0;
+            packetLoopCount = 0;
+        }
+
           
-            int readResult = jetson_read_values(pitch_ANGLE, yaw_CV_angle, shoot_toggle);
+            //readResult = jetson_read_values(pitch_ANGLE, yaw_CV_angle, shoot_toggle);
             //printf("Rx Pitch: %.3f Yaw: %.3f Shoot: %d\n\n\n", pitch_ANGLE, yaw_CV_angle, shoot_toggle);
 
             //like idk why ig floats are fucked oop
@@ -701,21 +760,21 @@ int main(){
 
             //------------------CV SHOOTING---------------------------
 
-            ++printLoop;
-            if( printLoop >= 15){   //use for slower printing
-                printLoop = 0;
-                if (test_shoot == 0) { ++test_shoot; }
-                else { test_shoot = 0; }
-                // printf("Target: %d | Current: %d | Error: %d | Output: %d | dt: %lu\n",
-                //     shootTargetPosition,
-                //     indexerR >> MULTITURNANGLE,
-                //     shootTargetPosition - (indexerR >> MULTITURNANGLE),
-                //     debugShooting,
-                //     timeSure - prevTimeSure);
-                //printff("%d %d %d %d\n", test_shoot, shootReady, shootTargetPosition, indexerR>>MULTITURNANGLE);
-                //printff("%.3f %.3f %d\n", yaw_CV_angle, pitch_ANGLE, shoot_toggle);
-                printff("Y: %d %d ,%d [%d] P: %d %d ,%d\n", yaw_in_ticks, yaw>>ANGLE, yaw>>POWEROUT, dticks, pitch_in_ticks, pitch>>ANGLE, pitch>>POWEROUT);
-            }
+            // ++printLoop;
+            // if( printLoop >= 15){   //use for slower printing
+            //     printLoop = 0;
+            //     if (test_shoot == 0) { ++test_shoot; }
+            //     else { test_shoot = 0; }
+            //     // printf("Target: %d | Current: %d | Error: %d | Output: %d | dt: %lu\n",
+            //     //     shootTargetPosition,
+            //     //     indexerR >> MULTITURNANGLE,
+            //     //     shootTargetPosition - (indexerR >> MULTITURNANGLE),
+            //     //     debugShooting,
+            //     //     timeSure - prevTimeSure);
+            //     //printff("%d %d %d %d\n", test_shoot, shootReady, shootTargetPosition, indexerR>>MULTITURNANGLE);
+            //     //printff("%.3f %.3f %d\n", yaw_CV_angle, pitch_ANGLE, shoot_toggle);
+            //     //printff("Y: %d %d ,%d [%d] P: %d %d ,%d\n", yaw_in_ticks, yaw>>ANGLE, yaw>>POWEROUT, dticks, pitch_in_ticks, pitch>>ANGLE, pitch>>POWEROUT);
+            // }
 
             // pitch_in_ticks is relative to level = 0 ticks. PITCH_LEVEL_TICKS - pitch_in_ticks = abs position in ticks
             pitch.setPosition(PITCH_LEVEL_TICKS - pitch_in_ticks);
