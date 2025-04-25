@@ -4,6 +4,7 @@
 #include <math.h>
 
 #define PI 3.14159265
+#define TIME 15
 
 DigitalOut led(L26);
 DigitalOut led2(L27);
@@ -30,8 +31,8 @@ float calculateDeltaYaw(float actual, float desired)
     return deltaYaw;
 }
 
-float calculateDeltaPos (float actual, float desired) {
-    return abs (desired - actual);
+float calculateDistance(float posx, float posy, float final_x, float final_y) {
+    return sqrt(pow((final_x - posx), 2) + pow((final_y - posy), 2));
 }
 
 int main(){
@@ -56,7 +57,7 @@ int main(){
     ChassisSpeeds prev_velocity = {0.0, 0.0, 0.0};
     ChassisSpeeds accel = {0.0, 0.0, 0.0};
 
-    std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {200.0, 0.0}, {200.0, 200.0}, {0.0, 200.0}, {0.0, 0.0}};
+    std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {500.0, 0.0}, {500.0, 200.0}, {0.0, 200.0}, {0.0, 0.0}};
 
     float angle = 0.0;
     float posx = final_pos[0][0]; // need to go to 1676 ish
@@ -76,15 +77,16 @@ int main(){
     float buffer_x = 20.0;
     float buffer_angle = PI/16;
 
-    float ly_init = 0.8;
-    float lx_init = 0.8;
+    float vel_init = 0.8;
+    float accel_init = 0.3;
+    float decel_dist = 1000 * vel_init * vel_init / (2 * accel_init * TIME); // in mm
     float rx_init = 0.4; // you basically divide the angle you want by pi, so this is PI/4 / PI
 
     while(true){ //main loop
         timeStart_u = us_ticker_read();
 
         //inner loop runs every 25ms
-        if((timeStart_u - loopTimer_u) / 1000 > 25) { 
+        if((timeStart_u - loopTimer_u) / 1000 > TIME) { 
             loopTimer_u = timeStart_u;
             led2 = !led2; //led blink tells us how fast the inner loop is running
 
@@ -99,11 +101,11 @@ int main(){
             //MAIN CODE
             Chassis.periodic();
             velocity = Chassis.getChassisSpeeds();
-            accel =  {(velocity.vX - prev_velocity.vX) / 25, (velocity.vY - prev_velocity.vY) / 25, (velocity.vOmega - prev_velocity.vOmega) / 25};
+            accel =  {(velocity.vX - prev_velocity.vX) / TIME, (velocity.vY - prev_velocity.vY) / TIME, (velocity.vOmega - prev_velocity.vOmega) / TIME};
 
             // update pos and angle in mm
-            // velocities in m/s, acceleration in m/s^2, the loop runs every 25 ms
-            angle = angle + ((velocity.vOmega * 0.025 + (1/2 * accel.vOmega * 25 * 0.025)) * PI);
+            // velocities in m/s, acceleration in m/s^2, the loop runs every TIME ms
+            angle = angle + ((velocity.vOmega * TIME * 0.001 + (1/2 * accel.vOmega * TIME * TIME * 0.001)) * PI);
             while (angle > PI) {
                 angle -= 2*PI;
             }
@@ -111,9 +113,9 @@ int main(){
                 angle += 2*PI;
             }
             
-            posy = posy + ((velocity.vY * sin(angle)) - (velocity.vX * cos(angle))) * 25 + (1/2 * ((accel.vY * sin(angle)) - (accel.vX * cos(angle))) * 25 * 0.025);
+            posy = posy + ((velocity.vY * sin(angle)) - (velocity.vX * cos(angle))) * TIME + (1/2 * ((accel.vY * sin(angle)) - (accel.vX * cos(angle))) * TIME * TIME * 0.001);
             
-            posx = posx + ((velocity.vX * sin(angle)) + (velocity.vY * cos(angle))) * 25 + (1/2 * ((accel.vX * sin(angle)) + (accel.vY * cos(angle))) * 25 * 0.025);
+            posx = posx + ((velocity.vX * sin(angle)) + (velocity.vY * cos(angle))) * TIME + (1/2 * ((accel.vX * sin(angle)) + (accel.vY * cos(angle))) * TIME * TIME * 0.001);
 
             float lx = 0;
             float ly = 0;
@@ -170,47 +172,130 @@ int main(){
                 final_angle = atan2((final_pos[idx][1] - posy), (final_pos[idx][0] - posx));
 
                 float deltayaw = calculateDeltaYaw(angle, final_angle);
+                float distance = calculateDistance(posx, posy, final_x, final_y);
 
-                float deltax = calculateDeltaPos(posx, final_x);
-                float deltay = calculateDeltaPos(posy, final_y);
-
-                if (deltayaw > buffer_angle && (end == false)) {
-                    rx = rx_init;
-                }
-                else if (deltayaw < -buffer_angle && (end == false)) {
-                    rx = -rx_init;
-                } 
-                else {
-                    if ((deltay > buffer_y)) {
-                        ly = ly_init;
-                        if (idx > final_pos.size() - 1) {
-                            idx --;
-                            end = false;
-                        }
+                if ((final_y - posy) > buffer_y) {
+                    if (abs(velocity.vX) < vel_init) {
+                        lx = velocity.vX - accel_init;
                     }
                     else {
-                        if ((deltax > buffer_x)) {
-                            ly = ly_init;
-                            if (idx == final_pos.size() - 1) {
-                                end = false;
-                            }
+                        lx = -vel_init;
+                    }
+
+                    if (distance < decel_dist) {
+                        if (velocity.vX < 0) {
+                            lx = velocity.vX + accel_init;
                         }
                         else {
-                            // if we are close enough to the point, move to the next point
-                            if (idx < final_pos.size() - 1) {
-                                idx += 1;
-                                final_y = final_pos[idx][1];
-                                final_x = final_pos[idx][0];
-                                final_angle = atan2((final_pos[idx][1] - posy), (final_pos[idx][0] - posx));
-                            }
-                            else {
-                                end = true;
-                                ly = 0;
-                                rx = 0.5;
-                            }
+                            lx = 0;
                         }
                     }
                 }
+                else if ((posy - final_y) > buffer_y) {
+                    if (abs(velocity.vX) < vel_init) {
+                        lx = velocity.vX + accel_init;
+                    }
+                    else {
+                        lx = vel_init;
+                    }
+
+                    if (distance < decel_dist) {
+                        if (velocity.vX > 0) {
+                            lx = velocity.vX - accel_init;
+                        }
+                        else {
+                            lx = 0;
+                        }
+                    }
+                }
+                else {
+                    lx = 0;
+                }
+
+                if ((final_x - posx) > buffer_x) {
+                    if (velocity.vY < vel_init) {
+                        ly = velocity.vY + accel_init;
+                    }
+                    else {
+                        ly = vel_init;
+                    }
+
+                    if (distance < decel_dist) {
+                        if (velocity.vY > 0) {
+                            ly = velocity.vY - accel_init;
+                        }
+                        else {
+                            ly = 0;
+                        }
+                    }
+                }
+                else if ((posx - final_x) > buffer_x) {
+                    if (velocity.vY < -vel_init) {
+                        ly = velocity.vY - accel_init;
+                    }
+                    else {
+                        ly = -vel_init;
+                    }
+
+                    if (distance < decel_dist) {
+                        if (velocity.vY < 0) {
+                            ly = velocity.vY + accel_init;
+                        }
+                        else {
+                            ly = 0;
+                        }
+                    }
+                }
+                else {
+                    ly = 0;
+                }
+
+                if (ly == 0 && lx == 0){
+                    if (idx < final_pos.size() - 1) {
+                        idx += 1;
+                        final_y = final_pos[idx][1];
+                        final_x = final_pos[idx][0];
+                    }
+                }
+
+                // DEPRECATED ANGLE CHANGING CODE (THANKS ANSHAL)
+                // if (deltayaw > buffer_angle && (end == false)) {
+                //     rx = rx_init;
+                // }
+                // else if (deltayaw < -buffer_angle && (end == false)) {
+                //     rx = -rx_init;
+                // } 
+                // else {
+                //     if ((deltay > buffer_y)) {
+                //         ly = ly_init;
+                //         if (idx > final_pos.size() - 1) {
+                //             idx --;
+                //             end = false;
+                //         }
+                //     }
+                //     else {
+                //         if ((deltax > buffer_x)) {
+                //             ly = ly_init;
+                //             if (idx == final_pos.size() - 1) {
+                //                 end = false;
+                //             }
+                //         }
+                //         else {
+                //             // if we are close enough to the point, move to the next point
+                //             if (idx < final_pos.size() - 1) {
+                //                 idx += 1;
+                //                 final_y = final_pos[idx][1];
+                //                 final_x = final_pos[idx][0];
+                //                 final_angle = atan2((final_pos[idx][1] - posy), (final_pos[idx][0] - posx));
+                //             }
+                //             else {
+                //                 end = true;
+                //                 ly = 0;
+                //                 rx = 0.5;
+                //             }
+                //         }
+                //     }
+                // }
 
                 Chassis.setChassisSpeeds({lx, ly, rx}); 
             }
@@ -220,7 +305,7 @@ int main(){
 
             counter++;
             if (counter > 10) {
-                printfESP("X: %.3f, Y: %.3f, A: %.3f, %.3f %d\n", posx, posy, angle, final_angle, idx);
+                printfESP("X: %.3f, Y: %.3f, decel: %.3f, %.3f %d\n", posx, posy, angle, decel_dist, idx);
                 counter = 0;
             }
             //MOST CODE DOESNT NEED TO RUN FASTER THAN EVERY 25ms
