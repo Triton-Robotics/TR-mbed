@@ -65,10 +65,10 @@ DJIMotor indexerR(6, CANHandler::CANBUS_2, C610);
 
 ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
 
-DJIMotor RTOPFLYWHEEL(1, CANHandler::CANBUS_2, M3508_FLYWHEEL);
-DJIMotor LTOPFLYWHEEL(2, CANHandler::CANBUS_2, M3508_FLYWHEEL);
-DJIMotor RBOTTOMFLYWHEEL(4, CANHandler::CANBUS_2, M3508_FLYWHEEL);
-DJIMotor LBOTTOMFLYWHEEL(3, CANHandler::CANBUS_2, M3508_FLYWHEEL);
+DJIMotor RTOPFLYWHEEL(2, CANHandler::CANBUS_2, M3508_FLYWHEEL);
+DJIMotor LTOPFLYWHEEL(3, CANHandler::CANBUS_2, M3508_FLYWHEEL);
+DJIMotor RBOTTOMFLYWHEEL(1, CANHandler::CANBUS_2, M3508_FLYWHEEL);
+DJIMotor LBOTTOMFLYWHEEL(4, CANHandler::CANBUS_2, M3508_FLYWHEEL);
 
 BufferedSerial pc(USBTX, USBRX); // tx, rx
 float yaw_angle;
@@ -106,8 +106,8 @@ void setFlyWheelPower(int speed)
 {
     LTOPFLYWHEEL.setPower(-speed);
     LBOTTOMFLYWHEEL.setPower(speed);
-    RTOPFLYWHEEL.setPower(speed);
-    RBOTTOMFLYWHEEL.setPower(-speed);
+    RTOPFLYWHEEL.setPower(-speed);// changes made
+    RBOTTOMFLYWHEEL.setPower(speed);//
 }
 
 
@@ -532,7 +532,7 @@ int main(){
         timeStart = us_ticker_read();
 
         //CV loop runs every 2ms
-        if((timeStart - loopTimerCV) / 1000 > 0) { 
+        if((timeStart - loopTimerCV) / 1000 > 2) { 
             loopTimerCV = timeStart;
             jetson_send_feedback(); //  __COMENTED OUT LOOLOOKOKOLOOOOKO HERHEHRERHEHRHE
             //basic_bitch_read();
@@ -619,6 +619,7 @@ int main(){
                 //indexerL.setSpeed(2000);
                 if (shoot_toggle != 0) {
                     indexerR.setSpeed(30*36);
+                    indexerL.setSpeed(-30*36);
                 }
                 else { indexerR.setSpeed(0); }
             }
