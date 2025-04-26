@@ -618,8 +618,7 @@ int main(){
                 setFlyWheelPower(8000);
                 //indexerL.setSpeed(2000);
                 if (shoot_toggle != 0) {
-                    indexerR.setSpeed(30*36);
-                    indexerL.setSpeed(-30*36);
+                    indexerR.setSpeed(30*144);
                 }
                 else { indexerR.setSpeed(0); }
             }
