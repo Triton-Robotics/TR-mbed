@@ -241,6 +241,8 @@ int main(){
     //Indexer 
     indexerR.setSpeedPID(1, 0, 1);
     indexerR.setSpeedIntegralCap(8000);
+    indexerL.setSpeedPID(1,0,1);
+    indexerL.setSpeedIntegralCap(8000);
 
     unsigned long timeSure;
     unsigned long prevTimeSure;
@@ -348,7 +350,8 @@ int main(){
             {
                 setFlyWheelPower(8000);
                 if (shoot_toggle != 0) {
-                    indexerR.setSpeed(30*144);
+                    indexerR.setSpeed(30*120);
+                    indexerL.setSpeed(-30*120);
                 }
                 else { indexerR.setSpeed(0); }
             }
