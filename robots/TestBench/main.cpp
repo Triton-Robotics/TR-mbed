@@ -57,7 +57,7 @@ int main(){
     ChassisSpeeds prev_velocity = {0.0, 0.0, 0.0};
     ChassisSpeeds accel = {0.0, 0.0, 0.0};
 
-    std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {500.0, 0.0}, {500.0, 200.0}, {0.0, 200.0}, {0.0, 0.0}};
+    std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {500.0, 0.0}, {500.0, 500.0}, {0.0, 500.0}, {0.0, 0.0}};
 
     float angle = 0.0;
     float posx = final_pos[0][0]; // need to go to 1676 ish
@@ -77,8 +77,8 @@ int main(){
     float buffer_x = 20.0;
     float buffer_angle = PI/16;
 
-    float vel_init = 0.8;
-    float accel_init = 0.3;
+    float vel_init = 1.0; // should be max vel
+    float accel_init = 0.7;
     float decel_dist = 1000 * vel_init * vel_init / (2 * accel_init * TIME); // in mm
     float rx_init = 0.4; // you basically divide the angle you want by pi, so this is PI/4 / PI
 
@@ -131,48 +131,21 @@ int main(){
             }
             else if (remote.rightSwitch() == Remote::SwitchState::UP) {
                 led = 0;
-                // Purely changing x and y speeds, not rotation yet!
-                // if (final_pos[idx][1] - posy > buffer_y) {
-                //     ly = ly_init;
-                //     printff("Moving forward: %.3f\n", ly);
-                // }   
-                // else if (posy - final_pos[idx][1] > buffer_y) {
-                //     ly = -ly_init;
-                //     printff("Moving backward (should never be reached): %.3f\n", lx);
-                // }
-                // else {
-                //     ly = 0;
-                // }
-
-                // if (final_pos[idx][0] - posx > buffer_x) {
-                //     lx = lx_init;
-                //     printff("Moving right: %.3f\n", lx);
-                // }
-                // else if (posx - final_pos[idx][0] > buffer_x) {
-                //     lx = -lx_init;
-                //     printff("Moving left (should never be reached): %.3f\n", lx);
-                // }
-                // else {
-                //     lx = 0;
-                // }
-                // if (lx == 0 && ly == 0) {
-                //     if (idx < final_pos.size() - 1) {
-                //         idx++;
-                // }
-                // }
-                // if (abs(remote.leftX()) < 150 && inc_counter == 0) {
-                //    lx = remote.leftX();
-                // }
-                // if (abs(remote.rightX()) < 45) {
-                //    rx = remote.rightX();
-                // }
-                // lx = remote.leftX() / 660.0;
-                // ly = remote.leftY() / 660.0;
-
                 final_angle = atan2((final_pos[idx][1] - posy), (final_pos[idx][0] - posx));
 
                 float deltayaw = calculateDeltaYaw(angle, final_angle);
                 float distance = calculateDistance(posx, posy, final_x, final_y);
+
+                if (distance > 1000.0) {
+                    vel_init = 2.9;
+                    accel_init = 0.8;
+                    decel_dist = 1000 * vel_init * vel_init / (2 * accel_init * TIME);
+                }
+                else{
+                    vel_init = 1.0;
+                    accel_init = 0.6;
+                    decel_dist = 1000 * vel_init * vel_init / (2 * accel_init * TIME);
+                }
 
                 if ((final_y - posy) > buffer_y) {
                     if (abs(velocity.vX) < vel_init) {
@@ -258,45 +231,6 @@ int main(){
                     }
                 }
 
-                // DEPRECATED ANGLE CHANGING CODE (THANKS ANSHAL)
-                // if (deltayaw > buffer_angle && (end == false)) {
-                //     rx = rx_init;
-                // }
-                // else if (deltayaw < -buffer_angle && (end == false)) {
-                //     rx = -rx_init;
-                // } 
-                // else {
-                //     if ((deltay > buffer_y)) {
-                //         ly = ly_init;
-                //         if (idx > final_pos.size() - 1) {
-                //             idx --;
-                //             end = false;
-                //         }
-                //     }
-                //     else {
-                //         if ((deltax > buffer_x)) {
-                //             ly = ly_init;
-                //             if (idx == final_pos.size() - 1) {
-                //                 end = false;
-                //             }
-                //         }
-                //         else {
-                //             // if we are close enough to the point, move to the next point
-                //             if (idx < final_pos.size() - 1) {
-                //                 idx += 1;
-                //                 final_y = final_pos[idx][1];
-                //                 final_x = final_pos[idx][0];
-                //                 final_angle = atan2((final_pos[idx][1] - posy), (final_pos[idx][0] - posx));
-                //             }
-                //             else {
-                //                 end = true;
-                //                 ly = 0;
-                //                 rx = 0.5;
-                //             }
-                //         }
-                //     }
-                // }
-
                 Chassis.setChassisSpeeds({lx, ly, rx}); 
             }
             
@@ -308,12 +242,11 @@ int main(){
                 printfESP("X: %.3f, Y: %.3f, decel: %.3f, %.3f %d\n", posx, posy, angle, decel_dist, idx);
                 counter = 0;
             }
-            //MOST CODE DOESNT NEED TO RUN FASTER THAN EVERY 25ms
+            //MOST CODE DOESNT NEED TO RUN FASTER THAN EVERY 15ms
 
             timeEnd_u = us_ticker_read();
             DJIMotor::s_sendValues();
         }
-        //posy -= (velocity.vY + accel.vY * 0.0005);
 
         //FEEDBACK CODE DOES NEED TO RUN FASTER THAN 1MS
         //OTHER QUICK AND URGENT TASKS GO HERE
