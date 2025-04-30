@@ -78,7 +78,7 @@ float pitch_value = 0;
 float Pitch_value;
 float Yaw;
 char nucleo_value[30] = {0};
-char jetson_value[30] = {0};
+char jetson_value[100] = {0};
 
 struct fromJetson{
     float pitch_angle;
@@ -268,43 +268,133 @@ float jetson_send_feedback() {
  * @param yaw_move buffer to store desired yaw position
  */
 ssize_t jetson_read_values(float &pitch_move, float & yaw_move, char &shoot_switch) {
-    bcJetson.set_blocking(false);
-    char dumbByte;
+    bool check = 0;
+    ssize_t fillArrayCheck;
+    char *jetsonValuePtr = jetson_value;
+    unsigned int jetsonIndexShift = 0;            //relates to index of last byte in jetsonValues
+    unsigned int resultShift;                      //cycles final results array, 9 bytes
+    unsigned int shiftOffset;                      //cycles increments through 9 bytes relative to jetsonIndexShift
+    uint8_t theoryCheck;                           //calculated check from 8 bits of results
+    uint8_t checkSum;                              //last bit in results array              
+    char result[10] = {0};                          //array containing latest jetson_value data
 
-    ssize_t result = bcJetson.read(jetson_value, 10);
-    // for (int i = 0 ; i < 10 ; ++i ) {
-    //     printf("%d ", jetson_value[i]);
-    // }
-    // printf("\n");
-
-    if (result != -EAGAIN) { // If buffer not empty, decode data. Else do nothing
-        // Print raw buffer bytes as decimal integers
-        // printf("Raw buffer data: ");
-        // printf("\n");
-
-        uint8_t checkSum = jetson_value[9];
-        uint8_t theoryCheck = calculateLRC(jetson_value,9);
-        if(checkSum == theoryCheck){
-            decode_toSTM32(jetson_value, pitch_move, yaw_move, shoot_switch, checkSum);
-            //printf("Rx Pitch: %.3f Yaw: %.3f Shoot: %d Check: %d\nFIN\n\n", jetson_value, pitch_move, yaw_move, shoot_switch, checkSum);
+    if ( bcJetson.readable() ) {
+        printf("\n------------READING-----------\n");
+        while ( (fillArrayCheck >= 10) && (jetsonIndexShift < 100) ) {
+            fillArrayCheck = bcJetson.read(jetsonValuePtr+jetsonIndexShift, 10); //keep adding 10 bytes throughout array until buffer empty
+            jetsonIndexShift += 10;
+            printf("status: %d index: %d \n", fillArrayCheck, jetsonIndexShift);
+            for ( int i = 0 ; i < 100 ; ++i) {
+                printf("%d ", jetson_value[i]);
+            }
+            printf("\nread done\n");
         }
-        else{
-            led3 = !led3;
-        }  
 
-        //printf("\n\nclearing buffer: ");
-        while ( bcJetson.readable() ) {
-            ssize_t resultClear = bcJetson.read(&dumbByte, 1);
-            //printf("%d ", dumbByte);
-        }
-        //printf("\n------CLEARED------\n");
-    } 
 
-    else {
-        //printf("Err\n");
+        // 0 0 100 100 100 100 100 100 100 66 Err
+        // 0 0 100 100 100 100 100 100 100 66 Err
+        // 0 0 100 100 100 100 100 100 100 66 Err
+        // 0 0 100 100 100 100 100 100 100 66 Err
+        // 0 0 100 100 100 100 100 100 100 66 Err
+        // 0 0 100 100 100 100 100 100 100 66 Err
+        // 0 0 100 100 100 100 100 100 100 66 Err
+        // 0 0 100 100 100 100 100 100 100 66 Err
+        // 0 0 100 100 100 100 100 100 100 66 Err
+        // 0 0 100 100 100 100 100 100 100 66 Err
+        // 0 0 100 100 100 100 100 100 100 66 Err
+        // 0 0 100 100 100 100 100 100 100 66 Err
+        // 0 0 100 100 100 100 100 100 100 66 Err
+        // 0 0 100 100 100 100 100 100 100 66 Err
+        // 0 0 100 100 100 100 100 100 100 66 Err
+        // 0 0 100 100 100 100 100 100 100 66 Err
+        // 0 0 100 100 100 100 100 100 100 66 Err
+        // 0 0 100 100 100 100 100 100 100 66 Err
+        // 0 0 100 100 100 100 100 100 100 66 Err
+        // 0 0 100 100 100 100 100 100 100 66 Err
+        // 0 0 100 100 100 100 100 100 100 66 Err
+        // 0 0 100 100 100 100 100 100 100 66 Err
+        // 0 0 100 100 100 100 100 100 100 66 Err
+        // 0 0 100 100 100 100 100 100 100 66 Err
+        // 0 0 100 100 100 100 100 100 100 66 Err
+        // 0 0 100 100 100 100 100 100 100 66 Err
+        // 0 0 100 100 100 100 100 100 100 66 Err
+        // 0 0 100 100 100 100 100 100 100 66 Err
+        // 0 0 100 100 100 100 100 100 100 66 
+        // ------------READING-----------
+        // status: 10 index: 10 
+        // 0 0 100 100 100 100 100 100 100 66 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0  
+        //read done
+        
+
+        printf("DONE READING\n");
+        // while ( (jetson_value[jetsonIndexShift] != calculateLRC(jetsonValuePtr+jetsonIndexShift-10,9) ) && (jetsonIndexShift > 9) ) { //check checksum, and shift left if not matchign
+        //     --jetsonIndexShift;
+        //     printf("matching checksum's %d \n", jetsonIndexShift);
+        //     led3 = !led3;
+        // }
+        // printf("MATCHED\n");
+
+        //fill results array with latest data
+        // for (shiftOffset = (jetsonIndexShift-10); shiftOffset <= (jetsonIndexShift) ; ++shiftOffset) {
+        //     result[shiftOffset] = jetson_value[shiftOffset];
+        //     printf("filling result array \n");
+        // }
+
+        //comparing final bit to the theoretical to check for complete packet
+
+        // if (jetsonIndexShift > 8) {
+        //     --jetsonIndexShift;
+        // }
+        printf("jetIdxShift %d \n", jetsonIndexShift);
+        decode_toSTM32(jetson_value, pitch_move, yaw_move, shoot_switch, checkSum);
+        jetsonIndexShift = 0;
+    } else {
+        printf("Err\n");
     }
-    return result;
+    return fillArrayCheck;
 }
+        
+        
+    
+//     bcJetson.set_blocking(false);
+//     char dumbByte;
+//     int debugCount = 0;
+
+//     ssize_t result = bcJetson.read(jetson_value, 10);
+//     for (int i = 0 ; i < 10 ; ++i ) {
+//         printf("%c ", jetson_value[i]);
+//     }
+//     printf(" read complete\n\n");
+
+//     if (result != -EAGAIN) { // If buffer not empty, decode data. Else do nothing
+//         // Print raw buffer bytes as decimal integers
+//         // printf("Raw buffer data: ");
+//         // printf("\n");
+
+//         uint8_t checkSum = jetson_value[9];
+//         uint8_t theoryCheck = calculateLRC(jetson_value,9);
+//         if(checkSum == theoryCheck){
+//             decode_toSTM32(jetson_value, pitch_move, yaw_move, shoot_switch, checkSum);
+//             //printf("Rx Pitch: %.3f Yaw: %.3f Shoot: %d Check: %d\nFIN\n\n", jetson_value, pitch_move, yaw_move, shoot_switch, checkSum);
+//         }
+//         else{
+//             led3 = !led3;
+//         }  
+
+//         //printf("\n\nclearing buffer: ");
+//         while ( bcJetson.readable() ) {
+//             ssize_t resultClear = bcJetson.read(&dumbByte, 1);
+//             printf("%c ", dumbByte);
+//             ++debugCount;
+//         }
+//         printf("\n------CLEARED------ bytes: %d\n", debugCount);
+//     } 
+
+//     else {
+//         //printf("Err\n");
+//     }
+//     return result;
+// }
 
 
 // think this is bad copy of jetson_read_values
@@ -489,15 +579,16 @@ int main(){
     int totalBytes = 0;
     int packetLoopCount = 0;
     char testPacketTx[10] = {0}, testChecksumTx;       //Tx self test
-    char orderPacket[9] = {0};
-    char orderPacketRx[9] = {0};
+    char orderPacket[10] = {0};
+    char orderPacketRx[100] = {0};
+    char *arrayPtr = orderPacketRx;
 
         //more Buffer stuff
         char bufferClear;
         char testValues[9] = {0};
     
-        char nineByteIndicator = 65;
-        char SecondByteIndicator = 65;
+        char nineByteIndicator = 0;
+        char SecondByteIndicator = 0;
         char fillerByte = 42;
         ssize_t readResult;
         ssize_t fillBufferDebug;
@@ -540,81 +631,86 @@ int main(){
             //write two order indicator bytes, then fill the rest with nothing
             orderPacket[0] = SecondByteIndicator;
             orderPacket[1] = nineByteIndicator;
-            orderPacket[2] = '*';
-            orderPacket[3] = '*';
-            orderPacket[4] = '*';
-            orderPacket[5] = '*';
-            orderPacket[6] = '*';
-            orderPacket[7] = '*';
-            orderPacket[8] = '*';
+            orderPacket[2] = 100;
+            orderPacket[3] = 100;
+            orderPacket[4] = 100;
+            orderPacket[5] = 100;
+            orderPacket[6] = 100;
+            orderPacket[7] = 100;
+            orderPacket[8] = 100;
+            orderPacket[9] = 66; //checksum
 
-            for (int i = 0 ; i < 9 ; ++i) {
-                printf("%c", orderPacket[i]);
+            for (int i = 0 ; i < 10 ; ++i) {
+                printf("%d ", orderPacket[i]);
             }
 
-            fillBufferDebug = bcJetson.write(&orderPacket, 9);
-            printf(" ");
+            fillBufferDebug = bcJetson.write(orderPacket, 10);
             bcJetson.sync();
 
-            ++nineByteIndicator;
-            if (nineByteIndicator > 90) {
-                nineByteIndicator = 65;
-                ++SecondByteIndicator;
-                if ( SecondByteIndicator > 90 ) {
-                    SecondByteIndicator = 65;
-                }
-            }
+        //     ++nineByteIndicator;
+        //     if (nineByteIndicator > 10) {
+        //         nineByteIndicator = 0;
+        //         ++SecondByteIndicator;
+        //         if ( SecondByteIndicator > 10 ) {
+        //             SecondByteIndicator = 0;
+        //         }
+        //     }
 
-            //basic_bitch_read();
-            led2 = !led2;
-        }
+        //     //basic_bitch_read();
+        //     led2 = !led2;
+        // }
+        // if ((timeStart - loopTimer) / 1000 > 15){
+        //     led = !led;
 
-        if ((timeStart - loopTimer) / 1000 > 15){
-            led = !led;
+        //     //int sizePacket = bcJetson.available();
+        //     refLoop++;
+        //     // remoteRead();
+        //     remoteRead();
+        //     Chassis.periodic();
+        //     cs = Chassis.getChassisSpeeds();
 
-            //int sizePacket = bcJetson.available();
-            refLoop++;
-            // remoteRead();
-            remoteRead();
-            Chassis.periodic();
-            cs = Chassis.getChassisSpeeds();
+        //     if (refLoop >= 5){
+        //         refereeThread(&referee);
 
-            if (refLoop >= 5){
-                refereeThread(&referee);
-
-                refLoop = 0;
-            }
-
+        //         refLoop = 0;
+        //     }
 
 
-        //read 9 bytes of buffer, first two being indicators
-        ++packetLoopCount;
 
-        printf("\n\nReceived: ");
-        readBufferDebug = bcJetson.read(&orderPacketRx, 9);
-        for (int i = 0 ; i < 9 ; ++i) {
-            printf("%c", orderPacketRx[i]);
-        }
-        printf("\n\n");
 
-        //clear the buffer every 
-        if ( packetLoopCount >= 12 ) {
-            printf("\n\n CLEARING \n");
-            while ( bcJetson.readable() ) {
-                readBufferDebug = bcJetson.read(&orderPacketRx, 9);
-                for (int i = 0 ; i < 9 ; ++i) {
-                    printf("%c", orderPacketRx[i]);
-                }
-                printf(" ");
-                totalBytes += 9;
-            }
-            printf("total: %d\n\n", totalBytes);
-            totalBytes = 0;
-            packetLoopCount = 0;
-        }
+        // printf("\n\nReceived: ");
+        // if ( bcJetson.readable() ) {
+        //     readBufferDebug = bcJetson.read( (arrayPtr + packetLoopCount), 10);
+        //     for (int i = 0 ; i < 100 ; ++i) {
+        //         printf("%d ", orderPacketRx[i]);
+        //     }
+        // }
+        // //read 9 bytes of buffer, first two being indicators
+        // packetLoopCount += 10;
+
+        // printf("\ntest loop: %d\n", packetLoopCount);
+
+        // //clear the buffer every 
+        // if ( packetLoopCount >= 50 ) {
+        //     printf("\n\n CLEARING \n");
+        //     while ( bcJetson.readable() ) {
+        //         readBufferDebug = bcJetson.read(orderPacketRx, 10);
+        //         for (int i = 0 ; i < 10 ; ++i) {
+        //             printf("%d ", orderPacketRx[i]);
+        //         }
+        //         printf(" ");
+        //         totalBytes += 9;
+        //     }
+        //     for (int i = 0 ; i < 100 ; ++i) {
+        //         orderPacketRx[i] = 0;
+        //     }
+        //     printf("total: %d\n\n", totalBytes);
+        //     totalBytes = 0;
+        //     packetLoopCount = 0;
+        // }
 
           
-            //readResult = jetson_read_values(pitch_ANGLE, yaw_CV_angle, shoot_toggle);
+            readResult = jetson_read_values(pitch_ANGLE, yaw_CV_angle, shoot_toggle);
             //printf("Rx Pitch: %.3f Yaw: %.3f Shoot: %d\n\n\n", pitch_ANGLE, yaw_CV_angle, shoot_toggle);
 
             //like idk why ig floats are fucked oop
