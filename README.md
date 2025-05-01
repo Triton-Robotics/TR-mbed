@@ -86,6 +86,12 @@ mbed-tools sterm -b 115200
 
 See the [Troubleshooting](.md/TROUBLESHOOTING.md) guide for common issues and solutions.
 
+---
+
+## Debugging
+
+See the [Debugging](.md/debug/stm32cubeide.md) guide on how to run the debugger using STM32CubeIDE
+
 --- 
 
 ## Documentation
