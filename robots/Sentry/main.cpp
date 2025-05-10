@@ -90,9 +90,9 @@ int main()
 
     //     merge difference
     //     PID yawIMU(200.0, 0.1, 150, 20000, 8000); // 7.0,0.02,15.0,20000,8000
-    Chassis.setYawReference(&yaw, 4098); // "5604" is the number of ticks of yawOne considered to be robot-front
+    Chassis.setYawReference(&yaw, 1475); // "5604" is the number of ticks of yawOne considered to be robot-front
     Chassis.setSpeedFF_Ks(0.065);
-    
+
     yaw.setSpeedPID(3.5, 0, 200);
     PID yawBeyblade(0.32, 0, 550);
     PID yawNonBeyblade(0.15, 0, 550);
