@@ -5,17 +5,21 @@
 
 #define PI 3.14159265
 #define TIME 15
+#define RADIUS 0.244475
 
 DigitalOut led(L26);
 DigitalOut led2(L27);
 DigitalOut led3(L25);
 
-I2C i2c(I2C_SDA, I2C_SCL);
-
 //DEFINE MOTORS, ETC
 const int RPM_MAX = 9000;
 const int REMOTE_MAX = 660;
 const int RPM_REMOTE_RATIO = RPM_MAX / REMOTE_MAX;
+
+//CHASSIS DEFINING
+I2C i2c(I2C_SDA, I2C_SCL);
+BNO055 imu(i2c, IMU_RESET, MODE_IMU);
+ChassisSubsystem Chassis(1, 2, 3, 4, imu, RADIUS); // radius is 9.625 in
 
 float calculateDeltaYaw(float actual, float desired)
 {
@@ -49,9 +53,6 @@ int main(){
 
     int refLoop = 0;
 
-    //DEFINE PIDs AND OTHER CONSTANTS
-    BNO055 imu(i2c, IMU_RESET, MODE_IMU);
-    ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 inch
     
     ChassisSpeeds velocity = {0.0, 0.0, 0.0};
     ChassisSpeeds prev_velocity = {0.0, 0.0, 0.0};
@@ -78,7 +79,7 @@ int main(){
     float buffer_angle = PI/16;
 
     float vel_init = 1.0; // should be max vel
-    float accel_init = 0.7;
+    float accel_init = 0.4;
     float decel_dist = 1000 * vel_init * vel_init / (2 * accel_init * TIME); // in mm
     float rx_init = 0.4; // you basically divide the angle you want by pi, so this is PI/4 / PI
 
@@ -88,7 +89,7 @@ int main(){
         //inner loop runs every 25ms
         if((timeStart_u - loopTimer_u) / 1000 > TIME) { 
             loopTimer_u = timeStart_u;
-            led2 = !led2; //led blink tells us how fast the inner loop is running
+            led3 = !led3; //led blink tells us how fast the inner loop is running
 
             if (refLoop >= 5) { //ref code runs 5 of every inner loop, 
                 refLoop = 0;
@@ -121,6 +122,8 @@ int main(){
             float ly = 0;
             float rx = 0;
 
+            Chassis.setOmniKinematics(posx, posy, RADIUS);
+
             if (remote.rightSwitch() == Remote::SwitchState::MID || remote.rightSwitch() == Remote::SwitchState::UNKNOWN) {
                 led = 1;
                 lx = (remote.leftX() / 660.0) * Chassis.m_OmniKinematicsLimits.max_Vel;
@@ -136,15 +139,25 @@ int main(){
                 float deltayaw = calculateDeltaYaw(angle, final_angle);
                 float distance = calculateDistance(posx, posy, final_x, final_y);
 
-                if (distance > 1000.0) {
-                    vel_init = 2.9;
-                    accel_init = 0.8;
-                    decel_dist = 1000 * vel_init * vel_init / (2 * accel_init * TIME);
+                // if (distance > 1000.0) {
+                //     vel_init = 2.9;
+                //     accel_init = 0.8;
+                //     decel_dist = 1000 * vel_init * vel_init / (2 * accel_init * TIME);
+                // }
+                // else{
+                //     vel_init = 1.0;
+                //     accel_init = 0.6;
+                //     decel_dist = 1000 * vel_init * vel_init / (2 * accel_init * TIME);
+                // }
+
+                if (angle > buffer_angle) {
+                    rx = -rx_init;
                 }
-                else{
-                    vel_init = 1.0;
-                    accel_init = 0.6;
-                    decel_dist = 1000 * vel_init * vel_init / (2 * accel_init * TIME);
+                else if (angle < -buffer_angle) {
+                    rx = rx_init;
+                }
+                else {
+                    rx = 0;
                 }
 
                 if ((final_y - posy) > buffer_y) {
@@ -223,15 +236,127 @@ int main(){
                     ly = 0;
                 }
 
-                if (ly == 0 && lx == 0){
+                if ((ly == 0 && lx == 0) || (distance < M_SQRT2 * buffer_x)) {
                     if (idx < final_pos.size() - 1) {
                         idx += 1;
                         final_y = final_pos[idx][1];
                         final_x = final_pos[idx][0];
                     }
+                    else {
+                        idx = 0;
+                        final_y = final_pos[idx][1];
+                        final_x = final_pos[idx][0];
+                    }
+
+                    ly = 0;
+                    lx = 0;
                 }
 
                 Chassis.setChassisSpeeds({lx, ly, rx}); 
+            }
+            // else if (remote.rightSwitch() == Remote::SwitchState::DOWN) {
+            //     float distance = calculateDistance(posx, posy, final_x, final_y);
+
+            //     // if (distance > 10000.0) {
+            //     //     vel_init = 2.9;
+            //     //     accel_init = 0.8;
+            //     //     decel_dist = 1000 * vel_init * vel_init / (2 * accel_init * TIME);
+            //     // }
+            //     // else{
+            //     //     vel_init = 1.0;
+            //     //     accel_init = 0.6;
+            //     //     decel_dist = 1000 * vel_init * vel_init / (2 * accel_init * TIME);
+            //     // }
+
+            //     if ((final_y - posy) > buffer_y) {
+            //         if (abs(velocity.vX) < vel_init) {
+            //             lx = velocity.vX - accel_init;
+            //         }
+            //         else {
+            //             lx = -vel_init;
+            //         }
+
+            //         if (distance < decel_dist) {
+            //             if (velocity.vX < 0) {
+            //                 lx = velocity.vX + accel_init;
+            //             }
+            //             else {
+            //                 lx = 0;
+            //             }
+            //         }
+            //     }
+            //     else if ((posy - final_y) > buffer_y) {
+            //         if (abs(velocity.vX) < vel_init) {
+            //             lx = velocity.vX + accel_init;
+            //         }
+            //         else {
+            //             lx = vel_init;
+            //         }
+
+            //         if (distance < decel_dist) {
+            //             if (velocity.vX > 0) {
+            //                 lx = velocity.vX - accel_init;
+            //             }
+            //             else {
+            //                 lx = 0;
+            //             }
+            //         }
+            //     }
+            //     else {
+            //         lx = 0;
+            //     }
+
+            //     if ((final_x - posx) > buffer_x) {
+            //         if (velocity.vY < vel_init) {
+            //             ly = velocity.vY + accel_init;
+            //         }
+            //         else {
+            //             ly = vel_init;
+            //         }
+
+            //         if (distance < decel_dist) {
+            //             if (velocity.vY > 0) {
+            //                 ly = velocity.vY - accel_init;
+            //             }
+            //             else {
+            //                 ly = 0;
+            //             }
+            //         }
+            //     }
+            //     else if ((posx - final_x) > buffer_x) {
+            //         if (velocity.vY < -vel_init) {
+            //             ly = velocity.vY - accel_init;
+            //         }
+            //         else {
+            //             ly = -vel_init;
+            //         }
+
+            //         if (distance < decel_dist) {
+            //             if (velocity.vY < 0) {
+            //                 ly = velocity.vY + accel_init;
+            //             }
+            //             else {
+            //                 ly = 0;
+            //             }
+            //         }
+            //     }
+            //     else {
+            //         ly = 0;
+            //     }
+
+            //     if (ly == 0 && lx == 0){
+            //         if (idx < final_pos.size() - 1) {
+            //             idx += 1;
+            //             final_y = final_pos[idx][1];
+            //             final_x = final_pos[idx][0];
+            //         }
+            //     }
+
+            //     Chassis.setChassisSpeeds({lx, ly, -1.0}, ChassisSubsystem::YAW_ORIENTED);
+            // }
+            else{
+                //OFF
+                Chassis.setWheelPower({0,0,0,0});
             }
             
             prev_velocity = {velocity.vX, velocity.vY, velocity.vOmega};
@@ -239,7 +364,9 @@ int main(){
 
             counter++;
             if (counter > 10) {
-                printfESP("X: %.3f, Y: %.3f, decel: %.3f, %.3f %d\n", posx, posy, angle, decel_dist, idx);
+                //printff("X: %.3f, Y: %.3f, decel: %.3f, %.3f %d\n", posx, posy, angle, decel_dist, idx);
+                WheelSpeeds curr = Chassis.getWheelSpeeds();
+                printff("LF: %.3f RF: %.3f LB: %.3f RB: %.3f\n", curr.LF, curr.RF, curr.LB, curr.RB);
                 counter = 0;
             }
             //MOST CODE DOESNT NEED TO RUN FASTER THAN EVERY 15ms

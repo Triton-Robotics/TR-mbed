@@ -1,5 +1,6 @@
 #include "main.h"
 #include "subsystems/ChassisSubsystem.h"
+#include "util/motor/DJIMotor.h"
 
 DigitalOut led(L25);
 DigitalOut led2(L26);
@@ -343,18 +344,21 @@ int main(){
             printLoop ++;
             if (printLoop >= PRINT_FREQUENCY){
                 printLoop = 0;
+                printff("LF: %d RF: %d LB: %d RB: %d\n", Chassis.getMotor(ChassisSubsystem::MotorLocation::LEFT_FRONT).getData(motorDataType::VELOCITY), Chassis.getMotor(ChassisSubsystem::MotorLocation::RIGHT_FRONT).getData(motorDataType::VELOCITY), Chassis.getMotor(ChassisSubsystem::MotorLocation::LEFT_BACK).getData(motorDataType::VELOCITY), Chassis.getMotor(ChassisSubsystem::MotorLocation::RIGHT_BACK).getData(motorDataType::VELOCITY));
+
+                printff("LFval: %d RFval: %d LBval: %d RBval: %d\n", Chassis.getMotor(ChassisSubsystem::MotorLocation::LEFT_FRONT).getData(motorDataType::VALUE), Chassis.getMotor(ChassisSubsystem::MotorLocation::RIGHT_FRONT).getData(motorDataType::VALUE), Chassis.getMotor(ChassisSubsystem::MotorLocation::LEFT_BACK).getData(motorDataType::VALUE), Chassis.getMotor(ChassisSubsystem::MotorLocation::RIGHT_BACK).getData(motorDataType::VALUE));
                 //printff("Prints:\n");
                 //printff("lX:%.1f lY:%.1f rX:%.1f rY:%.1f lS:%d rS:%d\n", remote.leftX(), remote.leftY(), remote.rightX(), remote.rightY(), remote.leftSwitch(), remote.rightSwitch());
                 //printff("jx:%.3f jy:%.3f jpitch:%.3f jyaw:%.3f\n", jx, jy, jpitch, jyaw);
-                #ifdef USE_IMU
-                printff("yaw_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
-                printff("yaw_des:%.3f yaw_act:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180);
-                #else
-                printff("yaw_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
-                printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
-                #endif
+                // #ifdef USE_IMU
+                // printff("yaw_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
+                // printff("yaw_des:%.3f yaw_act:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180);
+                // #else
+                // printff("yaw_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
+                // printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
+                // #endif
                 //printff("pitch_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
-                printff("pitch_des:%.3f pitch_act:%.3f [%d]\n", pitch_desired_angle, pitch_current_angle, pitch>>ANGLE);
+                // printff("pitch_des:%.3f pitch_act:%.3f [%d]\n", pitch_desired_angle, pitch_current_angle, pitch>>ANGLE);
                 //printff("cX%.1f cY%.1f cOmega%.3f cRPM%.1f\n", cs.vX, cs.vY, cs.vOmega, cs.vOmega * 60 / (2*M_PI) * 4);
                 // printff("Chassis: LF:%c RF:%c LB:%c RB:%c Yaw:%c Pitch:%c Flywheel_L:%c Flywheel_R:%c Indexer:%c\n", 
                 //     Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).isConnected() ? 'y' : 'n', 
@@ -369,7 +373,7 @@ int main(){
                 #ifdef USE_IMU
                 //printff("IMU %.3f %.3f %.3f\n",imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
                 #endif
-                printff("elap:%.5fms\n", elapsedms);
+                // printff("elap:%.5fms\n", elapsedms);
             }
 
             DJIMotor::s_sendValues();

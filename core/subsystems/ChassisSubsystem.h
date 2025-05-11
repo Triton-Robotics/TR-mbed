@@ -28,7 +28,7 @@
 #define PI 3.14159265
 #define SECONDS_PER_MINUTE 60
 #define TICKS_PER_ROTATION 8192.0
-#define WHEEL_DIAMETER_METERS 4.75 * 0.0254
+#define WHEEL_DIAMETER_METERS 5.78 * 0.0254
 
 #define MAX_BEYBLADE_SPEED 1800
 #define BEYBLADE_ACCELERATION 0.05
@@ -36,7 +36,10 @@
 
 struct OmniKinematics
 {
-    double r1x, r1y, r2x, r2y, r3x, r3y, r4x, r4y;
+    double r1x, r1y, r1, // 4x3 matrix of form: (-sin(a1+w) cos (a1+w)) R)
+           r2x, r2y, r2, //                     (-sin(a2+w) cos (a2+w)) R)
+           r3x, r3y, r3, //                     (-sin(a3+w) cos (a3+w)) R)
+           r4x, r4y, r4; //                     (-sin(a4+w) cos (a4+w)) R)
 };
 
 struct WheelSpeeds
@@ -330,6 +333,9 @@ public:
     int testData[300][4];
     int testDataIndex = 0;
 
+    void setOmniKinematics(double x, double y, double radius);
+
+
 private:
     DJIMotor LF, RF, LB, RB;
     DJIMotor *yaw = 0;
@@ -348,7 +354,6 @@ private:
     static double radPerSecondToRPM(double radPerSecond);
 
     OmniKinematics m_OmniKinematics;
-    void setOmniKinematics(double radius);
     // Eigen::MatrixXd wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds);
 
     double FF_Ks;

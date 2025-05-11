@@ -18,7 +18,7 @@ constexpr float BEYBLADE_OMEGA = 1.0;
 // constexpr float MOUSE_SENSITIVITY_PITCH = 1.0/5;
 
 //DEGREES PER SECOND AT MAX
-constexpr float JOYSTICK_SENSITIVITY_YAW_DPS = 90.0; 
+constexpr float JOYSTICK_SENSITIVITY_YAW_DPS = 45.0; 
 constexpr float JOYSTICK_SENSITIVITY_PITCH_DPS = 90.0;
 constexpr float MOUSE_SENSITIVITY_YAW_DPS = 1.0;
 constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 1.0;
@@ -29,12 +29,12 @@ constexpr int PRINT_FREQUENCY = 20; //the higher the number, the less often
 
 constexpr float CHASSIS_FF_KICK = 0.065;
 
-//#define USE_IMU
+#define USE_IMU
 
 //CHASSIS DEFINING
 I2C i2c(I2C_SDA, I2C_SCL);
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
-ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
+ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.27305); // radius is 9 in
 DJIMotor yaw(1, CANHandler::CANBUS_1, GIMBLY,"Yeah");
 DJIMotor pitch(5, CANHandler::CANBUS_2, GIMBLY,"Peach"); // right
 
@@ -120,7 +120,7 @@ int main(){
     bool shootReady = false;
 
     //CHASSIS
-    Chassis.setYawReference(&yaw, 6500); //the number of ticks of yaw considered to be robot-front
+    Chassis.setYawReference(&yaw, 2400); //the number of ticks of yaw considered to be robot-front
     //Common values for reference are 6500 and 2500
     Chassis.setSpeedFF_Ks(CHASSIS_FF_KICK); //feed forward "kick" for wheels, a constant multiplier of max power in the direcion of movment
 
@@ -146,6 +146,8 @@ int main(){
     int refLoop = 0;
     int printLoop = 0;
 
+    ChassisSpeeds cs;
+
     while(true){
         timeStart = us_ticker_read();
 
@@ -167,6 +169,8 @@ int main(){
                 }
                 
             }
+            Chassis.periodic();
+            cs = Chassis.getChassisSpeeds();
             remoteRead();
 
             #ifdef USE_IMU
@@ -238,6 +242,9 @@ int main(){
             //YAW CODE
             if (drive == 'u' || drive == 'd' || (drive =='o' && (remote.rightSwitch() == Remote::SwitchState::UP || remote.rightSwitch() == Remote::SwitchState::DOWN))){
                 //Regular Yaw Code
+                float chassis_rotation_radps = cs.vOmega;
+                int chassis_rotation_rpm = chassis_rotation_radps * 60 / (2*M_PI) * 5;
+
                 yaw_desired_angle -= jyaw * MOUSE_SENSITIVITY_YAW_DPS * elapsedms / 1000;
                 yaw_desired_angle -= jyaw * JOYSTICK_SENSITIVITY_YAW_DPS * elapsedms / 1000;
                 //yaw_desired_angle = (yaw_desired_angle + 360) % 360;
@@ -250,6 +257,7 @@ int main(){
                 #else
                 yawVelo = yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yaw_desired_angle, yaw_current_angle, 360), timeSure - prevTimeSure);
                 #endif
+                yawVelo -= chassis_rotation_rpm;
 
                 int dir = 0;
                 if(yawVelo > 0){
@@ -370,25 +378,25 @@ int main(){
                 //printff("lX:%.1f lY:%.1f rX:%.1f rY:%.1f lS:%d rS:%d\n", remote.leftX(), remote.leftY(), remote.rightX(), remote.rightY(), remote.leftSwitch(), remote.rightSwitch());
                 //printff("jx:%.3f jy:%.3f jpitch:%.3f jyaw:%.3f\n", jx, jy, jpitch, jyaw);
                 #ifdef USE_IMU
-                printff("yaw_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
-                printff("yaw_des:%.3f yaw_act:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180);
+                printff("yaw_des_v:%d yaw_act_v:%d\n", yawVelo, yaw>>VELOCITY);
+                // printff("yaw_des:%.3f yaw_act:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180);
                 #else
                 printff("yaw_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
                 printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
                 #endif
-                printff("elap:%.5fms\n", elapsedms);
-                printff("Chassis: LF:%c RF:%c LB:%c RB:%c\n", 
-                    Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).isConnected() ? 'y' : 'n', 
-                    Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).isConnected() ? 'y' : 'n', 
-                    Chassis.getMotor(ChassisSubsystem::LEFT_BACK).isConnected() ? 'y' : 'n', 
-                    Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).isConnected() ? 'y' : 'n');
-                printff("Y:%c P:%c F_L:%c F_R:%c I:%c F:%c\n",
-                    yaw.isConnected() ? 'y' : 'n', 
-                    pitch.isConnected() ? 'y' : 'n', 
-                    LFLYWHEEL.isConnected() ? 'y' : 'n', 
-                    RFLYWHEEL.isConnected() ? 'y' : 'n',
-                    indexer.isConnected() ? 'y' : 'n',
-                    feeder.isConnected() ? 'y' : 'n');
+                // printff("elap:%.5fms\n", elapsedms);
+                // printff("Chassis: LF:%c RF:%c LB:%c RB:%c\n", 
+                //     Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).isConnected() ? 'y' : 'n', 
+                //     Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).isConnected() ? 'y' : 'n', 
+                //     Chassis.getMotor(ChassisSubsystem::LEFT_BACK).isConnected() ? 'y' : 'n', 
+                //     Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).isConnected() ? 'y' : 'n');
+                // printff("Y:%c P:%c F_L:%c F_R:%c I:%c F:%c\n",
+                //     yaw.isConnected() ? 'y' : 'n', 
+                //     pitch.isConnected() ? 'y' : 'n', 
+                //     LFLYWHEEL.isConnected() ? 'y' : 'n', 
+                //     RFLYWHEEL.isConnected() ? 'y' : 'n',
+                //     indexer.isConnected() ? 'y' : 'n',
+                //     feeder.isConnected() ? 'y' : 'n');
                 #ifdef USE_IMU
                 //printff("IMU %.3f %.3f %.3f\n",imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
                 #endif
