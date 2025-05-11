@@ -269,43 +269,21 @@ float jetson_send_feedback() {
  */
 ssize_t jetson_read_values(float &pitch_move, float & yaw_move, char &shoot_switch) {
     bcJetson.set_blocking(false);
-    bool check = 0;
+    int i;
     char clear;
     ssize_t fillArrayCheck = 10;
-    char *jetsonValuePtr = jetson_value;
+    char *jetsonValuePtr = jetson_value;        //ptr pointing to memory address of jetson values
     unsigned int jetsonIndexShift = 0;            //relates to index of last byte in jetsonValues
-    unsigned int resultShift;                      //cycles final results array, 9 bytes
-    unsigned int shiftOffset;                      //cycles increments through 9 bytes relative to jetsonIndexShift
-    uint8_t theoryCheck;                           //calculated check from 8 bits of results
     uint8_t checkSum;                              //last bit in results array              
-    char result[10] = {0};                          //array containing latest jetson_value data
 
     if ( bcJetson.readable() ) {
         printf("\nread\n");
         while ( (fillArrayCheck >= 10) && (jetsonIndexShift < 200) ) {
-            //printf("RE loop\n");
-            //printf("\nstat: %d ind: %d \n", fillArrayCheck, jetsonIndexShift);
-            //printf("read nxt \n");
-
             fillArrayCheck = bcJetson.read(jetsonValuePtr+jetsonIndexShift, 10); //keep adding 10 bytes throughout array until buffer empty
-            //printf("stat: %d is 10?\n", fillArrayCheck);
-
             jetsonIndexShift += 10;
-            //printf("in %d \n", jetsonIndexShift);
-            // for ( int i = 0 ; i < jetsonIndexShift ; ++i) {
-            //     printf("%d ", jetson_value[i]);
-            // }
-            // printf("\n");
         }
-        printf("\ndone\n");
-        printf("indx: %d \n", jetsonIndexShift);
 
         jetsonIndexShift -= 10;
-
-        printf("\ncurr packet: ");
-        for ( int i = jetsonIndexShift - 10 ; i < jetsonIndexShift ; ++i) {
-            printf("%d ", jetson_value[i]);
-        }
 
         //we have moved 10 bytes back to account for extra last increment
         //calculateLRC works from the start of address to the next x bytes
@@ -313,22 +291,33 @@ ssize_t jetson_read_values(float &pitch_move, float & yaw_move, char &shoot_swit
         //goal: decrement jetsonindexshift until it reaches then end of a good packet
         //ptr+jetsonindex-10 starts us at the beginning of a packet we're checking
         while ( calculateLRC(jetsonValuePtr+jetsonIndexShift-10, 9) != jetson_value[jetsonIndexShift - 1] ) {
-                --jetsonIndexShift;
-                printf("bad");
+            //printf("check: %d = %d? - strt: %d - ptrStrt:%d - ", calculateLRC(jetsonValuePtr+jetsonIndexShift-10, 9), jetson_value[jetsonIndexShift-1], jetson_value[jetsonIndexShift-10],*(jetsonValuePtr+jetsonIndexShift-10));
+            for ( i = jetsonIndexShift - 10 ; i < jetsonIndexShift ; ++i) {
+                printf("%d ", jetson_value[i]);
+            }    
+            --jetsonIndexShift;
+            printf(" bad\n");
         }
-        printf("match\n");
-        checkSum = jetson_value[jetsonIndexShift-1];
 
+        --jetsonIndexShift; //while loop does this when it checks, however it will not be in the outcome
+
+        printf("\nmatched packet: ");
+        for ( i = jetsonIndexShift - 10 ; i < jetsonIndexShift ; ++i) {
+            printf("%d ", jetson_value[i]);
+        }   
+
+        checkSum = jetson_value[jetsonIndexShift];
+        jetsonIndexShift = 0;
+        
         decode_toSTM32(jetsonValuePtr+jetsonIndexShift-10, pitch_move, yaw_move, shoot_switch, checkSum);
 
         while (bcJetson.readable() ) {
             fillArrayCheck = bcJetson.read(&clear, 1);
             //printf("c");
         }
-
         jetsonIndexShift = 0;
     } else {
-        printf("Err\n");
+        printf("\nErr\n");
     }
     return fillArrayCheck;
 }
@@ -488,34 +477,40 @@ int main(){
             //write two order indicator bytes, then fill the rest with nothing
             orderPacket[0] = SecondByteIndicator;
             orderPacket[1] = firstByteIndicator;
-            orderPacket[2] = 11;
-            orderPacket[3] = 11;
-            orderPacket[4] = 11;
-            orderPacket[5] = 11;
-            orderPacket[6] = 11;
-            orderPacket[7] = 11;
+            orderPacket[2] = 0;
+            orderPacket[3] = 0;
+            orderPacket[4] = 65;
+            orderPacket[5] = 48;
+            orderPacket[6] = 0;
+            orderPacket[7] = 0;
             orderPacket[8] = printLoop;
 
-            
-            orderPacket[9] = calculateLRC( orderPacket, 9); //checksum
+            if (printLoop == 10) {
+                orderPacket[9] = calculateLRC( orderPacket, 9); //checksum
 
-            printf("\nSe: ");
-            //printf("1 milissecond\n");
+            } else {
+                orderPacket[9] = 99;
+
+            }
+            
+
+            printf("S: ");
             for (int i = 0 ; i < 10 ; ++i) {
                 printf("%d ", orderPacket[i]);
             }
-
-            fillBufferDebug = bcJetson.write(orderPacket, 10);
-            bcJetson.sync();
+            printf("\n");
+            self_sending_data();
+            //fillBufferDebug = bcJetson.write(orderPacket, 10);
+            //bcJetson.sync();
             ++printLoop;
             ++printCount;
 
             ++firstByteIndicator;
-            if (firstByteIndicator > 10) {
-                firstByteIndicator = 0;
+            if (firstByteIndicator > 75) {
+                firstByteIndicator = 65;
                 ++SecondByteIndicator;
-                if ( SecondByteIndicator > 10 ) {
-                    SecondByteIndicator = 0;
+                if ( SecondByteIndicator > 42 ) {
+                    SecondByteIndicator = 32;
                 }
             }
 
@@ -576,7 +571,7 @@ int main(){
 
             if ( printLoop >= 10 ) {
                 readResult = jetson_read_values(pitch_CV_angle, yaw_CV_angle, shoot_toggle);
-                printf("seCt: %d Pi: %.3f Ya: %.3f Sh: %d\n\n\n", printCount, pitch_CV_angle, yaw_CV_angle, shoot_toggle);
+                printf("\nsent: %d Pi: %.3f Ya: %.3f Sh: %d\n\n\n", printCount, pitch_CV_angle, yaw_CV_angle, shoot_toggle);
                 printLoop = 0;
                 printCount = 0;
             }
