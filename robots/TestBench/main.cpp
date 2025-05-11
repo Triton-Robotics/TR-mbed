@@ -307,9 +307,8 @@ ssize_t jetson_read_values(float &pitch_move, float & yaw_move, char &shoot_swit
         }   
 
         checkSum = jetson_value[jetsonIndexShift];
-        jetsonIndexShift = 0;
-        
         decode_toSTM32(jetsonValuePtr+jetsonIndexShift-10, pitch_move, yaw_move, shoot_switch, checkSum);
+        jetsonIndexShift = 0;
 
         while (bcJetson.readable() ) {
             fillArrayCheck = bcJetson.read(&clear, 1);
@@ -499,9 +498,9 @@ int main(){
                 printf("%d ", orderPacket[i]);
             }
             printf("\n");
-            self_sending_data();
-            //fillBufferDebug = bcJetson.write(orderPacket, 10);
-            //bcJetson.sync();
+            //self_sending_data();
+            fillBufferDebug = bcJetson.write(orderPacket, 10);
+            bcJetson.sync();
             ++printLoop;
             ++printCount;
 
