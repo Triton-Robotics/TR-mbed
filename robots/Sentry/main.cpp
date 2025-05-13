@@ -31,7 +31,7 @@ constexpr float CHASSIS_FF_KICK = 0.065;
 
 constexpr int FLYWHEEL_SPEED = 7000;
 
-//#define USE_IMU
+#define USE_IMU
 
 //CHASSIS DEFINING
 I2C i2c(I2C_SDA, I2C_SCL);
@@ -76,8 +76,9 @@ int main(){
     * MOTORS SETUP AND PIDS
     */
     //YAW
-    PID yawBeyblade(5.0, 0, 150); //yaw PID is cascading, so there are external position PIDs for yaw control
-    yaw.setSpeedPID(537.48, 0.48305, 0);
+    PID yawBeyblade(0.2, 0, 100); //yaw PID is cascading, so there are external position PIDs for yaw control
+    yawBeyblade.setOutputCap(10);
+    yaw.setSpeedPID(937.48, 0.48305, 0);
     yaw.setSpeedIntegralCap(5000);
     yaw.setSpeedOutputCap(32000);
     yaw.outputCap = 32000;
@@ -127,7 +128,7 @@ int main(){
     // bool shootReady = false;
 
     //CHASSIS
-    Chassis.setYawReference(&yaw, 4096); //the number of ticks of yaw considered to be robot-front
+    Chassis.setYawReference(&yaw, 4608); //the number of ticks of yaw considered to be robot-front
     //Common values for reference are 6500 and 2500
     Chassis.setSpeedFF_Ks(CHASSIS_FF_KICK); //feed forward "kick" for wheels, a constant multiplier of max power in the direcion of movment
 
@@ -261,9 +262,9 @@ int main(){
                 yaw_desired_angle = floatmod(yaw_desired_angle, 360);
 
                 #ifdef USE_IMU
-                yawVelo = yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yaw_desired_angle, imuAngles.yaw + 180, 360), timeSure - prevTimeSure);
+                yawVelo = -yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yaw_desired_angle, imuAngles.yaw + 180, 360), timeSure - prevTimeSure);
                 #else
-                yawVelo = -jyaw * JOYSTICK_SENSITIVITY_YAW_DPS / 360.0 * 60;
+                yawVelo = jyaw * JOYSTICK_SENSITIVITY_YAW_DPS / 360.0 * 60;
                 #endif
                 //yawVelo = 0;
                 yawVelo -= chassis_rotation_rpm;
@@ -275,8 +276,8 @@ int main(){
                     dir = -1;
                 }
                 //yaw.pidSpeed.feedForward = -5.30094881524873 * yawVelo * yawVelo * dir + 461.129143101395 * yawVelo + 2402.35249010233 * dir;
-                yaw.pidSpeed.feedForward = 4 * dir * (874 + (73.7 * abs(yawVelo)) + (0.0948 * yawVelo * yawVelo));
-                yaw.setSpeed(-yawVelo);
+                yaw.pidSpeed.feedForward = (-5.30094881524873*yawVelo*yawVelo*dir + 461.129143101395*yawVelo + 3402.35249010233 * dir);
+                yaw.setSpeed(yawVelo);
 
                 prevTimeSure = timeSure;
             }else{
@@ -354,11 +355,11 @@ int main(){
                 //printff("lX:%.1f lY:%.1f rX:%.1f rY:%.1f lS:%d rS:%d\n", remote.leftX(), remote.leftY(), remote.rightX(), remote.rightY(), remote.leftSwitch(), remote.rightSwitch());
                 //printff("jx:%.3f jy:%.3f jpitch:%.3f jyaw:%.3f\n", jx, jy, jpitch, jyaw);
                 #ifdef USE_IMU
-                printff("yaw_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
+                printff("yaw_des_v:%d yaw_act_v:%d ", yawVelo, yaw>>VELOCITY);
                 printff("yaw_des:%.3f yaw_act:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180);
                 #else
-                printff("yaw_des_v:%d yaw_act_v:%d PWR:%d\n", yawVelo, yaw>>VELOCITY, yaw>>POWEROUT);
-                //printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
+                printff("yaw_des_v:%d yaw_act_v:%d PWR:%d ", yawVelo, yaw>>VELOCITY, yaw>>POWEROUT);
+                printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
                 #endif
                 //printff("pitch_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
                 //printff("pitch_des:%.3f pitch_act:%.3f [%d]\n", pitch_desired_angle, pitch_current_angle, pitch>>ANGLE);

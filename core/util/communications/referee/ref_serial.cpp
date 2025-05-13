@@ -1,6 +1,8 @@
 
 #include "ref_serial.h"
 
+#define REF_DEBUG 1
+
 // top part: I try to make this object-oriented, but then realized it would be quite complicated
 
 Referee::Referee(PinName pin_tx, PinName pin_rx) : ref(pin_tx, pin_rx, 115200) {
@@ -129,201 +131,333 @@ void Judge_GetMessage(uint16_t Data_Length)
                 // printf("ST[%d]\n", n);
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Game_StatusData))
                 {
+                    #if REF_DEBUG
+                    printf("GS[%d]\n", n);
+                    #endif
                     memcpy(&game_status, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_Game_StatusData - JUDGE_EXTRA]));
                     n += JudgeLength_Game_StatusData;
                     ext_game_status.infoUpdateFlag = 1;
                 }
-                else
+                else{
+                    #if REF_DEBUG
+                    printf("GS_NO[%d]\n", n);
+                    #endif
                     n++;
+                }
                 break;
             case Judge_Game_ResultData: //比赛结果
                 // printf("GR[%d]\n", n);
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Game_ResultData))
                 {
+                    #if REF_DEBUG
+                    printf("GR[%d]\n", n);
+                    #endif
                     memcpy(&game_result, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_Game_ResultData - JUDGE_EXTRA]));
                     n += JudgeLength_Game_ResultData;
                     ext_game_result.InfoUpdataFlag = 1;
                 }
-                else
+                else{
+                    #if REF_DEBUG
+                    printf("GR_NO[%d]\n", n);
+                    #endif
                     n++;
+                }
                 break;
             case Judge_Robot_HP: //机器人血量数据
                 // printf("HP[%d]\n", n);
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Robot_HP))
                 {
+                    #if REF_DEBUG
+                    printf("HP[%d]\n", n);
+                    #endif
                     memcpy(&ext_game_robot_HP.data.dataBuff, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_Robot_HP - JUDGE_EXTRA]));
                     n += JudgeLength_Robot_HP;
                     ext_game_robot_HP.InfoUpdataFlag = 1;
                 }
-                else
+                else{
+                    #if REF_DEBUG
+                    printf("HP_NO[%d]\n", n);
+                    #endif
                     n++;
+                }
                 break;
             case Judge_Dart_Launch: //飞镖发射状态
-                // printf("DL[%d]\n", n);
+
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Dart_Launch))
                 {
+                    #if REF_DEBUG
+                    printf("DL[%d]\n", n);
+                    #endif
                     memcpy(&ext_dart_status.data.dataBuff, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_Dart_Launch - JUDGE_EXTRA]));
                     n += JudgeLength_Dart_Launch;
                     ext_dart_status.InfoUpdataFlag = 1;
                 }
-                else
+                else{
+                    #if REF_DEBUG
+                    printf("DL_NO[%d]\n", n);
+                    #endif
                     n++;
+                }
                 break;
             case Judge_AI_ChallengeBuff: //AI加成与惩罚
-                // printf("AI[%d]\n", n);
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_AI_ChallengeBuff))
                 {
+                    #if REF_DEBUG
+                    printf("AI[%d]\n", n);
+                    #endif
                     memcpy(&ext_ICRA_buff_debuff_zone_status.data.dataBuff, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[11]));
                     n += JudgeLength_AI_ChallengeBuff;
                     ext_ICRA_buff_debuff_zone_status.InfoUpdataFlag = 1;
                 }
-                else
+                else{
+                    #if REF_DEBUG
+                    printf("AI_NO[%d]\n", n);
+                    #endif
                     n++;
+                }
                 break;
             case Judge_Event_Data: //场地事件数据
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Event_Data))
                 {
-                    // printf("EV[%d]\n", n);
+                    #if REF_DEBUG
+                    printf("EV[%d]\n", n);
+                    #endif
                     memcpy(&ext_even_data.data.dataBuff, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[4]));
                     n += JudgeLength_Event_Data;
                     ext_even_data.InfoUpdataFlag = 1;
                 }
-                else
+                else{
+                    #if REF_DEBUG
+                    printf("EV_NO[%d]\n", n);
+                    #endif
                     n++;
+                }
                 break;
             case Judge_Supply_Station: //补给站动作标识
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Supply_Station))
                 {
-                    // printf("SS[%d]\n", n);
+                    #if REF_DEBUG
+                    printf("SS[%d]\n", n);
+                    #endif
                     memcpy(&ext_supply_projectile_action.data.dataBuff, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_Supply_Station - JUDGE_EXTRA]));
                     n += JudgeLength_Supply_Station;
                     ext_supply_projectile_action.InfoUpdataFlag = 1;
                 }
-                else
+                else{
+                    #if REF_DEBUG
+                    printf("SS_NO[%d]\n", n);
+                    #endif
                     n++;
+                }
                 break;
             case Judge_Referee_Warning: //裁判系统警告信息
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Referee_Warning))
                 {
+                    #if REF_DEBUG
+                    printf("RF[%d]\n", n);
+                    #endif
                     memcpy(&referee_warning, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_Referee_Warning - JUDGE_EXTRA]));
                     n += JudgeLength_Referee_Warning;
                     ext_referee_warning.InfoUpdataFlag = 1;
                 }
-                else
+                else{
+                    #if REF_DEBUG
+                    printf("RF_NO[%d]\n", n);
+                    #endif
                     n++;
+                }
                 break;
             case Judge_Dart_Countdown: //飞镖发射口倒计时
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Dart_Countdown))
                 {
+                    #if REF_DEBUG
+                    printf("DT[%d]\n", n);
+                    #endif
                     memcpy(&ext_dart_remaining_time.data.dataBuff, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_Dart_Countdown - JUDGE_EXTRA]));
                     n += JudgeLength_Dart_Countdown;
                     ext_dart_remaining_time.InfoUpdataFlag = 1;
                 }
-                else
+                else{
+                    #if REF_DEBUG
+                    printf("DT_NO[%d]\n", n);
+                    #endif
                     n++;
+                }
                 break;
             case Judge_Robot_State: //比赛机器人状态
+                for(int i = 0; i < JudgeLength_Robot_State; i ++){
+                    printf("|%2x", (uint8_t)*(JudgeSystem_rxBuff+n+i));
+                }
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Robot_State))
                 {
-                    // printf("RS[%d]\n", n);
+                    #if REF_DEBUG
+                    printf("RS[%d]\n", n);
+                    #endif
                     memcpy(&robot_status, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_Robot_State - JUDGE_EXTRA]));
-                    
+
                     n += JudgeLength_Robot_State;
                     ext_game_robot_state.InfoUpdataFlag = 1;
                 }
-                else
+                else{
+                    #if REF_DEBUG
+                    printf("RS_NO[%d]\n", n);
+                    #endif
                     n++;
+                }
                 break;
             case Judge_Power_Heat: //实时功率热量
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Power_Heat))
                 {
-                    // printf("PH[%d]\n", n);
+                    #if REF_DEBUG
+                    printf("PH[%d]\n", n);
+                    #endif
+                    //printf("PH[%d]\n", n);
                     memcpy(&power_heat_data, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_Power_Heat - JUDGE_EXTRA]));
                     n += JudgeLength_Power_Heat;
                     ext_power_heat_data.InfoUpdataFlag = 1;
                 }
-                else
+                else{
+                    #if REF_DEBUG
+                    printf("PH_NO[%d]\n", n);
+                    #endif
                     n++;
+                }
                 break;
             case Judge_Robot_Position: //机器人位置
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Robot_Position))
                 {
+                    #if REF_DEBUG
+                    printf("RP[%d]\n", n);
+                    #endif
                     memcpy(&robot_pos, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_Robot_Position - JUDGE_EXTRA]));
                     n += JudgeLength_Robot_Position;
                     ext_game_robot_pos.InfoUpdataFlag = 1;
                 }
-                else
+                else{
+                    #if REF_DEBUG
+                    printf("RP_NO[%d]\n", n);
+                    #endif
                     n++;
+                }
                 break;
             case Judge_Robot_Buff: //机器人增益
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Robot_Buff))
                 {
+                    #if REF_DEBUG
+                    printf("BF[%d]\n", n);
+                    #endif
                     memcpy(&buff, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_Robot_Buff - JUDGE_EXTRA]));
                     n += JudgeLength_Robot_Buff;
                     Buff.InfoUpdataFlag = 1;
                 }
-                else
+                else{
+                    #if REF_DEBUG
+                    printf("BF_NO[%d]\n", n);
+                    #endif
                     n++;
+                }
                 break;
             case Judge_Aerial_Energy: //空中机器人能量状态
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Aerial_Energy))
                 {
+                    #if REF_DEBUG
+                    printf("AE[%d]\n", n);
+                    #endif
                     memcpy(&aerial_robot_energy.data.dataBuff, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_Aerial_Energy - JUDGE_EXTRA]));
                     n += JudgeLength_Aerial_Energy;
                     aerial_robot_energy.InfoUpdataFlag = 1;
                 }
-                else
+                else{
+                    #if REF_DEBUG
+                    printf("AE_NO[%d]\n", n);
+                    #endif
                     n++;
+                }
                 break;
             case Judge_Injury_State: //伤害状态
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Injury_State))
                 {
+                    #if REF_DEBUG
+                    printf("IN[%d]\n", n);
+                    #endif
                     memcpy(&hurt_data, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_Injury_State - JUDGE_EXTRA]));
                     n += JudgeLength_Injury_State;
                     ext_robot_hurt.InfoUpdataFlag = 1;
                 }
-                else
+                else{
+                    #if REF_DEBUG
+                    printf("IN_NO[%d]\n", n);
+                    #endif
                     n++;
+                }
                 break;
             case Judge_RealTime_Shoot: //实时射击数据
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_RealTime_Shoot))
                 {
+                    #if REF_DEBUG
+                    printf("RE[%d]\n", n);
+                    #endif
                     memcpy(&shoot_data, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_RealTime_Shoot - JUDGE_EXTRA]));
                     n += JudgeLength_RealTime_Shoot;
                     ext_shoot_data.InfoUpdataFlag = 1;
                 }
-                else
+                else{
+                    #if REF_DEBUG
+                    printf("RE_NO[%d]\n", n);
+                    #endif
                     n++;
+                }
                 break;
             case Judge_Remaining_Rounds: //子弹剩余数
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Remaining_Rounds))
                 {
+                    #if REF_DEBUG
+                    printf("RR[%d]\n", n);
+                    #endif
                     memcpy(&projectile_allowance, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_Remaining_Rounds - JUDGE_EXTRA]));
                     n += JudgeLength_Remaining_Rounds;
                     ext_bullet_remaining.InfoUpdataFlag = 1;
                 }
-                else
+                else{
+                    #if REF_DEBUG
+                    printf("RR_NO[%d]\n", n);
+                    #endif
                     n++;
+                }
                 break;
             case Judge_Robot_RFID: //机器人RFID状态
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Robot_RFID))
                 {
+                    #if REF_DEBUG
+                    printf("ID[%d]\n", n);
+                    #endif
                     memcpy(&ext_rfid_status.data.dataBuff, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_Robot_RFID - JUDGE_EXTRA]));
                     n += JudgeLength_Robot_RFID;
                     ext_rfid_status.InfoUpdataFlag = 1;
                 }
-                else
+                else{
+                    #if REF_DEBUG
+                    printf("ID_NO[%d]\n", n);
+                    #endif
                     n++;
+                }
                 break;
             case Judge_Dart_Client: //飞镖机器人客户端指令数据
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Dart_Client))
                 {
+                    #if REF_DEBUG
+                    printf("RC[%d]\n", n);
+                    #endif
                     memcpy(&ext_dart_client_cmd.data.dataBuff, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[12]));
                     n += JudgeLength_Dart_Client;
                     ext_dart_client_cmd.InfoUpdataFlag = 1;
                 }
-                else
-                    n++; //26
+                else{
+                    #if REF_DEBUG
+                    printf("DC_NO[%d]\n", n);
+                    #endif
+                    n++;
+                } //26
                 break;
             case Judge_Robot_Communicate: //机器人信息交互(还有一种写法就是直接case内容ID 不case命令码)
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Robot_Commute))
@@ -331,8 +465,12 @@ void Judge_GetMessage(uint16_t Data_Length)
                     memcpy(&Robot_Commute, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[26]));
                     n += JudgeLength_Robot_Commute;
                 }
-                else
+                else{
+                    #if REF_DEBUG
+                    printf("RC_NO[%d]\n", n);
+                    #endif
                     n++;
+                }
                 break;
             default:
                 // printf("[none %x]\n", JudgeSystem_rxBuff[n + 5] | JudgeSystem_rxBuff[n + 6] << 8);
