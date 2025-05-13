@@ -24,7 +24,7 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
     this->lbId = lbId;
     this->rbId = rbId;
 
-    // setOmniKinematics(radius);
+    setOmniKinematics(radius);
     m_OmniKinematicsLimits.max_Vel = MAX_VEL; // m/s
     m_OmniKinematicsLimits.max_vOmega = 8; // rad/s
 
@@ -45,7 +45,7 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
     pid_LF.setPID(3, 0, 0);
     pid_RF.setPID(3, 0, 0);
     pid_LB.setPID(3, 0, 0);
-    pid_RB.setPID(3, 0, 0); 
+    pid_RB.setPID(3, 0, 0);
 
     brakeMode = COAST;
 
@@ -291,6 +291,9 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     float scale = Bisection(p1, p2, p3, p4, r1, r2, r3, r4, power_limit);
 
 
+
+    
+
     // printf("Before Set:%.3f\n", p_theory(p1*scale, p2*scale, p3*scale, p4*scale, r1, r2, r3, r4));
 
     LF.setPower(powers[0]*scale);
@@ -485,44 +488,27 @@ void ChassisSubsystem::setOmniKinematicsLimits(double max_Vel, double max_vOmega
     m_OmniKinematicsLimits.max_vOmega = max_vOmega;
 }
 
-void ChassisSubsystem::setOmniKinematics(double x, double y, double radius)
+void ChassisSubsystem::setOmniKinematics(double radius)
 {
-    double a1 = 3*PI/4;
-    double a2 = PI/4;
-    double a3 = 5*PI/4;
-    double a4 = 7*PI/4;
+    m_OmniKinematics.r1x = -sqrt(radius);
+    m_OmniKinematics.r1y = sqrt(radius);
 
-    double phi = atan2((y), (x));
+    m_OmniKinematics.r2x = sqrt(radius);
+    m_OmniKinematics.r2y = sqrt(radius);
 
-    m_OmniKinematics.r1x = -sin(a1 + phi);
-    m_OmniKinematics.r1y =  cos(a1 + phi);
-    m_OmniKinematics.r1  =  radius;
+    m_OmniKinematics.r3x = -sqrt(radius);
+    m_OmniKinematics.r3y = -sqrt(radius);
 
-    m_OmniKinematics.r2x = -sin(a2 + phi);
-    m_OmniKinematics.r2y =  cos(a2 + phi);
-    m_OmniKinematics.r2  =  radius;
-
-    m_OmniKinematics.r3x = -sin(a3 + phi);
-    m_OmniKinematics.r3y =  cos(a3 + phi);
-    m_OmniKinematics.r3  =  radius;
-
-    m_OmniKinematics.r4x = -sin(a4 + phi);
-    m_OmniKinematics.r4y =  cos(a4 + phi);
-    m_OmniKinematics.r4  =  radius;
+    m_OmniKinematics.r4x = sqrt(radius);
+    m_OmniKinematics.r4y = -sqrt(radius);
 }
 
 WheelSpeeds ChassisSubsystem::chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds)
 {
-    // return {(1 / sqrt(2)) * (chassisSpeeds.vX + chassisSpeeds.vY + chassisSpeeds.vOmega * ((m_OmniKinematics.r1x) - (m_OmniKinematics.r1y))),
-    //         (1 / sqrt(2)) * (chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y))),
-    //         (1 / sqrt(2)) * (-chassisSpeeds.vX + chassisSpeeds.vY + chassisSpeeds.vOmega * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y))),
-    //         (1 / sqrt(2)) * (-chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y)))};
-
-    return {
-        chassisSpeeds.vX * m_OmniKinematics.r1x + chassisSpeeds.vY * m_OmniKinematics.r1y + chassisSpeeds.vOmega * m_OmniKinematics.r1,
-        chassisSpeeds.vX * m_OmniKinematics.r2x + chassisSpeeds.vY * m_OmniKinematics.r2y + chassisSpeeds.vOmega * m_OmniKinematics.r2, 
-        chassisSpeeds.vX * m_OmniKinematics.r3x + chassisSpeeds.vY * m_OmniKinematics.r3y + chassisSpeeds.vOmega * m_OmniKinematics.r3, 
-        chassisSpeeds.vX * m_OmniKinematics.r4x + chassisSpeeds.vY * m_OmniKinematics.r4y + chassisSpeeds.vOmega * m_OmniKinematics.r4};
+    return {(1 / sqrt(2)) * (chassisSpeeds.vX + chassisSpeeds.vY + chassisSpeeds.vOmega * ((m_OmniKinematics.r1x) - (m_OmniKinematics.r1y))),
+            (1 / sqrt(2)) * (chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y))),
+            (1 / sqrt(2)) * (-chassisSpeeds.vX + chassisSpeeds.vY + chassisSpeeds.vOmega * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y))),
+            (1 / sqrt(2)) * (-chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y)))};
 }
 
 ChassisSpeeds ChassisSubsystem::wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds)
@@ -535,6 +521,10 @@ ChassisSpeeds ChassisSubsystem::wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpee
         -coef, -coef, -coef * ((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y));
     Eigen::MatrixXd FWD_K(3, 4);
     FWD_K = Inv_K.completeOrthogonalDecomposition().pseudoInverse();
+    // printf("[%.1f %.1f %.1f %.1f\n%.1f %.1f %.1f %.1f\n%.1f %.1f %.1f %.1f]\n", 
+    //     FWD_K(0,0), FWD_K(0,1), FWD_K(0,2), FWD_K(0,3), 
+    //     FWD_K(1,0), FWD_K(1,1), FWD_K(1,2), FWD_K(1,3), 
+    //     FWD_K(2,0), FWD_K(2,1), FWD_K(2,2), FWD_K(2,3));
     Eigen::MatrixXd WS(4, 1);
     WS << wheelSpeeds.LF, wheelSpeeds.RF, wheelSpeeds.LB, wheelSpeeds.RB;
     Eigen::MatrixXd CS(3, 1);
@@ -588,7 +578,7 @@ int ChassisSubsystem::motorPIDtoPower(MotorLocation location, double speed, uint
     PID pids[4] = {pid_LF,pid_RF,pid_LB,pid_RB};
     
     power = pids[location].calculate(speed, getMotor(location).getData(VELOCITY), dt);
-    //printf("[%d]",power);
+    // printf("[%d]",power);
 
     if(speed == 0) {
         setSpeedFeedforward(location, 0);
