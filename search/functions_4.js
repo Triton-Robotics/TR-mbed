@@ -72,7 +72,7 @@ var searchData=
   ['dgetf2_69',['dgetf2',['../lapack_8h.html#a96d12fbf2e6cddeab7ff9b498b40c4ec',1,'lapack.h']]],
   ['dgetrf_70',['dgetrf',['../lapack_8h.html#a8308a6b32487dd2d9b5a22035b61fd48',1,'lapack.h']]],
   ['dgetrs_71',['dgetrs',['../lapack_8h.html#ad8754440946d351c4e7adf088deb49f6',1,'lapack.h']]],
-  ['dgmres_72',['dgmres',['../classEigen_1_1DGMRES.html#a800fcf37c0ac66f76d5c070e4aeae2a7',1,'Eigen::DGMRES::DGMRES(const EigenBase&lt; MatrixDerived &gt; &amp;A)'],['../classEigen_1_1DGMRES.html#a1b06062ec16932d3a20ea4767d9de51d',1,'Eigen::DGMRES::dgmres(const MatrixType &amp;mat, const Rhs &amp;rhs, Dest &amp;x, const Preconditioner &amp;precond) const'],['../classEigen_1_1DGMRES.html#a17bd25826b56c39bc7cc4ce8fbf8a848',1,'Eigen::DGMRES::DGMRES()']]],
+  ['dgmres_72',['dgmres',['../classEigen_1_1DGMRES.html#a17bd25826b56c39bc7cc4ce8fbf8a848',1,'Eigen::DGMRES::DGMRES()'],['../classEigen_1_1DGMRES.html#a800fcf37c0ac66f76d5c070e4aeae2a7',1,'Eigen::DGMRES::DGMRES(const EigenBase&lt; MatrixDerived &gt; &amp;A)'],['../classEigen_1_1DGMRES.html#a1b06062ec16932d3a20ea4767d9de51d',1,'Eigen::DGMRES::dgmres(const MatrixType &amp;mat, const Rhs &amp;rhs, Dest &amp;x, const Preconditioner &amp;precond) const']]],
   ['dgmresapplydeflation_73',['dgmresApplyDeflation',['../classEigen_1_1DGMRES.html#af0cb72e1c8fa37895d1543b1bb09f9d2',1,'Eigen::DGMRES']]],
   ['dgmrescomputedeflationdata_74',['dgmresComputeDeflationData',['../classEigen_1_1DGMRES.html#a7bada6df49a235ad404802bc4e04b598',1,'Eigen::DGMRES']]],
   ['dgmrescycle_75',['dgmresCycle',['../classEigen_1_1DGMRES.html#ab77d66ef7f84ff15b6bd55fb76619218',1,'Eigen::DGMRES']]],
