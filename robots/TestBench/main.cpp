@@ -299,7 +299,7 @@ ssize_t jetson_read_values(float &pitch_move, float & yaw_move, char &shoot_swit
             printf(" bad\n");
         }
 
-        --jetsonIndexShift; //while loop does this when it checks, however it will not be in the outcome
+        //--jetsonIndexShift; //while loop does this when it checks, however it will not be in the outcome
 
         printf("\nmatched packet: ");
         for ( i = jetsonIndexShift - 10 ; i < jetsonIndexShift ; ++i) {
@@ -449,6 +449,14 @@ int main(){
         ssize_t readResult;
         ssize_t fillBufferDebug;
         ssize_t readBufferDebug;
+
+        float test_yaw = 0;
+        float test_pitch = 0;
+        bool direction = 0;
+        char test_packet[10] = {0};
+        char shoot_on = 0;
+        int loop_count = 0;
+        uint8_t check_sum;
     
     //Rx
     float pitch_CV_angle = 0;
@@ -474,47 +482,96 @@ int main(){
             //jetson_send_feedback(); //  __COMENTED OUT LOOLOOKOKOLOOOOKO HERHEHRERHEHRHE
 
             //write two order indicator bytes, then fill the rest with nothing
-            orderPacket[0] = SecondByteIndicator;
-            orderPacket[1] = firstByteIndicator;
-            orderPacket[2] = 0;
-            orderPacket[3] = 0;
-            orderPacket[4] = 65;
-            orderPacket[5] = 48;
-            orderPacket[6] = 0;
-            orderPacket[7] = 0;
-            orderPacket[8] = printLoop;
+            // orderPacket[0] = SecondByteIndicator;
+            // orderPacket[1] = firstByteIndicator;
+            // orderPacket[2] = 0;
+            // orderPacket[3] = 0;
+            // orderPacket[4] = 65;
+            // orderPacket[5] = 48;
+            // orderPacket[6] = 0;
+            // orderPacket[7] = 0;
+            // orderPacket[8] = printLoop;
 
-            if (printLoop == 10) {
-                orderPacket[9] = calculateLRC( orderPacket, 9); //checksum
+            // if (printLoop == 10) {
+            //     orderPacket[9] = calculateLRC( orderPacket, 9); //checksum
 
-            } else {
-                orderPacket[9] = 99;
+            // } else {
+            //     orderPacket[9] = 99;
 
-            }
+            // }
             
 
-            printf("S: ");
-            for (int i = 0 ; i < 10 ; ++i) {
-                printf("%d ", orderPacket[i]);
-            }
-            printf("\n");
-            //self_sending_data();
-            fillBufferDebug = bcJetson.write(orderPacket, 10);
-            bcJetson.sync();
-            ++printLoop;
-            ++printCount;
+            // printf("S: ");
+            // for (int i = 0 ; i < 10 ; ++i) {
+            //     printf("%d ", orderPacket[i]);
+            // }
+            // printf("\n");
+            // //self_sending_data();
+            // fillBufferDebug = bcJetson.write(orderPacket, 10);
+            // bcJetson.sync();
+            // ++printLoop;
+            // ++printCount;
 
-            ++firstByteIndicator;
-            if (firstByteIndicator > 75) {
-                firstByteIndicator = 65;
-                ++SecondByteIndicator;
-                if ( SecondByteIndicator > 42 ) {
-                    SecondByteIndicator = 32;
+            // ++firstByteIndicator;
+            // if (firstByteIndicator > 75) {
+            //     firstByteIndicator = 65;
+            //     ++SecondByteIndicator;
+            //     if ( SecondByteIndicator > 42 ) {
+            //         SecondByteIndicator = 32;
+            //     }
+            // }
+
+            
+            if (loop_count == 100) {
+                if (shoot_on == 0) {
+                    ++shoot_on;
+                }
+                else { shoot_on = 1; }
+                loop_count = 0;
+            }
+
+            // //incrementing pitch and Yaw myself Code--------------
+            if ( direction == 0) {
+                test_yaw += 0.01;
+                test_pitch += 0.001; //don't need to worry about bounds, handled below
+
+                if (test_yaw >= 0.4){
+                    direction = 1;
                 }
             }
+            else {
+                test_yaw -= 0.01;
+                test_pitch -= 0.001;
+                if (test_yaw <= -0.4){
+                    direction = 0;
+                } 
+            }
+            if ( abs(test_yaw) <= 0.0001 ) {
+                test_yaw = 0;
+            }
+            //printf("yaw: %0.3f\n", test_yaw);
 
+            //Forming packet
+            memcpy(test_packet, &test_pitch, sizeof(float));
+            memcpy(test_packet + 4, &test_yaw, sizeof(float));
+            memcpy(test_packet + 8, &shoot_on, sizeof(char)); // shooting indicator
+
+            // //checksum
+            check_sum = calculateLRC(test_packet,9);
+            memcpy(test_packet + 9, &check_sum, sizeof(char)); // shooting indicator
+
+            for ( int i = 0 ; i < 10; ++i ) {
+                printf("%d ", test_packet[i]);
+            }
+            printf("\n");
+
+            //fill buffer
+            bcJetson.write( &test_packet, 10);
+            bcJetson.sync();
            //basic_bitch_read();
             led2 = !led2;
+            ++printLoop;
+            ++loop_count;
         }
 
         if ((timeStart - loopTimer) / 1000 > 15){
@@ -533,6 +590,7 @@ int main(){
 
                 refLoop = 0;
             }
+
 
             //recieve one packet of data
             // printf("\n\nRe\n");
@@ -570,7 +628,7 @@ int main(){
 
             if ( printLoop >= 10 ) {
                 readResult = jetson_read_values(pitch_CV_angle, yaw_CV_angle, shoot_toggle);
-                printf("\nsent: %d Pi: %.3f Ya: %.3f Sh: %d\n\n\n", printCount, pitch_CV_angle, yaw_CV_angle, shoot_toggle);
+                printf("\nPi: %.3f Ya: %.3f Sh: %d\n\n\n", pitch_CV_angle, yaw_CV_angle, shoot_toggle);
                 printLoop = 0;
                 printCount = 0;
             }
