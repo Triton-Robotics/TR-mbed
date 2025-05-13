@@ -481,97 +481,99 @@ int main(){
             loopTimerCV = timeStart;
             //jetson_send_feedback(); //  __COMENTED OUT LOOLOOKOKOLOOOOKO HERHEHRERHEHRHE
 
-            //write two order indicator bytes, then fill the rest with nothing
-            // orderPacket[0] = SecondByteIndicator;
-            // orderPacket[1] = firstByteIndicator;
-            // orderPacket[2] = 0;
-            // orderPacket[3] = 0;
-            // orderPacket[4] = 65;
-            // orderPacket[5] = 48;
-            // orderPacket[6] = 0;
-            // orderPacket[7] = 0;
-            // orderPacket[8] = printLoop;
+                if ( printLoop > 3 ) {
+                //write two order indicator bytes, then fill the rest with nothing
+                orderPacket[0] = SecondByteIndicator;
+                orderPacket[1] = firstByteIndicator;
+                orderPacket[2] = 0;
+                orderPacket[3] = 0;
+                orderPacket[4] = 65;
+                orderPacket[5] = 48;
+                orderPacket[6] = 0;
+                orderPacket[7] = 0;
+                orderPacket[8] = printLoop;
 
-            // if (printLoop == 10) {
-            //     orderPacket[9] = calculateLRC( orderPacket, 9); //checksum
+                if (printLoop == 10) {
+                    orderPacket[9] = 99;//calculateLRC( orderPacket, 9); //checksum
 
-            // } else {
-            //     orderPacket[9] = 99;
+                } else {
+                    orderPacket[9] = 99;
 
-            // }
-            
-
-            // printf("S: ");
-            // for (int i = 0 ; i < 10 ; ++i) {
-            //     printf("%d ", orderPacket[i]);
-            // }
-            // printf("\n");
-            // //self_sending_data();
-            // fillBufferDebug = bcJetson.write(orderPacket, 10);
-            // bcJetson.sync();
-            // ++printLoop;
-            // ++printCount;
-
-            // ++firstByteIndicator;
-            // if (firstByteIndicator > 75) {
-            //     firstByteIndicator = 65;
-            //     ++SecondByteIndicator;
-            //     if ( SecondByteIndicator > 42 ) {
-            //         SecondByteIndicator = 32;
-            //     }
-            // }
-
-            
-            if (loop_count == 100) {
-                if (shoot_on == 0) {
-                    ++shoot_on;
                 }
-                else { shoot_on = 1; }
-                loop_count = 0;
-            }
+                
 
-            // //incrementing pitch and Yaw myself Code--------------
-            if ( direction == 0) {
-                test_yaw += 0.01;
-                test_pitch += 0.001; //don't need to worry about bounds, handled below
-
-                if (test_yaw >= 0.4){
-                    direction = 1;
+                printf("S: ");
+                for (int i = 0 ; i < 10 ; ++i) {
+                    printf("%d ", orderPacket[i]);
                 }
-            }
-            else {
-                test_yaw -= 0.01;
-                test_pitch -= 0.001;
-                if (test_yaw <= -0.4){
-                    direction = 0;
-                } 
-            }
-            if ( abs(test_yaw) <= 0.0001 ) {
-                test_yaw = 0;
-            }
-            //printf("yaw: %0.3f\n", test_yaw);
+                printf("\n");
+                //self_sending_data();
+                fillBufferDebug = bcJetson.write(orderPacket, 10);
+                bcJetson.sync();
 
-            //Forming packet
-            memcpy(test_packet, &test_pitch, sizeof(float));
-            memcpy(test_packet + 4, &test_yaw, sizeof(float));
-            memcpy(test_packet + 8, &shoot_on, sizeof(char)); // shooting indicator
+                ++firstByteIndicator;
+                if (firstByteIndicator > 75) {
+                    firstByteIndicator = 65;
+                    ++SecondByteIndicator;
+                    if ( SecondByteIndicator > 42 ) {
+                        SecondByteIndicator = 32;
+                    }
+                }
+                } else {           
+                if (loop_count == 100) {
+                    if (shoot_on == 0) {
+                        ++shoot_on;
+                    }
+                    else { shoot_on = 1; }
+                    loop_count = 0;
+                }
 
-            // //checksum
-            check_sum = calculateLRC(test_packet,9);
-            memcpy(test_packet + 9, &check_sum, sizeof(char)); // shooting indicator
+                // //incrementing pitch and Yaw myself Code--------------
+                if ( direction == 0) {
+                    test_yaw += 0.01;
+                    test_pitch += 0.001; //don't need to worry about bounds, handled below
 
-            for ( int i = 0 ; i < 10; ++i ) {
-                printf("%d ", test_packet[i]);
+                    if (test_yaw >= 0.4){
+                        direction = 1;
+                    }
+                }
+                else {
+                    test_yaw -= 0.01;
+                    test_pitch -= 0.001;
+                    if (test_yaw <= -0.4){
+                        direction = 0;
+                    } 
+                }
+                if ( abs(test_yaw) <= 0.0001 ) {
+                    test_yaw = 0;
+                }
+                //printf("yaw: %0.3f\n", test_yaw);
+
+                //Forming packet
+                memcpy(test_packet, &test_pitch, sizeof(float));
+                memcpy(test_packet + 4, &test_yaw, sizeof(float));
+                memcpy(test_packet + 8, &shoot_on, sizeof(char)); // shooting indicator
+
+                // //checksum
+                check_sum = calculateLRC(test_packet,9);
+                memcpy(test_packet + 9, &check_sum, sizeof(char)); // shooting indicator
+
+                printf("S: ");
+                for (int i = 0 ; i < 10 ; ++i) {
+                    printf("%d ", test_packet[i]);
+                }
+                printf("\n");
+
+                //fill buffer
+                bcJetson.write( &test_packet, 10);
+                bcJetson.sync();
+                //basic_bitch_read();
             }
-            printf("\n");
-
-            //fill buffer
-            bcJetson.write( &test_packet, 10);
-            bcJetson.sync();
-           //basic_bitch_read();
-            led2 = !led2;
+            printf("\nloop: %d\n",printLoop);
             ++printLoop;
             ++loop_count;
+            ++printCount;
+            led2 = !led2;
         }
 
         if ((timeStart - loopTimer) / 1000 > 15){
