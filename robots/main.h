@@ -36,7 +36,7 @@
 
 DigitalIn userButton(BUTTON1);
 TRMutex printer;
-static BufferedSerial bc(PC_12, PD_2, 115200);
+static BufferedSerial bc(PA_0, PA_1, 115200);
 
 void updatePriority(priorityLevels desiredLevel)
 {
