@@ -53,9 +53,9 @@ I2C i2c(I2C_SDA, I2C_SCL);
 
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
-DJIMotor yaw(6, CANHandler::CANBUS_1, GIMBLY,"Yeah");
+DJIMotor yaw(7, CANHandler::CANBUS_1, GIMBLY,"Yeah");
 DJIMotor pitch(5, CANHandler::CANBUS_2, GIMBLY,"Peach"); // right
-DJIMotor yaw2(7, CANHandler::CANBUS_1, GIMBLY,"Ye2"); // left, not functioning
+DJIMotor yaw2(6, CANHandler::CANBUS_1, GIMBLY,"Ye2"); // left, not functioning
 
 DJIMotor indexerL(5, CANHandler::CANBUS_2, C610,"IndexerL");
 DJIMotor indexerR(6, CANHandler::CANBUS_2, C610,"IndexerR");
@@ -257,12 +257,12 @@ int main(){
     * MOTORS SETUP AND PIDS
     */
     //YAW
-    PID yawBeyblade(0.2, 0, 100); //yaw PID is cascading, so there are external position PIDs for yaw control
-    yawBeyblade.setOutputCap(10);
-    yaw.setSpeedPID(937.48, 0.48305, 0);
+    PID yawBeyblade(0.5, 0, 0); //yaw PID is cascading, so there are external position PIDs for yaw control
+    yawBeyblade.setOutputCap(30);
+    yaw.setSpeedPID(100, 0.48305, 0);
     yaw.setSpeedIntegralCap(5000);
     yaw.setSpeedOutputCap(32000);
-    yaw.outputCap = 32000;
+    yaw.outputCap = 12000;
     yaw.useAbsEncoder = false;
 
     int yawVelo = 0;
@@ -563,8 +563,9 @@ int main(){
                 //printff("lX:%.1f lY:%.1f rX:%.1f rY:%.1f lS:%d rS:%d\n", remote.leftX(), remote.leftY(), remote.rightX(), remote.rightY(), remote.leftSwitch(), remote.rightSwitch());
                 //printff("jx:%.3f jy:%.3f jpitch:%.3f jyaw:%.3f\n", jx, jy, jpitch, jyaw);
                 #ifdef USE_IMU
-                printff("yaw_des_v:%d yaw_act_v:%d ", yawVelo, yaw>>VELOCITY);
-                printff("yaw_des:%.3f yaw_act:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180);
+                // printff("yaw_des_v:%d yaw_act_v:%d ", yawVelo, yaw>>VELOCITY);
+                // printff("yaw_des:%.3f yaw_act:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180);
+                printff("%.3f, %.3f, %.3f\n", imuAngles.yaw + 180, imuAngles.roll + 180, imuAngles.pitch + 180 );
                 #else
                 printff("yaw_des_v:%d yaw_act_v:%d PWR:%d ", yawVelo, yaw>>VELOCITY, yaw>>POWEROUT);
                 printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
