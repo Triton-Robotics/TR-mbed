@@ -46,7 +46,10 @@ char pitch_velocity_char[4];
 char nucleo_value[30] = {0};
 char jetson_value[30] = {0};
 
-
+//CV
+float CV_pitch_angle_radians = 0.0;
+float CV_yaw_angle_radians = 0.0;
+char CV_shoot = 0;
 
 //CHASSIS DEFINING
 I2C i2c(I2C_SDA, I2C_SCL);
@@ -315,11 +318,6 @@ int main(){
 
     //GENERAL VARIABLES
 
-    //CV
-    float CV_pitch_angle_radians = 0.0;
-    float CV_yaw_angle_radians = 0.0;
-    char CV_shoot = 0;
-
     //drive and shooting mode
     char drive = 'o'; //default o when using joystick
     char shot = 'o'; //default o when using joystick
@@ -337,6 +335,7 @@ int main(){
 
     unsigned long timeStart;
     unsigned long loopTimer = us_ticker_read();
+    unsigned long loopTimerCV = loopTimer;
     int refLoop = 0;
     int printLoop = 0;
 
@@ -346,12 +345,12 @@ int main(){
         timeStart = us_ticker_read();
 
         //CV loop runs every 2ms
-        // if((timeStart - loopTimerCV) / 1000 > 0) { 
-        //     loopTimerCV = timeStart;
-        //     jetson_send_feedback(); //  __COMENTED OUT LOOLOOKOKOLOOOOKO HERHEHRERHEHRHE
-        //     //basic_bitch_read();
-        //     led2 = !led2;
-        // }
+        if((timeStart - loopTimerCV) / 1000 > 1) { 
+            loopTimerCV = timeStart;
+            jetson_send_feedback(); //  __COMENTED OUT LOOLOOKOKOLOOOOKO HERHEHRERHEHRHE
+            //basic_bitch_read();
+            led2 = !led2;
+        }
 
         if ((timeStart - loopTimer) / 1000 > OUTER_LOOP_DT_MS){
             float elapsedms = (timeStart - loopTimer) / 1000;
