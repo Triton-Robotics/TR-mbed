@@ -126,6 +126,8 @@ public:
 
     float previousRPM[4] = {0, 0, 0, 0};
 
+    float radius;
+
     static float limitAcceleration(float desiredRPM, float previousRPM, int power);
 
     static float p_theory(int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm);

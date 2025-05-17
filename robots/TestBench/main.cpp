@@ -122,8 +122,6 @@ int main(){
             float ly = 0;
             float rx = 0;
 
-            Chassis.setOmniKinematics(posx, posy, RADIUS);
-
             if (remote.rightSwitch() == Remote::SwitchState::MID || remote.rightSwitch() == Remote::SwitchState::UNKNOWN) {
                 led = 1;
                 lx = (remote.leftX() / 660.0) * Chassis.m_OmniKinematicsLimits.max_Vel;
@@ -138,17 +136,6 @@ int main(){
 
                 float deltayaw = calculateDeltaYaw(angle, final_angle);
                 float distance = calculateDistance(posx, posy, final_x, final_y);
-
-                // if (distance > 1000.0) {
-                //     vel_init = 2.9;
-                //     accel_init = 0.8;
-                //     decel_dist = 1000 * vel_init * vel_init / (2 * accel_init * TIME);
-                // }
-                // else{
-                //     vel_init = 1.0;
-                //     accel_init = 0.6;
-                //     decel_dist = 1000 * vel_init * vel_init / (2 * accel_init * TIME);
-                // }
 
                 if (angle > buffer_angle) {
                     rx = -rx_init;
@@ -254,106 +241,6 @@ int main(){
 
                 Chassis.setChassisSpeeds({lx, ly, rx}); 
             }
-            // else if (remote.rightSwitch() == Remote::SwitchState::DOWN) {
-            //     float distance = calculateDistance(posx, posy, final_x, final_y);
-
-            //     // if (distance > 10000.0) {
-            //     //     vel_init = 2.9;
-            //     //     accel_init = 0.8;
-            //     //     decel_dist = 1000 * vel_init * vel_init / (2 * accel_init * TIME);
-            //     // }
-            //     // else{
-            //     //     vel_init = 1.0;
-            //     //     accel_init = 0.6;
-            //     //     decel_dist = 1000 * vel_init * vel_init / (2 * accel_init * TIME);
-            //     // }
-
-            //     if ((final_y - posy) > buffer_y) {
-            //         if (abs(velocity.vX) < vel_init) {
-            //             lx = velocity.vX - accel_init;
-            //         }
-            //         else {
-            //             lx = -vel_init;
-            //         }
-
-            //         if (distance < decel_dist) {
-            //             if (velocity.vX < 0) {
-            //                 lx = velocity.vX + accel_init;
-            //             }
-            //             else {
-            //                 lx = 0;
-            //             }
-            //         }
-            //     }
-            //     else if ((posy - final_y) > buffer_y) {
-            //         if (abs(velocity.vX) < vel_init) {
-            //             lx = velocity.vX + accel_init;
-            //         }
-            //         else {
-            //             lx = vel_init;
-            //         }
-
-            //         if (distance < decel_dist) {
-            //             if (velocity.vX > 0) {
-            //                 lx = velocity.vX - accel_init;
-            //             }
-            //             else {
-            //                 lx = 0;
-            //             }
-            //         }
-            //     }
-            //     else {
-            //         lx = 0;
-            //     }
-
-            //     if ((final_x - posx) > buffer_x) {
-            //         if (velocity.vY < vel_init) {
-            //             ly = velocity.vY + accel_init;
-            //         }
-            //         else {
-            //             ly = vel_init;
-            //         }
-
-            //         if (distance < decel_dist) {
-            //             if (velocity.vY > 0) {
-            //                 ly = velocity.vY - accel_init;
-            //             }
-            //             else {
-            //                 ly = 0;
-            //             }
-            //         }
-            //     }
-            //     else if ((posx - final_x) > buffer_x) {
-            //         if (velocity.vY < -vel_init) {
-            //             ly = velocity.vY - accel_init;
-            //         }
-            //         else {
-            //             ly = -vel_init;
-            //         }
-
-            //         if (distance < decel_dist) {
-            //             if (velocity.vY < 0) {
-            //                 ly = velocity.vY + accel_init;
-            //             }
-            //             else {
-            //                 ly = 0;
-            //             }
-            //         }
-            //     }
-            //     else {
-            //         ly = 0;
-            //     }
-
-            //     if (ly == 0 && lx == 0){
-            //         if (idx < final_pos.size() - 1) {
-            //             idx += 1;
-            //             final_y = final_pos[idx][1];
-            //             final_x = final_pos[idx][0];
-            //         }
-            //     }
-
-            //     Chassis.setChassisSpeeds({lx, ly, -1.0}, ChassisSubsystem::YAW_ORIENTED);
-            // }
             else{
                 //OFF
                 Chassis.setWheelPower({0,0,0,0});

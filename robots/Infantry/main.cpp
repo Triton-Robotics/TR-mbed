@@ -25,12 +25,14 @@ constexpr float MOUSE_SENSITIVITY_YAW_DPS = 1.0;
 constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 1.0;
 
 constexpr int OUTER_LOOP_DT_MS = 15;
+constexpr int TIME = 15;
+#define PI 3.14159265
 
 constexpr int PRINT_FREQUENCY = 20; //the higher the number, the less often
 
 constexpr float CHASSIS_FF_KICK = 0.065;
 
-//#define USE_IMU
+#define USE_IMU
 
 //CHASSIS DEFINING
 I2C i2c(I2C_SDA, I2C_SCL);
@@ -58,6 +60,24 @@ int calculateDeltaYaw(int ref_yaw, int beforeBeybladeYaw)
             deltaYaw += 360;
     }
     return deltaYaw;
+}
+
+float calculateDeltaYawRad(float actual, float desired)
+{
+    float deltaYaw = desired - actual;
+
+    if (abs(deltaYaw) > PI)
+    {
+        if (deltaYaw > 0)
+            deltaYaw -= 2*PI;
+        else
+            deltaYaw += 2*PI;
+    }
+    return deltaYaw;
+}
+
+float calculateDistance(float posx, float posy, float final_x, float final_y) {
+    return sqrt(pow((final_x - posx), 2) + pow((final_y - posy), 2));
 }
 
 int main(){
@@ -146,8 +166,44 @@ int main(){
 
     ChassisSpeeds cs;
 
+    // Auto code
+    ChassisSpeeds velocity = {0.0, 0.0, 0.0};
+    ChassisSpeeds prev_velocity = {0.0, 0.0, 0.0};
+    ChassisSpeeds accel = {0.0, 0.0, 0.0};
+
+    std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {500.0, 0.0}, {500.0, 500.0}, {0.0, 500.0}, {0.0, 0.0}};
+
+    float init_angle = -1000;
+    float angle = imuAngles.yaw - init_angle;
+    float posx = final_pos[0][0]; // need to go to 1676 ish
+    float posy = final_pos[0][1]; // we need to go to -6800 (ish)
+    int counter = 0;
+
+    // final positions
+    int idx = 1;
+    bool end = false;
+    float final_y = final_pos[idx][1];
+    float final_x = final_pos[idx][0];
+
+    // calculating final angle outside loop
+    float final_angle = atan2((final_pos[idx][1] - posy), (final_pos[idx][0] - posx));
+    float final_angle_previous = 0.0;
+    float buffer_y = 20.0;
+    float buffer_x = 20.0;
+    float buffer_angle = PI/16;
+
+    float vel_init = 1.0; // should be max vel
+    float accel_init = 0.4;
+    float decel_dist = 1000 * vel_init * vel_init / (2 * accel_init * TIME); // in mm
+    float rx_init = 0.4; // you basically divide the angle you want by pi, so this is PI/4 / PI
+
+
     while(true){
         timeStart = us_ticker_read();
+
+        if (init_angle == -1000 && imuAngles.yaw != 0) {
+            init_angle = imuAngles.yaw;
+        }
 
         if ((timeStart - loopTimer) / 1000 > OUTER_LOOP_DT_MS){
             float elapsedms = (timeStart - loopTimer) / 1000;
@@ -219,26 +275,264 @@ int main(){
             jpitch = max(-1.0F, min(1.0F, jpitch));
             jyaw = max(-1.0F, min(1.0F, jyaw));
 
+            velocity = Chassis.getChassisSpeeds();
+            accel =  {(velocity.vX - prev_velocity.vX) / TIME, (velocity.vY - prev_velocity.vY) / TIME, (velocity.vOmega - prev_velocity.vOmega) / TIME};
+
+            // update pos and angle in mm
+            // velocities in m/s, acceleration in m/s^2, the loop runs every TIME ms
+            // angle = imuAngles.yaw - init_angle;
+            angle = calculateDeltaYaw(imuAngles.yaw, init_angle);
+            angle = angle * -PI/180;
+            while (angle > PI) {
+                angle -= 2*PI;
+            }
+            while (angle < -PI) {
+                angle += 2*PI;
+            }
+            
+            posy = posy + ((velocity.vY * sin(angle)) - (velocity.vX * cos(angle))) * TIME + (1/2 * ((accel.vY * sin(angle)) - (accel.vX * cos(angle))) * TIME * TIME * 0.001);
+            
+            posx = posx + ((velocity.vX * sin(angle)) + (velocity.vY * cos(angle))) * TIME + (1/2 * ((accel.vX * sin(angle)) + (accel.vY * cos(angle))) * TIME * TIME * 0.001);
+
+            float lx = 0;
+            float ly = 0;
+            float rx = 0;
+
             //Chassis Code
-            if (drive == 'u' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::UP)){
+            if (remote.rightSwitch() == Remote::SwitchState::MID || remote.rightSwitch() == Remote::SwitchState::UNKNOWN) {
                 //REGULAR DRIVING CODE
                 Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
                                           jy * Chassis.m_OmniKinematicsLimits.max_Vel,
                                           0 * Chassis.m_OmniKinematicsLimits.max_vOmega},
                                           ChassisSubsystem::YAW_ORIENTED);
+
+            } else if (remote.rightSwitch() == Remote::SwitchState::UP) {
+                led = 0;
+                
+                final_angle = atan2((final_pos[idx][1] - posy), (final_pos[idx][0] - posx));
+                float deltayaw = calculateDeltaYaw(angle, final_angle);
+                float distance = calculateDistance(posx, posy, final_x, final_y);
+
+                if (angle > buffer_angle) {
+                    jyaw = -rx_init;
+                }
+                else if (angle < -buffer_angle) {
+                    jyaw = rx_init;
+                }
+                else {
+                    jyaw = 0;
+                }
+
+                if ((final_y - posy) > buffer_y) {
+                    if (abs(velocity.vX) < vel_init) {
+                        lx = velocity.vX - accel_init;
+                    }
+                    else {
+                        lx = -vel_init;
+                    }
+
+                    if (distance < decel_dist) {
+                        if (velocity.vX < 0) {
+                            lx = velocity.vX + accel_init;
+                        }
+                        else {
+                            lx = 0;
+                        }
+                    }
+                }
+                else if ((posy - final_y) > buffer_y) {
+                    if (abs(velocity.vX) < vel_init) {
+                        lx = velocity.vX + accel_init;
+                    }
+                    else {
+                        lx = vel_init;
+                    }
+
+                    if (distance < decel_dist) {
+                        if (velocity.vX > 0) {
+                            lx = velocity.vX - accel_init;
+                        }
+                        else {
+                            lx = 0;
+                        }
+                    }
+                }
+                else {
+                    lx = 0;
+                }
+
+                if ((final_x - posx) > buffer_x) {
+                    if (velocity.vY < vel_init) {
+                        ly = velocity.vY + accel_init;
+                    }
+                    else {
+                        ly = vel_init;
+                    }
+
+                    if (distance < decel_dist) {
+                        if (velocity.vY > 0) {
+                            ly = velocity.vY - accel_init;
+                        }
+                        else {
+                            ly = 0;
+                        }
+                    }
+                }
+                else if ((posx - final_x) > buffer_x) {
+                    if (velocity.vY < -vel_init) {
+                        ly = velocity.vY - accel_init;
+                    }
+                    else {
+                        ly = -vel_init;
+                    }
+
+                    if (distance < decel_dist) {
+                        if (velocity.vY < 0) {
+                            ly = velocity.vY + accel_init;
+                        }
+                        else {
+                            ly = 0;
+                        }
+                    }
+                }
+                else {
+                    ly = 0;
+                }
+
+                if ((ly == 0 && lx == 0) || (distance < M_SQRT2 * buffer_x)) {
+                    if (idx < final_pos.size() - 1) {
+                        idx += 1;
+                        final_y = final_pos[idx][1];
+                        final_x = final_pos[idx][0];
+                    }
+                    else {
+                        idx = 0;
+                        final_y = final_pos[idx][1];
+                        final_x = final_pos[idx][0];
+                    }
+
+                    ly = 0;
+                    lx = 0;
+                }
+
+                Chassis.setChassisSpeeds({lx, ly, rx}, ChassisSubsystem::YAW_ORIENTED);
+
             }else if (drive == 'd' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::DOWN)){
                 //BEYBLADE DRIVING CODE
-                Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          jy * Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          -BEYBLADE_OMEGA},
-                                          ChassisSubsystem::YAW_ORIENTED);
+                final_angle = atan2((final_pos[idx][1] - posy), (final_pos[idx][0] - posx));
+                float deltayaw = calculateDeltaYaw(angle, final_angle);
+                float distance = calculateDistance(posx, posy, final_x, final_y);
+
+                if (angle > buffer_angle) {
+                    jyaw = -rx_init;
+                }
+                else if (angle < -buffer_angle) {
+                    jyaw = rx_init;
+                }
+                else {
+                    jyaw = 0;
+                }
+
+                if ((final_y - posy) > buffer_y) {
+                    if (abs(velocity.vX) < vel_init) {
+                        lx = velocity.vX - accel_init;
+                    }
+                    else {
+                        lx = -vel_init;
+                    }
+
+                    if (distance < decel_dist) {
+                        if (velocity.vX < 0) {
+                            lx = velocity.vX + accel_init;
+                        }
+                        else {
+                            lx = 0;
+                        }
+                    }
+                }
+                else if ((posy - final_y) > buffer_y) {
+                    if (abs(velocity.vX) < vel_init) {
+                        lx = velocity.vX + accel_init;
+                    }
+                    else {
+                        lx = vel_init;
+                    }
+
+                    if (distance < decel_dist) {
+                        if (velocity.vX > 0) {
+                            lx = velocity.vX - accel_init;
+                        }
+                        else {
+                            lx = 0;
+                        }
+                    }
+                }
+                else {
+                    lx = 0;
+                }
+
+                if ((final_x - posx) > buffer_x) {
+                    if (velocity.vY < vel_init) {
+                        ly = velocity.vY + accel_init;
+                    }
+                    else {
+                        ly = vel_init;
+                    }
+
+                    if (distance < decel_dist) {
+                        if (velocity.vY > 0) {
+                            ly = velocity.vY - accel_init;
+                        }
+                        else {
+                            ly = 0;
+                        }
+                    }
+                }
+                else if ((posx - final_x) > buffer_x) {
+                    if (velocity.vY < -vel_init) {
+                        ly = velocity.vY - accel_init;
+                    }
+                    else {
+                        ly = -vel_init;
+                    }
+
+                    if (distance < decel_dist) {
+                        if (velocity.vY < 0) {
+                            ly = velocity.vY + accel_init;
+                        }
+                        else {
+                            ly = 0;
+                        }
+                    }
+                }
+                else {
+                    ly = 0;
+                }
+
+                if ((ly == 0 && lx == 0) || (distance < M_SQRT2 * buffer_x)) {
+                    if (idx < final_pos.size() - 1) {
+                        idx += 1;
+                        final_y = final_pos[idx][1];
+                        final_x = final_pos[idx][0];
+                    }
+                    else {
+                        idx = 0;
+                        final_y = final_pos[idx][1];
+                        final_x = final_pos[idx][0];
+                    }
+
+                    ly = 0;
+                    lx = 0;
+                }
+
+                Chassis.setChassisSpeeds({lx, ly, -BEYBLADE_OMEGA}, ChassisSubsystem::YAW_ORIENTED);
             }else{
                 //OFF
                 Chassis.setWheelPower({0,0,0,0});
             }
 
             //YAW CODE
-            if (drive == 'u' || drive == 'd' || (drive =='o' && (remote.rightSwitch() == Remote::SwitchState::UP || remote.rightSwitch() == Remote::SwitchState::DOWN))){
+            if (remote.rightSwitch() == Remote::SwitchState::MID || remote.rightSwitch() == Remote::SwitchState::UP || remote.rightSwitch() == Remote::SwitchState::DOWN) {
                 float chassis_rotation_radps = cs.vOmega;
                 int chassis_rotation_rpm = chassis_rotation_radps * 60 / (2*M_PI) * 4; //I added this 4 but I don't know why.
                 
@@ -275,7 +569,7 @@ int main(){
             }
 
             //PITCH
-            if (drive == 'u' || drive == 'd' || (drive =='o' && (remote.rightSwitch() == Remote::SwitchState::UP || remote.rightSwitch() == Remote::SwitchState::DOWN))){
+            if (remote.rightSwitch() == Remote::SwitchState::MID || remote.rightSwitch() == Remote::SwitchState::UP || remote.rightSwitch() == Remote::SwitchState::DOWN) {
                 //Regular Pitch Code
                 pitch_desired_angle += jpitch * MOUSE_SENSITIVITY_PITCH_DPS * elapsedms / 1000;
                 pitch_desired_angle -= jpitch * JOYSTICK_SENSITIVITY_PITCH_DPS * elapsedms / 1000;
@@ -344,9 +638,11 @@ int main(){
             printLoop ++;
             if (printLoop >= PRINT_FREQUENCY){
                 printLoop = 0;
-                printff("LF: %d RF: %d LB: %d RB: %d\n", Chassis.getMotor(ChassisSubsystem::MotorLocation::LEFT_FRONT).getData(motorDataType::VELOCITY), Chassis.getMotor(ChassisSubsystem::MotorLocation::RIGHT_FRONT).getData(motorDataType::VELOCITY), Chassis.getMotor(ChassisSubsystem::MotorLocation::LEFT_BACK).getData(motorDataType::VELOCITY), Chassis.getMotor(ChassisSubsystem::MotorLocation::RIGHT_BACK).getData(motorDataType::VELOCITY));
+                //printff("LF: %d RF: %d LB: %d RB: %d\n", Chassis.getMotor(ChassisSubsystem::MotorLocation::LEFT_FRONT).getData(motorDataType::VELOCITY), Chassis.getMotor(ChassisSubsystem::MotorLocation::RIGHT_FRONT).getData(motorDataType::VELOCITY), Chassis.getMotor(ChassisSubsystem::MotorLocation::LEFT_BACK).getData(motorDataType::VELOCITY), Chassis.getMotor(ChassisSubsystem::MotorLocation::RIGHT_BACK).getData(motorDataType::VELOCITY));
 
-                printff("LFval: %d RFval: %d LBval: %d RBval: %d\n", Chassis.getMotor(ChassisSubsystem::MotorLocation::LEFT_FRONT).getData(motorDataType::VALUE), Chassis.getMotor(ChassisSubsystem::MotorLocation::RIGHT_FRONT).getData(motorDataType::VALUE), Chassis.getMotor(ChassisSubsystem::MotorLocation::LEFT_BACK).getData(motorDataType::VALUE), Chassis.getMotor(ChassisSubsystem::MotorLocation::RIGHT_BACK).getData(motorDataType::VALUE));
+                //printff("LFval: %d RFval: %d LBval: %d RBval: %d\n", Chassis.getMotor(ChassisSubsystem::MotorLocation::LEFT_FRONT).getData(motorDataType::VALUE), Chassis.getMotor(ChassisSubsystem::MotorLocation::RIGHT_FRONT).getData(motorDataType::VALUE), Chassis.getMotor(ChassisSubsystem::MotorLocation::LEFT_BACK).getData(motorDataType::VALUE), Chassis.getMotor(ChassisSubsystem::MotorLocation::RIGHT_BACK).getData(motorDataType::VALUE));
+
+                printff("A: %.3f i: %.3f X: %.3f Y: %.3f\n", angle, init_angle, posx, posy);
                 //printff("Prints:\n");
                 //printff("lX:%.1f lY:%.1f rX:%.1f rY:%.1f lS:%d rS:%d\n", remote.leftX(), remote.leftY(), remote.rightX(), remote.rightY(), remote.leftSwitch(), remote.rightSwitch());
                 //printff("jx:%.3f jy:%.3f jpitch:%.3f jyaw:%.3f\n", jx, jy, jpitch, jyaw);

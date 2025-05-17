@@ -5,7 +5,7 @@
 /**
  * @param radius radius in meters
  */
-ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbId, BNO055 &imu, double radius)
+ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbId, BNO055 &imu, double radius_)
     : LF(lfId, CAN_BUS_TYPE, MOTOR_TYPE),
       RF(rfId, CAN_BUS_TYPE, MOTOR_TYPE),
       LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE),
@@ -23,6 +23,8 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
     this->rfId = rfId;
     this->lbId = lbId;
     this->rbId = rbId;
+
+    radius = radius_;
 
     setOmniKinematics(radius);
     m_OmniKinematicsLimits.max_Vel = MAX_VEL; // m/s
@@ -42,10 +44,10 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
     // LB.setSpeedPID(3, 0, 0);
     // RB.setSpeedPID(3 , 0, 0);
 
-    pid_LF.setPID(3, 0, 0);
-    pid_RF.setPID(3, 0, 0);
-    pid_LB.setPID(3, 0, 0);
-    pid_RB.setPID(3, 0, 0);
+    pid_LF.setPID(2, 0.1, 0);
+    pid_RF.setPID(2, 0.1, 0);
+    pid_LB.setPID(2, 0.1, 0);
+    pid_RB.setPID(2, 0.1, 0);
 
     brakeMode = COAST;
 
@@ -490,17 +492,17 @@ void ChassisSubsystem::setOmniKinematicsLimits(double max_Vel, double max_vOmega
 
 void ChassisSubsystem::setOmniKinematics(double radius)
 {
-    m_OmniKinematics.r1x = -sqrt(radius);
-    m_OmniKinematics.r1y = sqrt(radius);
+    m_OmniKinematics.r1x = -sqrt(radius); // sqrt(2);
+    m_OmniKinematics.r1y = sqrt(radius); // sqrt(2);
 
-    m_OmniKinematics.r2x = sqrt(radius);
-    m_OmniKinematics.r2y = sqrt(radius);
+    m_OmniKinematics.r2x = sqrt(radius); // sqrt(2);
+    m_OmniKinematics.r2y = sqrt(radius); // sqrt(2);
 
-    m_OmniKinematics.r3x = -sqrt(radius);
-    m_OmniKinematics.r3y = -sqrt(radius);
+    m_OmniKinematics.r3x = -sqrt(radius); // sqrt(2);
+    m_OmniKinematics.r3y = -sqrt(radius); // sqrt(2);
 
-    m_OmniKinematics.r4x = sqrt(radius);
-    m_OmniKinematics.r4y = -sqrt(radius);
+    m_OmniKinematics.r4x = sqrt(radius); // sqrt(2);
+    m_OmniKinematics.r4y = -sqrt(radius); // sqrt(2);
 }
 
 WheelSpeeds ChassisSubsystem::chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds)
