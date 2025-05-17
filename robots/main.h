@@ -49,7 +49,6 @@ void printfESP(const char *format, ...){
     va_start(args, format);
     vsnprintf(temp, 100, format, args);
     bc.write(temp, 100);
-    va_end(args);
 }
 
 void print(char statement[], priorityLevels priority = DEFAULT)
@@ -122,16 +121,5 @@ static void remotePrint()
 // Thread threadingReferee(osPriorityLow);
 // Thread threadingPrint(osPriorityBelowNormal);
 // Thread threadingLogger(osPriorityLow);
-
-float floatmod(float input, float mod){
-    float f = input;
-    while(f < 0){
-        f += mod;
-    }
-    while(f >= mod){
-        f -= mod;
-    }
-    return f;
-}
 
 #endif // TR_EMBEDDED_MAIN_H
