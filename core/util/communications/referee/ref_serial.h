@@ -45,31 +45,31 @@ private:
 
 /***********************************命令码ID*************************************/
 
-#define       Judge_Game_StatusData              0x0001
-#define       Judge_Game_ResultData              0x0002
-#define       Judge_Robot_HP                     0x0003
-#define       Judge_Dart_Launch                  0x0004
-#define       Judge_AI_ChallengeBuff             0x0005
-#define       Judge_Event_Data                   0x0101
-#define       Judge_Supply_Station               0x0102
+#define       Judge_Game_StatusData              0x0001 //11
+#define       Judge_Game_ResultData              0x0002 //1
+#define       Judge_Robot_HP                     0x0003 //32
+#define       Judge_Dart_Launch                  0x0004 //UNUSED
+#define       Judge_AI_ChallengeBuff             0x0005 //UNUSED
+#define       Judge_Event_Data                   0x0101 //4
+#define       Judge_Supply_Station               0x0102 //3
 //#define       Judge_Request_Recharge             0x0103(对抗赛未开放)
-#define       Judge_Referee_Warning              0x0104
-#define       Judge_Dart_Countdown               0x0105
-#define       Judge_Robot_State                  0x0201
-#define       Judge_Power_Heat                   0x0202
-#define       Judge_Robot_Position               0x0203
-#define       Judge_Robot_Buff                   0x0204
-#define       Judge_Aerial_Energy                0x0205
-#define       Judge_Injury_State                 0x0206
-#define       Judge_RealTime_Shoot               0x0207
-#define       Judge_Remaining_Rounds             0x0208
-#define       Judge_Robot_RFID                   0x0209
-#define       Judge_Dart_Client                  0x020A
-#define       Judge_Robot_Communicate            0x0301
-#define       Judge_User_Defined                 0x0302
-#define       Judge_Map_Interaction              0x0303
-#define       Judge_KeyMouse_Message             0x0304
-#define       Judge_Client_Map                   0x0305
+#define       Judge_Referee_Warning              0x0104 //3
+#define       Judge_Dart_Countdown               0x0105 //3
+#define       Judge_Robot_State                  0x0201 //13
+#define       Judge_Power_Heat                   0x0202 //16
+#define       Judge_Robot_Position               0x0203 //16
+#define       Judge_Robot_Buff                   0x0204 //7
+#define       Judge_Aerial_Energy                0x0205 
+#define       Judge_Injury_State                 0x0206 //1
+#define       Judge_RealTime_Shoot               0x0207 //7
+#define       Judge_Remaining_Rounds             0x0208 //6
+#define       Judge_Robot_RFID                   0x0209 //4
+#define       Judge_Dart_Client                  0x020A //6
+#define       Judge_Robot_Communicate            0x0301 //127
+#define       Judge_User_Defined                 0x0302 //30
+#define       Judge_Map_Interaction              0x0303 //15
+#define       Judge_KeyMouse_Message             0x0304 //12
+#define       Judge_Client_Map                   0x0305 //24
 
 /***************************DATA_Length*************************/
 
@@ -79,10 +79,10 @@ private:
 #define       JudgeLength_Game_StatusData        20
 #define       JudgeLength_Game_ResultData        10
 #define       JudgeLength_Robot_HP               41
-#define       JudgeLength_Dart_Launch            12
-#define       JudgeLength_AI_ChallengeBuff       20
+#define       JudgeLength_Dart_Launch            12 //UNUSED
+#define       JudgeLength_AI_ChallengeBuff       20 //UNUSED
 #define       JudgeLength_Event_Data             13
-#define       JudgeLength_Supply_Station         13
+#define       JudgeLength_Supply_Station         12
 //#define       JudgeLength_Request_Recharge       11(对抗赛未开放)
 #define       JudgeLength_Referee_Warning        12
 #define       JudgeLength_Dart_Countdown         12
