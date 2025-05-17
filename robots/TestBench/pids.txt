@@ -1,0 +1,36 @@
+    /* GOOD PID VALUES
+     * inf pitch pos pid: (16.2644,0.024926,1200.2213), ff = -3550, icap = 3000
+     * sentry yaw spd pid: (937.48, 0.48305, 0),
+     *  ff = (-5.30094881524873 * pow(desiredOutput,2)*dir + 461.129143101395 * desiredOutput + 2402.35249010233*dir),
+     *  icap = 5000
+     *
+     *
+     */
+
+
+    // infantry pitch
+//     testMot.setPositionPID(17.4351,0.024875,1053.175); // old
+//    testMot.setPositionPID(16.2644,0.024926,445.2213);  // new
+//    testMot.setPositionPID(16.2644,0.024926,1200.2213);  // good w/ ff
+//    testMot.setPositionIntegralCap(3000);
+
+    // infantry yaw
+    // testMot.setPositionPID(3.0459,0.00058304,3977.9767);
+    // testMot.setPositionIntegralCap();
+
+//    // sentry pitch
+//    testMot.setPositionPID(21.3544, 0.020221, 1078.4383);
+//    testMot.setPositionPID(0.51595, 3.6503e-05, 1823.1593);
+//    testMot.setPositionIntegralCap(3000);
+
+    // sentry yaw (ff: 2.146e-07 x^2 + 0.000247 x - 1.501)
+    testMot.setSpeedPID(922.9095, 0.51424, 0);
+    testMot.setSpeedIntegralCap(1000);
+
+    // hero pitch
+//    testMot.setPositionPID(18.22, 0.012889, 439.1312);
+//    testMot.setPositionPID(2.7811, 0.0031165, 620.4491);
+
+    // hero yaw
+//    testMot.setPositionPID(10.4569, 0.0012426, 7681.1044);
+//    testMot.setPositionPID(6.369, 0.00084055, 9283.1751);

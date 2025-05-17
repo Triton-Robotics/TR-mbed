@@ -1,500 +1,299 @@
+// Test yaw or pitch motor
 #include "main.h"
-#include "Infantry.h"
-// #include <jetson.h>
-#include <cstdlib>
+#include <cmath>
+#include <functional>
 
-#include <iostream>
-#include "subsystems/ChassisSubsystem.h"
+// Testing Parameters
+bool pitch = false, yaw = true;
+bool position = false, velocity = true;
 
-#define PI 3.14159265
-
-#define LOWERBOUND 35.0
-#define UPPERBOUND -15.0
-
-// add radius measurement here
-#define RADIUS 0.5
-#define RUNSPIN 1.0
-
-#define JOYSTICK_SENSE_YAW 1.0/90
-#define JOYSTICK_SENSE_PITCH 1.0/150
-#define MOUSE_SENSE_YAW 1.0/5
-#define MOUSE_SENSE_PITCH 1.0/5
-#define MOUSE_KB_MULT 0.2
-
-I2C i2c(I2C_SDA, I2C_SCL);
-
-BNO055 imu(i2c, IMU_RESET, MODE_IMU);
-ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
-DJIMotor yaw(5, CANHandler::CANBUS_1, GIMBLY,"Yeah");
-DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY,"Peach"); // right
-DJIMotor pitch2(6, CANHandler::CANBUS_2, GIMBLY,"useless"); // left, not functioning
-
-DJIMotor indexer(7, CANHandler::CANBUS_2, C610,"Indexer");
-DJIMotor RFLYWHEEL(8, CANHandler::CANBUS_2, M3508,"RightFly");
-DJIMotor LFLYWHEEL(5, CANHandler::CANBUS_2, M3508,"LeftFly");
+// Infantry turret constraints
+#define PITCH_MIN 2400 // TODO
+#define PITCH_MAX 300 // TODO
+#define YAW_MIN 0
+#define YAW_MAX 8191
+#define MAX_POWER 32767 // GM6020
 
 DigitalOut led(L26);
 DigitalOut led2(L27);
 DigitalOut led3(L25);
-DigitalOut led4(LED1);
-DigitalIn button(BUTTON1);
-DigitalIn jumper(PC_9);
 
-BNO055_ANGULAR_POSITION_typedef imuAngles;
+I2C i2c(I2C_SDA, I2C_SCL);
 
-int calculateDeltaYaw(int ref_yaw, int beforeBeybladeYaw)
-{
-    int deltaYaw = beforeBeybladeYaw - ref_yaw;
+//int pitchPos = PITCH_MIN, yawPos = YAW_MIN;
+int ry = 0, lx = 0, ly = 0, rx = 0, yawPower = 0;
+bool converged, steadyState;
+int pitchRange, pitchCenter, nextStartingPitch;
+std::vector<unsigned long> convVec_u;
 
-    if (abs(deltaYaw) > 180)
-    {
-        if (deltaYaw > 0)
-            deltaYaw -= 360;
-        else
-            deltaYaw += 360;
+int main(){
+    DJIMotor pitchMot(7, CANHandler::CANBUS_2, GM6020, "pitch_motor");
+    DJIMotor yawMot(5, CANHandler::CANBUS_1, GM6020, "yaw_motor");
+
+    pitchMot.setPositionPID(16.2644,0.024926,1200.2213);
+    pitchMot.setPositionIntegralCap(3000);
+    pitchMot.pidPosition.feedForward = -3550;
+
+    std::reference_wrapper<DJIMotor> mot { pitchMot };
+
+    if (pitch) {
+        mot = pitchMot;
     }
-    return deltaYaw;
-}
+    else if (yaw) {
+        mot  = yawMot;
+    }
+    DJIMotor& testMot  = mot;
 
-int main()
-{
+    //assigning can handler objects to motor class.
+    DJIMotor::s_setCANHandlers(&canHandler1,&canHandler2, false, false);
 
-    DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
-
-    /*
-    * MOTORS SETUP AND PIDS
-    */
-
-    pitch.setPositionPID(18, 0.01, 850); //12.3 0.03 2.5 //mid is 13.3, 0.03, 7.5
-    pitch.setPositionIntegralCap(6000);
-  //   merge difference:
-//     pitch.setPositionPID(17.3, 0.03, 8.5); // 12.3 0.03 2.5 //mid is 13.3, 0.03, 7.5
-//     pitch.setPositionIntegralCap(60000);
-//    pitch.setPositionOutputCap(100000);
-    pitch.pidPosition.feedForward = 0;
-    pitch.outputCap = 32760;
-    pitch.useAbsEncoder = true;
-
-
-    pitch.useAbsEncoder = true;
-    pitch.setPositionPID(15, 0, 1700); //15, 0 1700
-    pitch.setPositionOutputCap(32000);
-    float currentPitch = 0;
-    float desiredPitch = 0;
-    float pitch_phase = 33 / 180.0 * PI; // 5.69 theoretical
-    float InitialOffset_Ticks = 2500;
-    float K = 0.38; // 0.75 //0.85
-
-    LFLYWHEEL.setSpeedPID(7.5, 0, 0.04);
-    RFLYWHEEL.setSpeedPID(7.5, 0, 0.04);
-
-    //     merge difference
-    //     PID yawIMU(200.0, 0.1, 150, 20000, 8000); // 7.0,0.02,15.0,20000,8000
-    Chassis.setYawReference(&yaw, 4098); // "5604" is the number of ticks of yawOne considered to be robot-front
-    Chassis.setSpeedFF_Ks(0.065);
-    
-    yaw.setSpeedPID(3.5, 0, 200);
-    PID yawBeyblade(0.32, 0, 550);
-    PID yawNonBeyblade(0.15, 0, 550);
-
-    yaw.setSpeedIntegralCap(1000);
-    yaw.useAbsEncoder = false;
-
-    indexer.setSpeedPID(1, 0, 1);
-    indexer.setSpeedIntegralCap(8000);
-    //PID for indexer angle position control. Surely there are better names then "sure"...
-    PID sure(0.5,0,0.4);
-    sure.setOutputCap(4000);
-    unsigned long timeSure;
-    unsigned long prevTimeSure;
-    //  merge difference
-    //   chassis.setBrakeMode(ChassisSubsystem::BrakeMode::COAST);
-
-    // command.initialize();
-
-    /*
-    * OPERATIONAL VARIABLES
-    */
-    unsigned long loopTimer = us_ticker_read();
-
-    int refLoop = 0;
-    int ref_yaw;
-
-    int yawSetPoint = imuAngles.yaw;
-    double rotationalPower = 0;
-
-    jumper.mode(PullDown);
-
+    //getting initial feedback.
     DJIMotor::s_getFeedback();
-    double beybladeSpeed = 2;
-    bool beybladeIncreasing = true;
 
-    float chassis_power;
-    uint16_t chassis_power_limit;
-    uint16_t ref_chassis_temp1;
-    uint16_t ref_chassis_temp2;
-    uint16_t heatMax1;
-    uint16_t heatMax2;
+    unsigned long loopTimer_u = us_ticker_read();
+    unsigned long timeEnd_u, timeStart_u, timeTest_u = 0;
 
-    int counter = 0;
+    int refLoop = 0, desiredOutput = 0;
 
-    unsigned long lastTime = 0;
-    unsigned long yawTime = us_ticker_read();
+    while(true) { //main loop
+        timeStart_u = us_ticker_read();
 
-    //Variables & PID for burst fire
-    bool shoot = false;
-    //int shootPosition;
-    int shootTargetPosition = 36*8190 ;
-    bool shootReady = false;
+        if ((timeStart_u - loopTimer_u) / 1000 > 15) {
+            loopTimer_u = timeStart_u;
+            led = !led; //led blink tells us how fast the inner loop is running
 
-    char drive = 'o';
-    char shot = 'o';
+            remoteRead(); //reading data from remote
+            bool switL = (remote.leftSwitch() == Remote::SwitchState::UP);
+            bool switLDown = (remote.leftSwitch() == Remote::SwitchState::DOWN);
 
-    bool userButton;
-    bool prev_userButton;
-    char driveMode = 'j';
+            lx = 0;
+            ly = 0;
+            rx = 0;
+            ry = 0;
 
-    int yawVelo = 0;
-
-    while (true)
-    {
-        unsigned long timeStart = us_ticker_read();
-
-        if ((timeStart - loopTimer) / 1000 > 25){
-            led3 = !led3;
-
-            loopTimer = timeStart;
-            led = !led;
-            refLoop++;
-            if (refLoop >= 5){
-                led3 = referee.readable();
-                refereeThread(&referee);
-                refLoop = 0;
-                led2 = !led2;
-
-                //POWER LIMIT OVERRIDE INCASE
-                if(robot_status.chassis_power_limit < 10){
-                    chassis_power_limit = 50;
-                }else{
-                    chassis_power_limit = robot_status.chassis_power_limit;
-                }
-                
-                Chassis.power_limit = (float)chassis_power_limit;
-                chassis_power = power_heat_data.chassis_power;
+            if (abs(remote.rightX()) > 35) {
+                rx = remote.rightX();
             }
-            Chassis.periodic();
-            cs = Chassis.getChassisSpeeds();
-            remoteRead();
-            Chassis.periodic();
-
-            if(jumper){
-                driveMode = 'm';
-                // led = 1;
-            }else{
-                driveMode = 'j';
-                // led = 0;
+            if (abs(remote.rightY()) > 35) {
+                ry = remote.rightY();
             }
-            if(remote.keyPressed(Remote::Key::R)){
-                drive = 'm';
-            }else if(remote.keyPressed(Remote::Key::E)){
-                drive = 'u';
-            }else if(remote.keyPressed(Remote::Key::Q)){
-                drive = 'd';        
+            if (abs(remote.leftX()) > 35) {
+                lx = remote.leftX();
             }
-            if(remote.keyPressed(Remote::Key::C)){
-                shot = 'm';
-            }else if(remote.keyPressed(Remote::Key::V)){
-                shot = 'u';
-            }else if(remote.keyPressed(Remote::Key::B)){
-                shot = 'd';        
+            if (abs(remote.leftY()) > 35) {
+                ly = remote.leftY();
             }
 
-            refLoop++;
-            imu.get_angular_position_quat(&imuAngles);
-            if (refLoop >= 5){
-                refereeThread(&referee);
-                refLoop = 0;
-                led2 = !led2;
-                // led4 = button;
-                // printff("%f %f %d \n", ext_power_heat_data.data.chassis_power, ext_power_heat_data.data.chassis_power_buffer, ext_game_robot_state.data.chassis_power_limit);
-                // printff("%f %d %d %d\n", imuAngles.yaw, yawSetPoint, remote.getMouseX()*MOUSE_SENSE_YAW, yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure));
-                // printff("ang%f t%d d%f FF%f\n", (((pitch>>ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360, pitch>>ANGLE, desiredPitch, K * sin((desiredPitch / 180 * PI) - pitch_phase)); //(desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks
-                
-                
-                // led = 0;
-                if(robot_status.chassis_power_limit < 10){
-                    Chassis.PEAK_POWER_ALL = 8000;
-                }else{
-                    Chassis.PEAK_POWER_ALL = 141 * robot_status.chassis_power_limit;
-                }
-                
-
-                // printff("%d %d \n" , ext_power_heat_data.data.shooter_id1_17mm_cooling_heat, ext_game_robot_state.data.shooter_id1_17mm_cooling_limit);
+            if (switL) { // manual control
+                desiredOutput = ry / 10;
+                if (position)
+                    testMot.setPosition(desiredOutput);
+                else if (velocity)
+                    testMot.setSpeed(desiredOutput);
             }
 
-            if(remote.keyPressed(Remote::Key::CTRL)){
-                Chassis.PEAK_POWER_ALL = 32000;
-            }else if(remote.keyPressed(Remote::Key::G)){
-                Chassis.PEAK_POWER_ALL = 60000;
-            }
-
-
-            double scalar = 1;
-            double jx = remote.leftX() / 660.0 * scalar;
-            double jy = remote.leftY() / 660.0 * scalar;
-            double jr = remote.rightX() / 660.0 * scalar;
-
-            double tolerance = 0.05;
-            jx = (abs(jx) < tolerance) ? 0 : jx;
-            jy = (abs(jy) < tolerance) ? 0 : jy;
-            jr = (abs(jr) < tolerance) ? 0 : jr;
-
-            // if(driveMode == 'm'){
-            //     jx = MOUSE_KB_MULT * ((remote.keyPressed(Remote::Key::D) ? 1 : 0) + (remote.keyPressed(Remote::Key::A) ? -1 : 0));
-            //     jy = MOUSE_KB_MULT * ((remote.keyPressed(Remote::Key::W) ? 1 : 0) + (remote.keyPressed(Remote::Key::S) ? -1 : 0));
-            //     jr = MOUSE_KB_MULT * ((remote.keyPressed(Remote::Key::E) ? 1 : 0) + (remote.keyPressed(Remote::Key::Q) ? -1 : 0));
-            // }
-
-            float mult = 1;
-            // if(remote.keyPressed(Remote::Key::SHIFT)){
-            //     mult = 0.5;
-            // }
-
-            jx += mult * ((remote.keyPressed(Remote::Key::D) ? 1 : 0) + (remote.keyPressed(Remote::Key::A) ? -1 : 0));
-            jy += mult * ((remote.keyPressed(Remote::Key::W) ? 1 : 0) + (remote.keyPressed(Remote::Key::S) ? -1 : 0));
-            jr += mult * ((remote.keyPressed(Remote::Key::E) ? 1 : 0) + (remote.keyPressed(Remote::Key::Q) ? -1 : 0));
-
-
-            currentPitch = (double(pitch.getData(ANGLE) - InitialOffset_Ticks) / TICKS_REVOLUTION) * 360; // degrees
-
-            int leftStickValue = remote.rightY();
-            /**
-             * RightSwitch controls: Pitch, Yaw, Chassis
-             * Up: Pitch enabled, yaw and chassis seperate
-             * Mid or Unkown: Off. All power set to 0
-             * Down: Pitch enabled, yaw and chassis Beyblade
-             */
-            int stick = remote.rightY();
-            if (drive == 'u' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::UP)){          // All non-serializer motors activated
-                led3 = 1;
-                unsigned long time = us_ticker_read();
-                Chassis.setSpeedFF_Ks(0.065);
-                Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          jy *
-                                          Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          0 * Chassis.m_OmniKinematicsLimits.max_vOmega},
-                                          ChassisSubsystem::YAW_ORIENTED);
-
-                lastTime = time; 
-
-                // if(driveMode == 'm'){
-                //     yawSetPoint -= remote.getMouseX() * MOUSE_SENSE_YAW;
-                // }else{
-                //     yawSetPoint -= remote.rightX() * JOYSTICK_SENSE_YAW;
-                // }
-
-                yawSetPoint -= remote.getMouseX() * MOUSE_SENSE_YAW;
-                if(remote.rightX() > 10 || remote.rightX() < -10){
-                    yawSetPoint -= remote.rightX() * JOYSTICK_SENSE_YAW;
+            else if (switLDown) { // PID convergence testing
+                if (!timeTest_u) { // initialize test vars
+                    timeTest_u = timeStart_u;
+                    convVec_u = {};
+                    converged = true;
                 }
-
-                yawSetPoint = (yawSetPoint+360) % 360;
-
-                timeSure = us_ticker_read();
-                
-                yawVelo = 5 * yawNonBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure);
-
-                int dir = 0;
-                if(yawVelo > 0){
-                    dir = 1;
-                }else if(yawVelo < 0){
-                    dir = -1;
-                }
-                yaw.pidSpeed.feedForward = dir * (874 + (73.7 * abs(yawVelo)) + (0.0948 * yawVelo * yawVelo));
-
-                yaw.setSpeed(yawVelo);
-                imu.get_angular_position_quat(&imuAngles);
-
-                prevTimeSure = timeSure;
-                // imu.get_angular_position_quat(&imuAngles);
-            } else if (drive == 'm' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::MID || remote.rightSwitch() == Remote::SwitchState::UNKNOWN)){ // disable all the non-serializer components
-                Chassis.setSpeedFF_Ks(0.065);
-                Chassis.setWheelPower({0,0,0,0});
-                yaw.setPower(0);
-
-                yawSetPoint = (imuAngles.yaw + 180) ;
-                yawSetPoint = yawSetPoint % 360;
-            } else if (drive == 'd' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::DOWN)){           // beyblade mode
-                unsigned long time = us_ticker_read(); //time for pid
-                pitch.setPower(0);
-                Chassis.setSpeedFF_Ks(0.065);
-                Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          jy * Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          -RUNSPIN },ChassisSubsystem::YAW_ORIENTED);
-
-                // if(driveMode == 'm'){
-                //     yawSetPoint -= remote.getMouseX() * MOUSE_SENSE_YAW;
-                // }else{
-                //     yawSetPoint -= remote.rightX() * JOYSTICK_SENSE_YAW;
-                // }
-
-                yawSetPoint -= remote.getMouseX() * MOUSE_SENSE_YAW;
-                if(remote.rightX() > 10 || remote.rightX() < -10){
-                    yawSetPoint -= remote.rightX() * JOYSTICK_SENSE_YAW;
-                }
-
-                yawSetPoint = (yawSetPoint+360) % 360;
-                
-                timeSure = us_ticker_read();
-
-                yawVelo = -Chassis.getChassisSpeeds().vOmega / 3.14 * 30 + yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yawSetPoint,imuAngles.yaw+180, 360), timeSure - prevTimeSure);
-
-                int dir = 0;
-                if(yawVelo > 0){
-                    dir = 1;
-                }else if(yawVelo < 0){
-                    dir = -1;
-                }
-                yaw.pidSpeed.feedForward = 2 * dir * (874 + (73.7 * abs(yawVelo)) + (0.0948 * yawVelo * yawVelo));
-                
-                yaw.setSpeed(yawVelo);
-                imu.get_angular_position_quat(&imuAngles);
-
-                prevTimeSure = timeSure;
-            }
-            yawTime = us_ticker_read();
-
-
-            // burst fire, turn the indexer to shoot 3-5 balls a time and stop indexer
-            // only shoot when left switch changes from down/unknown/mid to up
-            // if left switch remains at up state, indexer stops after 3-5 balls
-            if (shoot){
-                if (indexer>>MULTITURNANGLE >= shootTargetPosition){
-                    indexer.setSpeed(0);
-                    shoot = false;
-                } else {
-                    timeSure = us_ticker_read();
-                    indexer.setSpeed(sure.calculate(shootTargetPosition, indexer>>MULTITURNANGLE, timeSure - prevTimeSure)); //
-                    prevTimeSure = timeSure;
-                }
-            } else {
-                indexer.setSpeed(0);
-            }
-
-            //PITCH CODE, if remote is UP or DOWN, run pitch code, else off
-            if (drive == 'u' || drive == 'd' || (drive == 'o' && (remote.rightSwitch() == Remote::SwitchState::UP ||
-                remote.rightSwitch() == Remote::SwitchState::DOWN))){
-
-                // check switch mode
-                // ground level = -5.69
-                // lower bound = 15
-                // upper bound = -25
-                
-                // printff("i%f\n",desiredPitch);
-                // if(driveMode == 'm'){
-                //     desiredPitch += remote.getMouseY() * MOUSE_SENSE_PITCH;
-                // }else{
-                //     desiredPitch -= leftStickValue * JOYSTICK_SENSE_PITCH;
-                // }
-
-                desiredPitch += remote.getMouseY() * MOUSE_SENSE_PITCH;
-                desiredPitch -= leftStickValue * JOYSTICK_SENSE_PITCH;
-
-                if (desiredPitch >= LOWERBOUND) {
-                    // printff("u%f\n",desiredPitch);
-                    desiredPitch = LOWERBOUND;
-                }
-                else if (desiredPitch <= UPPERBOUND) {
-                    // printff("d%f\n",desiredPitch);
-                    desiredPitch = UPPERBOUND;
-                }
-
-                float FF = K * sin((desiredPitch / 180 * PI) - pitch_phase); // output: [-1,1]
-                pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
-                pitch.setPosition(int((desiredPitch / 360) * TICKS_REVOLUTION + InitialOffset_Ticks));
-
-            } else{
-                pitch.setPower(0);
-            }
-
-
-            /**
-             * left switch controls burst fire: indexer and flywheels
-             * state down or unknown: no motion
-             * state mid: flywheels running, resetting shoot state
-             * state up: flywheels continues running, turn indexer if state set by state mid
-             */
-            if (remote.leftSwitch() == Remote::SwitchState::UP || remote.getMouseL()){
-                // Monitors state of left switch at previous loop and determine whether to turn indexer on
-                // if left switch was at other states, turn indexer on
-                // otherwise, continue the burstfire and stop after 3-5 shots
-                // $shootReady local to if block, $shoot variable used above
-                if (shootReady){
-                    shootReady = false;
-                    // shoot = true;
-                    shootTargetPosition = 8192 * 12 + (indexer>>MULTITURNANGLE);
-
-                    //shoot limit
-                    if(robot_status.shooter_barrel_heat_limit < 10 || power_heat_data.shooter_17mm_1_barrel_heat < robot_status.shooter_barrel_heat_limit - 40) {
-                        shoot = true;
+                if (converged && steadyState) { // set next speed once system settles
+                    converged = false;
+                    steadyState = false;
+                    timeTest_u = timeStart_u;
+                    if (yaw && velocity) {
+                        switch (convVec_u.size()) {
+                            case 0: // test 1a: small +delta
+                                desiredOutput = 5;
+                                break;
+                            case 1: // test 1b: small -delta
+                                desiredOutput = -5;
+                                break;
+                            case 2: // test 2a: medium +delta
+                                desiredOutput = 15;
+                                break;
+                            case 3: // test 2b: medium -delta
+                                desiredOutput = -15;
+                                break;
+                            case 4: // test 3a: large +delta
+                                desiredOutput = 50;
+                                break;
+                            case 5: // test 3b: large -delta
+                                desiredOutput = -50;
+                                break;
+                            default: // print test results
+                                for (int i = 0; i < convVec_u.size(); i++) {
+                                    printff("%lu\t", convVec_u[i]);
+                                }
+                                printff("\n");
+                        }
                     }
-                    
+                    else if (yaw && position) {
+                        int curPos = testMot >> ANGLE;
+                        switch (convVec_u.size()) {
+                            case 0: // test 1a: small +delta
+                                desiredOutput = (curPos + YAW_MAX / 10) % YAW_MAX;
+                                break;
+                            case 1: // test 1b: small -delta
+                                desiredOutput = (curPos - YAW_MAX / 10) % YAW_MAX;
+                                break;
+                            case 2: // test 2a: medium +delta
+                                desiredOutput = (curPos + YAW_MAX / 5) % YAW_MAX;
+                                break;
+                            case 3: // test 2b: medium -delta
+                                desiredOutput = (curPos - YAW_MAX / 5) % YAW_MAX;
+                                break;
+                            case 4: // test 3a: large +delta
+                                desiredOutput = (curPos + YAW_MAX / 2) % YAW_MAX;
+                                break;
+                            case 5: // test 3b: large -delta
+                                desiredOutput = (curPos - YAW_MAX / 2) % YAW_MAX;
+                                break;
+                            default: // print test results
+                                for (int i = 0; i < convVec_u.size(); i++) {
+                                    printff("%lu\t", convVec_u[i]);
+                                }
+                                printff("\n");
+                        }
+                    }
+                    else if (pitch && position) {
+                        pitchRange = PITCH_MAX - PITCH_MIN;
+                        pitchCenter = PITCH_MIN + pitchRange / 2;
+                        nextStartingPitch = pitchCenter;
+                        switch (convVec_u.size()) {
+                            case 0: // test 1a: small +delta
+                                desiredOutput = pitchCenter + pitchRange / 8;
+                                break;
+                            case 1: // test 1b: small -delta
+                                desiredOutput = pitchCenter - pitchRange / 8;
+                                break;
+                            case 2: // test 2a: medium +delta
+                                desiredOutput = pitchCenter + pitchRange / 3;
+                                break;
+                            case 3: // test 2b: medium -delta
+                                desiredOutput = pitchCenter - pitchRange / 3;
+                                nextStartingPitch = PITCH_MIN;
+                                break;
+                            case 4: // test 3a: large +delta, starting at lowest turret point
+                                desiredOutput = pitchCenter + pitchRange * 0.4;
+                                nextStartingPitch = PITCH_MAX;
+                                break;
+                            case 5: // test 3b: large -delta, starting at highest turret point
+                                desiredOutput = pitchCenter - pitchRange * 0.4;
+                                break;
+                            default: // print test results
+                                for (int i = 0; i < convVec_u.size(); i++) {
+                                    printff("%lu\t", convVec_u[i]);
+                                }
+                                printff("\n");
+                        }
+                    }
+                    testMot.setSpeed(desiredOutput);
                 }
-            } else {
-                //SwitchState state set to mid/down/unknown
-                shootReady = true;
+
+                else if (converged) { // get to steady state before next test
+                    if (velocity) { // ss: velocity = 0
+                        testMot.setPower(0);
+                        if (!(testMot >> VELOCITY)) {
+                            steadyState = true;
+                        }
+                    } else if (position) { // ss: velocity = 0, position = desired
+                        if (pitch) {
+                            testMot.setPosition(nextStartingPitch);
+                            float limit = 0.02;
+                            float error = ((testMot >> ANGLE) - nextStartingPitch) / (testMot >> ANGLE);
+                            if (!(testMot >> VELOCITY) && (abs(error) < limit)) {
+                                steadyState = true;
+                            }
+                        }
+                    }
+
+                }
+                else { // check if convergence reached (+-2% error)
+                    float limit = 0.02;
+                    if (yaw && velocity) {
+                        float error = ((testMot >> VELOCITY) - desiredOutput) / (testMot >> VELOCITY);
+                        if (abs(error) < limit) {
+                            converged = true;
+                            convVec_u.push_back(timeStart_u - timeTest_u); // store time to converge
+                        }
+                    }
+                    else if (yaw && position) {
+                        float error = ((testMot >> ANGLE) - desiredOutput) / (testMot >> ANGLE);
+                        /*
+                         * Velocity is in RPM, but position goes from 0-8191, so translate that into a variable
+                         * tthat calculates the next position in 15 ms. If that error is also within the tolerance,
+                         * consider that successful convergence.
+                         */
+                        float velTicks = ((float) (testMot>>VELOCITY)) * 60 * 1000/15; // velTicks: delta pos ticks per 15 ms
+                        float nextPos = ((float) (testMot>>ANGLE)) + velTicks;
+                        float nextError = (nextPos - desiredOutput) / nextPos; //estimated error on next read
+                        if (abs(error) < limit && abs(nextError) < limit) {
+                            converged = true;
+                            convVec_u.push_back(timeStart_u - timeTest_u); // store time to converge
+                        }
+                    }
+                    else if (pitch && position) {
+                        float error = ((testMot >> ANGLE) - desiredOutput) / (testMot >> ANGLE);
+                        /*
+                         * Velocity is in RPM, but position goes from 0-8191, so translate that into a variable
+                         * tthat calculates the next position in 15 ms. If that error is also within the tolerance,
+                         * consider that successful convergence.
+                         */
+                        float velTicks = ((float) (testMot>>VELOCITY)) * 60 * 1000/15; // velTicks: delta pos ticks per 15 ms
+                        float nextPos = ((float) (testMot>>ANGLE)) + velTicks;
+                        float nextError = (nextPos - desiredOutput) / nextPos; //estimated error on next read
+                        if (abs(error) < limit && abs(nextError) < limit) {
+                            converged = true;
+                            convVec_u.push_back(timeStart_u - timeTest_u); // store time to converge
+                        }
+                    }
+                }
             }
 
-            if (remote.leftSwitch() != Remote::SwitchState::DOWN &&
-                remote.leftSwitch() != Remote::SwitchState::UNKNOWN){
-                RFLYWHEEL.setSpeed(7000);
-                LFLYWHEEL.setSpeed(-7000);
-            } else{
-                // left SwitchState set to up/mid/unknown
-                RFLYWHEEL.setSpeed(0);
-                LFLYWHEEL.setSpeed(0);
-
-            printLoop ++;
-            if (printLoop >= PRINT_FREQUENCY){
-                printLoop = 0;
-                //printff("Prints:\n");
-                //printff("lX:%.1f lY:%.1f rX:%.1f rY:%.1f lS:%d rS:%d\n", remote.leftX(), remote.leftY(), remote.rightX(), remote.rightY(), remote.leftSwitch(), remote.rightSwitch());
-                //printff("jx:%.3f jy:%.3f jpitch:%.3f jyaw:%.3f\n", jx, jy, jpitch, jyaw);
-                #ifdef USE_IMU
-                printff("yaw_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
-                printff("yaw_des:%.3f yaw_act:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180);
-                #else
-                // printff("yaw_des_v:%d yaw_act_v:%d\n", yawVelo, yaw>>VELOCITY);
-                //printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
-                #endif
-                //printff("pitch_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
-                //printff("pitch_des:%.3f pitch_act:%.3f [%d]\n", pitch_desired_angle, pitch_current_angle, pitch>>ANGLE);
-                //printff("cX%.1f cY%.1f cOmega%.3f cRPM%.1f\n", cs.vX, cs.vY, cs.vOmega, cs.vOmega * 60 / (2*M_PI) * 4);
-                // printff("Chassis: LF:%c RF:%c LB:%c RB:%c Yaw:%c Pitch:%c Flywheel_L:%c Flywheel_R:%c Indexer:%c\n", 
-                //     Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).isConnected() ? 'y' : 'n', 
-                //     Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).isConnected() ? 'y' : 'n', 
-                //     Chassis.getMotor(ChassisSubsystem::LEFT_BACK).isConnected() ? 'y' : 'n', 
-                //     Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).isConnected() ? 'y' : 'n',
-                //     yaw.isConnected() ? 'y' : 'n', 
-                //     pitch.isConnected() ? 'y' : 'n', 
-                //     LFLYWHEEL.isConnected() ? 'y' : 'n', 
-                //     RFLYWHEEL.isConnected() ? 'y' : 'n',
-                //     indexer.isConnected() ? 'y' : 'n');
-                #ifdef USE_IMU
-                //printff("IMU %.3f %.3f %.3f\n",imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
-                #endif
-                //printff("pwr:%.2f max:%d\n", chassis_power, chassis_power_limit);
-                printff("ID:%d LVL:%d HP:%d MAX_HP:%d\n", robot_status.robot_id, robot_status.robot_level, robot_status.current_HP, robot_status.maximum_HP);
-                //printff("elap:%.5fms\n", elapsedms);
+            if (switL || switLDown) { // run PID calcs
+                int dir = 0;
+                if (desiredOutput > 0) {
+                    dir = 1;
+                } else if (desiredOutput < 0) {
+                    dir = -1;
+                }
+                testMot.pidSpeed.feedForward = (-0.431808886065578 * pow(desiredOutput, 2)) * dir
+                                               + 167.091229447692 * desiredOutput + 1643.17393278750 * dir;
             }
+            else {
+                testMot.setPower(0);
+                timeTest_u = 0;
+            }
+
+            timeEnd_u = us_ticker_read();
 
             DJIMotor::s_sendValues();
+
+            if (refLoop >= 5) { // printing every 5 cycles
+                refLoop = 0;
+                refereeThread(&referee);
+
+                int curAngle = testMot >> ANGLE;
+                int curSpeed = testMot >> VELOCITY;
+                int posError = abs(desiredOutput - curAngle);
+                int speedError = abs(desiredOutput - curSpeed);
+                int iCPos = testMot.pidPosition.iC;
+                int iCSpd = testMot.pidSpeed.iC;
+
+                if (switL || velocity)
+                    printff("%d\t%d\t%d\t%d\t%d\t%d\n", speedError, desiredOutput, curSpeed, iCSpd, testMot.powerOut);
+                else if (switL || position)
+                    printff("%d\t%d\t%d\t%d\t%d\t%d\n", posError, desiredOutput, curAngle, iCPos, testMot.powerOut);
+            }
+            refLoop++;
+
+            //FEEDBACK CODE DOES NEED TO RUN FASTER THAN 1MS
+            //OTHER QUICK AND URGENT TASKS GO HERE
+
+            DJIMotor::s_getFeedback();
+            ThisThread::sleep_for(1ms);
         }
-        unsigned long timeEnd = us_ticker_read() / 1000;
-        DJIMotor::s_getFeedback();
-        prev_userButton = userButton;
-        ThisThread::sleep_for(1ms);
-        userButton = button;
     }
 }
-
