@@ -42,8 +42,14 @@ float yaw_value = 0;
 float pitch_value = 0;
 float Pitch_value;
 float Yaw;
-char nucleo_value[30] = {0};
+char nucleo_value[40] = {0};
 char jetson_value[30] = {0};
+
+float angle = 0.0;
+// starts off at point 0, 0
+float posx = 0.0;
+float posy = 0.0;
+
 
 struct fromJetson{
     float pitch_angle;
@@ -53,6 +59,7 @@ struct fromJetson{
 
 // ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
 float xRotated, yRotated;
+float xVel, yVel;
 // BNO055_ANGULAR_POSITION_typedef imuAngles; //(-180) - (180)
 
 char yaw_angle_char[4];
@@ -94,17 +101,22 @@ void getBytesFromFloat(char* byteArr, float value) {
 }
 
 /**
- * Writes 9 bytes of read_buf into received_one and received_two as floats for pitch & yaw positions
+ * Writes 17 bytes of read_buf into received_one, received_two, received_four,
+ * received_five as floats for pitch, yaw, x, and y coordinates.
  * Used for receiving desired position data from CV in read_buf, write out as 
  * floats to received_one/two.
+ * 
  * @param read_buf - Source data
  * @param received_one - Destination buffer
  */
-void decode_toSTM32(char *read_buf, float &received_one, float &received_two, char &received_three, uint8_t &checksum){
+void decode_toSTM32(char *read_buf, float &received_one, float &received_two, char &received_three,
+    float &received_four, float &received_five, uint8_t &checksum){
     memcpy(&received_one, read_buf, sizeof(float));
     memcpy(&received_two, read_buf + 4, sizeof(float));
     memcpy(&received_three, read_buf + 8, sizeof(char)); // shooting indicator
-    checksum = read_buf[9];
+    memcpy(&received_four, read_buf + 9, sizeof(float)); // x_destination
+    memcpy(&received_five, read_buf + 13, sizeof(float)); // y_destination
+    checksum = read_buf[17];
 }
 
 /**
@@ -172,10 +184,19 @@ float jetson_send_feedback() {
     // rotatePoint(cs.vX, cs.vY, imuAngles.yaw, xRotated, yRotated);
     //printf("Rx: %f | Ry: %f", xRotated, yRotated);
 
-    char rotate_x_char[sizeof(float)];
-    char rotate_y_char[sizeof(float)];
-    getBytesFromFloat(rotate_x_char, xRotated);
-    getBytesFromFloat(rotate_y_char, yRotated);
+    // char rotate_x_char[sizeof(float)];
+    // char rotate_y_char[sizeof(float)];
+    // getBytesFromFloat(rotate_x_char, xRotated);
+    // getBytesFromFloat(rotate_y_char, yRotated);
+
+    ChassisSpeeds currentVel = Chassis.getChassisSpeeds();
+    xVel = static_cast<float>(currentVel.vX);
+    yVel = static_cast<float>(currentVel.vY);
+
+    char x_vel_char[sizeof(float)];
+    char y_vel_char[sizeof(float)];
+    getBytesFromFloat(x_vel_char, xVel);
+    getBytesFromFloat(y_vel_char, yVel);
 
     //GET yaw and pitch data
     float yaw_angle = ChassisSubsystem::ticksToRadians(yaw.getData(ANGLE)); //Ticks
@@ -190,35 +211,41 @@ float jetson_send_feedback() {
     char yaw_velocity_char[4];
     char pitch_angle_char[4];
     char pitch_velocity_char[4];
+    char x_pos_char[4];
+    char y_pos_char[4];
 
     getBytesFromFloat(yaw_angle_char, yaw_angle);
     getBytesFromFloat(yaw_velocity_char, yaw_velocity);
     getBytesFromFloat(pitch_angle_char, pitch_angle);
     getBytesFromFloat(pitch_velocity_char, pitch_velocity);
+    getBytesFromFloat(x_pos_char, posx);
+    getBytesFromFloat(y_pos_char, posy);
 
 
     //put the data into temp
-    int startPositions[7] = {0, 4, 8, 12, 16, 20, 24};
-    copy4Char(rotate_x_char, nucleo_value, startPositions[0]);
-    copy4Char(rotate_y_char, nucleo_value, startPositions[1]);
+    int startPositions[8] = {0, 4, 8, 12, 16, 20, 24, 28, 32};
+    copy4Char(x_vel_char, nucleo_value, startPositions[0]);
+    copy4Char(y_vel_char, nucleo_value, startPositions[1]);
     copy4Char(pitch_angle_char, nucleo_value, startPositions[2]);
     copy4Char(yaw_angle_char, nucleo_value, startPositions[3]);
     copy4Char(pitch_velocity_char, nucleo_value, startPositions[4]);
     copy4Char(yaw_velocity_char, nucleo_value, startPositions[5]);
+    copy4Char(x_pos_char, nucleo_value, startPositions[6]);
+    copy4Char(y_pos_char, nucleo_value, startPositions[7]);
+
 
     //printf("Rx: %d temp: %d | t2nd %d | t3d %d| t4th %d\n",rotate_x_char[0], temp[0], temp[1], temp[2], temp[3]);
     //printf("temp: %s\n", temp);
 
-
     //get lrc
-    uint8_t lrc = calculateLRC(nucleo_value, 24);
+    uint8_t lrc = calculateLRC(nucleo_value, 32);
     char lrc_char = static_cast<uint8_t>(lrc);
     //printf("lrc: %d\n", lrc);
-    nucleo_value[24] = lrc_char;
+    nucleo_value[32] = lrc_char;
     //printf("lrc: %d\n", temp[24]);
 
     bcJetson.set_blocking(false);
-    bcJetson.write(nucleo_value, 30);
+    bcJetson.write(nucleo_value, 40);
     //printf("Rx: %f | Ry: %f | p_a: %f | y_a: %f | p_v: %f | y_v: %f | lrc: %d \n", xRotated, yRotated, pitch_angle, yaw_angle, pitch_velocity, yaw_velocity, lrc);
     
     //make a struct to send data
@@ -232,11 +259,12 @@ float jetson_send_feedback() {
  * @param pitch_move buffer to store desired pitch position
  * @param yaw_move buffer to store desired yaw position
  */
-ssize_t jetson_read_values(float &pitch_move, float & yaw_move, char &shoot_switch) {
+ssize_t jetson_read_values(float &pitch_move, float & yaw_move, char &shoot_switch, 
+    float &x_destination, float &y_destination) {
     bcJetson.set_blocking(false);
     char dumbByte;
 
-    ssize_t result = bcJetson.read(jetson_value, 10);
+    ssize_t result = bcJetson.read(jetson_value, 18);
     // for (int i = 0 ; i < 10 ; ++i ) {
     //     printf("%d ", jetson_value[i]);
     // }
@@ -247,8 +275,8 @@ ssize_t jetson_read_values(float &pitch_move, float & yaw_move, char &shoot_swit
         // printf("Raw buffer data: ");
         // printf("\n");
 
-        uint8_t checkSum = jetson_value[9];
-        uint8_t theoryCheck = calculateLRC(jetson_value,9);
+        uint8_t checkSum = jetson_value[17];
+        uint8_t theoryCheck = calculateLRC(jetson_value,17);
         if(checkSum == theoryCheck){
             decode_toSTM32(jetson_value, pitch_move, yaw_move, shoot_switch, checkSum);
             //printf("Rx Pitch: %.3f Yaw: %.3f Shoot: %d Check: %d\nFIN\n\n", jetson_value, pitch_move, yaw_move, shoot_switch, checkSum);
@@ -322,11 +350,11 @@ void self_sending_data() {
     memcpy(test_packet + 8, &shoot_on, sizeof(char)); // shooting indicator
 
     // //checksum
-    check_sum = calculateLRC(test_packet,9);
-    memcpy(test_packet + 9, &check_sum, sizeof(char)); // shooting indicator
-
+    check_sum = calculateLRC(test_packet,17);
+    memcpy(test_packet + 17, &check_sum, sizeof(char)); // shooting indicator
+    // +17 for potential 2 floats being added
     //fill buffer
-    bcJetson.write( &test_packet, 10);
+    bcJetson.write( &test_packet, 18);
     bcJetson.sync();
 }
 
@@ -366,7 +394,6 @@ void basic_bitch_read(){
         printf("\n");
 }
 
-
 float calculateDeltaYaw(float actual, float desired)
 {
     float deltaYaw = desired - actual;
@@ -405,9 +432,10 @@ int main(){
 
     std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {500.0, 0.0}, {500.0, 500.0}, {0.0, 500.0}, {0.0, 0.0}};
 
-    float angle = 0.0;
-    float posx = final_pos[0][0]; // need to go to 1676 ish
-    float posy = final_pos[0][1]; // we need to go to -6800 (ish)
+    // moved as global variables
+    // float angle = 0.0;
+    // float posx = final_pos[0][0]; // need to go to 1676 ish
+    // float posy = final_pos[0][1]; // we need to go to -6800 (ish)
     int counter = 0;
 
     // final positions
@@ -494,6 +522,10 @@ int main(){
     float desiredPosition = 0;
     float diffRealExpectedPitch = 0;
 
+    // tracking stuff
+    float x_destination;
+    float y_destination;
+
     //Buffer stuff
     char jetsonByte;
     int numBytes = 0;
@@ -552,7 +584,7 @@ int main(){
                 refLoopAut = 0;
             }
           
-            int readResult = jetson_read_values(pitch_ANGLE, yaw_CV_angle, shoot_toggle);
+            int readResult = jetson_read_values(pitch_ANGLE, yaw_CV_angle, shoot_toggle, x_destination, y_destination);
             //printf("Rx Pitch: %.3f Yaw: %.3f Shoot: %d\n\n\n", pitch_ANGLE, yaw_CV_angle, shoot_toggle);
 
             //like idk why ig floats are fucked oop
@@ -588,8 +620,6 @@ int main(){
             float chassis_rotation_radps = cs.vOmega;
             int chassis_rotation_rpm = chassis_rotation_radps * 60 / (2*M_PI) * 4; //I added this 4 but I don't know why.
             
-            
-
             prevTimeSure = timeSure;
             timeSure = us_ticker_read();
             dticks = DJIMotor::s_calculateDeltaPhase(yaw_in_ticks, yaw>>ANGLE, 8192);
@@ -724,6 +754,7 @@ int main(){
         unsigned long timeEnd = us_ticker_read();
 
         //inner loop runs every 25ms
+        // robot drive loop
         if((timeStart_u - loopTimer_u) / 1000 > TIME) { 
             loopTimer_u = timeStart_u;
             led3 = !led3; //led blink tells us how fast the inner loop is running
@@ -735,6 +766,8 @@ int main(){
             refLoop ++;
 
             remoteRead(); //reading data from remote
+            // read x, y destination data
+            int readResult = jetson_read_values(pitch_ANGLE, yaw_CV_angle, shoot_toggle, x_destination, y_destination);
         
             //MAIN CODE
             Chassis.periodic();
@@ -768,115 +801,128 @@ int main(){
                 Chassis.setChassisSpeeds({lx, ly, rx});
             }
             else if (remote.rightSwitch() == Remote::SwitchState::UP) {
-                led = 0;
-                final_angle = atan2((final_pos[idx][1] - posy), (final_pos[idx][0] - posx));
 
-                float deltayaw = calculateDeltaYaw(angle, final_angle);
-                float distance = calculateDistance(posx, posy, final_x, final_y);
+                // reads x, y data -> only then should move
+                if (readResult != 0) {
+                    printff("X: %.3f, Y: %.3f\n", x_destination, y_destination);
 
-                if (angle > buffer_angle) {
-                    rx = -rx_init;
-                }
-                else if (angle < -buffer_angle) {
-                    rx = rx_init;
-                }
-                else {
-                    rx = 0;
-                }
+                    led = 0;
+                    final_angle = atan2((y_destination - posy), (x_destination - posx));
 
-                if ((final_y - posy) > buffer_y) {
-                    if (abs(velocity.vX) < vel_init) {
-                        lx = velocity.vX - accel_init;
+                    float deltayaw = calculateDeltaYaw(angle, final_angle);
+                    float distance = calculateDistance(posx, posy, x_destination, y_destination);
+
+                    float x_dist = x_destination - posx;
+                    float y_dist = y_destination - posy;
+
+                    if (angle > buffer_angle) {
+                        rx = -rx_init;
+                    }
+                    else if (angle < -buffer_angle) {
+                        rx = rx_init;
                     }
                     else {
-                        lx = -vel_init;
+                        rx = 0;
                     }
 
-                    if (distance < decel_dist) {
-                        if (velocity.vX < 0) {
-                            lx = velocity.vX + accel_init;
-                        }
-                        else {
-                            lx = 0;
-                        }
-                    }
-                }
-                else if ((posy - final_y) > buffer_y) {
-                    if (abs(velocity.vX) < vel_init) {
-                        lx = velocity.vX + accel_init;
-                    }
-                    else {
-                        lx = vel_init;
-                    }
-
-                    if (distance < decel_dist) {
-                        if (velocity.vX > 0) {
+                    if (y_dist > buffer_y) {
+                        if (abs(velocity.vX) < vel_init) {
                             lx = velocity.vX - accel_init;
                         }
                         else {
-                            lx = 0;
+                            lx = -vel_init;
+                        }
+
+                        if (distance < decel_dist) {
+                            if (velocity.vX < 0) {
+                                lx = velocity.vX + accel_init;
+                            }
+                            else {
+                                lx = 0;
+                            }
                         }
                     }
-                }
-                else {
-                    lx = 0;
-                }
-
-                if ((final_x - posx) > buffer_x) {
-                    if (velocity.vY < vel_init) {
-                        ly = velocity.vY + accel_init;
-                    }
-                    else {
-                        ly = vel_init;
-                    }
-
-                    if (distance < decel_dist) {
-                        if (velocity.vY > 0) {
-                            ly = velocity.vY - accel_init;
+                    else if (-y_dist > buffer_y) {
+                        if (abs(velocity.vX) < vel_init) {
+                            lx = velocity.vX + accel_init;
                         }
                         else {
-                            ly = 0;
+                            lx = vel_init;
+                        }
+
+                        if (distance < decel_dist) {
+                            if (velocity.vX > 0) {
+                                lx = velocity.vX - accel_init;
+                            }
+                            else {
+                                lx = 0;
+                            }
                         }
                     }
-                }
-                else if ((posx - final_x) > buffer_x) {
-                    if (velocity.vY < -vel_init) {
-                        ly = velocity.vY - accel_init;
-                    }
                     else {
-                        ly = -vel_init;
+                        lx = 0;
                     }
 
-                    if (distance < decel_dist) {
-                        if (velocity.vY < 0) {
+                    if (x_dist > buffer_x) {
+                        if (velocity.vY < vel_init) {
                             ly = velocity.vY + accel_init;
                         }
                         else {
-                            ly = 0;
+                            ly = vel_init;
+                        }
+
+                        if (distance < decel_dist) {
+                            if (velocity.vY > 0) {
+                                ly = velocity.vY - accel_init;
+                            }
+                            else {
+                                ly = 0;
+                            }
                         }
                     }
-                }
-                else {
-                    ly = 0;
-                }
+                    else if (-x_dist > buffer_x) {
+                        if (velocity.vY < -vel_init) {
+                            ly = velocity.vY - accel_init;
+                        }
+                        else {
+                            ly = -vel_init;
+                        }
 
-                if ((ly == 0 && lx == 0) || (distance < M_SQRT2 * buffer_x)) {
-                    if (idx < final_pos.size() - 1) {
-                        idx += 1;
-                        final_y = final_pos[idx][1];
-                        final_x = final_pos[idx][0];
+                        if (distance < decel_dist) {
+                            if (velocity.vY < 0) {
+                                ly = velocity.vY + accel_init;
+                            }
+                            else {
+                                ly = 0;
+                            }
+                        }
                     }
                     else {
-                        idx = 0;
-                        final_y = final_pos[idx][1];
-                        final_x = final_pos[idx][0];
+                        ly = 0;
                     }
 
-                    ly = 0;
-                    lx = 0;
-                }
+                    // auto should handle automatically updating destination position once close enough
+                    // if ((ly == 0 && lx == 0) || (distance < M_SQRT2 * buffer_x)) {
+                    //     if (idx < final_pos.size() - 1) {
+                    //         idx += 1;
+                    //         final_y = final_pos[idx][1];
+                    //         final_x = final_pos[idx][0];
+                    //     }
+                    //     else {
+                    //         idx = 0;
+                    //         final_y = final_pos[idx][1];
+                    //         final_x = final_pos[idx][0];
+                    //     }
 
-                Chassis.setChassisSpeeds({lx, ly, rx}); 
+                    //     ly = 0;
+                    //     lx = 0;
+                    // }
+
+                    Chassis.setChassisSpeeds({lx, ly, rx});
+                } 
+                else {
+                    printff("Invalid Read Result: X_dest: %.3f, Y_dest: %.3f\n", x_destination, y_destination);
+                }
             }
             else{
                 //OFF
