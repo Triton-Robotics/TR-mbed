@@ -96,7 +96,7 @@ int main(){
     float pitch_current_angle = 0;
     float pitch_desired_angle = 0;
     float pitch_phase_angle = 33 / 180.0 * PI; // 5.69 theoretical //wtf is this?
-    float pitch_zero_offset_ticks = 2500;
+    float pitch_zero_offset_ticks = 1500;
     float K = 0.38; // 0.75 //0.85
 
     //FLYWHEELS
@@ -154,6 +154,7 @@ int main(){
             led = !led;
             refLoop++;
             if (refLoop >= 5){
+                led3 = referee.readable();
                 refereeThread(&referee);
                 refLoop = 0;
                 led2 = !led2;
@@ -165,6 +166,8 @@ int main(){
                     chassis_power_limit = robot_status.chassis_power_limit;
                 }
                 
+                Chassis.power_limit = (float)chassis_power_limit;
+                chassis_power = power_heat_data.chassis_power;
             }
             Chassis.periodic();
             cs = Chassis.getChassisSpeeds();
@@ -294,6 +297,7 @@ int main(){
                 //Off
                 pitch.setPower(0);
             }
+            pitch_current_angle = ((pitch>>ANGLE) - pitch_zero_offset_ticks) / TICKS_REVOLUTION * 360;
 
             //INDEXER CODE
             if (remote.leftSwitch() == Remote::SwitchState::UP || remote.getMouseL()){
@@ -349,10 +353,12 @@ int main(){
                 printff("yaw_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
                 printff("yaw_des:%.3f yaw_act:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180);
                 #else
-                printff("yaw_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
-                printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
+                // printff("yaw_des_v:%d yaw_act_v:%d\n", yawVelo, yaw>>VELOCITY);
+                //printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
                 #endif
-                printff("cX%.1f cY%.1f cOmega%.3f cRPM%.1f\n", cs.vX, cs.vY, cs.vOmega, cs.vOmega * 60 / (2*M_PI) * 4);
+                //printff("pitch_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
+                //printff("pitch_des:%.3f pitch_act:%.3f [%d]\n", pitch_desired_angle, pitch_current_angle, pitch>>ANGLE);
+                //printff("cX%.1f cY%.1f cOmega%.3f cRPM%.1f\n", cs.vX, cs.vY, cs.vOmega, cs.vOmega * 60 / (2*M_PI) * 4);
                 // printff("Chassis: LF:%c RF:%c LB:%c RB:%c Yaw:%c Pitch:%c Flywheel_L:%c Flywheel_R:%c Indexer:%c\n", 
                 //     Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).isConnected() ? 'y' : 'n', 
                 //     Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).isConnected() ? 'y' : 'n', 
@@ -366,7 +372,9 @@ int main(){
                 #ifdef USE_IMU
                 //printff("IMU %.3f %.3f %.3f\n",imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
                 #endif
-                printff("elap:%.5fms\n", elapsedms);
+                //printff("pwr:%.2f max:%d\n", chassis_power, chassis_power_limit);
+                printff("ID:%d LVL:%d HP:%d MAX_HP:%d\n", robot_status.robot_id, robot_status.robot_level, robot_status.current_HP, robot_status.maximum_HP);
+                //printff("elap:%.5fms\n", elapsedms);
             }
 
             DJIMotor::s_sendValues();

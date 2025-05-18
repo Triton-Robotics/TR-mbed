@@ -167,6 +167,10 @@ public:
         mode = POS;
     }
 
+    inline motorMoveMode getMode(){
+        return mode;
+    }
+
     __attribute__((unused)) inline bool isConnected() const {
         return us_ticker_read() / 1000 - timeOfLastFeedback <= TIMEOUT_MS;
     }

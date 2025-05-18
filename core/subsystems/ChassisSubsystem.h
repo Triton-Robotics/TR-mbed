@@ -330,6 +330,9 @@ public:
     int testData[300][4];
     int testDataIndex = 0;
 
+    static double radiansToTicks(double radians);
+    static double ticksToRadians(double ticks);
+
 private:
     DJIMotor LF, RF, LB, RB;
     DJIMotor *yaw = 0;
@@ -340,9 +343,6 @@ private:
     // bool beybladeIncreasing;
     BNO055 imu;
     BNO055_ANGULAR_POSITION_typedef imuAngles;
-
-    static double radiansToTicks(double radians);
-    static double ticksToRadians(double ticks);
 
     static double rpmToRadPerSecond(double RPM);
     static double radPerSecondToRPM(double radPerSecond);

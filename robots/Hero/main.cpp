@@ -34,7 +34,9 @@ constexpr float CHASSIS_FF_KICK = 0.065;
 //CHASSIS DEFINING
 I2C i2c(I2C_SDA, I2C_SCL);
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
+
 ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.559); // radius is 9 in
+
 DJIMotor yaw(1, CANHandler::CANBUS_1, GIMBLY,"Yeah");
 DJIMotor pitch(5, CANHandler::CANBUS_2, GIMBLY,"Peach"); // right
 
@@ -285,12 +287,12 @@ int main(){
                 pitch_desired_angle += jpitch * MOUSE_SENSITIVITY_PITCH_DPS * elapsedms / 1000;
                 pitch_desired_angle -= jpitch * JOYSTICK_SENSITIVITY_PITCH_DPS * elapsedms / 1000;
 
-                if (pitch_desired_angle >= LOWERBOUND) {
-                    pitch_desired_angle = LOWERBOUND;
-                }
-                else if (pitch_desired_angle <= UPPERBOUND) {
-                    pitch_desired_angle = UPPERBOUND;
-                }
+                // if (pitch_desired_angle >= LOWERBOUND) {
+                //     pitch_desired_angle = LOWERBOUND;
+                // }
+                // else if (pitch_desired_angle <= UPPERBOUND) {
+                //     pitch_desired_angle = UPPERBOUND;
+                // }
 
                 //float FF = K * sin((desiredPitch / 180 * PI) - pitch_phase); // output: [-1,1]
                 //float FF = K * cos(pitch_desired_angle / 180 * PI);

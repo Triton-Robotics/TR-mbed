@@ -521,6 +521,10 @@ ChassisSpeeds ChassisSubsystem::wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpee
         -coef, -coef, -coef * ((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y));
     Eigen::MatrixXd FWD_K(3, 4);
     FWD_K = Inv_K.completeOrthogonalDecomposition().pseudoInverse();
+    // printf("[%.1f %.1f %.1f %.1f\n%.1f %.1f %.1f %.1f\n%.1f %.1f %.1f %.1f]\n", 
+    //     FWD_K(0,0), FWD_K(0,1), FWD_K(0,2), FWD_K(0,3), 
+    //     FWD_K(1,0), FWD_K(1,1), FWD_K(1,2), FWD_K(1,3), 
+    //     FWD_K(2,0), FWD_K(2,1), FWD_K(2,2), FWD_K(2,3));
     Eigen::MatrixXd WS(4, 1);
     WS << wheelSpeeds.LF, wheelSpeeds.RF, wheelSpeeds.LB, wheelSpeeds.RB;
     Eigen::MatrixXd CS(3, 1);
