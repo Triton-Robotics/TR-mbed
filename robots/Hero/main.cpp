@@ -8,7 +8,7 @@ DigitalOut ledbuiltin(LED1);
 
 //CONSTANTS
 constexpr float LOWERBOUND = 12.0;
-constexpr float UPPERBOUND = -15.0;
+constexpr float UPPERBOUND = -25.0;
 
 constexpr float BEYBLADE_OMEGA = 1.0;
 
@@ -100,7 +100,7 @@ int main(){
     float pitch_current_angle = 0;
     float pitch_desired_angle = 0;
     float pitch_phase_angle = 33 / 180.0 * PI; // 5.69 theoretical //wtf is this?
-    float pitch_zero_offset_ticks = 2500;
+    float pitch_zero_offset_ticks = 2000;
     float K = 0.38; // 0.75 //0.85
 
     //FLYWHEELS
@@ -284,15 +284,15 @@ int main(){
             //PITCH
             if (drive == 'u' || drive == 'd' || (drive =='o' && (remote.rightSwitch() == Remote::SwitchState::UP || remote.rightSwitch() == Remote::SwitchState::DOWN))){
                 //Regular Pitch Code
-                pitch_desired_angle += jpitch * MOUSE_SENSITIVITY_PITCH_DPS * elapsedms / 1000;
-                pitch_desired_angle -= jpitch * JOYSTICK_SENSITIVITY_PITCH_DPS * elapsedms / 1000;
+                pitch_desired_angle += -jpitch * MOUSE_SENSITIVITY_PITCH_DPS * elapsedms / 1000;
+                pitch_desired_angle -= -jpitch * JOYSTICK_SENSITIVITY_PITCH_DPS * elapsedms / 1000;
 
-                // if (pitch_desired_angle >= LOWERBOUND) {
-                //     pitch_desired_angle = LOWERBOUND;
-                // }
-                // else if (pitch_desired_angle <= UPPERBOUND) {
-                //     pitch_desired_angle = UPPERBOUND;
-                // }
+                if (pitch_desired_angle >= LOWERBOUND) {
+                    pitch_desired_angle = LOWERBOUND;
+                }
+                else if (pitch_desired_angle <= UPPERBOUND) {
+                    pitch_desired_angle = UPPERBOUND;
+                }
 
                 //float FF = K * sin((desiredPitch / 180 * PI) - pitch_phase); // output: [-1,1]
                 //float FF = K * cos(pitch_desired_angle / 180 * PI);
@@ -412,7 +412,7 @@ int main(){
                 //printff("lX:%.1f lY:%.1f rX:%.1f rY:%.1f lS:%d rS:%d\n", remote.leftX(), remote.leftY(), remote.rightX(), remote.rightY(), remote.leftSwitch(), remote.rightSwitch());
                 //printff("jx:%.3f jy:%.3f jpitch:%.3f jyaw:%.3f\n", jx, jy, jpitch, jyaw);
 
-                //printff("%.3f  %d\n", pitch_desired_angle, pitch.getData(ANGLE));
+                printff("%.3f  %d\n", pitch_desired_angle, pitch.getData(ANGLE));
                 //printff("%d\n", indexer.getData(POWEROUT));
 
                 #ifdef USE_IMU
