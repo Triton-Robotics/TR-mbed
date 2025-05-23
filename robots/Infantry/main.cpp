@@ -20,8 +20,8 @@ constexpr float BEYBLADE_OMEGA = 1.0;
 //DEGREES PER SECOND AT MAX
 constexpr float JOYSTICK_SENSITIVITY_YAW_DPS = 180.0; 
 constexpr float JOYSTICK_SENSITIVITY_PITCH_DPS = 180.0;
-constexpr float MOUSE_SENSITIVITY_YAW_DPS = 1.0;
-constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 1.0;
+constexpr float MOUSE_SENSITIVITY_YAW_DPS = 10.0;
+constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 10.0;
 
 constexpr int OUTER_LOOP_DT_MS = 15;
 
@@ -402,11 +402,11 @@ int main(){
             }else if(remote.keyPressed(Remote::Key::Q)){
                 drive = 'd';        
             }
-            if(remote.keyPressed(Remote::Key::C)){
+            if(remote.keyPressed(Remote::Key::V)){
                 shot = 'm';
-            }else if(remote.keyPressed(Remote::Key::V)){
-                shot = 'u';
-            }else if(remote.keyPressed(Remote::Key::B)){
+            // }else if(remote.keyPressed(Remote::Key::V)){
+            //     shot = 'u';
+            }else if(remote.keyPressed(Remote::Key::C)){
                 shot = 'd';        
             }
 
@@ -418,12 +418,18 @@ int main(){
             float jpitch = remote.rightY() / 660.0 * scalar; // -1 to 1
             float jyaw = remote.rightX() / 660.0 * scalar; // -1 to 1
 
+            //Pitch, Yaw for Mouse
+            float myaw = remote.getMouseX();
+            float mpitch = -remote.getMouseY();
+
+
             //joystick tolerance
             float tolerance = 0.05; 
             jx = (abs(jx) < tolerance) ? 0 : jx;
             jy = (abs(jy) < tolerance) ? 0 : jy;
             jpitch = (abs(jpitch) < tolerance) ? 0 : jpitch;
             jyaw = (abs(jyaw) < tolerance) ? 0 : jyaw;
+            
             
             //Keyboard Driving
             float mult = 1;
@@ -460,7 +466,7 @@ int main(){
                 int chassis_rotation_rpm = chassis_rotation_radps * 60 / (2*M_PI) * 4; //I added this 4 but I don't know why.
                 
                 //Regular Yaw Code
-                yaw_desired_angle -= jyaw * MOUSE_SENSITIVITY_YAW_DPS * elapsedms / 1000;
+                yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * elapsedms / 1000;
                 yaw_desired_angle -= jyaw * JOYSTICK_SENSITIVITY_YAW_DPS * elapsedms / 1000;
                 //yaw_desired_angle = (yaw_desired_angle + 360) % 360;
                 yaw_desired_angle = floatmod(yaw_desired_angle, 360);
@@ -494,7 +500,7 @@ int main(){
             //PITCH
             if (drive == 'u' || drive == 'd' || (drive =='o' && (remote.rightSwitch() == Remote::SwitchState::UP || remote.rightSwitch() == Remote::SwitchState::DOWN))){
                 //Regular Pitch Code
-                pitch_desired_angle += jpitch * MOUSE_SENSITIVITY_PITCH_DPS * elapsedms / 1000;
+                pitch_desired_angle += mpitch * MOUSE_SENSITIVITY_PITCH_DPS * elapsedms / 1000;
                 pitch_desired_angle += jpitch * JOYSTICK_SENSITIVITY_PITCH_DPS * elapsedms / 1000;
 
                 if (pitch_desired_angle <= LOWERBOUND) {
@@ -515,7 +521,7 @@ int main(){
             pitch_current_angle = (pitch_zero_offset_ticks - (pitch>>ANGLE)) / TICKS_REVOLUTION * 360;
 
             //INDEXER CODE
-            if (remote.leftSwitch() == Remote::SwitchState::UP || remote.getMouseL()){
+            if (remote.leftSwitch() == Remote::SwitchState::UP || (remote.getMouseL() && (abs(RFLYWHEEL.getData(VELOCITY)) > 6000) && (abs(LFLYWHEEL.getData(VELOCITY)) > 6000))){
                 if (shootReady){
                     shootReady = false;
                     shootTargetPosition = 8192 * 12 + (indexer>>MULTITURNANGLE);
@@ -548,8 +554,8 @@ int main(){
             }
 
             //FLYWHEELS
-            if (remote.leftSwitch() != Remote::SwitchState::DOWN &&
-                remote.leftSwitch() != Remote::SwitchState::UNKNOWN){
+            if (shot == 'm' || (shot == 'o' && remote.leftSwitch() != Remote::SwitchState::DOWN &&
+                remote.leftSwitch() != Remote::SwitchState::UNKNOWN)){
                 RFLYWHEEL.setSpeed(7000);
                 LFLYWHEEL.setSpeed(-7000);
             } else{
@@ -588,10 +594,10 @@ int main(){
                 // printff("IMU %.3f %.3f %.3f\n",imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
                 #endif
                 //printff("pwr:%.2f max:%d\n", chassis_power, chassis_power_limit);
-                printff("ID:%d LVL:%d HP:%d MAX_HP:%d\n", robot_status.robot_id, robot_status.robot_level, robot_status.current_HP, robot_status.maximum_HP);
+                // printff("ID:%d LVL:%d HP:%d MAX_HP:%d\n", robot_status.robot_id, robot_status.robot_level, robot_status.current_HP, robot_status.maximum_HP);
                 //printff("elap:%.5fms\n", elapsedms);
-                printff("heatLimit:%d heat:%d \n", robot_status.shooter_barrel_heat_limit, power_heat_data.shooter_17mm_1_barrel_heat);
-
+                // printff("heatLimit:%d heat:%d \n", robot_status.shooter_barrel_heat_limit, power_heat_data.shooter_17mm_1_barrel_heat);
+                printff("right:%c, left:%c, X:%.2f, Y:%.2f\n", drive, shot, myaw, mpitch);
                 // if(nucleo_value[24] != 0 && remote.rightSwitch() == Remote::SwitchState::UP){
                 //     printff("[");
                 //     for(int i = 0; i < 30; i ++){
