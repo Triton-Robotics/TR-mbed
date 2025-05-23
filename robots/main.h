@@ -25,6 +25,8 @@
 #include "communications/referee/ref_operations.h"
 #include "communications/Jetson.h"
 
+#include "communications/JetsonNew.hpp"
+
 #include <cstring>
 #define ESP_DEBUG 1 // 1 true, 0 false
 
