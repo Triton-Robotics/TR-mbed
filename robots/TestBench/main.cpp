@@ -267,54 +267,92 @@ float jetson_send_feedback() {
  * @param pitch_move buffer to store desired pitch position
  * @param yaw_move buffer to store desired yaw position
  */
-ssize_t jetson_read_values(float &pitch_move, float & yaw_move, char &shoot_switch) {
+
+ //return 1 if successful match, 0 if no match but buffer available, -1 for unreadable
+ssize_t jetson_read_values(float &pitch_move, float & yaw_move, char &shoot_switch, int &packetFlag) {
     bcJetson.set_blocking(false);
     int i;
     char clear;
     ssize_t fillArrayCheck = 10;
-    char *jetsonValuePtr = jetson_value;        //ptr pointing to memory address of jetson values
+    //char *jetsonValuePtr = jetson_value;        //ptr pointing to memory address of jetson values
     unsigned int jetsonIndexShift = 0;            //relates to index of last byte in jetsonValues
+    int numBytes = 0;
     uint8_t checkSum;                              //last bit in results array              
 
     if ( bcJetson.readable() ) {
-        printf("\nread\n");
+
+        // printf("\nread\n");
+        // while ( (fillArrayCheck >= 10) && (jetsonIndexShift < 200) ) {
+        //     fillArrayCheck = bcJetson.read(jetsonValuePtr+jetsonIndexShift, 10); //keep adding 10 bytes throughout array until buffer empty
+        //     jetsonIndexShift += 10;
+        // }
+        // jetsonIndexShift -= 10;
+
         while ( (fillArrayCheck >= 10) && (jetsonIndexShift < 200) ) {
-            fillArrayCheck = bcJetson.read(jetsonValuePtr+jetsonIndexShift, 10); //keep adding 10 bytes throughout array until buffer empty
-            jetsonIndexShift += 10;
+            fillArrayCheck = bcJetson.read(jetson_value+numBytes, 10); //keep adding 10 bytes throughout array until buffer empty
+            numBytes += fillArrayCheck;
         }
+        printf("\nbytes: %d\n", numBytes);
 
-        jetsonIndexShift -= 10;
+        //starting at the very last index of jetson_values
+        //we will be checking 9 bytes before the byte i is at
+        //if we meet the match conditions, decode values, clear buffer, return 1
+        //if no match found, print bad
+        for( int i = numBytes - 1 ; i >= 9 ; --i) {
+            if (debug) { printf("%d %d %d\n", calculateLRC(&jetson_value[i - 10], 9), jetson_value[i], jetson_value[i-10]); }
 
+            if ( (calculateLRC(&jetson_value[i - 10], 9) == jetson_value[i]) && (jetson_value[i] != 0) && (jetson_value[i-10] == packetFlag) ){
+                printf("match\n");
+                
+                //debug
+                if (debug) {
+                    for (int j = jetsonIndexShift - 10 ; j < jetsonIndexShift ; ++j) {
+                        printf("%d ", jetson_value[j]);
+                    } 
+                    printf("\n");
+                }
+
+                decode_toSTM32(&jetson_value[i-9], pitch_move, yaw_move, shoot_switch, checkSum);
+
+
+                while (bcJetson.readable() ) {
+                    fillArrayCheck = bcJetson.read(&clear, 1);
+                //printf("c");
+                }
+                return fillArrayCheck;
+            }
+        }
+        return 0;
         //we have moved 10 bytes back to account for extra last increment
         //calculateLRC works from the start of address to the next x bytes
         //checks if the checksum of the last packet is consistent
         //goal: decrement jetsonindexshift until it reaches then end of a good packet
         //ptr+jetsonindex-10 starts us at the beginning of a packet we're checking
-        while ( calculateLRC(jetsonValuePtr+jetsonIndexShift-10, 9) != jetson_value[jetsonIndexShift - 1] ) {
-            //printf("check: %d = %d? - strt: %d - ptrStrt:%d - ", calculateLRC(jetsonValuePtr+jetsonIndexShift-10, 9), jetson_value[jetsonIndexShift-1], jetson_value[jetsonIndexShift-10],*(jetsonValuePtr+jetsonIndexShift-10));
-            for ( i = jetsonIndexShift - 10 ; i < jetsonIndexShift ; ++i) {
-                printf("%d ", jetson_value[i]);
-            }    
-            --jetsonIndexShift;
-            printf(" bad\n");
-        }
+        // while ( calculateLRC(jetsonValuePtr+jetsonIndexShift-10, 9) != jetson_value[jetsonIndexShift - 1] ) {
+        //     //printf("check: %d = %d? - strt: %d - ptrStrt:%d - ", calculateLRC(jetsonValuePtr+jetsonIndexShift-10, 9), jetson_value[jetsonIndexShift-1], jetson_value[jetsonIndexShift-10],*(jetsonValuePtr+jetsonIndexShift-10));
+        //     for ( i = jetsonIndexShift - 10 ; i < jetsonIndexShift ; ++i) {
+        //         printf("%d ", jetson_value[i]);
+        //     }    
+        //     --jetsonIndexShift;
+        //     printf(" bad\n");
+        // }
 
         //--jetsonIndexShift; //while loop does this when it checks, however it will not be in the outcome
 
-        printf("\nmatched packet: ");
-        for ( i = jetsonIndexShift - 10 ; i < jetsonIndexShift ; ++i) {
-            printf("%d ", jetson_value[i]);
-        }   
+        // printf("\nmatched packet: ");
+        // for ( i = jetsonIndexShift - 10 ; i < jetsonIndexShift ; ++i) {
+        //     printf("%d ", jetson_value[i]);
+        // }   
 
-        checkSum = jetson_value[jetsonIndexShift];
-        decode_toSTM32(jetsonValuePtr+jetsonIndexShift-10, pitch_move, yaw_move, shoot_switch, checkSum);
-        jetsonIndexShift = 0;
+        // checkSum = jetson_value[jetsonIndexShift];
+        // decode_toSTM32(jetsonValuePtr+jetsonIndexShift-10, pitch_move, yaw_move, shoot_switch, checkSum);
+        // jetsonIndexShift = 0;
 
-        while (bcJetson.readable() ) {
-            fillArrayCheck = bcJetson.read(&clear, 1);
-            //printf("c");
-        }
-        jetsonIndexShift = 0;
+        // while (bcJetson.readable() ) {
+        //     fillArrayCheck = bcJetson.read(&clear, 1);
+        //     //printf("c");
+        // }
+        // jetsonIndexShift = 0;
     } else {
         printf("\nErr\n");
     }
@@ -438,9 +476,8 @@ int main(){
     //Buffer stuff
     int totalBytes = 0;
     int packetLoopCount = 0;
-    char orderPacket[10] = {0};
-    char orderPacketRx[200] = {0};
-    char *arrayPtr = orderPacketRx;
+    char test_packetRx[200] = {0};
+    char *arrayPtr = test_packetRx;
 
         //Send Buffer stuff
         char firstByteIndicator = 0;
@@ -453,10 +490,12 @@ int main(){
         float test_yaw = 0;
         float test_pitch = 0;
         bool direction = 0;
-        char test_packet[10] = {0};
+        char test_packet[11] = {0};
         char shoot_on = 0;
-        int loop_count = 0;
+        int shoot_count = 0;
         uint8_t check_sum;
+
+        unsigned int magicByte = 0xEE;
     
     //Rx
     float pitch_CV_angle = 0;
@@ -466,7 +505,7 @@ int main(){
 
     //PRINTLOOP
     int printLoop = 0;
-    int printCount = 0;
+    int byteCount = 0;
 
     ChassisSpeeds cs;
 
@@ -481,98 +520,73 @@ int main(){
             loopTimerCV = timeStart;
             //jetson_send_feedback(); //  __COMENTED OUT LOOLOOKOKOLOOOOKO HERHEHRERHEHRHE
 
-                if ( printLoop > 3 ) {
-                //write two order indicator bytes, then fill the rest with nothing
-                orderPacket[0] = SecondByteIndicator;
-                orderPacket[1] = firstByteIndicator;
-                orderPacket[2] = 0;
-                orderPacket[3] = 0;
-                orderPacket[4] = 65;
-                orderPacket[5] = 48;
-                orderPacket[6] = 0;
-                orderPacket[7] = 0;
-                orderPacket[8] = printLoop;
+                if ( printLoop > 7 ) { //determines how many bad bytes we want to send, starting from end of buffer you will have to sort through 10 - # packets 
 
-                if (printLoop == 10) {
-                    orderPacket[9] = 99;//calculateLRC( orderPacket, 9); //checksum
-
-                } else {
-                    orderPacket[9] = 99;
-
-                }
-                
-
-                printf("S: ");
-                for (int i = 0 ; i < 10 ; ++i) {
-                    printf("%d ", orderPacket[i]);
-                }
-                printf("\n");
-                //self_sending_data();
-                fillBufferDebug = bcJetson.write(orderPacket, 10);
-                bcJetson.sync();
-
-                ++firstByteIndicator;
-                if (firstByteIndicator > 75) {
-                    firstByteIndicator = 65;
-                    ++SecondByteIndicator;
-                    if ( SecondByteIndicator > 42 ) {
-                        SecondByteIndicator = 32;
+                    printf("S: ");
+                    for (int i = 0 ; i < 11 ; ++i) {
+                        test_packet[i] = i;
+                        printf("%d ", test_packet[i]);
                     }
-                }
+                    printf("\n");
+                    //self_sending_data();
+                    fillBufferDebug = bcJetson.write(test_packet, 11);
+                    bcJetson.sync();
+                    
                 } else {           
-                if (loop_count == 100) {
-                    if (shoot_on == 0) {
-                        ++shoot_on;
+                    if (shoot_count == 50) {
+                        if (shoot_on == 0) {
+                            ++shoot_on;
+                        }
+                        else { shoot_on = 1; }
+                        shoot_count = 0;
                     }
-                    else { shoot_on = 1; }
-                    loop_count = 0;
-                }
 
-                // //incrementing pitch and Yaw myself Code--------------
-                if ( direction == 0) {
-                    test_yaw += 0.01;
-                    test_pitch += 0.001; //don't need to worry about bounds, handled below
+                    // //incrementing pitch and Yaw myself Code--------------
+                    if ( direction == 0) {
+                        test_yaw += 0.01;
+                        test_pitch += 0.001; //don't need to worry about bounds, handled below
 
-                    if (test_yaw >= 0.4){
-                        direction = 1;
+                        if (test_yaw >= 0.4){
+                            direction = 1;
+                        }
                     }
-                }
-                else {
-                    test_yaw -= 0.01;
-                    test_pitch -= 0.001;
-                    if (test_yaw <= -0.4){
-                        direction = 0;
-                    } 
-                }
-                if ( abs(test_yaw) <= 0.0001 ) {
-                    test_yaw = 0;
-                }
-                //printf("yaw: %0.3f\n", test_yaw);
+                    else {
+                        test_yaw -= 0.01;
+                        test_pitch -= 0.001;
+                        if (test_yaw <= -0.4){
+                            direction = 0;
+                        } 
+                    }
+                    if ( abs(test_yaw) <= 0.0001 ) {
+                        test_yaw = 0;
+                    }
 
-                //Forming packet
-                memcpy(test_packet, &test_pitch, sizeof(float));
-                memcpy(test_packet + 4, &test_yaw, sizeof(float));
-                memcpy(test_packet + 8, &shoot_on, sizeof(char)); // shooting indicator
+                    //Forming packet
+                    memcpy(test_packet, &magicByte, sizeof(char));
+                    memcpy(test_packet + 1, &test_pitch, sizeof(float));
+                    memcpy(test_packet + 5, &test_yaw, sizeof(float));
+                    memcpy(test_packet + 9, &shoot_on, sizeof(char)); // shooting indicator
 
-                // //checksum
-                check_sum = calculateLRC(test_packet,9);
-                memcpy(test_packet + 9, &check_sum, sizeof(char)); // shooting indicator
+                    // //checksum
+                    check_sum = calculateLRC(test_packet, 10);
+                    memcpy(test_packet + 10, &check_sum, sizeof(char)); // shooting indicator
 
-                printf("S: ");
-                for (int i = 0 ; i < 10 ; ++i) {
-                    printf("%d ", test_packet[i]);
+                    printf("S: ");
+                    for (int i = 0 ; i < 11 ; ++i) {
+                        printf("%d ", test_packet[i]);
+                    }
+                    printf("\n");
+
+                    //fill buffer
+                    bcJetson.write( &test_packet, 10);
+                    bcJetson.sync();
+                    //basic_bitch_read();
                 }
-                printf("\n");
-
-                //fill buffer
-                bcJetson.write( &test_packet, 10);
-                bcJetson.sync();
-                //basic_bitch_read();
-            }
             printf("\nloop: %d\n",printLoop);
+            
             ++printLoop;
-            ++loop_count;
-            ++printCount;
+            ++shoot_count;
+            byteCount += 11;;
             led2 = !led2;
         }
 
@@ -600,7 +614,7 @@ int main(){
             //     //printf("received: ");
             //     readBufferDebug = bcJetson.read( (arrayPtr + packetLoopCount), 10);
             //     // for (int i = 0 ; i < 100 ; ++i) {
-            //     //     printf("%d ", orderPacketRx[i]);
+            //     //     printf("%d ", test_packetRx[i]);
             //     // }
             // }
             //read 9 bytes of buffer, first two being indicators
@@ -613,10 +627,10 @@ int main(){
             //     printf("\n\n-CLEAR-\n");
             //     if (bcJetson.readable() ){ 
             //         while ( bcJetson.readable() ) {
-            //             readBufferDebug = bcJetson.read(orderPacketRx, 1);
+            //             readBufferDebug = bcJetson.read(test_packetRx, 1);
             //             //printf("bytes read: %d", readBufferDebug);
             //             // for (int i = 0 ; i < 10 ; ++i) {
-            //             //     printf("%d ", orderPacketRx[i]);
+            //             //     printf("%d ", test_packetRx[i]);
             //             // }
             //             //printf(" ");
             //             totalBytes += 10;
@@ -630,9 +644,9 @@ int main(){
 
             if ( printLoop >= 10 ) {
                 readResult = jetson_read_values(pitch_CV_angle, yaw_CV_angle, shoot_toggle);
-                printf("\nPi: %.3f Ya: %.3f Sh: %d\n\n\n", pitch_CV_angle, yaw_CV_angle, shoot_toggle);
+                printf("\ndeBg: %d Pi: %.3f Ya: %.3f Sh: %d\n\n\n", readResult, pitch_CV_angle, yaw_CV_angle, shoot_toggle);
                 printLoop = 0;
-                printCount = 0;
+                byteCount = 0;
             }
             DJIMotor::s_sendValues();
         }
