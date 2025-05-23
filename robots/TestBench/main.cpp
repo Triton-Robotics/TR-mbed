@@ -4,7 +4,7 @@
 #include <cmath>
 
 // Testing Parameters
-bool infantry = true, sentry = false, hero = false;
+bool infantry = false, sentry = false, hero = false;
 bool pitch = false, yaw = true;
 bool position = false, velocity = true;
 
@@ -127,6 +127,7 @@ int main(){
                     printff("%d\t%d\n", powerBuffer, velocityBuffer);
             DJIMotor::s_sendValues();
         }
+//        printff("working\n");
         DJIMotor::s_getFeedback();
         ThisThread::sleep_for(1ms);
     }
