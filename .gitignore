@@ -22,3 +22,6 @@ micro-ros/
 .DS_STORE
 *.ps1
 Makefile
+*.png
+.md/debug/stm32cubeide.md
+MATLAB/pids.txt
