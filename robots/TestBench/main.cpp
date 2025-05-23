@@ -169,5 +169,6 @@ int main()
         }
         DJIMotor::s_getFeedback();
         ThisThread::sleep_for(1ms);
+        //testing
     }
 }
