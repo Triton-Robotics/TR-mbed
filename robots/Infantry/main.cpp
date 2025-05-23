@@ -588,7 +588,7 @@ int main(){
                 // printff("IMU %.3f %.3f %.3f\n",imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
                 #endif
                 //printff("pwr:%.2f max:%d\n", chassis_power, chassis_power_limit);
-                printff("ID:%d LVL:%d HP:%d MAX_HP:%d\n", robot_status.robot_id, robot_status.robot_level, robot_status.current_HP, robot_status.maximum_HP);
+                // printff("ID:%d LVL:%d HP:%d MAX_HP:%d\n", robot_status.robot_id, robot_status.robot_level, robot_status.current_HP, robot_status.maximum_HP);
                 //printff("elap:%.5fms\n", elapsedms);
                 printff("heatLimit:%d heat:%d \n", robot_status.shooter_barrel_heat_limit, power_heat_data.shooter_17mm_1_barrel_heat);
 
