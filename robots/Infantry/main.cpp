@@ -259,9 +259,9 @@ int main(){
     * MOTORS SETUP AND PIDS
     */
     //YAW
-    PID yawBeyblade(1.0, 0, 150); //yaw PID is cascading, so there are external position PIDs for yaw control
+    PID yawBeyblade(1.0, 0, 0); //yaw PID is cascading, so there are external position PIDs for yaw control
     // PID yawNonBeyblade(0.15, 0, 550);
-    yaw.setSpeedPID(37.5, 0.2, 100);
+    yaw.setSpeedPID(550, 0, 0);
     yaw.setSpeedIntegralCap(8000);
     yaw.setSpeedOutputCap(32000);
     yaw.outputCap = 16000;
@@ -277,8 +277,9 @@ int main(){
     #endif
 
     //PITCH
-    pitch.setPositionPID(5, 0, 700); //15, 0 1700
+    pitch.setPositionPID(26.2644, 0.034926, 1200); //15, 0 1700
     pitch.setPositionOutputCap(32000);
+    pitch.setPositionIntegralCap(3000);
     pitch.pidPosition.feedForward = 0;
     pitch.outputCap = 16000;
     pitch.useAbsEncoder = true;
@@ -482,7 +483,7 @@ int main(){
                 }else if(yawVelo < 0){
                     dir = -1;
                 }
-                yaw.pidSpeed.feedForward = dir * (874 + (73.7 * abs(yawVelo)) + (0.0948 * yawVelo * yawVelo));
+                yaw.pidSpeed.feedForward = 1221 + 97.4 * yawVelo;
                 yaw.setSpeed(yawVelo);
             }else{
                 //Off
@@ -508,6 +509,8 @@ int main(){
                 //float FF = K * sin((desiredPitch / 180 * PI) - pitch_phase); // output: [-1,1]
                 //float FF = K * cos(pitch_desired_angle / 180 * PI);
                 //pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
+                float pitch_desired_radians = -(pitch_desired_angle / 360) * 2 * M_PI;
+                pitch.pidPosition.feedForward = cos(pitch_desired_radians) * -2600;
                 pitch.setPosition(-int((pitch_desired_angle / 360) * TICKS_REVOLUTION - pitch_zero_offset_ticks));
             }else{
                 //Off
@@ -573,7 +576,7 @@ int main(){
                 //printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
                 #endif
                 //printff("pitch_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
-                // printff("pitch_des:%.3f pitch_act:%.3f [%d]\n", pitch_desired_angle, pitch_current_angle, pitch>>ANGLE);
+                printff("pitch_des:%.3f pitch_act:%.3f [%d]\n", pitch_desired_angle, pitch_current_angle, pitch>>ANGLE);
                 //printff("cX%.1f cY%.1f cOmega%.3f cRPM%.1f\n", cs.vX, cs.vY, cs.vOmega, cs.vOmega * 60 / (2*M_PI) * 4);
                 // printff("Chassis: LF:%c RF:%c LB:%c RB:%c Yaw:%c Pitch:%c Flywheel_L:%c Flywheel_R:%c Indexer:%c\n", 
                 //     Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).isConnected() ? 'y' : 'n', 
@@ -591,7 +594,7 @@ int main(){
                 //printff("pwr:%.2f max:%d\n", chassis_power, chassis_power_limit);
                 // printff("ID:%d LVL:%d HP:%d MAX_HP:%d\n", robot_status.robot_id, robot_status.robot_level, robot_status.current_HP, robot_status.maximum_HP);
                 //printff("elap:%.5fms\n", elapsedms);
-                printff("heatLimit:%d heat:%d \n", robot_status.shooter_barrel_heat_limit, power_heat_data.shooter_17mm_1_barrel_heat);
+                //("heatLimit:%d heat:%d \n", robot_status.shooter_barrel_heat_limit, power_heat_data.shooter_17mm_1_barrel_heat);
 
                 // if(nucleo_value[24] != 0 && remote.rightSwitch() == Remote::SwitchState::UP){
                 //     printff("[");
