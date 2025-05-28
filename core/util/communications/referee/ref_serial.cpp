@@ -1,7 +1,7 @@
 
 #include "ref_serial.h"
 
-#define REF_DEBUG 0
+#define REF_DEBUG 1
 
 // top part: I try to make this object-oriented, but then realized it would be quite complicated
 
@@ -300,7 +300,10 @@ void Judge_GetMessage(uint16_t Data_Length)
                 }
                 else{
                     #if REF_DEBUG
-                    printf("RS_NO[%d]\n", n);
+                    printf("RS_NO[%d|", n);
+                    for(int i = 0; i < JudgeLength_Robot_State; i ++){
+                       printf("%2x|", (uint8_t)*(JudgeSystem_rxBuff+n+i));
+                    }
                     #endif
                     n++;
                 }
@@ -311,14 +314,32 @@ void Judge_GetMessage(uint16_t Data_Length)
                     #if REF_DEBUG
                     printf("PH[%d]\n", n);
                     #endif
-                    //printf("PH[%d]\n", n);
+                    //WIERD BUG BYPASS
+                    power_heat_data_t preData = power_heat_data;
                     memcpy(&power_heat_data, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_Power_Heat - JUDGE_EXTRA]));
+                    
+                    if(power_heat_data.shooter_17mm_1_barrel_heat == 0 && preData.shooter_17mm_1_barrel_heat != 0){
+                        power_heat_data.shooter_17mm_1_barrel_heat = preData.shooter_17mm_1_barrel_heat;
+                    }
+                    if(power_heat_data.shooter_17mm_2_barrel_heat == 0 && preData.shooter_17mm_2_barrel_heat != 0){
+                        power_heat_data.shooter_17mm_2_barrel_heat = preData.shooter_17mm_2_barrel_heat;
+                    }
+                    if(power_heat_data.shooter_42mm_barrel_heat == 0 && preData.shooter_42mm_barrel_heat != 0){
+                        power_heat_data.shooter_42mm_barrel_heat = preData.shooter_42mm_barrel_heat;
+                    }
+                    
                     n += JudgeLength_Power_Heat;
                     ext_power_heat_data.InfoUpdataFlag = 1;
+                    #if REF_DEBUG
+                    printf("%u %u %u %u\n", power_heat_data.buffer_energy, power_heat_data.shooter_17mm_1_barrel_heat, power_heat_data.shooter_17mm_2_barrel_heat, power_heat_data.shooter_42mm_barrel_heat);
+                    #endif
                 }
                 else{
                     #if REF_DEBUG
-                    printf("PH_NO[%d]\n", n);
+                    printf("PH_NO[%d|", n);
+                    for(int i = 0; i < JudgeLength_Power_Heat; i ++){
+                       printf("%2x|", (uint8_t)*(JudgeSystem_rxBuff+n+i));
+                    }
                     #endif
                     n++;
                 }

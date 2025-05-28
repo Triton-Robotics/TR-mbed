@@ -228,6 +228,7 @@ ssize_t jetson_read_values(float &pitch_move, float & yaw_move, char &shoot_swit
         if(checkSum == theoryCheck){
             decode_toSTM32(jetson_value, pitch_move, yaw_move, shoot_switch, checkSum);
             //printf("Rx Pitch: %.3f Yaw: %.3f Shoot: %d Check: %d\nFIN\n\n", jetson_value, pitch_move, yaw_move, shoot_switch, checkSum);
+            led3 = !led3;
         }
         else{
             //led3 = !led3;
@@ -345,7 +346,6 @@ int main(){
             //if(remote.rightSwitch() == Remote::SwitchState::UP)
             jetson_send_feedback(imuAngles.yaw + 180); //  __COMENTED OUT LOOLOOKOKOLOOOOKO HERHEHRERHEHRHE
             //basic_bitch_read();
-            led3 = !led3;
         }
 
         if ((timeStart - loopTimer) / 1000 > OUTER_LOOP_DT_MS){
@@ -354,10 +354,9 @@ int main(){
             led = !led;
             refLoop++;
             if (refLoop >= 5){
-                //led3 = referee.readable();
+                led2 = referee.readable();
                 refereeThread(&referee);
                 refLoop = 0;
-                led2 = !led2;
 
                 //POWER LIMIT OVERRIDE INCASE
                 if(robot_status.chassis_power_limit < 10){
@@ -576,7 +575,7 @@ int main(){
                 //printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
                 #endif
                 //printff("pitch_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
-                printff("pitch_des:%.3f pitch_act:%.3f [%d]\n", pitch_desired_angle, pitch_current_angle, pitch>>ANGLE);
+                //printff("pitch_des:%.3f pitch_act:%.3f [%d]\n", pitch_desired_angle, pitch_current_angle, pitch>>ANGLE);
                 //printff("cX%.1f cY%.1f cOmega%.3f cRPM%.1f\n", cs.vX, cs.vY, cs.vOmega, cs.vOmega * 60 / (2*M_PI) * 4);
                 // printff("Chassis: LF:%c RF:%c LB:%c RB:%c Yaw:%c Pitch:%c Flywheel_L:%c Flywheel_R:%c Indexer:%c\n", 
                 //     Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).isConnected() ? 'y' : 'n', 
@@ -594,7 +593,7 @@ int main(){
                 //printff("pwr:%.2f max:%d\n", chassis_power, chassis_power_limit);
                 // printff("ID:%d LVL:%d HP:%d MAX_HP:%d\n", robot_status.robot_id, robot_status.robot_level, robot_status.current_HP, robot_status.maximum_HP);
                 //printff("elap:%.5fms\n", elapsedms);
-                //("heatLimit:%d heat:%d \n", robot_status.shooter_barrel_heat_limit, power_heat_data.shooter_17mm_1_barrel_heat);
+                printff("[HEAT] lim:%d buf:%d b1:%d b2:%d sp:%.1f fr:%d\n", robot_status.shooter_barrel_heat_limit, power_heat_data.buffer_energy, power_heat_data.shooter_17mm_1_barrel_heat, power_heat_data.shooter_17mm_2_barrel_heat, shoot_data.initial_speed, shoot_data.launching_frequency);
 
                 // if(nucleo_value[24] != 0 && remote.rightSwitch() == Remote::SwitchState::UP){
                 //     printff("[");
