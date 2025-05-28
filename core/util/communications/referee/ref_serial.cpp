@@ -1,7 +1,7 @@
 
 #include "ref_serial.h"
 
-#define REF_DEBUG 1
+#define REF_DEBUG 0
 
 // top part: I try to make this object-oriented, but then realized it would be quite complicated
 
