@@ -365,9 +365,9 @@ typedef struct
 
 typedef __packed struct
 {
- uint16_t chassis_voltage;
- uint16_t chassis_current;
- float chassis_power;
+ uint16_t reserved1; //REMOVED chassis_voltage
+ uint16_t reserved2; //REMOVED chassis_current
+ float reserved3; //REMOVED chassis_power
  uint16_t buffer_energy;
  uint16_t shooter_17mm_1_barrel_heat;
  uint16_t shooter_17mm_2_barrel_heat;
@@ -733,7 +733,7 @@ typedef  struct __packed
 /** @brief Receive data from the referee system serial port
 	@param b Serial object
 */
-void JudgeSystem_USART_Receive_DMA(BufferedSerial* b);
+int JudgeSystem_USART_Receive_DMA(BufferedSerial* b);
 void Judge_GetMessage(uint16_t Data_Length);
 void Judge_sendPC(BufferedSerial* b);
 void RobotStatus_LEDYellow(BufferedSerial* b);

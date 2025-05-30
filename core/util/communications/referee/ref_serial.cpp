@@ -31,12 +31,13 @@ uint8_t Judge_Self_ID;        //当前机器人ID
 uint16_t Judge_SelfClient_ID; //发送者机器人对应的客户端ID
 
 
-void JudgeSystem_USART_Receive_DMA(BufferedSerial* b) // modified
+int JudgeSystem_USART_Receive_DMA(BufferedSerial* b) // modified
 {
     // b->enable_input(TRUE);
     // memset(JudgeSystem_rxBuff, 0, sizeof(JudgeSystem_rxBuff));
     b->enable_output(true);
-    b->read(JudgeSystem_rxBuff, JUDGESYSTEM_PACKSIZE);
+    //memset (JudgeSystem_rxBuff,0,JUDGESYSTEM_PACKSIZE);
+    return b->read(JudgeSystem_rxBuff, JUDGESYSTEM_PACKSIZE);
 }
 
 ext_game_status_t ext_game_status; //
@@ -114,12 +115,14 @@ uint8_t Robot_Commute[26];
 
 void Judge_GetMessage(uint16_t Data_Length)
 {
+    #if REF_DEBUG
     // for (int i = 0; i < Data_Length;i++)
     // {
     //     printf("%x ", JudgeSystem_rxBuff[i]);
     // }
     // printf("\n");
     // printf("[%d]\n",Data_Length);
+    #endif
     for (int n = 0; n < Data_Length;)
     {
         
@@ -292,11 +295,33 @@ void Judge_GetMessage(uint16_t Data_Length)
                 {
                     #if REF_DEBUG
                     printf("RS[%d]\n", n);
+                    robot_status_t* gamering = (robot_status_t*)&JudgeSystem_rxBuff[n + 7];
+                    // printf("G%u %u %u %u %u %u %u %x\n", 
+                    //     gamering->robot_id,
+                    //     gamering->robot_level,
+                    //     gamering->current_HP,
+                    //     gamering->maximum_HP,    
+                    //     gamering->shooter_barrel_cooling_value,
+                    //     gamering->shooter_barrel_heat_limit,
+                    //     gamering->chassis_power_limit,
+                    //     gamering->power_management_output);
                     #endif
                     memcpy(&robot_status, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_Robot_State - JUDGE_EXTRA]));
 
                     n += JudgeLength_Robot_State;
                     ext_game_robot_state.InfoUpdataFlag = 1;
+
+                    #if REF_DEBUG
+                    // printf("R%u %u %u %u %u %u %u %x\n", 
+                    //     robot_status.robot_id,
+                    //     robot_status.robot_level,
+                    //     robot_status.current_HP,
+                    //     robot_status.maximum_HP,
+                    //     robot_status.shooter_barrel_cooling_value,
+                    //     robot_status.shooter_barrel_heat_limit,
+                    //     robot_status.chassis_power_limit,
+                    //     robot_status.power_management_output);
+                    #endif
                 }
                 else{
                     #if REF_DEBUG
@@ -331,15 +356,15 @@ void Judge_GetMessage(uint16_t Data_Length)
                     n += JudgeLength_Power_Heat;
                     ext_power_heat_data.InfoUpdataFlag = 1;
                     #if REF_DEBUG
-                    printf("%u %u %u %u\n", power_heat_data.buffer_energy, power_heat_data.shooter_17mm_1_barrel_heat, power_heat_data.shooter_17mm_2_barrel_heat, power_heat_data.shooter_42mm_barrel_heat);
+                    //printf("%u %u %u %u\n", power_heat_data.buffer_energy, power_heat_data.shooter_17mm_1_barrel_heat, power_heat_data.shooter_17mm_2_barrel_heat, power_heat_data.shooter_42mm_barrel_heat);
                     #endif
                 }
                 else{
                     #if REF_DEBUG
                     printf("PH_NO[%d|", n);
-                    for(int i = 0; i < JudgeLength_Power_Heat; i ++){
-                       printf("%2x|", (uint8_t)*(JudgeSystem_rxBuff+n+i));
-                    }
+                    // for(int i = 0; i < JudgeLength_Power_Heat; i ++){
+                    //    printf("%2x|", (uint8_t)*(JudgeSystem_rxBuff+n+i));
+                    // }
                     #endif
                     n++;
                 }

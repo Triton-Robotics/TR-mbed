@@ -5,8 +5,8 @@ void refereeThread(BufferedSerial* referee){
     // int loop=0;
     // while(1){
     if(referee->readable()){
-        JudgeSystem_USART_Receive_DMA(referee);
-        Judge_GetMessage(JUDGESYSTEM_PACKSIZE);
+        int rad = JudgeSystem_USART_Receive_DMA(referee);
+        Judge_GetMessage(rad);
 
         // if(loop % 10==0){ // print out only every 10 iterations
         if(enablePrintRefData){
