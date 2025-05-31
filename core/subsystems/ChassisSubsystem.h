@@ -348,6 +348,7 @@ private:
     static double radPerSecondToRPM(double radPerSecond);
 
     OmniKinematics m_OmniKinematics;
+    float chassis_radius;
     void setOmniKinematics(double radius);
     // Eigen::MatrixXd wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds);
 

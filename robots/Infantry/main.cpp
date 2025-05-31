@@ -333,6 +333,8 @@ int main(){
     int refLoop = 0;
     int printLoop = 0;
 
+    bool cv_enabled = false;
+
     ChassisSpeeds cs;
 
     while(true){
@@ -372,20 +374,21 @@ int main(){
 
             int readResult = jetson_read_values(CV_pitch_angle_radians, CV_yaw_angle_radians, CV_shoot);
 
-            //like idk why ig floats are fucked oop
-            if ( abs(CV_yaw_angle_radians) > 0.001 ) {
-                //printf("you are now zero\n");
-                // CV_yaw_angle_radians = 0;
-                yaw_desired_angle = CV_yaw_angle_radians / M_PI * 180;
-                CV_yaw_angle_radians = 0;
+            if(cv_enabled){
+                //like idk why ig floats are fucked oop
+                if (readResult != -EAGAIN) {
+                    //printf("you are now zero\n");
+                    // CV_yaw_angle_radians = 0;
+                    yaw_desired_angle = CV_yaw_angle_radians / M_PI * 180;
+                    //CV_yaw_angle_radians = 0;
+                }
+                
+                if (readResult != -EAGAIN) {
+                    // CV_pitch_angle_radians = 0;
+                    pitch_desired_angle = CV_pitch_angle_radians / M_PI * 180;
+                    //CV_pitch_angle_radians = 0;
+                }
             }
-            
-            if ( abs(CV_pitch_angle_radians) > 0.001 ) {
-                // CV_pitch_angle_radians = 0;
-                pitch_desired_angle = CV_pitch_angle_radians / M_PI * 180;
-                CV_pitch_angle_radians = 0;
-            }
-
             #ifdef USE_IMU
             imu.get_angular_position_quat(&imuAngles);
             #else
@@ -404,6 +407,12 @@ int main(){
                 shot = 'm';
             }else if(remote.keyPressed(Remote::Key::C)){
                 shot = 'd';        
+            }
+
+            if(remote.keyPressed(Remote::Key::F)){
+                cv_enabled = true;
+            }else if(remote.keyPressed(Remote::Key::G)){
+                cv_enabled = false;
             }
 
 
@@ -585,12 +594,12 @@ int main(){
                 //printff("jx:%.3f jy:%.3f jpitch:%.3f jyaw:%.3f\n", jx, jy, jpitch, jyaw);
                 #ifdef USE_IMU
                 //printff("yaw_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
-                // printff("yaw_des:%.3f yaw_act:%.3f ", yaw_desired_angle, imuAngles.yaw + 180);
+                //printff("YD:%.3f YA:%.3f CVY:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180, CV_yaw_angle_radians * 180 / M_PI);
                 #else
                 // printff("yaw_des_v:%d yaw_act_v:%d\n", yawVelo, yaw>>VELOCITY);
                 //printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
                 #endif
-                //printff("pitch_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
+                //printff("yaw_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
                 //printff("pitch_des:%.3f pitch_act:%.3f [%d]\n", pitch_desired_angle, pitch_current_angle, pitch>>ANGLE);
                 //printff("cX%.1f cY%.1f cOmega%.3f cRPM%.1f\n", cs.vX, cs.vY, cs.vOmega, cs.vOmega * 60 / (2*M_PI) * 4);
                 // printff("Chassis: LF:%c RF:%c LB:%c RB:%c Yaw:%c Pitch:%c Flywheel_L:%c Flywheel_R:%c Indexer:%c\n", 
@@ -606,10 +615,10 @@ int main(){
                 #ifdef USE_IMU
                 // printff("IMU %.3f %.3f %.3f\n",imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
                 #endif
-                printff("pwr:%u max:%d heat:%d\n", chassis_buffer, robot_status.chassis_power_limit, power_heat_data.shooter_17mm_1_barrel_heat);
-                printff("ID:%d LVL:%d HP:%d MAX_HP:%d\n", robot_status.robot_id, robot_status.robot_level, robot_status.current_HP, robot_status.maximum_HP);
+                //printff("pwr:%u max:%d heat:%d\n", chassis_buffer, robot_status.chassis_power_limit, power_heat_data.shooter_17mm_1_barrel_heat);
+                //printff("ID:%d LVL:%d HP:%d MAX_HP:%d\n", robot_status.robot_id, robot_status.robot_level, robot_status.current_HP, robot_status.maximum_HP);
                 //printff("elap:%.5fms\n", elapsedms);
-                printff("[HEAT] lim:%d buf:%d b1:%d b2:%d sp:%.1f fr:%d\n", robot_status.shooter_barrel_heat_limit, power_heat_data.buffer_energy, power_heat_data.shooter_17mm_1_barrel_heat, power_heat_data.shooter_17mm_2_barrel_heat, shoot_data.initial_speed, shoot_data.launching_frequency);
+                //printff("[HEAT] lim:%d buf:%d b1:%d b2:%d sp:%.1f fr:%d\n", robot_status.shooter_barrel_heat_limit, power_heat_data.buffer_energy, power_heat_data.shooter_17mm_1_barrel_heat, power_heat_data.shooter_17mm_2_barrel_heat, shoot_data.initial_speed, shoot_data.launching_frequency);
 
                 // if(nucleo_value[24] != 0 && remote.rightSwitch() == Remote::SwitchState::UP){
                 //     printff("[");
@@ -618,6 +627,7 @@ int main(){
                 //     }
                 //     printff("]");
                 // }
+                printff("CS: %.1f %.1f %.1f\n", cs.vX, cs.vY, cs.vOmega);
             }
 
             DJIMotor::s_sendValues();

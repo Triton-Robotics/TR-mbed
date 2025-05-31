@@ -11,7 +11,8 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
       LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE),
       RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE),
       imu(imu),
-      power_limit(50.0F)
+      power_limit(50.0F),
+      chassis_radius(radius)
 // chassisKalman()
 {
     LF.outputCap = 16000; // DJIMotor class has a max outputCap: 16384
@@ -490,6 +491,7 @@ void ChassisSubsystem::setOmniKinematicsLimits(double max_Vel, double max_vOmega
 
 void ChassisSubsystem::setOmniKinematics(double radius)
 {
+    float SQRT_2 = sqrt(2);
     m_OmniKinematics.r1x = -sqrt(radius);
     m_OmniKinematics.r1y = sqrt(radius);
 
@@ -503,6 +505,22 @@ void ChassisSubsystem::setOmniKinematics(double radius)
     m_OmniKinematics.r4y = -sqrt(radius);
 }
 
+// void ChassisSubsystem::setOmniKinematics(double radius)
+// {
+//     float SQRT_2 = sqrt(2);
+//     m_OmniKinematics.r1x = -radius/SQRT_2;
+//     m_OmniKinematics.r1y = radius/SQRT_2;
+
+//     m_OmniKinematics.r2x = radius/SQRT_2;
+//     m_OmniKinematics.r2y = radius/SQRT_2;
+
+//     m_OmniKinematics.r3x = -radius/SQRT_2;
+//     m_OmniKinematics.r3y = -radius/SQRT_2;
+
+//     m_OmniKinematics.r4x = radius/SQRT_2;
+//     m_OmniKinematics.r4y = -radius/SQRT_2;
+// }
+
 WheelSpeeds ChassisSubsystem::chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds)
 {
     return {(1 / sqrt(2)) * (chassisSpeeds.vX + chassisSpeeds.vY + chassisSpeeds.vOmega * ((m_OmniKinematics.r1x) - (m_OmniKinematics.r1y))),
@@ -510,6 +528,14 @@ WheelSpeeds ChassisSubsystem::chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSp
             (1 / sqrt(2)) * (-chassisSpeeds.vX + chassisSpeeds.vY + chassisSpeeds.vOmega * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y))),
             (1 / sqrt(2)) * (-chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y)))};
 }
+
+// WheelSpeeds ChassisSubsystem::chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds)
+// {
+//     return {(1 / chassis_radius) * (chassisSpeeds.vX + chassisSpeeds.vY + chassisSpeeds.vOmega * ((m_OmniKinematics.r1x) - (m_OmniKinematics.r1y))),
+//             (1 / chassis_radius) * (chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y))),
+//             (1 / chassis_radius) * (-chassisSpeeds.vX + chassisSpeeds.vY + chassisSpeeds.vOmega * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y))),
+//             (1 / chassis_radius) * (-chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y)))};
+// }
 
 ChassisSpeeds ChassisSubsystem::wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds)
 {
