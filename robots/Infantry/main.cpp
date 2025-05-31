@@ -8,7 +8,7 @@ DigitalOut ledbuiltin(LED1);
 
 //CONSTANTS
 constexpr float LOWERBOUND = -35.0;
-constexpr float UPPERBOUND = 25.0;
+constexpr float UPPERBOUND = 40.0;
 
 constexpr float BEYBLADE_OMEGA = 1.0;
 
@@ -20,8 +20,6 @@ constexpr float BEYBLADE_OMEGA = 1.0;
 //DEGREES PER SECOND AT MAX
 constexpr float JOYSTICK_SENSITIVITY_YAW_DPS = 180.0; 
 constexpr float JOYSTICK_SENSITIVITY_PITCH_DPS = 180.0;
-constexpr float MOUSE_SENSITIVITY_YAW_DPS = 10.0;
-constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 10.0;
 
 constexpr int OUTER_LOOP_DT_MS = 15;
 
@@ -408,6 +406,18 @@ int main(){
                 shot = 'd';        
             }
 
+
+            // Mouse sensitivity initialized
+            float MOUSE_SENSITIVITY_YAW_DPS = 10.0;
+            float MOUSE_SENSITIVITY_PITCH_DPS = 10.0;
+            
+            // right click (hold) slows decreases sensitivity
+            if (remote.getMouseR()) {
+                MOUSE_SENSITIVITY_YAW_DPS = 5.0;
+                MOUSE_SENSITIVITY_PITCH_DPS = 5.0;
+            }
+
+
             //Driving input
             float scalar = 1;
             float jx = remote.leftX() / 660.0 * scalar; // -1 to 1
@@ -428,9 +438,15 @@ int main(){
             
             //Keyboard Driving
             float mult = 1;
+
+            // Shift to make robot go slower
+            if (remote.keyPressed(Remote::Key::SHIFT)) {
+                mult = 0.5;
+            }
+
             jx += mult * ((remote.keyPressed(Remote::Key::D) ? 1 : 0) + (remote.keyPressed(Remote::Key::A) ? -1 : 0));
             jy += mult * ((remote.keyPressed(Remote::Key::W) ? 1 : 0) + (remote.keyPressed(Remote::Key::S) ? -1 : 0));
-            
+
             //Bounding the four j variables
             jx = max(-1.0F, min(1.0F, jx));
             jy = max(-1.0F, min(1.0F, jy));
