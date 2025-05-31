@@ -195,6 +195,7 @@ void jetson_send_feedback_simple(){
  * Read motor values and send to CV
  */
 float jetson_send_feedback() {
+    char magicByte = 0xEE;
     //char temp[50] = {0};
     // ChassisSpeeds cs = Chassis.m_chassisSpeeds;
     // imu.get_angular_position_quat(&imuAngles);
@@ -269,8 +270,10 @@ float jetson_send_feedback() {
  */
 
  //return 1 if successful match, 0 if no match but buffer available, -1 for unreadable
-ssize_t jetson_read_values(float &pitch_move, float & yaw_move, char &shoot_switch, int &packetFlag) {
+ssize_t jetson_read_values(float &pitch_move, float & yaw_move, char &shoot_switch) {
     bcJetson.set_blocking(false);
+    int debug = true;
+    int packetFlag = 0xEE;
     int i;
     char clear;
     ssize_t fillArrayCheck = 10;
@@ -292,16 +295,26 @@ ssize_t jetson_read_values(float &pitch_move, float & yaw_move, char &shoot_swit
             fillArrayCheck = bcJetson.read(jetson_value+numBytes, 10); //keep adding 10 bytes throughout array until buffer empty
             numBytes += fillArrayCheck;
         }
+        for ( i = 0; i< numBytes ; ++i) {
+            printf("%d ", jetson_value[i]);
+        }
         printf("\nbytes: %d\n", numBytes);
 
         //starting at the very last index of jetson_values
         //we will be checking 9 bytes before the byte i is at
         //if we meet the match conditions, decode values, clear buffer, return 1
         //if no match found, print bad
-        for( int i = numBytes - 1 ; i >= 9 ; --i) {
-            if (debug) { printf("%d %d %d\n", calculateLRC(&jetson_value[i - 10], 9), jetson_value[i], jetson_value[i-10]); }
+        for( i = numBytes - 1 ; i >= 10 ; --i) {
+            if (debug) { 
+                for (int j = i - 10; j <= i; ++j) {
+                    printf("%d ",jetson_value[j]);
+                }
+                printf("\n");
+                printf("%d %d %d\n", calculateLRC(&jetson_value[i - 10], 10), jetson_value[i], jetson_value[i-10]);
+             }
 
-            if ( (calculateLRC(&jetson_value[i - 10], 9) == jetson_value[i]) && (jetson_value[i] != 0) && (jetson_value[i-10] == packetFlag) ){
+            //calculating checksum w/ header bytes
+            if ( (calculateLRC(&jetson_value[i - 10], 10) == jetson_value[i]) && (jetson_value[i] != 0) && (jetson_value[i-10] == packetFlag) ){
                 printf("match\n");
                 
                 //debug
@@ -322,6 +335,7 @@ ssize_t jetson_read_values(float &pitch_move, float & yaw_move, char &shoot_swit
                 return fillArrayCheck;
             }
         }
+        printf("\nno match\n");
         return 0;
         //we have moved 10 bytes back to account for extra last increment
         //calculateLRC works from the start of address to the next x bytes
@@ -362,51 +376,98 @@ ssize_t jetson_read_values(float &pitch_move, float & yaw_move, char &shoot_swit
 
 //Send yourself packets through buffer
 void self_sending_data() {
-    static float test_yaw = 0;
-    static float test_pitch = 0;
-    static bool direction = 0;
-    static char test_packet[10] = {0};
-    static char shoot_on = 0;
-    static int loop_count = 0;
+    //Send Buffer stuff
+    char firstByteIndicator = 0;
+    char SecondByteIndicator = 0;
+    char txCheckSum = 0;
+    ssize_t readResult;
+    ssize_t fillBufferDebug;
+    ssize_t readBufferDebug;
+
+    float test_yaw = 0;
+    float test_pitch = 0;
+    bool direction = 0;
+    char test_packet[11] = {0};
+    char shoot_on = 0;
+    int shoot_count = 0;
     uint8_t check_sum;
 
-    if (loop_count == 100) {
-        if (shoot_on == 0) {
-            ++shoot_on;
-        }
-        else { shoot_on = 1; }
-        loop_count = 0;
+    unsigned int magicByte = 0xEE;
+
+
+
+
+    //PRINTLOOP
+    int printLoop = 0;
+    int byteCount = 0;
+    
+    if ( printLoop > 7 ) { //determines how many bad bytes we want to send, starting from end of buffer you will have to sort through 10 - # packets 
+
+    printf("S: ");
+    for (int i = 0 ; i < 11 ; ++i) {
+        test_packet[i] = i;
+        printf("%d ", test_packet[i]);
     }
-
-    // //incrementing pitch and Yaw myself Code--------------
-    if ( direction == 0) {
-        test_yaw += 0.01;
-        test_pitch += 0.001; //don't need to worry about bounds, handled below
-
-        if (test_yaw >= 1){
-            direction = 1;
-        }
-    }
-    else {
-        test_yaw -= 0.01;
-        test_pitch -= 0.001;
-        if (test_yaw <= -1){
-            direction = 0;
-        } 
-    }
-
-    //Forming packet
-    memcpy(test_packet, &test_pitch, sizeof(float));
-    memcpy(test_packet + 4, &test_yaw, sizeof(float));
-    memcpy(test_packet + 8, &shoot_on, sizeof(char)); // shooting indicator
-
-    // //checksum
-    check_sum = calculateLRC(test_packet,9);
-    memcpy(test_packet + 9, &check_sum, sizeof(char)); // shooting indicator
-
-    //fill buffer
-    bcJetson.write( &test_packet, 10);
+    printf("\n");
+    //self_sending_data();
+    fillBufferDebug = bcJetson.write(test_packet, 11);
     bcJetson.sync();
+        
+    } else {           
+        if (shoot_count == 50) {
+            if (shoot_on == 0) {
+                ++shoot_on;
+            }
+            else { shoot_on = 1; }
+            shoot_count = 0;
+        }
+
+        // //incrementing pitch and Yaw myself Code--------------
+        if ( direction == 0) {
+            test_yaw += 0.01;
+            test_pitch += 0.001; //don't need to worry about bounds, handled below
+
+            if (test_yaw >= 0.4){
+                direction = 1;
+            }
+        }
+        else {
+            test_yaw -= 0.01;
+            test_pitch -= 0.001;
+            if (test_yaw <= -0.4){
+                direction = 0;
+            } 
+        }
+        if ( abs(test_yaw) <= 0.0001 ) {
+            test_yaw = 0;
+        }
+
+        //Forming packet
+        memcpy(test_packet, &magicByte, sizeof(char));
+        memcpy(test_packet + 1, &test_pitch, sizeof(float));
+        memcpy(test_packet + 5, &test_yaw, sizeof(float));
+        memcpy(test_packet + 9, &shoot_on, sizeof(char)); // shooting indicator
+
+        // //checksum
+        check_sum = calculateLRC(test_packet, 10);
+        memcpy(test_packet + 10, &check_sum, sizeof(char)); // shooting indicator
+
+        printf("S: ");
+        for (int i = 0 ; i < 11 ; ++i) {
+            printf("%d ", test_packet[i]);
+        }
+        printf("\n");
+
+        //fill buffer
+        bcJetson.write( &test_packet, 11);
+        bcJetson.sync();
+        //basic_bitch_read();
+    }
+    printf("\nloop: %d byteCnt: %d\n",printLoop, byteCount);
+    
+    ++printLoop;
+    ++shoot_count;
+    byteCount += 11;
 }
 
 //Yaw Incorporated
@@ -578,15 +639,15 @@ int main(){
                     printf("\n");
 
                     //fill buffer
-                    bcJetson.write( &test_packet, 10);
+                    bcJetson.write( &test_packet, 11);
                     bcJetson.sync();
                     //basic_bitch_read();
                 }
-            printf("\nloop: %d\n",printLoop);
+            printf("\nloop: %d byteCnt: %d\n",printLoop, byteCount);
             
             ++printLoop;
             ++shoot_count;
-            byteCount += 11;;
+            byteCount += 11;
             led2 = !led2;
         }
 
