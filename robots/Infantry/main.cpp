@@ -322,7 +322,7 @@ int main(){
     bool prev_userButton;
 
     //ref variables
-    float chassis_power;
+    uint16_t chassis_buffer;
     uint16_t chassis_power_limit;
     uint16_t barrel_heat1;
     uint16_t barrel_heat_max1;
@@ -358,13 +358,13 @@ int main(){
 
                 //POWER LIMIT OVERRIDE INCASE
                 if(robot_status.chassis_power_limit < 10){
-                    chassis_power_limit = 50;
+                    chassis_power_limit = 49;
                 }else{
                     chassis_power_limit = robot_status.chassis_power_limit;
                 }
                 
                 Chassis.power_limit = (float)chassis_power_limit;
-                chassis_power = power_heat_data.chassis_power;
+                chassis_buffer = power_heat_data.buffer_energy;
             }
             Chassis.periodic();
             cs = Chassis.getChassisSpeeds();
@@ -606,8 +606,8 @@ int main(){
                 #ifdef USE_IMU
                 // printff("IMU %.3f %.3f %.3f\n",imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
                 #endif
-                //printff("pwr:%.2f max:%d\n", chassis_power, chassis_power_limit);
-                // printff("ID:%d LVL:%d HP:%d MAX_HP:%d\n", robot_status.robot_id, robot_status.robot_level, robot_status.current_HP, robot_status.maximum_HP);
+                printff("pwr:%u max:%d heat:%d\n", chassis_buffer, robot_status.chassis_power_limit, power_heat_data.shooter_17mm_1_barrel_heat);
+                printff("ID:%d LVL:%d HP:%d MAX_HP:%d\n", robot_status.robot_id, robot_status.robot_level, robot_status.current_HP, robot_status.maximum_HP);
                 //printff("elap:%.5fms\n", elapsedms);
                 printff("[HEAT] lim:%d buf:%d b1:%d b2:%d sp:%.1f fr:%d\n", robot_status.shooter_barrel_heat_limit, power_heat_data.buffer_energy, power_heat_data.shooter_17mm_1_barrel_heat, power_heat_data.shooter_17mm_2_barrel_heat, shoot_data.initial_speed, shoot_data.launching_frequency);
 
