@@ -328,7 +328,7 @@ int main(){
     bool prev_userButton;
 
     //ref variables
-    float chassis_power;
+    uint16_t chassis_buffer;
     uint16_t chassis_power_limit;
     uint16_t barrel_heat1;
     uint16_t barrel_heat_max1;
@@ -371,7 +371,6 @@ int main(){
                 }
                 
                 Chassis.power_limit = (float)chassis_power_limit;
-                chassis_power = power_heat_data.chassis_power;
             }
             Chassis.periodic();
             cs = Chassis.getChassisSpeeds();
@@ -591,7 +590,7 @@ int main(){
                 #ifdef USE_IMU
                 //printff("IMU %.3f %.3f %.3f\n",imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
                 #endif
-                //printff("pwr:%.2f max:%d\n", chassis_power, chassis_power_limit);
+                // printff("pwr:%u max:%d heat:%d\n", chassis_buffer, robot_status.chassis_power_limit, power_heat_data.shooter_17mm_1_barrel_heat);
                 //printff("ID:%d LVL:%d HP:%d MAX_HP:%d\n", robot_status.robot_id, robot_status.robot_level, robot_status.current_HP, robot_status.maximum_HP);
                 //printff("elap:%.5fms\n", elapsedms);
             }

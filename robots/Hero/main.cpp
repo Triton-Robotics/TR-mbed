@@ -140,7 +140,7 @@ int main(){
     bool prev_userButton;
 
     //ref variables
-    float chassis_power;
+    uint16_t chassis_buffer;
     uint16_t chassis_power_limit;
     uint16_t barrel_heat1;
     uint16_t barrel_heat_max1;
