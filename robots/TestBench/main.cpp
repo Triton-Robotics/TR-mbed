@@ -8,10 +8,9 @@
 #include <iostream>
 #include <chrono>
 
-
-#define PI 3.14159265
+#define READ_DEBUG 0
 #define MAGICBYTE 0xEE
-#define DEBUG 0
+#define PI 3.14159265
 
 #define UPPERBOUND_DEG 10.0 // Bound of how high turret can point in degrees
 //sentry 2025. -9 is probably more accurate but this is a buffer so the usb doesn't keep breaking
@@ -261,34 +260,31 @@ float jetson_send_feedback() {
  //return 1 if successful match, 0 if no match but buffer available, -1 for unreadable
 ssize_t jetson_read_values(float &pitch_move, float & yaw_move, char &shoot_switch) {
     bcJetson.set_blocking(false);
-    int packetFlag = MAGICBYTE;
-    int i;
-    char clear;
     ssize_t fillArrayCheck = 10;
-    //char *jetsonValuePtr = jetson_value;        //ptr pointing to memory address of jetson values
-    unsigned int jetsonIndexShift = 0;            //relates to index of last byte in jetsonValues
-    int numBytes = 0;
-    uint8_t checkSum;                              //last bit in results array              
+    int i;
+    unsigned int numBytes = 0;            //counts bytes read aka size of jetson_values
+    uint8_t checkSum;                     //last bit in packet            
 
     if ( bcJetson.readable() ) {
-        while ( (fillArrayCheck >= 10) && (jetsonIndexShift < 200) ) {
+        while ( (fillArrayCheck >= 10) && (numBytes < 200) ) {
             fillArrayCheck = bcJetson.read(jetson_value+numBytes, 10); //keep adding 10 bytes throughout array until buffer empty
             numBytes += fillArrayCheck;
         }
 
-        if (DEBUG) { 
+        if (READ_DEBUG) { 
             for ( i = 0; i< numBytes ; ++i) {
                 printf("%d ", jetson_value[i]);
             }
             printf("\nbytes: %d\n", numBytes);
         }
 
-        //starting at the very last index of jetson_values
-        //we will be checking 9 bytes before the byte i is at; exclude magic byte in checksum
-        //if we meet the match conditions, decode values, clear buffer, return 1
-        //if no match found, print bad
+        //starting at the very last index of jetson_values (numbytes - 1)
+        //i - 10 is the magic byte, and we will use next 9 bytes for checksum which is at i; exclude magic byte in checksum
+        //if we meet the match conditions, decode values, clear buffer, return last amount of bytes read
+        //if no match found, print no match
+        //if buffer empty, print empty
         for( i = numBytes - 1 ; i >= 10 ; --i) {
-            if (DEBUG) { 
+            if (READ_DEBUG) { 
                 for (int j = i - 10; j <= i; ++j) {
                     printf("%d ",jetson_value[j]);
                 }
@@ -297,26 +293,19 @@ ssize_t jetson_read_values(float &pitch_move, float & yaw_move, char &shoot_swit
              }
 
             //calculating checksum w/ header bytes
-            if ( (calculateLRC(&jetson_value[i - 9], 9) == jetson_value[i]) && (jetson_value[i] != 0) && (jetson_value[i-10] == packetFlag) ){
-                printf("match\n");
+            if ( (calculateLRC(&jetson_value[i - 9], 9) == jetson_value[i]) && (jetson_value[i] != 0) && (jetson_value[i-10] == MAGICBYTE) ){
                 
-                //debug
-                if (DEBUG) {
-                    for (int j = jetsonIndexShift - 10 ; j < jetsonIndexShift ; ++j) {
-                        printf("%d ", jetson_value[j]);
-                    } 
-                    printf("\n");
-                }
+                if (READ_DEBUG) { printf("match\n"); }
 
                 decode_toSTM32(&jetson_value[i-9], pitch_move, yaw_move, shoot_switch, checkSum);
                 return fillArrayCheck;
             }
         }
-        printf("\nno match\n");
+        if (READ_DEBUG) {  printf("\nno match\n"); }
         return 0;
         
     } else {
-        printf("\nErr\n");
+        if (READ_DEBUG) { printf("\nempty\n"); }
     }
     return fillArrayCheck;
 }
