@@ -260,7 +260,8 @@ int main(){
     //YAW
     PID yawBeyblade(1.0, 0, 0); //yaw PID is cascading, so there are external position PIDs for yaw control
     // PID yawNonBeyblade(0.15, 0, 550);
-    yaw.setSpeedPID(550, 0, 0);
+    yawBeyblade.setOutputCap(90);
+    yaw.setSpeedPID(850, 0, 0);
     yaw.setSpeedIntegralCap(8000);
     yaw.setSpeedOutputCap(32000);
     yaw.outputCap = 16000;
@@ -507,7 +508,7 @@ int main(){
                 }else if(yawVelo < 0){
                     dir = -1;
                 }
-                yaw.pidSpeed.feedForward = 1221 + 97.4 * yawVelo;
+                yaw.pidSpeed.feedForward = 1221*dir + 97.4 * yawVelo;
                 yaw.setSpeed(yawVelo);
             }else{
                 //Off
