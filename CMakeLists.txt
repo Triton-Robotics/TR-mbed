@@ -53,7 +53,6 @@ endif()
 include(${MBED_PATH}/tools/cmake/app.cmake)
 
 project(${APP_TARGET})
-#find_package(Python3 REQUIRED VERSION 3.7)
 
 add_subdirectory(${MBED_PATH})
 link_libraries(mbed-os)

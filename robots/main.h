@@ -25,6 +25,8 @@
 #include "communications/referee/ref_operations.h"
 #include "communications/Jetson.h"
 
+#include "communications/JetsonNew.hpp"
+
 #include <cstring>
 #define ESP_DEBUG 1 // 1 true, 0 false
 
@@ -41,6 +43,15 @@ static BufferedSerial bc(PA_0, PA_1, 115200);
 void updatePriority(priorityLevels desiredLevel)
 {
     printer.updatePriority(desiredLevel);
+}
+
+void printfESP(const char *format, ...){
+    char temp[100];
+    va_list args;
+    va_start(args, format);
+    vsnprintf(temp, 100, format, args);
+    bc.write(temp, 100);
+    va_end(args);
 }
 
 void print(char statement[], priorityLevels priority = DEFAULT)

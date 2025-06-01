@@ -1,6 +1,13 @@
 **This setup guide assumes WSL is already set up. 
 If not, follow [this guide](https://docs.microsoft.com/en-us/windows/wsl/install-win10) to install WSL.**
 
+<<<<<<< HEAD
+=======
+After downloading WSL you need to turn on "windows for linux subsystem". You can achieve this by going to your settings and find "Turn Windows features on or off". After clicking this, you will be taken to a page where you can turn linux on. You'll have to restart your computer after.
+
+![Turn Windows Features on or off](./window.png)
+
+>>>>>>> main
 ### Base development packages
 ```shell
 sudo apt install                  \
@@ -25,13 +32,33 @@ pip install   \
   intelhex
 ```
 
+<<<<<<< HEAD
 In `~/.bashrc` (or `~/.bash_profile`), append the following to enable `mbed-tools` via command line:
+=======
+If an error pops up about not being able to downlaod it, use 
+```shell
+pip install mbed-tools --break-system-packages
+pip install prettytable --break-system-packages
+pip install future --break-system-packages
+pip install jinja2 --break-system-packages
+pip install intelhex --break-system-packages
+```
+and download each one of them one by one. 
+### Enable mebed-tools
+
+Type `nano ~/.bashrc` (or `nano ~/.bash_profile`) in the terminal, append the following to enable `mbed-tools` via command line:
+>>>>>>> main
 
 ```shell
 export PATH="${PATH}:/home/${USER}/.local/bin"
 ```
+<<<<<<< HEAD
 
 ### Flashing STM32
+=======
+ 
+### Flashing STM32 (Better for flashing but optional) 
+>>>>>>> main
 
 Author: Michael Owens
 
@@ -68,4 +95,8 @@ Flashing is where WSL begins to diverge from normal Linux. We have to pass throu
 sudo openocd -f board/st_nucleo_f4.cfg -c "program cmake-build-debug/robots/TestBench/TR-TestBench.elf verify reset exit"
 ```
 
+<<<<<<< HEAD
 ### Return to [main setup guide](../../README.md#setup) to continue setup.
+=======
+### Return to [main setup guide](../../README.md#setup) to continue setup.
+>>>>>>> main

@@ -265,8 +265,13 @@ int DJIMotor::getData(motorDataType data) {
     else if(data == MULTITURNANGLE)
         return multiTurn;
 
-    else
+    else if(data == POWEROUT)
         return powerOut;
+
+    else if(data == VALUE)
+        return value;
+
+    return 0;
 
 }
 
@@ -374,6 +379,5 @@ void DJIMotor::s_sendThread() {
         ThisThread::sleep_for(1ms);
     }
 }
-
 
 #pragma clang diagnostic pop

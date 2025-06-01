@@ -22,7 +22,7 @@ void Remote::read(){
     // Check disconnect timeout
     if ((duration_cast<milliseconds>(readTimer.elapsed_time()).count() - lastRead) > REMOTE_DISCONNECT_TIMEOUT)
     {
-        printf("Remote disconnected \n");
+        // printf("Remote disconnected \n");
         connected = false;  // Remote no longer connected
         reset();            // Reset current remote values
     }

@@ -368,9 +368,22 @@ double Chassis::degreesToRadians(double degrees)
     return degrees * PI / 180.0;
 }
 
-int Chassis::getHeadingDegrees()
-{
-    return (int)imuAngles.yaw;
+int Chassis::getHeadingDegreesYaw(){
+    return (int) imuAngles.yaw;
+//    return (int) imuAngles.pitch;
+//    return (int) imuAngles.roll;
+}
+
+int Chassis::getHeadingDegreesPitch() {
+    return (int) imuAngles.pitch;
+//    return (int) imuAngles.pitch;
+//    return (int) imuAngles.roll;
+}
+
+int Chassis::getHeadingDegreesRoll() {
+    return (int) imuAngles.roll;
+//    return (int) imuAngles.pitch;
+//    return (int) imuAngles.roll;
 }
 
 Pose2D Chassis::getPose()
@@ -388,17 +401,18 @@ ChassisSpeeds Chassis::getSpeeds()
         chassisKalman.getX(3),
         chassisKalman.getX(4)};
 }
+//
+//bool Chassis::allMotorsConnected()
+//{
+//    return (
+//        (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, lfId)) &&
+//        (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, rfId)) &&
+//        (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, lbId)) &&
+//        (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, rbId))
+//
+//    );
+//}
 
-// bool Chassis::allMotorsConnected()
-// {
-//     return (
-//         (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, lfId)) &&
-//         (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, rfId)) &&
-//         (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, lbId)) &&
-//         (DJIMotor::s_isMotorConnected(CAN_BUS_TYPE, MOTOR_TYPE, rbId))
-
-//     );
-// }
 
 // void Chassis::driveTurretRelativePower(ChassisSpeeds speeds, double turretAngleDegrees) {
 //     double robotHeading = imuAngles.yaw * PI / 180.0;

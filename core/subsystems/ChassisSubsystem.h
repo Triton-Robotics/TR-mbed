@@ -11,6 +11,7 @@
 // #include <subsystems/ChassisKalman.h>
 // #include <algorithms/WheelKalman.h>
 #include <algorithms/Pose2D.h>
+#include <algorithms/PID.h>
 // #include <algorithms/WheelSpeeds.h>
 // #include <algorithms/ChassisSpeeds.h>
 #include "algorithms/eigen-3.4.0/Eigen/QR"
@@ -27,10 +28,11 @@
 #define PI 3.14159265
 #define SECONDS_PER_MINUTE 60
 #define TICKS_PER_ROTATION 8192.0
-#define WHEEL_DIAMETER_METERS 4.75 * 0.0254
+#define WHEEL_DIAMETER_METERS 0.152
 
 #define MAX_BEYBLADE_SPEED 1800
 #define BEYBLADE_ACCELERATION 0.05
+#define MAX_VEL 2.92
 
 struct OmniKinematics
 {
@@ -118,8 +120,19 @@ public:
     enum DRIVE_MODE
     {
         YAW_ORIENTED,
+        REVERSE_YAW_ORIENTED,
         ROBOT_ORIENTED
     };
+
+    float previousRPM[4] = {0, 0, 0, 0};
+
+    static float limitAcceleration(float desiredRPM, float previousRPM, int power);
+
+    static float p_theory(int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm);
+
+    static float Bisection(int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm, float chassisPowerLimit);
+
+    float power_limit;
 
     /**
      * Gets the chassis's current WheelSpeeds
@@ -131,7 +144,7 @@ public:
      * The setWheelSpeeds method drives each motor at a specific speed
      * @param wheelSpeeds The speeds in RPM to drive each motor at
      */
-    void setWheelSpeeds(WheelSpeeds wheelSpeeds);
+    float setWheelSpeeds(WheelSpeeds wheelSpeeds);
 
     /**
      * The normalizeWheelSpeeds method normalizes each motor with respect to m_OmniKinematicsLimits.max_Vel
@@ -156,7 +169,7 @@ public:
      *
      * @param desiredChassisSpeeds The robot-relative speeds (vX, vY, and vOmega) in m/s
      */
-    void setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode = ROBOT_ORIENTED);
+    float setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode = ROBOT_ORIENTED);
 
     /**
      * The rotateChassisSpeed method
@@ -295,6 +308,16 @@ public:
 
     ChassisSpeeds m_chassisSpeeds;
     WheelSpeeds m_wheelSpeeds;
+    
+    int PEAK_POWER_ALL;
+    int PEAK_POWER_SINGLE;
+
+    PID pid_LF;
+    PID pid_RF;
+    PID pid_LB;
+    PID pid_RB;
+
+    uint32_t lastPIDTime = 0;
 
     // int8_t isInverted[4];
 
@@ -307,8 +330,8 @@ public:
     int testData[300][4];
     int testDataIndex = 0;
 
-    static float ticksToRadians(float ticks);
-    static float radiansToTicks(float radians);
+    static double radiansToTicks(double radians);
+    static double ticksToRadians(double ticks);
 
 private:
     DJIMotor LF, RF, LB, RB;
@@ -321,13 +344,11 @@ private:
     BNO055 imu;
     BNO055_ANGULAR_POSITION_typedef imuAngles;
 
-
-
-
-    static float rpmToRadPerSecond(double RPM);
+    static double rpmToRadPerSecond(double RPM);
     static double radPerSecondToRPM(double radPerSecond);
 
     OmniKinematics m_OmniKinematics;
+    float chassis_radius;
     void setOmniKinematics(double radius);
     // Eigen::MatrixXd wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds);
 
@@ -338,6 +359,7 @@ private:
     // void setMotorSpeedTicksPerSecond(int index, double speed);
 
     double getMotorSpeedRPM(MotorLocation location);
+    int motorPIDtoPower(MotorLocation location, double speed, uint32_t dt);
 
     // ChassisKalman chassisKalman;
     double testAngle;
