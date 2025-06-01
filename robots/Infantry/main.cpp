@@ -34,7 +34,7 @@ constexpr float pitch_zero_offset_ticks = 1500;
 //CHASSIS DEFINING
 I2C i2c(I2C_SDA, I2C_SCL);
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
-ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
+ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.22617); // radius is 9 in
 DJIMotor yaw(4, CANHandler::CANBUS_1, GIMBLY,"Yeah");
 DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY,"Peach"); // right
 
@@ -484,7 +484,7 @@ int main(){
             //YAW CODE
             if (drive == 'u' || drive == 'd' || (drive =='o' && (remote.rightSwitch() == Remote::SwitchState::UP || remote.rightSwitch() == Remote::SwitchState::DOWN))){
                 float chassis_rotation_radps = cs.vOmega;
-                int chassis_rotation_rpm = chassis_rotation_radps * 60 / (2*M_PI) * 4; //I added this 4 but I don't know why.
+                int chassis_rotation_rpm = chassis_rotation_radps * 60 / (2*M_PI); //I added this 4 but I don't know why.
                 
                 //Regular Yaw Code
                 yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * elapsedms / 1000;
