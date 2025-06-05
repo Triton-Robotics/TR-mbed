@@ -251,9 +251,9 @@ int main(){
 
             counter++;
             if (counter > 10) {
-                //printff("X: %.3f, Y: %.3f, decel: %.3f, %.3f %d\n", posx, posy, angle, decel_dist, idx);
-                WheelSpeeds curr = Chassis.getWheelSpeeds();
-                printff("LF: %.3f RF: %.3f LB: %.3f RB: %.3f\n", curr.LF, curr.RF, curr.LB, curr.RB);
+                printff("X: %.3f, Y: %.3f, decel: %.3f, %.3f %d\n", posx, posy, angle, decel_dist, idx);
+                //WheelSpeeds curr = Chassis.getWheelSpeeds();
+                //printff("LF: %.3f RF: %.3f LB: %.3f RB: %.3f\n", curr.LF, curr.RF, curr.LB, curr.RB);
                 counter = 0;
             }
             //MOST CODE DOESNT NEED TO RUN FASTER THAN EVERY 15ms
