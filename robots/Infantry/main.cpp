@@ -19,8 +19,8 @@ constexpr float BEYBLADE_OMEGA = 1.0;
 // constexpr float MOUSE_SENSITIVITY_PITCH = 1.0/5;
 
 //DEGREES PER SECOND AT MAX
-constexpr float JOYSTICK_SENSITIVITY_YAW_DPS = 180.0; 
-constexpr float JOYSTICK_SENSITIVITY_PITCH_DPS = 180.0;
+constexpr float JOYSTICK_SENSITIVITY_YAW_DPS = 90.0; 
+constexpr float JOYSTICK_SENSITIVITY_PITCH_DPS = 90.0;
 constexpr float MOUSE_SENSITIVITY_YAW_DPS = 1.0;
 constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 1.0;
 
@@ -37,7 +37,7 @@ constexpr float CHASSIS_FF_KICK = 0.065;
 //CHASSIS DEFINING
 I2C i2c(I2C_SDA, I2C_SCL);
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
-ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
+ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.22617); // radius is 9 in
 DJIMotor yaw(4, CANHandler::CANBUS_1, GIMBLY,"Yeah");
 DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY,"Peach"); // right
 
@@ -90,10 +90,10 @@ int main(){
     * MOTORS SETUP AND PIDS
     */
     //YAW
-    PID yawBeyblade(1.0, 0, 150); //yaw PID is cascading, so there are external position PIDs for yaw control
+    PID yawBeyblade(0.04, 0, 4); //yaw PID is cascading, so there are external position PIDs for yaw control
     // PID yawNonBeyblade(0.15, 0, 550);
-    yaw.setSpeedPID(37.5, 0.2, 100);
-    yaw.setSpeedIntegralCap(8000);
+    yaw.setSpeedPID(250, 0, 100);
+    // yaw.setSpeedIntegralCap(8000);
     yaw.setSpeedOutputCap(32000);
     yaw.outputCap = 16000;
     yaw.useAbsEncoder = false;
@@ -108,7 +108,7 @@ int main(){
     #endif
 
     //PITCH
-    pitch.setPositionPID(5, 0, 700); //15, 0 1700
+    pitch.setPositionPID(8, 0, 0); //15, 0 1700
     pitch.setPositionOutputCap(32000);
     pitch.pidPosition.feedForward = 0;
     pitch.outputCap = 16000;
@@ -117,7 +117,7 @@ int main(){
     float pitch_current_angle = 0;
     float pitch_desired_angle = 0;
     float pitch_phase_angle = 33 / 180.0 * PI; // 5.69 theoretical //wtf is this?
-    float pitch_zero_offset_ticks = 1500;
+    float pitch_zero_offset_ticks = 2000;
     float K = 0.38; // 0.75 //0.85
 
     //FLYWHEELS
@@ -125,7 +125,7 @@ int main(){
     RFLYWHEEL.setSpeedPID(7.1849, 0.000042634, 0);
 
     //INDEXER
-    indexer.setSpeedPID(1, 0, 1);
+    indexer.setSpeedPID(1.65, 0, 1);
     indexer.setSpeedIntegralCap(8000);
     //Cascading PID for indexer angle position control. Surely there are better names then "sure"...
     PID sure(0.5,0,0.4);
@@ -171,10 +171,11 @@ int main(){
     ChassisSpeeds prev_velocity = {0.0, 0.0, 0.0};
     ChassisSpeeds accel = {0.0, 0.0, 0.0};
 
-    std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {500.0, 0.0}, {500.0, 500.0}, {0.0, 500.0}, {0.0, 0.0}};
+    std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {300.0, 0.0}, {300.0, 300.0}, {0.0, 300.0}, {0.0, 0.0}};
 
-    float init_angle = -1000;
-    float angle = imuAngles.yaw - init_angle;
+    int init_angle = -1000;
+    float yawNow = 0;
+    float angle = 0; // imuAngles.yaw - init_yaw + init_angle;
     float posx = final_pos[0][0]; // need to go to 1676 ish
     float posy = final_pos[0][1]; // we need to go to -6800 (ish)
     int counter = 0;
@@ -192,7 +193,7 @@ int main(){
     float buffer_x = 20.0;
     float buffer_angle = PI/16;
 
-    float vel_init = 1.0; // should be max vel
+    float vel_init = 0.8; // should be max vel
     float accel_init = 0.4;
     float decel_dist = 1000 * vel_init * vel_init / (2 * accel_init * TIME); // in mm
     float rx_init = 0.4; // you basically divide the angle you want by pi, so this is PI/4 / PI
@@ -200,15 +201,15 @@ int main(){
 
     while(true){
         timeStart = us_ticker_read();
-
-        if (init_angle == -1000 && imuAngles.yaw != 0) {
-            init_angle = imuAngles.yaw;
+        if (init_angle == -1000 && (yaw>>ANGLE) != 0) {
+            init_angle = (yaw>>ANGLE);
         }
 
         if ((timeStart - loopTimer) / 1000 > OUTER_LOOP_DT_MS){
             float elapsedms = (timeStart - loopTimer) / 1000;
             loopTimer = timeStart;
             led = !led;
+            ledbuiltin = !ledbuiltin;
             refLoop++;
             if (refLoop >= 5){
                 refereeThread(&referee);
@@ -276,13 +277,12 @@ int main(){
             jyaw = max(-1.0F, min(1.0F, jyaw));
 
             velocity = Chassis.getChassisSpeeds();
-            accel =  {(velocity.vX - prev_velocity.vX) / TIME, (velocity.vY - prev_velocity.vY) / TIME, (velocity.vOmega - prev_velocity.vOmega) / TIME};
+            accel =  {(velocity.vX - prev_velocity.vX) / (0.001 * TIME), (velocity.vY - prev_velocity.vY) / (0.001 * TIME), (velocity.vOmega - prev_velocity.vOmega) / (0.001 * TIME)};
 
             // update pos and angle in mm
             // velocities in m/s, acceleration in m/s^2, the loop runs every TIME ms
-            // angle = imuAngles.yaw - init_angle;
-            angle = calculateDeltaYaw(imuAngles.yaw, init_angle);
-            angle = angle * -PI/180;
+            angle = (7900 - (yaw>>ANGLE)) * 2*PI/8192; //7900 is the zero for inf i think
+
             while (angle > PI) {
                 angle -= 2*PI;
             }
@@ -290,9 +290,13 @@ int main(){
                 angle += 2*PI;
             }
             
-            posy = posy + ((velocity.vY * sin(angle)) - (velocity.vX * cos(angle))) * TIME + (1/2 * ((accel.vY * sin(angle)) - (accel.vX * cos(angle))) * TIME * TIME * 0.001);
+            // posy = posy + ((velocity.vY * sin(angle)) - (velocity.vX * cos(angle))) * TIME + (1/2 * ((accel.vY * sin(angle)) - (accel.vX * cos(angle))) * TIME * TIME * 0.001);
             
-            posx = posx + ((velocity.vX * sin(angle)) + (velocity.vY * cos(angle))) * TIME + (1/2 * ((accel.vX * sin(angle)) + (accel.vY * cos(angle))) * TIME * TIME * 0.001);
+            // posx = posx + ((velocity.vX * sin(angle)) + (velocity.vY * cos(angle))) * TIME + (1/2 * ((accel.vX * sin(angle)) + (accel.vY * cos(angle))) * TIME * TIME * 0.001);
+
+            posx = posx + (velocity.vX * cos(angle) - velocity.vY * sin(angle)) * TIME + (1/2 * (accel.vX * cos(angle) - accel.vY * sin(angle)) * TIME * TIME * 0.001);
+
+            posy = posy + (velocity.vY * cos(angle) + velocity.vX * sin(angle)) * TIME + (1/2 * (accel.vY * cos(angle) + accel.vX * sin(angle)) * TIME * TIME * 0.001);
 
             float lx = 0;
             float ly = 0;
@@ -310,18 +314,18 @@ int main(){
                 led = 0;
                 
                 final_angle = atan2((final_pos[idx][1] - posy), (final_pos[idx][0] - posx));
-                float deltayaw = calculateDeltaYaw(angle, final_angle);
+                // float deltayaw = calculateDeltaYaw(angle, final_angle);
                 float distance = calculateDistance(posx, posy, final_x, final_y);
 
-                if (angle > buffer_angle) {
-                    jyaw = -rx_init;
-                }
-                else if (angle < -buffer_angle) {
-                    jyaw = rx_init;
-                }
-                else {
-                    jyaw = 0;
-                }
+                // if (angle > buffer_angle) {
+                //     jyaw = -rx_init;
+                // }
+                // else if (angle < -buffer_angle) {
+                //     jyaw = rx_init;
+                // }
+                // else {
+                //     jyaw = 0;
+                // }
 
                 if ((final_y - posy) > buffer_y) {
                     if (abs(velocity.vX) < vel_init) {
@@ -405,17 +409,11 @@ int main(){
                         final_y = final_pos[idx][1];
                         final_x = final_pos[idx][0];
                     }
-                    else {
-                        idx = 0;
-                        final_y = final_pos[idx][1];
-                        final_x = final_pos[idx][0];
-                    }
-
                     ly = 0;
                     lx = 0;
                 }
 
-                Chassis.setChassisSpeeds({lx, ly, rx}, ChassisSubsystem::YAW_ORIENTED);
+                Chassis.setChassisSpeeds({lx, ly, 0}, ChassisSubsystem::YAW_ORIENTED);
 
             }else if (drive == 'd' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::DOWN)){
                 //BEYBLADE DRIVING CODE
@@ -512,11 +510,6 @@ int main(){
                 if ((ly == 0 && lx == 0) || (distance < M_SQRT2 * buffer_x)) {
                     if (idx < final_pos.size() - 1) {
                         idx += 1;
-                        final_y = final_pos[idx][1];
-                        final_x = final_pos[idx][0];
-                    }
-                    else {
-                        idx = 0;
                         final_y = final_pos[idx][1];
                         final_x = final_pos[idx][0];
                     }
@@ -642,7 +635,7 @@ int main(){
 
                 //printff("LFval: %d RFval: %d LBval: %d RBval: %d\n", Chassis.getMotor(ChassisSubsystem::MotorLocation::LEFT_FRONT).getData(motorDataType::VALUE), Chassis.getMotor(ChassisSubsystem::MotorLocation::RIGHT_FRONT).getData(motorDataType::VALUE), Chassis.getMotor(ChassisSubsystem::MotorLocation::LEFT_BACK).getData(motorDataType::VALUE), Chassis.getMotor(ChassisSubsystem::MotorLocation::RIGHT_BACK).getData(motorDataType::VALUE));
 
-                printff("A: %.3f i: %.3f X: %.3f Y: %.3f\n", angle, init_angle, posx, posy);
+                printff("X: %.2f Y: %.2f yaw:%d init:%d\n", posx, posy, (yaw>>ANGLE), init_angle);
                 //printff("Prints:\n");
                 //printff("lX:%.1f lY:%.1f rX:%.1f rY:%.1f lS:%d rS:%d\n", remote.leftX(), remote.leftY(), remote.rightX(), remote.rightY(), remote.leftSwitch(), remote.rightSwitch());
                 //printff("jx:%.3f jy:%.3f jpitch:%.3f jyaw:%.3f\n", jx, jy, jpitch, jyaw);

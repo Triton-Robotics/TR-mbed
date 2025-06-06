@@ -102,7 +102,7 @@ int main(){
             //MAIN CODE
             Chassis.periodic();
             velocity = Chassis.getChassisSpeeds();
-            accel =  {(velocity.vX - prev_velocity.vX) / TIME, (velocity.vY - prev_velocity.vY) / TIME, (velocity.vOmega - prev_velocity.vOmega) / TIME};
+            accel =  {(velocity.vX - prev_velocity.vX) / (0.001 *TIME), (velocity.vY - prev_velocity.vY) / (0.001 *TIME), (velocity.vOmega - prev_velocity.vOmega) / (0.001 *TIME)};
 
             // update pos and angle in mm
             // velocities in m/s, acceleration in m/s^2, the loop runs every TIME ms
