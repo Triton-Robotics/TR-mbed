@@ -54,8 +54,7 @@ char pitch_angle_char[4];
 char pitch_velocity_char[4];
 
 char nucleo_value[30] = {0};
-char jetson_value[30] = {0};
-
+char jetson_read_buff[500] {0};
 //CV
 float CV_pitch_angle_radians = 0.0;
 float CV_yaw_angle_radians = 0.0;
@@ -135,18 +134,6 @@ static uint8_t calculateLRC(const char* data, size_t length) {
  * Read motor values and send to CV
  */
 float jetson_send_feedback(float yaw_degrees) {
-    //char temp[50] = {0};
-    // ChassisSpeeds cs = Chassis.m_chassisSpeeds;
-    // imu.get_angular_position_quat(&imuAngles);
-    //printf("chassis:%f|%f imu:%f\n", cs.vX, cs.vY, imuAngles.yaw);
-    //printf("yaw angle %f, yaw velocity %f\n", yaw.getData(ANGLE), yaw.getData(VELOCITY));
-    //printf("pitch angle %f, pitch velocity %f \n", pitch.getData(ANGLE), pitch.getData(VELOCITY));
-    //printf("IMU Angle: %f\n", float(imuAngles.yaw));
-
-    //GET the x, y value from chassis
-    // rotatePoint(cs.vX, cs.vY, imuAngles.yaw, xRotated, yRotated);
-    //printf("Rx: %f | Ry: %f", xRotated, yRotated);
-
     char rotate_x_char[sizeof(float)];
     char rotate_y_char[sizeof(float)];
     getBytesFromFloat(rotate_x_char, xRotated);
@@ -172,9 +159,11 @@ float jetson_send_feedback(float yaw_degrees) {
     getBytesFromFloat(pitch_angle_char, pitch_angle);
     getBytesFromFloat(pitch_velocity_char, pitch_velocity);
 
-
+  // 0  1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25    - 26 total bytes
+  // EE x x x x y y y y p p  p  p  y  y  y  y  pv pv pv pv yv yv yv yv checksum
     //put the data into temp
-    int startPositions[7] = {0, 4, 8, 12, 16, 20, 24};
+  int startPositions[6] = {1, 5, 9, 13, 17, 21};
+  nucleo_value[0] = MAGICBYTE;
     copy4Char(rotate_x_char, nucleo_value, startPositions[0]);
     copy4Char(rotate_y_char, nucleo_value, startPositions[1]);
     copy4Char(pitch_angle_char, nucleo_value, startPositions[2]);
@@ -187,15 +176,12 @@ float jetson_send_feedback(float yaw_degrees) {
 
 
     //get lrc
-    uint8_t lrc = calculateLRC(nucleo_value, 24);
+  uint8_t lrc = calculateLRC(nucleo_value + 1, 24); //exclude header byte
     char lrc_char = static_cast<uint8_t>(lrc);
-    //printf("lrc: %d\n", lrc);
-    nucleo_value[24] = lrc_char;
-    //printf("lrc: %d\n", temp[24]);
+  nucleo_value[25] = lrc_char;
 
-    bcJetson.sync(); //sync if 1ms or lower, but if 2+ dont use sync
-    bcJetson.write(nucleo_value, 30);
-    
+  bcJetson.set_blocking(false);
+  bcJetson.write(nucleo_value, 26); //changed from 30
     //printf("Rx: %f | Ry: %f | p_a: %f | y_a: %f | p_v: %f | y_v: %f | lrc: %d \n", xRotated, yRotated, pitch_angle, yaw_angle, pitch_velocity, yaw_velocity, lrc);
     
     //make a struct to send data
@@ -210,24 +196,25 @@ float jetson_send_feedback(float yaw_degrees) {
  * @param pitch_move buffer to store desired pitch position
  * @param yaw_move buffer to store desired yaw position
  */
+//TODO: remove printf's
 ssize_t jetson_read_values(float &pitch_move, float & yaw_move, char &shoot_switch) {
     bcJetson.set_blocking(false);
-    ssize_t fillArrayCheck = 10;
-    int i;
-    unsigned int numBytes = 0;            //counts bytes read aka size of jetson_values
-    uint8_t checkSum;                     //last bit in packet            
 
-    if ( bcJetson.readable() ) {
-        while ( (fillArrayCheck >= 10) && (numBytes < 200) ) {
-            fillArrayCheck = bcJetson.read(jetson_value+numBytes, 10); //keep adding 10 bytes throughout array until buffer empty
-            numBytes += fillArrayCheck;
+    if(!bcJetson.readable()){
+      printf("nothing to read exiting early\n");
+      return -EAGAIN;
+    }
+
+    //TODO: keep a persistent buffer where if no matches are found we keep appending to the buffer until we find a match
+    ssize_t bytes_read = bcJetson.read(jetson_read_buff, 500);
+    if(bytes_read == -EAGAIN){
+      printf("read error\n");
+      return -EAGAIN;
         }
 
-        if (READ_DEBUG) { 
-            for ( i = 0; i< numBytes ; ++i) {
-                printf("%d ", jetson_value[i]);
-            }
-            printf("\nbytes: %d\n", numBytes);
+    if(bytes_read < 11){
+      printf("not enough data in buffer\n");
+      return -1;
         }
 
         //starting at the very last index of jetson_values (numbytes - 1)
@@ -235,31 +222,31 @@ ssize_t jetson_read_values(float &pitch_move, float & yaw_move, char &shoot_swit
         //if we meet the match conditions, decode values, clear buffer, return last amount of bytes read
         //if no match found, print no match
         //if buffer empty, print empty
-        for( i = numBytes - 1 ; i >= 10 ; --i) {
+    for(int i = bytes_read - 1 ; i >= 10 ; --i) {
             if (READ_DEBUG) { 
                 for (int j = i - 10; j <= i; ++j) {
-                    printf("%d ",jetson_value[j]);
+              printf("%d ",jetson_read_buff[j]);
                 }
                 printf("\n");
-                printf("%d %d %d\n", calculateLRC(&jetson_value[i - 9], 9), jetson_value[i], jetson_value[i-10]);
+          printf("%d %d %d\n", calculateLRC(&jetson_read_buff[i - 9], 9), jetson_read_buff[i], jetson_read_buff[i-10]);
              }
 
-            //calculating checksum w/ header bytes
-            if ( (calculateLRC(&jetson_value[i - 9], 9) == jetson_value[i]) && (jetson_value[i] != 0) && (jetson_value[i-10] == MAGICBYTE) ){
+      //calculating checksum without magic header bytes
+      //check for magic byte, check checksum != 0, check calculated checksum matches message checksum
+      if ((jetson_read_buff[i-10] == MAGICBYTE) &&
+          (jetson_read_buff[i] != 0) && 
+          (calculateLRC(&jetson_read_buff[i - 9], 9) == jetson_read_buff[i])){
                 
                 if (READ_DEBUG) { printf("match\n"); }
 
-                decode_toSTM32(&jetson_value[i-9], pitch_move, yaw_move, shoot_switch, checkSum);
-                return fillArrayCheck;
+          uint8_t checkSum;
+          decode_toSTM32(&jetson_read_buff[i-9], pitch_move, yaw_move, shoot_switch, checkSum);
+          return 1;
             }
         }
-        if (READ_DEBUG) {  printf("\nno match\n"); }
-        return 0;
-        
-    } else {
-        if (READ_DEBUG) { printf("\nempty\n"); }
-    }
-    return fillArrayCheck;
+
+  printf("did not find any matches in buffer\n");
+  return -1;
 }
 int main(){
 
@@ -390,18 +377,9 @@ int main(){
             int readResult = jetson_read_values(CV_pitch_angle_radians, CV_yaw_angle_radians, CV_shoot);
 
             if(cv_enabled){
-                //like idk why ig floats are fucked oop
-                if (readResult != -EAGAIN) {
-                    //printf("you are now zero\n");
-                    // CV_yaw_angle_radians = 0;
+                if(readResult > 0){
                     yaw_desired_angle = CV_yaw_angle_radians / M_PI * 180;
-                    //CV_yaw_angle_radians = 0;
-                }
-                
-                if (readResult != -EAGAIN) {
-                    // CV_pitch_angle_radians = 0;
                     pitch_desired_angle = CV_pitch_angle_radians / M_PI * 180;
-                    //CV_pitch_angle_radians = 0;
                 }
             }
             #ifdef USE_IMU
