@@ -54,7 +54,10 @@ char pitch_angle_char[4];
 char pitch_velocity_char[4];
 
 char nucleo_value[30] = {0};
-char jetson_read_buff[500] {0};
+#define JETSON_READ_BUFF_SIZE 500
+#define JETSON_READ_MSG_SIZE 11
+char jetson_read_buff[JETSON_READ_BUFF_SIZE] = {0};
+int jetson_read_buff_pos = 0;
 //CV
 float CV_pitch_angle_radians = 0.0;
 float CV_yaw_angle_radians = 0.0;
@@ -201,19 +204,24 @@ ssize_t jetson_read_values(float &pitch_move, float & yaw_move, char &shoot_swit
     bcJetson.set_blocking(false);
 
     if(!bcJetson.readable()){
-      printf("nothing to read exiting early\n");
       return -EAGAIN;
     }
 
+    if(jetson_read_buff_pos > (JETSON_READ_BUFF_SIZE - JETSON_READ_MSG_SIZE)){
+      printf("WARN: jetson read buffer overflow. Resetting buffer to 0\n");
+      jetson_read_buff_pos = 0;
+    }
+
     //TODO: keep a persistent buffer where if no matches are found we keep appending to the buffer until we find a match
-    ssize_t bytes_read = bcJetson.read(jetson_read_buff, 500);
+    int available_space = JETSON_READ_BUFF_SIZE - jetson_read_buff_pos;
+    ssize_t bytes_read = bcJetson.read(jetson_read_buff + jetson_read_buff_pos, available_space);
     if(bytes_read == -EAGAIN){
-      printf("read error\n");
       return -EAGAIN;
         }
 
-    if(bytes_read < 11){
-      printf("not enough data in buffer\n");
+    jetson_read_buff_pos += bytes_read;
+
+    if(jetson_read_buff_pos < JETSON_READ_MSG_SIZE){
       return -1;
         }
 
@@ -222,32 +230,24 @@ ssize_t jetson_read_values(float &pitch_move, float & yaw_move, char &shoot_swit
         //if we meet the match conditions, decode values, clear buffer, return last amount of bytes read
         //if no match found, print no match
         //if buffer empty, print empty
-    for(int i = bytes_read - 1 ; i >= 10 ; --i) {
-            if (READ_DEBUG) { 
-                for (int j = i - 10; j <= i; ++j) {
-              printf("%d ",jetson_read_buff[j]);
-                }
-                printf("\n");
-          printf("%d %d %d\n", calculateLRC(&jetson_read_buff[i - 9], 9), jetson_read_buff[i], jetson_read_buff[i-10]);
-             }
-
+    for(int i = jetson_read_buff_pos - 1 ; i >= 10 ; --i) {
       //calculating checksum without magic header bytes
       //check for magic byte, check checksum != 0, check calculated checksum matches message checksum
       if ((jetson_read_buff[i-10] == MAGICBYTE) &&
           (jetson_read_buff[i] != 0) && 
           (calculateLRC(&jetson_read_buff[i - 9], 9) == jetson_read_buff[i])){
-                
-                if (READ_DEBUG) { printf("match\n"); }
 
           uint8_t checkSum;
           decode_toSTM32(&jetson_read_buff[i-9], pitch_move, yaw_move, shoot_switch, checkSum);
+          //TODO: as an optimization we can clear onto the message we extracted. Leaving any potential partial messages in the buffer
+          jetson_read_buff_pos = 0;
           return 1;
             }
         }
 
-  printf("did not find any matches in buffer\n");
   return -1;
 }
+
 int main(){
 
     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
