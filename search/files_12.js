@@ -40,7 +40,7 @@ var searchData=
   ['simplicial_5fcholesky_2ecpp_37',['simplicial_cholesky.cpp',['../simplicial__cholesky_8cpp.html',1,'']]],
   ['simplicialcholesky_2eh_38',['SimplicialCholesky.h',['../SimplicialCholesky_8h.html',1,'']]],
   ['simplicialcholesky_5fimpl_2eh_39',['SimplicialCholesky_impl.h',['../SimplicialCholesky__impl_8h.html',1,'']]],
-  ['single_2ecpp_40',['single.cpp',['../blas_2single_8cpp.html',1,'(Global Namespace)'],['../lapack_2single_8cpp.html',1,'(Global Namespace)']]],
+  ['single_2ecpp_40',['single.cpp',['../lapack_2single_8cpp.html',1,'(Global Namespace)'],['../blas_2single_8cpp.html',1,'(Global Namespace)']]],
   ['size_5flin_5flog_2ehh_41',['size_lin_log.hh',['../size__lin__log_8hh.html',1,'']]],
   ['size_5flog_2ehh_42',['size_log.hh',['../size__log_8hh.html',1,'']]],
   ['sizeof_2ecpp_43',['sizeof.cpp',['../sizeof_8cpp.html',1,'']]],
