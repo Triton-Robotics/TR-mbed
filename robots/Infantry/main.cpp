@@ -174,7 +174,7 @@ int main(){
     std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {300.0, 0.0}, {300.0, 300.0}, {0.0, 300.0}, {0.0, 0.0}};
 
     int init_angle = -1000;
-    float yawNow = 0;
+    float init_yaw = 0;
     float angle = 0; // imuAngles.yaw - init_yaw + init_angle;
     float posx = final_pos[0][0]; // need to go to 1676 ish
     float posy = final_pos[0][1]; // we need to go to -6800 (ish)
@@ -203,6 +203,7 @@ int main(){
         timeStart = us_ticker_read();
         if (init_angle == -1000 && (yaw>>ANGLE) != 0) {
             init_angle = (yaw>>ANGLE);
+            init_yaw = imuAngles.yaw;
         }
 
         if ((timeStart - loopTimer) / 1000 > OUTER_LOOP_DT_MS){
@@ -281,7 +282,11 @@ int main(){
 
             // update pos and angle in mm
             // velocities in m/s, acceleration in m/s^2, the loop runs every TIME ms
-            angle = (7900 - (yaw>>ANGLE)) * 2*PI/8192; //7900 is the zero for inf i think
+            
+            // BEYBLADE ANGLE
+            // angle = (7900 - (yaw>>ANGLE)) * 2*PI/8192;
+            // normal auto ANGLE
+            angle = (7900 - init_angle) * 2*PI/8192; //7900 is the zero for inf i think // test idea ((imuAngles.yaw - init_yaw)* 8192 / 360)
 
             while (angle > PI) {
                 angle -= 2*PI;
