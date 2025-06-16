@@ -261,7 +261,7 @@ int main(){
     PID yawBeyblade(1.0, 0, 0); //yaw PID is cascading, so there are external position PIDs for yaw control
     // PID yawNonBeyblade(0.15, 0, 550);
     yawBeyblade.setOutputCap(90);
-    yaw.setSpeedPID(850, 0, 0);
+    yaw.setSpeedPID(550, 0, 0);
     yaw.setSpeedIntegralCap(8000);
     yaw.setSpeedOutputCap(32000);
     yaw.outputCap = 16000;
