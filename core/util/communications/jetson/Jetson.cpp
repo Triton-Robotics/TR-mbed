@@ -59,7 +59,7 @@ static uint8_t calculateLRC(const char* data, size_t length) {
 /**
  * Read motor values and send to CV
  */
-void jetson_send_feedback(BufferedSerial jetson_serial, const Jetson_send_data& data) {
+void jetson_send_feedback(BufferedSerial &bcJetson, const Jetson_send_data& data) {
   char chassis_x_velocity_char[4];
   char chassis_y_velocity_char[4];
   char yaw_angle_char[4];
@@ -92,8 +92,8 @@ void jetson_send_feedback(BufferedSerial jetson_serial, const Jetson_send_data& 
   nucleo_value[25] = lrc_char;
 
   //TODO: do we need this?
-  jetson_serial.set_blocking(false);
-  jetson_serial.write(nucleo_value, 26); //changed from 30
+  bcJetson.set_blocking(false);
+  bcJetson.write(nucleo_value, 26); //changed from 30
 }
 
 
@@ -104,11 +104,11 @@ void jetson_send_feedback(BufferedSerial jetson_serial, const Jetson_send_data& 
 * @param yaw_move buffer to store desired yaw position
 */
 //TODO: remove printf's
-ssize_t jetson_read_values(BufferedSerial jetson_serial, Jetson_read_data& read_data) {
+ssize_t jetson_read_values(BufferedSerial &bcJetson, Jetson_read_data& read_data) {
   //TODO: do we need this?
-  jetson_serial.set_blocking(false);
+  bcJetson.set_blocking(false);
 
-  if(!jetson_serial.readable()){
+  if(!bcJetson.readable()){
     return -EAGAIN;
   }
 
@@ -119,7 +119,7 @@ ssize_t jetson_read_values(BufferedSerial jetson_serial, Jetson_read_data& read_
 
   //TODO: keep a persistent buffer where if no matches are found we keep appending to the buffer until we find a match
   int available_space = JETSON_READ_BUFF_SIZE - jetson_read_buff_pos;
-  ssize_t bytes_read = jetson_serial.read(jetson_read_buff + jetson_read_buff_pos, available_space);
+  ssize_t bytes_read = bcJetson.read(jetson_read_buff + jetson_read_buff_pos, available_space);
   if(bytes_read == -EAGAIN){
     return -EAGAIN;
       }

@@ -1,6 +1,9 @@
+#pragma once
 #include <cstring>
 #include <stdint.h>
-#include "communications/SerialCommunication.h"
+// #include "communications/SerialCommunication.h"
+
+#include "mbed.h"
 
 struct Jetson_send_data {
   float chassis_x_velocity;
@@ -17,5 +20,7 @@ struct Jetson_read_data {
   char shoot_status;
 };
 
-void jetson_send_feedback(BufferedSerial jetson_serial, const Jetson_send_data& data);
-ssize_t jetson_read_values(BufferedSerial jetson_serial, Jetson_read_data& read_data);
+// BufferedSerial bcJetson(PC_12, PD_2, 115200);
+
+void jetson_send_feedback(BufferedSerial &bcJetson, const Jetson_send_data& data);
+ssize_t jetson_read_values(BufferedSerial &bcJetson, Jetson_read_data& read_data);
