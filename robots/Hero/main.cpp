@@ -304,7 +304,8 @@ int main(){
             }
 
             //INDEXER CODE
-            if (remote.leftSwitch() == Remote::SwitchState::UP  || (remote.getMouseL() && remote.leftSwitch() == Remote::SwitchState::MID)){
+            if ((remote.leftSwitch() == Remote::SwitchState::UP  || (remote.getMouseL() && remote.leftSwitch() == Remote::SwitchState::MID)) && 
+                remote.rightSwitch() != Remote::SwitchState::MID){
                 if (shootReady){
                     shootReady = false;
                    if(robot_status.shooter_barrel_heat_limit < 10 || power_heat_data.shooter_42mm_barrel_heat < robot_status.shooter_barrel_heat_limit - 110) {
@@ -395,7 +396,8 @@ int main(){
 
             //FLYWHEELS
             if (remote.leftSwitch() != Remote::SwitchState::DOWN &&
-                remote.leftSwitch() != Remote::SwitchState::UNKNOWN){
+                remote.leftSwitch() != Remote::SwitchState::UNKNOWN &&
+                remote.rightSwitch() != Remote::SwitchState::MID){
                 RFLYWHEEL.setSpeed(-7475);
                 LFLYWHEEL.setSpeed(7475);
             } else{

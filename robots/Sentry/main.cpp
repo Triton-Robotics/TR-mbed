@@ -438,23 +438,23 @@ int main(){
             jpitch = max(-1.0F, min(1.0F, jpitch));
             jyaw = max(-1.0F, min(1.0F, jyaw));
 
-            //Chassis Code
-            if (drive == 'u' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::UP)){
-                //REGULAR DRIVING CODE
-                Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          jy * Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          0 * Chassis.m_OmniKinematicsLimits.max_vOmega},
-                                          ChassisSubsystem::REVERSE_YAW_ORIENTED);
-            }else if (drive == 'd' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::DOWN)){
-                //BEYBLADE DRIVING CODE
-                Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          jy * Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          -BEYBLADE_OMEGA},
-                                          ChassisSubsystem::REVERSE_YAW_ORIENTED);
-            }else{
-                //OFF
-                Chassis.setWheelPower({0,0,0,0});
-            }
+            // //Chassis Code
+            // if (drive == 'u' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::UP)){
+            //     //REGULAR DRIVING CODE
+            //     Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
+            //                               jy * Chassis.m_OmniKinematicsLimits.max_Vel,
+            //                               0 * Chassis.m_OmniKinematicsLimits.max_vOmega},
+            //                               ChassisSubsystem::REVERSE_YAW_ORIENTED);
+            // }else if (drive == 'd' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::DOWN)){
+            //     //BEYBLADE DRIVING CODE
+            //     Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
+            //                               jy * Chassis.m_OmniKinematicsLimits.max_Vel,
+            //                               -BEYBLADE_OMEGA},
+            //                               ChassisSubsystem::REVERSE_YAW_ORIENTED);
+            // }else{
+            //     //OFF
+            //     Chassis.setWheelPower({0,0,0,0});
+            // }
 
             //YAW CODE
             if (drive == 'u' || drive == 'd' || (drive =='o' && (remote.rightSwitch() == Remote::SwitchState::UP || remote.rightSwitch() == Remote::SwitchState::DOWN))){
@@ -518,7 +518,7 @@ int main(){
             pitch_current_angle = ((pitch>>ANGLE) - pitch_zero_offset_ticks) / TICKS_REVOLUTION * 360;
 
             //INDEXER CODE
-            if (remote.leftSwitch() == Remote::SwitchState::UP || remote.getMouseL()){
+            if ((remote.leftSwitch() == Remote::SwitchState::UP || remote.getMouseL()) && remote.rightSwitch() != Remote::SwitchState::MID){
                 // if (shootReady){
                 //     shootReady = false;
                 //     shootTargetPosition = 8192 * 12 + (indexer>>MULTITURNANGLE);
@@ -541,13 +541,14 @@ int main(){
 
             //FLYWHEELS
             if (remote.leftSwitch() != Remote::SwitchState::DOWN &&
-                remote.leftSwitch() != Remote::SwitchState::UNKNOWN){
+                remote.leftSwitch() != Remote::SwitchState::UNKNOWN &&
+                remote.rightSwitch() != Remote::SwitchState::MID){
                 RFLYWHEEL_U.setSpeed(-FLYWHEEL_SPEED);
                 LFLYWHEEL_U.setSpeed(FLYWHEEL_SPEED);
                 RFLYWHEEL_D.setSpeed(-FLYWHEEL_SPEED);
                 LFLYWHEEL_D.setSpeed(FLYWHEEL_SPEED);
             } else{
-                // left SwitchState set to up/mid/unknown
+                // left SwitchState set to down/unknown
                 RFLYWHEEL_U.setSpeed(0);
                 LFLYWHEEL_U.setSpeed(0);
                 RFLYWHEEL_D.setSpeed(0);
