@@ -10,7 +10,7 @@ DigitalOut ledbuiltin(LED1);
 constexpr float LOWERBOUND = -35.0;
 constexpr float UPPERBOUND = 40.0;
 
-constexpr float BEYBLADE_OMEGA = 1.0;
+constexpr float BEYBLADE_OMEGA = 2; //3.54 8.84 14.07
 
 // constexpr float JOYSTICK_SENSITIVITY_YAW = 1.0/90;
 // constexpr float JOYSTICK_SENSITIVITY_PITCH = 1.0/150;
@@ -258,10 +258,11 @@ int main(){
     * MOTORS SETUP AND PIDS
     */
     //YAW
-    PID yawBeyblade(1.0, 0, 0); //yaw PID is cascading, so there are external position PIDs for yaw control
+    PID yawBeyblade(1.0, 0.005, 50); //yaw PID is cascading, so there are external position PIDs for yaw control
+    yawBeyblade.setIntegralCap(2);
     // PID yawNonBeyblade(0.15, 0, 550);
     yawBeyblade.setOutputCap(90);
-    yaw.setSpeedPID(850, 0, 0);
+    yaw.setSpeedPID(550, 1, 0);
     yaw.setSpeedIntegralCap(8000);
     yaw.setSpeedOutputCap(32000);
     yaw.outputCap = 16000;
@@ -345,7 +346,7 @@ int main(){
         if((timeStart - loopTimerCV) / 1000 > 1) { //1 with sync or 2 without
             loopTimerCV = timeStart;
             //if(remote.rightSwitch() == Remote::SwitchState::UP)
-            jetson_send_feedback(imuAngles.yaw + 180); //  __COMENTED OUT LOOLOOKOKOLOOOOKO HERHEHRERHEHRHE
+            //jetson_send_feedback(imuAngles.yaw + 180); //  __COMENTED OUT LOOLOOKOKOLOOOOKO HERHEHRERHEHRHE
             //basic_bitch_read();
         }
 
@@ -464,6 +465,9 @@ int main(){
             jyaw = max(-1.0F, min(1.0F, jyaw));
 
             //Chassis Code
+            ChassisSpeeds test = {jx * Chassis.m_OmniKinematicsLimits.max_Vel,
+                                          jy * Chassis.m_OmniKinematicsLimits.max_Vel,
+                                          -BEYBLADE_OMEGA};
             if (drive == 'u' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::UP)){
                 //REGULAR DRIVING CODE
                 Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
@@ -472,9 +476,8 @@ int main(){
                                           ChassisSubsystem::YAW_ORIENTED);
             }else if (drive == 'd' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::DOWN)){
                 //BEYBLADE DRIVING CODE
-                Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          jy * Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          -BEYBLADE_OMEGA},
+                
+                Chassis.setChassisSpeeds(test,
                                           ChassisSubsystem::YAW_ORIENTED);
             }else{
                 //OFF
@@ -482,9 +485,10 @@ int main(){
             }
 
             //YAW CODE
+            float error = 0;
             if (drive == 'u' || drive == 'd' || (drive =='o' && (remote.rightSwitch() == Remote::SwitchState::UP || remote.rightSwitch() == Remote::SwitchState::DOWN))){
                 float chassis_rotation_radps = cs.vOmega;
-                int chassis_rotation_rpm = chassis_rotation_radps * 60 / (2*M_PI); //I added this 4 but I don't know why.
+                int chassis_rotation_rpm = chassis_rotation_radps * 60 / (2*PI) * 1.5; //I added this 4 but I don't know why.
                 
                 //Regular Yaw Code
                 yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * elapsedms / 1000;
@@ -492,10 +496,13 @@ int main(){
                 //yaw_desired_angle = (yaw_desired_angle + 360) % 360;
                 yaw_desired_angle = floatmod(yaw_desired_angle, 360);
 
+                //yaw_desired_angle = ((int)remote.leftSwitch() - 1) * 30;
+
                 prevTimeSure = timeSure;
                 timeSure = us_ticker_read();
                 #ifdef USE_IMU
-                yawVelo = yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yaw_desired_angle, imuAngles.yaw + 180, 360), timeSure - prevTimeSure);
+                error = DJIMotor::s_calculateDeltaPhaseF(yaw_desired_angle, imuAngles.yaw + 180, 360);
+                yawVelo = yawBeyblade.calculatePeriodic(error, timeSure - prevTimeSure);
                 #else
                 yawVelo = -jyaw * JOYSTICK_SENSITIVITY_YAW_DPS / 360.0 * 60;
                 #endif
@@ -503,9 +510,9 @@ int main(){
                 yawVelo -= chassis_rotation_rpm;
 
                 int dir = 0;
-                if(yawVelo > 0){
+                if(yawVelo > 1){
                     dir = 1;
-                }else if(yawVelo < 0){
+                }else if(yawVelo < -1){
                     dir = -1;
                 }
                 yaw.pidSpeed.feedForward = 1221*dir + 97.4 * yawVelo;
@@ -594,10 +601,13 @@ int main(){
                 //printff("lX:%.1f lY:%.1f rX:%.1f rY:%.1f lS:%d rS:%d\n", remote.leftX(), remote.leftY(), remote.rightX(), remote.rightY(), remote.leftSwitch(), remote.rightSwitch());
                 //printff("jx:%.3f jy:%.3f jpitch:%.3f jyaw:%.3f\n", jx, jy, jpitch, jyaw);
                 #ifdef USE_IMU
-                //printff("yaw_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
+                //printff("ydv:%d yav:%d PWR:%d ", yawVelo, yaw>>VELOCITY, yaw>>POWEROUT);
+                //printff("V[%.1f][%.1f][%.1f]E:%.3f ", yaw.pidSpeed.pC, yaw.pidSpeed.iC, yaw.pidSpeed.dC, yawVelo - (yaw>>VELOCITY));
+                printff("P[%.1f][%.1f][%.1f]E:%.3f ", yawBeyblade.pC, yawBeyblade.iC, yawBeyblade.dC, error);
                 //printff("YD:%.3f YA:%.3f CVY:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180, CV_yaw_angle_radians * 180 / M_PI);
+                printff("ERR:%.3f\n", error);
                 #else
-                // printff("yaw_des_v:%d yaw_act_v:%d\n", yawVelo, yaw>>VELOCITY);
+                printff("yaw_des_v:%d yaw_act_v:%d\n", yawVelo, yaw>>VELOCITY);
                 //printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
                 #endif
                 //printff("yaw_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
@@ -628,7 +638,23 @@ int main(){
                 //     }
                 //     printff("]");
                 // }
-                printff("CS: %.1f %.1f %.1f\n", cs.vX, cs.vY, cs.vOmega);
+                //printff("CS: %.1f %.1f %.1f ", cs.vX, cs.vY, cs.vOmega);
+                //printff("DS: %.1f %.1f %.1f\n", test.vX, test.vY, test.vOmega);
+                WheelSpeeds ac = Chassis.getWheelSpeeds();
+                WheelSpeeds ws = Chassis.chassisSpeedsToWheelSpeeds(test);
+                //printff("CH: %.2f %.2f %.2f %.2f ", ws.LF,ws.RF,ws.LB,ws.RB);
+                //printff("A: %.2f %.2f %.2f %.2f\n", ac.LF,ac.RF,ac.LB,ac.RB);
+                // printff("A_RAW: %d %d %d %d\n", 
+                //     Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).getData(VELOCITY), 
+                //     Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).getData(VELOCITY), 
+                //     Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(VELOCITY), 
+                //     Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).getData(VELOCITY));
+                // printff("A_MPS: %.2f %.2f %.2f %.2f\n", 
+                //     Chassis.getMotorSpeed(ChassisSubsystem::LEFT_FRONT, ChassisSubsystem::METER_PER_SECOND), 
+                //     Chassis.getMotorSpeed(ChassisSubsystem::RIGHT_FRONT, ChassisSubsystem::METER_PER_SECOND), 
+                //     Chassis.getMotorSpeed(ChassisSubsystem::LEFT_BACK, ChassisSubsystem::METER_PER_SECOND), 
+                //     Chassis.getMotorSpeed(ChassisSubsystem::RIGHT_BACK, ChassisSubsystem::METER_PER_SECOND));
+
             }
 
             DJIMotor::s_sendValues();

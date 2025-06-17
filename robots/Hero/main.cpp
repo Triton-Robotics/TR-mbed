@@ -246,7 +246,7 @@ int main(){
             //YAW CODE
             if (drive == 'u' || drive == 'd' || (drive =='o' && (remote.rightSwitch() == Remote::SwitchState::UP || remote.rightSwitch() == Remote::SwitchState::DOWN))){
                 float chassis_rotation_radps = cs.vOmega;
-                int chassis_rotation_rpm = chassis_rotation_radps * 60 / (2*M_PI) * 0.6868; //I added this 4 but I don't know why.
+                int chassis_rotation_rpm = chassis_rotation_radps * 60 / (2*M_PI); //I added this 4 but I don't know why.
 
                 //Regular Yaw Code
                 yaw_desired_angle -= jyaw * MOUSE_SENSITIVITY_YAW_DPS * elapsedms / 1000;
@@ -263,7 +263,7 @@ int main(){
                 //yawVelo = yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yaw_desired_angle, yaw_current_angle, 360), timeSure - prevTimeSure);
                 #endif
                 yawVelo -= chassis_rotation_rpm;
-                yawVelo *= 6; // scaled up arbitrarily 
+                //yawVelo *= 6; // scaled up arbitrarily 
 
                 int dir = 0;
                 if(yawVelo > 0){
