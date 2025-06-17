@@ -21,6 +21,11 @@ private:
     float outputCap = 0;
 
     float lastError = 0;
+    float lastError1 = 0;
+    float lastError2 = 0;
+    float lastError3 = 0;
+    float lastError4 = 0;
+    float lastError5 = 0;
     double errorIntegral = 0;
 
 public:

@@ -37,12 +37,22 @@ void PID::resetPID(float kP, float kI, float kD, float integralCap, float output
     this->outputCap = outputCap;
 
     lastError = 0;
+    lastError1 = 0;
+    lastError2 = 0;
+    lastError3 = 0;
+    lastError4 = 0;
+    lastError5 = 0;
     errorIntegral = 0;
 }
 
 void PID::resetErrorIntegral()
 {
     lastError = 0;
+    lastError1 = 0;
+    lastError2 = 0;
+    lastError3 = 0;
+    lastError4 = 0;
+    lastError5 = 0;
     errorIntegral = 0;
 }
 
@@ -71,7 +81,13 @@ int PID::calculatePeriodic(float error, double dt)
 
     dC = (kD * (error - lastError) / dt);
 
-    lastError = error;
+    //lastError = error;
+    lastError1 = error;
+    lastError2 = lastError1;
+    lastError3 = lastError2;
+    lastError4 = lastError3;
+    lastError5 = lastError4;
+    lastError = (lastError1 + lastError2 + lastError3 + lastError4 + lastError5) / 5;
     limitOutput(PIDCalc);
     return static_cast<int>(PIDCalc);
 }
