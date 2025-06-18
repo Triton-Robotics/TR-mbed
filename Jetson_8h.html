@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>TR-mbed: core/util/communications/Jetson.h File Reference</title>
+<title>TR-mbed: core/util/communications/jetson/Jetson.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -69,125 +69,99 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_4270bfced15e0e73154b13468c7c9ad9.html">core</a></li><li class="navelem"><a class="el" href="dir_459a7c9a427a2877b0db19c6b8d6e89d.html">util</a></li><li class="navelem"><a class="el" href="dir_d4aea1d95c6a99738078bf54480a0a68.html">communications</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_4270bfced15e0e73154b13468c7c9ad9.html">core</a></li><li class="navelem"><a class="el" href="dir_459a7c9a427a2877b0db19c6b8d6e89d.html">util</a></li><li class="navelem"><a class="el" href="dir_d4aea1d95c6a99738078bf54480a0a68.html">communications</a></li><li class="navelem"><a class="el" href="dir_ee523754a4bc837bd9b59f3e06135686.html">jetson</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#define-members">Macros</a>  </div>
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">Jetson.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;mbed.h&gt;</code><br />
-<code>#include &lt;atomic&gt;</code><br />
+<div class="textblock"><code>#include &lt;cstring&gt;</code><br />
+<code>#include &lt;stdint.h&gt;</code><br />
+<code>#include &quot;mbed.h&quot;</code><br />
 </div>
 <p><a href="Jetson_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJetson.html">Jetson</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A class for interfacing with the <a class="el" href="classJetson.html" title="A class for interfacing with the Jetson TX2 and receiving computer vision data over UART.">Jetson</a> TX2 and receiving computer vision data over UART.  <a href="classJetson.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structJetson__send__data.html">Jetson_send_data</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structJetson__read__data.html">Jetson_read_data</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:aac7f4a6d26d0b66cdc6a6a445173762a" id="r_aac7f4a6d26d0b66cdc6a6a445173762a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Jetson_8h.html#aac7f4a6d26d0b66cdc6a6a445173762a">JETSON_BUF_LEN</a>&#160;&#160;&#160;18</td></tr>
-<tr class="separator:aac7f4a6d26d0b66cdc6a6a445173762a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9e3ef153880545ba90bbdb09e226e9d9" id="r_a9e3ef153880545ba90bbdb09e226e9d9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Jetson_8h.html#a9e3ef153880545ba90bbdb09e226e9d9">JETSON_TOPIC_ID</a>&#160;&#160;&#160;0x69</td></tr>
-<tr class="separator:a9e3ef153880545ba90bbdb09e226e9d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1a54cf354299a2d3d5dafa8f6577aa5b" id="r_a1a54cf354299a2d3d5dafa8f6577aa5b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Jetson_8h.html#a1a54cf354299a2d3d5dafa8f6577aa5b">JETSON_TOPIC_ID_SEND</a>&#160;&#160;&#160;0xDD</td></tr>
-<tr class="separator:a1a54cf354299a2d3d5dafa8f6577aa5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae09a8fc4598f782d1776a67a145634b7" id="r_ae09a8fc4598f782d1776a67a145634b7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Jetson_8h.html#ae09a8fc4598f782d1776a67a145634b7">JETSON_COBS_HEADER_LEN</a>&#160;&#160;&#160;5</td></tr>
-<tr class="separator:ae09a8fc4598f782d1776a67a145634b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a39e71ca36f46ce9dc54fe341fa12fe57" id="r_a39e71ca36f46ce9dc54fe341fa12fe57"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Jetson_8h.html#a39e71ca36f46ce9dc54fe341fa12fe57">JETSON_READ_TIMEOUT</a>&#160;&#160;&#160;1000</td></tr>
-<tr class="separator:a39e71ca36f46ce9dc54fe341fa12fe57"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa7543069091b5cb12ada2c0dfb10522a" id="r_aa7543069091b5cb12ada2c0dfb10522a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Jetson_8h.html#aa7543069091b5cb12ada2c0dfb10522a">JETSON_READ_RATE</a>&#160;&#160;&#160;500</td></tr>
-<tr class="separator:aa7543069091b5cb12ada2c0dfb10522a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a918841549a54e2c9e2f8d08cda740b13" id="r_a918841549a54e2c9e2f8d08cda740b13"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Jetson_8h.html#a918841549a54e2c9e2f8d08cda740b13">jetson_send_feedback</a> (BufferedSerial &amp;bcJetson, const <a class="el" href="structJetson__send__data.html">Jetson_send_data</a> &amp;<a class="el" href="Map__placement__new_8cpp.html#abe49a82806b5db2e012bc33839af03e6">data</a>)</td></tr>
+<tr class="separator:a918841549a54e2c9e2f8d08cda740b13"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a789e58d2ca8dd41e15e6d65dd7856b4c" id="r_a789e58d2ca8dd41e15e6d65dd7856b4c"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Jetson_8h.html#a789e58d2ca8dd41e15e6d65dd7856b4c">jetson_read_values</a> (BufferedSerial &amp;bcJetson, <a class="el" href="structJetson__read__data.html">Jetson_read_data</a> &amp;read_data)</td></tr>
+<tr class="separator:a789e58d2ca8dd41e15e6d65dd7856b4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="aac7f4a6d26d0b66cdc6a6a445173762a" name="aac7f4a6d26d0b66cdc6a6a445173762a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aac7f4a6d26d0b66cdc6a6a445173762a">&#9670;&#160;</a></span>JETSON_BUF_LEN</h2>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="a789e58d2ca8dd41e15e6d65dd7856b4c" name="a789e58d2ca8dd41e15e6d65dd7856b4c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a789e58d2ca8dd41e15e6d65dd7856b4c">&#9670;&#160;</a></span>jetson_read_values()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define JETSON_BUF_LEN&#160;&#160;&#160;18</td>
+          <td class="memname">ssize_t jetson_read_values </td>
+          <td>(</td>
+          <td class="paramtype">BufferedSerial &amp;&#160;</td>
+          <td class="paramname"><em>bcJetson</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structJetson__read__data.html">Jetson_read_data</a> &amp;&#160;</td>
+          <td class="paramname"><em>read_data</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Serial parser settings </p>
+<p>Read desired pitch and yaw position data from Jetson</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pitch_move</td><td>buffer to store desired pitch position </td></tr>
+    <tr><td class="paramname">yaw_move</td><td>buffer to store desired yaw position </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
-<a id="ae09a8fc4598f782d1776a67a145634b7" name="ae09a8fc4598f782d1776a67a145634b7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae09a8fc4598f782d1776a67a145634b7">&#9670;&#160;</a></span>JETSON_COBS_HEADER_LEN</h2>
+<a id="a918841549a54e2c9e2f8d08cda740b13" name="a918841549a54e2c9e2f8d08cda740b13"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a918841549a54e2c9e2f8d08cda740b13">&#9670;&#160;</a></span>jetson_send_feedback()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define JETSON_COBS_HEADER_LEN&#160;&#160;&#160;5</td>
+          <td class="memname">void jetson_send_feedback </td>
+          <td>(</td>
+          <td class="paramtype">BufferedSerial &amp;&#160;</td>
+          <td class="paramname"><em>bcJetson</em>, </td>
         </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa7543069091b5cb12ada2c0dfb10522a" name="aa7543069091b5cb12ada2c0dfb10522a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa7543069091b5cb12ada2c0dfb10522a">&#9670;&#160;</a></span>JETSON_READ_RATE</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
         <tr>
-          <td class="memname">#define JETSON_READ_RATE&#160;&#160;&#160;500</td>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structJetson__send__data.html">Jetson_send_data</a> &amp;&#160;</td>
+          <td class="paramname"><em>data</em>&#160;</td>
         </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a39e71ca36f46ce9dc54fe341fa12fe57" name="a39e71ca36f46ce9dc54fe341fa12fe57"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a39e71ca36f46ce9dc54fe341fa12fe57">&#9670;&#160;</a></span>JETSON_READ_TIMEOUT</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
         <tr>
-          <td class="memname">#define JETSON_READ_TIMEOUT&#160;&#160;&#160;1000</td>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<a id="a9e3ef153880545ba90bbdb09e226e9d9" name="a9e3ef153880545ba90bbdb09e226e9d9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9e3ef153880545ba90bbdb09e226e9d9">&#9670;&#160;</a></span>JETSON_TOPIC_ID</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define JETSON_TOPIC_ID&#160;&#160;&#160;0x69</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a1a54cf354299a2d3d5dafa8f6577aa5b" name="a1a54cf354299a2d3d5dafa8f6577aa5b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1a54cf354299a2d3d5dafa8f6577aa5b">&#9670;&#160;</a></span>JETSON_TOPIC_ID_SEND</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define JETSON_TOPIC_ID_SEND&#160;&#160;&#160;0xDD</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
+<p>Read motor values and send to CV </p>
 
 </div>
 </div>

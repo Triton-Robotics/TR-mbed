@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>TR-mbed: core/util/communications/Jetson.cpp File Reference</title>
+<title>TR-mbed: core/util/communications/jetson/Jetson.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -69,48 +69,117 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_4270bfced15e0e73154b13468c7c9ad9.html">core</a></li><li class="navelem"><a class="el" href="dir_459a7c9a427a2877b0db19c6b8d6e89d.html">util</a></li><li class="navelem"><a class="el" href="dir_d4aea1d95c6a99738078bf54480a0a68.html">communications</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_4270bfced15e0e73154b13468c7c9ad9.html">core</a></li><li class="navelem"><a class="el" href="dir_459a7c9a427a2877b0db19c6b8d6e89d.html">util</a></li><li class="navelem"><a class="el" href="dir_d4aea1d95c6a99738078bf54480a0a68.html">communications</a></li><li class="navelem"><a class="el" href="dir_ee523754a4bc837bd9b59f3e06135686.html">jetson</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#func-members">Functions</a>  </div>
+<a href="#define-members">Macros</a> &#124;
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">Jetson.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="Jetson_8h_source.html">Jetson.h</a>&quot;</code><br />
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:ae191ec471fc0c343a934ef3eca0c475b" id="r_ae191ec471fc0c343a934ef3eca0c475b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Jetson_8cpp.html#ae191ec471fc0c343a934ef3eca0c475b">MAGICBYTE</a>&#160;&#160;&#160;0xEE</td></tr>
+<tr class="separator:ae191ec471fc0c343a934ef3eca0c475b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c2247c8723cba67d971cda133196983" id="r_a9c2247c8723cba67d971cda133196983"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Jetson_8cpp.html#a9c2247c8723cba67d971cda133196983">JETSON_READ_BUFF_SIZE</a>&#160;&#160;&#160;500</td></tr>
+<tr class="separator:a9c2247c8723cba67d971cda133196983"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf949ab9107785a26a6e77714a6bf482" id="r_adf949ab9107785a26a6e77714a6bf482"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Jetson_8cpp.html#adf949ab9107785a26a6e77714a6bf482">JETSON_READ_MSG_SIZE</a>&#160;&#160;&#160;11</td></tr>
+<tr class="separator:adf949ab9107785a26a6e77714a6bf482"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a7a439adb59e78300bd613b1b0d2827e3" id="r_a7a439adb59e78300bd613b1b0d2827e3"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Jetson_8cpp.html#a7a439adb59e78300bd613b1b0d2827e3">cobs_unstuff_data</a> (const uint8_t *ptr, size_t length, uint8_t *dst)</td></tr>
-<tr class="separator:a7a439adb59e78300bd613b1b0d2827e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab8d0d5089789d74bc313af68636ba92f" id="r_ab8d0d5089789d74bc313af68636ba92f"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Jetson_8cpp.html#ab8d0d5089789d74bc313af68636ba92f">cobs_stuff_data</a> (const uint8_t *input, size_t length, uint8_t *output)</td></tr>
-<tr class="separator:ab8d0d5089789d74bc313af68636ba92f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7faf8e9c9154e20a34236b268fb0b8ea" id="r_a7faf8e9c9154e20a34236b268fb0b8ea"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Jetson_8cpp.html#a7faf8e9c9154e20a34236b268fb0b8ea">getBytesFromFloat</a> (char *byteArr, float value)</td></tr>
+<tr class="separator:a7faf8e9c9154e20a34236b268fb0b8ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa25a9c14690b9ca95424e1f068eddf0e" id="r_aa25a9c14690b9ca95424e1f068eddf0e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Jetson_8cpp.html#aa25a9c14690b9ca95424e1f068eddf0e">decode_toSTM32</a> (char *read_buf, float &amp;received_one, float &amp;received_two, char &amp;received_three, uint8_t &amp;checksum)</td></tr>
+<tr class="separator:aa25a9c14690b9ca95424e1f068eddf0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad36cdd2215586fcd32f5ab304eccd560" id="r_ad36cdd2215586fcd32f5ab304eccd560"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Jetson_8cpp.html#ad36cdd2215586fcd32f5ab304eccd560">copy4Char</a> (char *srcBuf, char *destBuf, <a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> <a class="el" href="gnuplot__common__settings_8hh.html#a855fbae0ff7d592163aaf60fd0b22f71">offset</a>)</td></tr>
+<tr class="separator:ad36cdd2215586fcd32f5ab304eccd560"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a918841549a54e2c9e2f8d08cda740b13" id="r_a918841549a54e2c9e2f8d08cda740b13"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Jetson_8cpp.html#a918841549a54e2c9e2f8d08cda740b13">jetson_send_feedback</a> (BufferedSerial &amp;bcJetson, const <a class="el" href="structJetson__send__data.html">Jetson_send_data</a> &amp;<a class="el" href="Map__placement__new_8cpp.html#abe49a82806b5db2e012bc33839af03e6">data</a>)</td></tr>
+<tr class="separator:a918841549a54e2c9e2f8d08cda740b13"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a789e58d2ca8dd41e15e6d65dd7856b4c" id="r_a789e58d2ca8dd41e15e6d65dd7856b4c"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Jetson_8cpp.html#a789e58d2ca8dd41e15e6d65dd7856b4c">jetson_read_values</a> (BufferedSerial &amp;bcJetson, <a class="el" href="structJetson__read__data.html">Jetson_read_data</a> &amp;read_data)</td></tr>
+<tr class="separator:a789e58d2ca8dd41e15e6d65dd7856b4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:a3d836f4d6cc8c1bc3e322c0f524b482d" id="r_a3d836f4d6cc8c1bc3e322c0f524b482d"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Jetson_8cpp.html#a3d836f4d6cc8c1bc3e322c0f524b482d">nucleo_value</a> [30] = {0}</td></tr>
+<tr class="separator:a3d836f4d6cc8c1bc3e322c0f524b482d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4089fd23b6ca2a96a79a0798f486e1d7" id="r_a4089fd23b6ca2a96a79a0798f486e1d7"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Jetson_8cpp.html#a4089fd23b6ca2a96a79a0798f486e1d7">jetson_read_buff</a> [<a class="el" href="Jetson_8cpp.html#a9c2247c8723cba67d971cda133196983">JETSON_READ_BUFF_SIZE</a>] = {0}</td></tr>
+<tr class="separator:a4089fd23b6ca2a96a79a0798f486e1d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1085b352b7866fd0227a55a210e05ccb" id="r_a1085b352b7866fd0227a55a210e05ccb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Jetson_8cpp.html#a1085b352b7866fd0227a55a210e05ccb">jetson_read_buff_pos</a> = 0</td></tr>
+<tr class="separator:a1085b352b7866fd0227a55a210e05ccb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a9c2247c8723cba67d971cda133196983" name="a9c2247c8723cba67d971cda133196983"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c2247c8723cba67d971cda133196983">&#9670;&#160;</a></span>JETSON_READ_BUFF_SIZE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define JETSON_READ_BUFF_SIZE&#160;&#160;&#160;500</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="adf949ab9107785a26a6e77714a6bf482" name="adf949ab9107785a26a6e77714a6bf482"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf949ab9107785a26a6e77714a6bf482">&#9670;&#160;</a></span>JETSON_READ_MSG_SIZE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define JETSON_READ_MSG_SIZE&#160;&#160;&#160;11</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae191ec471fc0c343a934ef3eca0c475b" name="ae191ec471fc0c343a934ef3eca0c475b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae191ec471fc0c343a934ef3eca0c475b">&#9670;&#160;</a></span>MAGICBYTE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define MAGICBYTE&#160;&#160;&#160;0xEE</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ab8d0d5089789d74bc313af68636ba92f" name="ab8d0d5089789d74bc313af68636ba92f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab8d0d5089789d74bc313af68636ba92f">&#9670;&#160;</a></span>cobs_stuff_data()</h2>
+<a id="ad36cdd2215586fcd32f5ab304eccd560" name="ad36cdd2215586fcd32f5ab304eccd560"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad36cdd2215586fcd32f5ab304eccd560">&#9670;&#160;</a></span>copy4Char()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">size_t cobs_stuff_data </td>
+          <td class="memname">void copy4Char </td>
           <td>(</td>
-          <td class="paramtype">const uint8_t *&#160;</td>
-          <td class="paramname"><em>input</em>, </td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>srcBuf</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>length</em>, </td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>destBuf</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint8_t *&#160;</td>
-          <td class="paramname"><em>output</em>&#160;</td>
+          <td class="paramtype"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td>
+          <td class="paramname"><em>offset</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -119,43 +188,60 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>A helper function to pack a buffer of bytes into a COBS packet. The buffer must be in the form of a COBS packet.</p>
-<dl class="section see"><dt>See also</dt><dd><a href="https://en.wikipedia.org/wiki/Consistent_Overhead_Byte_Stuffing">https://en.wikipedia.org/wiki/Consistent_Overhead_Byte_Stuffing</a></dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>Copies 4 bytes from srcBuf[0] into destBuf[offset] </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">input</td><td>The input buffer, which should be in the form |topic_ID|len_high|len_low|CRC_high|CRC_low|payload_start...payload_end| </td></tr>
-    <tr><td class="paramname">length</td><td>The length of the input buffer </td></tr>
-    <tr><td class="paramname">output</td><td>The output buffer, which will be a stuffed COBS packet </td></tr>
+    <tr><td class="paramname">srcBuf</td><td>source buffer </td></tr>
+    <tr><td class="paramname">destBuf</td><td>destination buffer </td></tr>
+    <tr><td class="paramname">offset</td><td>the starting position into destBuf</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The length of the output buffer </dd></dl>
+<p>Coipes 4 bytes from srcBuf[0] into destBuf[offset] </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">srcBuf</td><td>source buffer </td></tr>
+    <tr><td class="paramname">destBuf</td><td>destination buffer </td></tr>
+    <tr><td class="paramname">offset</td><td>the starting position into destBuf </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
-<a id="a7a439adb59e78300bd613b1b0d2827e3" name="a7a439adb59e78300bd613b1b0d2827e3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7a439adb59e78300bd613b1b0d2827e3">&#9670;&#160;</a></span>cobs_unstuff_data()</h2>
+<a id="aa25a9c14690b9ca95424e1f068eddf0e" name="aa25a9c14690b9ca95424e1f068eddf0e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa25a9c14690b9ca95424e1f068eddf0e">&#9670;&#160;</a></span>decode_toSTM32()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">size_t cobs_unstuff_data </td>
+          <td class="memname">void decode_toSTM32 </td>
           <td>(</td>
-          <td class="paramtype">const uint8_t *&#160;</td>
-          <td class="paramname"><em>ptr</em>, </td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>read_buf</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>length</em>, </td>
+          <td class="paramtype">float &amp;&#160;</td>
+          <td class="paramname"><em>received_one</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint8_t *&#160;</td>
-          <td class="paramname"><em>dst</em>&#160;</td>
+          <td class="paramtype">float &amp;&#160;</td>
+          <td class="paramname"><em>received_two</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char &amp;&#160;</td>
+          <td class="paramname"><em>received_three</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t &amp;&#160;</td>
+          <td class="paramname"><em>checksum</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -164,17 +250,156 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>A helper function to find the values in a buffer of bytes. The buffer must be in the form of a COBS packet.</p>
-<dl class="section see"><dt>See also</dt><dd><a href="https://en.wikipedia.org/wiki/Consistent_Overhead_Byte_Stuffing">https://en.wikipedia.org/wiki/Consistent_Overhead_Byte_Stuffing</a></dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>Writes 9 bytes of read_buf into received_one and received_two as floats for pitch &amp; yaw positions Used for receiving desired position data from CV in read_buf, write out as floats to received_one/two. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">ptr</td><td>A pointer to the buffer to search </td></tr>
-    <tr><td class="paramname">length</td><td>The length of the buffer </td></tr>
-    <tr><td class="paramname">dst</td><td>A pointer to the destination, in which the unpacked data will be stored </td></tr>
+    <tr><td class="paramname">read_buf</td><td>- Source data </td></tr>
+    <tr><td class="paramname">received_one</td><td>- Destination buffer </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The number of bytes unpacked </dd></dl>
+
+</div>
+</div>
+<a id="a7faf8e9c9154e20a34236b268fb0b8ea" name="a7faf8e9c9154e20a34236b268fb0b8ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7faf8e9c9154e20a34236b268fb0b8ea">&#9670;&#160;</a></span>getBytesFromFloat()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void getBytesFromFloat </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>byteArr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Copy float <code>value</code> bytes into single bytes in <code>byteArr</code> array </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">byteArr</td><td>destination char array for value individual bytes </td></tr>
+    <tr><td class="paramname">value</td><td>float value to copy into byteArr </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a789e58d2ca8dd41e15e6d65dd7856b4c" name="a789e58d2ca8dd41e15e6d65dd7856b4c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a789e58d2ca8dd41e15e6d65dd7856b4c">&#9670;&#160;</a></span>jetson_read_values()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">ssize_t jetson_read_values </td>
+          <td>(</td>
+          <td class="paramtype">BufferedSerial &amp;&#160;</td>
+          <td class="paramname"><em>bcJetson</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structJetson__read__data.html">Jetson_read_data</a> &amp;&#160;</td>
+          <td class="paramname"><em>read_data</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Read desired pitch and yaw position data from Jetson</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pitch_move</td><td>buffer to store desired pitch position </td></tr>
+    <tr><td class="paramname">yaw_move</td><td>buffer to store desired yaw position </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a918841549a54e2c9e2f8d08cda740b13" name="a918841549a54e2c9e2f8d08cda740b13"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a918841549a54e2c9e2f8d08cda740b13">&#9670;&#160;</a></span>jetson_send_feedback()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void jetson_send_feedback </td>
+          <td>(</td>
+          <td class="paramtype">BufferedSerial &amp;&#160;</td>
+          <td class="paramname"><em>bcJetson</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structJetson__send__data.html">Jetson_send_data</a> &amp;&#160;</td>
+          <td class="paramname"><em>data</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Read motor values and send to CV </p>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="a4089fd23b6ca2a96a79a0798f486e1d7" name="a4089fd23b6ca2a96a79a0798f486e1d7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4089fd23b6ca2a96a79a0798f486e1d7">&#9670;&#160;</a></span>jetson_read_buff</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char jetson_read_buff[<a class="el" href="Jetson_8cpp.html#a9c2247c8723cba67d971cda133196983">JETSON_READ_BUFF_SIZE</a>] = {0}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1085b352b7866fd0227a55a210e05ccb" name="a1085b352b7866fd0227a55a210e05ccb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1085b352b7866fd0227a55a210e05ccb">&#9670;&#160;</a></span>jetson_read_buff_pos</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> jetson_read_buff_pos = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3d836f4d6cc8c1bc3e322c0f524b482d" name="a3d836f4d6cc8c1bc3e322c0f524b482d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3d836f4d6cc8c1bc3e322c0f524b482d">&#9670;&#160;</a></span>nucleo_value</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char nucleo_value = {0}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>

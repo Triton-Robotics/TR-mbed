@@ -8,6 +8,5 @@ var searchData=
   ['computationinfo_5',['ComputationInfo',['../group__enums.html#ga85fad7b87587764e5cf6b513a9e0ee5e',1,'Eigen']]],
   ['contraction_5ftype_6',['contraction_type',['../namespaceEigen_1_1TensorSycl_1_1internal.html#ae779b94e3f0127525eda5ff1db87719d',1,'Eigen::TensorSycl::internal']]],
   ['convolution_5ftype_7',['convolution_type',['../namespaceEigen.html#aeae138f89644546cf3e6952820a4b85b',1,'Eigen']]],
-  ['cornertype_8',['CornerType',['../classEigen_1_1AlignedBox.html#ae4aa935b36004fffc49c7a3a85e2d378',1,'Eigen::AlignedBox']]],
-  ['cv_9',['cv',['../classJetson.html#aa63103bffe77a5f527da3a3d8eb63627',1,'Jetson']]]
+  ['cornertype_8',['CornerType',['../classEigen_1_1AlignedBox.html#ae4aa935b36004fffc49c7a3a85e2d378',1,'Eigen::AlignedBox']]]
 ];

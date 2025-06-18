@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>TR-mbed: TR-mbed</title>
+<title>TR-mbed: Eigen CI infrastructure</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -69,90 +69,98 @@ $(function() {
 </div>
 
 <div><div class="header">
-  <div class="headertitle"><div class="title">TR-mbed </div></div>
+  <div class="headertitle"><div class="title"><a class="el" href="namespaceEigen.html" title="Namespace containing all symbols from the Eigen library.">Eigen</a> CI infrastructure </div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="md_README"></a> </p><div class="fragment"><div class="line">  __________                        __             __   __   ___   ____ ___  _____</div>
-<div class="line"> /_  __/ __ \            ____ ___  / /_  ___  ____/ /  / /  |__ \ / __ \__ \|__  /</div>
-<div class="line">  / / / /_/ /  ______   / __ `__ \/ __ \/ _ \/ __  /  / /   __/ // / / /_/ / /_ &lt; </div>
-<div class="line"> / / / _, _/  /_____/  / / / / / / /_/ /  __/ /_/ /  / /   / __// /_/ / __/___/ / </div>
-<div class="line">/_/ /_/ |_|           /_/ /_/ /_/_.___/\___/\__,_/  / /   /____/\____/____/____/  </div>
-<div class="line">                                                   /_/                            </div>
-</div><!-- fragment --><hr  />
+<div class="textblock"><p><a class="anchor" id="md_core_2util_2algorithms_2eigen-3_84_80_2ci_2README"></a> <a class="el" href="namespaceEigen.html" title="Namespace containing all symbols from the Eigen library.">Eigen</a>'s CI infrastructure uses two stages: A <code>build</code> stage to build the unit-test suite and a <code>test</code> stage to run the unit-tests.</p>
+<h2><a class="anchor" id="autotoc_md1"></a>
+Build Stage</h2>
+<p>The build stage consists of the following jobs:</p>
 <table class="markdownTable">
 <tr class="markdownTableHead">
-<th class="markdownTableHeadNone">Table of Contents    </th></tr>
+<th class="markdownTableHeadNone">Job Name   </th><th class="markdownTableHeadNone">Arch   </th><th class="markdownTableHeadNone">OS   </th><th class="markdownTableHeadNone">Compiler   </th><th class="markdownTableHeadNone">C++11    </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">Prerequisites    </td></tr>
+<td class="markdownTableBodyNone"><code>build:x86-64:linux:gcc-4.8:cxx11-off</code>   </td><td class="markdownTableBodyNone"><code>x86-64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>GCC-4.8</code>   </td><td class="markdownTableBodyNone"><code>Off</code>    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">Setup    </td></tr>
+<td class="markdownTableBodyNone"><code>build:x86-64:linux:gcc-4.8:cxx11-on</code>   </td><td class="markdownTableBodyNone"><code>x86-64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>GCC-4.8</code>   </td><td class="markdownTableBodyNone"><code>On</code>    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">Flashing    </td></tr>
+<td class="markdownTableBodyNone"><code>build:x86-64:linux:gcc-9:cxx11-off</code>   </td><td class="markdownTableBodyNone"><code>x86-64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>GCC-9</code>   </td><td class="markdownTableBodyNone"><code>Off</code>    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">Troubleshooting    </td></tr>
+<td class="markdownTableBodyNone"><code>build:x86-64:linux:gcc-9:cxx11-on</code>   </td><td class="markdownTableBodyNone"><code>x86-64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>GCC-9</code>   </td><td class="markdownTableBodyNone"><code>On</code>    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">Documentation   </td></tr>
+<td class="markdownTableBodyNone"><code>build:x86-64:linux:gcc-10:cxx11-off</code>   </td><td class="markdownTableBodyNone"><code>x86-64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>GCC-10</code>   </td><td class="markdownTableBodyNone"><code>Off</code>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>build:x86-64:linux:gcc-10:cxx11-on</code>   </td><td class="markdownTableBodyNone"><code>x86-64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>GCC-10</code>   </td><td class="markdownTableBodyNone"><code>On</code>    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>build:x86-64:linux:clang-10:cxx11-off</code>   </td><td class="markdownTableBodyNone"><code>x86-64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>Clang-10</code>   </td><td class="markdownTableBodyNone"><code>Off</code>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>build:x86-64:linux:clang-10:cxx11-on</code>   </td><td class="markdownTableBodyNone"><code>x86-64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>Clang-10</code>   </td><td class="markdownTableBodyNone"><code>On</code>    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>build:aarch64:linux:gcc-10:cxx11-off</code>   </td><td class="markdownTableBodyNone"><code>AArch64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>GCC-10</code>   </td><td class="markdownTableBodyNone"><code>Off</code>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>build:aarch64:linux:gcc-10:cxx11-on</code>   </td><td class="markdownTableBodyNone"><code>AArch64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>GCC-10</code>   </td><td class="markdownTableBodyNone"><code>On</code>    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>build:aarch64:linux:clang-10:cxx11-off</code>   </td><td class="markdownTableBodyNone"><code>AArch64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>Clang-10</code>   </td><td class="markdownTableBodyNone"><code>Off</code>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>build:aarch64:linux:clang-10:cxx11-on</code>   </td><td class="markdownTableBodyNone"><code>AArch64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>Clang-10</code>   </td><td class="markdownTableBodyNone"><code>On</code>   </td></tr>
 </table>
-<hr  />
 <h2><a class="anchor" id="autotoc_md2"></a>
-Prerequisites</h2>
-<p><b>We have setup guides for the major operating systems.</b></p>
-<h3><a class="anchor" id="autotoc_md3"></a>
-&lt;strong&gt;Please choose the appropriate setup guide for your operating system:&lt;/strong&gt;</h3>
-<ul>
-<li>### Linux</li>
-<li>### Windows Subsystem for Linux (WSL)</li>
-<li>### MacOS</li>
-</ul>
-<hr  />
-<h2><a class="anchor" id="autotoc_md5"></a>
-Setup</h2>
-<ol type="1">
-<li>Clone this repo:</li>
-</ol>
-<div class="fragment"><div class="line">git clone https://github.com/Triton-Robotics/TR-mbed.git</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md6"></a>
-At this point, you may choose to diverge from the CLI setup guide and set up an IDE instead. Check out the setup instructions for @ref "/home/runner/work/TR-mbed/TR-mbed/.md/ide/clion.md" "CLion" or @ref "/home/runner/work/TR-mbed/TR-mbed/.md/ide/vscode.md" "VSCode". We higly recommend @ref "/home/runner/work/TR-mbed/TR-mbed/.md/ide/clion.md" "CLion".</h3>
-<ol type="1">
-<li>Configure <code>CMake</code> project. This should only be done once per project, or after editing any <code>CMakeLists.txt</code>:</li>
-</ol>
-<div class="fragment"><div class="line">cmake -S . -B cmake-build-debug -GNinja</div>
-</div><!-- fragment --><ol type="1">
-<li>Build the desired target using your IDE or via CLI:</li>
-</ol>
-<div class="fragment"><div class="line">cmake --build cmake-build-debug --target TR-TestBench -j $(nproc)</div>
-</div><!-- fragment --><p>Viable targets for build are: <code>TR-Engineer</code>, <code>TR-Infantry</code>, <code>TR-Sentry</code>, <code>TR-Hero</code>, and <code>TR-TestBench</code></p>
-<hr  />
-<p> Note: Go to the Embed Discord and search up makefile. After you find it, download it and upload it to your local TR-Embed folder. Most likely your computer will not work with E drive, to which you have to change it to D in the makefile. If you have problems with this, contact a embed member or the team lead.</p>
-<p>After completing all of this you can make and flash your code to the nucleo using <code>make testbench</code>, <code>make hero</code>, <code>make infantry</code>, and <code>make sentry</code>. You should see a block with many numbers when the code is flashed. If you see a red text regarding "missing embed-tools" it is likely becuase you don't have the serial monitor downloaded which is not required to make and flash code.</p>
-<h2><a class="anchor" id="autotoc_md8"></a>
-Flashing STM32</h2>
-<ol type="1">
-<li><p class="startli">Locate the generated executable:</p>
-<p class="startli">eg. The built executable for TestBench will be present in <code>cmake-build-debug/robots/TestBench/TR-TestBench.elf</code></p>
-</li>
-<li>Flash the executable to the target device:</li>
-</ol>
-<div class="fragment"><div class="line">openocd -f board/st_nucleo_f4.cfg -c &quot;program cmake-build-debug/robots/TestBench/TR-TestBench.elf verify reset exit&quot;</div>
-</div><!-- fragment --><blockquote class="doxtable">
-<p>&zwj;For flashing device in WSL, see the <a href=".md/os/wsl.md#flashing-stm32">WSL guide</a>. </p>
-</blockquote>
-<ol type="1">
-<li>View serial output:</li>
-</ol>
-<div class="fragment"><div class="line">mbed-tools sterm -b 115200</div>
-</div><!-- fragment --><hr  />
-<h2><a class="anchor" id="autotoc_md10"></a>
-Troubleshooting</h2>
-<p>See the Troubleshooting guide for common issues and solutions.</p>
-<hr  />
-<h2><a class="anchor" id="autotoc_md12"></a>
-Debugging</h2>
-<p>See the Debugging guide on how to run the debugger using STM32CubeIDE</p>
-<hr  />
-<h2><a class="anchor" id="autotoc_md14"></a>
-Documentation</h2>
-<p>See our <a href="https://triton-robotics.github.io/TR-mbed/">generated doxygen</a>. </p>
+Test stage</h2>
+<p>In principle every build-job has a corresponding test-job, however testing supported and unsupported modules is divided into separate jobs. The test jobs in detail:</p>
+<h2><a class="anchor" id="autotoc_md3"></a>
+Job dependecies</h2>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Job Name   </th><th class="markdownTableHeadNone">Arch   </th><th class="markdownTableHeadNone">OS   </th><th class="markdownTableHeadNone">Compiler   </th><th class="markdownTableHeadNone">C++11   </th><th class="markdownTableHeadNone">Module    </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>test:x86-64:linux:gcc-4.8:cxx11-off:official</code>   </td><td class="markdownTableBodyNone"><code>x86-64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>GCC-4.8</code>   </td><td class="markdownTableBodyNone"><code>Off</code>   </td><td class="markdownTableBodyNone"><code>Official</code>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>test:x86-64:linux:gcc-4.8:cxx11-off:unsupported</code>   </td><td class="markdownTableBodyNone"><code>x86-64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>GCC-4.8</code>   </td><td class="markdownTableBodyNone"><code>Off</code>   </td><td class="markdownTableBodyNone"><code>Unsupported</code>    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>test:x86-64:linux:gcc-4.8:cxx11-on:official</code>   </td><td class="markdownTableBodyNone"><code>x86-64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>GCC-4.8</code>   </td><td class="markdownTableBodyNone"><code>On</code>   </td><td class="markdownTableBodyNone"><code>Official</code>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>test:x86-64:linux:gcc-4.8:cxx11-on:unsupported</code>   </td><td class="markdownTableBodyNone"><code>x86-64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>GCC-4.8</code>   </td><td class="markdownTableBodyNone"><code>On</code>   </td><td class="markdownTableBodyNone"><code>Unsupported</code>    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>test:x86-64:linux:gcc-9:cxx11-off:official</code>   </td><td class="markdownTableBodyNone"><code>x86-64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>GCC-9</code>   </td><td class="markdownTableBodyNone"><code>Off</code>   </td><td class="markdownTableBodyNone"><code>Official</code>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>test:x86-64:linux:gcc-9:cxx11-off:unsupported</code>   </td><td class="markdownTableBodyNone"><code>x86-64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>GCC-9</code>   </td><td class="markdownTableBodyNone"><code>Off</code>   </td><td class="markdownTableBodyNone"><code>Unsupported</code>    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>test:x86-64:linux:gcc-9:cxx11-on:official</code>   </td><td class="markdownTableBodyNone"><code>x86-64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>GCC-9</code>   </td><td class="markdownTableBodyNone"><code>On</code>   </td><td class="markdownTableBodyNone"><code>Official</code>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>test:x86-64:linux:gcc-9:cxx11-on:unsupported</code>   </td><td class="markdownTableBodyNone"><code>x86-64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>GCC-9</code>   </td><td class="markdownTableBodyNone"><code>On</code>   </td><td class="markdownTableBodyNone"><code>Unsupported</code>    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>test:x86-64:linux:gcc-10:cxx11-off:official</code>   </td><td class="markdownTableBodyNone"><code>x86-64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>GCC-10</code>   </td><td class="markdownTableBodyNone"><code>Off</code>   </td><td class="markdownTableBodyNone"><code>Official</code>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>test:x86-64:linux:gcc-10:cxx11-off:unsupported</code>   </td><td class="markdownTableBodyNone"><code>x86-64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>GCC-10</code>   </td><td class="markdownTableBodyNone"><code>Off</code>   </td><td class="markdownTableBodyNone"><code>Unsupported</code>    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>test:x86-64:linux:gcc-10:cxx11-on:official</code>   </td><td class="markdownTableBodyNone"><code>x86-64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>GCC-10</code>   </td><td class="markdownTableBodyNone"><code>On</code>   </td><td class="markdownTableBodyNone"><code>Official</code>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>test:x86-64:linux:gcc-10:cxx11-on:unsupported</code>   </td><td class="markdownTableBodyNone"><code>x86-64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>GCC-10</code>   </td><td class="markdownTableBodyNone"><code>On</code>   </td><td class="markdownTableBodyNone"><code>Unsupported</code>    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>test:x86-64:linux:clang-10:cxx11-off:official</code>   </td><td class="markdownTableBodyNone"><code>x86-64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>Clang-10</code>   </td><td class="markdownTableBodyNone"><code>Off</code>   </td><td class="markdownTableBodyNone"><code>Official</code>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>test:x86-64:linux:clang-10:cxx11-off:unsupported</code>   </td><td class="markdownTableBodyNone"><code>x86-64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>Clang-10</code>   </td><td class="markdownTableBodyNone"><code>Off</code>   </td><td class="markdownTableBodyNone"><code>Unsupported</code>    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>test:x86-64:linux:clang-10:cxx11-on:official</code>   </td><td class="markdownTableBodyNone"><code>x86-64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>Clang-10</code>   </td><td class="markdownTableBodyNone"><code>On</code>   </td><td class="markdownTableBodyNone"><code>Official</code>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>test:x86-64:linux:clang-10:cxx11-on:unsupported</code>   </td><td class="markdownTableBodyNone"><code>x86-64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>Clang-10</code>   </td><td class="markdownTableBodyNone"><code>On</code>   </td><td class="markdownTableBodyNone"><code>Unsupported</code>    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>test:aarch64:linux:gcc-10:cxx11-off:official</code>   </td><td class="markdownTableBodyNone"><code>AArch64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>GCC-10</code>   </td><td class="markdownTableBodyNone"><code>Off</code>   </td><td class="markdownTableBodyNone"><code>Official</code>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>test:aarch64:linux:gcc-10:cxx11-off:unsupported</code>   </td><td class="markdownTableBodyNone"><code>AArch64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>GCC-10</code>   </td><td class="markdownTableBodyNone"><code>Off</code>   </td><td class="markdownTableBodyNone"><code>Unsupported</code>    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>test:aarch64:linux:gcc-10:cxx11-on:official</code>   </td><td class="markdownTableBodyNone"><code>AArch64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>GCC-10</code>   </td><td class="markdownTableBodyNone"><code>On</code>   </td><td class="markdownTableBodyNone"><code>Official</code>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>test:aarch64:linux:gcc-10:cxx11-on:unsupported</code>   </td><td class="markdownTableBodyNone"><code>AArch64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>GCC-10</code>   </td><td class="markdownTableBodyNone"><code>On</code>   </td><td class="markdownTableBodyNone"><code>Unsupported</code>    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>test:aarch64:linux:clang-10:cxx11-off:official</code>   </td><td class="markdownTableBodyNone"><code>AArch64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>Clang-10</code>   </td><td class="markdownTableBodyNone"><code>Off</code>   </td><td class="markdownTableBodyNone"><code>Official</code>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>test:aarch64:linux:clang-10:cxx11-off:unsupported</code>   </td><td class="markdownTableBodyNone"><code>AArch64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>Clang-10</code>   </td><td class="markdownTableBodyNone"><code>Off</code>   </td><td class="markdownTableBodyNone"><code>Unsupported</code>    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>test:aarch64:linux:clang-10:cxx11-on:official</code>   </td><td class="markdownTableBodyNone"><code>AArch64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>Clang-10</code>   </td><td class="markdownTableBodyNone"><code>On</code>   </td><td class="markdownTableBodyNone"><code>Official</code>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>test:aarch64:linux:clang-10:cxx11-on:unsupported</code>   </td><td class="markdownTableBodyNone"><code>AArch64</code>   </td><td class="markdownTableBodyNone"><code>Ubuntu 18.04</code>   </td><td class="markdownTableBodyNone"><code>Clang-10</code>   </td><td class="markdownTableBodyNone"><code>On</code>   </td><td class="markdownTableBodyNone"><code>Unsupported</code>   </td></tr>
+</table>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->

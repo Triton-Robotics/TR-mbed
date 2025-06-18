@@ -8,10 +8,9 @@ var searchData=
   ['threading_5',['Eigen and multi-threading',['../TopicMultiThreading.html',1,'UserManual_Generalities']]],
   ['todo_20list_6',['Todo List',['../todo.html',1,'']]],
   ['topics_7',['General topics',['../UserManual_Generalities.html',1,'index']]],
-  ['tr_20mbed_8',['TR-mbed',['../index.html',1,'']]],
-  ['tutorialsparse_5fexample_5fdetails_9',['TutorialSparse_example_details',['../TutorialSparse_example_details.html',1,'UnclassifiedPages']]],
-  ['type_10',['Adding a new expression type',['../TopicNewExpressionType.html',1,'UserManual_CustomizingEigen']]],
-  ['typename_20keywords_20in_20c_11',['The template and typename keywords in C++',['../TopicTemplateKeyword.html',1,'UserManual_Generalities']]],
-  ['types_12',['types',['../TopicScalarTypes.html',1,'Scalar types'],['../TopicCustomizing_CustomScalar.html',1,'Using custom scalar types']]],
-  ['types_20as_20parameters_13',['Writing Functions Taking Eigen Types as Parameters',['../TopicFunctionTakingEigenTypes.html',1,'UserManual_Generalities']]]
+  ['tutorialsparse_5fexample_5fdetails_8',['TutorialSparse_example_details',['../TutorialSparse_example_details.html',1,'UnclassifiedPages']]],
+  ['type_9',['Adding a new expression type',['../TopicNewExpressionType.html',1,'UserManual_CustomizingEigen']]],
+  ['typename_20keywords_20in_20c_10',['The template and typename keywords in C++',['../TopicTemplateKeyword.html',1,'UserManual_Generalities']]],
+  ['types_11',['types',['../TopicScalarTypes.html',1,'Scalar types'],['../TopicCustomizing_CustomScalar.html',1,'Using custom scalar types']]],
+  ['types_20as_20parameters_12',['Writing Functions Taking Eigen Types as Parameters',['../TopicFunctionTakingEigenTypes.html',1,'UserManual_Generalities']]]
 ];

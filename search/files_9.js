@@ -10,6 +10,5 @@ var searchData=
   ['jacobisvd_5fint_2ecpp_7',['jacobisvd_int.cpp',['../jacobisvd__int_8cpp.html',1,'']]],
   ['jacobisvd_5flapacke_2eh_8',['JacobiSVD_LAPACKE.h',['../JacobiSVD__LAPACKE_8h.html',1,'']]],
   ['jetson_2ecpp_9',['Jetson.cpp',['../Jetson_8cpp.html',1,'']]],
-  ['jetson_2eh_10',['Jetson.h',['../Jetson_8h.html',1,'']]],
-  ['jetsonnew_2ehpp_11',['JetsonNew.hpp',['../JetsonNew_8hpp.html',1,'']]]
+  ['jetson_2eh_10',['Jetson.h',['../Jetson_8h.html',1,'']]]
 ];

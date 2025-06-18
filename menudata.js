@@ -296,8 +296,7 @@ var menudata={children:[
 {text:"v",url:"functions_eval_v.html#index_v"},
 {text:"w",url:"functions_eval_w.html#index_w"},
 {text:"x",url:"functions_eval_x.html#index_x"},
-{text:"y",url:"functions_eval_y.html#index_y"},
-{text:"z",url:"functions_eval_z.html#index_z"}]},
+{text:"y",url:"functions_eval_y.html#index_y"}]},
 {text:"Related Symbols",url:"functions_rela.html",children:[
 {text:"c",url:"functions_rela.html#index_c"},
 {text:"e",url:"functions_rela.html#index_e"},
@@ -365,6 +364,7 @@ var menudata={children:[
 {text:"v",url:"globals_func_v.html#index_v"},
 {text:"w",url:"globals_func_w.html#index_w"},
 {text:"x",url:"globals_func_x.html#index_x"},
+{text:"y",url:"globals_func_y.html#index_y"},
 {text:"z",url:"globals_func_z.html#index_z"}]},
 {text:"Variables",url:"globals_vars.html",children:[
 {text:"a",url:"globals_vars.html#index_a"},

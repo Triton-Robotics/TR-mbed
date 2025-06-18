@@ -1,6 +1,9 @@
 var searchData=
 [
-  ['key_0',['Key',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4f',1,'Remote']]],
-  ['kind_1',['Kind',['../classEigen_1_1internal_1_1StridedLinearBufferCopy.html#a9b33c9925cacf0deff3334bc2f2d389d',1,'Eigen::internal::StridedLinearBufferCopy']]],
-  ['knobsstatsindex_2',['KnobsStatsIndex',['../namespaceinternal_1_1Colamd.html#abe3a625fb18b6ff60ca02138382810c0',1,'internal::Colamd']]]
+  ['memtype_0',['MemType',['../namespaceEigen_1_1internal.html#a5ada550dfc9d36503a814391f7f68fc9',1,'Eigen::internal']]],
+  ['mode_1',['Mode',['../classTrackball.html#ab221a0af65769c8e5be823ea63a8b813',1,'Trackball']]],
+  ['motordatatype_2',['motorDataType',['../DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4',1,'DJIMotor.h']]],
+  ['motorlocation_3',['MotorLocation',['../classChassisSubsystem.html#a32583c046895b96d68bd1a5b6b3db4e2',1,'ChassisSubsystem']]],
+  ['motortype_4',['motorType',['../DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54',1,'DJIMotor.h']]],
+  ['my_5fsizes_5',['my_sizes',['../constructor_8cpp.html#a4051a9225a2612a796f1506ecddafb00',1,'constructor.cpp']]]
 ];
