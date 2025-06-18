@@ -18,8 +18,8 @@ constexpr float BEYBLADE_OMEGA = 1.0;
 // constexpr float MOUSE_SENSITIVITY_PITCH = 1.0/5;
 
 //DEGREES PER SECOND AT MAX
-constexpr float JOYSTICK_SENSITIVITY_YAW_DPS = 90.0; 
-constexpr float JOYSTICK_SENSITIVITY_PITCH_DPS = 90.0;
+constexpr float JOYSTICK_SENSITIVITY_YAW_DPS = 180.0; 
+constexpr float JOYSTICK_SENSITIVITY_PITCH_DPS = 180.0;
 constexpr float MOUSE_SENSITIVITY_YAW_DPS = 1.0;
 constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 1.0;
 
@@ -29,13 +29,13 @@ constexpr int PRINT_FREQUENCY = 20; //the higher the number, the less often
 
 constexpr float CHASSIS_FF_KICK = 0.065;
 
-//#define USE_IMU
+#define USE_IMU
 
 //CHASSIS DEFINING
 I2C i2c(I2C_SDA, I2C_SCL);
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 
-ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.559); // radius is 9 in
+ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2794); // radius is 9 in
 
 DJIMotor yaw(1, CANHandler::CANBUS_1, GIMBLY,"Yeah");
 DJIMotor pitch(5, CANHandler::CANBUS_2, GIMBLY,"Peach"); // right
@@ -72,12 +72,14 @@ int main(){
     * MOTORS SETUP AND PIDS
     */
     //YAW
-    PID yawBeyblade(0.04,0,4);
+    PID yawBeyblade(1,0,0);
+    yawBeyblade.setIntegralCap(2);
     //PID yawBeyblade(1.5, 0, 550); //yaw PID is cascading, so there are external position PIDs for yaw control
     // PID yawNonBeyblade(0.15, 0, 550);
     yaw.setSpeedPID(250,0,0);
+    yaw.setSpeedIntegralCap(8000);
+    yaw.setSpeedOutputCap(32000);
     //yaw.setSpeedPID(50, 0.2, 300); // tried setting P to 37.5 same as infantry yaw PID
-    pitch.setSpeedOutputCap(32000);
     yaw.outputCap = 16000;
     yaw.useAbsEncoder = false;
 
@@ -246,7 +248,7 @@ int main(){
             //YAW CODE
             if (drive == 'u' || drive == 'd' || (drive =='o' && (remote.rightSwitch() == Remote::SwitchState::UP || remote.rightSwitch() == Remote::SwitchState::DOWN))){
                 float chassis_rotation_radps = cs.vOmega;
-                int chassis_rotation_rpm = chassis_rotation_radps * 60 / (2*M_PI); //I added this 4 but I don't know why.
+                int chassis_rotation_rpm = chassis_rotation_radps * 60 / (2*M_PI) * 1.5; //I added this 4 but I don't know why.
 
                 //Regular Yaw Code
                 yaw_desired_angle -= jyaw * MOUSE_SENSITIVITY_YAW_DPS * elapsedms / 1000;
@@ -266,12 +268,12 @@ int main(){
                 //yawVelo *= 6; // scaled up arbitrarily 
 
                 int dir = 0;
-                if(yawVelo > 0){
+                if(yawVelo > 1){
                     dir = 1;
-                }else if(yawVelo < 0){
+                }else if(yawVelo < -1){
                     dir = -1;
                 }
-                yaw.pidSpeed.feedForward = dir * ((15.4 + abs(yawVelo)) / 0.0083);
+                yaw.pidSpeed.feedForward = dir * (1855 + abs(yawVelo) * 120.48);
                 yaw.setSpeed(yawVelo);
             }else{
                 //Off
@@ -407,20 +409,20 @@ int main(){
             printLoop ++;
             if (printLoop >= PRINT_FREQUENCY){
                 printLoop = 0;
-                printff("%.3f Pitch\n", pitch_desired_angle);
+                //printff("%.3f Pitch\n", pitch_desired_angle);
                 //printff("Prints:\n");
                 //printff("lX:%.1f lY:%.1f rX:%.1f rY:%.1f lS:%d rS:%d\n", remote.leftX(), remote.leftY(), remote.rightX(), remote.rightY(), remote.leftSwitch(), remote.rightSwitch());
                 //printff("jx:%.3f jy:%.3f jpitch:%.3f jyaw:%.3f\n", jx, jy, jpitch, jyaw);
 
-                printff("%.3f  %d\n", pitch_desired_angle, pitch.getData(ANGLE));
+                //printff("%.3f  %d\n", pitch_desired_angle, pitch.getData(ANGLE));
                 //printff("%d\n", indexer.getData(POWEROUT));
 
                 #ifdef USE_IMU
-                printff("yaw_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
-                printff("yaw_des:%.3f yaw_act:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180);
+                //printff("yaw_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
+                //printff("yaw_des:%.3f yaw_act:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180);
                 #else
-                // printff("yaw_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
-                // printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
+                printff("yaw_des_v:%d yaw_act_v:%d\n", yawVelo, yaw>>VELOCITY);
+                //printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
                 #endif
                 // printff("elap:%.5fms\n", elapsedms);
                 // printff("Chassis: LF:%c RF:%c LB:%c RB:%c\n", 
@@ -436,8 +438,30 @@ int main(){
                 //     indexer.isConnected() ? 'y' : 'n',
                 //     feeder.isConnected() ? 'y' : 'n');
                 #ifdef USE_IMU
-                //printff("IMU %.3f %.3f %.3f\n",imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
+                printff("IMU %.3f %.3f %.3f\n",imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
                 #endif
+
+                WheelSpeeds ac = Chassis.getWheelSpeeds();
+                ChassisSpeeds test = {jx * Chassis.m_OmniKinematicsLimits.max_Vel,
+                                    jy * Chassis.m_OmniKinematicsLimits.max_Vel,
+                                    -BEYBLADE_OMEGA};
+                WheelSpeeds ws = Chassis.chassisSpeedsToWheelSpeeds(test);
+                
+                // printff("CS: %.1f %.1f %.1f ", cs.vX, cs.vY, cs.vOmega);
+                // printff("DS: %.1f %.1f %.1f\n", test.vX, test.vY, test.vOmega);
+
+                // printff("CH: %.2f %.2f %.2f %.2f ", ws.LF,ws.RF,ws.LB,ws.RB);
+                // printff("A: %.2f %.2f %.2f %.2f\n", ac.LF,ac.RF,ac.LB,ac.RB);
+                // printff("A_RAW: %d %d %d %d\n", 
+                //     Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).getData(VELOCITY), 
+                //     Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).getData(VELOCITY), 
+                //     Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(VELOCITY), 
+                //     Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).getData(VELOCITY));
+                // printff("A_MPS: %.2f %.2f %.2f %.2f\n", 
+                //     Chassis.getMotorSpeed(ChassisSubsystem::LEFT_FRONT, ChassisSubsystem::METER_PER_SECOND), 
+                //     Chassis.getMotorSpeed(ChassisSubsystem::RIGHT_FRONT, ChassisSubsystem::METER_PER_SECOND), 
+                //     Chassis.getMotorSpeed(ChassisSubsystem::LEFT_BACK, ChassisSubsystem::METER_PER_SECOND), 
+                //     Chassis.getMotorSpeed(ChassisSubsystem::RIGHT_BACK, ChassisSubsystem::METER_PER_SECOND));
             }
 
             DJIMotor::s_sendValues();
