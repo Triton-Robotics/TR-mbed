@@ -450,7 +450,7 @@ double ChassisSubsystem::getMotorSpeed(MotorLocation location, SPEED_UNIT unit =
     case RPM:
         return speed;
     case METER_PER_SECOND:
-        return speed / M3508_GEAR_RATIO * (2 * PI / 60) * WHEEL_DIAMETER_METERS / 2;
+        return (speed / M3508_GEAR_RATIO) * (2 * PI / 60) * (WHEEL_DIAMETER_METERS / 2);
     }
 }
 
@@ -489,73 +489,85 @@ void ChassisSubsystem::setOmniKinematicsLimits(double max_Vel, double max_vOmega
     m_OmniKinematicsLimits.max_vOmega = max_vOmega;
 }
 
-void ChassisSubsystem::setOmniKinematics(double radius)
-{
-    float SQRT_2 = sqrt(2);
-    m_OmniKinematics.r1x = -sqrt(radius);
-    m_OmniKinematics.r1y = sqrt(radius);
-
-    m_OmniKinematics.r2x = sqrt(radius);
-    m_OmniKinematics.r2y = sqrt(radius);
-
-    m_OmniKinematics.r3x = -sqrt(radius);
-    m_OmniKinematics.r3y = -sqrt(radius);
-
-    m_OmniKinematics.r4x = sqrt(radius);
-    m_OmniKinematics.r4y = -sqrt(radius);
-}
+//NEW STUFF FROM THIS PAPER: https://research.ijcaonline.org/volume113/number3/pxc3901586.pdf
 
 // void ChassisSubsystem::setOmniKinematics(double radius)
 // {
 //     float SQRT_2 = sqrt(2);
-//     m_OmniKinematics.r1x = -radius/SQRT_2;
-//     m_OmniKinematics.r1y = radius/SQRT_2;
+//     m_OmniKinematics.r1x = -sqrt(radius);
+//     m_OmniKinematics.r1y = sqrt(radius);
 
-//     m_OmniKinematics.r2x = radius/SQRT_2;
-//     m_OmniKinematics.r2y = radius/SQRT_2;
+//     m_OmniKinematics.r2x = sqrt(radius);
+//     m_OmniKinematics.r2y = sqrt(radius);
 
-//     m_OmniKinematics.r3x = -radius/SQRT_2;
-//     m_OmniKinematics.r3y = -radius/SQRT_2;
+//     m_OmniKinematics.r3x = -sqrt(radius);
+//     m_OmniKinematics.r3y = -sqrt(radius);
 
-//     m_OmniKinematics.r4x = radius/SQRT_2;
-//     m_OmniKinematics.r4y = -radius/SQRT_2;
+//     m_OmniKinematics.r4x = sqrt(radius);
+//     m_OmniKinematics.r4y = -sqrt(radius);
 // }
 
-WheelSpeeds ChassisSubsystem::chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds)
+void ChassisSubsystem::setOmniKinematics(double radius)
 {
-    return {(1 / sqrt(2)) * (chassisSpeeds.vX + chassisSpeeds.vY + chassisSpeeds.vOmega * ((m_OmniKinematics.r1x) - (m_OmniKinematics.r1y))),
-            (1 / sqrt(2)) * (chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y))),
-            (1 / sqrt(2)) * (-chassisSpeeds.vX + chassisSpeeds.vY + chassisSpeeds.vOmega * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y))),
-            (1 / sqrt(2)) * (-chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y)))};
+    float SQRT_2 = sqrt(2);
+    m_OmniKinematics.r1x = radius/SQRT_2;
+    m_OmniKinematics.r1y = radius/SQRT_2;
+
+    m_OmniKinematics.r2x = radius/SQRT_2;
+    m_OmniKinematics.r2y = radius/SQRT_2;
+
+    m_OmniKinematics.r3x = radius/SQRT_2;
+    m_OmniKinematics.r3y = radius/SQRT_2;
+
+    m_OmniKinematics.r4x = radius/SQRT_2;
+    m_OmniKinematics.r4y = radius/SQRT_2;
 }
 
 // WheelSpeeds ChassisSubsystem::chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds)
 // {
-//     return {(1 / chassis_radius) * (chassisSpeeds.vX + chassisSpeeds.vY + chassisSpeeds.vOmega * ((m_OmniKinematics.r1x) - (m_OmniKinematics.r1y))),
-//             (1 / chassis_radius) * (chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y))),
-//             (1 / chassis_radius) * (-chassisSpeeds.vX + chassisSpeeds.vY + chassisSpeeds.vOmega * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y))),
-//             (1 / chassis_radius) * (-chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y)))};
+//     return {(1 / sqrt(2)) * (chassisSpeeds.vX + chassisSpeeds.vY + chassisSpeeds.vOmega * ((m_OmniKinematics.r1x) - (m_OmniKinematics.r1y))),
+//             (1 / sqrt(2)) * (chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y))),
+//             (1 / sqrt(2)) * (-chassisSpeeds.vX + chassisSpeeds.vY + chassisSpeeds.vOmega * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y))),
+//             (1 / sqrt(2)) * (-chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y)))};
+// }
+
+//inputs chassis speeds in m/s, outputs wheel speeds in m/s
+WheelSpeeds ChassisSubsystem::chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds)
+{
+    return {(chassisSpeeds.vX + chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r1x) + (m_OmniKinematics.r1y))),
+            (chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y))),
+            (-chassisSpeeds.vX + chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y))),
+            (-chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r4x) + (m_OmniKinematics.r4y)))};
+}
+
+// ChassisSpeeds ChassisSubsystem::wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds)
+// {
+//     Eigen::MatrixXd Inv_K(4, 3);
+//     float coef = 1 / sqrt(2);
+//     Inv_K << coef, coef, coef * ((m_OmniKinematics.r1x) - (m_OmniKinematics.r1y)),
+//         coef, -coef, -coef * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y)),
+//         -coef, coef, coef * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y)),
+//         -coef, -coef, -coef * ((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y));
+//     Eigen::MatrixXd FWD_K(3, 4);
+//     FWD_K = Inv_K.completeOrthogonalDecomposition().pseudoInverse();
+//     // printf("[%.1f %.1f %.1f %.1f\n%.1f %.1f %.1f %.1f\n%.1f %.1f %.1f %.1f]\n", 
+//     //     FWD_K(0,0), FWD_K(0,1), FWD_K(0,2), FWD_K(0,3), 
+//     //     FWD_K(1,0), FWD_K(1,1), FWD_K(1,2), FWD_K(1,3), 
+//     //     FWD_K(2,0), FWD_K(2,1), FWD_K(2,2), FWD_K(2,3));
+//     Eigen::MatrixXd WS(4, 1);
+//     WS << wheelSpeeds.LF, wheelSpeeds.RF, wheelSpeeds.LB, wheelSpeeds.RB;
+//     Eigen::MatrixXd CS(3, 1);
+//     CS = FWD_K * WS;
+//     return {CS(0, 0), CS(1, 0), CS(2, 0)};
 // }
 
 ChassisSpeeds ChassisSubsystem::wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds)
 {
-    Eigen::MatrixXd Inv_K(4, 3);
-    float coef = 1 / sqrt(2);
-    Inv_K << coef, coef, coef * ((m_OmniKinematics.r1x) - (m_OmniKinematics.r1y)),
-        coef, -coef, -coef * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y)),
-        -coef, coef, coef * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y)),
-        -coef, -coef, -coef * ((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y));
-    Eigen::MatrixXd FWD_K(3, 4);
-    FWD_K = Inv_K.completeOrthogonalDecomposition().pseudoInverse();
-    // printf("[%.1f %.1f %.1f %.1f\n%.1f %.1f %.1f %.1f\n%.1f %.1f %.1f %.1f]\n", 
-    //     FWD_K(0,0), FWD_K(0,1), FWD_K(0,2), FWD_K(0,3), 
-    //     FWD_K(1,0), FWD_K(1,1), FWD_K(1,2), FWD_K(1,3), 
-    //     FWD_K(2,0), FWD_K(2,1), FWD_K(2,2), FWD_K(2,3));
-    Eigen::MatrixXd WS(4, 1);
-    WS << wheelSpeeds.LF, wheelSpeeds.RF, wheelSpeeds.LB, wheelSpeeds.RB;
-    Eigen::MatrixXd CS(3, 1);
-    CS = FWD_K * WS;
-    return {CS(0, 0), CS(1, 0), CS(2, 0)};
+    float dist = chassis_radius/sqrt(2);
+    float vX = (wheelSpeeds.LF + wheelSpeeds.RF - wheelSpeeds.LB - wheelSpeeds.RB) / 4;
+    float vY = (wheelSpeeds.LF - wheelSpeeds.RF + wheelSpeeds.LB - wheelSpeeds.RB) / 4;
+    float vOmega = (-wheelSpeeds.LF - wheelSpeeds.RF - wheelSpeeds.LB - wheelSpeeds.RB) / (4*(2 * dist));
+    return {vX, vY, vOmega};
 }
 
 char *ChassisSubsystem::MatrixtoString(Eigen::MatrixXd mat)

@@ -294,6 +294,21 @@ int DJIMotor::s_calculateDeltaPhase(int target, int current, int max) {
     return deltaPhase;
 }
 
+float DJIMotor::s_calculateDeltaPhaseF(float target, float current, float max) {
+    //target %= max;
+
+    float deltaPhase = target - current;
+
+    if(abs(deltaPhase) > max / 2){
+        if(deltaPhase > 0)
+            deltaPhase -= max;
+
+        else
+            deltaPhase += max;
+    }
+    return deltaPhase;
+}
+
 void DJIMotor::s_updateMultiTurnPosition() {
     int Threshold = 3000; // From 0 to 8191
     int curAngle, lastAngle, deltaAngle, speed;
