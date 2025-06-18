@@ -129,6 +129,8 @@ Public Member Functions</h2></td></tr>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a0b5a2b5a360d45a44fd33ccab6f61fc9" id="r_a0b5a2b5a360d45a44fd33ccab6f61fc9"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a0b5a2b5a360d45a44fd33ccab6f61fc9">s_calculateDeltaPhase</a> (<a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> target, <a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> current, <a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> <a class="el" href="datatypes_8h.html#affe776513b24d84b39af8ab0930fef7f">max</a>=<a class="el" href="DJIMotor_8h.html#ad03dbacc70a2fb4f766bf0d10ea3afc4">TICKS_REVOLUTION</a>)</td></tr>
 <tr class="separator:a0b5a2b5a360d45a44fd33ccab6f61fc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a377de70f3e08502fed004e38f89587a5" id="r_a377de70f3e08502fed004e38f89587a5"><td class="memItemLeft" align="right" valign="top">static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a377de70f3e08502fed004e38f89587a5">s_calculateDeltaPhaseF</a> (float target, float current, float <a class="el" href="datatypes_8h.html#affe776513b24d84b39af8ab0930fef7f">max</a>)</td></tr>
+<tr class="separator:a377de70f3e08502fed004e38f89587a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a253570f800cc9e4ff76eeabef2d5971f" id="r_a253570f800cc9e4ff76eeabef2d5971f"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a253570f800cc9e4ff76eeabef2d5971f">s_setCANHandlers</a> (<a class="el" href="classCANHandler.html">CANHandler</a> *bus_1, <a class="el" href="classCANHandler.html">CANHandler</a> *bus_2, bool threadSend=true, bool threadFeedback=true)</td></tr>
 <tr class="separator:a253570f800cc9e4ff76eeabef2d5971f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8264d642cfa2e65dd343adb64835b717" id="r_a8264d642cfa2e65dd343adb64835b717"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDJIMotor.html#a8264d642cfa2e65dd343adb64835b717">s_getFeedback</a> (bool debug=false)</td></tr>
@@ -543,6 +545,48 @@ Static Public Attributes</h2></td></tr>
           <td></td>
           <td class="paramtype"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td>
           <td class="paramname"><em>max</em> = <code><a class="el" href="DJIMotor_8h.html#ad03dbacc70a2fb4f766bf0d10ea3afc4">TICKS_REVOLUTION</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a377de70f3e08502fed004e38f89587a5" name="a377de70f3e08502fed004e38f89587a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a377de70f3e08502fed004e38f89587a5">&#9670;&#160;</a></span>s_calculateDeltaPhaseF()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float DJIMotor::s_calculateDeltaPhaseF </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>target</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>current</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>max</em>&#160;</td>
         </tr>
         <tr>
           <td></td>

@@ -1156,7 +1156,7 @@ var searchData=
   ['changing_20the_20mapped_20array_1153',['Changing the mapped array',['..//home/runner/work/TR-mbed/TR-mbed/core/util/algorithms/eigen-3.4.0/doc/TutorialMapClass.dox#TutorialMapPlacementNew',1,'']]],
   ['channel_1154',['Channel',['../classRemote.html#a0584fcca643d59d1b4d8b2624d2807eb',1,'Remote']]],
   ['chars_1155',['CHARS',['../SSD1308_8h.html#a5d7cfaaf3d71eb89b31364adb9fda6a6',1,'SSD1308.h']]],
-  ['chassis_1156',['chassis',['../Hero_2main_8cpp.html#aba8818433ab6cea939eeba35d505d301',1,'Chassis:&#160;main.cpp'],['../Infantry_2main_8cpp.html#a217ccc782f0ca5d3eaa43f23d776e524',1,'Chassis:&#160;main.cpp'],['../classChassis.html',1,'Chassis'],['../Sentry_2main_8cpp.html#a217ccc782f0ca5d3eaa43f23d776e524',1,'Chassis:&#160;main.cpp'],['../TestBench_2main_8cpp.html#a217ccc782f0ca5d3eaa43f23d776e524',1,'Chassis:&#160;main.cpp'],['../classChassis.html#ab45e8f9442dd9b4a831d5d728260e863',1,'Chassis::Chassis()']]],
+  ['chassis_1156',['chassis',['../Hero_2main_8cpp.html#afd0dc1c946cb4900870fa304480b036f',1,'Chassis:&#160;main.cpp'],['../Infantry_2main_8cpp.html#adc55503b65f2ef772f3f1d864ba44042',1,'Chassis:&#160;main.cpp'],['../classChassis.html',1,'Chassis'],['../Sentry_2main_8cpp.html#a217ccc782f0ca5d3eaa43f23d776e524',1,'Chassis:&#160;main.cpp'],['../TestBench_2main_8cpp.html#a217ccc782f0ca5d3eaa43f23d776e524',1,'Chassis:&#160;main.cpp'],['../classChassis.html#ab45e8f9442dd9b4a831d5d728260e863',1,'Chassis::Chassis()']]],
   ['chassis_2ecpp_1157',['Chassis.cpp',['../Chassis_8cpp.html',1,'']]],
   ['chassis_2eh_1158',['Chassis.h',['../Chassis_8h.html',1,'']]],
   ['chassis_5fcurrent_1159',['chassis_current',['../structext__power__heat__data__t.html#ada31a4640b23fa383b7578b03b6cbace',1,'ext_power_heat_data_t']]],
