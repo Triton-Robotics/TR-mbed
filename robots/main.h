@@ -23,7 +23,8 @@
 #include "communications/referee/ref_serial.h"
 #include "communications/referee/ref_ui.h"
 #include "communications/referee/ref_operations.h"
-#include "communications/Jetson.h"
+#include "communications/jetson/Jetson.h"
+
 
 #include <cstring>
 #define ESP_DEBUG 1 // 1 true, 0 false
@@ -36,7 +37,7 @@
 
 DigitalIn userButton(BUTTON1);
 TRMutex printer;
-static BufferedSerial bc(PC_12, PD_2, 115200);
+static BufferedSerial bc(PA_0, PA_1, 115200);
 
 void updatePriority(priorityLevels desiredLevel)
 {

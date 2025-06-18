@@ -8,10 +8,10 @@ DigitalOut led3(L27);
 DigitalOut ledbuiltin(LED1);
 
 //CONSTANTS
-constexpr float LOWERBOUND = 35.0;
-constexpr float UPPERBOUND = -15.0;
+constexpr float LOWERBOUND = -35.0;
+constexpr float UPPERBOUND = 40.0;
 
-constexpr float BEYBLADE_OMEGA = 1.0;
+constexpr float BEYBLADE_OMEGA = 2; //3.54 8.84 14.07
 
 // constexpr float JOYSTICK_SENSITIVITY_YAW = 1.0/90;
 // constexpr float JOYSTICK_SENSITIVITY_PITCH = 1.0/150;
@@ -19,10 +19,8 @@ constexpr float BEYBLADE_OMEGA = 1.0;
 // constexpr float MOUSE_SENSITIVITY_PITCH = 1.0/5;
 
 //DEGREES PER SECOND AT MAX
-constexpr float JOYSTICK_SENSITIVITY_YAW_DPS = 90.0; 
-constexpr float JOYSTICK_SENSITIVITY_PITCH_DPS = 90.0;
-constexpr float MOUSE_SENSITIVITY_YAW_DPS = 1.0;
-constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 1.0;
+constexpr float JOYSTICK_SENSITIVITY_YAW_DPS = 180.0; 
+constexpr float JOYSTICK_SENSITIVITY_PITCH_DPS = 180.0;
 
 constexpr int OUTER_LOOP_DT_MS = 15;
 constexpr int TIME = 15;
@@ -32,6 +30,10 @@ constexpr int PRINT_FREQUENCY = 20; //the higher the number, the less often
 
 constexpr float CHASSIS_FF_KICK = 0.065;
 
+constexpr float pitch_zero_offset_ticks = 1500;
+
+#define READ_DEBUG 0
+#define MAGICBYTE 0xEE
 #define USE_IMU
 
 //CHASSIS DEFINING
@@ -44,6 +46,15 @@ DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY,"Peach"); // right
 DJIMotor indexer(7, CANHandler::CANBUS_2, C610,"Indexer");
 DJIMotor RFLYWHEEL(1, CANHandler::CANBUS_2, M3508,"RightFly");
 DJIMotor LFLYWHEEL(2, CANHandler::CANBUS_2, M3508,"LeftFly");
+
+//CV STUFF
+static BufferedSerial bcJetson(PC_12, PD_2, 115200);  //JETSON PORT
+
+//CV
+float CV_pitch_angle_radians = 0.0;
+float CV_yaw_angle_radians = 0.0;
+char CV_shoot = 0;
+
 
 #ifdef USE_IMU
 BNO055_ANGULAR_POSITION_typedef imuAngles;
@@ -86,14 +97,18 @@ int main(){
     DJIMotor::s_sendValues();
     DJIMotor::s_getFeedback();
 
+    bcJetson.set_blocking(false);
+
     /*
     * MOTORS SETUP AND PIDS
     */
     //YAW
-    PID yawBeyblade(0.04, 0, 4); //yaw PID is cascading, so there are external position PIDs for yaw control
+    PID yawBeyblade(1.0, 0.005, 50); //yaw PID is cascading, so there are external position PIDs for yaw control
+    yawBeyblade.setIntegralCap(2);
     // PID yawNonBeyblade(0.15, 0, 550);
-    yaw.setSpeedPID(250, 0, 100);
-    // yaw.setSpeedIntegralCap(8000);
+    yawBeyblade.setOutputCap(90);
+    yaw.setSpeedPID(550, 1, 0);
+    yaw.setSpeedIntegralCap(8000);
     yaw.setSpeedOutputCap(32000);
     yaw.outputCap = 16000;
     yaw.useAbsEncoder = false;
@@ -108,8 +123,9 @@ int main(){
     #endif
 
     //PITCH
-    pitch.setPositionPID(8, 0, 0); //15, 0 1700
+    pitch.setPositionPID(26.2644, 0.034926, 1200); //15, 0 1700
     pitch.setPositionOutputCap(32000);
+    pitch.setPositionIntegralCap(3000);
     pitch.pidPosition.feedForward = 0;
     pitch.outputCap = 16000;
     pitch.useAbsEncoder = true;
@@ -117,7 +133,6 @@ int main(){
     float pitch_current_angle = 0;
     float pitch_desired_angle = 0;
     float pitch_phase_angle = 33 / 180.0 * PI; // 5.69 theoretical //wtf is this?
-    float pitch_zero_offset_ticks = 2000;
     float K = 0.38; // 0.75 //0.85
 
     //FLYWHEELS
@@ -154,15 +169,18 @@ int main(){
     bool prev_userButton;
 
     //ref variables
-    float chassis_power;
+    uint16_t chassis_buffer;
     uint16_t chassis_power_limit;
     uint16_t barrel_heat1;
     uint16_t barrel_heat_max1;
 
     unsigned long timeStart;
     unsigned long loopTimer = us_ticker_read();
+    unsigned long loopTimerCV = loopTimer;
     int refLoop = 0;
     int printLoop = 0;
+
+    bool cv_enabled = false;
 
     ChassisSpeeds cs;
 
@@ -201,9 +219,22 @@ int main(){
 
     while(true){
         timeStart = us_ticker_read();
-        if (init_angle == -1000 && (yaw>>ANGLE) != 0) {
-            init_angle = (yaw>>ANGLE);
-            init_yaw = imuAngles.yaw;
+
+        //CV loop runs every 2ms
+        if((timeStart - loopTimerCV) / 1000 > 1) { //1 with sync or 2 without
+            loopTimerCV = timeStart;
+            
+            Jetson_send_data jetson_send_data;
+            jetson_send_data.chassis_x_velocity = 0.0;
+            jetson_send_data.chassis_y_velocity = 0.0;
+
+            jetson_send_data.pitch_angle_rads = ChassisSubsystem::ticksToRadians( (pitch_zero_offset_ticks - pitch.getData(ANGLE)) );
+            jetson_send_data.pitch_velocity = pitch.getData(VELOCITY) / 60.0;
+
+            jetson_send_data.yaw_angle_rads = (imuAngles.yaw + 180.0) * (M_PI / 180.0);
+            jetson_send_data.yaw_velocity = yaw.getData(VELOCITY)/60.0;
+
+            jetson_send_feedback(bcJetson, jetson_send_data);
         }
 
         if ((timeStart - loopTimer) / 1000 > OUTER_LOOP_DT_MS){
@@ -213,22 +244,33 @@ int main(){
             ledbuiltin = !ledbuiltin;
             refLoop++;
             if (refLoop >= 5){
+                led2 = referee.readable();
                 refereeThread(&referee);
                 refLoop = 0;
-                led2 = !led2;
 
                 //POWER LIMIT OVERRIDE INCASE
                 if(robot_status.chassis_power_limit < 10){
-                    chassis_power_limit = 50;
+                    chassis_power_limit = 49;
                 }else{
                     chassis_power_limit = robot_status.chassis_power_limit;
                 }
                 
+                Chassis.power_limit = (float)chassis_power_limit;
+                chassis_buffer = power_heat_data.buffer_energy;
             }
             Chassis.periodic();
             cs = Chassis.getChassisSpeeds();
             remoteRead();
 
+            Jetson_read_data jetson_received_data;
+            int readResult = jetson_read_values(bcJetson, jetson_received_data);
+
+            if(cv_enabled){
+                if(readResult > 0){
+                    yaw_desired_angle = jetson_received_data.requested_yaw_rads / M_PI * 180;
+                    pitch_desired_angle = jetson_received_data.requested_pitch_rads / M_PI * 180;
+                }
+            }
             #ifdef USE_IMU
             imu.get_angular_position_quat(&imuAngles);
             #else
@@ -243,13 +285,29 @@ int main(){
             }else if(remote.keyPressed(Remote::Key::Q)){
                 drive = 'd';        
             }
-            if(remote.keyPressed(Remote::Key::C)){
+            if(remote.keyPressed(Remote::Key::V)){
                 shot = 'm';
-            }else if(remote.keyPressed(Remote::Key::V)){
-                shot = 'u';
-            }else if(remote.keyPressed(Remote::Key::B)){
+            }else if(remote.keyPressed(Remote::Key::C)){
                 shot = 'd';        
             }
+
+            if(remote.keyPressed(Remote::Key::F)){
+                cv_enabled = true;
+            }else if(remote.keyPressed(Remote::Key::G)){
+                cv_enabled = false;
+            }
+
+
+            // Mouse sensitivity initialized
+            float MOUSE_SENSITIVITY_YAW_DPS = 10.0;
+            float MOUSE_SENSITIVITY_PITCH_DPS = 10.0;
+            
+            // right click (hold) slows decreases sensitivity
+            if (remote.getMouseR()) {
+                MOUSE_SENSITIVITY_YAW_DPS = 5.0;
+                MOUSE_SENSITIVITY_PITCH_DPS = 5.0;
+            }
+
 
             //Driving input
             float scalar = 1;
@@ -258,6 +316,9 @@ int main(){
             //Pitch, Yaw
             float jpitch = remote.rightY() / 660.0 * scalar; // -1 to 1
             float jyaw = remote.rightX() / 660.0 * scalar; // -1 to 1
+
+            float myaw = remote.getMouseX();
+            float mpitch = -remote.getMouseY();
 
             //joystick tolerance
             float tolerance = 0.05; 
@@ -268,9 +329,15 @@ int main(){
             
             //Keyboard Driving
             float mult = 1;
+
+            // Shift to make robot go slower
+            if (remote.keyPressed(Remote::Key::SHIFT)) {
+                mult = 0.5;
+            }
+
             jx += mult * ((remote.keyPressed(Remote::Key::D) ? 1 : 0) + (remote.keyPressed(Remote::Key::A) ? -1 : 0));
             jy += mult * ((remote.keyPressed(Remote::Key::W) ? 1 : 0) + (remote.keyPressed(Remote::Key::S) ? -1 : 0));
-            
+
             //Bounding the four j variables
             jx = max(-1.0F, min(1.0F, jx));
             jy = max(-1.0F, min(1.0F, jy));
@@ -308,7 +375,10 @@ int main(){
             float rx = 0;
 
             //Chassis Code
-            if (remote.rightSwitch() == Remote::SwitchState::MID || remote.rightSwitch() == Remote::SwitchState::UNKNOWN) {
+            ChassisSpeeds test = {jx * Chassis.m_OmniKinematicsLimits.max_Vel,
+                                          jy * Chassis.m_OmniKinematicsLimits.max_Vel,
+                                          -BEYBLADE_OMEGA};
+            if (drive == 'u' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::UP)){
                 //REGULAR DRIVING CODE
                 Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
                                           jy * Chassis.m_OmniKinematicsLimits.max_Vel,
@@ -422,128 +492,33 @@ int main(){
 
             }else if (drive == 'd' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::DOWN)){
                 //BEYBLADE DRIVING CODE
-                final_angle = atan2((final_pos[idx][1] - posy), (final_pos[idx][0] - posx));
-                float deltayaw = calculateDeltaYaw(angle, final_angle);
-                float distance = calculateDistance(posx, posy, final_x, final_y);
-
-                if (angle > buffer_angle) {
-                    jyaw = -rx_init;
-                }
-                else if (angle < -buffer_angle) {
-                    jyaw = rx_init;
-                }
-                else {
-                    jyaw = 0;
-                }
-
-                if ((final_y - posy) > buffer_y) {
-                    if (abs(velocity.vX) < vel_init) {
-                        lx = velocity.vX - accel_init;
-                    }
-                    else {
-                        lx = -vel_init;
-                    }
-
-                    if (distance < decel_dist) {
-                        if (velocity.vX < 0) {
-                            lx = velocity.vX + accel_init;
-                        }
-                        else {
-                            lx = 0;
-                        }
-                    }
-                }
-                else if ((posy - final_y) > buffer_y) {
-                    if (abs(velocity.vX) < vel_init) {
-                        lx = velocity.vX + accel_init;
-                    }
-                    else {
-                        lx = vel_init;
-                    }
-
-                    if (distance < decel_dist) {
-                        if (velocity.vX > 0) {
-                            lx = velocity.vX - accel_init;
-                        }
-                        else {
-                            lx = 0;
-                        }
-                    }
-                }
-                else {
-                    lx = 0;
-                }
-
-                if ((final_x - posx) > buffer_x) {
-                    if (velocity.vY < vel_init) {
-                        ly = velocity.vY + accel_init;
-                    }
-                    else {
-                        ly = vel_init;
-                    }
-
-                    if (distance < decel_dist) {
-                        if (velocity.vY > 0) {
-                            ly = velocity.vY - accel_init;
-                        }
-                        else {
-                            ly = 0;
-                        }
-                    }
-                }
-                else if ((posx - final_x) > buffer_x) {
-                    if (velocity.vY < -vel_init) {
-                        ly = velocity.vY - accel_init;
-                    }
-                    else {
-                        ly = -vel_init;
-                    }
-
-                    if (distance < decel_dist) {
-                        if (velocity.vY < 0) {
-                            ly = velocity.vY + accel_init;
-                        }
-                        else {
-                            ly = 0;
-                        }
-                    }
-                }
-                else {
-                    ly = 0;
-                }
-
-                if ((ly == 0 && lx == 0) || (distance < M_SQRT2 * buffer_x)) {
-                    if (idx < final_pos.size() - 1) {
-                        idx += 1;
-                        final_y = final_pos[idx][1];
-                        final_x = final_pos[idx][0];
-                    }
-
-                    ly = 0;
-                    lx = 0;
-                }
-
-                Chassis.setChassisSpeeds({lx, ly, -BEYBLADE_OMEGA}, ChassisSubsystem::YAW_ORIENTED);
+                
+                Chassis.setChassisSpeeds(test,
+                                          ChassisSubsystem::YAW_ORIENTED);
             }else{
                 //OFF
                 Chassis.setWheelPower({0,0,0,0});
             }
 
             //YAW CODE
-            if (remote.rightSwitch() == Remote::SwitchState::MID || remote.rightSwitch() == Remote::SwitchState::UP || remote.rightSwitch() == Remote::SwitchState::DOWN) {
+            float error = 0;
+            if (drive == 'u' || drive == 'd' || (drive =='o' && (remote.rightSwitch() == Remote::SwitchState::UP || remote.rightSwitch() == Remote::SwitchState::DOWN))){
                 float chassis_rotation_radps = cs.vOmega;
-                int chassis_rotation_rpm = chassis_rotation_radps * 60 / (2*M_PI) * 4; //I added this 4 but I don't know why.
+                int chassis_rotation_rpm = chassis_rotation_radps * 60 / (2*PI) * 1.5; //I added this 4 but I don't know why.
                 
                 //Regular Yaw Code
-                yaw_desired_angle -= jyaw * MOUSE_SENSITIVITY_YAW_DPS * elapsedms / 1000;
+                yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * elapsedms / 1000;
                 yaw_desired_angle -= jyaw * JOYSTICK_SENSITIVITY_YAW_DPS * elapsedms / 1000;
                 //yaw_desired_angle = (yaw_desired_angle + 360) % 360;
                 yaw_desired_angle = floatmod(yaw_desired_angle, 360);
 
+                //yaw_desired_angle = ((int)remote.leftSwitch() - 1) * 30;
+
                 prevTimeSure = timeSure;
                 timeSure = us_ticker_read();
                 #ifdef USE_IMU
-                yawVelo = yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yaw_desired_angle, imuAngles.yaw + 180, 360), timeSure - prevTimeSure);
+                error = DJIMotor::s_calculateDeltaPhaseF(yaw_desired_angle, imuAngles.yaw + 180, 360);
+                yawVelo = yawBeyblade.calculatePeriodic(error, timeSure - prevTimeSure);
                 #else
                 yawVelo = -jyaw * JOYSTICK_SENSITIVITY_YAW_DPS / 360.0 * 60;
                 #endif
@@ -551,12 +526,12 @@ int main(){
                 yawVelo -= chassis_rotation_rpm;
 
                 int dir = 0;
-                if(yawVelo > 0){
+                if(yawVelo > 1){
                     dir = 1;
-                }else if(yawVelo < 0){
+                }else if(yawVelo < -1){
                     dir = -1;
                 }
-                yaw.pidSpeed.feedForward = dir * (874 + (73.7 * abs(yawVelo)) + (0.0948 * yawVelo * yawVelo));
+                yaw.pidSpeed.feedForward = 1221*dir + 97.4 * yawVelo;
                 yaw.setSpeed(yawVelo);
             }else{
                 //Off
@@ -569,28 +544,31 @@ int main(){
             //PITCH
             if (remote.rightSwitch() == Remote::SwitchState::MID || remote.rightSwitch() == Remote::SwitchState::UP || remote.rightSwitch() == Remote::SwitchState::DOWN) {
                 //Regular Pitch Code
-                pitch_desired_angle += jpitch * MOUSE_SENSITIVITY_PITCH_DPS * elapsedms / 1000;
-                pitch_desired_angle -= jpitch * JOYSTICK_SENSITIVITY_PITCH_DPS * elapsedms / 1000;
+                pitch_desired_angle += mpitch * MOUSE_SENSITIVITY_PITCH_DPS * elapsedms / 1000;
+                pitch_desired_angle += jpitch * JOYSTICK_SENSITIVITY_PITCH_DPS * elapsedms / 1000;
 
-                if (pitch_desired_angle >= LOWERBOUND) {
+                if (pitch_desired_angle <= LOWERBOUND) {
                     pitch_desired_angle = LOWERBOUND;
                 }
-                else if (pitch_desired_angle <= UPPERBOUND) {
+                else if (pitch_desired_angle >= UPPERBOUND) {
                     pitch_desired_angle = UPPERBOUND;
                 }
 
                 //float FF = K * sin((desiredPitch / 180 * PI) - pitch_phase); // output: [-1,1]
                 //float FF = K * cos(pitch_desired_angle / 180 * PI);
                 //pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
-                pitch.setPosition(int((pitch_desired_angle / 360) * TICKS_REVOLUTION + pitch_zero_offset_ticks));
+                float pitch_desired_radians = -(pitch_desired_angle / 360) * 2 * M_PI;
+                pitch.pidPosition.feedForward = cos(pitch_desired_radians) * -2600;
+                pitch.setPosition(-int((pitch_desired_angle / 360) * TICKS_REVOLUTION - pitch_zero_offset_ticks));
             }else{
                 //Off
                 pitch.setPower(0);
             }
-            pitch_current_angle = ((pitch>>ANGLE) - pitch_zero_offset_ticks) / TICKS_REVOLUTION * 360;
+            pitch_current_angle = (pitch_zero_offset_ticks - (pitch>>ANGLE)) / TICKS_REVOLUTION * 360;
 
             //INDEXER CODE
-            if (remote.leftSwitch() == Remote::SwitchState::UP || remote.getMouseL()){
+            if ((remote.leftSwitch() == Remote::SwitchState::UP || remote.getMouseL()) && (abs(RFLYWHEEL>>VELOCITY) > 6000 && abs(LFLYWHEEL>>VELOCITY) > 6000) 
+                && remote.rightSwitch() != Remote::SwitchState::MID){
                 if (shootReady){
                     shootReady = false;
                     shootTargetPosition = 8192 * 12 + (indexer>>MULTITURNANGLE);
@@ -623,8 +601,8 @@ int main(){
             }
 
             //FLYWHEELS
-            if (remote.leftSwitch() != Remote::SwitchState::DOWN &&
-                remote.leftSwitch() != Remote::SwitchState::UNKNOWN){
+            if (shot == 'm' || (shot == 'o' && remote.leftSwitch() != Remote::SwitchState::DOWN &&
+                remote.leftSwitch() != Remote::SwitchState::UNKNOWN && remote.rightSwitch() != Remote::SwitchState::MID)){
                 RFLYWHEEL.setSpeed(7000);
                 LFLYWHEEL.setSpeed(-7000);
             } else{
@@ -644,15 +622,18 @@ int main(){
                 //printff("Prints:\n");
                 //printff("lX:%.1f lY:%.1f rX:%.1f rY:%.1f lS:%d rS:%d\n", remote.leftX(), remote.leftY(), remote.rightX(), remote.rightY(), remote.leftSwitch(), remote.rightSwitch());
                 //printff("jx:%.3f jy:%.3f jpitch:%.3f jyaw:%.3f\n", jx, jy, jpitch, jyaw);
-                // #ifdef USE_IMU
-                // printff("yaw_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
-                // printff("yaw_des:%.3f yaw_act:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180);
-                // #else
-                // printff("yaw_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
-                // printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
-                // #endif
-                //printff("pitch_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
-                // printff("pitch_des:%.3f pitch_act:%.3f [%d]\n", pitch_desired_angle, pitch_current_angle, pitch>>ANGLE);
+                #ifdef USE_IMU
+                //printff("ydv:%d yav:%d PWR:%d ", yawVelo, yaw>>VELOCITY, yaw>>POWEROUT);
+                //printff("V[%.1f][%.1f][%.1f]E:%.3f ", yaw.pidSpeed.pC, yaw.pidSpeed.iC, yaw.pidSpeed.dC, yawVelo - (yaw>>VELOCITY));
+                printff("P[%.1f][%.1f][%.1f]E:%.3f ", yawBeyblade.pC, yawBeyblade.iC, yawBeyblade.dC, error);
+                //printff("YD:%.3f YA:%.3f CVY:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180, CV_yaw_angle_radians * 180 / M_PI);
+                printff("ERR:%.3f\n", error);
+                #else
+                printff("yaw_des_v:%d yaw_act_v:%d\n", yawVelo, yaw>>VELOCITY);
+                //printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
+                #endif
+                //printff("yaw_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
+                //printff("pitch_des:%.3f pitch_act:%.3f [%d]\n", pitch_desired_angle, pitch_current_angle, pitch>>ANGLE);
                 //printff("cX%.1f cY%.1f cOmega%.3f cRPM%.1f\n", cs.vX, cs.vY, cs.vOmega, cs.vOmega * 60 / (2*M_PI) * 4);
                 // printff("Chassis: LF:%c RF:%c LB:%c RB:%c Yaw:%c Pitch:%c Flywheel_L:%c Flywheel_R:%c Indexer:%c\n", 
                 //     Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).isConnected() ? 'y' : 'n', 
@@ -665,9 +646,37 @@ int main(){
                 //     RFLYWHEEL.isConnected() ? 'y' : 'n',
                 //     indexer.isConnected() ? 'y' : 'n');
                 #ifdef USE_IMU
-                //printff("IMU %.3f %.3f %.3f\n",imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
+                // printff("IMU %.3f %.3f %.3f\n",imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
                 #endif
-                // printff("elap:%.5fms\n", elapsedms);
+                //printff("pwr:%u max:%d heat:%d\n", chassis_buffer, robot_status.chassis_power_limit, power_heat_data.shooter_17mm_1_barrel_heat);
+                //printff("ID:%d LVL:%d HP:%d MAX_HP:%d\n", robot_status.robot_id, robot_status.robot_level, robot_status.current_HP, robot_status.maximum_HP);
+                //printff("elap:%.5fms\n", elapsedms);
+                //printff("[HEAT] lim:%d buf:%d b1:%d b2:%d sp:%.1f fr:%d\n", robot_status.shooter_barrel_heat_limit, power_heat_data.buffer_energy, power_heat_data.shooter_17mm_1_barrel_heat, power_heat_data.shooter_17mm_2_barrel_heat, shoot_data.initial_speed, shoot_data.launching_frequency);
+
+                // if(nucleo_value[24] != 0 && remote.rightSwitch() == Remote::SwitchState::UP){
+                //     printff("[");
+                //     for(int i = 0; i < 30; i ++){
+                //         printff("%x,", nucleo_value[i]);
+                //     }
+                //     printff("]");
+                // }
+                //printff("CS: %.1f %.1f %.1f ", cs.vX, cs.vY, cs.vOmega);
+                //printff("DS: %.1f %.1f %.1f\n", test.vX, test.vY, test.vOmega);
+                WheelSpeeds ac = Chassis.getWheelSpeeds();
+                WheelSpeeds ws = Chassis.chassisSpeedsToWheelSpeeds(test);
+                //printff("CH: %.2f %.2f %.2f %.2f ", ws.LF,ws.RF,ws.LB,ws.RB);
+                //printff("A: %.2f %.2f %.2f %.2f\n", ac.LF,ac.RF,ac.LB,ac.RB);
+                // printff("A_RAW: %d %d %d %d\n", 
+                //     Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).getData(VELOCITY), 
+                //     Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).getData(VELOCITY), 
+                //     Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(VELOCITY), 
+                //     Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).getData(VELOCITY));
+                // printff("A_MPS: %.2f %.2f %.2f %.2f\n", 
+                //     Chassis.getMotorSpeed(ChassisSubsystem::LEFT_FRONT, ChassisSubsystem::METER_PER_SECOND), 
+                //     Chassis.getMotorSpeed(ChassisSubsystem::RIGHT_FRONT, ChassisSubsystem::METER_PER_SECOND), 
+                //     Chassis.getMotorSpeed(ChassisSubsystem::LEFT_BACK, ChassisSubsystem::METER_PER_SECOND), 
+                //     Chassis.getMotorSpeed(ChassisSubsystem::RIGHT_BACK, ChassisSubsystem::METER_PER_SECOND));
+
             }
 
             DJIMotor::s_sendValues();

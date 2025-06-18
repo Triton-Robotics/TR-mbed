@@ -1,3 +1,6 @@
+//mbed-tools sterm -b 115200
+
+
 #include "main.h"
 #include "TestBench.h"
 #include "subsystems/ChassisSubsystem.h"
@@ -46,6 +49,83 @@ int main(){
 
     //getting initial feedback.
     DJIMotor::s_getFeedback();
+
+    /*
+    * MOTORS SETUP AND PIDS
+    */
+    //YAW
+    PID yawBeyblade(0.5, 0, 0); //yaw PID is cascading, so there are external position PIDs for yaw control
+    yawBeyblade.setOutputCap(30);
+    yaw.setSpeedPID(100, 0.48305, 0);
+    yaw.setSpeedIntegralCap(5000);
+    yaw.setSpeedOutputCap(32000);
+    yaw.outputCap = 12000;
+    yaw.useAbsEncoder = false;
+
+    int yawVelo = 0;
+    #ifdef USE_IMU
+    imu.get_angular_position_quat(&imuAngles);
+    float yaw_desired_angle = imuAngles.yaw + 180;
+    #else
+    float yaw_desired_angle = (yaw>>ANGLE) * 360.0 / TICKS_REVOLUTION;
+    float yaw_current_angle = (yaw>>ANGLE) * 360.0 / TICKS_REVOLUTION;
+    #endif
+
+    //PITCH
+    pitch.setPositionPID(23.0458, 0.022697, 756.5322);
+    pitch.setPositionOutputCap(32000);
+    pitch.pidPosition.feedForward = 0;
+    pitch.outputCap = 16000;
+    pitch.useAbsEncoder = true;
+
+    float pitch_current_angle = 0;
+    float pitch_desired_angle = 0;
+    float pitch_phase_angle = 33 / 180.0 * PI; // 5.69 theoretical //wtf is this?
+    float pitch_zero_offset_ticks = 6500;
+    float K = 0.38; // 0.75 //0.85
+
+    //FLYWHEELS
+    LFLYWHEEL_U.setSpeedPID(7.1849, 0.000042634, 0);
+    RFLYWHEEL_U.setSpeedPID(7.1849, 0.000042634, 0);
+    LFLYWHEEL_D.setSpeedPID(7.1849, 0.000042634, 0);
+    RFLYWHEEL_D.setSpeedPID(7.1849, 0.000042634, 0);
+
+    //INDEXER
+    indexerL.setSpeedPID(1, 0, 1);
+    indexerL.setSpeedIntegralCap(8000);
+    indexerR.setSpeedPID(1, 0, 1);
+    indexerR.setSpeedIntegralCap(8000);
+    //Cascading PID for indexer angle position control. Surely there are better names then "sure"...
+    // PID sure(0.5,0,0.4);
+    // sure.setOutputCap(4000);
+    //Variables for burst fire
+    unsigned long timeSure;
+    unsigned long prevTimeSure;
+    // bool shoot = false;
+    // int shootTargetPosition = 36*8190 ;
+    // bool shootReady = false;
+
+    //CHASSIS
+    Chassis.setYawReference(&yaw, 4608); //the number of ticks of yaw considered to be robot-front
+    //Common values for reference are 6500 and 2500
+    Chassis.setSpeedFF_Ks(CHASSIS_FF_KICK); //feed forward "kick" for wheels, a constant multiplier of max power in the direcion of movment
+
+    //GENERAL VARIABLES
+
+    //drive and shooting mode
+    char drive = 'o'; //default o when using joystick
+    char shot = 'o'; //default o when using joystick
+    char driveMode = 'j'; //j for joystick, m for mouse/keyboard
+
+    //user button (doesnt work?)
+    bool userButton;
+    bool prev_userButton;
+
+    //ref variables
+    uint16_t chassis_buffer;
+    uint16_t chassis_power_limit;
+    uint16_t barrel_heat1;
+    uint16_t barrel_heat_max1;
 
     unsigned long loopTimer_u = us_ticker_read();
     unsigned long timeEnd_u;

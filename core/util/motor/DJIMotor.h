@@ -122,6 +122,7 @@ private:
 public:
 
     static int s_calculateDeltaPhase(int target, int current, int max = TICKS_REVOLUTION);
+    static float s_calculateDeltaPhaseF(float target, float current, float max);
 
     static int motorCount;
     static bool initializedWarning;
@@ -165,6 +166,10 @@ public:
     inline void setPosition(int position){
         value = position;
         mode = POS;
+    }
+
+    inline motorMoveMode getMode(){
+        return mode;
     }
 
     __attribute__((unused)) inline bool isConnected() const {
