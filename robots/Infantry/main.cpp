@@ -551,7 +551,8 @@ int main(){
             pitch_current_angle = (pitch_zero_offset_ticks - (pitch>>ANGLE)) / TICKS_REVOLUTION * 360;
 
             //INDEXER CODE
-            if ((remote.leftSwitch() == Remote::SwitchState::UP || remote.getMouseL()) && (abs(RFLYWHEEL>>VELOCITY) > 6000 && abs(LFLYWHEEL>>VELOCITY) > 6000)){
+            if ((remote.leftSwitch() == Remote::SwitchState::UP || remote.getMouseL()) && (abs(RFLYWHEEL>>VELOCITY) > 6000 && abs(LFLYWHEEL>>VELOCITY) > 6000) 
+                && remote.rightSwitch() != Remote::SwitchState::MID){
                 if (shootReady){
                     shootReady = false;
                     shootTargetPosition = 8192 * 12 + (indexer>>MULTITURNANGLE);
@@ -585,7 +586,7 @@ int main(){
 
             //FLYWHEELS
             if (shot == 'm' || (shot == 'o' && remote.leftSwitch() != Remote::SwitchState::DOWN &&
-                remote.leftSwitch() != Remote::SwitchState::UNKNOWN)){
+                remote.leftSwitch() != Remote::SwitchState::UNKNOWN && remote.rightSwitch() != Remote::SwitchState::MID)){
                 RFLYWHEEL.setSpeed(7000);
                 LFLYWHEEL.setSpeed(-7000);
             } else{
