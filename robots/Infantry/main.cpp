@@ -29,6 +29,8 @@ constexpr float CHASSIS_FF_KICK = 0.065;
 
 constexpr float pitch_zero_offset_ticks = 1500;
 
+#define READ_DEBUG 0
+#define MAGICBYTE 0xEE
 #define USE_IMU
 
 //CHASSIS DEFINING
@@ -44,20 +46,12 @@ DJIMotor LFLYWHEEL(2, CANHandler::CANBUS_2, M3508,"LeftFly");
 
 //CV STUFF
 static BufferedSerial bcJetson(PC_12, PD_2, 115200);  //JETSON PORT
-float xRotated, yRotated;
-
-char yaw_angle_char[4];
-char yaw_velocity_char[4];
-char pitch_angle_char[4];
-char pitch_velocity_char[4];
-
-char nucleo_value[30] = {0};
-char jetson_value[30] = {0};
 
 //CV
 float CV_pitch_angle_radians = 0.0;
 float CV_yaw_angle_radians = 0.0;
 char CV_shoot = 0;
+
 
 #ifdef USE_IMU
 BNO055_ANGULAR_POSITION_typedef imuAngles;
@@ -74,176 +68,6 @@ int calculateDeltaYaw(int ref_yaw, int beforeBeybladeYaw)
             deltaYaw += 360;
     }
     return deltaYaw;
-}
-
-
-/**
- * Copy float `value` bytes into single bytes in `byteArr` array
- * @param byteArr destination char array for value individual bytes
- * @param value float value to copy into byteArr
- */
-void getBytesFromFloat(char* byteArr, float value) {
-    std::memcpy(byteArr, &value, sizeof(float));
-}
-
-/**
- * Writes 9 bytes of read_buf into received_one and received_two as floats for pitch & yaw positions
- * Used for receiving desired position data from CV in read_buf, write out as 
- * floats to received_one/two.
- * @param read_buf - Source data
- * @param received_one - Destination buffer
- */
-void decode_toSTM32(char *read_buf, float &received_one, float &received_two, char &received_three, uint8_t &checksum){
-    memcpy(&received_one, read_buf, sizeof(float));
-    memcpy(&received_two, read_buf + 4, sizeof(float));
-    memcpy(&received_three, read_buf + 8, sizeof(char)); // shooting indicator
-    checksum = read_buf[9];
-}
-
-/**
- * Coipes 4 bytes from srcBuf[0] into destBuf[offset]
- * @param srcBuf source buffer
- * @param destBuf destination buffer
- * @param offset the starting position into destBuf
- */
-void copy4Char(char* srcBuf, char* destBuf, int offset){
-    for(int i = 0; i < 4; i ++){
-        destBuf[offset+i] = srcBuf[i];
-    }
-}
-
-/**
- * Performs a Longitudinal Redundancy Check
- * @param data the data to compute the checksum on
- * @param length the length of data
- */
-static uint8_t calculateLRC(const char* data, size_t length) {
-    unsigned char lrc = 0;
-    for (size_t i = 0; i < length; ++i) {
-        lrc += data[i];
-        lrc &= 0xff;
-    }
-    lrc = ((lrc ^ 0xff) + 1) & 0xff;
-    return lrc;
-}
-
-
-/**
- * Read motor values and send to CV
- */
-float jetson_send_feedback(float yaw_degrees) {
-    //char temp[50] = {0};
-    // ChassisSpeeds cs = Chassis.m_chassisSpeeds;
-    // imu.get_angular_position_quat(&imuAngles);
-    //printf("chassis:%f|%f imu:%f\n", cs.vX, cs.vY, imuAngles.yaw);
-    //printf("yaw angle %f, yaw velocity %f\n", yaw.getData(ANGLE), yaw.getData(VELOCITY));
-    //printf("pitch angle %f, pitch velocity %f \n", pitch.getData(ANGLE), pitch.getData(VELOCITY));
-    //printf("IMU Angle: %f\n", float(imuAngles.yaw));
-
-    //GET the x, y value from chassis
-    // rotatePoint(cs.vX, cs.vY, imuAngles.yaw, xRotated, yRotated);
-    //printf("Rx: %f | Ry: %f", xRotated, yRotated);
-
-    char rotate_x_char[sizeof(float)];
-    char rotate_y_char[sizeof(float)];
-    getBytesFromFloat(rotate_x_char, xRotated);
-    getBytesFromFloat(rotate_y_char, yRotated);
-
-    //GET yaw and pitch data
-    //float yaw_angle = ChassisSubsystem::ticksToRadians(yaw.getData(ANGLE)); //Ticks
-    float yaw_angle = yaw_degrees * M_PI / 180;
-    float yaw_velocity = yaw.getData(VELOCITY)/60.0; //RPM
-
-    float pitch_angle = ChassisSubsystem::ticksToRadians((pitch_zero_offset_ticks - pitch.getData(ANGLE)));
-    float pitch_velocity = pitch.getData(VELOCITY)/60.0;
-
-    // printf("yaw A: %f | yaw v: %f | pitch a: %f | pitch v: %f\n", yaw_angle, yaw_velocity, pitch_angle, pitch_velocity);
-
-    char yaw_angle_char[4];
-    char yaw_velocity_char[4];
-    char pitch_angle_char[4];
-    char pitch_velocity_char[4];
-
-    getBytesFromFloat(yaw_angle_char, yaw_angle);
-    getBytesFromFloat(yaw_velocity_char, yaw_velocity);
-    getBytesFromFloat(pitch_angle_char, pitch_angle);
-    getBytesFromFloat(pitch_velocity_char, pitch_velocity);
-
-
-    //put the data into temp
-    int startPositions[7] = {0, 4, 8, 12, 16, 20, 24};
-    copy4Char(rotate_x_char, nucleo_value, startPositions[0]);
-    copy4Char(rotate_y_char, nucleo_value, startPositions[1]);
-    copy4Char(pitch_angle_char, nucleo_value, startPositions[2]);
-    copy4Char(yaw_angle_char, nucleo_value, startPositions[3]);
-    copy4Char(pitch_velocity_char, nucleo_value, startPositions[4]);
-    copy4Char(yaw_velocity_char, nucleo_value, startPositions[5]);
-
-    //printf("Rx: %d temp: %d | t2nd %d | t3d %d| t4th %d\n",rotate_x_char[0], temp[0], temp[1], temp[2], temp[3]);
-    //printf("temp: %s\n", temp);
-
-
-    //get lrc
-    uint8_t lrc = calculateLRC(nucleo_value, 24);
-    char lrc_char = static_cast<uint8_t>(lrc);
-    //printf("lrc: %d\n", lrc);
-    nucleo_value[24] = lrc_char;
-    //printf("lrc: %d\n", temp[24]);
-
-    bcJetson.sync(); //sync if 1ms or lower, but if 2+ dont use sync
-    bcJetson.write(nucleo_value, 30);
-    
-    //printf("Rx: %f | Ry: %f | p_a: %f | y_a: %f | p_v: %f | y_v: %f | lrc: %d \n", xRotated, yRotated, pitch_angle, yaw_angle, pitch_velocity, yaw_velocity, lrc);
-    
-    //make a struct to send data
-    // ThisThread::sleep_for(3);
-    return yaw_angle;
-}
-
-
-/**
- * Read desired pitch and yaw position data from Jetson
- * 
- * @param pitch_move buffer to store desired pitch position
- * @param yaw_move buffer to store desired yaw position
- */
-ssize_t jetson_read_values(float &pitch_move, float & yaw_move, char &shoot_switch) {
-    char dumbByte;
-
-    ssize_t result = bcJetson.read(jetson_value, 10);
-    // for (int i = 0 ; i < 10 ; ++i ) {
-    //     printf("%d ", jetson_value[i]);
-    // }
-    // printf("\n");
-
-    if (result != -EAGAIN) { // If buffer not empty, decode data. Else do nothing
-        // Print raw buffer bytes as decimal integers
-        // printf("Raw buffer data: ");
-        // printf("\n");
-
-        uint8_t checkSum = jetson_value[9];
-        uint8_t theoryCheck = calculateLRC(jetson_value,9);
-        if(checkSum == theoryCheck){
-            decode_toSTM32(jetson_value, pitch_move, yaw_move, shoot_switch, checkSum);
-            //printf("Rx Pitch: %.3f Yaw: %.3f Shoot: %d Check: %d\nFIN\n\n", jetson_value, pitch_move, yaw_move, shoot_switch, checkSum);
-            led3 = !led3;
-        }
-        else{
-            //led3 = !led3;
-        }  
-
-        //printf("\n\nclearing buffer: ");
-        while ( bcJetson.readable() ) {
-            ssize_t resultClear = bcJetson.read(&dumbByte, 1);
-            //printf("%d ", dumbByte);
-        }
-        //printf("\n------CLEARED------\n");
-    } 
-
-    else {
-        //printf("Err\n");
-    }
-    return result;
 }
 
 int main(){
@@ -345,9 +169,18 @@ int main(){
         //CV loop runs every 2ms
         if((timeStart - loopTimerCV) / 1000 > 1) { //1 with sync or 2 without
             loopTimerCV = timeStart;
-            //if(remote.rightSwitch() == Remote::SwitchState::UP)
-            //jetson_send_feedback(imuAngles.yaw + 180); //  __COMENTED OUT LOOLOOKOKOLOOOOKO HERHEHRERHEHRHE
-            //basic_bitch_read();
+            
+            Jetson_send_data jetson_send_data;
+            jetson_send_data.chassis_x_velocity = 0.0;
+            jetson_send_data.chassis_y_velocity = 0.0;
+
+            jetson_send_data.pitch_angle_rads = ChassisSubsystem::ticksToRadians( (pitch_zero_offset_ticks - pitch.getData(ANGLE)) );
+            jetson_send_data.pitch_velocity = pitch.getData(VELOCITY) / 60.0;
+
+            jetson_send_data.yaw_angle_rads = (imuAngles.yaw + 180.0) * (M_PI / 180.0);
+            jetson_send_data.yaw_velocity = yaw.getData(VELOCITY)/60.0;
+
+            jetson_send_feedback(bcJetson, jetson_send_data);
         }
 
         if ((timeStart - loopTimer) / 1000 > OUTER_LOOP_DT_MS){
@@ -374,21 +207,13 @@ int main(){
             cs = Chassis.getChassisSpeeds();
             remoteRead();
 
-            int readResult = jetson_read_values(CV_pitch_angle_radians, CV_yaw_angle_radians, CV_shoot);
+            Jetson_read_data jetson_received_data;
+            int readResult = jetson_read_values(bcJetson, jetson_received_data);
 
             if(cv_enabled){
-                //like idk why ig floats are fucked oop
-                if (readResult != -EAGAIN) {
-                    //printf("you are now zero\n");
-                    // CV_yaw_angle_radians = 0;
-                    yaw_desired_angle = CV_yaw_angle_radians / M_PI * 180;
-                    //CV_yaw_angle_radians = 0;
-                }
-                
-                if (readResult != -EAGAIN) {
-                    // CV_pitch_angle_radians = 0;
-                    pitch_desired_angle = CV_pitch_angle_radians / M_PI * 180;
-                    //CV_pitch_angle_radians = 0;
+                if(readResult > 0){
+                    yaw_desired_angle = jetson_received_data.requested_yaw_rads / M_PI * 180;
+                    pitch_desired_angle = jetson_received_data.requested_pitch_rads / M_PI * 180;
                 }
             }
             #ifdef USE_IMU
