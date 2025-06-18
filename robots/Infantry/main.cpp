@@ -212,9 +212,14 @@ int main(){
 
             if(cv_enabled){
                 if(readResult > 0){
+                    led3 = 1;
                     yaw_desired_angle = jetson_received_data.requested_yaw_rads / M_PI * 180;
                     pitch_desired_angle = jetson_received_data.requested_pitch_rads / M_PI * 180;
+                }else{
+                    led3 = !led;
                 }
+            }else{
+                led3 = 0;
             }
             #ifdef USE_IMU
             imu.get_angular_position_quat(&imuAngles);
@@ -236,9 +241,9 @@ int main(){
                 shot = 'd';        
             }
 
-            if(remote.keyPressed(Remote::Key::F)){
+            if(remote.keyPressed(Remote::Key::F) || (remote.leftSwitch() == Remote::SwitchState::MID && jumperPC9)){
                 cv_enabled = true;
-            }else if(remote.keyPressed(Remote::Key::G)){
+            }else if(remote.keyPressed(Remote::Key::G) || (remote.leftSwitch() != Remote::SwitchState::MID && jumperPC9)){
                 cv_enabled = false;
             }
 
@@ -340,7 +345,7 @@ int main(){
                 }else if(yawVelo < -1){
                     dir = -1;
                 }
-                yaw.pidSpeed.feedForward = 1221*dir + 97.4 * yawVelo;
+                yaw.pidSpeed.feedForward = 1221 * dir + 97.4 * yawVelo;
                 yaw.setSpeed(yawVelo);
             }else{
                 //Off
@@ -429,7 +434,7 @@ int main(){
                 #ifdef USE_IMU
                 //printff("ydv:%d yav:%d PWR:%d ", yawVelo, yaw>>VELOCITY, yaw>>POWEROUT);
                 //printff("V[%.1f][%.1f][%.1f]E:%.3f ", yaw.pidSpeed.pC, yaw.pidSpeed.iC, yaw.pidSpeed.dC, yawVelo - (yaw>>VELOCITY));
-                printff("P[%.1f][%.1f][%.1f]E:%.3f ", yawBeyblade.pC, yawBeyblade.iC, yawBeyblade.dC, error);
+                printff(".P[%.1f][%.1f][%.1f]E:%.3f ", yawBeyblade.pC, yawBeyblade.iC, yawBeyblade.dC, error);
                 //printff("YD:%.3f YA:%.3f CVY:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180, CV_yaw_angle_radians * 180 / M_PI);
                 printff("ERR:%.3f\n", error);
                 #else
@@ -480,7 +485,7 @@ int main(){
                 //     Chassis.getMotorSpeed(ChassisSubsystem::RIGHT_FRONT, ChassisSubsystem::METER_PER_SECOND), 
                 //     Chassis.getMotorSpeed(ChassisSubsystem::LEFT_BACK, ChassisSubsystem::METER_PER_SECOND), 
                 //     Chassis.getMotorSpeed(ChassisSubsystem::RIGHT_BACK, ChassisSubsystem::METER_PER_SECOND));
-
+                //printff("L:%d R:%d\n", LFLYWHEEL.getVelocity)
             }
 
             DJIMotor::s_sendValues();

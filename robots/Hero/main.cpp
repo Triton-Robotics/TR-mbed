@@ -10,7 +10,7 @@ DigitalOut ledbuiltin(LED1);
 constexpr float LOWERBOUND = 12.0;
 constexpr float UPPERBOUND = -25.0;
 
-constexpr float BEYBLADE_OMEGA = 1.0;
+constexpr float BEYBLADE_OMEGA = 2.0;
 
 // constexpr float JOYSTICK_SENSITIVITY_YAW = 1.0/90;
 // constexpr float JOYSTICK_SENSITIVITY_PITCH = 1.0/150;
@@ -29,7 +29,7 @@ constexpr int PRINT_FREQUENCY = 20; //the higher the number, the less often
 
 constexpr float CHASSIS_FF_KICK = 0.065;
 
-#define USE_IMU
+//#define USE_IMU
 
 //CHASSIS DEFINING
 I2C i2c(I2C_SDA, I2C_SCL);
