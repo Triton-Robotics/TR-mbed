@@ -32,6 +32,8 @@ constexpr float CHASSIS_FF_KICK = 0.065;
 
 constexpr int FLYWHEEL_SPEED = 7000;
 
+#define READ_DEBUG 0
+#define MAGICBYTE 0xEE
 #define USE_IMU
 
 //CV STUFF
@@ -213,41 +215,54 @@ float jetson_send_feedback() {
  */
 ssize_t jetson_read_values(float &pitch_move, float & yaw_move, char &shoot_switch) {
     bcJetson.set_blocking(false);
-    char dumbByte;
+    ssize_t fillArrayCheck = 10;
+    int i;
+    unsigned int numBytes = 0;            //counts bytes read aka size of jetson_values
+    uint8_t checkSum;                     //last bit in packet            
 
-    ssize_t result = bcJetson.read(jetson_value, 10);
-    // for (int i = 0 ; i < 10 ; ++i ) {
-    //     printf("%d ", jetson_value[i]);
-    // }
-    // printf("\n");
-
-    if (result != -EAGAIN) { // If buffer not empty, decode data. Else do nothing
-        // Print raw buffer bytes as decimal integers
-        // printf("Raw buffer data: ");
-        // printf("\n");
-
-        uint8_t checkSum = jetson_value[9];
-        uint8_t theoryCheck = calculateLRC(jetson_value,9);
-        if(checkSum == theoryCheck){
-            decode_toSTM32(jetson_value, pitch_move, yaw_move, shoot_switch, checkSum);
-            //printf("Rx Pitch: %.3f Yaw: %.3f Shoot: %d Check: %d\nFIN\n\n", jetson_value, pitch_move, yaw_move, shoot_switch, checkSum);
+    if ( bcJetson.readable() ) {
+        while ( (fillArrayCheck >= 10) && (numBytes < 200) ) {
+            fillArrayCheck = bcJetson.read(jetson_value+numBytes, 10); //keep adding 10 bytes throughout array until buffer empty
+            numBytes += fillArrayCheck;
         }
-        else{
-            led3 = !led3;
-        }  
 
-        //printf("\n\nclearing buffer: ");
-        while ( bcJetson.readable() ) {
-            ssize_t resultClear = bcJetson.read(&dumbByte, 1);
-            //printf("%d ", dumbByte);
+        if (READ_DEBUG) { 
+            for ( i = 0; i< numBytes ; ++i) {
+                printf("%d ", jetson_value[i]);
+            }
+            printf("\nbytes: %d\n", numBytes);
         }
-        //printf("\n------CLEARED------\n");
-    } 
 
-    else {
-        //printf("Err\n");
+        //starting at the very last index of jetson_values (numbytes - 1)
+        //i - 10 is the magic byte, and we will use next 9 bytes for checksum which is at i; exclude magic byte in checksum
+        //if we meet the match conditions, decode values, clear buffer, return last amount of bytes read
+        //if no match found, print no match
+        //if buffer empty, print empty
+        for( i = numBytes - 1 ; i >= 10 ; --i) {
+            if (READ_DEBUG) { 
+                for (int j = i - 10; j <= i; ++j) {
+                    printf("%d ",jetson_value[j]);
+                }
+                printf("\n");
+                printf("%d %d %d\n", calculateLRC(&jetson_value[i - 9], 9), jetson_value[i], jetson_value[i-10]);
+             }
+
+            //calculating checksum w/ header bytes
+            if ( (calculateLRC(&jetson_value[i - 9], 9) == jetson_value[i]) && (jetson_value[i] != 0) && (jetson_value[i-10] == MAGICBYTE) ){
+                
+                if (READ_DEBUG) { printf("match\n"); }
+
+                decode_toSTM32(&jetson_value[i-9], pitch_move, yaw_move, shoot_switch, checkSum);
+                return fillArrayCheck;
+            }
+        }
+        if (READ_DEBUG) {  printf("\nno match\n"); }
+        return 0;
+        
+    } else {
+        if (READ_DEBUG) { printf("\nempty\n"); }
     }
-    return result;
+    return fillArrayCheck;
 }
 
 int main(){
