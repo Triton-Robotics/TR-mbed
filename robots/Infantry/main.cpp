@@ -47,10 +47,6 @@ DJIMotor LFLYWHEEL(2, CANHandler::CANBUS_2, M3508,"LeftFly");
 //CV STUFF
 static BufferedSerial bcJetson(PC_12, PD_2, 115200);  //JETSON PORT
 
-//CV
-float CV_pitch_angle_radians = 0.0;
-float CV_yaw_angle_radians = 0.0;
-char CV_shoot = 0;
 
 
 #ifdef USE_IMU
@@ -160,6 +156,7 @@ int main(){
     int printLoop = 0;
 
     bool cv_enabled = false;
+    char cv_shoot_status = 0;
 
     ChassisSpeeds cs;
 
@@ -214,7 +211,10 @@ int main(){
                 if(readResult > 0){
                     yaw_desired_angle = jetson_received_data.requested_yaw_rads / M_PI * 180;
                     pitch_desired_angle = jetson_received_data.requested_pitch_rads / M_PI * 180;
+                    cv_shoot_status = jetson_received_data.shoot_status;
                 }
+            } else {
+              cv_shoot_status = 0;
             }
             #ifdef USE_IMU
             imu.get_angular_position_quat(&imuAngles);
@@ -241,7 +241,13 @@ int main(){
             }else if(remote.keyPressed(Remote::Key::G)){
                 cv_enabled = false;
             }
-
+          
+            if(remote.leftSwitch() != Remote::SwitchState::DOWN && remote.leftSwitch() != Remote::SwitchState::UNKNOWN){
+              cv_enabled = true;
+            } 
+            if(remote.leftSwitch() == Remote::SwitchState::DOWN || remote.leftSwitch() == Remote::SwitchState::UNKNOWN){
+              cv_enabled = false;
+            }
 
             // Mouse sensitivity initialized
             float MOUSE_SENSITIVITY_YAW_DPS = 10.0;
@@ -376,7 +382,8 @@ int main(){
             pitch_current_angle = (pitch_zero_offset_ticks - (pitch>>ANGLE)) / TICKS_REVOLUTION * 360;
 
             //INDEXER CODE
-            if ((remote.leftSwitch() == Remote::SwitchState::UP || remote.getMouseL()) && (abs(RFLYWHEEL>>VELOCITY) > 6000 && abs(LFLYWHEEL>>VELOCITY) > 6000) 
+            if ( (cv_enabled && cv_shoot_status == 1 && remote.leftSwitch() == Remote::SwitchState::UP) ||
+              (remote.getMouseL()) && (abs(RFLYWHEEL>>VELOCITY) > 6000 && abs(LFLYWHEEL>>VELOCITY) > 6000) 
                 && remote.rightSwitch() != Remote::SwitchState::MID){
                 if (shootReady){
                     shootReady = false;
@@ -423,15 +430,16 @@ int main(){
             printLoop ++;
             if (printLoop >= PRINT_FREQUENCY){
                 printLoop = 0;
+                // printff("cv_enable: %d | cv_shoot_status: %d\n", cv_enabled == true, cv_shoot_status);
                 //printff("Prints:\n");
                 //printff("lX:%.1f lY:%.1f rX:%.1f rY:%.1f lS:%d rS:%d\n", remote.leftX(), remote.leftY(), remote.rightX(), remote.rightY(), remote.leftSwitch(), remote.rightSwitch());
                 //printff("jx:%.3f jy:%.3f jpitch:%.3f jyaw:%.3f\n", jx, jy, jpitch, jyaw);
                 #ifdef USE_IMU
                 //printff("ydv:%d yav:%d PWR:%d ", yawVelo, yaw>>VELOCITY, yaw>>POWEROUT);
                 //printff("V[%.1f][%.1f][%.1f]E:%.3f ", yaw.pidSpeed.pC, yaw.pidSpeed.iC, yaw.pidSpeed.dC, yawVelo - (yaw>>VELOCITY));
-                printff("P[%.1f][%.1f][%.1f]E:%.3f ", yawBeyblade.pC, yawBeyblade.iC, yawBeyblade.dC, error);
+                // printff("P[%.1f][%.1f][%.1f]E:%.3f ", yawBeyblade.pC, yawBeyblade.iC, yawBeyblade.dC, error);
                 //printff("YD:%.3f YA:%.3f CVY:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180, CV_yaw_angle_radians * 180 / M_PI);
-                printff("ERR:%.3f\n", error);
+                // printff("ERR:%.3f\n", error);
                 #else
                 printff("yaw_des_v:%d yaw_act_v:%d\n", yawVelo, yaw>>VELOCITY);
                 //printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
