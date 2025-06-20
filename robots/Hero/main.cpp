@@ -10,7 +10,7 @@ DigitalOut ledbuiltin(LED1);
 constexpr float LOWERBOUND = 12.0;
 constexpr float UPPERBOUND = -25.0;
 
-constexpr float BEYBLADE_OMEGA = 1.0;
+constexpr float BEYBLADE_OMEGA = 2.0;
 
 // constexpr float JOYSTICK_SENSITIVITY_YAW = 1.0/90;
 // constexpr float JOYSTICK_SENSITIVITY_PITCH = 1.0/150;
@@ -72,11 +72,11 @@ int main(){
     * MOTORS SETUP AND PIDS
     */
     //YAW
-    PID yawBeyblade(1,0,0);
+    PID yawBeyblade(1,0.005,150);
     yawBeyblade.setIntegralCap(2);
     //PID yawBeyblade(1.5, 0, 550); //yaw PID is cascading, so there are external position PIDs for yaw control
     // PID yawNonBeyblade(0.15, 0, 550);
-    yaw.setSpeedPID(250,0,0);
+    yaw.setSpeedPID(380,0,0);
     yaw.setSpeedIntegralCap(8000);
     yaw.setSpeedOutputCap(32000);
     //yaw.setSpeedPID(50, 0.2, 300); // tried setting P to 37.5 same as infantry yaw PID
@@ -85,7 +85,15 @@ int main(){
 
     int yawVelo = 0;
     #ifdef USE_IMU
-    imu.get_angular_position_quat(&imuAngles);
+    // imu.get_angular_position_quat(&imuAngles);
+    while(imu.chip_ready()){
+
+    }
+    imu.get_euler_angles((BNO055_EULER_TypeDef*)&imuAngles);
+   
+    imuAngles.yaw = 180 - imuAngles.yaw;
+    imuAngles.pitch = 180 - imuAngles.pitch;
+    imuAngles.roll = 180 - imuAngles.roll;
     float yaw_desired_angle = imuAngles.yaw + 180;
     #else
     float yaw_desired_angle = (yaw>>ANGLE) * 360.0 / TICKS_REVOLUTION;
@@ -180,7 +188,11 @@ int main(){
             remoteRead();
 
             #ifdef USE_IMU
-            imu.get_angular_position_quat(&imuAngles);
+            //imu.get_angular_position_quat(&imuAngles);
+            imu.get_euler_angles((BNO055_EULER_TypeDef*)&imuAngles);
+            imuAngles.yaw = 180 - imuAngles.yaw;
+            imuAngles.pitch = 180 - imuAngles.pitch;
+            imuAngles.roll = 180 - imuAngles.roll;
             #else
             yaw_current_angle = (yaw>>ANGLE) * 360.0 / TICKS_REVOLUTION;
             #endif
@@ -421,7 +433,7 @@ int main(){
 
                 #ifdef USE_IMU
                 //printff("yaw_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
-                //printff("yaw_des:%.3f yaw_act:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180);
+                printff("yaw_des:%.3f yaw_act:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180);
                 #else
                 printff("yaw_des_v:%d yaw_act_v:%d\n", yawVelo, yaw>>VELOCITY);
                 //printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
@@ -440,7 +452,7 @@ int main(){
                 //     indexer.isConnected() ? 'y' : 'n',
                 //     feeder.isConnected() ? 'y' : 'n');
                 #ifdef USE_IMU
-                printff("IMU %.3f %.3f %.3f\n",imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
+                //printff("IMU %.3f %.3f %.3f\n",imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
                 #endif
 
                 WheelSpeeds ac = Chassis.getWheelSpeeds();
