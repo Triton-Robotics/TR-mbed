@@ -29,6 +29,9 @@ constexpr float CHASSIS_FF_KICK = 0.065;
 
 constexpr float pitch_zero_offset_ticks = 1500;
 
+constexpr int NUM_BALLS_SHOT = 3;
+constexpr int FLYWHEEL_VELO = 7500;
+
 #define READ_DEBUG 0
 #define MAGICBYTE 0xEE
 #define USE_IMU
@@ -82,7 +85,7 @@ int main(){
     * MOTORS SETUP AND PIDS
     */
     //YAW
-    PID yawBeyblade(1.0, 0.005, 50); //yaw PID is cascading, so there are external position PIDs for yaw control
+    PID yawBeyblade(1.0, 0.00, 50); //yaw PID is cascading, so there are external position PIDs for yaw control
     yawBeyblade.setIntegralCap(2);
     // PID yawNonBeyblade(0.15, 0, 550);
     yawBeyblade.setOutputCap(90);
@@ -115,15 +118,16 @@ int main(){
     float K = 0.38; // 0.75 //0.85
 
     //FLYWHEELS
-    LFLYWHEEL.setSpeedPID(7.1849, 0.000042634, 0);
-    RFLYWHEEL.setSpeedPID(7.1849, 0.000042634, 0);
+    LFLYWHEEL.setSpeedPID(7.1849, 0.000042634, 100);
+    RFLYWHEEL.setSpeedPID(7.1849, 0.000042634, 100);
 
     //INDEXER
-    indexer.setSpeedPID(1, 0, 1);
-    indexer.setSpeedIntegralCap(8000);
+    indexer.setSpeedPID(1, 0.0005, 1);
+    indexer.setSpeedIntegralCap(4000);
     //Cascading PID for indexer angle position control. Surely there are better names then "sure"...
-    PID sure(0.5,0,0.4);
-    sure.setOutputCap(4000);
+    PID sure(3,0,0.4);
+    sure.setOutputCap(133 * M2006_GEAR_RATIO);
+    //sure.setOutputCap(5000);
     //Variables for burst fire
     unsigned long timeSure;
     unsigned long prevTimeSure;
@@ -241,9 +245,9 @@ int main(){
                 shot = 'd';        
             }
 
-            if(remote.keyPressed(Remote::Key::F) || (remote.leftSwitch() == Remote::SwitchState::MID && jumperPC9)){
+            if(remote.keyPressed(Remote::Key::F) || ((remote.leftSwitch() == Remote::SwitchState::MID || remote.leftSwitch() == Remote::SwitchState::UP) && jumperPC9)){
                 cv_enabled = true;
-            }else if(remote.keyPressed(Remote::Key::G) || (remote.leftSwitch() != Remote::SwitchState::MID && jumperPC9)){
+            }else if(remote.keyPressed(Remote::Key::G) || ((remote.leftSwitch() != Remote::SwitchState::MID && remote.leftSwitch() != Remote::SwitchState::UP) && jumperPC9)){
                 cv_enabled = false;
             }
 
@@ -381,11 +385,11 @@ int main(){
             pitch_current_angle = (pitch_zero_offset_ticks - (pitch>>ANGLE)) / TICKS_REVOLUTION * 360;
 
             //INDEXER CODE
-            if ((remote.leftSwitch() == Remote::SwitchState::UP || remote.getMouseL()) && (abs(RFLYWHEEL>>VELOCITY) > 6000 && abs(LFLYWHEEL>>VELOCITY) > 6000) 
-                && remote.rightSwitch() != Remote::SwitchState::MID){
+            if ((remote.leftSwitch() == Remote::SwitchState::UP || remote.getMouseL()) && (abs(RFLYWHEEL>>VELOCITY) > (FLYWHEEL_VELO - 500) && abs(LFLYWHEEL>>VELOCITY) > (FLYWHEEL_VELO - 500)) 
+                /*&& remote.rightSwitch() != Remote::SwitchState::MID*/){
                 if (shootReady){
                     shootReady = false;
-                    shootTargetPosition = 8192 * 12 + (indexer>>MULTITURNANGLE);
+                    shootTargetPosition = (8192 * M2006_GEAR_RATIO / 9 * NUM_BALLS_SHOT) + (indexer>>MULTITURNANGLE);
 
                     //shoot limit
                     if(robot_status.shooter_barrel_heat_limit < 10 || power_heat_data.shooter_17mm_1_barrel_heat < robot_status.shooter_barrel_heat_limit - 40) {
@@ -404,25 +408,40 @@ int main(){
             if (shoot){
                 if (indexer>>MULTITURNANGLE >= shootTargetPosition){
                     indexer.setSpeed(0);
+                    indexer.pidSpeed.feedForward = 0;
                     shoot = false;
                 } else {
                     timeSure = us_ticker_read();
                     indexer.setSpeed(sure.calculate(shootTargetPosition, indexer>>MULTITURNANGLE, timeSure - prevTimeSure)); //
+                    indexer.pidSpeed.feedForward = 300;
                     prevTimeSure = timeSure;
                 }
             } else {
                 indexer.setSpeed(0);
+                indexer.pidSpeed.feedForward = 0;
             }
 
             //FLYWHEELS
-            if (shot == 'm' || (shot == 'o' && remote.leftSwitch() != Remote::SwitchState::DOWN &&
-                remote.leftSwitch() != Remote::SwitchState::UNKNOWN && remote.rightSwitch() != Remote::SwitchState::MID)){
-                RFLYWHEEL.setSpeed(7000);
-                LFLYWHEEL.setSpeed(-7000);
+            if (shot == 'm' || (shot == 'o' && remote.leftSwitch() != Remote::SwitchState::DOWN/* &&
+                remote.leftSwitch() != Remote::SwitchState::UNKNOWN && remote.rightSwitch() != Remote::SwitchState::MID*/)){
+                LFLYWHEEL.setSpeed(-FLYWHEEL_VELO);
+                RFLYWHEEL.setSpeed(FLYWHEEL_VELO);
+                LFLYWHEEL.pidSpeed.feedForward = 52;
+                RFLYWHEEL.pidSpeed.feedForward = 77;
             } else{
                 // left SwitchState set to up/mid/unknown
-                RFLYWHEEL.setSpeed(0);
-                LFLYWHEEL.setSpeed(0);
+                if(abs(LFLYWHEEL>>VELOCITY) < 50){
+                    LFLYWHEEL.setPower(0);
+                }else{
+                    LFLYWHEEL.setSpeed(0);
+                }
+                if(abs(RFLYWHEEL>>VELOCITY) < 50){
+                    RFLYWHEEL.setPower(0);
+                }else{
+                    RFLYWHEEL.setSpeed(0);
+                }
+                LFLYWHEEL.pidSpeed.feedForward = 0;
+                RFLYWHEEL.pidSpeed.feedForward = 0;
             }
 
             printLoop ++;
@@ -434,11 +453,11 @@ int main(){
                 #ifdef USE_IMU
                 //printff("ydv:%d yav:%d PWR:%d ", yawVelo, yaw>>VELOCITY, yaw>>POWEROUT);
                 //printff("V[%.1f][%.1f][%.1f]E:%.3f ", yaw.pidSpeed.pC, yaw.pidSpeed.iC, yaw.pidSpeed.dC, yawVelo - (yaw>>VELOCITY));
-                printff(".P[%.1f][%.1f][%.1f]E:%.3f ", yawBeyblade.pC, yawBeyblade.iC, yawBeyblade.dC, error);
+                //printff(".P[%.1f][%.1f][%.1f]E:%.3f ", yawBeyblade.pC, yawBeyblade.iC, yawBeyblade.dC, error);
                 //printff("YD:%.3f YA:%.3f CVY:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180, CV_yaw_angle_radians * 180 / M_PI);
-                printff("ERR:%.3f\n", error);
+                //printff("ERR:%.3f\n", error);
                 #else
-                printff("yaw_des_v:%d yaw_act_v:%d\n", yawVelo, yaw>>VELOCITY);
+                //printff("yaw_des_v:%d yaw_act_v:%d\n", yawVelo, yaw>>VELOCITY);
                 //printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
                 #endif
                 //printff("yaw_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
@@ -485,7 +504,22 @@ int main(){
                 //     Chassis.getMotorSpeed(ChassisSubsystem::RIGHT_FRONT, ChassisSubsystem::METER_PER_SECOND), 
                 //     Chassis.getMotorSpeed(ChassisSubsystem::LEFT_BACK, ChassisSubsystem::METER_PER_SECOND), 
                 //     Chassis.getMotorSpeed(ChassisSubsystem::RIGHT_BACK, ChassisSubsystem::METER_PER_SECOND));
-                //printff("L:%d R:%d\n", LFLYWHEEL.getVelocity)
+                //printff("%d,%d,%d,%d\n", abs(LFLYWHEEL>>VELOCITY), abs(LFLYWHEEL>>POWEROUT), abs(RFLYWHEEL>>VELOCITY), abs(RFLYWHEEL>>POWEROUT));
+                if(remote.rightSwitch() == Remote::SwitchState::UP){
+                    // printff("%d %d %u %u %u %f ", abs(LFLYWHEEL>>VELOCITY), abs(RFLYWHEEL>>VELOCITY), shoot_data.bullet_type, shoot_data.shooter_number, shoot_data.launching_frequency, *(float*)(((uint8_t*)&shoot_data)+4) /*((shoot_data.initial_speed / 0.06) * (30 / M_PI))*/);
+                    // for(int i = 0; i < 7; i ++){
+                    //    printff("(%2x)", (uint8_t)*((((uint8_t*)&shoot_data)+i)));
+                    // }
+                    float c = 0;
+                    memcpy(&c, ((uint8_t*)&shoot_data)+3, 4);
+                    // for(int i = 0; i < 4; i ++){
+                    //    printff("[%2x]", (uint8_t)*((((uint8_t*)&c)+i)));
+                    // }
+                    // printff(" %f %f %8x\n", shoot_data.initial_speed, c, c);
+                    // printff("%d %d %f %f\n", abs(LFLYWHEEL>>VELOCITY), abs(RFLYWHEEL>>VELOCITY), ((c / 0.06) * (30 / M_PI)), c);
+                    //printff("%d %d\n", abs(LFLYWHEEL>>VELOCITY), abs(RFLYWHEEL>>VELOCITY));
+                    
+                }
             }
 
             DJIMotor::s_sendValues();
