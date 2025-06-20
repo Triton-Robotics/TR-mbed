@@ -7,7 +7,7 @@ var searchData=
   ['unitdiag_4',['UnitDiag',['../group__enums.html#gga39e3366ff5554d731e7dc8bb642f83cda2ef430bff6cc12c2d1e0ef01b95f7ff3',1,'Eigen']]],
   ['unitlower_5',['UnitLower',['../group__enums.html#gga39e3366ff5554d731e7dc8bb642f83cda8f40b928c10a71ba03e5f75ad2a72fda',1,'Eigen']]],
   ['unitupper_6',['UnitUpper',['../group__enums.html#gga39e3366ff5554d731e7dc8bb642f83cdadd28224d7ea92689930be73c1b50b0ad',1,'Eigen']]],
-  ['unknown_7',['unknown',['../structinputfile__t.html#a5f7062d68daf3cd64502039d6c57d5f3aad921d60486366258809553a3db49a4a',1,'inputfile_t::unknown'],['../classRemote.html#affd0b019d5483d546bc29b07447649bba696b031073e74bf2cb98e5ef201d4aa3',1,'Remote::UNKNOWN']]],
+  ['unknown_7',['unknown',['../classRemote.html#affd0b019d5483d546bc29b07447649bba696b031073e74bf2cb98e5ef201d4aa3',1,'Remote::UNKNOWN'],['../structinputfile__t.html#a5f7062d68daf3cd64502039d6c57d5f3aad921d60486366258809553a3db49a4a',1,'inputfile_t::unknown']]],
   ['unrolling_8',['unrolling',['../classEigen_1_1internal_1_1trsolve__traits.html#aaba0636ab6dd240fe705aa433d8a004caece810841ffc8df578af2a87836c7382',1,'Eigen::internal::trsolve_traits::Unrolling'],['../structEigen_1_1internal_1_1copy__using__evaluator__traits.html#abd042f32fac0fc758177b1fec69f7710afb07e8a47fe431a5f0d543a6d0a381ba',1,'Eigen::internal::copy_using_evaluator_traits::Unrolling']]],
   ['unrollinglimit_9',['UnrollingLimit',['../structEigen_1_1internal_1_1redux__traits.html#a0cb276a13a072470b1c4c846a76f3fbbab77c34de158a02239d627f4c26dbc862',1,'Eigen::internal::redux_traits']]],
   ['up_10',['UP',['../classRemote.html#affd0b019d5483d546bc29b07447649bbafbaedde498cdead4f2780217646e9ba1',1,'Remote']]],

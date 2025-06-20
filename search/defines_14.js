@@ -15,10 +15,7 @@ var searchData=
   ['unusable_12',['Unusable',['../ReturnByValue_8h.html#ad82b14391d23eab65b6e3ac4b831a923',1,'ReturnByValue.h']]],
   ['up_13',['UP',['../common_8h.html#a1965eaca47dbf3f87acdafc2208f04eb',1,'common.h']]],
   ['uplo_14',['UPLO',['../common_8h.html#aede440fdc60eff8db8599716ca73b449',1,'common.h']]],
-  ['upperbound_5fdeg_15',['UPPERBOUND_DEG',['../TestBench_2main_8cpp.html#a5e51c09399294c53930fe9381d6f9a65',1,'main.cpp']]],
-  ['upperbound_5frad_16',['UPPERBOUND_RAD',['../TestBench_2main_8cpp.html#a87586a52c1f9aab150503819c0a791e7',1,'main.cpp']]],
-  ['upperbound_5fticks_17',['UPPERBOUND_TICKS',['../TestBench_2main_8cpp.html#a3c84e521e63e0d1d1bc21541bc064a23',1,'main.cpp']]],
-  ['use_5fimu_18',['use_imu',['../Hero_2main_8cpp.html#a8253255e4a1a7c9d1eb849d923244b54',1,'USE_IMU:&#160;main.cpp'],['../Infantry_2main_8cpp.html#a8253255e4a1a7c9d1eb849d923244b54',1,'USE_IMU:&#160;main.cpp'],['../Sentry_2main_8cpp.html#a8253255e4a1a7c9d1eb849d923244b54',1,'USE_IMU:&#160;main.cpp'],['../TestBench_2main_8cpp.html#a8253255e4a1a7c9d1eb849d923244b54',1,'USE_IMU:&#160;main.cpp']]],
-  ['usec_5fin_5fsec_19',['USEC_IN_SEC',['../portable__timer_8hh.html#a72467fb3c401ef8777d20cf99416e39e',1,'portable_timer.hh']]],
-  ['user_5fctrl_20',['USER_CTRL',['../MPU6050_8h.html#abd9eebb35aad7616fe0414952e2d477d',1,'MPU6050.h']]]
+  ['use_5fimu_15',['use_imu',['../Hero_2main_8cpp.html#a8253255e4a1a7c9d1eb849d923244b54',1,'USE_IMU:&#160;main.cpp'],['../Infantry_2main_8cpp.html#a8253255e4a1a7c9d1eb849d923244b54',1,'USE_IMU:&#160;main.cpp'],['../Sentry_2main_8cpp.html#a8253255e4a1a7c9d1eb849d923244b54',1,'USE_IMU:&#160;main.cpp']]],
+  ['usec_5fin_5fsec_16',['USEC_IN_SEC',['../portable__timer_8hh.html#a72467fb3c401ef8777d20cf99416e39e',1,'portable_timer.hh']]],
+  ['user_5fctrl_17',['USER_CTRL',['../MPU6050_8h.html#abd9eebb35aad7616fe0414952e2d477d',1,'MPU6050.h']]]
 ];

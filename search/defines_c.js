@@ -1056,8 +1056,5 @@ var searchData=
   ['len_5ftail_1053',['LEN_TAIL',['../ref__serial_8h.html#a678be00622af728789459e4bd5e58837',1,'ref_serial.h']]],
   ['lm_5fcheck_5fn_5fiters_1054',['LM_CHECK_N_ITERS',['../NonLinearOptimization_8cpp.html#a11a643e2e057d22b9da3090e743f1c76',1,'NonLinearOptimization.cpp']]],
   ['lm_5feval_5fcount_5ftol_1055',['lm_eval_count_tol',['../levenberg__marquardt_8cpp.html#a42952419c599cd9384aea50c39d0e7b9',1,'LM_EVAL_COUNT_TOL:&#160;levenberg_marquardt.cpp'],['../NonLinearOptimization_8cpp.html#a42952419c599cd9384aea50c39d0e7b9',1,'LM_EVAL_COUNT_TOL:&#160;NonLinearOptimization.cpp']]],
-  ['lo_1056',['LO',['../common_8h.html#af6756f4391699fde08af441bb7d9d49f',1,'common.h']]],
-  ['lowerbound_5fdeg_1057',['LOWERBOUND_DEG',['../TestBench_2main_8cpp.html#a0835331ab9fbed1e00fcdcd608281927',1,'main.cpp']]],
-  ['lowerbound_5frad_1058',['LOWERBOUND_RAD',['../TestBench_2main_8cpp.html#a14766b4e4749163562ed34592aab8952',1,'main.cpp']]],
-  ['lowerbound_5fticks_1059',['LOWERBOUND_TICKS',['../TestBench_2main_8cpp.html#aa00cc679e49badc95cde5dd0e57b6614',1,'main.cpp']]]
+  ['lo_1056',['LO',['../common_8h.html#af6756f4391699fde08af441bb7d9d49f',1,'common.h']]]
 ];

@@ -13,7 +13,7 @@ var searchData=
   ['mag_5fradius_5flsb_10',['MAG_RADIUS_LSB',['../BNO055_8h.html#a3f7693547ec956e2da4f7e6530c8a71d',1,'BNO055.h']]],
   ['mag_5fradius_5fmsb_11',['MAG_RADIUS_MSB',['../BNO055_8h.html#ac869b0aca1fc605dcb5e007a6a7ac76a',1,'BNO055.h']]],
   ['mag_5fsleep_5fconfig_12',['MAG_SLEEP_CONFIG',['../BNO055_8h.html#a841e226ef9cb339f0899b14af702310e',1,'BNO055.h']]],
-  ['magicbyte_13',['magicbyte',['../Jetson_8cpp.html#ae191ec471fc0c343a934ef3eca0c475b',1,'MAGICBYTE:&#160;Jetson.cpp'],['../Infantry_2main_8cpp.html#ae191ec471fc0c343a934ef3eca0c475b',1,'MAGICBYTE:&#160;main.cpp'],['../Sentry_2main_8cpp.html#ae191ec471fc0c343a934ef3eca0c475b',1,'MAGICBYTE:&#160;main.cpp'],['../TestBench_2main_8cpp.html#ae191ec471fc0c343a934ef3eca0c475b',1,'MAGICBYTE:&#160;main.cpp']]],
+  ['magicbyte_13',['magicbyte',['../Jetson_8cpp.html#ae191ec471fc0c343a934ef3eca0c475b',1,'MAGICBYTE:&#160;Jetson.cpp'],['../Infantry_2main_8cpp.html#ae191ec471fc0c343a934ef3eca0c475b',1,'MAGICBYTE:&#160;main.cpp'],['../Sentry_2main_8cpp.html#ae191ec471fc0c343a934ef3eca0c475b',1,'MAGICBYTE:&#160;main.cpp']]],
   ['match_14',['MATCH',['../indexed__view_8cpp.html#a119a664669ab4a6c7abece20216c1e82',1,'indexed_view.cpp']]],
   ['matsize_15',['matsize',['../benchmark_8cpp.html#ac81caa3f5245baf574ab26ed3733137c',1,'MATSIZE:&#160;benchmark.cpp'],['../benchmarkX_8cpp.html#ac81caa3f5245baf574ab26ed3733137c',1,'MATSIZE:&#160;benchmarkX.cpp']]],
   ['mattype_16',['MATTYPE',['../benchmarkX_8cpp.html#a3269f36c202892ee3104aa4785c1ea80',1,'benchmarkX.cpp']]],
@@ -130,8 +130,5 @@ var searchData=
   ['mot_5fdur_127',['MOT_DUR',['../MPU6050_8h.html#abd323d6704238106a255f3123fed1bcc',1,'MPU6050.h']]],
   ['mot_5fthr_128',['MOT_THR',['../MPU6050_8h.html#a7f58ac7631efe13fd4cafa8d22088746',1,'MPU6050.h']]],
   ['motor_5ftype_129',['motor_type',['../Chassis_8h.html#ad47970668f4c1d0ab4b2364fabf0d4a6',1,'MOTOR_TYPE:&#160;Chassis.h'],['../ChassisSubsystem_8h.html#ad47970668f4c1d0ab4b2364fabf0d4a6',1,'MOTOR_TYPE:&#160;ChassisSubsystem.h']]],
-  ['mouse_5fkb_5fmult_130',['MOUSE_KB_MULT',['../TestBench_2main_8cpp.html#a2c4507a3302129efe42973bd5153771b',1,'main.cpp']]],
-  ['mouse_5fsense_5fpitch_131',['MOUSE_SENSE_PITCH',['../TestBench_2main_8cpp.html#a4e4551a3406780ad021a451936d79a2a',1,'main.cpp']]],
-  ['mouse_5fsense_5fyaw_132',['MOUSE_SENSE_YAW',['../TestBench_2main_8cpp.html#a4c30a902cf36402ac40736dc05c87bf2',1,'main.cpp']]],
-  ['myverify_133',['MYVERIFY',['../benchBlasGemm_8cpp.html#ab5b7e06a480648c6b05106c17a1edf7e',1,'benchBlasGemm.cpp']]]
+  ['myverify_130',['MYVERIFY',['../benchBlasGemm_8cpp.html#ab5b7e06a480648c6b05106c17a1edf7e',1,'benchBlasGemm.cpp']]]
 ];
