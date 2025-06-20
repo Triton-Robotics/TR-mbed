@@ -241,28 +241,28 @@ int main(){
                 shot = 'd';        
             }
 
-            if(remote.keyPressed(Remote::Key::F) || ((remote.leftSwitch() == Remote::SwitchState::MID || remote.leftSwitch() == Remote::SwitchState::UP) && jumperPC9)){
+            if(remote.getMouseR() || remote.leftSwitch() == Remote::SwitchState::MID /*|| ((remote.leftSwitch() == Remote::SwitchState::MID || remote.leftSwitch() == Remote::SwitchState::UP) && jumperPC9)*/){
                 cv_enabled = true;
-            }else if(remote.keyPressed(Remote::Key::G) || ((remote.leftSwitch() != Remote::SwitchState::MID && remote.leftSwitch() != Remote::SwitchState::UP) && jumperPC9)){
+            }else if(!remote.getMouseR() /*|| ((remote.leftSwitch() != Remote::SwitchState::MID && remote.leftSwitch() != Remote::SwitchState::UP) && jumperPC9)*/){
                 cv_enabled = false;
             }
           
-            if(remote.leftSwitch() != Remote::SwitchState::DOWN && remote.leftSwitch() != Remote::SwitchState::UNKNOWN){
-              cv_enabled = true;
-            } 
-            if(remote.leftSwitch() == Remote::SwitchState::DOWN || remote.leftSwitch() == Remote::SwitchState::UNKNOWN){
-              cv_enabled = false;
-            }
+            // if(remote.leftSwitch() != Remote::SwitchState::DOWN && remote.leftSwitch() != Remote::SwitchState::UNKNOWN){
+            //   cv_enabled = true;
+            // } 
+            // if(remote.leftSwitch() == Remote::SwitchState::DOWN || remote.leftSwitch() == Remote::SwitchState::UNKNOWN){
+            //   cv_enabled = false;
+            // }
 
             // Mouse sensitivity initialized
             float MOUSE_SENSITIVITY_YAW_DPS = 10.0;
             float MOUSE_SENSITIVITY_PITCH_DPS = 10.0;
             
             // right click (hold) slows decreases sensitivity
-            if (remote.getMouseR()) {
-                MOUSE_SENSITIVITY_YAW_DPS = 5.0;
-                MOUSE_SENSITIVITY_PITCH_DPS = 5.0;
-            }
+            // if (remote.getMouseR()) {
+            //     MOUSE_SENSITIVITY_YAW_DPS = 5.0;
+            //     MOUSE_SENSITIVITY_PITCH_DPS = 5.0;
+            // }
 
 
             //Driving input
