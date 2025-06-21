@@ -35,6 +35,9 @@
 
 // SSD1308 oled(&i2c, 0x78);
 
+DigitalIn jumperPC9(PC_9);
+DigitalIn jumperPB1(PB_1);
+
 DigitalIn userButton(BUTTON1);
 TRMutex printer;
 static BufferedSerial bc(PA_0, PA_1, 115200);

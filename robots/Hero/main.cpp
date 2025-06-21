@@ -10,7 +10,7 @@ DigitalOut ledbuiltin(LED1);
 constexpr float LOWERBOUND = 12.0;
 constexpr float UPPERBOUND = -25.0;
 
-constexpr float BEYBLADE_OMEGA = 1.0;
+constexpr float BEYBLADE_OMEGA = 2.0;
 
 // constexpr float JOYSTICK_SENSITIVITY_YAW = 1.0/90;
 // constexpr float JOYSTICK_SENSITIVITY_PITCH = 1.0/150;
@@ -72,11 +72,11 @@ int main(){
     * MOTORS SETUP AND PIDS
     */
     //YAW
-    PID yawBeyblade(1,0,0);
+    PID yawBeyblade(1,0.005,150);
     yawBeyblade.setIntegralCap(2);
     //PID yawBeyblade(1.5, 0, 550); //yaw PID is cascading, so there are external position PIDs for yaw control
     // PID yawNonBeyblade(0.15, 0, 550);
-    yaw.setSpeedPID(250,0,0);
+    yaw.setSpeedPID(380,0,0);
     yaw.setSpeedIntegralCap(8000);
     yaw.setSpeedOutputCap(32000);
     //yaw.setSpeedPID(50, 0.2, 300); // tried setting P to 37.5 same as infantry yaw PID
@@ -85,7 +85,15 @@ int main(){
 
     int yawVelo = 0;
     #ifdef USE_IMU
-    imu.get_angular_position_quat(&imuAngles);
+    // imu.get_angular_position_quat(&imuAngles);
+    while(imu.chip_ready()){
+
+    }
+    imu.get_euler_angles((BNO055_EULER_TypeDef*)&imuAngles);
+   
+    imuAngles.yaw = 180 - imuAngles.yaw;
+    imuAngles.pitch = 180 - imuAngles.pitch;
+    imuAngles.roll = 180 - imuAngles.roll;
     float yaw_desired_angle = imuAngles.yaw + 180;
     #else
     float yaw_desired_angle = (yaw>>ANGLE) * 360.0 / TICKS_REVOLUTION;
@@ -177,10 +185,17 @@ int main(){
             }
             Chassis.periodic();
             cs = Chassis.getChassisSpeeds();
+
+            Remote::SwitchState previous_mode = remote.leftSwitch();
+            bool prevM = remote.getMouseL();
             remoteRead();
 
             #ifdef USE_IMU
-            imu.get_angular_position_quat(&imuAngles);
+            //imu.get_angular_position_quat(&imuAngles);
+            imu.get_euler_angles((BNO055_EULER_TypeDef*)&imuAngles);
+            imuAngles.yaw = 180 - imuAngles.yaw;
+            imuAngles.pitch = 180 - imuAngles.pitch;
+            imuAngles.roll = 180 - imuAngles.roll;
             #else
             yaw_current_angle = (yaw>>ANGLE) * 360.0 / TICKS_REVOLUTION;
             #endif
@@ -309,95 +324,92 @@ int main(){
             }
 
             //INDEXER CODE
-            if ((remote.leftSwitch() == Remote::SwitchState::UP  || (remote.getMouseL() && remote.leftSwitch() == Remote::SwitchState::MID)) && 
-                remote.rightSwitch() != Remote::SwitchState::MID){
-                if (shootReady){
-                    shootReady = false;
-                   if(robot_status.shooter_barrel_heat_limit < 10 || power_heat_data.shooter_42mm_barrel_heat < robot_status.shooter_barrel_heat_limit - 110) {
-                       shoot = true;
-                   }else {
-                       shoot = false;
-                   }
-
-//                     shoot = true;
-                    shootTargetPosition = 8192 * 3 + (indexer>>MULTITURNANGLE);
-//                    if(ext_power_heat_data.data.shooter_id1_17mm_cooling_heat < ext_game_robot_state.data.shooter_id1_17mm_cooling_limit - 40) {
-//                    shoot = true;
-                   shootTimer = us_ticker_read()/1000;
-//                    }
+            if((previous_mode == Remote::SwitchState::MID && remote.leftSwitch() == Remote::SwitchState::UP) || (!prevM && remote.getMouseL())){
+                if(robot_status.shooter_barrel_heat_limit < 10 || power_heat_data.shooter_42mm_barrel_heat < robot_status.shooter_barrel_heat_limit - 110) {
+                    shootTimer = us_ticker_read()/1000;
                 }
-            } else {
-                //SwitchState state set to mid/down/unknown
-                shootReady = true;
-                indexer.setPower(50);
-//                feeder.setPower(0);
-                feeder.setSpeed(0);
             }
 
+            if (us_ticker_read()/1000 - shootTimer < 200){
+                feeder.setSpeed(7000);
+            } else {
+                feeder.setSpeed(0);
+            }
+            if (us_ticker_read()/1000 - shootTimer < 500){
+                // indexer.setSpeed(8000);
+                indexer.setSpeed(6000);
+            }else if (us_ticker_read()/1000 - shootTimer > 500 && us_ticker_read()/1000 - shootTimer < 650){
+                // indexer.setSpeed(8000);
+                indexer.setPower(-16000);
+            } else {
+                indexer.setPower(0);
+                // indexerOn = true;
+            }
             // burst fire, turn the indexer to shoot 3-5 balls a time and stop indexer
             // only shoot when left switch changes from down/unknown/mid to up
             // if left switch remains at up state, indexer stops after 3-5 balls
-            if (shoot){
-                    //                 if (indexer>>MULTITURNANGLE >= shootTargetPosition){
-                    //                     // indexer.setSpeed(0);
-                    //                     shoot = false;
-                    //                 } else {
-                    //                     timeSure = us_ticker_read();
-                    //                     // indexer.setSpeed(0); //
-                    //                     // prevTimeSure = timeSure;
-                    //                 }
-                    //feeder
-                    bool feederOn = false;
-                    bool indexerOn = false;
-                    if (us_ticker_read()/1000 - shootTimer < 180){
-                        feeder.setSpeed(5500);
-                    } else {
-                        feeder.setSpeed(0);
-                        feederOn = true;
-                    }
-                    //indexer
-                    if (us_ticker_read()/1000 - shootTimer < 300){
-                        indexer.setSpeed(7400);
-                    } else {
-                        indexer.setSpeed(350);
-                        indexerOn = true;
-                    }
-                    if (indexerOn && feederOn){
-                        shoot = false;
-                    }
+//             if (shoot){
+//                     //                 if (indexer>>MULTITURNANGLE >= shootTargetPosition){
+//                     //                     // indexer.setSpeed(0);
+//                     //                     shoot = false;
+//                     //                 } else {
+//                     //                     timeSure = us_ticker_read();
+//                     //                     // indexer.setSpeed(0); //
+//                     //                     // prevTimeSure = timeSure;
+//                     //                 }
+//                     //feeder
+//                     bool feederOn = false;
+//                     bool indexerOn = false;
+
+//                     if (us_ticker_read()/1000 - shootTimer < 200){
+//                         feeder.setSpeed(7000);
+//                     } else {
+//                         feeder.setSpeed(0);
+//                         feederOn = true;
+//                     }
+//                     if (us_ticker_read()/1000 - shootTimer > 500 && us_ticker_read()/1000 - shootTimer < 650){
+//                         // indexer.setSpeed(8000);
+//                         indexer.setPower(-16000);
+//                     } else {
+//                         indexer.setSpeed(6000);
+//                         // indexerOn = true;
+//                     }
+//                     if (feederOn){
+//                         shoot = false;
+//                     }
 
                     
-                    // comment out once the pitch data is settled
+//                     // comment out once the pitch data is settled
 
-                    // if (pitch is elevated) {
-                    //     //indexer
-                    //     if (us_ticker_read()/1000 - shootTimer < 300){
-                    //         indexer.setSpeed(8000);
-                    //     } else {
-                    //         indexer.setSpeed(350);
-                    //         indexerOn = true;
-                    //     }
-                    //     if (indexerOn && feederOn){
-                    //         shoot = false;
-                    //     }
-                    // } else { // standard values that work when the pitch is level
-                    //     //indexer
-                    //     if (us_ticker_read()/1000 - shootTimer < 300){
-                    //         indexer.setSpeed(8000);
-                    //     } else {
-                    //         indexer.setSpeed(350);
-                    //         indexerOn = true;
-                    //     }
-                    //     if (indexerOn && feederOn){
-                    //         shoot = false;
-                    //     }
-                    // }
+//                     // if (pitch is elevated) {
+//                     //     //indexer
+//                     //     if (us_ticker_read()/1000 - shootTimer < 300){
+//                     //         indexer.setSpeed(8000);
+//                     //     } else {
+//                     //         indexer.setSpeed(350);
+//                     //         indexerOn = true;
+//                     //     }
+//                     //     if (indexerOn && feederOn){
+//                     //         shoot = false;
+//                     //     }
+//                     // } else { // standard values that work when the pitch is level
+//                     //     //indexer
+//                     //     if (us_ticker_read()/1000 - shootTimer < 300){
+//                     //         indexer.setSpeed(8000);
+//                     //     } else {
+//                     //         indexer.setSpeed(350);
+//                     //         indexerOn = true;
+//                     //     }
+//                     //     if (indexerOn && feederOn){
+//                     //         shoot = false;
+//                     //     }
+//                     // }
 
-                } else {
-                indexer.setSpeed(200);
-//                 feeder.setSpeed(0);
-                feeder.setPower(0);
-                }
+//                 } else {
+//                 // indexer.setSpeed(200);
+// //                 feeder.setSpeed(0);
+//                 feeder.setPower(0);
+//                 }
 
             //FLYWHEELS
             if (remote.leftSwitch() != Remote::SwitchState::DOWN &&
@@ -424,9 +436,9 @@ int main(){
 
                 #ifdef USE_IMU
                 //printff("yaw_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
-                //printff("yaw_des:%.3f yaw_act:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180);
+                // printff("yaw_des:%.3f yaw_act:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180);
                 #else
-                printff("yaw_des_v:%d yaw_act_v:%d\n", yawVelo, yaw>>VELOCITY);
+                // printff("yaw_des_v:%d yaw_act_v:%d\n", yawVelo, yaw>>VELOCITY);
                 //printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
                 #endif
                 // printff("elap:%.5fms\n", elapsedms);
@@ -443,7 +455,7 @@ int main(){
                 //     indexer.isConnected() ? 'y' : 'n',
                 //     feeder.isConnected() ? 'y' : 'n');
                 #ifdef USE_IMU
-                printff("IMU %.3f %.3f %.3f\n",imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
+                //printff("IMU %.3f %.3f %.3f\n",imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
                 #endif
 
                 WheelSpeeds ac = Chassis.getWheelSpeeds();

@@ -189,6 +189,7 @@ public:
 
     inline void setSpeedPID(float kP, float kI, float kD)                       { pidSpeed.setPID(kP, kI, kD); }
     inline void setSpeedIntegralCap(double cap)                                 { pidSpeed.setIntegralCap((float)cap); }
+    inline void setSpeedDerivativeCap(double cap)                                 { pidSpeed.setDerivativeCap((float)cap); }
     inline void setSpeedOutputCap(double cap)                                   { pidSpeed.setOutputCap((float)cap); }
 
     inline int calculateSpeedPID(int desired, int current, double dt)           { return pidSpeed.calculate(desired, current, dt); }

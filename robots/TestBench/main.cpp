@@ -54,17 +54,28 @@ int main(){
     * MOTORS SETUP AND PIDS
     */
     //YAW
-    PID yawBeyblade(0.5, 0, 0); //yaw PID is cascading, so there are external position PIDs for yaw control
-    yawBeyblade.setOutputCap(30);
-    yaw.setSpeedPID(100, 0.48305, 0);
-    yaw.setSpeedIntegralCap(5000);
+    PID yawBeyblade(1,0.005,150);
+    yawBeyblade.setIntegralCap(2);
+    //PID yawBeyblade(1.5, 0, 550); //yaw PID is cascading, so there are external position PIDs for yaw control
+    // PID yawNonBeyblade(0.15, 0, 550);
+    yaw.setSpeedPID(380,0,0);
+    yaw.setSpeedIntegralCap(8000);
     yaw.setSpeedOutputCap(32000);
-    yaw.outputCap = 12000;
+    //yaw.setSpeedPID(50, 0.2, 300); // tried setting P to 37.5 same as infantry yaw PID
+    yaw.outputCap = 16000;
     yaw.useAbsEncoder = false;
 
     int yawVelo = 0;
     #ifdef USE_IMU
-    imu.get_angular_position_quat(&imuAngles);
+    // imu.get_angular_position_quat(&imuAngles);
+    while(imu.chip_ready()){
+
+    }
+    imu.get_euler_angles((BNO055_EULER_TypeDef*)&imuAngles);
+   
+    imuAngles.yaw = 180 - imuAngles.yaw;
+    imuAngles.pitch = 180 - imuAngles.pitch;
+    imuAngles.roll = 180 - imuAngles.roll;
     float yaw_desired_angle = imuAngles.yaw + 180;
     #else
     float yaw_desired_angle = (yaw>>ANGLE) * 360.0 / TICKS_REVOLUTION;
@@ -72,7 +83,7 @@ int main(){
     #endif
 
     //PITCH
-    pitch.setPositionPID(23.0458, 0.022697, 756.5322);
+    pitch.setPositionPID(8, 0, 0); //15, 0, 1700
     pitch.setPositionOutputCap(32000);
     pitch.pidPosition.feedForward = 0;
     pitch.outputCap = 16000;
@@ -81,32 +92,31 @@ int main(){
     float pitch_current_angle = 0;
     float pitch_desired_angle = 0;
     float pitch_phase_angle = 33 / 180.0 * PI; // 5.69 theoretical //wtf is this?
-    float pitch_zero_offset_ticks = 6500;
+    float pitch_zero_offset_ticks = 2000;
     float K = 0.38; // 0.75 //0.85
 
     //FLYWHEELS
-    LFLYWHEEL_U.setSpeedPID(7.1849, 0.000042634, 0);
-    RFLYWHEEL_U.setSpeedPID(7.1849, 0.000042634, 0);
-    LFLYWHEEL_D.setSpeedPID(7.1849, 0.000042634, 0);
-    RFLYWHEEL_D.setSpeedPID(7.1849, 0.000042634, 0);
+    LFLYWHEEL.setSpeedPID(7.1849, 0.000042634, 0);
+    RFLYWHEEL.setSpeedPID(7.1849, 0.000042634, 0);
+
+    feeder.setSpeedPID(4, 0, 1);
 
     //INDEXER
-    indexerL.setSpeedPID(1, 0, 1);
-    indexerL.setSpeedIntegralCap(8000);
-    indexerR.setSpeedPID(1, 0, 1);
-    indexerR.setSpeedIntegralCap(8000);
+    indexer.setSpeedPID(1.65, 0, 1);
+    indexer.setSpeedIntegralCap(8000);
     //Cascading PID for indexer angle position control. Surely there are better names then "sure"...
-    // PID sure(0.5,0,0.4);
-    // sure.setOutputCap(4000);
+    PID sure(0.5,0,0.4);
+    sure.setOutputCap(4000);
     //Variables for burst fire
     unsigned long timeSure;
     unsigned long prevTimeSure;
-    // bool shoot = false;
-    // int shootTargetPosition = 36*8190 ;
-    // bool shootReady = false;
+    unsigned long shootTimer;
+    bool shoot = false;
+    int shootTargetPosition = 36*8190 ;
+    bool shootReady = false;
 
     //CHASSIS
-    Chassis.setYawReference(&yaw, 4608); //the number of ticks of yaw considered to be robot-front
+    Chassis.setYawReference(&yaw, 2500); //the number of ticks of yaw considered to be robot-front
     //Common values for reference are 6500 and 2500
     Chassis.setSpeedFF_Ks(CHASSIS_FF_KICK); //feed forward "kick" for wheels, a constant multiplier of max power in the direcion of movment
 

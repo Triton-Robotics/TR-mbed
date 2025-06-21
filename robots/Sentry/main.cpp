@@ -52,9 +52,6 @@ char yaw_velocity_char[4];
 char pitch_angle_char[4];
 char pitch_velocity_char[4];
 
-char nucleo_value[30] = {0};
-char jetson_value[30] = {0};
-
 //CV
 float CV_pitch_angle_radians = 0.0;
 float CV_yaw_angle_radians = 0.0;
@@ -197,13 +194,28 @@ int main(){
     * MOTORS SETUP AND PIDS
     */
     //YAW
-    PID yawBeyblade(0.5, 0, 0); //yaw PID is cascading, so there are external position PIDs for yaw control
+
+    // for CV
+    PID yawBeyblade(0.3, 0, 0); //yaw PID is cascading, so there are external position PIDs for yaw control
     yawBeyblade.setOutputCap(30);
-    yaw.setSpeedPID(100, 0.48305, 0);
-    yaw.setSpeedIntegralCap(5000);
+    // yaw.setSpeedPID(924.48, 1.8563, 100);
+    yaw.setSpeedPID(1250.355, 1.0061, 0);
+    // yaw.setSpeedPID(3386.438, 7.4473, 17859.4174);
+    yaw.setSpeedIntegralCap(8000);
+    yaw.setSpeedDerivativeCap(4000);
     yaw.setSpeedOutputCap(32000);
-    yaw.outputCap = 12000;
+    yaw.outputCap = 16000;
     yaw.useAbsEncoder = false;
+
+    // // for manual driving
+    // PID yawBeyblade(0.5, 0, 0); //yaw PID is cascading, so there are external position PIDs for yaw control
+    // yawBeyblade.setOutputCap(35);
+    // yaw.setSpeedPID(922.9095, 0.51424, 0);
+    // yaw.setSpeedIntegralCap(5000);
+    // yaw.setSpeedOutputCap(32000);
+    // yaw.outputCap = 16000;
+    // yaw.useAbsEncoder = false;
+
 
     int yawVelo = 0;
     #ifdef USE_IMU
@@ -249,7 +261,7 @@ int main(){
     // bool shootReady = false;
 
     //CHASSIS
-    Chassis.setYawReference(&yaw, 4608); //the number of ticks of yaw considered to be robot-front
+    Chassis.setYawReference(&yaw, 5650); //the number of ticks of yaw considered to be robot-front
     //Common values for reference are 6500 and 2500
     Chassis.setSpeedFF_Ks(CHASSIS_FF_KICK); //feed forward "kick" for wheels, a constant multiplier of max power in the direcion of movment
 
@@ -350,7 +362,7 @@ int main(){
             remoteRead();
 
             Jetson_read_data jetson_received_data;
-            int readResult = jetson_read_values(CV_pitch_angle_radians, CV_yaw_angle_radians, CV_shoot);
+            int readResult = jetson_read_values(bcJetson, jetson_received_data);
 
             if(cv_enabled){
                 if(readResult > 0){
@@ -489,7 +501,7 @@ int main(){
             //YAW CODE
             if (drive == 'u' || drive == 'd' || (drive =='o' && (remote.rightSwitch() == Remote::SwitchState::UP || remote.rightSwitch() == Remote::SwitchState::DOWN))){
                 float chassis_rotation_radps = cs.vOmega;
-                int chassis_rotation_rpm = chassis_rotation_radps * 60 / (2*M_PI) * 4; //I added this 4 but I don't know why.
+                int chassis_rotation_rpm = chassis_rotation_radps * 60 / (2*M_PI) * 1.5; //I added this 4 but I don't know why.
                 
                 //Regular Yaw Code
                 yaw_desired_angle -= jyaw * MOUSE_SENSITIVITY_YAW_DPS * elapsedms / 1000;
@@ -503,16 +515,21 @@ int main(){
                 yawVelo = jyaw * JOYSTICK_SENSITIVITY_YAW_DPS / 360.0 * 60;
                 #endif
                 //yawVelo = 0;
-                yawVelo -= chassis_rotation_rpm;
+                yawVelo += chassis_rotation_rpm;
 
                 int dir = 0;
-                if(yawVelo > 0){
+                if(yawVelo > 1){
                     dir = 1;
-                }else if(yawVelo < 0){
+                }else if(yawVelo < 1){
                     dir = -1;
                 }
-                //yaw.pidSpeed.feedForward = -5.30094881524873 * yawVelo * yawVelo * dir + 461.129143101395 * yawVelo + 2402.35249010233 * dir;
-                yaw.pidSpeed.feedForward = (-5.30094881524873*yawVelo*yawVelo*dir + 461.129143101395*yawVelo + 3402.35249010233 * dir);
+
+                // 2 degree
+                yaw.pidSpeed.feedForward = -0.6840 * yawVelo * yawVelo * dir + 225.6726 * yawVelo + 1868 * dir;
+
+                // 1 degree
+                // yaw.pidSpeed.feedForward = 175.3608 * yawVelo + 2302.1 * dir;
+
                 yaw.setSpeed(yawVelo);
 
                 prevTimeSure = timeSure;
@@ -602,7 +619,7 @@ int main(){
                 //printff("pitch_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
                 //printff("pitch_des:%.3f pitch_act:%.3f [%d]\n", pitch_desired_angle, pitch_current_angle, pitch>>ANGLE);
                 //printff("cX%.1f cY%.1f cOmega%.3f cRPM%.1f\n", cs.vX, cs.vY, cs.vOmega, cs.vOmega * 60 / (2*M_PI) * 4);
-                // printff("Chassis: LF:%c RF:%c LB:%c RB:%c Yaw:%c Pitch:%c Flywheel_L:%c Flywheel_R:%c Indexer:%c\n", 
+                // printff("LF:%c RF:%c LB:%c RB:%c Yaw:%c Pitch:%c\n", 
                 //     Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).isConnected() ? 'y' : 'n', 
                 //     Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).isConnected() ? 'y' : 'n', 
                 //     Chassis.getMotor(ChassisSubsystem::LEFT_BACK).isConnected() ? 'y' : 'n', 
