@@ -6,6 +6,26 @@
 #define TR_EMBEDDED_PID_H
 
 #include "mbed.h"
+#define lastX 5
+
+struct lastfew {
+    long long last[lastX] = { 0 };
+    int arm = 0;
+
+    void add(long long l) {
+        last[arm] = l;
+        arm++;
+        if (arm == lastX)
+            arm = 0;
+    }
+
+    long long time() {
+        long long t = 0;
+        for (int i = 0; i < lastX; i++)
+            t += last[i];
+        return t / lastX;
+    }
+};
 
 /**
  * The PID class is used to implement PID (proportional, integral, derivative) control of a motor. It is used by almost every
@@ -22,6 +42,7 @@ private:
 
     float lastError = 0;
     double errorIntegral = 0;
+    lastfew dBuffer;
 
 public:
     float feedForward = 0;

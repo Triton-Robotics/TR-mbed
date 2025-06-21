@@ -64,12 +64,16 @@ int PID::calculatePeriodic(float error, double dt)
     double PIDCalc = (kP * error) + (errorIntegral) + feedForward;
     pC = kP * error;
 
+    double dTerm = 0;
     if (dt > 0)
     {
-        PIDCalc += (kD * (error - lastError) / dt);
+        dTerm = (kD * (error - lastError) / dt);
+        dBuffer.add(dTerm);
+        dTerm = dBuffer.time();
+        PIDCalc += dTerm;
     }
 
-    dC = (kD * (error - lastError) / dt);
+    dC = dTerm;
 
     lastError = error;
     limitOutput(PIDCalc);
