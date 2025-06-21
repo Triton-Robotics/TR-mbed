@@ -514,13 +514,13 @@ int main(){
                 //     Chassis.getMotorSpeed(ChassisSubsystem::LEFT_BACK, ChassisSubsystem::METER_PER_SECOND), 
                 //     Chassis.getMotorSpeed(ChassisSubsystem::RIGHT_BACK, ChassisSubsystem::METER_PER_SECOND));
                 //printff("%d,%d,%d,%d\n", abs(LFLYWHEEL>>VELOCITY), abs(LFLYWHEEL>>POWEROUT), abs(RFLYWHEEL>>VELOCITY), abs(RFLYWHEEL>>POWEROUT));
-                if(remote.rightSwitch() == Remote::SwitchState::UP){
+                // if(remote.rightSwitch() == Remote::SwitchState::UP){
                     // printff("%d %d %u %u %u %f ", abs(LFLYWHEEL>>VELOCITY), abs(RFLYWHEEL>>VELOCITY), shoot_data.bullet_type, shoot_data.shooter_number, shoot_data.launching_frequency, *(float*)(((uint8_t*)&shoot_data)+4) /*((shoot_data.initial_speed / 0.06) * (30 / M_PI))*/);
                     // for(int i = 0; i < 7; i ++){
                     //    printff("(%2x)", (uint8_t)*((((uint8_t*)&shoot_data)+i)));
                     // }
-                    float c = 0;
-                    memcpy(&c, ((uint8_t*)&shoot_data)+3, 4);
+                    // float c = 0;
+                    // memcpy(&c, ((uint8_t*)&shoot_data)+3, 4);
                     // for(int i = 0; i < 4; i ++){
                     //    printff("[%2x]", (uint8_t)*((((uint8_t*)&c)+i)));
                     // }
@@ -528,7 +528,7 @@ int main(){
                     // printff("%d %d %f %f\n", abs(LFLYWHEEL>>VELOCITY), abs(RFLYWHEEL>>VELOCITY), ((c / 0.06) * (30 / M_PI)), c);
                     //printff("%d %d\n", abs(LFLYWHEEL>>VELOCITY), abs(RFLYWHEEL>>VELOCITY));
                     
-                }
+                // }
             }
 
             DJIMotor::s_sendValues();

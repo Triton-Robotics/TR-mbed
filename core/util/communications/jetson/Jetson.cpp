@@ -122,7 +122,13 @@ ssize_t jetson_read_values(BufferedSerial &bcJetson, Jetson_read_data& read_data
   ssize_t bytes_read = bcJetson.read(jetson_read_buff + jetson_read_buff_pos, available_space);
   if(bytes_read == -EAGAIN){
     return -EAGAIN;
-      }
+  }
+
+  //error other than no data to read 
+  if(bytes_read <= 0){
+    jetson_read_buff_pos = 0; //reset buffer
+    return bytes_read; //return error code
+  }
 
   jetson_read_buff_pos += bytes_read;
 
