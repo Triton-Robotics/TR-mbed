@@ -1050,11 +1050,12 @@ var searchData=
   ['lapack_5fzupmtr_1047',['LAPACK_zupmtr',['../lapacke_8h.html#a14c07c819564d01af16c1f09bc0d3c48',1,'lapacke.h']]],
   ['lapacke_5ffree_1048',['LAPACKE_free',['../lapacke_8h.html#a5aeb6552536c5f62fdf44467e17fe603',1,'lapacke.h']]],
   ['lapacke_5fmalloc_1049',['LAPACKE_malloc',['../lapacke_8h.html#addc2d2af4fb24769e5bc5c1f08e32604',1,'lapacke.h']]],
-  ['left_1050',['LEFT',['../common_8h.html#a437ef08681e7210d6678427030446a54',1,'common.h']]],
-  ['len_5fcmdid_1051',['LEN_CMDID',['../ref__serial_8h.html#a60f1b66e9e5564f879f936e6327acc4f',1,'ref_serial.h']]],
-  ['len_5fheader_1052',['LEN_HEADER',['../ref__serial_8h.html#a4d1fe0f0b5bcda03fd47e62fe678c91b',1,'ref_serial.h']]],
-  ['len_5ftail_1053',['LEN_TAIL',['../ref__serial_8h.html#a678be00622af728789459e4bd5e58837',1,'ref_serial.h']]],
-  ['lm_5fcheck_5fn_5fiters_1054',['LM_CHECK_N_ITERS',['../NonLinearOptimization_8cpp.html#a11a643e2e057d22b9da3090e743f1c76',1,'NonLinearOptimization.cpp']]],
-  ['lm_5feval_5fcount_5ftol_1055',['lm_eval_count_tol',['../levenberg__marquardt_8cpp.html#a42952419c599cd9384aea50c39d0e7b9',1,'LM_EVAL_COUNT_TOL:&#160;levenberg_marquardt.cpp'],['../NonLinearOptimization_8cpp.html#a42952419c599cd9384aea50c39d0e7b9',1,'LM_EVAL_COUNT_TOL:&#160;NonLinearOptimization.cpp']]],
-  ['lo_1056',['LO',['../common_8h.html#af6756f4391699fde08af441bb7d9d49f',1,'common.h']]]
+  ['lastx_1050',['lastX',['../PID_8h.html#a179eaca0680d8bd161bf8335ff43ad17',1,'PID.h']]],
+  ['left_1051',['LEFT',['../common_8h.html#a437ef08681e7210d6678427030446a54',1,'common.h']]],
+  ['len_5fcmdid_1052',['LEN_CMDID',['../ref__serial_8h.html#a60f1b66e9e5564f879f936e6327acc4f',1,'ref_serial.h']]],
+  ['len_5fheader_1053',['LEN_HEADER',['../ref__serial_8h.html#a4d1fe0f0b5bcda03fd47e62fe678c91b',1,'ref_serial.h']]],
+  ['len_5ftail_1054',['LEN_TAIL',['../ref__serial_8h.html#a678be00622af728789459e4bd5e58837',1,'ref_serial.h']]],
+  ['lm_5fcheck_5fn_5fiters_1055',['LM_CHECK_N_ITERS',['../NonLinearOptimization_8cpp.html#a11a643e2e057d22b9da3090e743f1c76',1,'NonLinearOptimization.cpp']]],
+  ['lm_5feval_5fcount_5ftol_1056',['lm_eval_count_tol',['../levenberg__marquardt_8cpp.html#a42952419c599cd9384aea50c39d0e7b9',1,'LM_EVAL_COUNT_TOL:&#160;levenberg_marquardt.cpp'],['../NonLinearOptimization_8cpp.html#a42952419c599cd9384aea50c39d0e7b9',1,'LM_EVAL_COUNT_TOL:&#160;NonLinearOptimization.cpp']]],
+  ['lo_1057',['LO',['../common_8h.html#af6756f4391699fde08af441bb7d9d49f',1,'common.h']]]
 ];
