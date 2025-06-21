@@ -54,7 +54,7 @@ char CV_shoot = 0;
 I2C i2c(I2C_SDA, I2C_SCL);
 
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
-ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.254); // radius is 10 in
+ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.2286); // radius is 9 in
 DJIMotor yaw(7, CANHandler::CANBUS_1, GIMBLY,"Yeah");
 DJIMotor pitch(5, CANHandler::CANBUS_2, GIMBLY,"Peach"); // right
 DJIMotor yaw2(6, CANHandler::CANBUS_1, GIMBLY,"Ye2"); // left, not functioning
@@ -95,13 +95,28 @@ int main(){
     * MOTORS SETUP AND PIDS
     */
     //YAW
-    PID yawBeyblade(1, 0, 0); //yaw PID is cascading, so there are external position PIDs for yaw control
+
+    // for CV
+    PID yawBeyblade(0.3, 0, 0); //yaw PID is cascading, so there are external position PIDs for yaw control
     yawBeyblade.setOutputCap(30);
-    yaw.setSpeedPID(450, 0.02, 300);
-    yaw.setSpeedIntegralCap(5000);
+    // yaw.setSpeedPID(924.48, 1.8563, 100);
+    yaw.setSpeedPID(1250.355, 1.0061, 0);
+    // yaw.setSpeedPID(3386.438, 7.4473, 17859.4174);
+    yaw.setSpeedIntegralCap(8000);
+    yaw.setSpeedDerivativeCap(4000);
     yaw.setSpeedOutputCap(32000);
     yaw.outputCap = 16000;
     yaw.useAbsEncoder = false;
+
+    // // for manual driving
+    // PID yawBeyblade(0.5, 0, 0); //yaw PID is cascading, so there are external position PIDs for yaw control
+    // yawBeyblade.setOutputCap(35);
+    // yaw.setSpeedPID(922.9095, 0.51424, 0);
+    // yaw.setSpeedIntegralCap(5000);
+    // yaw.setSpeedOutputCap(32000);
+    // yaw.outputCap = 16000;
+    // yaw.useAbsEncoder = false;
+
 
     int yawVelo = 0;
     #ifdef USE_IMU
@@ -335,13 +350,18 @@ int main(){
                 yawVelo += chassis_rotation_rpm;
 
                 int dir = 0;
-                if(yawVelo > 0){
+                if(yawVelo > 1){
                     dir = 1;
-                }else if(yawVelo < 0){
+                }else if(yawVelo < 1){
                     dir = -1;
                 }
-                //yaw.pidSpeed.feedForward = -5.30094881524873 * yawVelo * yawVelo * dir + 461.129143101395 * yawVelo + 2402.35249010233 * dir;
-                yaw.pidSpeed.feedForward = (184.5 * yawVelo + 2561 * dir);
+
+                // 2 degree
+                yaw.pidSpeed.feedForward = -0.6840 * yawVelo * yawVelo * dir + 225.6726 * yawVelo + 1868 * dir;
+
+                // 1 degree
+                // yaw.pidSpeed.feedForward = 175.3608 * yawVelo + 2302.1 * dir;
+
                 yaw.setSpeed(yawVelo);
 
                 prevTimeSure = timeSure;
@@ -421,12 +441,12 @@ int main(){
                 //printff("lX:%.1f lY:%.1f rX:%.1f rY:%.1f lS:%d rS:%d\n", remote.leftX(), remote.leftY(), remote.rightX(), remote.rightY(), remote.leftSwitch(), remote.rightSwitch());
                 //printff("jx:%.3f jy:%.3f jpitch:%.3f jyaw:%.3f\n", jx, jy, jpitch, jyaw);
                 #ifdef USE_IMU
-                printff("yaw_des_v:%d yaw_act_v:%d \n", yawVelo, yaw>>VELOCITY);
+                // printff("yaw_des_v:%d yaw_act_v:%d ", yawVelo, yaw>>VELOCITY);
                 // printff("yaw_des:%.3f yaw_act:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180);
                 printff("%.3f, %.3f, %.3f\n", imuAngles.yaw + 180, imuAngles.roll + 180, imuAngles.pitch + 180 );
                 #else
-                // printff("yaw_des_v:%d yaw_act_v:%d PWR:%d ", yawVelo, yaw>>VELOCITY, yaw>>POWEROUT);
-                // printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
+                printff("yaw_des_v:%d yaw_act_v:%d PWR:%d ", yawVelo, yaw>>VELOCITY, yaw>>POWEROUT);
+                printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
                 #endif
                 //printff("pitch_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
                 //printff("pitch_des:%.3f pitch_act:%.3f [%d]\n", pitch_desired_angle, pitch_current_angle, pitch>>ANGLE);
@@ -439,14 +459,14 @@ int main(){
                 //     yaw.isConnected() ? 'y' : 'n', 
                 //     pitch.isConnected() ? 'y' : 'n');
 
-                // printff("Flywheels: LU:%c LD:%c RU:%c RD:%c IL:%c IR:%c\n", 
+                // printff("Flywheels: LU:%c LD:%c RU:%c RD:%c IndexerL:%c IndexerR:%c\n", 
                 //     LFLYWHEEL_U.isConnected() ? 'y' : 'n', 
                 //     LFLYWHEEL_D.isConnected() ? 'y' : 'n', 
                 //     RFLYWHEEL_U.isConnected() ? 'y' : 'n', 
                 //     RFLYWHEEL_D.isConnected() ? 'y' : 'n', 
                 //     indexerL.isConnected() ? 'y' : 'n',
                 //     indexerR.isConnected() ? 'y' : 'n');
-                // printff("%d %d %d\n", Chassis.getMotor(ChassisSubsystem::LEFT_FRONT)>>VELOCITY,  Chassis.getMotor(ChassisSubsystem::LEFT_FRONT)>>VALUE, Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).getMode());
+                //printff("%d %d %d\n", Chassis.getMotor(ChassisSubsystem::LEFT_FRONT)>>VELOCITY,  Chassis.getMotor(ChassisSubsystem::LEFT_FRONT)>>VALUE, Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).getMode());
                 #ifdef USE_IMU
                 //printff("IMU %.3f %.3f %.3f\n",imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
                 #endif
