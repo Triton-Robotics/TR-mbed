@@ -299,7 +299,7 @@ int main(){
             jx = (abs(jx) < tolerance) ? 0 : jx;
             jy = (abs(jy) < tolerance) ? 0 : jy;
             jpitch = (abs(jpitch) < tolerance) ? 0 : jpitch;
-            jyaw = (abs(jyaw) < tolerance) ? 0 : jyaw;
+            jyaw = (abs(jyaw) < tolerance * 3) ? 0 : jyaw;
             
             //Keyboard Driving
             float mult = 1;
@@ -409,8 +409,8 @@ int main(){
                     
                 // }
 
-                indexerL.setSpeed(-5 * 8 * M2006_GEAR_RATIO);
-                indexerR.setSpeed(5 * 8 * M2006_GEAR_RATIO);
+                indexerL.setSpeed(-5 * 16 * M2006_GEAR_RATIO);
+                indexerR.setSpeed(5 * 16 * M2006_GEAR_RATIO);
             } else {
                 indexerL.setSpeed(0);
                 indexerR.setSpeed(0);
