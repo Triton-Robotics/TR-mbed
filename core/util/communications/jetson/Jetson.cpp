@@ -91,8 +91,6 @@ void jetson_send_feedback(BufferedSerial &bcJetson, const Jetson_send_data& data
   char lrc_char = static_cast<uint8_t>(lrc);
   nucleo_value[25] = lrc_char;
 
-  //TODO: do we need this?
-  bcJetson.set_blocking(false);
   bcJetson.write(nucleo_value, 26); //changed from 30
 }
 
@@ -105,9 +103,6 @@ void jetson_send_feedback(BufferedSerial &bcJetson, const Jetson_send_data& data
 */
 //TODO: remove printf's
 ssize_t jetson_read_values(BufferedSerial &bcJetson, Jetson_read_data& read_data) {
-  //TODO: do we need this?
-  bcJetson.set_blocking(false);
-
   if(!bcJetson.readable()){
     return -EAGAIN;
   }
