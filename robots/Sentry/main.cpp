@@ -80,7 +80,7 @@ BNO055_ANGULAR_POSITION_typedef imuAngles;
 struct SetValues {
     float lx;
     float ly;
-}
+};
 
 int calculateDeltaYaw(int ref_yaw, int beforeBeybladeYaw)
 {
@@ -144,7 +144,7 @@ SetValues calculate_lx_ly(float posx, float posy, float final_x, float final_y, 
     }
 
     if ((final_x - posx) > BUFFER) {
-        if (vY < VEL_INIT) {
+        if (abs(vY) < VEL_INIT) {
             values.ly = vY + ACCEL_INIT;
         }
         else {
@@ -161,7 +161,7 @@ SetValues calculate_lx_ly(float posx, float posy, float final_x, float final_y, 
         }
     }
     else if ((posx - final_x) > BUFFER) {
-        if (vY < -VEL_INIT) {
+        if (abs(vY) < VEL_INIT) {
             values.ly = vY - ACCEL_INIT;
         }
         else {
@@ -439,10 +439,11 @@ int main(){
             accel =  {(velocity.vX - prev_velocity.vX) / (0.001 * OUTER_LOOP_DT_MS), (velocity.vY - prev_velocity.vY) / (0.001 * OUTER_LOOP_DT_MS), (velocity.vOmega - prev_velocity.vOmega) / (0.001 * OUTER_LOOP_DT_MS)};
 
             // update pos and angle in mm
-            // velocities in m/s, acceleration in m/s^2, the loop runs every OUTER_LOOP_DT_MS ms
+            // velocities in m/s, acceleration in m/s^2, the loop runs every OUTER_LOOP_DT_MS
             
             // ANGLE
-            angle = ((7900 - (yaw>>ANGLE)) + ((imuAngles.yaw - init_yaw)* 8192 / 360)) * 2*M_PI/8192; 
+            //angle = ((5650 - (yaw>>ANGLE)) + ((imuAngles.yaw - init_yaw)* 8192 / 360)) * 2*M_PI/8192; 
+            angle = (imuAngles.yaw - init_yaw) * 2 * M_PI / 360;
             // first half is making the conversion from chassis center to head 
             // second half is finding the angle of the head relative to start
 
@@ -453,26 +454,28 @@ int main(){
                 angle += 2*M_PI;
             }
 
-            posx = posx + (velocity.vX * cos(angle) - velocity.vY * sin(angle)) * OUTER_LOOP_DT_MS + 
-                    (1/2 * (accel.vX * cos(angle) - accel.vY * sin(angle)) * OUTER_LOOP_DT_MS * OUTER_LOOP_DT_MS * 0.001);
-            posy = posy + (velocity.vY * cos(angle) + velocity.vX * sin(angle)) * OUTER_LOOP_DT_MS + 
-                    (1/2 * (accel.vY * cos(angle) + accel.vX * sin(angle)) * OUTER_LOOP_DT_MS * OUTER_LOOP_DT_MS * 0.001);
+            // posx = posx + ((velocity.vX * cos(angle) - velocity.vY * sin(angle)) * OUTER_LOOP_DT_MS + 
+            //         (1/2 * (accel.vX * cos(angle) - accel.vY * sin(angle)) * OUTER_LOOP_DT_MS * OUTER_LOOP_DT_MS * 0.001));
+            // posy = posy + ((velocity.vY * cos(angle) + velocity.vX * sin(angle)) * OUTER_LOOP_DT_MS + 
+            //         (1/2 * (accel.vY * cos(angle) + accel.vX * sin(angle)) * OUTER_LOOP_DT_MS * OUTER_LOOP_DT_MS * 0.001));
 
-            //Chassis Code
+            posy = posy + ((velocity.vY * sin(angle)) - (velocity.vX * cos(angle))) * OUTER_LOOP_DT_MS + (1/2 * ((accel.vY * sin(angle)) - (accel.vX * cos(angle))) * OUTER_LOOP_DT_MS * OUTER_LOOP_DT_MS * 0.001);
+            
+            posx = posx + ((velocity.vX * sin(angle)) + (velocity.vY * cos(angle))) * OUTER_LOOP_DT_MS + (1/2 * ((accel.vX * sin(angle)) + (accel.vY * cos(angle))) * OUTER_LOOP_DT_MS * OUTER_LOOP_DT_MS * 0.001);
+
+                    //Chassis Code
             if (drive == 'u' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::UP)){
                 //REGULAR DRIVING CODE
                 float distance = calculateDistance(posx, posy, final_x, final_y);
                 SetValues values = calculate_lx_ly(posx, posy, final_x, final_y, velocity.vX, velocity.vY);
 
                 if ((values.ly == 0 && values.lx == 0) || (distance < M_SQRT2 * BUFFER)) {
-                    if (robot_status.current_HP > robot_status.maximum_HP * 0.2) {
+                    if (robot_status.current_HP >= robot_status.maximum_HP * 0.2) {
                         if (idx < final_pos.size() - 1) {
-                        idx += 1;
-                        final_y = final_pos[idx][1];
-                        final_x = final_pos[idx][0];
-                    }
-                    values.ly = 0;
-                    values.lx = 0;
+                            idx += 1;
+                            final_y = final_pos[idx][1];
+                            final_x = final_pos[idx][0];
+                        }
                     }
                     else {
                         if (idx > 0) {
@@ -480,9 +483,9 @@ int main(){
                             final_y = final_pos[idx][1];
                             final_x = final_pos[idx][0];
                         }
-                        values.ly = 0;
-                        values.lx = 0;
                     }
+                    values.ly = 0;
+                    values.lx = 0;
                 }
                 Chassis.setChassisSpeeds({values.lx, values.ly, 0},
                                           ChassisSubsystem::REVERSE_YAW_ORIENTED);
@@ -492,7 +495,7 @@ int main(){
                 SetValues values = calculate_lx_ly(posx, posy, final_x, final_y, velocity.vX, velocity.vY);
 
                 if ((values.ly == 0 && values.lx == 0) || (distance < M_SQRT2 * BUFFER)) {
-                    if (robot_status.current_HP > robot_status.maximum_HP * 0.2) {
+                    if (robot_status.current_HP >= robot_status.maximum_HP * 0.2) {
                         if (idx < final_pos.size() - 1) {
                         idx += 1;
                         final_y = final_pos[idx][1];
@@ -629,10 +632,11 @@ int main(){
                 //printff("Prints:\n");
                 //printff("lX:%.1f lY:%.1f rX:%.1f rY:%.1f lS:%d rS:%d\n", remote.leftX(), remote.leftY(), remote.rightX(), remote.rightY(), remote.leftSwitch(), remote.rightSwitch());
                 //printff("jx:%.3f jy:%.3f jpitch:%.3f jyaw:%.3f\n", jx, jy, jpitch, jyaw);
+                printff("X:%.2f,Y:%.2f,hp:%hu,mhp:%hu,%d\n", posx, posy, robot_status.current_HP, robot_status.maximum_HP, idx);
                 #ifdef USE_IMU
                 // printff("yaw_des_v:%d yaw_act_v:%d ", yawVelo, yaw>>VELOCITY);
                 // printff("yaw_des:%.3f yaw_act:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180);
-                printff("%.3f, %.3f, %.3f\n", imuAngles.yaw + 180, imuAngles.roll + 180, imuAngles.pitch + 180 );
+                //printff("%.3f, %.3f, %.3f\n", imuAngles.yaw + 180, imuAngles.roll + 180, imuAngles.pitch + 180 );
                 #else
                 printff("yaw_des_v:%d yaw_act_v:%d PWR:%d ", yawVelo, yaw>>VELOCITY, yaw>>POWEROUT);
                 printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
