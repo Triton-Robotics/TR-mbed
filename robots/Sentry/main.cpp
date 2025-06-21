@@ -484,8 +484,6 @@ int main(){
                         values.lx = 0;
                     }
                 }
-                
-
                 Chassis.setChassisSpeeds({values.lx, values.ly, 0},
                                           ChassisSubsystem::REVERSE_YAW_ORIENTED);
             }else if (drive == 'd' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::DOWN)){
@@ -494,13 +492,24 @@ int main(){
                 SetValues values = calculate_lx_ly(posx, posy, final_x, final_y, velocity.vX, velocity.vY);
 
                 if ((values.ly == 0 && values.lx == 0) || (distance < M_SQRT2 * BUFFER)) {
-                    if (idx < final_pos.size() - 1) {
+                    if (robot_status.current_HP > robot_status.maximum_HP * 0.2) {
+                        if (idx < final_pos.size() - 1) {
                         idx += 1;
                         final_y = final_pos[idx][1];
                         final_x = final_pos[idx][0];
                     }
                     values.ly = 0;
                     values.lx = 0;
+                    }
+                    else {
+                        if (idx > 0) {
+                            idx -= 1;
+                            final_y = final_pos[idx][1];
+                            final_x = final_pos[idx][0];
+                        }
+                        values.ly = 0;
+                        values.lx = 0;
+                    }
                 }
 
                 Chassis.setChassisSpeeds({values.lx, values.ly, -BEYBLADE_OMEGA},
