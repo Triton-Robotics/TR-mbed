@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['r_0',['r',['../structdoublecomplex.html#aa21d9095ea8af6f0530961e14e25d060',1,'doublecomplex::r'],['../structcomplex.html#a03cba9844d71e49f4ddf7c5f3dd45822',1,'complex::r'],['../structekf__t.html#a8588ae93fdb7195117fc5ab3d792e2e7',1,'ekf_t::R'],['../structekf__t.html#abd8956f78de0ec133489760e35000f0e',1,'ekf_t::R'],['../structBNO055__EULER__TypeDef.html#a9233895337c4cc141d4e0ffa570c1d2e',1,'BNO055_EULER_TypeDef::r'],['../classEigen_1_1HybridNonLinearSolver.html#a3772d7513630aaa22785129e69505fcd',1,'Eigen::HybridNonLinearSolver::R']]],
+  ['r_0',['r',['../structekf__t.html#abd8956f78de0ec133489760e35000f0e',1,'ekf_t::R'],['../classEigen_1_1HybridNonLinearSolver.html#a3772d7513630aaa22785129e69505fcd',1,'Eigen::HybridNonLinearSolver::R'],['../structBNO055__EULER__TypeDef.html#a9233895337c4cc141d4e0ffa570c1d2e',1,'BNO055_EULER_TypeDef::r'],['../structdoublecomplex.html#aa21d9095ea8af6f0530961e14e25d060',1,'doublecomplex::r'],['../structekf__t.html#a8588ae93fdb7195117fc5ab3d792e2e7',1,'ekf_t::R'],['../structcomplex.html#a03cba9844d71e49f4ddf7c5f3dd45822',1,'complex::r']]],
   ['r1x_1',['r1x',['../structOmniKinematics.html#a25ef8fd96df52462f4385c6afb4a3ae9',1,'OmniKinematics']]],
   ['r1y_2',['r1y',['../structOmniKinematics.html#a137dea521cbe5649d56b4405e3604aa8',1,'OmniKinematics']]],
   ['r2x_3',['r2x',['../structOmniKinematics.html#a60f2c8b05d185bb53569e016b114d86c',1,'OmniKinematics']]],

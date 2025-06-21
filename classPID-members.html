@@ -77,9 +77,11 @@ $(function() {
 <table class="directory">
   <tr class="even"><td class="entry"><a class="el" href="classPID.html#a908c6955daeac2cf3e65682d661a85c6">calculate</a>(int desired, int current, double dt)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classPID.html#a260015c5948e580ea5b620a628b17179">calculatePeriodic</a>(float error, double dt)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classPID.html#af825b006e765120ff387c4e15c6a7f8a">dC</a></td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classPID.html#a62b8d72d1f225e7d57d5202568e0bde5">feedForward</a></td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classPID.html#a5bbac4da836d971dea9cb8faf07bf91f">iC</a></td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classPID.html#a220ea9c305c0f48b0b8443bcbe9cced5">dBuffer</a></td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classPID.html#af825b006e765120ff387c4e15c6a7f8a">dC</a></td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classPID.html#a62b8d72d1f225e7d57d5202568e0bde5">feedForward</a></td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classPID.html#a5bbac4da836d971dea9cb8faf07bf91f">iC</a></td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classPID.html#a0454deb88ca8f6dc436fe7b7dd3ea59b">limitErrorDerivative</a>(double dTerm)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classPID.html#aa983201822da3346499943637f2779e1">limitErrorIntegral</a>()</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classPID.html#af95f3cef98375cc0ef81fe7630ab1ec9">limitOutput</a>(double &amp;PIDCalc) const</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classPID.html#a52638a3331e1f731e8075cea5bb47b25">pC</a></td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
@@ -87,9 +89,10 @@ $(function() {
   <tr class="odd"><td class="entry"><a class="el" href="classPID.html#a11fa491da71a1f9e95bfa95776d09f7c">PID</a>(float kP, float kI, float kD, float integralCap=0, float outputCap=0)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classPID.html#a413f036b1ac7d8fd4c95f4db2ea3aab6">resetErrorIntegral</a>()</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classPID.html#aaeef3baa1d9939cf810ddc91e1436e86">resetPID</a>(float kP, float kI, float kD, float integralCap=0, float outputCap=0)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classPID.html#ac3dde8d74b0f05b5a82ed8b8018b855f">setIntegralCap</a>(float integralCap)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classPID.html#a53169403b2a9bed490ed0346c4fff9ea">setOutputCap</a>(float outCap)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classPID.html#a328bd50f380430b2d5d475dd1a30adfd">setPID</a>(float p, float i, float d, float integralCap=0, float outputCap=0)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classPID.html#af3d84c80b69d1920c1c7bf68fe461344">setDerivativeCap</a>(float derivativeCap)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classPID.html#ac3dde8d74b0f05b5a82ed8b8018b855f">setIntegralCap</a>(float integralCap)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classPID.html#a53169403b2a9bed490ed0346c4fff9ea">setOutputCap</a>(float outCap)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classPID.html#a328bd50f380430b2d5d475dd1a30adfd">setPID</a>(float p, float i, float d, float integralCap=0, float outputCap=0)</td><td class="entry"><a class="el" href="classPID.html">PID</a></td><td class="entry"></td></tr>
 </table></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
