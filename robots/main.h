@@ -138,4 +138,15 @@ float floatmod(float input, float mod){
     return f;
 }
 
+constexpr float MAX_METERSPERSSECOND_60W = 1.0;
+constexpr float MAX_RADIANSPERSSECOND_60W = 6.3;
+float BeybladeModulation(ChassisSpeeds cs){
+    float v = sqrt(cs.vX * cs.vX + cs.vY * cs.vY);
+    if(v < MAX_METERSPERSSECOND_60W){
+        return (MAX_METERSPERSSECOND_60W - v) * (MAX_RADIANSPERSSECOND_60W * 0.8);
+    }else{
+        return 0;
+    }
+}
+
 #endif // TR_EMBEDDED_MAIN_H
