@@ -297,7 +297,7 @@ int main(){
     ChassisSpeeds prev_velocity = {0.0, 0.0, 0.0};
     ChassisSpeeds accel = {0.0, 0.0, 0.0};
 
-    std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {300.0, 0.0}, {300.0, 300.0}, {0.0, 300.0}, {0.0, 0.0}};
+    std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {300.0, 0.0}, {300.0, 300.0}};
 
     int init_angle = -1000;
     float init_yaw = 0;
@@ -465,14 +465,26 @@ int main(){
                 SetValues values = calculate_lx_ly(posx, posy, final_x, final_y, velocity.vX, velocity.vY);
 
                 if ((values.ly == 0 && values.lx == 0) || (distance < M_SQRT2 * BUFFER)) {
-                    if (idx < final_pos.size() - 1) {
+                    if (robot_status.current_HP > robot_status.maximum_HP * 0.2) {
+                        if (idx < final_pos.size() - 1) {
                         idx += 1;
                         final_y = final_pos[idx][1];
                         final_x = final_pos[idx][0];
                     }
                     values.ly = 0;
                     values.lx = 0;
+                    }
+                    else {
+                        if (idx > 0) {
+                            idx -= 1;
+                            final_y = final_pos[idx][1];
+                            final_x = final_pos[idx][0];
+                        }
+                        values.ly = 0;
+                        values.lx = 0;
+                    }
                 }
+                
 
                 Chassis.setChassisSpeeds({values.lx, values.ly, 0},
                                           ChassisSubsystem::REVERSE_YAW_ORIENTED);
