@@ -71,11 +71,13 @@ int main(){
     yawBeyblade.setIntegralCap(2);
     // PID yawNonBeyblade(0.15, 0, 550);
     yawBeyblade.setOutputCap(90);
+    yawBeyblade.dBuffer.lastY = 5;
     yaw.setSpeedPID(450, 1, 0);
     yaw.setSpeedIntegralCap(8000);
     yaw.setSpeedOutputCap(32000);
     yaw.outputCap = 16000;
     yaw.useAbsEncoder = false;
+    
 
     int yawVelo = 0;
     #ifdef USE_IMU
@@ -90,7 +92,7 @@ int main(){
     // pitch.setPositionPID(26.2644, 0.034926, 1200); //15, 0 1700
     // pitch.setPositionOutputCap(32000);
     // pitch.setPositionIntegralCap(3000);
-    PID pitchCascade(3,0.5,0);
+    PID pitchCascade(3,0.5,0.05);
     pitchCascade.setIntegralCap(2);
     pitchCascade.setOutputCap(30);
     pitch.setSpeedPID(500,0.8,0);
@@ -99,7 +101,7 @@ int main(){
     pitch.pidPosition.feedForward = 0;
     pitch.outputCap = 16000;
     pitch.useAbsEncoder = true;
-    //pitchCascade.dBuffer.lastY = 5;
+    pitchCascade.dBuffer.lastY = 5;
 
     int pitchVelo = 0;
 

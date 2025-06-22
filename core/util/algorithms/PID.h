@@ -1,5 +1,5 @@
 //This adds an unstable change to make the D component low pass (avg  itself)
-//#define FUNNY_PID
+#define FUNNY_PID
 
 #ifndef FUNNY_PID
 
