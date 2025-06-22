@@ -22,7 +22,7 @@ constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 10.0;
 
 constexpr int OUTER_LOOP_DT_MS = 15;
 
-constexpr int PRINT_FREQUENCY = 20; //the higher the number, the less often
+constexpr int PRINT_FREQUENCY = 8; //the higher the number, the less often
 
 constexpr float CHASSIS_FF_KICK = 0.065;
 
@@ -67,11 +67,11 @@ int main(){
     * MOTORS SETUP AND PIDS
     */
     //YAW
-    PID yawBeyblade(1.0, 0.00, 50); //yaw PID is cascading, so there are external position PIDs for yaw control
+    PID yawBeyblade(1.0, 0.00, 0.05); //yaw PID is cascading, so there are external position PIDs for yaw control
     yawBeyblade.setIntegralCap(2);
     // PID yawNonBeyblade(0.15, 0, 550);
     yawBeyblade.setOutputCap(90);
-    yaw.setSpeedPID(550, 1, 0);
+    yaw.setSpeedPID(450, 1, 0);
     yaw.setSpeedIntegralCap(8000);
     yaw.setSpeedOutputCap(32000);
     yaw.outputCap = 16000;
@@ -87,12 +87,21 @@ int main(){
     #endif
 
     //PITCH
-    pitch.setPositionPID(26.2644, 0.034926, 1200); //15, 0 1700
-    pitch.setPositionOutputCap(32000);
-    pitch.setPositionIntegralCap(3000);
+    // pitch.setPositionPID(26.2644, 0.034926, 1200); //15, 0 1700
+    // pitch.setPositionOutputCap(32000);
+    // pitch.setPositionIntegralCap(3000);
+    PID pitchCascade(3,0.5,0);
+    pitchCascade.setIntegralCap(2);
+    pitchCascade.setOutputCap(30);
+    pitch.setSpeedPID(500,0.8,0);
+    pitch.setSpeedIntegralCap(2000);
+    pitch.setSpeedOutputCap(32000);
     pitch.pidPosition.feedForward = 0;
     pitch.outputCap = 16000;
     pitch.useAbsEncoder = true;
+    //pitchCascade.dBuffer.lastY = 5;
+
+    int pitchVelo = 0;
 
     float pitch_current_angle = 0;
     float pitch_desired_angle = 0;
@@ -195,9 +204,12 @@ int main(){
                     yaw_desired_angle = jetson_received_data.requested_yaw_rads / M_PI * 180;
                     pitch_desired_angle = jetson_received_data.requested_pitch_rads / M_PI * 180;
                     cv_shoot_status = jetson_received_data.shoot_status;
+                }else{
+                    led3 = 0;
                 }
             } else {
               cv_shoot_status = 0;
+              led3 = 0;
             }
 
             #ifdef USE_IMU
@@ -282,6 +294,7 @@ int main(){
                 Chassis.setWheelPower({0,0,0,0});
             }
 
+            
             //YAW CODE
             float error = 0;
             if (drive == 'u' || drive == 'd' || (drive =='o' && (remote.rightSwitch() == Remote::SwitchState::UP || remote.rightSwitch() == Remote::SwitchState::DOWN))){
@@ -321,11 +334,23 @@ int main(){
                 #endif
             }
 
+            prevTimeSure = timeSure;
+            timeSure = us_ticker_read();
+
             //PITCH
+            pitch_current_angle = (pitch_zero_offset_ticks - (pitch>>ANGLE)) / TICKS_REVOLUTION * 360;
             if (drive == 'u' || drive == 'd' || (drive =='o' && (remote.rightSwitch() == Remote::SwitchState::UP || remote.rightSwitch() == Remote::SwitchState::DOWN))){
                 //Regular Pitch Code
                 pitch_desired_angle += mpitch * MOUSE_SENSITIVITY_PITCH_DPS * elapsedms / 1000;
                 pitch_desired_angle += jpitch * JOYSTICK_SENSITIVITY_PITCH_DPS * elapsedms / 1000;
+
+                // if(jpitch > -0.33 && jpitch < 0.33){
+                //     pitch_desired_angle = 0;
+                // }else if(jpitch > 0.33){
+                //     pitch_desired_angle = 30;
+                // }else if(jpitch < -0.33){
+                //     pitch_desired_angle = -30;
+                // }       
 
                 if (pitch_desired_angle <= LOWERBOUND) {
                     pitch_desired_angle = LOWERBOUND;
@@ -334,15 +359,24 @@ int main(){
                     pitch_desired_angle = UPPERBOUND;
                 }
 
-                float pitch_desired_radians = -(pitch_desired_angle / 360) * 2 * M_PI;
-                pitch.pidPosition.feedForward = cos(pitch_desired_radians) * -2600;
-                pitch.setPosition(-int((pitch_desired_angle / 360) * TICKS_REVOLUTION - pitch_zero_offset_ticks));
+                pitchVelo = -pitchCascade.calculatePeriodic(pitch_desired_angle - pitch_current_angle, timeSure - prevTimeSure);
+                
+                int dir = 0;
+                if(pitchVelo > 1){
+                    dir = 1;
+                }else if(pitchVelo < -1){
+                    dir = -1;
+                }
+
+                float pitch_current_radians = -(pitch_current_angle / 360) * 2 * M_PI;
+                pitch.pidSpeed.feedForward = (cos(pitch_current_radians) * -2600) + (1221 * dir + 97.4 * yawVelo);
+                //pitch.setPosition(-int((pitch_desired_angle / 360) * TICKS_REVOLUTION - pitch_zero_offset_ticks));
+                pitch.setSpeed(pitchVelo);
             }else{
                 //Off
                 pitch.setPower(0);
             }
-            pitch_current_angle = (pitch_zero_offset_ticks - (pitch>>ANGLE)) / TICKS_REVOLUTION * 360;
-
+            
             //INDEXER CODE
             if ((remote.leftSwitch() == Remote::SwitchState::UP || remote.getMouseL()) && (abs(RFLYWHEEL>>VELOCITY) > (FLYWHEEL_VELO - 500) && abs(LFLYWHEEL>>VELOCITY) > (FLYWHEEL_VELO - 500)) 
                 /*&& remote.rightSwitch() != Remote::SwitchState::MID*/){
@@ -370,10 +404,8 @@ int main(){
                     indexer.pidSpeed.feedForward = 0;
                     shoot = false;
                 } else {
-                    timeSure = us_ticker_read();
                     indexer.setSpeed(sure.calculate(shootTargetPosition, indexer>>MULTITURNANGLE, timeSure - prevTimeSure)); //
                     indexer.pidSpeed.feedForward = 300;
-                    prevTimeSure = timeSure;
                 }
             } else {
                 indexer.setSpeed(0);
@@ -424,6 +456,14 @@ int main(){
                 //printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
                 #endif
                 //printff("yaw_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
+
+                //printff("ydv:%d yav:%d PWR:%d ", pitchVelo, pitch>>VELOCITY, pitch>>POWEROUT);
+                //printff("yd:%.3f ya:%.3f [%d] %.3f ", pitch_desired_angle, pitch_current_angle, yaw>>ANGLE, pitch_desired_angle- pitch_current_angle);
+                //printff("[%d][%d][%d]\n", (int)pitch.pidSpeed.pC, (int)pitch.pidSpeed.iC, (int)pitch.pidSpeed.dC);
+                printff("[%.1f][%.1f][%.1f] %.2f\n", pitchCascade.pC, pitchCascade.iC, pitchCascade.dC, pitch_desired_angle- pitch_current_angle);
+                
+                //printff("%lu %.2f %.2f\n", loopTimer, pitch_desired_angle, pitch_current_angle);
+                
                 //printff("pitch_des:%.3f pitch_act:%.3f [%d]\n", pitch_desired_angle, pitch_current_angle, pitch>>ANGLE);
                 //printff("cX%.1f cY%.1f cOmega%.3f cRPM%.1f\n", cs.vX, cs.vY, cs.vOmega, cs.vOmega * 60 / (2*M_PI) * 4);
                 // printff("Chassis: LF:%c RF:%c LB:%c RB:%c Yaw:%c Pitch:%c Flywheel_L:%c Flywheel_R:%c Indexer:%c\n", 

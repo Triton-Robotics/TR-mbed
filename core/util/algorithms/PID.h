@@ -1,3 +1,8 @@
+//This adds an unstable change to make the D component low pass (avg  itself)
+//#define FUNNY_PID
+
+#ifndef FUNNY_PID
+
 //
 // Created by ankit on 1/31/23.
 //
@@ -86,9 +91,8 @@ public:
 
 };
 
-
 #endif //TR_EMBEDDED_PID_H
-
+#else
 //
 // Created by ankit on 1/31/23.
 //
@@ -102,9 +106,9 @@ public:
 struct lastfew {
     long long last[lastX] = { 0 };
     int arm = 0;
-    int lastY = 0;
+    int lastY = 1;
 
-    lastfew(int lastY_ = 0) {
+    lastfew(int lastY_ = 1) {
         if(lastY_ > lastX){
             lastY = lastX;
         }else{
@@ -121,9 +125,9 @@ struct lastfew {
 
     long long time() {
         long long t = 0;
-        for (int i = 0; i < lastX; i++)
+        for (int i = 0; i < lastY; i++)
             t += last[i];
-        return t / lastX;
+        return t / lastY;
     }
 };
 
@@ -211,3 +215,4 @@ public:
 
 
 #endif //TR_EMBEDDED_PID_H
+#endif

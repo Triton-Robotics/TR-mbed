@@ -1,5 +1,7 @@
 #include "PID.h"
 
+#ifndef FUNNY_PID
+
 PID::PID()
 {
     kP = 0;
@@ -111,119 +113,123 @@ void PID::setOutputCap(float outputCap)
     this->outputCap = outputCap;
 }
 
-// #include "PID.h"
+#else
 
-// PID::PID()
-// {
-//     kP = 0;
-//     kI = 0;
-//     kD = 0;
-//     integralCap = 0;
-//     outputCap = 0;
-//     feedForward = 0;
-// }
+#include "PID.h"
 
-// PID::PID(float kP, float kI, float kD, float integralCap, float outputCap)
-// {
-//     this->kP = kP;
-//     this->kI = kI;
-//     this->kD = kD;
-//     this->integralCap = integralCap;
-//     this->outputCap = outputCap;
-// }
+PID::PID()
+{
+    kP = 0;
+    kI = 0;
+    kD = 0;
+    integralCap = 0;
+    outputCap = 0;
+    feedForward = 0;
+}
 
-// void PID::setPID(float kP, float kI, float kD, float integralCap, float outputCap)
-// {
-//     this->kP = kP;
-//     this->kI = kI;
-//     this->kD = kD;
-//     this->integralCap = integralCap;
-//     this->outputCap = outputCap;
-// }
+PID::PID(float kP, float kI, float kD, float integralCap, float outputCap)
+{
+    this->kP = kP;
+    this->kI = kI;
+    this->kD = kD;
+    this->integralCap = integralCap;
+    this->outputCap = outputCap;
+}
 
-// void PID::resetPID(float kP, float kI, float kD, float integralCap, float outputCap)
-// {
-//     this->kP = kP;
-//     this->kI = kI;
-//     this->kD = kD;
-//     this->integralCap = integralCap;
-//     this->outputCap = outputCap;
+void PID::setPID(float kP, float kI, float kD, float integralCap, float outputCap)
+{
+    this->kP = kP;
+    this->kI = kI;
+    this->kD = kD;
+    this->integralCap = integralCap;
+    this->outputCap = outputCap;
+}
 
-//     lastError = 0;
-//     errorIntegral = 0;
-// }
+void PID::resetPID(float kP, float kI, float kD, float integralCap, float outputCap)
+{
+    this->kP = kP;
+    this->kI = kI;
+    this->kD = kD;
+    this->integralCap = integralCap;
+    this->outputCap = outputCap;
 
-// void PID::resetErrorIntegral()
-// {
-//     lastError = 0;
-//     errorIntegral = 0;
-// }
+    lastError = 0;
+    errorIntegral = 0;
+}
 
-// int PID::calculate(int desired, int current, double dt)
-// {
-//     float error = static_cast<float>(desired - current);
-//     return calculatePeriodic(error, dt);
-// }
+void PID::resetErrorIntegral()
+{
+    lastError = 0;
+    errorIntegral = 0;
+}
 
-// int PID::calculatePeriodic(float error, double dt)
-// {
+int PID::calculate(int desired, int current, double dt)
+{
+    float error = static_cast<float>(desired - current);
+    return calculatePeriodic(error, dt);
+}
 
-//     dt /= 1000;
-//     errorIntegral += kI * dt * (error + lastError) / 2;
-//     limitErrorIntegral();
+int PID::calculatePeriodic(float error, double dt)
+{
 
-//     iC = errorIntegral;
+    dt /= 1000;
+    errorIntegral += kI * dt * (error + lastError) / 2;
+    limitErrorIntegral();
 
-//     double PIDCalc = (kP * error) + (errorIntegral) + feedForward;
-//     pC = kP * error;
+    iC = errorIntegral;
 
-//     double dTerm = 0;
-//     if (dt > 0)
-//     {
-//         dTerm = (kD * (error - lastError) / dt);
-//         dBuffer.add(dTerm);
-//         dTerm = dBuffer.time();
-//         PIDCalc += dTerm;
-//     }
+    double PIDCalc = (kP * error) + (errorIntegral) + feedForward;
+    pC = kP * error;
 
-//     dC = dTerm;
+    double dTerm = 0;
+    if (dt > 0)
+    {
+        dTerm = (kD * (error - lastError) / dt);
+        dBuffer.add(dTerm);
+        dTerm = dBuffer.time();
+        PIDCalc += dTerm;
+    }
 
-//     lastError = error;
-//     limitOutput(PIDCalc);
-//     return static_cast<int>(PIDCalc);
-// }
+    dC = dTerm;
 
-// void PID::limitErrorIntegral()
-// {
-//     if (integralCap != 0)
-//     {
-//         if (errorIntegral > integralCap)
-//             errorIntegral = integralCap;
+    lastError = error;
+    limitOutput(PIDCalc);
+    return static_cast<int>(PIDCalc);
+}
 
-//         else if (errorIntegral < -integralCap)
-//             errorIntegral = -integralCap;
-//     }
-// }
+void PID::limitErrorIntegral()
+{
+    if (integralCap != 0)
+    {
+        if (errorIntegral > integralCap)
+            errorIntegral = integralCap;
 
-// void PID::limitOutput(double &PIDCalc) const
-// {
+        else if (errorIntegral < -integralCap)
+            errorIntegral = -integralCap;
+    }
+}
 
-//     if (outputCap != 0)
-//     {
-//         if (PIDCalc > outputCap)
-//             PIDCalc = outputCap;
+void PID::limitOutput(double &PIDCalc) const
+{
 
-//         else if (PIDCalc < -outputCap)
-//             PIDCalc = -outputCap;
-//     }
-// }
+    if (outputCap != 0)
+    {
+        if (PIDCalc > outputCap)
+            PIDCalc = outputCap;
 
-// void PID::setIntegralCap(float integralCap)
-// {
-//     this->integralCap = integralCap;
-// }
+        else if (PIDCalc < -outputCap)
+            PIDCalc = -outputCap;
+    }
+}
 
-// void PID::setOutputCap(float outputCap)
-// {
-//     this->outputCap = outputCap;
-// }
+void PID::setIntegralCap(float integralCap)
+{
+    this->integralCap = integralCap;
+}
+
+void PID::setOutputCap(float outputCap)
+{
+    this->outputCap = outputCap;
+}
+
+#endif
