@@ -91,6 +91,7 @@ void jetson_send_feedback(BufferedSerial &bcJetson, const Jetson_send_data& data
   char lrc_char = static_cast<uint8_t>(lrc);
   nucleo_value[25] = lrc_char;
 
+  bcJetson.sync();
   bcJetson.write(nucleo_value, 26); //changed from 30
 }
 
@@ -108,7 +109,7 @@ ssize_t jetson_read_values(BufferedSerial &bcJetson, Jetson_read_data& read_data
   }
 
   if(jetson_read_buff_pos > (JETSON_READ_BUFF_SIZE - JETSON_READ_MSG_SIZE)){
-    printf("WARN: jetson read buffer overflow. Resetting buffer to 0\n");
+    // printf("WARN: jetson read buffer overflow. Resetting buffer to 0\n");
     jetson_read_buff_pos = 0;
   }
 
