@@ -291,10 +291,8 @@ int main(){
                 //Regular Yaw Code
                 yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * elapsedms / 1000;
                 yaw_desired_angle -= jyaw * JOYSTICK_SENSITIVITY_YAW_DPS * elapsedms / 1000;
-                //yaw_desired_angle = (yaw_desired_angle + 360) % 360;
-                yaw_desired_angle = floatmod(yaw_desired_angle, 360);
 
-                //yaw_desired_angle = ((int)remote.leftSwitch() - 1) * 30;
+                yaw_desired_angle = fmod((fmod(yaw_desired_angle, 360.0) + 360.0), 360.0); 
 
                 prevTimeSure = timeSure;
                 timeSure = us_ticker_read();
