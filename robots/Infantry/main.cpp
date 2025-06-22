@@ -29,7 +29,7 @@ constexpr float CHASSIS_FF_KICK = 0.065;
 constexpr float pitch_zero_offset_ticks = 1500;
 
 constexpr int NUM_BALLS_SHOT = 3;
-constexpr int FLYWHEEL_VELO = 7500;
+constexpr int FLYWHEEL_VELO = 7000;
 
 #define READ_DEBUG 0
 #define MAGICBYTE 0xEE
@@ -113,10 +113,10 @@ int main(){
     RFLYWHEEL.setSpeedPID(7.1849, 0.000042634, 100);
 
     //INDEXER
-    indexer.setSpeedPID(1, 0.0005, 1);
+    indexer.setSpeedPID(1, 0.0, 0);
     indexer.setSpeedIntegralCap(4000);
     //Cascading PID for indexer angle position control. Surely there are better names then "sure"...
-    PID sure(3,0,0.4);
+    PID sure(0.5,0,0);
     sure.setOutputCap(133 * M2006_GEAR_RATIO);
     
     //Variables for burst fire
@@ -400,13 +400,15 @@ int main(){
             // burst fire, turn the indexer to shoot 3-5 balls a time and stop indexer
             // only shoot when left switch changes from down/unknown/mid to up
             // if left switch remains at up state, indexer stops after 3-5 balls
+            int indexer_target_velocity = 0; 
             if (shoot){
                 if (indexer>>MULTITURNANGLE >= shootTargetPosition){
-                    indexer.setSpeed(0);
-                    indexer.pidSpeed.feedForward = 0;
+                    // indexer.setSpeed(indexer_target_velocity);
+                    // indexer.pidSpeed.feedForward = 0;
                     shoot = false;
                 } else {
-                    indexer.setSpeed(sure.calculate(shootTargetPosition, indexer>>MULTITURNANGLE, timeSure - prevTimeSure)); //
+                    indexer_target_velocity = sure.calculate(shootTargetPosition, indexer>>MULTITURNANGLE, timeSure - prevTimeSure);
+                    indexer.setSpeed(indexer_target_velocity); //
                     indexer.pidSpeed.feedForward = 300;
                 }
             } else {
@@ -462,8 +464,9 @@ int main(){
                 //printff("ydv:%d yav:%d PWR:%d ", pitchVelo, pitch>>VELOCITY, pitch>>POWEROUT);
                 //printff("yd:%.3f ya:%.3f [%d] %.3f ", pitch_desired_angle, pitch_current_angle, yaw>>ANGLE, pitch_desired_angle- pitch_current_angle);
                 //printff("[%d][%d][%d]\n", (int)pitch.pidSpeed.pC, (int)pitch.pidSpeed.iC, (int)pitch.pidSpeed.dC);
-                printff("[%.1f][%.1f][%.1f] %.2f\n", pitchCascade.pC, pitchCascade.iC, pitchCascade.dC, pitch_desired_angle- pitch_current_angle);
-                
+                // printff("[%.1f][%.1f][%.1f] %.2f\n", pitchCascade.pC, pitchCascade.iC, pitchCascade.dC, pitch_desired_angle- pitch_current_angle);
+                // printff("%d | [%.1f][%.1f][%.1f] %d | %d\n", shoot, indexer.pidSpeed.pC, indexer.pidSpeed.iC, indexer.pidSpeed.dC,  indexer_target_velocity - (indexer>>VELOCITY), indexer_target_velocity);
+                printff("%d | %d\n", LFLYWHEEL>>VELOCITY, RFLYWHEEL>>VELOCITY);
                 //printff("%lu %.2f %.2f\n", loopTimer, pitch_desired_angle, pitch_current_angle);
                 
                 //printff("pitch_des:%.3f pitch_act:%.3f [%d]\n", pitch_desired_angle, pitch_current_angle, pitch>>ANGLE);
