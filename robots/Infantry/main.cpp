@@ -72,7 +72,7 @@ int main(){
     // PID yawNonBeyblade(0.15, 0, 550);
     yawBeyblade.setOutputCap(90);
     yawBeyblade.dBuffer.lastY = 5;
-    yaw.setSpeedPID(450, 1, 0);
+    yaw.setSpeedPID(550, 1, 0);
     yaw.setSpeedIntegralCap(8000);
     yaw.setSpeedOutputCap(32000);
     yaw.outputCap = 16000;
