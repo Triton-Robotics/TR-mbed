@@ -142,6 +142,7 @@ private:
     float kD = 0;
 
     double integralCap = 0;
+    double derivativeCap = 0;
     float outputCap = 0;
 
     float lastError = 0;
@@ -196,7 +197,15 @@ public:
 
     void limitOutput(double &PIDCalc) const;
 
+    double limitErrorDerivative(double dTerm);
+
     void limitErrorIntegral();
+
+    /**
+     * Sets the integral cap
+     * @param derivativeCap The new integral cap
+     */
+    void setDerivativeCap(float derivativeCap);
 
     /**
      * Sets the integral cap
