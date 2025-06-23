@@ -113,11 +113,12 @@ int main(){
     RFLYWHEEL.setSpeedPID(7.1849, 0.000042634, 100);
 
     //INDEXER
-    indexer.setSpeedPID(1, 0.0, 0);
-    indexer.setSpeedIntegralCap(4000);
+    indexer.setSpeedPID(2.7, 0.001, 0);
+    indexer.setSpeedIntegralCap(100);
     //Cascading PID for indexer angle position control. Surely there are better names then "sure"...
-    PID sure(0.5,0,0);
+    PID sure(0.1,0,0.001);
     sure.setOutputCap(133 * M2006_GEAR_RATIO);
+    sure.dBuffer = 10;
     
     //Variables for burst fire
     unsigned long timeSure;
@@ -381,18 +382,18 @@ int main(){
             
             //INDEXER CODE
             if ((remote.leftSwitch() == Remote::SwitchState::UP || remote.getMouseL()) && (abs(RFLYWHEEL>>VELOCITY) > (FLYWHEEL_VELO - 500) && abs(LFLYWHEEL>>VELOCITY) > (FLYWHEEL_VELO - 500)) 
-                /*&& remote.rightSwitch() != Remote::SwitchState::MID*/){
+                /*&& remote.rightSwitch() != Remote::SwitchState::MID*/){        
                 if (shootReady){
-                    shootReady = false;
-                    shootTargetPosition = (8192 * M2006_GEAR_RATIO / 9 * NUM_BALLS_SHOT) + (indexer>>MULTITURNANGLE);
 
                     //shoot limit
                     if(robot_status.shooter_barrel_heat_limit < 10 || power_heat_data.shooter_17mm_1_barrel_heat < robot_status.shooter_barrel_heat_limit - 40) {
                         shoot = true;
+                        shootReady = false;
+                        shootTargetPosition = (8192 * M2006_GEAR_RATIO / 9 * NUM_BALLS_SHOT) + (indexer>>MULTITURNANGLE);
                     }
                     
                 }
-            } else {
+            } else if(!(remote.leftSwitch() == Remote::SwitchState::UP || remote.getMouseL())) {
                 //SwitchState state set to mid/down/unknown
                 shootReady = true;
             }
@@ -402,14 +403,15 @@ int main(){
             // if left switch remains at up state, indexer stops after 3-5 balls
             int indexer_target_velocity = 0; 
             if (shoot){
-                if (indexer>>MULTITURNANGLE >= shootTargetPosition){
+                // 1 degree of error allowed
+                if (abs((indexer>>MULTITURNANGLE) - shootTargetPosition) <= 819){
                     // indexer.setSpeed(indexer_target_velocity);
                     // indexer.pidSpeed.feedForward = 0;
                     shoot = false;
                 } else {
                     indexer_target_velocity = sure.calculate(shootTargetPosition, indexer>>MULTITURNANGLE, timeSure - prevTimeSure);
                     indexer.setSpeed(indexer_target_velocity); //
-                    indexer.pidSpeed.feedForward = 300;
+                    indexer.pidSpeed.feedForward = (indexer>>VALUE) / 4788 * 630;
                 }
             } else {
                 indexer.setSpeed(0);
@@ -417,8 +419,7 @@ int main(){
             }
 
             //FLYWHEELS
-            if (shot == 'm' || (shot == 'o' && remote.leftSwitch() != Remote::SwitchState::DOWN/* &&
-                remote.leftSwitch() != Remote::SwitchState::UNKNOWN && remote.rightSwitch() != Remote::SwitchState::MID*/)){
+            if (shot == 'm' || (shot == 'o' && remote.leftSwitch() != Remote::SwitchState::DOWN && remote.leftSwitch() != Remote::SwitchState::UNKNOWN)){
                 LFLYWHEEL.setSpeed(-FLYWHEEL_VELO);
                 RFLYWHEEL.setSpeed(FLYWHEEL_VELO);
                 LFLYWHEEL.pidSpeed.feedForward = 52;
@@ -447,6 +448,7 @@ int main(){
                 //printff("lX:%.1f lY:%.1f rX:%.1f rY:%.1f lS:%d rS:%d\n", remote.leftX(), remote.leftY(), remote.rightX(), remote.rightY(), remote.leftSwitch(), remote.rightSwitch());
                 //printff("jx:%.3f jy:%.3f jpitch:%.3f jyaw:%.3f\n", jx, jy, jpitch, jyaw);
                 #ifdef USE_IMU
+                // printff("%d\n", remote.getMouseL());
                 //printff("ydv:%d yav:%d PWR:%d ", yawVelo, yaw>>VELOCITY, yaw>>POWEROUT);
                 //printff("V[%.1f][%.1f][%.1f]E:%.3f ", yaw.pidSpeed.pC, yaw.pidSpeed.iC, yaw.pidSpeed.dC, yawVelo - (yaw>>VELOCITY));
                 // printff("P[%.1f][%.1f][%.1f]E:%.3f ", yawBeyblade.pC, yawBeyblade.iC, yawBeyblade.dC, error);
@@ -466,7 +468,7 @@ int main(){
                 //printff("[%d][%d][%d]\n", (int)pitch.pidSpeed.pC, (int)pitch.pidSpeed.iC, (int)pitch.pidSpeed.dC);
                 // printff("[%.1f][%.1f][%.1f] %.2f\n", pitchCascade.pC, pitchCascade.iC, pitchCascade.dC, pitch_desired_angle- pitch_current_angle);
                 // printff("%d | [%.1f][%.1f][%.1f] %d | %d\n", shoot, indexer.pidSpeed.pC, indexer.pidSpeed.iC, indexer.pidSpeed.dC,  indexer_target_velocity - (indexer>>VELOCITY), indexer_target_velocity);
-                printff("%d | %d\n", LFLYWHEEL>>VELOCITY, RFLYWHEEL>>VELOCITY);
+                // printff("%d | %d\n", LFLYWHEEL>>VELOCITY, RFLYWHEEL>>VELOCITY);
                 //printff("%lu %.2f %.2f\n", loopTimer, pitch_desired_angle, pitch_current_angle);
                 
                 //printff("pitch_des:%.3f pitch_act:%.3f [%d]\n", pitch_desired_angle, pitch_current_angle, pitch>>ANGLE);
