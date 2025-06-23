@@ -10,8 +10,6 @@ DigitalOut ledbuiltin(LED1);
 constexpr float LOWERBOUND = -35.0;
 constexpr float UPPERBOUND = 40.0;
 
-constexpr float BEYBLADE_OMEGA = 2; //3.54 8.84 14.07
-
 //DEGREES PER SECOND AT MAX
 constexpr float JOYSTICK_SENSITIVITY_YAW_DPS = 180.0; 
 constexpr float JOYSTICK_SENSITIVITY_PITCH_DPS = 180.0;
@@ -261,31 +259,50 @@ int main(){
             jyaw = (abs(jyaw) < tolerance) ? 0 : jyaw;
             
             //Keyboard Driving
-            float mult = 1;
+            float mult = 0.7;
 
             // Shift to make robot go slower
             if (remote.keyPressed(Remote::Key::SHIFT)) {
                 mult = 0.5;
             }
+            if(remote.keyPressed(Remote::Key::CTRL)){
+              mult = 1;
+            }
 
             jx += mult * ((remote.keyPressed(Remote::Key::D) ? 1 : 0) + (remote.keyPressed(Remote::Key::A) ? -1 : 0));
             jy += mult * ((remote.keyPressed(Remote::Key::W) ? 1 : 0) + (remote.keyPressed(Remote::Key::S) ? -1 : 0));
 
+            float j_hypo = sqrt(jx * jx + jy * jy);
+            if(j_hypo > 1.0){
+              jx = jx / j_hypo;
+              jy = jy / j_hypo;
+            }
             //Bounding the four j variables
             jx = max(-1.0F, min(1.0F, jx));
             jy = max(-1.0F, min(1.0F, jy));
             jpitch = max(-1.0F, min(1.0F, jpitch));
             jyaw = max(-1.0F, min(1.0F, jyaw));
 
+            float max_linear_vel = -1.24 + 0.0513 * chassis_power_limit + -0.000216 * (chassis_power_limit * chassis_power_limit);
+            // float max_omega = 0.326 + 0.0857 * chassis_power_limit + -0.000183 * (chassis_power_limit * chassis_power_limit);
+            float max_omega = 4.8;
+
+            float linear_hypo = sqrtf(jx * jx + jy * jy);
+            if(linear_hypo > 1.0){
+              linear_hypo = 1.0;
+            }
+            float available_beyblade = 1.0 - linear_hypo;
+            float omega_speed = max_omega * available_beyblade;
+
             //Chassis Code
-            ChassisSpeeds beybladeSpeeds = {jx * Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          jy * Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          -BEYBLADE_OMEGA};
+            ChassisSpeeds beybladeSpeeds = {jx * max_linear_vel,
+                                          jy * max_linear_vel,
+                                          -omega_speed};
             if (drive == 'u' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::UP)){
                 //REGULAR DRIVING CODE
-                Chassis.setChassisSpeeds({jx * Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          jy * Chassis.m_OmniKinematicsLimits.max_Vel,
-                                          0 * Chassis.m_OmniKinematicsLimits.max_vOmega},
+                Chassis.setChassisSpeeds({jx * max_linear_vel,
+                                          jy * max_linear_vel,
+                                          0},
                                           ChassisSubsystem::YAW_ORIENTED);
             }else if (drive == 'd' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::DOWN)){
                 //BEYBLADE DRIVING CODE
