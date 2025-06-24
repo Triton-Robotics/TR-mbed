@@ -11,10 +11,14 @@ DigitalOut led(L26);
 DigitalOut led2(L27);
 DigitalOut led3(L25);
 
-constexpr float BUFFER = 3.0;
-constexpr float ACCEL_INIT = 0.4;
-constexpr float VEL_INIT = 1.0;
-constexpr float DECEL_DIST = 2000 * VEL_INIT * VEL_INIT / (2 * ACCEL_INIT* TIME);
+
+constexpr float BUFFER_ANGLE = PI / 16;
+// PI/2 radps = 1 in vOmega terms (idk why), so we're converting PI/4 radps to 0.5 vOmega term
+constexpr float ROT_INIT = 1; 
+constexpr float ACCEL_INIT = 0.5;
+constexpr float VEL_INIT = 1.2;
+constexpr float DECEL_DIST =  VEL_INIT * VEL_INIT / (2 * ACCEL_INIT* TIME);
+constexpr float BUFFER = 0.1;
 float rotation = 0;
 
 //CHASSIS DEFINING
@@ -25,6 +29,7 @@ ChassisSubsystem Chassis(1, 2, 3, 4, imu, RADIUS); // radius is 9.625 in
 struct SetValues {
     float lx;
     float ly;
+    float rx;
 };
 
 float calculateDeltaYaw(float actual, float desired)
@@ -45,11 +50,22 @@ float calculateDistance(float posx, float posy, float final_x, float final_y) {
     return sqrt(pow((final_x - posx), 2) + pow((final_y - posy), 2));
 }
 
-SetValues calculate_lx_ly(float posx, float posy, float final_x, float final_y, float vX, float vY) {
+SetValues calculate_chassis_speeds(float posx, float posy, float angle, float final_x, float final_y, float vX, float vY) {
     float distance = calculateDistance(posx, posy, final_x, final_y);
     SetValues values;
     values.lx = 0;
     values.ly = 0;
+    values.rx = 0; 
+
+    if (angle > BUFFER_ANGLE) {
+        values.rx = -ROT_INIT;
+    }
+    else if (angle < -BUFFER_ANGLE) {
+        values.rx = ROT_INIT;
+    }
+    else {
+        values.rx = 0;
+    }
     // printff("%.3f, %.3f\n", distance, DECEL_DIST);
     // if the final position is too far away:
     if ((final_x - posx) > BUFFER) {
@@ -164,8 +180,10 @@ int main(){
     Chassis.setMotorSpeedPID(ChassisSubsystem::RIGHT_BACK, 3, 0, 0);
 
 
-    // std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {0.0, 4020.0}, {-1000.0, 4020}}; // 670 is ~1 meter
-    std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {0.0, 500.0}, {-500.0, 500}};
+    // std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {0.0, 4020.0}, {-1000.0, 4020}}; 
+    // std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {0.0, 2*0.588}};
+    std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {0.0,1.0}, {0,0}, {1,0}, {0,0}};
+
 
     float angle = 0.0;
     float posx = final_pos[0][0]; // need to go to 1676 ish
@@ -208,18 +226,27 @@ int main(){
                       (velocity.vOmega - prev_velocity.vOmega) / (TIME*0.001)}; 
             
             // angle is always 0 for robot oriented drive
+            angle = angle + ((velocity.vOmega * TIME * 0.001) + (1/2 * accel.vOmega * TIME * 0.001 * TIME * 0.001)) * PI / 2;
+            
+            if (angle > PI) {
+                angle -= 2 * PI;
+            }
+            else if (angle < -PI) {
+                angle += 2 * PI;
+            }
+
             posx = posx + ((velocity.vX * cos(angle) + velocity.vY * sin(angle)) * TIME * 0.001
-                + (1/2 * (accel.vX * cos(angle) + accel.vY * sin(angle)) * TIME * TIME * 0.001));
+                + (0.5 * (accel.vX * cos(angle) + accel.vY * sin(angle)) * TIME * 0.001 * TIME * 0.001)) * 1.6;
 
             posy = posy + ((velocity.vY * cos(angle) - velocity.vX * sin(angle)) * TIME * 0.001
-                + (1/2 * (accel.vY * cos(angle) - accel.vX * sin(angle)) * TIME * TIME * 0.001));
+                + (0.5 * (accel.vY * cos(angle) - accel.vX * sin(angle)) * TIME * 0.001 * TIME * 0.001)) * 1.6;
 
             float lx = 0;
             float ly = 0;
             float rx = 0;
 
             // game_progress == 4 means "in competition"
-            if (game_status.game_progress == 4) {
+            if (true){//if (game_status.game_progress == 4) {
                 if (remote.rightSwitch() == Remote::SwitchState::MID || remote.rightSwitch() == Remote::SwitchState::UNKNOWN) {
                     led = 1;
                     lx = (remote.leftX() / 660.0) * Chassis.m_OmniKinematicsLimits.max_Vel;
@@ -231,10 +258,11 @@ int main(){
                 else if (remote.rightSwitch() == Remote::SwitchState::UP) {
                     led = 0;
                     float distance = calculateDistance(posx, posy, final_x, final_y);
-                    SetValues values = calculate_lx_ly(posx, posy, final_x, final_y, velocity.vX, velocity.vY);
+
+                    SetValues values = calculate_chassis_speeds(posx, posy, angle, final_x, final_y, velocity.vX, velocity.vY);
 
                     // If robot has stopped moving or its close to its setpoint:
-                    if ((values.ly == 0 && values.lx == 0) || (distance < M_SQRT2 * BUFFER)) {
+                    if ((distance < M_SQRT2 * BUFFER)) {
                         settle_counter+= TIME;
                         // if hp is greater than 20%, go to next setpoint
                         if (robot_status.current_HP >= robot_status.maximum_HP * 0.2) {
@@ -262,11 +290,12 @@ int main(){
                     // we've reached the last setpoint, if we stopped moving, then start beyblading
                     if (idx == final_pos.size() - 1 && velocity.vX == 0 && velocity.vY == 0) {
                         beyblade_counter++;
-                        if (beyblade_counter > 5) {
-                            rotation = 3;
-                        }
+                    } 
+
+                    if (beyblade_counter > 10) {
+                        values.rx = 3;
                     }
-                    Chassis.setChassisSpeeds({values.lx, values.ly, rotation}, ChassisSubsystem::ROBOT_ORIENTED);
+                    Chassis.setChassisSpeeds({values.lx, values.ly, values.rx}, ChassisSubsystem::ROBOT_ORIENTED);
                 }
                 else {
                     //OFF
@@ -281,21 +310,11 @@ int main(){
 
             if (counter > 10) {
                 // printff("%d\n", idx);
-                // printff("X:%.3f Y:%.3f fx:%.3f fy:%.3f\n", posx, posy, final_x, final_y);
+                printff("X:%.3f Y:%.3f a:%.3f fx:%.3f fy:%.3f\n", posx, posy, angle, final_x, final_y);
+                // printff("vX:%.2f,vY:%.2f,vO:%.2f",velocity.vX, velocity.vY, velocity.vOmega);
                 WheelSpeeds curr = Chassis.getWheelSpeeds();
                 // printff("LF: %.3f RF: %.3f LB: %.3f RB: %.3f\n", curr.LF, curr.RF, curr.LB, curr.RB);
                 counter = 0;
-
-                float rpm_to_ms = (2 * PI / 60) * (WHEEL_DIAMETER_METERS / 2) / M3508_GEAR_RATIO;
-                WheelSpeeds desired = Chassis.desiredWheelSpeeds; // or add a getter if private
-                WheelSpeeds actual = Chassis.getWheelSpeeds();
-
-                printfESP("D: LF:%.3f RF:%.3f LB:%.3f RB:%.3f\n",
-                    desired.LF * rpm_to_ms, desired.RF * rpm_to_ms,
-                    desired.LB * rpm_to_ms, desired.RB * rpm_to_ms);
-
-                printfESP("ACTUAL : LF: %.3f RF: %.3f LB: %.3f RB: %.3f\n",
-                    actual.LF, actual.RF, actual.LB, actual.RB);
             }
             //MOST CODE DOESNT NEED TO RUN FASTER THAN EVERY 15ms
             timeEnd_u = us_ticker_read();
