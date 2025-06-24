@@ -97,25 +97,25 @@ int main(){
     //YAW
 
     // for CV
-    PID yawBeyblade(0.3, 0, 0); //yaw PID is cascading, so there are external position PIDs for yaw control
-    yawBeyblade.setOutputCap(30);
-    // yaw.setSpeedPID(924.48, 1.8563, 100);
-    yaw.setSpeedPID(1250.355, 1.0061, 0);
-    // yaw.setSpeedPID(3386.438, 7.4473, 17859.4174);
-    yaw.setSpeedIntegralCap(8000);
-    yaw.setSpeedDerivativeCap(4000);
-    yaw.setSpeedOutputCap(32000);
-    yaw.outputCap = 16000;
-    yaw.useAbsEncoder = false;
-
-    // // for manual driving
-    // PID yawBeyblade(0.5, 0, 0); //yaw PID is cascading, so there are external position PIDs for yaw control
-    // yawBeyblade.setOutputCap(35);
-    // yaw.setSpeedPID(922.9095, 0.51424, 0);
-    // yaw.setSpeedIntegralCap(5000);
+    // PID yawBeyblade(0.3, 0, 0); //yaw PID is cascading, so there are external position PIDs for yaw control
+    // yawBeyblade.setOutputCap(30);
+    // // yaw.setSpeedPID(924.48, 1.8563, 100);
+    // yaw.setSpeedPID(1250.355, 1.0061, 0);
+    // // yaw.setSpeedPID(3386.438, 7.4473, 17859.4174);
+    // yaw.setSpeedIntegralCap(8000);
+    // yaw.setSpeedDerivativeCap(4000);
     // yaw.setSpeedOutputCap(32000);
     // yaw.outputCap = 16000;
     // yaw.useAbsEncoder = false;
+
+    // // for manual driving
+    PID yawBeyblade(0.5, 0, 0); //yaw PID is cascading, so there are external position PIDs for yaw control
+    yawBeyblade.setOutputCap(35);
+    yaw.setSpeedPID(922.9095, 0.51424, 0);
+    yaw.setSpeedIntegralCap(5000);
+    yaw.setSpeedOutputCap(32000);
+    yaw.outputCap = 16000;
+    yaw.useAbsEncoder = false;
 
 
     int yawVelo = 0;
@@ -128,7 +128,7 @@ int main(){
     #endif
 
     //PITCH
-    pitch.setPositionPID(23.0458, 0.022697, 756.5322);
+    pitch.setPositionPID(15.0458, 0, 800.5322);
     pitch.setPositionOutputCap(32000);
     pitch.pidPosition.feedForward = 0;
     pitch.outputCap = 16000;
@@ -157,9 +157,9 @@ int main(){
     //Variables for burst fire
     unsigned long timeSure;
     unsigned long prevTimeSure;
-    // bool shoot = false;
+    bool shoot = false;
     // int shootTargetPosition = 36*8190 ;
-    // bool shootReady = false;
+    bool shootReady = false;
 
     //CHASSIS
     Chassis.setYawReference(&yaw, 5650); //the number of ticks of yaw considered to be robot-front
@@ -299,7 +299,7 @@ int main(){
             jx = (abs(jx) < tolerance) ? 0 : jx;
             jy = (abs(jy) < tolerance) ? 0 : jy;
             jpitch = (abs(jpitch) < tolerance) ? 0 : jpitch;
-            jyaw = (abs(jyaw) < tolerance) ? 0 : jyaw;
+            jyaw = (abs(jyaw) < tolerance * 3) ? 0 : jyaw;
             
             //Keyboard Driving
             float mult = 1;
@@ -397,35 +397,31 @@ int main(){
             pitch_current_angle = ((pitch>>ANGLE) - pitch_zero_offset_ticks) / TICKS_REVOLUTION * 360;
 
             //INDEXER CODE
-            if ((remote.leftSwitch() == Remote::SwitchState::UP || remote.getMouseL()) && remote.rightSwitch() != Remote::SwitchState::MID){
-                // if (shootReady){
-                //     shootReady = false;
-                //     shootTargetPosition = 8192 * 12 + (indexer>>MULTITURNANGLE);
-
-                //     //shoot limit
-                //     if(robot_status.shooter_barrel_heat_limit < 10 || power_heat_data.shooter_17mm_1_barrel_heat < robot_status.shooter_barrel_heat_limit - 40) {
-                //         shoot = true;
-                //     }
-                    
-                // }
-
-                indexerL.setSpeed(-5 * 8 * M2006_GEAR_RATIO);
-                indexerR.setSpeed(5 * 8 * M2006_GEAR_RATIO);
-            } else {
+            if ((remote.leftSwitch() == Remote::SwitchState::UP || remote.getMouseL()) && remote.rightSwitch() != Remote::SwitchState::MID) {
+                if(robot_status.shooter_barrel_heat_limit < 10 || power_heat_data.shooter_17mm_1_barrel_heat < robot_status.shooter_barrel_heat_limit - 40) {
+                    indexerL.setSpeed(-5 * 16 * M2006_GEAR_RATIO);
+                    indexerR.setSpeed(5 * 16 * M2006_GEAR_RATIO);
+                }
+                else {
+                    indexerL.setSpeed(0);
+                    indexerR.setSpeed(0);
+                }
+            } 
+            else {
                 indexerL.setSpeed(0);
                 indexerR.setSpeed(0);
                 //SwitchState state set to mid/down/unknown
-                //shootReady = true;
+                // shootReady = true;
             }
 
             //FLYWHEELS
             if (remote.leftSwitch() != Remote::SwitchState::DOWN &&
                 remote.leftSwitch() != Remote::SwitchState::UNKNOWN &&
                 remote.rightSwitch() != Remote::SwitchState::MID){
-                RFLYWHEEL_U.setSpeed(-FLYWHEEL_SPEED);
-                LFLYWHEEL_U.setSpeed(FLYWHEEL_SPEED);
-                RFLYWHEEL_D.setSpeed(-FLYWHEEL_SPEED);
-                LFLYWHEEL_D.setSpeed(FLYWHEEL_SPEED);
+                RFLYWHEEL_U.setSpeed(FLYWHEEL_SPEED);  // correct
+                LFLYWHEEL_U.setSpeed(-FLYWHEEL_SPEED); // actually RIGHT DOWN (from the back of the robot)
+                RFLYWHEEL_D.setSpeed(-FLYWHEEL_SPEED); // actually LEFT UP
+                LFLYWHEEL_D.setSpeed(FLYWHEEL_SPEED);  // correct
             } else{
                 // left SwitchState set to down/unknown
                 RFLYWHEEL_U.setSpeed(0);
@@ -437,8 +433,7 @@ int main(){
             printLoop ++;
             if (printLoop >= PRINT_FREQUENCY){
                 printLoop = 0;
-                printff("vX:%.2f,vY:%.2f,vO:%.2f\n",cs.vX, cs.vY, cs.vOmega);
-                //printff("Prints:\n")
+                //printff("Prints:\n");
                 //printff("lX:%.1f lY:%.1f rX:%.1f rY:%.1f lS:%d rS:%d\n", remote.leftX(), remote.leftY(), remote.rightX(), remote.rightY(), remote.leftSwitch(), remote.rightSwitch());
                 //printff("jx:%.3f jy:%.3f jpitch:%.3f jyaw:%.3f\n", jx, jy, jpitch, jyaw);
                 #ifdef USE_IMU
@@ -471,7 +466,7 @@ int main(){
                 #ifdef USE_IMU
                 //printff("IMU %.3f %.3f %.3f\n",imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
                 #endif
-                // printff("pwr:%u max:%d heat:%d\n", chassis_buffer, robot_status.chassis_power_limit, power_heat_data.shooter_17mm_1_barrel_heat);
+                printff("pwr:%u max:%d heat:%d\n", chassis_buffer, robot_status.chassis_power_limit, power_heat_data.shooter_17mm_1_barrel_heat);
                 //printff("ID:%d LVL:%d HP:%d MAX_HP:%d\n", robot_status.robot_id, robot_status.robot_level, robot_status.current_HP, robot_status.maximum_HP);
                 //printff("elap:%.5fms\n", elapsedms);
             }
