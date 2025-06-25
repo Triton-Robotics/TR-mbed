@@ -90,7 +90,7 @@ int main(){
     // pitch.setPositionPID(26.2644, 0.034926, 1200); //15, 0 1700
     // pitch.setPositionOutputCap(32000);
     // pitch.setPositionIntegralCap(3000);
-    PID pitchCascade(3,0.5,0.05);
+    PID pitchCascade(3,0.005,0.05);
     pitchCascade.setIntegralCap(2);
     pitchCascade.setOutputCap(30);
     pitch.setSpeedPID(500,0.8,0);
@@ -334,8 +334,6 @@ int main(){
 
                 yaw_desired_angle = fmod((fmod(yaw_desired_angle, 360.0) + 360.0), 360.0); 
 
-                prevTimeSure = timeSure;
-                timeSure = us_ticker_read();
                 #ifdef USE_IMU
                 error = DJIMotor::s_calculateDeltaPhaseF(yaw_desired_angle, imuAngles.yaw + 180, 360);
                 yawVelo = yawBeyblade.calculatePeriodic(error, timeSure - prevTimeSure);
@@ -511,7 +509,7 @@ int main(){
                 // printff("IMU %.3f %.3f %.3f\n",imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
                 #endif
                 //printff("pwr:%u max:%d heat:%d\n", chassis_buffer, robot_status.chassis_power_limit, power_heat_data.shooter_17mm_1_barrel_heat);
-                printff("ID:%d LVL:%d HP:%d MAX_HP:%d\n", robot_status.robot_id, robot_status.robot_level, robot_status.current_HP, robot_status.maximum_HP);
+                //printff("ID:%d LVL:%d HP:%d MAX_HP:%d\n", robot_status.robot_id, robot_status.robot_level, robot_status.current_HP, robot_status.maximum_HP);
                 // printff("elap:%.5fms\n", elapsedms);
                 //printff("[HEAT] lim:%d buf:%d b1:%d b2:%d sp:%.1f fr:%d\n", robot_status.shooter_barrel_heat_limit, power_heat_data.buffer_energy, power_heat_data.shooter_17mm_1_barrel_heat, power_heat_data.shooter_17mm_2_barrel_heat, shoot_data.initial_speed, shoot_data.launching_frequency);
 
