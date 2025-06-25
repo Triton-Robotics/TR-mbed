@@ -103,7 +103,6 @@ int main(){
     yaw.setSpeedPID(1250.355, 1.0061, 0);
     // yaw.setSpeedPID(3386.438, 7.4473, 17859.4174);
     yaw.setSpeedIntegralCap(8000);
-    yaw.setSpeedDerivativeCap(4000);
     yaw.setSpeedOutputCap(32000);
     yaw.outputCap = 16000;
     yaw.useAbsEncoder = false;
