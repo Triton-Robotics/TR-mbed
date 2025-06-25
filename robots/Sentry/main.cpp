@@ -263,11 +263,18 @@ int main(){
     #endif
 
     //PITCH
-    pitch.setPositionPID(15.0458, 0, 800.5322);
-    pitch.setPositionOutputCap(32000);
+    PID pitchCascade(1,0.0005,0.05);
+    pitchCascade.setIntegralCap(2);
+    pitchCascade.setOutputCap(30);
+    pitch.setSpeedPID(400,0.8,0);
+    pitch.setSpeedIntegralCap(4000);
+    pitch.setSpeedOutputCap(32000);
     pitch.pidPosition.feedForward = 0;
     pitch.outputCap = 16000;
     pitch.useAbsEncoder = true;
+    pitchCascade.dBuffer.lastY = 5;
+
+    int pitchVelo = 0;
 
     float pitch_current_angle = 0;
     float pitch_desired_angle = 0;
@@ -396,6 +403,12 @@ int main(){
             Jetson_read_data jetson_received_data;
             int readResult = jetson_read_values(bcJetson, jetson_received_data);
             char shoot_status_cv = 0;
+
+            if(remote.rightSwitch() == Remote::SwitchState::DOWN){
+              cv_enabled = false;
+            } else {
+              cv_enabled = true;
+            }
 
             if(cv_enabled){
                 if(readResult > 0){
@@ -568,8 +581,6 @@ int main(){
                 // yaw.pidSpeed.feedForward = 175.3608 * yawVelo + 2302.1 * dir;
 
                 yaw.setSpeed(yawVelo);
-
-                prevTimeSure = timeSure;
             }else{
                 //Off
                 yaw.setPower(0);
@@ -577,6 +588,9 @@ int main(){
                 yaw_desired_angle = imuAngles.yaw + 180;
                 #endif
             }
+
+            prevTimeSure = timeSure;
+            timeSure = us_ticker_read();
 
             //PITCH
             if (remote.rightSwitch() == Remote::SwitchState::DOWN || remote.rightSwitch() == Remote::SwitchState::UP){
@@ -590,15 +604,24 @@ int main(){
                     pitch_desired_angle = UPPERBOUND;
                 }
 
-                //float FF = K * sin((desiredPitch / 180 * PI) - pitch_phase); // output: [-1,1]
-                //float FF = K * cos(pitch_desired_angle / 180 * PI);
-                //pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
-                pitch.setPosition(int((pitch_desired_angle / 360) * TICKS_REVOLUTION + pitch_zero_offset_ticks));
+                pitchVelo = -pitchCascade.calculatePeriodic(pitch_desired_angle - pitch_current_angle, timeSure - prevTimeSure);
+                
+                int dir = 0;
+                if(pitchVelo > 1){
+                    dir = 1;
+                }else if(pitchVelo < -1){
+                    dir = -1;
+                }
+
+                float pitch_current_radians = -(pitch_current_angle / 360) * 2 * M_PI;
+                pitch.pidSpeed.feedForward = (1221 * dir + 97.4 * yawVelo);
+                //pitch.setPosition(-int((pitch_desired_angle / 360) * TICKS_REVOLUTION - pitch_zero_offset_ticks));
+                pitch.setSpeed(pitchVelo);
             }else{
                 //Off
                 pitch.setPower(0);
             }
-            pitch_current_angle = ((pitch>>ANGLE) - pitch_zero_offset_ticks) / TICKS_REVOLUTION * 360;
+            pitch_current_angle = (pitch_zero_offset_ticks - (pitch>>ANGLE)) / TICKS_REVOLUTION * 360 / 2;
 
             //INDEXER CODE
             if ((remote.rightSwitch() == Remote::SwitchState::DOWN && remote.leftSwitch() == Remote::SwitchState::UP) || 
@@ -653,6 +676,7 @@ int main(){
                 // printff("yaw_des_v:%d yaw_act_v:%d PWR:%d ", yawVelo, yaw>>VELOCITY, yaw>>POWEROUT);
                 // printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
                 #endif
+                // printff("[%.1f][%.1f][%.1f] %.1f %.1f\n", pitchCascade.pC, pitchCascade.iC, pitchCascade.dC,  pitch_current_angle, pitch_desired_angle);
                 // printff("%d, %d\n", power_heat_data.shooter_17mm_1_barrel_heat, power_heat_data.shooter_17mm_2_barrel_heat);
                 //printff("pitch_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
                 //printff("pitch_des:%.3f pitch_act:%.3f [%d]\n", pitch_desired_angle, pitch_current_angle, pitch>>ANGLE);
