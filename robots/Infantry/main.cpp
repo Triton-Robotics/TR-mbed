@@ -287,10 +287,17 @@ int main(){
             // float max_omega = 0.326 + 0.0857 * chassis_power_limit + -0.000183 * (chassis_power_limit * chassis_power_limit);
             float max_omega = 4.8;
 
+            if(remote.keyPressed(Remote::Key::CTRL)){
+              jx = 0.0;
+              jy = 0.0;
+              max_omega = 6.1;
+            }
+
             float linear_hypo = sqrtf(jx * jx + jy * jy);
             if(linear_hypo > 1.0){
               linear_hypo = 1.0;
             }
+
             float available_beyblade = 1.0 - linear_hypo;
             float omega_speed = max_omega * available_beyblade;
 
