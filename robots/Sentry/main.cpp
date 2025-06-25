@@ -111,17 +111,7 @@ SetValues calculate_chassis_speeds(float posx, float posy, float angle, float fi
     SetValues values;
     values.lx = 0;
     values.ly = 0;
-    values.rx = 0; 
-
-    // if (angle > BUFFER_ANGLE) {
-    //     values.rx = ROT_INIT;
-    // }
-    // else if (angle < -BUFFER_ANGLE) {
-    //     values.rx = -ROT_INIT;
-    // }
-    // else {
-    //     values.rx = 0;
-    // }
+    values.rx = 0;
 
     // if the final position is too far away:
     if ((final_x - posx) > BUFFER) {
@@ -336,7 +326,7 @@ int main(){
 
     ChassisSpeeds cs;
 
-    bool cv_enabled = false;
+    bool cv_enabled = true;
 
     // Auto code
     std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {0.0,5.0}};//, {-3.5,5.0}, {-3.5,2.0}};
