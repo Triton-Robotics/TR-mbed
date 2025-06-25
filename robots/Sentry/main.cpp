@@ -485,7 +485,7 @@ int main(){
             }
 
             //TODO FIX ME 
-            if (game_status.game_progress == 4 || true) {
+            if (game_status.game_progress == 4) {
                 
                 if (remote.rightSwitch() == Remote::SwitchState::UP) {
                     led = 0;
