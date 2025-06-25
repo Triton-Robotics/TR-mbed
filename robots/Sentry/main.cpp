@@ -39,9 +39,9 @@ constexpr int FLYWHEEL_SPEED = 7000;
 constexpr float BUFFER_ANGLE = PI / 16;
 // PI/2 radps = 1 in vOmega terms (idk why), so we're converting PI/4 radps to 0.5 vOmega term
 constexpr float ROT_INIT = 1; 
-constexpr float ACCEL_INIT = 0.5;
-constexpr float VEL_INIT = 1.2;
-constexpr float DECEL_DIST =  VEL_INIT * VEL_INIT / (2 * ACCEL_INIT* TIME);
+constexpr float ACCEL_INIT = 0.2;
+constexpr float VEL_INIT = 0.5;
+constexpr float DECEL_DIST = 2 * VEL_INIT * VEL_INIT / (2 * ACCEL_INIT* TIME);
 constexpr float BUFFER = 0.1;
 float rotation = 0;
 
@@ -113,16 +113,16 @@ SetValues calculate_chassis_speeds(float posx, float posy, float angle, float fi
     values.ly = 0;
     values.rx = 0; 
 
-    if (angle > BUFFER_ANGLE) {
-        values.rx = -ROT_INIT;
-    }
-    else if (angle < -BUFFER_ANGLE) {
-        values.rx = ROT_INIT;
-    }
-    else {
-        values.rx = 0;
-    }
-    // printff("%.3f, %.3f\n", distance, DECEL_DIST);
+    // if (angle > BUFFER_ANGLE) {
+    //     values.rx = ROT_INIT;
+    // }
+    // else if (angle < -BUFFER_ANGLE) {
+    //     values.rx = -ROT_INIT;
+    // }
+    // else {
+    //     values.rx = 0;
+    // }
+
     // if the final position is too far away:
     if ((final_x - posx) > BUFFER) {
         // if velocity is less than "max vel"
@@ -207,6 +207,20 @@ SetValues calculate_chassis_speeds(float posx, float posy, float angle, float fi
     }
     else {
         values.ly = 0;
+    }
+
+    if (angle > BUFFER_ANGLE) {
+        values.rx = ROT_INIT;
+        values.lx = 0;
+        values.ly = 0;
+    }
+    else if (angle < -BUFFER_ANGLE) {
+        values.rx = -ROT_INIT;
+        values.lx = 0;
+        values.ly = 0;
+    }
+    else {
+        values.rx = 0;
     }
 
     return values;
@@ -325,7 +339,7 @@ int main(){
     bool cv_enabled = false;
 
     // Auto code
-    std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {0.0,5.5}, {-4.0,5.5}, {-4.0,2.0}};
+    std::vector<std::vector<float>> final_pos = {{0.0, 0.0}, {0.0,5.0}};//, {-3.5,5.0}, {-3.5,2.0}};
 
     float angle = 0.0;
     float posx = final_pos[0][0]; // need to go to 1676 ish
@@ -452,7 +466,7 @@ int main(){
                       (velocity.vOmega - prev_velocity.vOmega) / (TIME*0.001)}; 
             
             // angle is always 0 for robot oriented drive
-            angle = angle + ((velocity.vOmega * TIME * 0.001) + (1/2 * accel.vOmega * TIME * 0.001 * TIME * 0.001)) * PI / 2;
+            angle = angle - ((velocity.vOmega * TIME * 0.001) + (1/2 * accel.vOmega * TIME * 0.001 * TIME * 0.001)) * PI / 2;
             
             if (angle > PI) {
                 angle -= 2 * PI;
@@ -460,6 +474,8 @@ int main(){
             else if (angle < -PI) {
                 angle += 2 * PI;
             }
+
+            //angle = 0.0;
 
             posx = posx + ((velocity.vX * cos(angle) + velocity.vY * sin(angle)) * TIME * 0.001
                 + (0.5 * (accel.vX * cos(angle) + accel.vY * sin(angle)) * TIME * 0.001 * TIME * 0.001)) * 1.6;
@@ -475,7 +491,6 @@ int main(){
                 lx = (remote.leftX() / 660.0) * Chassis.m_OmniKinematicsLimits.max_Vel;
                 ly = (remote.leftY() / 660.0) * Chassis.m_OmniKinematicsLimits.max_Vel;
               
-
                 Chassis.setChassisSpeeds({lx, ly, 0}, ChassisSubsystem::ROBOT_ORIENTED);
             }
 
@@ -492,7 +507,7 @@ int main(){
                     if ((distance < M_SQRT2 * BUFFER)) {
                         settle_counter+= TIME;
                         // if hp is greater than 20%, go to next setpoint
-                        if (robot_status.current_HP >= robot_status.maximum_HP * 0.2) {
+                        if (robot_status.current_HP > robot_status.maximum_HP * 0.2) {
 
                             // if we are not at the final setpoint and 300ms have passed, move to the next setpoint
                             if ((idx < final_pos.size() - 1) && (settle_counter > 300)) {
@@ -503,6 +518,7 @@ int main(){
                         }
                         // hp low, so go to previous setpoint
                         else {
+                            beyblade_counter = 0;
                             if (idx > 0) {
                                 idx -= 1;
                                 final_y = final_pos[idx][1];
@@ -517,10 +533,10 @@ int main(){
                     if (idx == final_pos.size() - 1 && velocity.vX == 0 && velocity.vY == 0) {
                         beyblade_counter++;
                     } 
-
                     if (beyblade_counter > 10) {
                         values.rx = 3;
                     }
+
                     Chassis.setChassisSpeeds({values.lx, values.ly, values.rx}, ChassisSubsystem::ROBOT_ORIENTED);
                 }
                 else {
