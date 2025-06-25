@@ -632,7 +632,7 @@ int main(){
 
             //INDEXER CODE
             if ((remote.leftSwitch() == Remote::SwitchState::UP || remote.getMouseL()) && remote.rightSwitch() != Remote::SwitchState::MID) {
-                if(robot_status.shooter_barrel_heat_limit < 10 || power_heat_data.shooter_17mm_1_barrel_heat < robot_status.shooter_barrel_heat_limit - 40) {
+                if(robot_status.shooter_barrel_heat_limit < 10 || power_heat_data.shooter_17mm_1_barrel_heat < robot_status.shooter_barrel_heat_limit - 30) {
                     indexerL.setSpeed(-5 * 16 * M2006_GEAR_RATIO);
                     indexerR.setSpeed(5 * 16 * M2006_GEAR_RATIO);
                 }
@@ -701,7 +701,7 @@ int main(){
                 //printff("IMU %.3f %.3f %.3f\n",imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
                 #endif
                 // printff("pwr:%u max:%d heat:%d\n", chassis_buffer, robot_status.chassis_power_limit, power_heat_data.shooter_17mm_1_barrel_heat);
-                //printff("ID:%d LVL:%d HP:%d MAX_HP:%d\n", robot_status.robot_id, robot_status.robot_level, robot_status.current_HP, robot_status.maximum_HP);
+                // printff("ID:%d LVL:%d HP:%d MAX_HP:%d\n", robot_status.robot_id, robot_status.robot_level, robot_status.current_HP, robot_status.maximum_HP);
                 //printff("elap:%.5fms\n", elapsedms);
             }
 
