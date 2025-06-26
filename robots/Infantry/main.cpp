@@ -27,7 +27,7 @@ constexpr float CHASSIS_FF_KICK = 0.065;
 constexpr float pitch_zero_offset_ticks = 1500;
 
 constexpr int NUM_BALLS_SHOT = 3;
-constexpr int FLYWHEEL_VELO = 7000;
+constexpr int FLYWHEEL_VELO = 5500;
 
 #define READ_DEBUG 0
 #define MAGICBYTE 0xEE
@@ -65,7 +65,7 @@ int main(){
     * MOTORS SETUP AND PIDS
     */
     //YAW
-    PID yawBeyblade(1.0, 0.00, 0.05); //yaw PID is cascading, so there are external position PIDs for yaw control
+    PID yawBeyblade(0.8, 0.00, 0.005); //yaw PID is cascading, so there are external position PIDs for yaw control
     yawBeyblade.setIntegralCap(2);
     // PID yawNonBeyblade(0.15, 0, 550);
     yawBeyblade.setOutputCap(90);
@@ -90,7 +90,7 @@ int main(){
     // pitch.setPositionPID(26.2644, 0.034926, 1200); //15, 0 1700
     // pitch.setPositionOutputCap(32000);
     // pitch.setPositionIntegralCap(3000);
-    PID pitchCascade(3,0.005,0.05);
+    PID pitchCascade(1.5,0.0005,0.05);
     pitchCascade.setIntegralCap(2);
     pitchCascade.setOutputCap(30);
     pitch.setSpeedPID(500,0.8,0);
@@ -107,8 +107,8 @@ int main(){
     float pitch_desired_angle = 0;
 
     //FLYWHEELS
-    LFLYWHEEL.setSpeedPID(7.1849, 0.000042634, 100);
-    RFLYWHEEL.setSpeedPID(7.1849, 0.000042634, 100);
+    LFLYWHEEL.setSpeedPID(7.1849, 0.000042634, 0);
+    RFLYWHEEL.setSpeedPID(7.1849, 0.000042634, 0);
 
     //INDEXER
     indexer.setSpeedPID(2.7, 0.001, 0);
