@@ -34,7 +34,7 @@ constexpr int PRINT_FREQUENCY = 20; //the higher the number, the less often
 
 constexpr float CHASSIS_FF_KICK = 0.065;
 
-constexpr int FLYWHEEL_SPEED = 7000;
+constexpr int FLYWHEEL_SPEED = 6000;
 
 constexpr float BUFFER_ANGLE = PI / 16;
 // PI/2 radps = 1 in vOmega terms (idk why), so we're converting PI/4 radps to 0.5 vOmega term
@@ -497,58 +497,66 @@ int main(){
                 Chassis.setChassisSpeeds({lx, ly, 0}, ChassisSubsystem::ROBOT_ORIENTED);
             }
 
-            //TODO FIX ME 
-            if (game_status.game_progress == 4) {
-                
-                if (remote.rightSwitch() == Remote::SwitchState::UP) {
-                    led = 0;
-                    float distance = calculateDistance(posx, posy, final_x, final_y);
-
-                    SetValues values = calculate_chassis_speeds(posx, posy, angle, final_x, final_y, velocity.vX, velocity.vY);
-
-                    // If robot has stopped moving or its close to its setpoint:
-                    if ((distance < M_SQRT2 * BUFFER)) {
-                        settle_counter+= TIME;
-                        // if hp is greater than 20%, go to next setpoint
-                        if (robot_status.current_HP > robot_status.maximum_HP * 0.2) {
-
-                            // if we are not at the final setpoint and 300ms have passed, move to the next setpoint
-                            if ((idx < final_pos.size() - 1) && (settle_counter > 300)) {
-                                    idx += 1;
-                                    final_y = final_pos[idx][1];
-                                    final_x = final_pos[idx][0];
-                            }
-                        }
-                        // hp low, so go to previous setpoint
-                        else {
-                            beyblade_counter = 0;
-                            if (idx > 0) {
-                                idx -= 1;
-                                final_y = final_pos[idx][1];
-                                final_x = final_pos[idx][0];
-                            }
-                        }
-                        values.ly = 0;
-                        values.lx = 0;
-                    }
-                    
-                    // we've reached the last setpoint, if we stopped moving, then start beyblading
-                    if (idx == final_pos.size() - 1 && velocity.vX == 0 && velocity.vY == 0) {
-                        beyblade_counter++;
-                    } 
-                    if (beyblade_counter > 10) {
-                        values.rx = 3;
-                    }
-
-                    Chassis.setChassisSpeeds({values.lx, values.ly, values.rx}, ChassisSubsystem::ROBOT_ORIENTED);
-                }
-                else {
-                    //OFF
-                    Chassis.setWheelPower({0,0,0,0});
-                }
-                
-                prev_velocity = {velocity.vX, velocity.vY, velocity.vOmega};
+            if(remote.rightSwitch() == Remote::SwitchState::UP){
+              // Chassis.setChassisSpeeds({0,0,3});
             }
+
+            if(remote.rightSwitch() == Remote::SwitchState::MID){
+              Chassis.setWheelPower({0,0,0,0});
+            }
+
+            //TODO FIX ME 
+            // if (true) {
+            //     if (remote.rightSwitch() == Remote::SwitchState::UP) {
+            //         led = 0;
+            //         float distance = calculateDistance(posx, posy, final_x, final_y);
+
+            //         SetValues values = calculate_chassis_speeds(posx, posy, angle, final_x, final_y, velocity.vX, velocity.vY);
+
+            //         // If robot has stopped moving or its close to its setpoint:
+            //         if ((distance < M_SQRT2 * BUFFER)) {
+            //             settle_counter+= TIME;
+            //             // if hp is greater than 20%, go to next setpoint
+            //             if (robot_status.current_HP > robot_status.maximum_HP * 0.2) {
+
+            //                 // if we are not at the final setpoint and 300ms have passed, move to the next setpoint
+            //                 if ((idx < final_pos.size() - 1) && (settle_counter > 300)) {
+            //                         idx += 1;
+            //                         final_y = final_pos[idx][1];
+            //                         final_x = final_pos[idx][0];
+            //                 }
+            //             }
+            //             // hp low, so go to previous setpoint
+            //             else {
+            //                 beyblade_counter = 0;
+            //                 if (idx > 0) {
+            //                     idx -= 1;
+            //                     final_y = final_pos[idx][1];
+            //                     final_x = final_pos[idx][0];
+            //                 }
+            //             }
+            //             values.ly = 0;
+            //             values.lx = 0;
+            //         }
+                    
+            //         // we've reached the last setpoint, if we stopped moving, then start beyblading
+            //         if (idx == final_pos.size() - 1 && velocity.vX == 0 && velocity.vY == 0) {
+            //             beyblade_counter++;
+            //         } 
+            //         if (beyblade_counter > 10) {
+            //             values.rx = 3;
+            //         }
+
+            //         // Chassis.setChassisSpeeds({values.lx, values.ly, values.rx}, ChassisSubsystem::ROBOT_ORIENTED);
+            //         Chassis.setChassisSpeeds({0,0,3});
+            //     }
+            //     else {
+            //         //OFF
+            //         Chassis.setWheelPower({0,0,0,0});
+            //     }
+                
+            //     prev_velocity = {velocity.vX, velocity.vY, velocity.vOmega};
+            // }
 
             //YAW CODE
             if (remote.rightSwitch() == Remote::SwitchState::DOWN  || remote.rightSwitch() == Remote::SwitchState::UP){
@@ -703,6 +711,7 @@ int main(){
                 // printff("pwr:%u max:%d heat:%d\n", chassis_buffer, robot_status.chassis_power_limit, power_heat_data.shooter_17mm_1_barrel_heat);
                 //printff("ID:%d LVL:%d HP:%d MAX_HP:%d\n", robot_status.robot_id, robot_status.robot_level, robot_status.current_HP, robot_status.maximum_HP);
                 //printff("elap:%.5fms\n", elapsedms);
+                // printff("%d\n", game_status.game_progress);
             }
 
             DJIMotor::s_sendValues();
