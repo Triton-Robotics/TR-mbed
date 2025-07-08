@@ -1,116 +1,119 @@
-// #include "PID.h"
+#include "PID.h"
 
-// PID::PID()
-// {
-//     kP = 0;
-//     kI = 0;
-//     kD = 0;
-//     integralCap = 0;
-//     outputCap = 0;
-//     feedForward = 0;
-// }
+#ifndef FUNNY_PID
 
-// PID::PID(float kP, float kI, float kD, float integralCap, float outputCap)
-// {
-//     this->kP = kP;
-//     this->kI = kI;
-//     this->kD = kD;
-//     this->integralCap = integralCap;
-//     this->outputCap = outputCap;
-// }
+PID::PID()
+{
+    kP = 0;
+    kI = 0;
+    kD = 0;
+    integralCap = 0;
+    outputCap = 0;
+    feedForward = 0;
+}
 
-// void PID::setPID(float kP, float kI, float kD, float integralCap, float outputCap)
-// {
-//     this->kP = kP;
-//     this->kI = kI;
-//     this->kD = kD;
-//     this->integralCap = integralCap;
-//     this->outputCap = outputCap;
-// }
+PID::PID(float kP, float kI, float kD, float integralCap, float outputCap)
+{
+    this->kP = kP;
+    this->kI = kI;
+    this->kD = kD;
+    this->integralCap = integralCap;
+    this->outputCap = outputCap;
+}
 
-// void PID::resetPID(float kP, float kI, float kD, float integralCap, float outputCap)
-// {
-//     this->kP = kP;
-//     this->kI = kI;
-//     this->kD = kD;
-//     this->integralCap = integralCap;
-//     this->outputCap = outputCap;
+void PID::setPID(float kP, float kI, float kD, float integralCap, float outputCap)
+{
+    this->kP = kP;
+    this->kI = kI;
+    this->kD = kD;
+    this->integralCap = integralCap;
+    this->outputCap = outputCap;
+}
 
-//     lastError = 0;
-//     errorIntegral = 0;
-// }
+void PID::resetPID(float kP, float kI, float kD, float integralCap, float outputCap)
+{
+    this->kP = kP;
+    this->kI = kI;
+    this->kD = kD;
+    this->integralCap = integralCap;
+    this->outputCap = outputCap;
 
-// void PID::resetErrorIntegral()
-// {
-//     lastError = 0;
-//     errorIntegral = 0;
-// }
+    lastError = 0;
+    errorIntegral = 0;
+}
 
-// int PID::calculate(int desired, int current, double dt)
-// {
-//     float error = static_cast<float>(desired - current);
-//     return calculatePeriodic(error, dt);
-// }
+void PID::resetErrorIntegral()
+{
+    lastError = 0;
+    errorIntegral = 0;
+}
 
-// int PID::calculatePeriodic(float error, double dt)
-// {
+int PID::calculate(int desired, int current, double dt)
+{
+    float error = static_cast<float>(desired - current);
+    return calculatePeriodic(error, dt);
+}
 
-//     dt /= 1000;
-//     errorIntegral += kI * dt * (error + lastError) / 2;
-//     limitErrorIntegral();
+int PID::calculatePeriodic(float error, double dt)
+{
 
-//     iC = errorIntegral;
+    dt /= 1000;
+    errorIntegral += kI * dt * (error + lastError) / 2;
+    limitErrorIntegral();
 
-//     double PIDCalc = (kP * error) + (errorIntegral) + feedForward;
-//     pC = kP * error;
+    iC = errorIntegral;
 
-//     if (dt > 0)
-//     {
-//         PIDCalc += (kD * (error - lastError) / dt);
-//     }
+    double PIDCalc = (kP * error) + (errorIntegral) + feedForward;
+    pC = kP * error;
 
-//     dC = (kD * (error - lastError) / dt);
+    if (dt > 0)
+    {
+        PIDCalc += (kD * (error - lastError) / dt);
+    }
 
-//     lastError = error;
+    dC = (kD * (error - lastError) / dt);
 
-//     limitOutput(PIDCalc);
-//     return static_cast<int>(PIDCalc);
-// }
+    lastError = error;
+    limitOutput(PIDCalc);
+    return static_cast<int>(PIDCalc);
+}
 
-// void PID::limitErrorIntegral()
-// {
-//     if (integralCap != 0)
-//     {
-//         if (errorIntegral > integralCap)
-//             errorIntegral = integralCap;
+void PID::limitErrorIntegral()
+{
+    if (integralCap != 0)
+    {
+        if (errorIntegral > integralCap)
+            errorIntegral = integralCap;
 
-//         else if (errorIntegral < -integralCap)
-//             errorIntegral = -integralCap;
-//     }
-// }
+        else if (errorIntegral < -integralCap)
+            errorIntegral = -integralCap;
+    }
+}
 
-// void PID::limitOutput(double &PIDCalc) const
-// {
+void PID::limitOutput(double &PIDCalc) const
+{
 
-//     if (outputCap != 0)
-//     {
-//         if (PIDCalc > outputCap)
-//             PIDCalc = outputCap;
+    if (outputCap != 0)
+    {
+        if (PIDCalc > outputCap)
+            PIDCalc = outputCap;
 
-//         else if (PIDCalc < -outputCap)
-//             PIDCalc = -outputCap;
-//     }
-// }
+        else if (PIDCalc < -outputCap)
+            PIDCalc = -outputCap;
+    }
+}
 
-// void PID::setIntegralCap(float integralCap)
-// {
-//     this->integralCap = integralCap;
-// }
+void PID::setIntegralCap(float integralCap)
+{
+    this->integralCap = integralCap;
+}
 
-// void PID::setOutputCap(float outputCap)
-// {
-//     this->outputCap = outputCap;
-// }
+void PID::setOutputCap(float outputCap)
+{
+    this->outputCap = outputCap;
+}
+
+#else
 
 #include "PID.h"
 
@@ -186,25 +189,12 @@ int PID::calculatePeriodic(float error, double dt)
         dTerm = dBuffer.time();
         PIDCalc += dTerm;
     }
-    dTerm = limitErrorDerivative(dTerm);
+
     dC = dTerm;
 
     lastError = error;
     limitOutput(PIDCalc);
     return static_cast<int>(PIDCalc);
-}
-
-double PID::limitErrorDerivative(double dTerm)
-{
-    if (derivativeCap != 0)
-    {
-        if (dTerm > derivativeCap)
-            dTerm = derivativeCap;
-
-        else if (dTerm < -derivativeCap)
-            dTerm = -derivativeCap;
-    }
-    return dTerm;
 }
 
 void PID::limitErrorIntegral()
@@ -232,10 +222,6 @@ void PID::limitOutput(double &PIDCalc) const
     }
 }
 
-void PID::setDerivativeCap(float derivativeCap) {
-    this->derivativeCap = derivativeCap;
-}
-
 void PID::setIntegralCap(float integralCap)
 {
     this->integralCap = integralCap;
@@ -245,3 +231,5 @@ void PID::setOutputCap(float outputCap)
 {
     this->outputCap = outputCap;
 }
+
+#endif

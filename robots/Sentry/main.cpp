@@ -34,7 +34,7 @@ constexpr int PRINT_FREQUENCY = 20; //the higher the number, the less often
 
 constexpr float CHASSIS_FF_KICK = 0.065;
 
-constexpr int FLYWHEEL_SPEED = 7000;
+constexpr int FLYWHEEL_SPEED = 6000;
 
 constexpr float BUFFER_ANGLE = PI / 16;
 // PI/2 radps = 1 in vOmega terms (idk why), so we're converting PI/4 radps to 0.5 vOmega term
@@ -263,11 +263,18 @@ int main(){
     #endif
 
     //PITCH
-    pitch.setPositionPID(15.0458, 0, 800.5322);
-    pitch.setPositionOutputCap(32000);
+    PID pitchCascade(1,0.0005,0.05);
+    pitchCascade.setIntegralCap(2);
+    pitchCascade.setOutputCap(30);
+    pitch.setSpeedPID(400,0.8,0);
+    pitch.setSpeedIntegralCap(4000);
+    pitch.setSpeedOutputCap(32000);
     pitch.pidPosition.feedForward = 0;
     pitch.outputCap = 16000;
     pitch.useAbsEncoder = true;
+    pitchCascade.dBuffer.lastY = 5;
+
+    int pitchVelo = 0;
 
     float pitch_current_angle = 0;
     float pitch_desired_angle = 0;
@@ -397,6 +404,12 @@ int main(){
             int readResult = jetson_read_values(bcJetson, jetson_received_data);
             char shoot_status_cv = 0;
 
+            if(remote.rightSwitch() == Remote::SwitchState::DOWN){
+              cv_enabled = false;
+            } else {
+              cv_enabled = true;
+            }
+
             if(cv_enabled){
                 if(readResult > 0){
                     yaw_desired_angle = jetson_received_data.requested_yaw_rads / M_PI * 180;
@@ -484,58 +497,66 @@ int main(){
                 Chassis.setChassisSpeeds({lx, ly, 0}, ChassisSubsystem::ROBOT_ORIENTED);
             }
 
-            //TODO FIX ME 
-            if (game_status.game_progress == 4) {
-                
-                if (remote.rightSwitch() == Remote::SwitchState::UP) {
-                    led = 0;
-                    float distance = calculateDistance(posx, posy, final_x, final_y);
-
-                    SetValues values = calculate_chassis_speeds(posx, posy, angle, final_x, final_y, velocity.vX, velocity.vY);
-
-                    // If robot has stopped moving or its close to its setpoint:
-                    if ((distance < M_SQRT2 * BUFFER)) {
-                        settle_counter+= TIME;
-                        // if hp is greater than 20%, go to next setpoint
-                        if (robot_status.current_HP > robot_status.maximum_HP * 0.2) {
-
-                            // if we are not at the final setpoint and 300ms have passed, move to the next setpoint
-                            if ((idx < final_pos.size() - 1) && (settle_counter > 300)) {
-                                    idx += 1;
-                                    final_y = final_pos[idx][1];
-                                    final_x = final_pos[idx][0];
-                            }
-                        }
-                        // hp low, so go to previous setpoint
-                        else {
-                            beyblade_counter = 0;
-                            if (idx > 0) {
-                                idx -= 1;
-                                final_y = final_pos[idx][1];
-                                final_x = final_pos[idx][0];
-                            }
-                        }
-                        values.ly = 0;
-                        values.lx = 0;
-                    }
-                    
-                    // we've reached the last setpoint, if we stopped moving, then start beyblading
-                    if (idx == final_pos.size() - 1 && velocity.vX == 0 && velocity.vY == 0) {
-                        beyblade_counter++;
-                    } 
-                    if (beyblade_counter > 10) {
-                        values.rx = 3;
-                    }
-
-                    Chassis.setChassisSpeeds({values.lx, values.ly, values.rx}, ChassisSubsystem::ROBOT_ORIENTED);
-                }
-                else {
-                    //OFF
-                    Chassis.setWheelPower({0,0,0,0});
-                }
-                
-                prev_velocity = {velocity.vX, velocity.vY, velocity.vOmega};
+            if(remote.rightSwitch() == Remote::SwitchState::UP){
+              // Chassis.setChassisSpeeds({0,0,3});
             }
+
+            if(remote.rightSwitch() == Remote::SwitchState::MID){
+              Chassis.setWheelPower({0,0,0,0});
+            }
+
+            //TODO FIX ME 
+            // if (true) {
+            //     if (remote.rightSwitch() == Remote::SwitchState::UP) {
+            //         led = 0;
+            //         float distance = calculateDistance(posx, posy, final_x, final_y);
+
+            //         SetValues values = calculate_chassis_speeds(posx, posy, angle, final_x, final_y, velocity.vX, velocity.vY);
+
+            //         // If robot has stopped moving or its close to its setpoint:
+            //         if ((distance < M_SQRT2 * BUFFER)) {
+            //             settle_counter+= TIME;
+            //             // if hp is greater than 20%, go to next setpoint
+            //             if (robot_status.current_HP > robot_status.maximum_HP * 0.2) {
+
+            //                 // if we are not at the final setpoint and 300ms have passed, move to the next setpoint
+            //                 if ((idx < final_pos.size() - 1) && (settle_counter > 300)) {
+            //                         idx += 1;
+            //                         final_y = final_pos[idx][1];
+            //                         final_x = final_pos[idx][0];
+            //                 }
+            //             }
+            //             // hp low, so go to previous setpoint
+            //             else {
+            //                 beyblade_counter = 0;
+            //                 if (idx > 0) {
+            //                     idx -= 1;
+            //                     final_y = final_pos[idx][1];
+            //                     final_x = final_pos[idx][0];
+            //                 }
+            //             }
+            //             values.ly = 0;
+            //             values.lx = 0;
+            //         }
+                    
+            //         // we've reached the last setpoint, if we stopped moving, then start beyblading
+            //         if (idx == final_pos.size() - 1 && velocity.vX == 0 && velocity.vY == 0) {
+            //             beyblade_counter++;
+            //         } 
+            //         if (beyblade_counter > 10) {
+            //             values.rx = 3;
+            //         }
+
+            //         // Chassis.setChassisSpeeds({values.lx, values.ly, values.rx}, ChassisSubsystem::ROBOT_ORIENTED);
+            //         Chassis.setChassisSpeeds({0,0,3});
+            //     }
+            //     else {
+            //         //OFF
+            //         Chassis.setWheelPower({0,0,0,0});
+            //     }
+                
+            //     prev_velocity = {velocity.vX, velocity.vY, velocity.vOmega};
+            // }
 
             //YAW CODE
             if (remote.rightSwitch() == Remote::SwitchState::DOWN  || remote.rightSwitch() == Remote::SwitchState::UP){
@@ -568,8 +589,6 @@ int main(){
                 // yaw.pidSpeed.feedForward = 175.3608 * yawVelo + 2302.1 * dir;
 
                 yaw.setSpeed(yawVelo);
-
-                prevTimeSure = timeSure;
             }else{
                 //Off
                 yaw.setPower(0);
@@ -577,6 +596,9 @@ int main(){
                 yaw_desired_angle = imuAngles.yaw + 180;
                 #endif
             }
+
+            prevTimeSure = timeSure;
+            timeSure = us_ticker_read();
 
             //PITCH
             if (remote.rightSwitch() == Remote::SwitchState::DOWN || remote.rightSwitch() == Remote::SwitchState::UP){
@@ -590,15 +612,24 @@ int main(){
                     pitch_desired_angle = UPPERBOUND;
                 }
 
-                //float FF = K * sin((desiredPitch / 180 * PI) - pitch_phase); // output: [-1,1]
-                //float FF = K * cos(pitch_desired_angle / 180 * PI);
-                //pitch.pidPosition.feedForward = int((INT16_T_MAX) * FF);
-                pitch.setPosition(int((pitch_desired_angle / 360) * TICKS_REVOLUTION + pitch_zero_offset_ticks));
+                pitchVelo = -pitchCascade.calculatePeriodic(pitch_desired_angle - pitch_current_angle, timeSure - prevTimeSure);
+                
+                int dir = 0;
+                if(pitchVelo > 1){
+                    dir = 1;
+                }else if(pitchVelo < -1){
+                    dir = -1;
+                }
+
+                float pitch_current_radians = -(pitch_current_angle / 360) * 2 * M_PI;
+                pitch.pidSpeed.feedForward = (1221 * dir + 97.4 * yawVelo);
+                //pitch.setPosition(-int((pitch_desired_angle / 360) * TICKS_REVOLUTION - pitch_zero_offset_ticks));
+                pitch.setSpeed(pitchVelo);
             }else{
                 //Off
                 pitch.setPower(0);
             }
-            pitch_current_angle = ((pitch>>ANGLE) - pitch_zero_offset_ticks) / TICKS_REVOLUTION * 360;
+            pitch_current_angle = (pitch_zero_offset_ticks - (pitch>>ANGLE)) / TICKS_REVOLUTION * 360 / 2;
 
             //INDEXER CODE
             if ((remote.rightSwitch() == Remote::SwitchState::DOWN && remote.leftSwitch() == Remote::SwitchState::UP) || 
@@ -653,6 +684,7 @@ int main(){
                 // printff("yaw_des_v:%d yaw_act_v:%d PWR:%d ", yawVelo, yaw>>VELOCITY, yaw>>POWEROUT);
                 // printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
                 #endif
+                // printff("[%.1f][%.1f][%.1f] %.1f %.1f\n", pitchCascade.pC, pitchCascade.iC, pitchCascade.dC,  pitch_current_angle, pitch_desired_angle);
                 // printff("%d, %d\n", power_heat_data.shooter_17mm_1_barrel_heat, power_heat_data.shooter_17mm_2_barrel_heat);
                 //printff("pitch_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
                 //printff("pitch_des:%.3f pitch_act:%.3f [%d]\n", pitch_desired_angle, pitch_current_angle, pitch>>ANGLE);
@@ -679,6 +711,7 @@ int main(){
                 // printff("pwr:%u max:%d heat:%d\n", chassis_buffer, robot_status.chassis_power_limit, power_heat_data.shooter_17mm_1_barrel_heat);
                 //printff("ID:%d LVL:%d HP:%d MAX_HP:%d\n", robot_status.robot_id, robot_status.robot_level, robot_status.current_HP, robot_status.maximum_HP);
                 //printff("elap:%.5fms\n", elapsedms);
+                // printff("%d\n", game_status.game_progress);
             }
 
             DJIMotor::s_sendValues();
