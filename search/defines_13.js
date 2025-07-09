@@ -19,9 +19,10 @@ var searchData=
   ['time_16',['TIME',['../Sentry_2main_8cpp.html#a078b6c12f1ac6819cecef90ab5870276',1,'main.cpp']]],
   ['tiny_5fmv_5fmax_5fsize_17',['TINY_MV_MAX_SIZE',['../bench__parameter_8hh.html#ae5488d5164f64787d0a118025c47d99b',1,'bench_parameter.hh']]],
   ['tr_18',['TR',['../common_8h.html#a4eeaa4bfb30c2bd68ba33198fb2f135e',1,'common.h']]],
-  ['track_19',['TRACK',['../core_2util_2algorithms_2eigen-3_84_80_2test_2main_8h.html#a4dcbde603979a969160d849f8374a7ee',1,'main.h']]],
-  ['track_5fwidth_5finches_20',['track_width_inches',['../ChassisKalman_8h.html#a1c00a849b02c2dd96e4726fcd5a9ceec',1,'TRACK_WIDTH_INCHES:&#160;ChassisKalman.h'],['../WheelKalman_8h.html#a1c00a849b02c2dd96e4726fcd5a9ceec',1,'TRACK_WIDTH_INCHES:&#160;WheelKalman.h']]],
-  ['tries_21',['tries',['../bench__reverse_8cpp.html#a527eb3eaec4a1cb30a1a98470e16d5a5',1,'TRIES:&#160;bench_reverse.cpp'],['../benchCholesky_8cpp.html#a527eb3eaec4a1cb30a1a98470e16d5a5',1,'TRIES:&#160;benchCholesky.cpp'],['../benchEigenSolver_8cpp.html#a527eb3eaec4a1cb30a1a98470e16d5a5',1,'TRIES:&#160;benchEigenSolver.cpp']]],
-  ['true_22',['TRUE',['../ref__serial_8h.html#aa8cecfc5c5c054d2875c03e77b7be15d',1,'ref_serial.h']]],
-  ['type_23',['TYPE',['../benchFFT_8cpp.html#a5a392548f2df67370cb15d2a5d75cd7b',1,'benchFFT.cpp']]]
+  ['tr_5fembedded_5fpid_5fh_19',['TR_EMBEDDED_PID_H',['../PID_8h.html#acef43a1b55eefa012c83053edec53da6',1,'PID.h']]],
+  ['track_20',['TRACK',['../core_2util_2algorithms_2eigen-3_84_80_2test_2main_8h.html#a4dcbde603979a969160d849f8374a7ee',1,'main.h']]],
+  ['track_5fwidth_5finches_21',['track_width_inches',['../ChassisKalman_8h.html#a1c00a849b02c2dd96e4726fcd5a9ceec',1,'TRACK_WIDTH_INCHES:&#160;ChassisKalman.h'],['../WheelKalman_8h.html#a1c00a849b02c2dd96e4726fcd5a9ceec',1,'TRACK_WIDTH_INCHES:&#160;WheelKalman.h']]],
+  ['tries_22',['tries',['../bench__reverse_8cpp.html#a527eb3eaec4a1cb30a1a98470e16d5a5',1,'TRIES:&#160;bench_reverse.cpp'],['../benchCholesky_8cpp.html#a527eb3eaec4a1cb30a1a98470e16d5a5',1,'TRIES:&#160;benchCholesky.cpp'],['../benchEigenSolver_8cpp.html#a527eb3eaec4a1cb30a1a98470e16d5a5',1,'TRIES:&#160;benchEigenSolver.cpp']]],
+  ['true_23',['TRUE',['../ref__serial_8h.html#aa8cecfc5c5c054d2875c03e77b7be15d',1,'ref_serial.h']]],
+  ['type_24',['TYPE',['../benchFFT_8cpp.html#a5a392548f2df67370cb15d2a5d75cd7b',1,'benchFFT.cpp']]]
 ];
