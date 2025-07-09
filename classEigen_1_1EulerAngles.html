@@ -220,7 +220,7 @@ class Eigen::EulerAngles&lt; _Scalar, _System &gt;</div><p>Represents a rotation
 <li>then, rotate the axes system over the gamma axis(which was rotated in the two stages above) in angle gamma</li>
 </ul>
 <dl class="section note"><dt>Note</dt><dd>This class support only intrinsic Euler angles for simplicity, see <a class="el" href="classEigen_1_1EulerSystem.html" title="Represents a fixed Euler rotation system.">EulerSystem</a> how to easily overcome this for extrinsic systems.</dd></dl>
-<h3><a class="anchor" id="autotoc_md120"></a>
+<h3><a class="anchor" id="autotoc_md135"></a>
 Rotation representation and conversions</h3>
 <p>It has been proved(see Wikipedia link below) that every rotation can be represented by Euler angles, but there is no single representation (e.g. unlike rotation matrices). Therefore, you can convert from <a class="el" href="namespaceEigen.html" title="Namespace containing all symbols from the Eigen library.">Eigen</a> rotation and to them (including rotation matrices, which is not called "rotations" by <a class="el" href="namespaceEigen.html" title="Namespace containing all symbols from the Eigen library.">Eigen</a> design).</p>
 <p>Euler angles usually used for:</p><ul>
@@ -230,7 +230,7 @@ Rotation representation and conversions</h3>
 </ul>
 <p>However, Euler angles are slow comparing to quaternion or matrices, because their unnatural math definition, although it's simple for human. To overcome this, this class provide easy movement from the math friendly representation to the human friendly representation, and vise-versa.</p>
 <p>All the user need to do is a safe simple C++ type conversion, and this class take care for the math. Additionally, some axes related computation is done in compile time.</p>
-<h4><a class="anchor" id="autotoc_md121"></a>
+<h4><a class="anchor" id="autotoc_md136"></a>
 Euler angles ranges in conversions</h4>
 <p>Rotations representation as <a class="el" href="classEigen_1_1EulerAngles.html" title="Represents a rotation in a 3 dimensional space as three Euler angles.">EulerAngles</a> are not single (unlike matrices), and even have infinite <a class="el" href="classEigen_1_1EulerAngles.html" title="Represents a rotation in a 3 dimensional space as three Euler angles.">EulerAngles</a> representations.<br  />
  For example, add or subtract 2*PI from either angle of <a class="el" href="classEigen_1_1EulerAngles.html" title="Represents a rotation in a 3 dimensional space as three Euler angles.">EulerAngles</a> and you'll get the same rotation. This is the general reason for infinite representation, but it's not the only general reason for not having a single representation.</p>
@@ -250,13 +250,13 @@ Euler angles ranges in conversions</h4>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classEigen_1_1EulerAngles.html#aa7d02f35a984118d4c157a63915bd216">EulerAngles(const MatrixBase&lt;Derived&gt;&amp;)</a> </dd>
 <dd>
 <a class="el" href="classEigen_1_1EulerAngles.html#a22539c574d7b6ca4577691f533f60061">EulerAngles(const RotationBase&lt;Derived, 3&gt;&amp;)</a></dd></dl>
-<h3><a class="anchor" id="autotoc_md122"></a>
+<h3><a class="anchor" id="autotoc_md137"></a>
 Convenient user typedefs</h3>
 <p>Convenient typedefs for <a class="el" href="classEigen_1_1EulerAngles.html" title="Represents a rotation in a 3 dimensional space as three Euler angles.">EulerAngles</a> exist for float and double scalar, in a form of <a class="el" href="classEigen_1_1EulerAngles.html" title="Represents a rotation in a 3 dimensional space as three Euler angles.">EulerAngles</a>{A}{B}{C}{scalar}, e.g. EulerAnglesXYZd, EulerAnglesZYZf.</p>
 <p>Only for positive axes{+x,+y,+z} Euler systems are have convenient typedef. If you need negative axes{-x,-y,-z}, it is recommended to create you own typedef with a word that represent what you need.</p>
-<h3><a class="anchor" id="autotoc_md123"></a>
+<h3><a class="anchor" id="autotoc_md138"></a>
 Example</h3>
-<div class="fragment"></div><!-- fragment --><p> Output: </p><pre class="fragment"></pre><h3><a class="anchor" id="autotoc_md124"></a>
+<div class="fragment"></div><!-- fragment --><p> Output: </p><pre class="fragment"></pre><h3><a class="anchor" id="autotoc_md139"></a>
 Additional reading</h3>
 <p>If you're want to get more idea about how Euler system work in <a class="el" href="namespaceEigen.html" title="Namespace containing all symbols from the Eigen library.">Eigen</a> see <a class="el" href="classEigen_1_1EulerSystem.html" title="Represents a fixed Euler rotation system.">EulerSystem</a>.</p>
 <p>More information about Euler angles: <a href="https://en.wikipedia.org/wiki/Euler_angles">https://en.wikipedia.org/wiki/Euler_angles</a></p>
