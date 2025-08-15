@@ -5,7 +5,8 @@
 
 // Testing Parameters
 bool infantry = false, sentry = false, hero = false;
-bool pitch = false, yaw = true;
+bool pitch = false, yaw = false;
+bool ind = true;
 bool position = false, velocity = true;
 
 DigitalOut led(L27);
@@ -18,6 +19,7 @@ DJIMotor sentryYaw1(6, CANHandler::CANBUS_1, GM6020, "sentry_yaw_motor_1");
 DJIMotor sentryYaw2(7, CANHandler::CANBUS_1, GM6020, "sentry_yaw_motor_2");
 DJIMotor infPitch(7, CANHandler::CANBUS_2, GM6020, "infantry_pitch_motor");
 DJIMotor infYaw(4, CANHandler::CANBUS_1, GM6020, "infantry_yaw_motor");
+DJIMotor indexer(2, CANHandler::CANBUS_1, M3508, "indexer");
 DJIMotor heroPitch(5, CANHandler::CANBUS_2, GM6020, "hero_pitch_motor");
 DJIMotor heroYaw(1, CANHandler::CANBUS_1, GM6020, "hero_yaw_motor");
 
@@ -44,6 +46,8 @@ int main(){
          testMot = &heroPitch;
     else if (hero || yaw)
          testMot = &heroYaw;
+    else if (ind)
+        testMot = &indexer;
 
     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
     DJIMotor::s_sendValues();
@@ -69,7 +73,7 @@ int main(){
         timeStart = us_ticker_read();
 
         if ((timeStart - loopTimer) / 1000 > 15){
-//            loopTimer = timeStart;
+           loopTimer = timeStart;
             led = !led;
             ledbuiltin = !ledbuiltin;
 

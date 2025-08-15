@@ -1,7 +1,7 @@
 
 #include "ref_serial.h"
 
-#define REF_DEBUG 1
+#define REF_DEBUG 0
 
 // top part: I try to make this object-oriented, but then realized it would be quite complicated
 
@@ -285,9 +285,9 @@ void Judge_GetMessage(uint16_t Data_Length)
                 }
                 break;
             case Judge_Robot_State: //比赛机器人状态
-                for(int i = 0; i < JudgeLength_Robot_State; i ++){
-                    printf("|%2x", (uint8_t)*(JudgeSystem_rxBuff+n+i));
-                }
+                // for(int i = 0; i < JudgeLength_Robot_State; i ++){
+                //     printf("|%2x", (uint8_t)*(JudgeSystem_rxBuff+n+i));
+                // }
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Robot_State))
                 {
                     #if REF_DEBUG
