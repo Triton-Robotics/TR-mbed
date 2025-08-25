@@ -622,7 +622,7 @@ int main(){
                 }
 
                 float pitch_current_radians = -(pitch_current_angle / 360) * 2 * M_PI;
-                pitch.pidSpeed.feedForward = (1221 * dir + 97.4 * yawVelo);
+                pitch.pidSpeed.feedForward = (1221 * dir + 97.4 * pitchVelo);
                 //pitch.setPosition(-int((pitch_desired_angle / 360) * TICKS_REVOLUTION - pitch_zero_offset_ticks));
                 pitch.setSpeed(pitchVelo);
             }else{
