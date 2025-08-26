@@ -4,10 +4,10 @@
 #include <cmath>
 
 // Testing Parameters
-bool infantry = false, sentry = false, hero = false;
-bool pitch = false, yaw = false;
+bool infantry = true, sentry = false, hero = false;
+bool pitch = false, yaw = true;
 bool ind = false;
-bool chassis = true;
+bool chassis = false;
 bool position = false, velocity = true;
 
 DigitalOut led(L27);
@@ -15,19 +15,19 @@ DigitalOut led2(L26);
 DigitalOut led3(L25);
 DigitalOut ledbuiltin(LED1);
 
-// DJIMotor sentryPitch(5, CANHandler::CANBUS_2, GM6020, "sentry_pitch_motor");
-// DJIMotor sentryYaw1(6, CANHandler::CANBUS_1, GM6020, "sentry_yaw_motor_1");
-// DJIMotor sentryYaw2(7, CANHandler::CANBUS_1, GM6020, "sentry_yaw_motor_2");
-// DJIMotor infPitch(7, CANHandler::CANBUS_2, GM6020, "infantry_pitch_motor");
-// DJIMotor infYaw(4, CANHandler::CANBUS_1, GM6020, "infantry_yaw_motor");
-// DJIMotor indexer(2, CANHandler::CANBUS_1, M3508, "indexer");
-// DJIMotor heroPitch(5, CANHandler::CANBUS_2, GM6020, "hero_pitch_motor");
-// DJIMotor heroYaw(1, CANHandler::CANBUS_1, GM6020, "hero_yaw_motor");
+DJIMotor sentryPitch(5, CANHandler::CANBUS_2, GM6020, "sentry_pitch_motor");
+DJIMotor sentryYaw1(6, CANHandler::CANBUS_1, GM6020, "sentry_yaw_motor_1");
+DJIMotor sentryYaw2(7, CANHandler::CANBUS_1, GM6020, "sentry_yaw_motor_2");
+DJIMotor infPitch(7, CANHandler::CANBUS_2, GM6020, "infantry_pitch_motor");
+DJIMotor infYaw(4, CANHandler::CANBUS_1, GM6020, "infantry_yaw_motor");
+DJIMotor indexer(2, CANHandler::CANBUS_1, M3508, "indexer");
+DJIMotor heroPitch(5, CANHandler::CANBUS_2, GM6020, "hero_pitch_motor");
+DJIMotor heroYaw(1, CANHandler::CANBUS_1, GM6020, "hero_yaw_motor");
 
-DJIMotor motor1(1, CANHandler::CANBUS_1, M3508, "chassis motor 1");
-DJIMotor motor2(2, CANHandler::CANBUS_1, M3508, "chassis motor 2");
-DJIMotor motor3(3, CANHandler::CANBUS_1, M3508, "chassis motor 3");
-DJIMotor motor4(4, CANHandler::CANBUS_1, M3508, "chassis motor 4");
+// DJIMotor motor1(1, CANHandler::CANBUS_1, M3508, "chassis motor 1");
+// DJIMotor motor2(2, CANHandler::CANBUS_1, M3508, "chassis motor 2");
+// DJIMotor motor3(3, CANHandler::CANBUS_1, M3508, "chassis motor 3");
+// DJIMotor motor4(4, CANHandler::CANBUS_1, M3508, "chassis motor 4");
 
 #define IMPULSE_STRENGTH 8191
 #define REMOTE_MAX 660
@@ -39,29 +39,29 @@ int main(){
     DJIMotor *testMot3 = nullptr;
     DJIMotor *testMot4 = nullptr;
 
-    // if (infantry || pitch) {
-    //     testMot = &infPitch;
-    // }
+    if (infantry && pitch) {
+        testMot = &infPitch;
+    }
     // else if (chassis) {
-        testMot = &motor1;
-        testMot2 = &motor2;
-        testMot3 = &motor3;
-        testMot4 = &motor4;
+        // testMot = &motor1;
+        // testMot2 = &motor2;
+        // testMot3 = &motor3;
+        // testMot4 = &motor4;
     // }
-    // else if (infantry || yaw)
-    //      testMot = &infYaw;
-    // else if (sentry || pitch)
-    //      testMot = &sentryPitch;
-    // else if (sentry || yaw) {
-    //     testMot = &sentryYaw1;
-    //     testMot2 = &sentryYaw2;
-    // }
-    // else if (hero || pitch)
-    //      testMot = &heroPitch;
-    // else if (hero || yaw)
-    //      testMot = &heroYaw;
-    // else if (ind)
-    //     testMot = &indexer;
+    else if (infantry && yaw)
+         testMot = &infYaw;
+    else if (sentry && pitch)
+         testMot = &sentryPitch;
+    else if (sentry && yaw) {
+        testMot = &sentryYaw1;
+        testMot2 = &sentryYaw2;
+    }
+    else if (hero && pitch)
+         testMot = &heroPitch;
+    else if (hero && yaw)
+         testMot = &heroYaw;
+    else if (ind)
+        testMot = &indexer;
 
     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
     DJIMotor::s_sendValues();
