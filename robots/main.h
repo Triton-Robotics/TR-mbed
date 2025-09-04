@@ -10,6 +10,7 @@
 #include "algorithms/PID.h"
 #include "algorithms/TRMutex.h"
 #include "peripherals/imu/BNO055.h"
+#include "peripherals/encoder/as5600.h"
 #include "peripherals/oled/SSD1308.h"
 // #include "subsystems/Chassis.h"
 #include "subsystems/ChassisSubsystem.h"
