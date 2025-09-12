@@ -43,10 +43,10 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
     // LB.setSpeedPID(3, 0, 0);
     // RB.setSpeedPID(3 , 0, 0);
 
-    pid_LF.setPID(3, 0, 0);
-    pid_RF.setPID(3, 0, 0);
-    pid_LB.setPID(3, 0, 0);
-    pid_RB.setPID(3, 0, 0);
+    pid_LF.setPID(2.45, 0, 0);
+    pid_RF.setPID(2.45, 0, 0);
+    pid_LB.setPID(2.45, 0, 0);
+    pid_RB.setPID(2.45, 0, 0);
 
     brakeMode = COAST;
 
@@ -225,7 +225,7 @@ float ChassisSubsystem::Bisection(int LeftFrontPower, int RightFrontPower, int L
 
 }
 
-float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
+float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds, float pwr_limit)
 {
     desiredWheelSpeeds = wheelSpeeds; // WheelSpeeds in RPM
     int powers[4] = {0,0,0,0};
@@ -289,7 +289,7 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     int r3 = abs(LB.getData(VELOCITY));
     int r4 = abs(RB.getData(VELOCITY));
 
-    float scale = Bisection(p1, p2, p3, p4, r1, r2, r3, r4, power_limit);
+    float scale = Bisection(p1, p2, p3, p4, r1, r2, r3, r4, pwr_limit);
 
 
 
@@ -310,7 +310,7 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     // printf("After Set:%.3f\n", p_theory(p1, p2, p3, p4, r1, r2, r3, r4));
 
 
-
+    
     return scale;
 }
 
@@ -344,7 +344,7 @@ ChassisSpeeds ChassisSubsystem::getChassisSpeeds() const
     return m_chassisSpeeds;
 }
 
-float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode)
+float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, float pwr_limit, DRIVE_MODE mode)
 {
     if (mode == REVERSE_YAW_ORIENTED)
     {
@@ -365,7 +365,7 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
     WheelSpeeds wheelSpeeds = chassisSpeedsToWheelSpeeds(desiredChassisSpeeds); // in m/s (for now)
     wheelSpeeds = normalizeWheelSpeeds(wheelSpeeds);
     wheelSpeeds *= (1 / (WHEEL_DIAMETER_METERS / 2) / (2 * PI / 60) * M3508_GEAR_RATIO);
-    float scale = setWheelSpeeds(wheelSpeeds);
+    float scale = setWheelSpeeds(wheelSpeeds, pwr_limit);
     return scale;
 }
 

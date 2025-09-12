@@ -142,7 +142,7 @@ void DJIMotor::setOutput(){
 }
 
 void DJIMotor::s_sendValues(bool debug){
-    for(short canBus = 0; canBus < CAN_HANDLER_NUMBER; canBus++)
+    for(short canBus = 0; canBus < 2; canBus++)
         for(short sendIDindex = 0; sendIDindex < 3; sendIDindex++)
             s_sendOneID((CANHandler::CANBus) canBus, sendIDindex, debug);
 
