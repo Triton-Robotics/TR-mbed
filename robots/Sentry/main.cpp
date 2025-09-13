@@ -643,6 +643,7 @@
 #define PI 3.14159265
 #define TIME 15
 #define RADIUS 0.2286
+#define WINDOW 19 // do an odd number for efficency??
 
 DigitalOut led(L25);
 DigitalOut led2(L26);
@@ -667,9 +668,9 @@ constexpr float JOYSTICK_SENSITIVITY_PITCH_DPS = 180.0;
 constexpr float MOUSE_SENSITIVITY_YAW_DPS = 1.0;
 constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 1.0;
 
-constexpr int OUTER_LOOP_DT_MS = 1;
+constexpr int OUTER_LOOP_DT_MS = 4;
 
-constexpr int PRINT_FREQUENCY = 20; //the higher the number, the less often
+constexpr int PRINT_FREQUENCY = 10; //the higher the number, the less often
 
 constexpr float CHASSIS_FF_KICK = 0.065;
 
@@ -725,6 +726,55 @@ struct SetValues {
     float ly;
     float rx;
 };
+
+
+struct remoteValues {
+    int leftX;
+    int leftY;
+    int rightX;
+    int rightY;
+    int leftSwitch;   // values 1–3
+    int rightSwitch;  // values 1–3
+};
+remoteValues history[WINDOW] = {0};
+struct remoteValues remoteVals;
+int indexx = 0;
+int remoteTimer = 0;
+
+int cmpfunc(const void *a, const void *b) {
+    return (*(int*)a - *(int*)b);
+}
+
+int medianField(int (*getter)(struct remoteValues)) {
+    int temp[WINDOW];
+    for (int i = 0; i < WINDOW; i++) {
+        temp[i] = getter(history[i]);
+    }
+    qsort(temp, WINDOW, sizeof(int), cmpfunc);
+    return temp[WINDOW/2];
+}
+
+void initHistory() {
+    remoteRead();
+    remoteVals.leftX = remote.leftX();
+    remoteVals.leftY = remote.leftY();
+    remoteVals.rightX = remote.rightX();
+    remoteVals.rightY = remote.rightY();
+    remoteVals.leftSwitch = (int)remote.leftSwitch();
+    remoteVals.rightSwitch = (int)remote.rightSwitch();
+
+    for (int i = 0; i < WINDOW; i++)
+        history[i] = remoteVals;
+}
+
+int getLeftX(struct remoteValues v) { return v.leftX; }
+int getLeftY(struct remoteValues v) { return v.leftY; }
+int getRightX(struct remoteValues v) { return v.rightX; }
+int getRightY(struct remoteValues v) { return v.rightY; }
+int getLeftSwitch(struct remoteValues v) { return v.leftSwitch; }
+int getRightSwitch(struct remoteValues v) { return v.rightSwitch; }
+
+
 
 float calculateDistance(float posx, float posy, float final_x, float final_y) {
     return sqrt(pow((final_x - posx), 2) + pow((final_y - posy), 2));
@@ -854,12 +904,14 @@ int main(){
     * MOTORS SETUP AND PIDS
     */
     //YAW
-    PID yawBeyblade(0.8, 0.00, 0.005); //yaw PID is cascading, so there are external position PIDs for yaw control
+    PID yawBeyblade(0.8, 0, 0); //yaw PID is cascading, so there are external position PIDs for yaw control
+    // PID yawBeyblade(0.8, 0.00, 0.005); //yaw PID is cascading, so there are external position PIDs for yaw control
     yawBeyblade.setIntegralCap(2);
     // PID yawNonBeyblade(0.15, 0, 550);
     yawBeyblade.setOutputCap(90);
     yawBeyblade.dBuffer.lastY = 5;
-    yaw.setSpeedPID(550, 1, 0);
+    // yaw.setSpeedPID(550, 1, 0);
+    yaw.setSpeedPID(300, 0, 0);
     yaw.setSpeedIntegralCap(8000);
     yaw.setSpeedOutputCap(32000);
     yaw.outputCap = 16000;
@@ -998,16 +1050,43 @@ int main(){
             }
             Chassis.periodic();
             cs = Chassis.getChassisSpeeds();
+
             remoteRead();
+            remoteValues raw;
+            raw.leftX = remote.leftX();
+            raw.leftY = remote.leftY();
+            raw.rightX = remote.rightX();
+            raw.rightY = remote.rightY();
+            raw.leftSwitch = (int)remote.leftSwitch();
+            raw.rightSwitch = (int)remote.rightSwitch();
+
+            history[indexx] = raw;
+            indexx = (indexx+1) % WINDOW;
+            remoteTimer++;
+            if (remoteTimer >= WINDOW) {
+                remoteTimer = 0;
+                remoteVals.leftX      = medianField(getLeftX);
+                remoteVals.leftY      = medianField(getLeftY);
+                remoteVals.rightX     = medianField(getRightX);
+                remoteVals.rightY     = medianField(getRightY);
+                remoteVals.leftSwitch = medianField(getLeftSwitch);
+                remoteVals.rightSwitch= medianField(getRightSwitch);
+            }
 
             Jetson_read_data jetson_received_data;
             int readResult = jetson_read_values(bcJetson, jetson_received_data);
             char shoot_status_cv = 0;
 
-            if(remote.rightSwitch() == Remote::SwitchState::DOWN){
-              cv_enabled = false;
-            } else {
+            // if(remote.rightSwitch() == Remote::SwitchState::DOWN){
+            //   cv_enabled = true;
+            // } else {
+            //   cv_enabled = false;
+            // }
+
+            if(remoteVals.rightSwitch == (int)Remote::SwitchState::DOWN){
               cv_enabled = true;
+            } else {
+              cv_enabled = false;
             }
 
             if(cv_enabled){
@@ -1039,11 +1118,16 @@ int main(){
 
             //Driving input
             float scalar = 1;
-            float jx = remote.leftX() / 660.0 * scalar; // -1 to 1
-            float jy = remote.leftY() / 660.0 * scalar; // -1 to 1
+            // float jx = remote.leftX() / 660.0 * scalar; // -1 to 1
+            // float jy = remote.leftY() / 660.0 * scalar; // -1 to 1
+            float jx = remoteVals.leftX / 660.0 * scalar;
+            float jy = remoteVals.leftY / 660.0 * scalar; 
+
             //Pitch, Yaw
-            float jpitch = remote.rightY() / 660.0 * scalar; // -1 to 1
-            float jyaw = remote.rightX() / 660.0 * scalar; // -1 to 1
+            // float jpitch = remote.rightY() / 660.0 * scalar; // -1 to 1
+            // float jyaw = remote.rightX() / 660.0 * scalar; // -1 to 1
+            float jpitch = remoteVals.rightY / 660.0 * scalar; 
+            float jyaw = remoteVals.rightX / 660.0 * scalar; // -1 to 1
 
             //joystick tolerance
             float tolerance = 0.1; 
@@ -1090,24 +1174,85 @@ int main(){
             float lx = 0;
             float ly = 0;
 
-            if (remote.rightSwitch() == Remote::SwitchState::DOWN) {
-                lx = (remote.leftX() / 660.0) * Chassis.m_OmniKinematicsLimits.max_Vel;
-                ly = (remote.leftY() / 660.0) * Chassis.m_OmniKinematicsLimits.max_Vel;
+            // if (remote.rightSwitch() == Remote::SwitchState::DOWN) {
+            //     lx = (remote.leftX() / 660.0) * Chassis.m_OmniKinematicsLimits.max_Vel;
+            //     ly = (remote.leftY() / 660.0) * Chassis.m_OmniKinematicsLimits.max_Vel;
+              
+            //     Chassis.setChassisSpeeds({lx, ly, 0}, 200, ChassisSubsystem::ROBOT_ORIENTED);
+            // }
+
+            // if(remote.rightSwitch() == Remote::SwitchState::UP){
+            //   // Chassis.setChassisSpeeds({0,0,3});
+            // }
+
+
+            // if(remote.rightSwitch() == Remote::SwitchState::MID){
+            //   Chassis.setWheelPower({0,0,0,0});
+            // }
+
+
+            if (remoteVals.rightSwitch == (int)Remote::SwitchState::DOWN) {
+                lx = (remoteVals.leftX / 660.0) * Chassis.m_OmniKinematicsLimits.max_Vel;
+                ly = (remoteVals.leftY / 660.0) * Chassis.m_OmniKinematicsLimits.max_Vel;
               
                 Chassis.setChassisSpeeds({lx, ly, 0}, 200, ChassisSubsystem::ROBOT_ORIENTED);
             }
 
-            if(remote.rightSwitch() == Remote::SwitchState::UP){
+            if(remoteVals.rightSwitch == (int)Remote::SwitchState::UP){
               // Chassis.setChassisSpeeds({0,0,3});
             }
 
-            if(remote.rightSwitch() == Remote::SwitchState::MID){
+            if(remoteVals.rightSwitch == (int)Remote::SwitchState::MID){
               Chassis.setWheelPower({0,0,0,0});
             }
 
+            // //YAW CODE
+            // float error = 0;
+            // if (remote.rightSwitch() == Remote::SwitchState::DOWN  || remote.rightSwitch() == Remote::SwitchState::UP){
+            //     float chassis_rotation_radps = cs.vOmega;
+            //     int chassis_rotation_rpm = chassis_rotation_radps * 60 / (2*M_PI) * 1.5; //I added this 4 but I don't know why.
+                
+            //     //Regular Yaw Code
+            //     yaw_desired_angle -= jyaw * JOYSTICK_SENSITIVITY_YAW_DPS * elapsedms / 1000;
+            //     yaw_desired_angle = fmod((fmod(yaw_desired_angle, 360.0) + 360.0), 360.0);
+
+            //     #ifdef USE_IMU
+            //     error = DJIMotor::s_calculateDeltaPhaseF(yaw_desired_angle, imuAngles.yaw + 180, 360);
+            //     yawVelo = yawBeyblade.calculatePeriodic(error, timeSure - prevTimeSure);
+            //     // yawVelo = -yawBeyblade.calculatePeriodic(DJIMotor::s_calculateDeltaPhase(yaw_desired_angle, imuAngles.yaw + 180, 360), timeSure - prevTimeSure);
+            //     #else
+            //     yawVelo = jyaw * JOYSTICK_SENSITIVITY_YAW_DPS / 360.0 * 60;
+            //     #endif
+            //     //yawVelo = 0;
+            //     yawVelo -= chassis_rotation_rpm;
+
+            //     int dir = 0;
+            //     if(yawVelo > 1){
+            //         dir = 1;
+            //     }else if(yawVelo < -1){
+            //         dir = -1;
+            //     }
+
+            //     // 2 degree
+            //     // yaw.pidSpeed.feedForward = -0.6840 * yawVelo * yawVelo * dir + 225.6726 * yawVelo + 1868 * dir;
+
+            //     yaw.pidSpeed.feedForward = 1221 * dir + 97.4 * yawVelo;
+            //     // 1 degree
+            //     // yaw.pidSpeed.feedForward = 175.3608 * yawVelo + 2302.1 * dir;
+
+            //     yaw.setSpeed(yawVelo);
+            // }else{
+            //     //Off
+            //     yaw.setPower(0);
+            //     #ifdef USE_IMU
+            //     yaw_desired_angle = imuAngles.yaw + 180;
+            //     #endif
+            // }
+
+
             //YAW CODE
             float error = 0;
-            if (remote.rightSwitch() == Remote::SwitchState::DOWN  || remote.rightSwitch() == Remote::SwitchState::UP){
+            if (remoteVals.rightSwitch == (int)Remote::SwitchState::DOWN  || remoteVals.rightSwitch == (int)Remote::SwitchState::UP){
                 float chassis_rotation_radps = cs.vOmega;
                 int chassis_rotation_rpm = chassis_rotation_radps * 60 / (2*M_PI) * 1.5; //I added this 4 but I don't know why.
                 
@@ -1151,10 +1296,43 @@ int main(){
             prevTimeSure = timeSure;
             timeSure = us_ticker_read();
 
+            // //PITCH
+            // pitch_current_angle = (pitch_zero_offset_ticks - (pitch>>ANGLE)) / TICKS_REVOLUTION * 360;
+
+            // if (remote.rightSwitch() == Remote::SwitchState::DOWN || remote.rightSwitch() == Remote::SwitchState::UP){
+            //     //Regular Pitch Code
+            //     pitch_desired_angle += jpitch * JOYSTICK_SENSITIVITY_PITCH_DPS * elapsedms / 1000;
+
+            //     if (pitch_desired_angle <= LOWERBOUND) {
+            //         pitch_desired_angle = LOWERBOUND;
+            //     }
+            //     else if (pitch_desired_angle >= UPPERBOUND) {
+            //         pitch_desired_angle = UPPERBOUND;
+            //     }
+
+            //     pitchVelo = -pitchCascade.calculatePeriodic(pitch_desired_angle - pitch_current_angle, timeSure - prevTimeSure);
+                
+            //     int dir = 0;
+            //     if(pitchVelo > 1){
+            //         dir = 1;
+            //     }else if(pitchVelo < -1){
+            //         dir = -1;
+            //     }
+
+            //     float pitch_current_radians = -(pitch_current_angle / 360) * 2 * M_PI;
+            //     pitch.pidSpeed.feedForward = (cos(pitch_current_radians) * -2600) + (1221 * dir + 97.4 * pitchVelo);
+            //     //pitch.setPosition(-int((pitch_desired_angle / 360) * TICKS_REVOLUTION - pitch_zero_offset_ticks));
+            //     pitch.setSpeed(pitchVelo);
+            // }else{
+            //     //Off
+            //     pitch.setPower(0);
+            // }
+
+
             //PITCH
             pitch_current_angle = (pitch_zero_offset_ticks - (pitch>>ANGLE)) / TICKS_REVOLUTION * 360;
 
-            if (remote.rightSwitch() == Remote::SwitchState::DOWN || remote.rightSwitch() == Remote::SwitchState::UP){
+            if (remoteVals.rightSwitch == (int)Remote::SwitchState::DOWN || remoteVals.rightSwitch == (int)Remote::SwitchState::UP){
                 //Regular Pitch Code
                 pitch_desired_angle += jpitch * JOYSTICK_SENSITIVITY_PITCH_DPS * elapsedms / 1000;
 
@@ -1183,8 +1361,23 @@ int main(){
                 pitch.setPower(0);
             }
 
+            // //INDEXER CODE
+            // if ((remote.rightSwitch() == Remote::SwitchState::DOWN && remote.leftSwitch() == Remote::SwitchState::UP) || 
+            //     shoot_status_cv == 1) {
+            //     if(robot_status.shooter_barrel_heat_limit < 10 || power_heat_data.shooter_17mm_1_barrel_heat < robot_status.shooter_barrel_heat_limit - 30) {
+            //         indexer.setSpeed(-5 * 16 * M2006_GEAR_RATIO);
+            //         // indexer.setPower(2500);
+            //     }
+            //     else {
+            //         indexer.setSpeed(0);
+            //     }
+            // } 
+            // else {
+            //     indexer.setSpeed(0);
+            // }
+
             //INDEXER CODE
-            if ((remote.rightSwitch() == Remote::SwitchState::DOWN && remote.leftSwitch() == Remote::SwitchState::UP) || 
+            if ((remoteVals.rightSwitch == (int)Remote::SwitchState::DOWN && remoteVals.leftSwitch == (int)Remote::SwitchState::UP) || 
                 shoot_status_cv == 1) {
                 if(robot_status.shooter_barrel_heat_limit < 10 || power_heat_data.shooter_17mm_1_barrel_heat < robot_status.shooter_barrel_heat_limit - 30) {
                     indexer.setSpeed(-5 * 16 * M2006_GEAR_RATIO);
@@ -1198,11 +1391,24 @@ int main(){
                 indexer.setSpeed(0);
             }
 
+            // //FLYWHEELS
+            // if ((remote.leftSwitch() != Remote::SwitchState::DOWN &&
+            //     remote.leftSwitch() != Remote::SwitchState::UNKNOWN &&
+            //     remote.rightSwitch() == Remote::SwitchState::DOWN) ||
+            //     remote.rightSwitch() == Remote::SwitchState::UP){
+            //     RFLYWHEEL.setSpeed(FLYWHEEL_SPEED);  // correct
+            //     LFLYWHEEL.setSpeed(-FLYWHEEL_SPEED); // actually RIGHT DOWN (from the back of the robot)
+            // } else{
+            //     // left SwitchState set to down/unknown
+            //     RFLYWHEEL.setSpeed(0);
+            //     LFLYWHEEL.setSpeed(0);
+            // }
+
             //FLYWHEELS
-            if ((remote.leftSwitch() != Remote::SwitchState::DOWN &&
-                remote.leftSwitch() != Remote::SwitchState::UNKNOWN &&
-                remote.rightSwitch() == Remote::SwitchState::DOWN) ||
-                remote.rightSwitch() == Remote::SwitchState::UP){
+            if ((remoteVals.leftSwitch != (int)Remote::SwitchState::DOWN &&
+                remoteVals.leftSwitch != (int)Remote::SwitchState::UNKNOWN &&
+                remoteVals.rightSwitch == (int)Remote::SwitchState::DOWN) ||
+                remoteVals.rightSwitch == (int)Remote::SwitchState::UP){
                 RFLYWHEEL.setSpeed(FLYWHEEL_SPEED);  // correct
                 LFLYWHEEL.setSpeed(-FLYWHEEL_SPEED); // actually RIGHT DOWN (from the back of the robot)
             } else{
@@ -1253,11 +1459,20 @@ int main(){
                 //printff("ID:%d LVL:%d HP:%d MAX_HP:%d\n", robot_status.robot_id, robot_status.robot_level, robot_status.current_HP, robot_status.maximum_HP);
                 //printff("elap:%.5fms\n", elapsedms);
                 // printff("%d\n", game_status.game_progress);
-                printff("%d %d %d %d %d %d\n", remote.leftX(), remote.leftY(),
-                                               remote.rightX(), remote.rightY(),
-                                               remote.leftSwitch(), remote.rightSwitch());
+                // printff("RAW: LX:%d LY:%d RX:%d RY:%d LS:%d RS:%d\n", 
+                //                                remote.leftX(), remote.leftY(),
+                //                                remote.rightX(), remote.rightY(),
+                //                                remote.leftSwitch(), remote.rightSwitch());
+                // printff("MED: LX:%d LY:%d RX:%d RY:%d LS:%d RS:%d\n",
+                //                                 remoteVals.leftX,
+                //                                 remoteVals.leftY,
+                //                                 remoteVals.rightX,
+                //                                 remoteVals.rightY,
+                //                                 remoteVals.leftSwitch,
+                //                                 remoteVals.rightSwitch);
+                printff("RAW: LS:%d RS:%d\n", remote.leftSwitch(), remote.rightSwitch());
+                printff("MED: LS:%d RS:%d\n", remoteVals.leftSwitch, remoteVals.rightSwitch);
             }
-            // pitch.setPower(0);
             DJIMotor::s_sendValues();
         }
         DJIMotor::s_getFeedback();
