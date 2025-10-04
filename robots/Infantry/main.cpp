@@ -58,6 +58,7 @@ int main(){
     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
     DJIMotor::s_sendValues();
     DJIMotor::s_getFeedback();
+    usbSerial.set_blocking(false);
 
     bcJetson.set_blocking(false);
 

@@ -221,6 +221,7 @@ int main(){
     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
     DJIMotor::s_sendValues();
     DJIMotor::s_getFeedback();
+    usbSerial.set_blocking(false);
 
     ChassisSpeeds velocity = {0.0, 0.0, 0.0};
     ChassisSpeeds prev_velocity = {0.0, 0.0, 0.0};

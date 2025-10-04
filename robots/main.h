@@ -41,6 +41,7 @@ DigitalIn jumperPB1(PB_1);
 DigitalIn userButton(BUTTON1);
 TRMutex printer;
 static BufferedSerial bc(PA_0, PA_1, 115200);
+static BufferedSerial usbSerial(USBTX, USBRX, 115200);
 
 void updatePriority(priorityLevels desiredLevel)
 {
@@ -71,10 +72,9 @@ void printff(const char *format, ...)
     char temp[50];
     va_list args;
     va_start(args, format);
-    vsnprintf(temp, 50, format, args);
-    printer.print(temp, DEFAULT);
-    if (ESP_DEBUG)
-        bc.write(temp, 50);
+    int len = vsnprintf(temp, 50, format, args);
+    if (len > 0)
+       usbSerial.write(temp, len);
     va_end(args);
 }
 
