@@ -60,7 +60,7 @@ WheelSpeeds ChassisSubsystem::getWheelSpeeds() const
 
 float ChassisSubsystem::limitAcceleration(float desiredRPM, float previousRPM, int power)
 {
-    float maxAccel = 100;
+    float maxAccel = 100; // at 15ms outer_loop_dt_ms, should be 100. everything is scaled off this
     float diff = desiredRPM - previousRPM;
 
     
