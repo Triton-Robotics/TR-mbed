@@ -643,7 +643,7 @@
 #define PI 3.14159265
 #define TIME 15
 #define RADIUS 0.2286
-#define WINDOW 19 // do an odd number for efficency??
+#define WINDOW 1 // do an odd number for efficency??
 
 DigitalOut led(L25);
 DigitalOut led2(L26);
@@ -668,7 +668,7 @@ constexpr float JOYSTICK_SENSITIVITY_PITCH_DPS = 180.0;
 constexpr float MOUSE_SENSITIVITY_YAW_DPS = 1.0;
 constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 1.0;
 
-constexpr int OUTER_LOOP_DT_MS = 4;
+constexpr int OUTER_LOOP_DT_MS = 1;
 
 constexpr int PRINT_FREQUENCY = 10; //the higher the number, the less often
 
@@ -1195,7 +1195,7 @@ int main(){
                 lx = (remoteVals.leftX / 660.0) * Chassis.m_OmniKinematicsLimits.max_Vel;
                 ly = (remoteVals.leftY / 660.0) * Chassis.m_OmniKinematicsLimits.max_Vel;
               
-                Chassis.setChassisSpeeds({lx, ly, 0}, 200, ChassisSubsystem::ROBOT_ORIENTED);
+                Chassis.setChassisSpeeds({lx, ly, 0}, 80, ChassisSubsystem::ROBOT_ORIENTED);
             }
 
             if(remoteVals.rightSwitch == (int)Remote::SwitchState::UP){

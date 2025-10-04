@@ -1,0 +1,3 @@
+loadfile "\\wsl$\Ubuntu\home\edstrat\TR-mbed\cmake-build-debug\robots\TestBench\TR-TestBench.elf"
+reset
+exit
