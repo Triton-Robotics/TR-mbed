@@ -132,7 +132,7 @@ class Eigen::EulerSystem&lt; _AlphaAxis, _BetaAxis, _GammaAxis &gt;</div><p>Repr
 <li>Query some compile time data about an Euler system. (e.g. Whether it's Tait-Bryan)</li>
 </ul>
 <p>Euler rotation is a set of three rotation on fixed axes. (see <a class="el" href="classEulerAngles.html">EulerAngles</a>) This meta-class store constantly those signed axes. (see <a class="el" href="namespaceEigen.html#ae614aa7cdd687fb5c421a54f2ce5c361">EulerAxis</a>)</p>
-<h3><a class="anchor" id="autotoc_md140"></a>
+<h3><a class="anchor" id="autotoc_md142"></a>
 Types of Euler systems</h3>
 <p>All and only valid 3 dimension Euler rotation over standard signed axes{+X,+Y,+Z,-X,-Y,-Z} are supported:</p><ul>
 <li>all axes X, Y, Z in each valid order (see below what order is valid)</li>
@@ -147,13 +147,13 @@ Types of Euler systems</h3>
 <li><em>Tait-Bryan</em> - all unsigned axes are distinct, e.g. {X,Y,Z}</li>
 <li><em>proper/classic Euler angles</em> - The first and the third unsigned axes is equal, and the second is different, e.g. {X,Y,X}</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md141"></a>
+<h3><a class="anchor" id="autotoc_md143"></a>
 Intrinsic vs extrinsic Euler systems</h3>
 <p>Only intrinsic Euler systems are supported for simplicity. If you want to use extrinsic Euler systems, just use the equal intrinsic opposite order for axes and angles. I.e axes (A,B,C) becomes (C,B,A), and angles (a,b,c) becomes (c,b,a).</p>
-<h3><a class="anchor" id="autotoc_md142"></a>
+<h3><a class="anchor" id="autotoc_md144"></a>
 Convenient user typedefs</h3>
 <p>Convenient typedefs for <a class="el" href="classEigen_1_1EulerSystem.html" title="Represents a fixed Euler rotation system.">EulerSystem</a> exist (only for positive axes Euler systems), in a form of <a class="el" href="classEigen_1_1EulerSystem.html" title="Represents a fixed Euler rotation system.">EulerSystem</a>{A}{B}{C}, e.g. EulerSystemXYZ.</p>
-<h3><a class="anchor" id="autotoc_md143"></a>
+<h3><a class="anchor" id="autotoc_md145"></a>
 Additional reading</h3>
 <p>More information about Euler angles: <a href="https://en.wikipedia.org/wiki/Euler_angles">https://en.wikipedia.org/wiki/Euler_angles</a></p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>

@@ -124,7 +124,33 @@ At this point, you may choose to diverge from the CLI setup guide and set up an 
 <hr  />
 <p> Note: Go to the Embed Discord and search up makefile. After you find it, download it and upload it to your local TR-Embed folder. Most likely your computer will not work with E drive, to which you have to change it to D in the makefile. If you have problems with this, contact a embed member or the team lead.</p>
 <p>After completing all of this you can make and flash your code to the nucleo using <code>make testbench</code>, <code>make hero</code>, <code>make infantry</code>, and <code>make sentry</code>. You should see a block with many numbers when the code is flashed. If you see a red text regarding "missing embed-tools" it is likely becuase you don't have the serial monitor downloaded which is not required to make and flash code.</p>
-<h2><a class="anchor" id="autotoc_md8"></a>
+<h3><a class="anchor" id="autotoc_md8"></a>
+Flashing to JLink</h3>
+<ol type="1">
+<li>Download the <a href="https://www.segger.com/downloads/jlink/">JLink</a> software and the <a href="https://www.segger.com/downloads/jlink/#Ozone">Ozone</a> debugger on your devices.</li>
+<li>Flash using the makefile, similar to the cmake setup:</li>
+</ol>
+<div class="fragment"><div class="line">make testbench-jlink</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md9"></a>
+Debugging with Ozone</h3>
+<ol type="1">
+<li>To debug with Ozone, you need to open the Ozone debugger, then create a new project.</li>
+<li>In devices, you should select the STM32F446RE device, then press Next:</li>
+</ol>
+<p><img src="https://github.com/user-attachments/assets/09b85499-3bea-4122-bb26-876b41bdf92e" alt="image" width="599" height="673" class="inline"/></p>
+<ol type="1">
+<li>Now, for the Connection settings, select SWD as the Target Interface, USB as the Host Interface, and 4MHz as the Interface Speed</li>
+</ol>
+<p><img src="https://github.com/user-attachments/assets/c0949765-56de-4f36-9fa7-2495f13ceefb" alt="image" width="600" height="682" class="inline"/></p>
+<ol type="1">
+<li>Finally, select the correct .elf file from your cmake-build-debug folder in the repository to configure Ozone</li>
+</ol>
+<p><img src="https://github.com/user-attachments/assets/79d86231-8c65-461d-842a-af0ef8510bf2" alt="image" width="596" height="679" class="inline"/></p>
+<ol type="1">
+<li>Press Finish since we do not need to change the Optional Settings.</li>
+</ol>
+<p>Congrats, you have Ozone set up!</p>
+<h2><a class="anchor" id="autotoc_md10"></a>
 Flashing STM32</h2>
 <ol type="1">
 <li><p class="startli">Locate the generated executable:</p>
@@ -141,15 +167,15 @@ Flashing STM32</h2>
 </ol>
 <div class="fragment"><div class="line">mbed-tools sterm -b 115200</div>
 </div><!-- fragment --><hr  />
-<h2><a class="anchor" id="autotoc_md10"></a>
+<h2><a class="anchor" id="autotoc_md12"></a>
 Troubleshooting</h2>
 <p>See the Troubleshooting guide for common issues and solutions.</p>
 <hr  />
-<h2><a class="anchor" id="autotoc_md12"></a>
+<h2><a class="anchor" id="autotoc_md14"></a>
 Debugging</h2>
 <p>See the Debugging guide on how to run the debugger using STM32CubeIDE</p>
 <hr  />
-<h2><a class="anchor" id="autotoc_md14"></a>
+<h2><a class="anchor" id="autotoc_md16"></a>
 Documentation</h2>
 <p>See our <a href="https://triton-robotics.github.io/TR-mbed/">generated doxygen</a>. </p>
 </div></div><!-- PageDoc -->
