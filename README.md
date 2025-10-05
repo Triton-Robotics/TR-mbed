@@ -59,6 +59,36 @@ Note: Go to the Embed Discord and search up makefile. After you find it, downloa
 
 After completing all of this you can make and flash your code to the nucleo using `make testbench`, `make hero`, `make infantry`, and `make sentry`. You should see a block with many numbers when the code is flashed. If you see a red text regarding "missing embed-tools" it is likely becuase you don't have the serial monitor downloaded which is not required to make and flash code. 
 
+### Flashing to JLink
+
+1. Download the [JLink](https://www.segger.com/downloads/jlink/) software and the [Ozone](https://www.segger.com/downloads/jlink/#Ozone) debugger on your devices.
+
+2. Flash using the makefile, similar to the cmake setup:
+
+```shell
+make testbench-jlink
+```
+
+### Debugging with Ozone
+
+1. To debug with Ozone, you need to open the Ozone debugger, then create a new project.
+
+2. In devices, you should select the STM32F446RE device, then press Next:
+
+<img width="599" height="673" alt="image" src="https://github.com/user-attachments/assets/09b85499-3bea-4122-bb26-876b41bdf92e" />
+
+3. Now, for the Connection settings, select SWD as the Target Interface, USB as the Host Interface, and 4MHz as the Interface Speed
+
+<img width="600" height="682" alt="image" src="https://github.com/user-attachments/assets/c0949765-56de-4f36-9fa7-2495f13ceefb" />
+
+4. Finally, select the correct .elf file from your cmake-build-debug folder in the repository to configure Ozone
+
+<img width="596" height="679" alt="image" src="https://github.com/user-attachments/assets/79d86231-8c65-461d-842a-af0ef8510bf2" />
+
+5. Press Finish since we do not need to change the Optional Settings.
+
+Congrats, you have Ozone set up!
+
 ## Flashing STM32
 
 1. Locate the generated executable:
