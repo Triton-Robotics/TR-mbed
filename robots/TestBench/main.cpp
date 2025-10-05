@@ -86,7 +86,7 @@
 //     while(true){
 //         timeStart = us_ticker_read();
 
-//         if ((timeStart - loopTimer) / 1000 > 15){
+//         if ((timeStart - loopTimer) / 1000 > 2){
 //            loopTimer = timeStart;
 //             led = !led;
 //             ledbuiltin = !ledbuiltin;
@@ -155,84 +155,84 @@
 
 
 
-//// Test drive motors
-//#include "main.h"
-//
-//DigitalOut led(L26);
-//DigitalOut led2(L27);
-//DigitalOut led3(L25);
-//
-//I2C i2c(I2C_SDA, I2C_SCL);
-//
+// // Test drive motors
+// #include "main.h"
+
+// DigitalOut led(L26);
+// DigitalOut led2(L27);
+// DigitalOut led3(L25);
+
+// I2C i2c(I2C_SDA, I2C_SCL);
+
 //  //DEFINE MOTORS, ETC
-//const int RPM_MAX = 9000;
-//const int REMOTE_MAX = 660;
-//const int RPM_REMOTE_RATIO = RPM_MAX / REMOTE_MAX;
-//
-//DJIMotor* frontleft = new DJIMotor(1, CANHandler::CANBus::CANBUS_1, motorType::M3508, "FL");
-//
-//DJIMotor* frontright = new DJIMotor(2, CANHandler::CANBus::CANBUS_1, motorType::M3508, "FR");
-//
-//DJIMotor* backleft = new DJIMotor(3, CANHandler::CANBus::CANBUS_1, motorType::M3508, "BL");
-//
-//DJIMotor* backright = new DJIMotor(4, CANHandler::CANBus::CANBUS_1, motorType::M3508, "BR");
-//
-//
-//int main(){
-//
+// const int RPM_MAX = 9000;
+// const int REMOTE_MAX = 660;
+// const int RPM_REMOTE_RATIO = RPM_MAX / REMOTE_MAX;
+
+// DJIMotor* frontleft = new DJIMotor(1, CANHandler::CANBus::CANBUS_1, motorType::M3508, "FL");
+
+// DJIMotor* frontright = new DJIMotor(2, CANHandler::CANBus::CANBUS_1, motorType::M3508, "FR");
+
+// DJIMotor* backleft = new DJIMotor(3, CANHandler::CANBus::CANBUS_1, motorType::M3508, "BL");
+
+// DJIMotor* backright = new DJIMotor(4, CANHandler::CANBus::CANBUS_1, motorType::M3508, "BR");
+
+
+// int main(){
+
 //    //assigning can handler objects to motor class.
 //    DJIMotor::s_setCANHandlers(&canHandler1,&canHandler2, false, false);
-//
+
 //    //getting initial feedback.
 //    DJIMotor::s_getFeedback();
-//
+
 //    unsigned long loopTimer_u = us_ticker_read();
 //    unsigned long timeEnd_u;
 //    unsigned long timeStart_u;
-//
+
 //    frontleft->setSpeedPID(5.2908, .010269, 0);
 //    frontright->setSpeedPID(5.2908, .010269, 0);
 //    backleft->setSpeedPID(5.2908, .010269, 0);
 //    backright->setSpeedPID(5.2908, .010269, 0);
-//
+
 //    int refLoop = 0;
-//
+
 //    //DEFINE PIDs AND OTHER CONSTANTS
-//
+
 //    int flspeed = 0;
 //    int frspeed = 0;
 //    int blspeed = 0;
 //    int brspeed = 0;
-//
+
 //    while(true){ //main loop
 //        timeStart_u = us_ticker_read();
-//
+
 //        //inner loop runs every 25ms
 //        if((timeStart_u - loopTimer_u) / 1000 > 25) {
 //            loopTimer_u = timeStart_u;
 //            led = !led; //led blink tells us how fast the inner loop is running
-//
+
 //            if (refLoop >= 5) { //ref code runs 5 of every inner loop,
 //                refLoop = 0;
 //                refereeThread(&referee);
-//
+
 //                printff("%d %d %d %d", *frontleft>>VELOCITY, *frontright>>VELOCITY, *backleft>>VELOCITY, *backright>>VELOCITY);
 //                printff(" %d %d %d %d\n", flspeed, frspeed, blspeed, brspeed);
 //            }
 //            refLoop ++;
-//
+
 //            remoteRead(); //reading data from remote
-//
+
 //            //MAIN CODE
 //            flspeed = 0;
 //            frspeed = 0;
 //            blspeed = 0;
 //            brspeed = 0;
-//
+
 //            int lx = 0;
 //            int ly = 0;
 //            int rx = 0;
-//
+
 //            if (abs(remote.leftY()) > 20) {
 //                ly = remote.leftY();
 //            }
@@ -242,34 +242,34 @@
 //            if (abs(remote.rightX()) > 20) {
 //                rx = remote.rightX();
 //            }
-//
+
 //            flspeed = ((ly + lx + rx) * RPM_REMOTE_RATIO) % RPM_MAX;
-//
+
 //            frspeed = ((-ly + lx + rx) * RPM_REMOTE_RATIO) % RPM_MAX;
-//
+
 //            blspeed = ((ly - lx + rx) * RPM_REMOTE_RATIO) % RPM_MAX;
-//
+
 //            brspeed = ((-ly - lx + rx) * RPM_REMOTE_RATIO) % RPM_MAX;
-//
+
 //            frontleft->setSpeed(flspeed);
 //            frontright->setSpeed(frspeed);
 //            backleft->setSpeed(blspeed);
 //            backright->setSpeed(brspeed);
-//
+
 //            //MOST CODE DOESNT NEED TO RUN FASTER THAN EVERY 25ms
-//
+
 //            timeEnd_u = us_ticker_read();
-//
+
 //            DJIMotor::s_sendValues();
 //        }
-//
+
 //        //FEEDBACK CODE DOES NEED TO RUN FASTER THAN 1MS
 //        //OTHER QUICK AND URGENT TASKS GO HERE
-//
+
 //        DJIMotor::s_getFeedback();
 //        ThisThread::sleep_for(1ms);
 //    }
-//}
+// }
 
 
 
@@ -310,7 +310,7 @@ constexpr float JOYSTICK_SENSITIVITY_PITCH_DPS = 180.0;
 constexpr float MOUSE_SENSITIVITY_YAW_DPS = 1.0;
 constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 1.0;
 
-constexpr int OUTER_LOOP_DT_MS = 15;
+constexpr int OUTER_LOOP_DT_MS = 1;
 
 constexpr int PRINT_FREQUENCY = 20; //the higher the number, the less often
 
@@ -348,6 +348,8 @@ int main(){
     DJIMotor::s_sendValues();
     DJIMotor::s_getFeedback();
 
+    // usbserial nonblocking
+    usbSerial.set_blocking(false);
 
     // init the encoder to 0 (i think this is the right way to do it)
     yawEncoder.setZPosition(0);
@@ -505,6 +507,8 @@ int main(){
                 indexer.setSpeed(0);
             }
 
+            printnb("time:%d\n", us_ticker_read()); // 14 char limit?
+            printnb("time:%d\n", us_ticker_read());
 
             printLoop ++;
             if (printLoop >= PRINT_FREQUENCY){
@@ -525,7 +529,7 @@ int main(){
                 // printff("yaw_des:%.3f yaw_act:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180);
                 int val = 0;
                 yawEncoder.getZPosition(&val);
-                printff("encoder pos: %d\n", val);
+                // printff("encoder pos: %d\n", val);
                 #else
                 // printff("yaw_des_v:%d yaw_act_v:%d\n", yawVelo, yaw>>VELOCITY);
                 //printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
