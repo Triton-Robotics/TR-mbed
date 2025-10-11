@@ -1,2 +1,4 @@
 loadfile "./cmake-build-debug/robots/Hero/TR-Hero.elf"
+r
+go
 exit
