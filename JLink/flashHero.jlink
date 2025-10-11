@@ -1,2 +1,3 @@
 loadfile "./cmake-build-debug/robots/Hero/TR-Hero.elf"
+reset
 exit

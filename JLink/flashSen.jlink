@@ -1,2 +1,3 @@
 loadfile "./cmake-build-debug/robots/Sentry/TR-Sentry.elf"
+reset
 exit
