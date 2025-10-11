@@ -1205,7 +1205,7 @@ int main(){
                 lx = (remoteVals.leftX / 660.0) * Chassis.m_OmniKinematicsLimits.max_Vel;
                 ly = (remoteVals.leftY / 660.0) * Chassis.m_OmniKinematicsLimits.max_Vel;
               
-                Chassis.setChassisSpeeds({lx, ly, 0}, 80, ChassisSubsystem::ROBOT_ORIENTED);
+                Chassis.setChassisSpeeds({lx, ly, 0}, 80, ChassisSubsystem::YAW_ORIENTED);
             }
 
             if(remoteVals.rightSwitch == (int)Remote::SwitchState::UP){
