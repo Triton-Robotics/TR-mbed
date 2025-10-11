@@ -1,0 +1,2 @@
+loadfile "./cmake-build-debug/robots/Infantry/TR-Infantry.elf"
+exit

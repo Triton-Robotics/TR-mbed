@@ -1,0 +1,2 @@
+loadfile "./cmake-build-debug/robots/TestBench/TR-TestBench.elf"
+exit
