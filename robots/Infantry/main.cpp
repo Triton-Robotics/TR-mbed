@@ -66,14 +66,15 @@ int main(){
     * MOTORS SETUP AND PIDS
     */
     //YAW
-    PID yawBeyblade(1, 0, 0); //yaw PID is cascading, so there are external position PIDs for yaw control
-    yawBeyblade.setIntegralCap(2);
-    // PID yawNonBeyblade(0.15, 0, 550);
-    yawBeyblade.setOutputCap(90);
-    yawBeyblade.dBuffer.lastY = 5;
     yaw.setSpeedPID(708.1461, 4.721, 2.6555);
     yaw.setSpeedIntegralCap(8000);
     yaw.setSpeedOutputCap(32000);
+
+    yaw.setPositionPID(1.18, 0, 0);
+    yaw.pidPosition.dBuffer.lastY = 5;
+    yaw.pidPosition.setIntegralCap(2);
+    yaw.pidPosition.setOutputCap(90);
+
     yaw.outputCap = 16000;
     yaw.useAbsEncoder = false;
     
@@ -337,12 +338,12 @@ int main(){
 
                 #ifdef USE_IMU
                 error = DJIMotor::s_calculateDeltaPhaseF(yaw_desired_angle, imuAngles.yaw + 180, 360);
-                yawVelo = yawBeyblade.calculatePeriodic(error, timeSure - prevTimeSure);
+                yawVelo = yaw.calculatePeriodicPosition(error, timeSure - prevTimeSure, chassis_rotation_rpm);
                 #else
                 yawVelo = -jyaw * JOYSTICK_SENSITIVITY_YAW_DPS / 360.0 * 60;
                 #endif
                 //yawVelo = 0;
-                yawVelo -= chassis_rotation_rpm;
+                // yawVelo -= chassis_rotation_rpm;
 
                 int dir = 0;
                 if(yawVelo > 1){
@@ -474,10 +475,8 @@ int main(){
                 // printff("%d\n", remote.getMouseL());
                 //printff("ydv:%d yav:%d PWR:%d ", yawVelo, yaw>>VELOCITY, yaw>>POWEROUT);
                 //printff("V[%.1f][%.1f][%.1f]E:%.3f ", yaw.pidSpeed.pC, yaw.pidSpeed.iC, yaw.pidSpeed.dC, yawVelo - (yaw>>VELOCITY));
-                // printff("P[%.1f][%.1f][%.1f]E:%.3f ", yawBeyblade.pC, yawBeyblade.iC, yawBeyblade.dC, error);
                 //printff("YD:%.3f YA:%.3f CVY:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180, CV_yaw_angle_radians * 180 / M_PI);
                 // printff("ERR:%.3f\n", error);
-                //printff(".P[%.1f][%.1f][%.1f]E:%.3f ", yawBeyblade.pC, yawBeyblade.iC, yawBeyblade.dC, error);
                 //printff("YD:%.3f YA:%.3f CVY:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180, CV_yaw_angle_radians * 180 / M_PI);
                 //printff("ERR:%.3f\n", error);
                 #else
