@@ -66,12 +66,12 @@ int main(){
     * MOTORS SETUP AND PIDS
     */
     //YAW
-    PID yawBeyblade(0.8, 0.00, 0.005); //yaw PID is cascading, so there are external position PIDs for yaw control
+    PID yawBeyblade(1, 0, 0); //yaw PID is cascading, so there are external position PIDs for yaw control
     yawBeyblade.setIntegralCap(2);
     // PID yawNonBeyblade(0.15, 0, 550);
     yawBeyblade.setOutputCap(90);
     yawBeyblade.dBuffer.lastY = 5;
-    yaw.setSpeedPID(550, 1, 0);
+    yaw.setSpeedPID(708.1461, 4.721, 2.6555);
     yaw.setSpeedIntegralCap(8000);
     yaw.setSpeedOutputCap(32000);
     yaw.outputCap = 16000;
