@@ -85,9 +85,16 @@ make testbench-jlink
 
 <img width="596" height="679" alt="image" src="https://github.com/user-attachments/assets/79d86231-8c65-461d-842a-af0ef8510bf2" />
 
-5. Press Finish since we do not need to change the Optional Settings.
+5. Press Finish since we do not need to change the Optional Settings. Congrats, you have the Ozone Debugger set up!
 
-Congrats, you have Ozone set up!
+6. To debug your stack while the robot is running, I advise flashing the JLink with Ozone open to ensure a secure connection to the device.
+
+7. Then, you should click the arrow next to the power button on the top left of the Ozone Window to select Attach to Running Program.
+
+8. You can then use the "View" window to open up various windows. The Memory, Global, Local and Watched Data and the Registers Windows show information about the current state and content of the target.
+
+9. Use the Watched Data Window to specify certain local or global data to trace and plot the current value, or use the Data Sampling window to track and export values.
+
 
 ## Flashing STM32
 
