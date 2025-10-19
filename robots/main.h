@@ -6,6 +6,7 @@
 #define TR_EMBEDDED_MAIN_H
 
 #include "mbed.h"
+// #include "rtos"
 
 #include "algorithms/PID.h"
 #include "algorithms/TRMutex.h"
@@ -40,8 +41,12 @@ DigitalIn jumperPB1(PB_1);
 
 DigitalIn userButton(BUTTON1);
 TRMutex printer;
+Mutex mutex_test;
+Thread cvThread;
+Thread refThread;
 static BufferedSerial bc(PA_0, PA_1, 115200);
 static BufferedSerial usbSerial(USBTX, USBRX, 115200);
+// static SPI spi_imu(PB_15, PB_14, PA_9, PB_9); // MOSI, MISO, SCLK, NSS
 
 void updatePriority(priorityLevels desiredLevel)
 {
