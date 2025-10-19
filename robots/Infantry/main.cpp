@@ -18,7 +18,7 @@ constexpr float JOYSTICK_SENSITIVITY_PITCH_DPS = 180.0;
 constexpr float MOUSE_SENSITIVITY_YAW_DPS = 10.0;
 constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 10.0;
 
-constexpr int OUTER_LOOP_DT_MS = 15;
+constexpr int OUTER_LOOP_DT_MS = 12;
 
 constexpr float CHASSIS_FF_KICK = 0.065;
 
@@ -226,7 +226,6 @@ int main(){
     while(true){
         timeStart = us_ticker_read();
 
-        controlStart = us_ticker_read();
         if ((timeStart - loopTimer) / 1000 > OUTER_LOOP_DT_MS){
             elapsedms = (timeStart - loopTimer) / 1000;
             loopTimer = timeStart;
@@ -252,6 +251,7 @@ int main(){
               led3 = 0;
             }
 
+            controlStart = us_ticker_read();
             #ifdef USE_IMU
             imu.get_angular_position_quat(&imuAngles);
             #else
@@ -336,7 +336,7 @@ int main(){
             float available_beyblade = 1.0 - linear_hypo;
             float omega_speed = max_omega * available_beyblade;
 
-            //Chassis Code
+            //Chassis Code - 100-150 us
             ChassisSpeeds beybladeSpeeds = {jx * max_linear_vel,
                                           jy * max_linear_vel,
                                           -omega_speed};
@@ -355,8 +355,10 @@ int main(){
                 Chassis.setWheelPower({0,0,0,0});
             }
 
-            
-            //YAW CODE
+            // YAW + PITCH - 150us
+
+
+            //YAW CODE 
             float error = 0;
             if (drive == 'u' || drive == 'd' || (drive =='o' && (remote.rightSwitch() == Remote::SwitchState::UP || remote.rightSwitch() == Remote::SwitchState::DOWN))){
                 float chassis_rotation_radps = cs.vOmega;
@@ -436,6 +438,8 @@ int main(){
                 pitch.setPower(0);
             }
             
+            // dexer + flywheel - 100us
+
             //INDEXER CODE
             if ((remote.leftSwitch() == Remote::SwitchState::UP || remote.getMouseL()) && (abs(RFLYWHEEL>>VELOCITY) > (FLYWHEEL_VELO - 500) && abs(LFLYWHEEL>>VELOCITY) > (FLYWHEEL_VELO - 500)) 
                 /*&& remote.rightSwitch() != Remote::SwitchState::MID*/){        
