@@ -18,7 +18,7 @@ constexpr float JOYSTICK_SENSITIVITY_PITCH_DPS = 180.0;
 constexpr float MOUSE_SENSITIVITY_YAW_DPS = 10.0;
 constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 10.0;
 
-constexpr int OUTER_LOOP_DT_MS = 12;
+constexpr int OUTER_LOOP_DT_MS = 2;
 
 constexpr float CHASSIS_FF_KICK = 0.065;
 
@@ -58,6 +58,7 @@ unsigned long prevTimeSure;
 bool shoot = false;
 int shootTargetPosition = 36*8190 ;
 bool shootReady = false;
+int remoteTimer = 0;
 
 
 float scalar = 1;
@@ -68,6 +69,12 @@ float jpitch = 0; // -1 to 1
 float jyaw = 0; // -1 to 1
 float myaw = 0;
 float mpitch = 0;
+float yaw_desired_angle = 0;
+float yaw_current_angle = 0;
+int pitchVelo = 0;
+float pitch_current_angle = 0;
+float pitch_desired_angle = 0;
+
 
 //GENERAL VARIABLES
 //drive and shooting mode
@@ -87,10 +94,12 @@ uint16_t chassis_power_limit;
 unsigned long timeStart;
 unsigned long timeStartCV;
 unsigned long timeStartRef;
+unsigned long timeStartImu;
 unsigned long loopTimer = us_ticker_read();
 unsigned long controlStart = us_ticker_read();
 unsigned long loopTimerCV = loopTimer;
 unsigned long loopTimerRef = loopTimer;
+unsigned long loopTimerImu = loopTimer;
 float elapsedms;
 
 int readResult = 0;
@@ -123,7 +132,24 @@ void cvthread() {
             jetson_send_data.yaw_angle_rads = (imuAngles.yaw + 180.0) * (M_PI / 180.0);
             jetson_send_data.yaw_velocity = yaw.getData(VELOCITY)/60.0;
             jetson_send_feedback(bcJetson, jetson_send_data);
+
+            readResult = jetson_read_values(bcJetson, jetson_received_data);
+
+            if(cv_enabled){
+                if(readResult > 0){
+                    led3 = 1;
+                    yaw_desired_angle = jetson_received_data.requested_yaw_rads / M_PI * 180;
+                    pitch_desired_angle = jetson_received_data.requested_pitch_rads / M_PI * 180;
+                    cv_shoot_status = jetson_received_data.shoot_status;
+                }else{
+                    led3 = 0;
+                }
+            } else {
+              cv_shoot_status = 0;
+              led3 = 0;
+            }
         }
+
         mutex_test.unlock();
         ThisThread::sleep_for(1ms);
     }
@@ -150,6 +176,27 @@ void refthread() {
             
             Chassis.power_limit = (float)chassis_power_limit;
             chassis_buffer = power_heat_data.buffer_energy;
+        }
+
+        mutex_test.unlock();
+        ThisThread::sleep_for(1ms);
+    }
+}
+
+void imuthread() {
+    while(1) {
+        mutex_test.lock();
+
+        timeStartImu = us_ticker_read();
+
+        if ((timeStartImu - loopTimerImu) / 1000 > 10){ 
+            loopTimerImu = timeStartImu;
+            
+            #ifdef USE_IMU
+            imu.get_angular_position_quat(&imuAngles);
+            #else
+            yaw_current_angle = (yaw>>ANGLE) * 360.0 / TICKS_REVOLUTION;
+            #endif
         }
 
         mutex_test.unlock();
@@ -187,10 +234,10 @@ int main(){
     int yawVelo = 0;
     #ifdef USE_IMU
     imu.get_angular_position_quat(&imuAngles);
-    float yaw_desired_angle = imuAngles.yaw + 180;
+    yaw_desired_angle = imuAngles.yaw + 180;
     #else
-    float yaw_desired_angle = (yaw>>ANGLE) * 360.0 / TICKS_REVOLUTION;
-    float yaw_current_angle = (yaw>>ANGLE) * 360.0 / TICKS_REVOLUTION;
+    yaw_desired_angle = (yaw>>ANGLE) * 360.0 / TICKS_REVOLUTION;
+    yaw_current_angle = (yaw>>ANGLE) * 360.0 / TICKS_REVOLUTION;
     #endif
 
     //PITCH
@@ -204,9 +251,6 @@ int main(){
     pitch.outputCap = 16000;
     pitch.useAbsEncoder = true;
     pitchCascade.dBuffer.lastY = 5;
-    int pitchVelo = 0;
-    float pitch_current_angle = 0;
-    float pitch_desired_angle = 0;
 
     //FLYWHEELS
     LFLYWHEEL.setSpeedPID(7.1849, 0.000042634, 0);
@@ -220,6 +264,7 @@ int main(){
     sure.setOutputCap(133 * M2006_GEAR_RATIO);
     sure.dBuffer = 10;
 
+    imuThread.start(imuthread);
     cvThread.start(cvthread);
     refThread.start(refthread);
     
@@ -231,32 +276,15 @@ int main(){
             loopTimer = timeStart;
             led = !led;
 
+            controlStart = us_ticker_read();
+
             Chassis.periodic();
             cs = Chassis.getChassisSpeeds();
-            remoteRead();
-
-            readResult = jetson_read_values(bcJetson, jetson_received_data);
-
-            if(cv_enabled){
-                if(readResult > 0){
-                    led3 = 1;
-                    yaw_desired_angle = jetson_received_data.requested_yaw_rads / M_PI * 180;
-                    pitch_desired_angle = jetson_received_data.requested_pitch_rads / M_PI * 180;
-                    cv_shoot_status = jetson_received_data.shoot_status;
-                }else{
-                    led3 = 0;
-                }
-            } else {
-              cv_shoot_status = 0;
-              led3 = 0;
+            
+            if (remoteTimer > 10) {
+                remoteTimer = 0;
+                remoteRead();
             }
-
-            controlStart = us_ticker_read();
-            #ifdef USE_IMU
-            imu.get_angular_position_quat(&imuAngles);
-            #else
-            yaw_current_angle = (yaw>>ANGLE) * 360.0 / TICKS_REVOLUTION;
-            #endif
 
             //Keyboard-based drive and shoot mode
             if(remote.keyPressed(Remote::Key::R)){
