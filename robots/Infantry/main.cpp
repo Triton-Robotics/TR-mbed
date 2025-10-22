@@ -18,7 +18,7 @@ constexpr float JOYSTICK_SENSITIVITY_PITCH_DPS = 180.0;
 constexpr float MOUSE_SENSITIVITY_YAW_DPS = 10.0;
 constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 10.0;
 
-constexpr int OUTER_LOOP_DT_MS = 2;
+constexpr int OUTER_LOOP_DT_MS = 1;
 
 constexpr float CHASSIS_FF_KICK = 0.065;
 

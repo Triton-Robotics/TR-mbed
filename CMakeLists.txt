@@ -6,6 +6,7 @@ find_program(MBED_CLI mbed-tools PATHS "~/.local/bin" REQUIRED)
 set(MBED_PLATFORM NUCLEO_F446RE)
 set(MBED_TOOLCHAIN GCC_ARM)
 set(DISABLE_WARNINGS ON)
+set(CMAKE_BUILD_TYPE Release)
 
 # Check if mbed-os is downloaded, if not download it
 if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/mbed-os)
@@ -48,6 +49,8 @@ set(APP_TARGET TR-Embedded)
 if (DISABLE_WARNINGS)
     add_compile_options(-w)
 endif()
+
+add_compile_options(-O3)
 
 # Enable cmake for mbed
 include(${MBED_PATH}/tools/cmake/app.cmake)
