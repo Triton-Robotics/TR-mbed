@@ -285,6 +285,7 @@ int main(){
                 remoteTimer = 0;
                 remoteRead();
             }
+            remoteTimer += 1;
 
             //Keyboard-based drive and shoot mode
             if(remote.keyPressed(Remote::Key::R)){
