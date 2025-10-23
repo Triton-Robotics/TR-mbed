@@ -530,9 +530,9 @@ int main(){
             }
 
             DJIMotor::s_sendValues();
-            printff("Looptime:%d\n", (us_ticker_read() - controlStart));
         }
         DJIMotor::s_getFeedback();
+        printff("Time:%dus\n", (us_ticker_read() - timeStart));
         ThisThread::sleep_for(1ms);
     }
 }
