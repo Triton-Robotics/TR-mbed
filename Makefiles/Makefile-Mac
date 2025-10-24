@@ -1,0 +1,61 @@
+
+
+# #=============================================================================
+# # Special targets to cleanup operation of make.
+
+# # Special rule to run CMake to check the build system integrity.
+# # No rule that depends on this can have commands that come from listfiles
+# # because they might be regenerated.
+# cmake_check_build_system:
+# 	$(CMAKE_COMMAND) -P /home/anshalaj/TR-mbed/CMakeFiles/VerifyGlobs.cmake
+# 	$(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+# .PHONY : cmake_check_build_system
+
+infantry-build:
+	cmake --build cmake-build-debug --target TR-Infantry -j $(nproc)
+
+testbench-build:
+	cmake --build cmake-build-debug --target TR-TestBench -j $(nproc)
+
+hero-build:
+	cmake --build cmake-build-debug --target TR-Hero -j $(nproc)
+
+sentry-build:
+	cmake --build cmake-build-debug --target TR-Sentry -j $(nproc)
+
+infantry: infantry-build
+	openocd -f board/st_nucleo_f4.cfg -c "program cmake-build-debug/robots/Infantry/TR-Infantry.elf verify reset exit"
+	mbed-tools sterm -b 115200
+
+testbench: testbench-build
+	openocd -f board/st_nucleo_f4.cfg -c "program cmake-build-debug/robots/TestBench/TR-TestBench.elf verify reset exit"
+	mbed-tools sterm -b 115200
+
+hero: hero-build
+	openocd -f board/st_nucleo_f4.cfg -c "program cmake-build-debug/robots/Hero/TR-Hero.elf verify reset exit"
+	mbed-tools sterm -b 115200
+
+sentry: sentry-build
+	openocd -f board/st_nucleo_f4.cfg -c "program cmake-build-debug/robots/Sentry/TR-Sentry.elf verify reset exit"
+	mbed-tools sterm -b 115200
+
+infantry-pi: infantry-build
+	scp cmake-build-debug/robots/Infantry/TR-Infantry.bin pi:/media/anshal/NOD_F446RE
+
+testbench-pi: testbench-build
+	scp cmake-build-debug/robots/TestBench/TR-TestBench.bin pi:/media/anshal/NOD_F446RE
+
+hero-pi: hero-build
+	scp cmake-build-debug/robots/Hero/TR-Hero.bin pi:/media/anshal/NOD_F446RE
+
+sentry-pi: sentry-build
+	scp cmake-build-debug/robots/Sentry/TR-Sentry.bin pi:/media/anshal/NOD_F446RE2
+
+serial:
+	mbed-tools sterm -b 115200
+
+bind:
+	cmd.exe /c usbipd attach --wsl --busid 2-2
+
+mount:
+	sudo mount E: /mnt/e
