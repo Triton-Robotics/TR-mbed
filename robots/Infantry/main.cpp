@@ -215,10 +215,10 @@ int main(){
     * MOTORS SETUP AND PIDS
     */
     //YAW
-    yaw.setSpeedPID(708.1461, 4.721, 2.6555);
+    yaw.setSpeedPID(550, 4, 0);
     yaw.setSpeedIntegralCap(8000);
     yaw.setSpeedOutputCap(32000);
-    yaw.setPositionPID(1, 0, 0);
+    yaw.setPositionPID(0.5, 0, 0);
     yaw.pidPosition.dBuffer.lastY = 5;
     yaw.pidPosition.setIntegralCap(2);
     yaw.pidPosition.setOutputCap(90);
@@ -459,7 +459,7 @@ int main(){
                 }
 
                 float pitch_current_radians = -(pitch_current_angle / 360) * 2 * M_PI;
-                pitch.pidSpeed.feedForward = (cos(pitch_current_radians) * -2600) + (1221 * dir + 97.4 * yawVelo);
+                pitch.pidSpeed.feedForward = (cos(pitch_current_radians) * -2600) + (1221 * dir + 97.4 * pitchVelo);
                 //pitch.setPosition(-int((pitch_desired_angle / 360) * TICKS_REVOLUTION - pitch_zero_offset_ticks));
                 pitch.setSpeed(pitchVelo);
             }else{
