@@ -40,32 +40,32 @@ int JudgeSystem_USART_Receive_DMA(BufferedSerial* b) // modified
     return b->read(JudgeSystem_rxBuff, JUDGESYSTEM_PACKSIZE);
 }
 
-ext_game_status_t ext_game_status; //
+// ext_game_status_t ext_game_status; //
 game_status_t game_status;
-ext_game_result_t ext_game_result; //
+// ext_game_result_t ext_game_result; //
 game_result_t game_result;
 ext_game_robot_HP_t ext_game_robot_HP;
 ext_dart_status_t ext_dart_status;
 ext_ICRA_buff_debuff_zone_status_t ext_ICRA_buff_debuff_zone_status;
 ext_event_data_t ext_even_data;
 ext_supply_projectile_action_t ext_supply_projectile_action;
-ext_referee_warning_t ext_referee_warning; //
+// ext_referee_warning_t ext_referee_warning; //
 referee_warning_t referee_warning; 
 ext_dart_remaining_time_t ext_dart_remaining_time;
-ext_game_robot_status_t ext_game_robot_state; //
+// ext_game_robot_status_t ext_game_robot_state; //
 robot_status_t robot_status;
-ext_power_heat_data_t ext_power_heat_data; //
+// ext_power_heat_data_t ext_power_heat_data; //
 power_heat_data_t power_heat_data;
-ext_game_robot_pos_t ext_game_robot_pos; //
+// ext_game_robot_pos_t ext_game_robot_pos; //
 robot_pos_t robot_pos;
 ext_buff_t Buff; //
 buff_t buff;
 aerial_robot_energy_t aerial_robot_energy;
-ext_robot_hurt_t ext_robot_hurt; //
+// ext_robot_hurt_t ext_robot_hurt; //
 hurt_data_t hurt_data;
-ext_shoot_data_t ext_shoot_data; //
+// ext_shoot_data_t ext_shoot_data; //
 shoot_data_t shoot_data;
-ext_bullet_remaining_t ext_bullet_remaining; //
+// ext_bullet_remaining_t ext_bullet_remaining; //
 projectile_allowance_t projectile_allowance;
 
 ext_rfid_status_t ext_rfid_status;
@@ -139,7 +139,7 @@ void Judge_GetMessage(uint16_t Data_Length)
                     #endif
                     memcpy(&game_status, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_Game_StatusData - JUDGE_EXTRA]));
                     n += JudgeLength_Game_StatusData;
-                    ext_game_status.infoUpdateFlag = 1;
+                    game_status.infoUpdateFlag = 1;
                 }
                 else{
                     #if REF_DEBUG
@@ -157,7 +157,7 @@ void Judge_GetMessage(uint16_t Data_Length)
                     #endif
                     memcpy(&game_result, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_Game_ResultData - JUDGE_EXTRA]));
                     n += JudgeLength_Game_ResultData;
-                    ext_game_result.InfoUpdataFlag = 1;
+                    game_result.InfoUpdataFlag = 1;
                 }
                 else{
                     #if REF_DEBUG
@@ -261,7 +261,7 @@ void Judge_GetMessage(uint16_t Data_Length)
                     #endif
                     memcpy(&referee_warning, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_Referee_Warning - JUDGE_EXTRA]));
                     n += JudgeLength_Referee_Warning;
-                    ext_referee_warning.InfoUpdataFlag = 1;
+                    referee_warning.InfoUpdataFlag = 1;
                 }
                 else{
                     #if REF_DEBUG
@@ -309,7 +309,7 @@ void Judge_GetMessage(uint16_t Data_Length)
                     memcpy(&robot_status, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_Robot_State - JUDGE_EXTRA]));
 
                     n += JudgeLength_Robot_State;
-                    ext_game_robot_state.InfoUpdataFlag = 1;
+                    robot_status.InfoUpdataFlag = 1;
 
                     #if REF_DEBUG
                     // printf("R%u %u %u %u %u %u %u %x\n", 
@@ -354,7 +354,7 @@ void Judge_GetMessage(uint16_t Data_Length)
                     }
                     
                     n += JudgeLength_Power_Heat;
-                    ext_power_heat_data.InfoUpdataFlag = 1;
+                    power_heat_data.InfoUpdataFlag = 1;
                     #if REF_DEBUG
                     //printf("%u %u %u %u\n", power_heat_data.buffer_energy, power_heat_data.shooter_17mm_1_barrel_heat, power_heat_data.shooter_17mm_2_barrel_heat, power_heat_data.shooter_42mm_barrel_heat);
                     #endif
@@ -377,7 +377,7 @@ void Judge_GetMessage(uint16_t Data_Length)
                     #endif
                     memcpy(&robot_pos, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_Robot_Position - JUDGE_EXTRA]));
                     n += JudgeLength_Robot_Position;
-                    ext_game_robot_pos.InfoUpdataFlag = 1;
+                    robot_pos.InfoUpdataFlag = 1;
                 }
                 else{
                     #if REF_DEBUG
@@ -428,7 +428,7 @@ void Judge_GetMessage(uint16_t Data_Length)
                     #endif
                     memcpy(&hurt_data, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_Injury_State - JUDGE_EXTRA]));
                     n += JudgeLength_Injury_State;
-                    ext_robot_hurt.InfoUpdataFlag = 1;
+                    hurt_data.InfoUpdataFlag = 1;
                 }
                 else{
                     #if REF_DEBUG
@@ -445,7 +445,7 @@ void Judge_GetMessage(uint16_t Data_Length)
                     #endif
                     memcpy(&shoot_data, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_RealTime_Shoot - JUDGE_EXTRA]));
                     n += JudgeLength_RealTime_Shoot;
-                    ext_shoot_data.InfoUpdataFlag = 1;
+                    shoot_data.InfoUpdataFlag = 1;
                 }
                 else{
                     #if REF_DEBUG
@@ -462,7 +462,7 @@ void Judge_GetMessage(uint16_t Data_Length)
                     #endif
                     memcpy(&projectile_allowance, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_Remaining_Rounds - JUDGE_EXTRA]));
                     n += JudgeLength_Remaining_Rounds;
-                    ext_bullet_remaining.InfoUpdataFlag = 1;
+                    projectile_allowance.InfoUpdataFlag = 1;
                 }
                 else{
                     #if REF_DEBUG
@@ -539,9 +539,9 @@ void Judge_GetMessage(uint16_t Data_Length)
 _Bool Color;
 _Bool is_red_or_blue(void)
 {
-    Judge_Self_ID = ext_game_robot_state.data.robot_id; //读取当前机器人ID
+    Judge_Self_ID = robot_status.robot_id; //读取当前机器人ID
 
-    if (ext_game_robot_state.data.robot_id > 10)
+    if (robot_status.robot_id > 10)
     {
         return 0; //蓝方 (blue)
     }
@@ -562,11 +562,11 @@ void determine_ID(void)
     Color = is_red_or_blue();
     if (Color == BLUE)
     {
-        Judge_SelfClient_ID = 0x0100 + ext_game_robot_state.data.robot_id; //计算客户端ID
+        Judge_SelfClient_ID = 0x0100 + robot_status.robot_id; //计算客户端ID
     }
     else if (Color == RED)
     {
-        Judge_SelfClient_ID = 0x0100 + ext_game_robot_state.data.robot_id; //计算客户端ID
+        Judge_SelfClient_ID = 0x0100 + robot_status.robot_id; //计算客户端ID
     }
 }
 
@@ -584,15 +584,15 @@ unsigned char CliendTxBuffer[send_max_len];
 
 void init_referee_struct_data(void)
 {
-    memset(&ext_game_robot_state, 0, sizeof(ext_game_robot_status_t));
+    memset(&robot_status, 0, sizeof(robot_status_t));
 }
 uint8_t get_robot_id(void)
 {
-    return ext_game_robot_state.data.robot_id;
+    return robot_status.robot_id;
 }
 uint8_t get_remain_hp(void)
 {
-    return ext_game_robot_state.data.current_HP;
+    return robot_status.current_HP;
 }
 
 

@@ -1,3 +1,3 @@
-loadfile "./cmake-build-debug/robots/Infantry/TR-Infantry.elf"
+loadfile "\\wsl.localhost\Ubuntu\home\huian\TR-mbed\cmake-build-debug\robots\Infantry\TR-Infantry.elf"
 reset
 exit

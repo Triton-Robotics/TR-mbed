@@ -495,16 +495,16 @@ int main(){
                 
                 //printff("pitch_des:%.3f pitch_act:%.3f [%d]\n", pitch_desired_angle, pitch_current_angle, pitch>>ANGLE);
                 //printff("cX%.1f cY%.1f cOmega%.3f cRPM%.1f\n", cs.vX, cs.vY, cs.vOmega, cs.vOmega * 60 / (2*M_PI) * 4);
-                // printff("Chassis: LF:%c RF:%c LB:%c RB:%c Yaw:%c Pitch:%c Flywheel_L:%c Flywheel_R:%c Indexer:%c\n", 
-                //     Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).isConnected() ? 'y' : 'n', 
-                //     Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).isConnected() ? 'y' : 'n', 
-                //     Chassis.getMotor(ChassisSubsystem::LEFT_BACK).isConnected() ? 'y' : 'n', 
-                //     Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).isConnected() ? 'y' : 'n',
-                //     yaw.isConnected() ? 'y' : 'n', 
-                //     pitch.isConnected() ? 'y' : 'n', 
-                //     LFLYWHEEL.isConnected() ? 'y' : 'n', 
-                //     RFLYWHEEL.isConnected() ? 'y' : 'n',
-                //     indexer.isConnected() ? 'y' : 'n');
+                printff("Chassis: LF:%c RF:%c LB:%c RB:%c Yaw:%c Pitch:%c Flywheel_L:%c Flywheel_R:%c Indexer:%c\n", 
+                    Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).isConnected() ? 'y' : 'n', 
+                    Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).isConnected() ? 'y' : 'n', 
+                    Chassis.getMotor(ChassisSubsystem::LEFT_BACK).isConnected() ? 'y' : 'n', 
+                    Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).isConnected() ? 'y' : 'n',
+                    yaw.isConnected() ? 'y' : 'n', 
+                    pitch.isConnected() ? 'y' : 'n', 
+                    LFLYWHEEL.isConnected() ? 'y' : 'n', 
+                    RFLYWHEEL.isConnected() ? 'y' : 'n',
+                    indexer.isConnected() ? 'y' : 'n');
                 #ifdef USE_IMU
                 // printff("IMU %.3f %.3f %.3f\n",imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
                 #endif
