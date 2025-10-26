@@ -106,55 +106,6 @@ int readResult = 0;
 bool cv_enabled = false;
 char cv_shoot_status = 0;
 
-void cvthread() {
-    while(1) {
-        timeStartCV = us_ticker_read();
-        mutex_test.lock();
-
-        jetson_send_data.chassis_x_velocity = 0.0;
-        jetson_send_data.chassis_y_velocity = 0.0;
-        jetson_send_data.pitch_angle_rads = 0.0;
-        jetson_send_data.yaw_angle_rads = 0.0;
-        jetson_send_data.pitch_velocity = 0.0;
-        jetson_send_data.yaw_velocity = 0.0;
-        jetson_received_data.requested_pitch_rads = 0.0;
-        jetson_received_data.requested_yaw_rads = 0.0;
-        jetson_received_data.shoot_status = 0;
-        
-        //CV loop runs every 2ms - takes about 2ms to run
-        if((timeStartCV - loopTimerCV) / 1000 > 1) { //1 with sync or 2 without
-            loopTimerCV = timeStartCV;
-            
-            jetson_send_data.chassis_x_velocity = 0.0;
-            jetson_send_data.chassis_y_velocity = 0.0;
-            jetson_send_data.pitch_angle_rads = ChassisSubsystem::ticksToRadians( (pitch_zero_offset_ticks - pitch.getData(ANGLE)) );
-            jetson_send_data.pitch_velocity = pitch.getData(VELOCITY) / 60.0;
-            jetson_send_data.yaw_angle_rads = (imuAngles.yaw + 180.0) * (M_PI / 180.0);
-            jetson_send_data.yaw_velocity = yaw.getData(VELOCITY)/60.0;
-            jetson_send_feedback(bcJetson, jetson_send_data);
-
-            readResult = jetson_read_values(bcJetson, jetson_received_data);
-
-            if(cv_enabled){
-                if(readResult > 0){
-                    led3 = 1;
-                    yaw_desired_angle = jetson_received_data.requested_yaw_rads / M_PI * 180;
-                    pitch_desired_angle = jetson_received_data.requested_pitch_rads / M_PI * 180;
-                    cv_shoot_status = jetson_received_data.shoot_status;
-                }else{
-                    led3 = 0;
-                }
-            } else {
-              cv_shoot_status = 0;
-              led3 = 0;
-            }
-        }
-        mutex_test.unlock();
-        printff("%dus\n", (us_ticker_read() - timeStartCV));
-        ThisThread::sleep_for(1ms);
-    }
-}
-
 void refthread() {
     while(1) {
         mutex_test.lock();
@@ -265,7 +216,6 @@ int main(){
     sure.dBuffer = 10;
 
     imuThread.start(imuthread);
-    // cvThread.start(cvthread);
     refThread.start(refthread);
     
     while(true){

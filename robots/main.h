@@ -42,7 +42,6 @@ DigitalIn jumperPB1(PB_1);
 DigitalIn userButton(BUTTON1);
 TRMutex printer;
 Mutex mutex_test;
-Thread cvThread;
 Thread refThread;
 Thread imuThread;
 static BufferedSerial bc(PA_0, PA_1, 115200);
