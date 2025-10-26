@@ -88,7 +88,6 @@ float tolerance = 0.05;
 float mult = 0.7;
 
 //ref variables
-uint16_t chassis_buffer;
 uint16_t chassis_power_limit;
 
 unsigned long timeStart;
@@ -126,7 +125,6 @@ void refthread() {
             }
             
             Chassis.power_limit = (float)chassis_power_limit;
-            chassis_buffer = power_heat_data.buffer_energy;
         }
 
         mutex_test.unlock();
