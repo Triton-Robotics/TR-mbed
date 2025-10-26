@@ -100,7 +100,7 @@ var searchData=
   ['arpack_5fwrapper_3c_20double_2c_20double_20_3e_97',['arpack_wrapper&lt; double, double &gt;',['../structEigen_1_1internal_1_1arpack__wrapper_3_01double_00_01double_01_4.html',1,'Eigen::internal']]],
   ['arpack_5fwrapper_3c_20float_2c_20float_20_3e_98',['arpack_wrapper&lt; float, float &gt;',['../structEigen_1_1internal_1_1arpack__wrapper_3_01float_00_01float_01_4.html',1,'Eigen::internal']]],
   ['arpackgeneralizedselfadjointeigensolver_99',['ArpackGeneralizedSelfAdjointEigenSolver',['../classEigen_1_1ArpackGeneralizedSelfAdjointEigenSolver.html',1,'Eigen']]],
-  ['array_100',['array',['../classEigen_1_1Array.html',1,'Eigen::Array&lt; _Scalar, _Rows, _Cols, _Options, _MaxRows, _MaxCols &gt;'],['../classEigen_1_1array.html',1,'Eigen::array&lt; T, n &gt;']]],
+  ['array_100',['array',['../classEigen_1_1array.html',1,'Eigen::array&lt; T, n &gt;'],['../classEigen_1_1Array.html',1,'Eigen::Array&lt; _Scalar, _Rows, _Cols, _Options, _MaxRows, _MaxCols &gt;']]],
   ['array_3c_20bool_2c_20numinputdims_20_3e_101',['array&lt; bool, NumInputDims &gt;',['../classEigen_1_1array.html',1,'Eigen']]],
   ['array_3c_20denseindex_2c_20numdims_20_3e_102',['array&lt; DenseIndex, NumDims &gt;',['../classEigen_1_1array.html',1,'Eigen']]],
   ['array_3c_20double_2c_20dparm_5fsize_2c_201_20_3e_103',['Array&lt; double, DPARM_SIZE, 1 &gt;',['../classEigen_1_1Array.html',1,'Eigen']]],

@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['j_0',['j',['../Jacobi__makeJacobi_8cpp.html#a4804f9d1c212b9655934738d0ae395ab',1,'J:&#160;Jacobi_makeJacobi.cpp'],['../tut__arithmetic__redux__minmax_8cpp.html#a39513f0f8d942bf9ef17b2e87ac6d34e',1,'j:&#160;tut_arithmetic_redux_minmax.cpp']]],
+  ['j_0',['j',['../tut__arithmetic__redux__minmax_8cpp.html#a39513f0f8d942bf9ef17b2e87ac6d34e',1,'j:&#160;tut_arithmetic_redux_minmax.cpp'],['../Jacobi__makeJacobi_8cpp.html#a4804f9d1c212b9655934738d0ae395ab',1,'J:&#160;Jacobi_makeJacobi.cpp']]],
   ['jetson_5fread_5fbuff_1',['jetson_read_buff',['../Jetson_8cpp.html#a4089fd23b6ca2a96a79a0798f486e1d7',1,'Jetson.cpp']]],
   ['jetson_5fread_5fbuff_5fpos_2',['jetson_read_buff_pos',['../Jetson_8cpp.html#a1085b352b7866fd0227a55a210e05ccb',1,'Jetson.cpp']]],
   ['joystick_5fsensitivity_5fpitch_5fdps_3',['joystick_sensitivity_pitch_dps',['../Hero_2main_8cpp.html#acd17a8d477498342ee090e24666474b3',1,'JOYSTICK_SENSITIVITY_PITCH_DPS:&#160;main.cpp'],['../Infantry_2main_8cpp.html#acd17a8d477498342ee090e24666474b3',1,'JOYSTICK_SENSITIVITY_PITCH_DPS:&#160;main.cpp'],['../Sentry_2main_8cpp.html#acd17a8d477498342ee090e24666474b3',1,'JOYSTICK_SENSITIVITY_PITCH_DPS:&#160;main.cpp'],['../TestBench_2main_8cpp.html#acd17a8d477498342ee090e24666474b3',1,'JOYSTICK_SENSITIVITY_PITCH_DPS:&#160;main.cpp']]],
