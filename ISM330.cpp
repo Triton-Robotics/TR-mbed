@@ -1,31 +1,39 @@
 #include "mbed.h"
 #include "ISM330.h"
+#include <cstdint>
 
-ISM330::ISM330(SPI &spi, PinName csPin)
+static constexpr int ISM330_CHIP_ID = 0x6b; ///< ISM330 default device id from WHOAMI
+static constexpr int ISM330_WHO_AM_I = 0x0f;
+
+ISM330::ISM330(SPI &spi, PinName csPin) noexcept
     : _spi(spi), _cs(csPin)
 {
     _cs = 1; // deselect by default
+    // NOTE: csPin seems to be redundant
 }
 
-
-
-bool ISM330::begin() {
+bool ISM330::begin() noexcept{
     _cs = 1;
-
     _spi.begin();
 
-    uint8_t id = whoAmI();
-    return (id == ISM330_CHIP_ID);
+    // instead of _spi.begin() suggested
+    //_spi.format(8, 3); // example mode: 8-bit, CPOL=1 CPHA=1 (check device!)
+    //_spi.frequency(10000000); // tune to your board's max
+
+
+    return whoAmI() == ISM330_CHIP_ID;
 }
 
-uint8_t ISM330::whoAmI() {
-    return readRegister(ISM330_Who_Am_I);
+uint8_t ISM330::whoAmI() noexcept{
+    return readRegister(ISM330_WHO_AM_I);
 }
 
-void ISM330::reset() {
+void ISM330::reset() noexcept{
     writeRegister(0x12, 0x01); //0x12 is CTRL 3, we're telling it to soft reset
-    thread_sleep_for(100);
+    thread_sleep_for(100); // possible change with polling perhaps?
 }
+
+
 
 uint8_t ISM330::readRegister(uint8_t reg) {
     _cs = 0;
@@ -43,7 +51,7 @@ void ISM330::readMultiple(uint8_t reg, uint8_t *buf, uint8_t len) {
         for (uint8_t i = 0; i < len; i++) {
         buf[i] = _spi.transfer(0x00);
     }
-    _cs = 0;
+    _cs = 0; //Possible bug, why not _cs = 1 ?
     //digitalWrite(_csPin, HIGH);
 }
 
@@ -56,7 +64,6 @@ void ISM330::writeRegister(uint8_t reg, uint8_t value) {
     //digitalWrite(_csPin, HIGH);
 }
 
-float accelScale = 0.122 
 
 /*Accel scale values 0.122 (4G), 0.244 (8G), 0.488 (16G)
 2G range: 0.061
@@ -67,6 +74,7 @@ float accelScale = 0.122
 
 void ISM330::readAccel(float *x, float *y, float *z) {
     uint8_t buf[6];
+    static constexpr float accelScale = 0.122;
     readMultiple(0x28, buf, 6);
 
     //Combining accel high and low 
@@ -83,8 +91,6 @@ void ISM330::readAccel(float *x, float *y, float *z) {
 }
 
 
-float gyroScale = 17.50
-
 /* Gyro Scalevalues for range (degrees per second), chose 17.50 for now since 45RPM (270DPS) is the safe max
 125 DPS: 4.375
 250 DPS: 8.75
@@ -96,6 +102,7 @@ float gyroScale = 17.50
 
 void ISM330::readGyro(float *x, float *y, float *z) {
     uint8_t buf[6];
+    static constexpr float gyroScale = 17.50; // Currently unused, idk if its needed 
     readMultiple(0x22, buf, 6);
 
     //Combining high and low gyro values 
@@ -104,3 +111,26 @@ void ISM330::readGyro(float *x, float *y, float *z) {
     int16_t rawGZ = (int16_t)((buf[5] << 8) | buf[4]);
 }
 
+std::tuple<float, float, float> ISM330::getAccel()
+{
+    uint8_t buf[6];
+    static constexpr float accelScale = 0.122;
+    readMultiple(0x28, buf, 6);
+    return std::make_tuple(
+        static_cast<int16_t>(buf[1] << 8 | buf[0]) * accelScale,
+        static_cast<int16_t>(buf[3] << 8 | buf[2]) * accelScale,
+        static_cast<int16_t>(buf[5] << 8 | buf[4]) * accelScale
+    );
+}
+
+std::tuple<float, float, float> ISM330::getGyro(){
+    uint8_t buf[6];
+    static constexpr float gyroScale = 17.50; // Currently unused, idk if its needed 
+    readMultiple(0x22, buf, 6);
+
+    return std::make_tuple(
+        static_cast<int16_t>((buf[1] << 8) | buf[0]),
+        static_cast<int16_t>((buf[3] << 8) | buf[2]),
+        static_cast<int16_t>((buf[5] << 8) | buf[4])
+    )
+}

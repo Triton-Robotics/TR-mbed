@@ -1,109 +1,131 @@
-/*!
- *  @file Adafruit_ISM330DHCX.h
- *
- * 	I2C Driver for the Adafruit ISM330DHCX 6-DoF Accelerometer and Gyroscope
- *library
- *
- * 	This is a library for the Adafruit ISM330DHCX breakout:
- * 	https://www.adafruit.com/products/4480
- *
- * 	Adafruit invests time and resources providing this open source code,
- *  please support Adafruit and open-source hardware by purchasing products from
- * 	Adafruit!
- *
- *
- *	BSD license (see license.txt)
- */
-
+/**
+* @file ISM330.h
+* @brief SPI driver for the ISM330DHCX 6-DoF accelerometer and gyroscope.
+*
+* This class provides a lightweight interface for communicating with the
+* ST ISM330DHCX sensor over SPI using Mbed OS. It supports basic device
+* initialization and simple readout of accelerometer and gyroscope data.
+*
+* The sensor must be externally configured for range, filtering and output
+* data rate before sampling values.
+*/
 #ifndef ISM330_H_
 #define ISM330_H_
-
 #include "mbed.h"
+#include <tuple>
 
-
-#define ISM330_CHIP_ID 0x6B ///< ISM330 default device id from WHOAMI
-#define ISM330_Who_Am_I 0x0F
-
-// Gyroscope Output Registers
-
-#define OUTX_L_G 0x22
-#define OUTX_H_G 0x23
-#define OUTY_L_G 0x24
-#define OUTY_H_G 0x25
-#define OUTZ_L_G 0x26
-#define OUTZ_H_G 0x27
-
-//Accelerometer Output Registers
-
-#define OUTX_L_XL 0x28
-#define OUTX_H_XL 0x29
-#define OUTY_L_XL 0x2A
-#define OUTY_H_XL 0x2B
-#define OUTZ_L_XL 0x2C
-#define OUTZ_H_XL 0x2D
-
+/**
+ * @class ISM330
+ * @brief Interface class for ISM330DHCX IMU using SPI.
+ */
 class ISM330 {
-public: 
-    ISM330(SPI &spi, PinName csPin);
+public:
+    /**
+    * @brief Construct a new ISM330 object.
+    *
+    * Chip select is set high after initialization to ensure the device is
+    * deselected.
+    *
+    * @param spi Reference to an initialized SPI peripheral.
+    * @param csPin GPIO pin used as the chip-select line (redundant).
+    */
+    ISM330(SPI &spi, PinName csPin) noexcept;
 
-    //set up
-    bool begin();
-    uint8_t whoAmI();
-    void reset();
+    /**
+    * @brief Initialize communication with the device.
+    *
+    * Performs basic SPI setup and verifies device presence using the WHO_AM_I
+    * register.
+    *
+    * @return true if the device identifier matches the expected chip ID.
+    * @return false if device detection fails.
+    */
+    bool begin() noexcept;
 
-    //Sensor Data
-    void readAccel(float *x, float *y, float *z);
-    void readGyro(float *x, float *y, float *z);
+    /**
+    * @brief Read the WHO_AM_I register value.
+    *
+    * This value should match the documented device ID. Mainly useful for
+    * diagnostics or verifying hardware connectivity.
+    *
+    * @return 8-bit device identifier.
+    */
+    uint8_t whoAmI() noexcept;
 
-private: 
-    uint8_t readRegister(uint8_t reg);
-    void readMultiple(uint8_t reg, uint8_t *buf, uint8_t len);
-    void writeRegister(uint8_t reg, uint8_t value);
+    /**
+    * @brief Issue a software reset to the device.
+    *
+    * Triggers a soft reset and blocks briefly to allow the device to restart.
+    */
+    void reset() noexcept;
 
-    SPI &_spi;
-    DigitalOut _cs;
+    /**
+    * @brief Read the latest accelerometer sample.
+    *
+    * Data returned in X, Y, Z order.
+    *
+    * @return A tuple of acceleration values in units defined by the active
+    *         sensor full-scale range.
+    */
+    [[nodiscard]] std::tuple<float, float, float> getAccel() noexcept;
 
+    /**
+    * @brief Read the latest gyroscope sample.
+    *
+    * Data returned in X, Y, Z order.
+    *
+    * @return A tuple of angular velocity values in units defined by the active
+    *         sensor full-scale range.
+    */
+    [[nodiscard]] std::tuple<float, float, float> getGyro() noexcept;
+
+    /**
+    * @deprecated Use getAccel() instead.
+    *
+    * @brief Read accelerometer values using pointer parameters.
+    */
+    [[deprecated("use `getAccel()` instead.")]]
+    void readAccel(float *x, float *y, float *z) noexcept;
+
+    /**
+    * @deprecated Use getGyro() instead.
+    *
+    * @brief Read gyroscope values using pointer parameters.
+    */
+    [[deprecated("use `getGyro()` instead.")]]
+    void readGyro(float *x, float *y, float *z) noexcept;
+
+private:
+    /**
+    * @brief Read a single register from the device.
+    *
+    * @param reg Register address to read.
+    * @return The value stored in the register.
+    */
+    uint8_t readRegister(uint8_t reg) noexcept;
+
+    /**
+    * @brief Read multiple consecutive registers starting from a base address.
+    *
+    * CS handling is performed internally. The caller must provide a buffer
+    * large enough to hold `len` bytes.
+    *
+    * @param reg Starting register address.
+    * @param buf Destination buffer.
+    * @param len Number of bytes to read.
+    */
+    void readMultiple(uint8_t reg, uint8_t *buf, uint8_t len) noexcept;
+
+    /**
+    * @brief Write a single register value.
+    *
+    * @param reg Register to modify.
+    * @param value Value to write.
+    */
+    void writeRegister(uint8_t reg, uint8_t value) noexcept;
+
+    SPI &_spi; ///< Reference to SPI bus instance.
+    DigitalOut _cs; ///< Chip-select GPIO line (active low).
 };
-
-/// Data Type Definitions? ///
-
-// typedef struct {
-//     uint8_t  chip_id;
-//     uint8_t  acc_id;
-//     uint8_t  mag_id;
-//     uint8_t  gyr_id;
-//     uint8_t  bootldr_rev_id;
-//     uint16_t sw_rev_id;
-// } ISM330_ID_INF_TypeDef;
-
-// typedef struct {
-//     double h;
-//     double r;
-//     double p;
-// } ISM330_EULER_TypeDef;
-
-// typedef struct {
-//     double x;
-//     double y;
-//     double z;
-//     double w;
-// } ISM330_QUATERNION_TypeDef;
-
-// typedef struct{
-//     double yaw;
-//     double roll;
-//     double pitch;
-// } ISM330_ANGULAR_POSITION_typedef;
-
-// typedef struct {
-//     double x;
-//     double y;
-//     double z;
-// } ISM330_VECTOR_TypeDef;
-
-// typedef struct {
-//     int8_t acc_chip;
-//     int8_t gyr_chip;
-// } ISM330_TEMPERATURE_TypeDef;
 
 #endif // ISM330_H_
