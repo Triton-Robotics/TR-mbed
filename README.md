@@ -63,7 +63,7 @@ After completing all of this you can make and flash your code to the nucleo usin
 
 ### Finding the Makefile
 
-1. Go into the Makefiles folder, and select the appropriate makefile for your operating system.
+1. Go into the Makefiles folder, and copy the appropriate makefile for your operating system outside the folder.
 
 2. Now, you can build your code with the following command:
 
