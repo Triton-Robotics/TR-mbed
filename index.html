@@ -124,36 +124,23 @@ At this point, you may choose to diverge from the CLI setup guide and set up an 
 <hr  />
 <p> Note: Go to the Embed Discord and search up makefile. After you find it, download it and upload it to your local TR-Embed folder. Most likely your computer will not work with E drive, to which you have to change it to D in the makefile. If you have problems with this, contact a embed member or the team lead.</p>
 <p>After completing all of this you can make and flash your code to the nucleo using <code>make testbench</code>, <code>make hero</code>, <code>make infantry</code>, and <code>make sentry</code>. You should see a block with many numbers when the code is flashed. If you see a red text regarding "missing embed-tools" it is likely becuase you don't have the serial monitor downloaded which is not required to make and flash code.</p>
-<h3><a class="anchor" id="autotoc_md8"></a>
+<h2><a class="anchor" id="autotoc_md8"></a>
+Flashing and building code</h2>
+<h3><a class="anchor" id="autotoc_md9"></a>
+Finding the Makefile</h3>
+<ol type="1">
+<li>Go into the Makefiles folder, and select the appropriate makefile for your operating system.</li>
+<li>Now, you can build your code with the following command:</li>
+</ol>
+<div class="fragment"><div class="line">make testbench-build</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md10"></a>
 Flashing to JLink</h3>
 <ol type="1">
-<li>Download the <a href="https://www.segger.com/downloads/jlink/">JLink</a> software and the <a href="https://www.segger.com/downloads/jlink/#Ozone">Ozone</a> debugger on your devices.</li>
+<li>Download the <a href="https://www.segger.com/downloads/jlink/">JLink</a> software on your device.</li>
 <li>Flash using the makefile, similar to the cmake setup:</li>
 </ol>
 <div class="fragment"><div class="line">make testbench-jlink</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md9"></a>
-Debugging with Ozone</h3>
-<ol type="1">
-<li>To debug with Ozone, you need to open the Ozone debugger, then create a new project.</li>
-<li>In devices, you should select the STM32F446RE device, then press Next:</li>
-</ol>
-<p><img src="https://github.com/user-attachments/assets/09b85499-3bea-4122-bb26-876b41bdf92e" alt="image" width="599" height="673" class="inline"/></p>
-<ol type="1">
-<li>Now, for the Connection settings, select SWD as the Target Interface, USB as the Host Interface, and 4MHz as the Interface Speed</li>
-</ol>
-<p><img src="https://github.com/user-attachments/assets/c0949765-56de-4f36-9fa7-2495f13ceefb" alt="image" width="600" height="682" class="inline"/></p>
-<ol type="1">
-<li>Finally, select the correct .elf file from your cmake-build-debug folder in the repository to configure Ozone</li>
-</ol>
-<p><img src="https://github.com/user-attachments/assets/79d86231-8c65-461d-842a-af0ef8510bf2" alt="image" width="596" height="679" class="inline"/></p>
-<ol type="1">
-<li>Press Finish since we do not need to change the Optional Settings. Congrats, you have the Ozone Debugger set up!</li>
-<li>To debug your stack while the robot is running, I advise flashing the JLink with Ozone open to ensure a secure connection to the device.</li>
-<li>Then, you should click the arrow next to the power button on the top left of the Ozone Window to select Attach to Running Program.</li>
-<li>You can then use the "View" window to open up various windows. The Memory, Global, Local and Watched Data and the Registers Windows show information about the current state and content of the target.</li>
-<li>Use the Watched Data Window to specify certain local or global data to trace and plot the current value, or use the Data Sampling window to track and export values.</li>
-</ol>
-<h2><a class="anchor" id="autotoc_md10"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md11"></a>
 Flashing STM32</h2>
 <ol type="1">
 <li><p class="startli">Locate the generated executable:</p>
@@ -170,15 +157,16 @@ Flashing STM32</h2>
 </ol>
 <div class="fragment"><div class="line">mbed-tools sterm -b 115200</div>
 </div><!-- fragment --><hr  />
-<h2><a class="anchor" id="autotoc_md12"></a>
+<h2><a class="anchor" id="autotoc_md13"></a>
 Troubleshooting</h2>
 <p>See the Troubleshooting guide for common issues and solutions.</p>
 <hr  />
-<h2><a class="anchor" id="autotoc_md14"></a>
+<h2><a class="anchor" id="autotoc_md15"></a>
 Debugging</h2>
 <p>See the Debugging guide on how to run the debugger using STM32CubeIDE</p>
+<p>See the Ozone Debugger guide on how to run the debugger using the Ozone Debugger.</p>
 <hr  />
-<h2><a class="anchor" id="autotoc_md16"></a>
+<h2><a class="anchor" id="autotoc_md17"></a>
 Documentation</h2>
 <p>See our <a href="https://triton-robotics.github.io/TR-mbed/">generated doxygen</a>. </p>
 </div></div><!-- PageDoc -->
