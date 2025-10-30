@@ -1,110 +1,6 @@
 #include "main.h"
 #include "subsystems/ChassisSubsystem.h"
 
-DigitalOut led(L25);
-DigitalOut led2(L26);
-DigitalOut led3(L27);
-DigitalOut ledbuiltin(LED1);
-
-//CONSTANTS
-constexpr float LOWERBOUND = -35.0;
-constexpr float UPPERBOUND = 40.0;
-
-//DEGREES PER SECOND AT MAX
-constexpr float JOYSTICK_SENSITIVITY_YAW_DPS = 180.0;
-constexpr float JOYSTICK_SENSITIVITY_PITCH_DPS = 180.0;
-
-// Mouse sensitivity initialized
-constexpr float MOUSE_SENSITIVITY_YAW_DPS = 10.0;
-constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 10.0;
-
-constexpr int OUTER_LOOP_DT_MS = 1;
-
-constexpr float CHASSIS_FF_KICK = 0.065;
-
-constexpr float pitch_zero_offset_ticks = 1500;
-
-constexpr int NUM_BALLS_SHOT = 3;
-constexpr int FLYWHEEL_VELO = 5500;
-
-#define READ_DEBUG 0
-#define MAGICBYTE 0xEE
-#define USE_IMU
-
-//CHASSIS DEFINING
-I2C i2c(I2C_SDA, I2C_SCL);
-BNO055 imu(i2c, IMU_RESET, MODE_IMU);
-ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.22617); // radius is 9 in
-DJIMotor yaw(4, CANHandler::CANBUS_1, GIMBLY,"Yeah");
-DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY,"Peach"); // right
-DJIMotor indexer(7, CANHandler::CANBUS_2, C610,"Indexer");
-DJIMotor RFLYWHEEL(1, CANHandler::CANBUS_2, M3508,"RightFly");
-DJIMotor LFLYWHEEL(2, CANHandler::CANBUS_2, M3508,"LeftFly");
-
-//CV STUFF
-static BufferedSerial bcJetson(PC_12, PD_2, 115200);  //JETSON PORT
-Jetson_send_data jetson_send_data;
-Jetson_read_data jetson_received_data;
-
-
-#ifdef USE_IMU
-BNO055_ANGULAR_POSITION_typedef imuAngles;
-#endif
-
-
-//Variables for burst fire
-unsigned long timeSure;
-unsigned long prevTimeSure;
-bool shoot = false;
-int shootTargetPosition = 36*8190 ;
-bool shootReady = false;
-int remoteTimer = 0;
-
-
-float scalar = 1;
-float jx = 0; // -1 to 1
-float jy = 0; // -1 to 1
-//Pitch, Yaw
-float jpitch = 0; // -1 to 1
-float jyaw = 0; // -1 to 1
-float myaw = 0;
-float mpitch = 0;
-float yaw_desired_angle = 0;
-float yaw_current_angle = 0;
-int pitchVelo = 0;
-float pitch_current_angle = 0;
-float pitch_desired_angle = 0;
-
-
-//GENERAL VARIABLES
-//drive and shooting mode
-char drive = 'o'; //default o when using joystick
-char shot = 'o'; //default o when using joystick
-
-//joystick tolerance
-float tolerance = 0.05; 
-
-//Keyboard Driving
-float mult = 0.7;
-
-//ref variables
-uint16_t chassis_power_limit;
-
-unsigned long timeStart;
-unsigned long timeStartCV;
-unsigned long timeStartRef;
-unsigned long timeStartImu;
-unsigned long loopTimer = us_ticker_read();
-unsigned long controlStart = us_ticker_read();
-unsigned long loopTimerCV = loopTimer;
-unsigned long loopTimerRef = loopTimer;
-unsigned long loopTimerImu = loopTimer;
-float elapsedms;
-
-int readResult = 0;
-bool cv_enabled = false;
-char cv_shoot_status = 0;
-
 void refthread() {
     while(1) {
         mutex_test.lock();
@@ -153,13 +49,13 @@ void imuthread() {
     }
 }
 
-int main(){
+void init() {
     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
     DJIMotor::s_sendValues();
     DJIMotor::s_getFeedback();
     usbSerial.set_blocking(false);
     bcJetson.set_blocking(false);
-
+    
     /*
     * MOTORS SETUP AND PIDS
     */
@@ -178,9 +74,7 @@ int main(){
     Chassis.setYawReference(&yaw, 6500); //the number of ticks of yaw considered to be robot-front
     //Common values for reference are 6500 and 2500
     Chassis.setSpeedFF_Ks(CHASSIS_FF_KICK); //feed forward "kick" for wheels, a constant multiplier of max power in the direcion of movment
-    ChassisSpeeds cs;
-
-    int yawVelo = 0;
+    
     #ifdef USE_IMU
     imu.get_angular_position_quat(&imuAngles);
     yaw_desired_angle = imuAngles.yaw + 180;
@@ -188,9 +82,8 @@ int main(){
     yaw_desired_angle = (yaw>>ANGLE) * 360.0 / TICKS_REVOLUTION;
     yaw_current_angle = (yaw>>ANGLE) * 360.0 / TICKS_REVOLUTION;
     #endif
-
+    
     //PITCH
-    PID pitchCascade(1.5,0.0005,0.05);
     pitchCascade.setIntegralCap(2);
     pitchCascade.setOutputCap(30);
     pitch.setSpeedPID(500,0.8,0);
@@ -200,19 +93,21 @@ int main(){
     pitch.outputCap = 16000;
     pitch.useAbsEncoder = true;
     pitchCascade.dBuffer.lastY = 5;
-
+    
     //FLYWHEELS
     LFLYWHEEL.setSpeedPID(7.1849, 0.000042634, 0);
     RFLYWHEEL.setSpeedPID(7.1849, 0.000042634, 0);
-
+    
     //INDEXER
     indexer.setSpeedPID(2.7, 0.001, 0);
     indexer.setSpeedIntegralCap(100);
     //Cascading PID for indexer angle position control. Surely there are better names then "sure"...
-    PID sure(0.1,0,0.001);
     sure.setOutputCap(133 * M2006_GEAR_RATIO);
     sure.dBuffer = 10;
+}
 
+int main(){
+    init();
     imuThread.start(imuthread);
     refThread.start(refthread);
     
