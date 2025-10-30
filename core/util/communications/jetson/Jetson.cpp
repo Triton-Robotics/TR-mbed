@@ -72,43 +72,7 @@ static uint8_t calculateLRC(const char* data, size_t length) {
 /**
  * Read motor values and send to CV
  */
-void jetson_send_feedback(BufferedSerial &bcJetson, const Jetson_send_data& data) {
-  char chassis_x_velocity_char[4];
-  char chassis_y_velocity_char[4];
-  char yaw_angle_char[4];
-  char yaw_velocity_char[4];
-  char pitch_angle_char[4];
-  char pitch_velocity_char[4];
-
-  getBytesFromFloat(chassis_x_velocity_char, data.chassis_x_velocity);
-  getBytesFromFloat(chassis_y_velocity_char, data.chassis_y_velocity);
-  getBytesFromFloat(yaw_angle_char, data.yaw_angle_rads);
-  getBytesFromFloat(yaw_velocity_char, data.yaw_velocity);
-  getBytesFromFloat(pitch_angle_char, data.pitch_angle_rads);
-  getBytesFromFloat(pitch_velocity_char, data.pitch_velocity);
-
-  // 0  1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25    - 26 total bytes
-  // EE x x x x y y y y p p  p  p  y  y  y  y  pv pv pv pv yv yv yv yv checksum
-  //put the data into temp
-  int startPositions[6] = {1, 5, 9, 13, 17, 21};
-  nucleo_value[0] = DATA_HEADER;
-  copy4Char(chassis_x_velocity_char, nucleo_value, startPositions[0]);
-  copy4Char(chassis_y_velocity_char, nucleo_value, startPositions[1]);
-  copy4Char(pitch_angle_char, nucleo_value, startPositions[2]);
-  copy4Char(yaw_angle_char, nucleo_value, startPositions[3]);
-  copy4Char(pitch_velocity_char, nucleo_value, startPositions[4]);
-  copy4Char(yaw_velocity_char, nucleo_value, startPositions[5]);
-
-
-  uint8_t lrc = calculateLRC(nucleo_value + 1, 24); //exclude header byte
-  char lrc_char = static_cast<uint8_t>(lrc);
-  nucleo_value[25] = lrc_char;
-
-  bcJetson.sync();
-  bcJetson.write(nucleo_value, 26); //changed from 30
-}
-
-void jetson_send_feedback2(BufferedSerial &bcJetson, const Jetson_send_ref& ref_data, const Jetson_send_data& data, int msg_type) {
+void jetson_send_feedback(BufferedSerial &bcJetson, const Jetson_send_ref& ref_data, const Jetson_send_data& data, int msg_type) {
     // Implementation for sending both Jetson_send_ref and Jetson_send_data
     if (msg_type == 1) {
         // Send ref data
@@ -173,63 +137,7 @@ void jetson_send_feedback2(BufferedSerial &bcJetson, const Jetson_send_ref& ref_
 * @param yaw_move buffer to store desired yaw position
 */
 //TODO: remove printf's
-ssize_t jetson_read_values(BufferedSerial &bcJetson, Jetson_read_data& read_data) {
-  if(!bcJetson.readable()){
-    return -EAGAIN;
-  }
-
-  if(jetson_read_buff_pos > (JETSON_READ_BUFF_SIZE - JETSON_READ_MSG_SIZE)){
-    // printf("WARN: jetson read buffer overflow. Resetting buffer to 0\n");
-    jetson_read_buff_pos = 0;
-  }
-
-  //TODO: keep a persistent buffer where if no matches are found we keep appending to the buffer until we find a match
-  int available_space = JETSON_READ_BUFF_SIZE - jetson_read_buff_pos;
-  ssize_t bytes_read = bcJetson.read(jetson_read_buff + jetson_read_buff_pos, available_space);
-  if(bytes_read == -EAGAIN){
-    return -EAGAIN;
-  }
-
-  //error other than no data to read 
-  if(bytes_read <= 0){
-    jetson_read_buff_pos = 0; //reset buffer
-    return bytes_read; //return error code
-  }
-
-  jetson_read_buff_pos += bytes_read;
-
-  if(jetson_read_buff_pos < JETSON_READ_MSG_SIZE){
-    return -1;
-      }
-
-  //starting at the very last index of jetson_values (numbytes - 1)
-  //i - 10 is the magic byte, and we will use next 9 bytes for checksum which is at i; exclude magic byte in checksum
-  //if we meet the match conditions, decode values, clear buffer, return last amount of bytes read
-  //if no match found, print no match
-  //if buffer empty, print empty
-  for(int i = jetson_read_buff_pos - 1 ; i >= 10 ; --i) {
-    //calculating checksum without magic header bytes
-    //check for magic byte, check checksum != 0, check calculated checksum matches message checksum
-    if ((jetson_read_buff[i-10] == DATA_HEADER) &&
-        (jetson_read_buff[i] != 0) && 
-        (calculateLRC(&jetson_read_buff[i - 9], 9) == jetson_read_buff[i])){
-
-        uint8_t checkSum;
-        decode_toSTM32(&jetson_read_buff[i-9], 
-          read_data.requested_pitch_rads, 
-          read_data.requested_yaw_rads, 
-          read_data.shoot_status, 
-          checkSum);
-        //TODO: as an optimization we can clear onto the message we extracted. Leaving any potential partial messages in the buffer
-        jetson_read_buff_pos = 0;
-        return 1;
-    }
-  }
-
-  return -1;
-}
-
-ssize_t jetson_read_values2(BufferedSerial &bcJetson, Jetson_read_data& read_data, Jetson_read_odom& odom_data) {
+ssize_t jetson_read_values(BufferedSerial &bcJetson, Jetson_read_data& read_data, Jetson_read_odom& odom_data) {
     if(!bcJetson.readable()) {
         return -1;
     }

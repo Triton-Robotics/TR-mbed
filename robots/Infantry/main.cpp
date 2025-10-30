@@ -48,7 +48,6 @@ DJIMotor LFLYWHEEL(2, CANHandler::CANBUS_2, M3508,"LeftFly");
 static BufferedSerial bcJetson(PC_12, PD_2, 115200);  //JETSON PORT
 
 
-
 #ifdef USE_IMU
 BNO055_ANGULAR_POSITION_typedef imuAngles;
 #endif
@@ -161,8 +160,9 @@ int main(){
             loopTimerCV = timeStart;
             
             Jetson_send_data jetson_send_data;
-            jetson_send_data.chassis_x_velocity = 0.0;
-            jetson_send_data.chassis_y_velocity = 0.0;
+            jetson_send_data.chassis_x_velocity = cs.vX;
+            jetson_send_data.chassis_y_velocity = cs.vY;
+            jetson_send_data.chassis_rotation = cs.vOmega;
 
             jetson_send_data.pitch_angle_rads = ChassisSubsystem::ticksToRadians( (pitch_zero_offset_ticks - pitch.getData(ANGLE)) );
             jetson_send_data.pitch_velocity = pitch.getData(VELOCITY) / 60.0;
@@ -170,7 +170,12 @@ int main(){
             jetson_send_data.yaw_angle_rads = (imuAngles.yaw + 180.0) * (M_PI / 180.0);
             jetson_send_data.yaw_velocity = yaw.getData(VELOCITY)/60.0;
 
-            jetson_send_feedback(bcJetson, jetson_send_data);
+            Jetson_send_ref jetson_send_ref;
+            jetson_send_ref.game_state = game_status.game_progress;
+            jetson_send_ref.robot_hp = robot_status.current_HP;
+
+            jetson_send_feedback(bcJetson, jetson_send_ref, jetson_send_data);
+            jetson_send_feedback(bcJetson, jetson_send_ref, jetson_send_data, 1);
         }
 
         if ((timeStart - loopTimer) / 1000 > OUTER_LOOP_DT_MS){
@@ -199,14 +204,17 @@ int main(){
             remoteRead();
 
             Jetson_read_data jetson_received_data;
-            int readResult = jetson_read_values(bcJetson, jetson_received_data);
+            Jetson_read_odom jetson_received_odom;
+            int readResult = jetson_read_values(bcJetson, jetson_received_data, jetson_received_odom);
 
             if(cv_enabled){
                 if(readResult > 0){
                     led3 = 1;
-                    yaw_desired_angle = jetson_received_data.requested_yaw_rads / M_PI * 180;
-                    pitch_desired_angle = jetson_received_data.requested_pitch_rads / M_PI * 180;
-                    cv_shoot_status = jetson_received_data.shoot_status;
+                    if (readResult == 1) {
+                        yaw_desired_angle = jetson_received_data.requested_yaw_rads / M_PI * 180;
+                        pitch_desired_angle = jetson_received_data.requested_pitch_rads / M_PI * 180;
+                        cv_shoot_status = jetson_received_data.shoot_status;
+                    }
                 }else{
                     led3 = 0;
                 }
