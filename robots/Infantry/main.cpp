@@ -46,6 +46,8 @@ DJIMotor LFLYWHEEL(2, CANHandler::CANBUS_2, M3508,"LeftFly");
 
 //CV STUFF
 static BufferedSerial bcJetson(PC_12, PD_2, 115200);  //JETSON PORT
+Jetson_read_data jetson_received_data;
+Jetson_read_odom jetson_received_odom;
 
 
 #ifdef USE_IMU
@@ -135,21 +137,21 @@ int main(){
     //drive and shooting mode
     char drive = 'o'; //default o when using joystick
     char shot = 'o'; //default o when using joystick
-
-
+    
+    
     //ref variables
     uint16_t chassis_buffer;
     uint16_t chassis_power_limit;
-
+    
     unsigned long timeStart;
     unsigned long loopTimer = us_ticker_read();
     unsigned long loopTimerCV = loopTimer;
     int refLoop = 0;
     int printLoop = 0;
-
+    
     bool cv_enabled = false;
     char cv_shoot_status = 0;
-
+    
     ChassisSpeeds cs;
 
     while(true){
@@ -175,7 +177,6 @@ int main(){
             jetson_send_ref.robot_hp = robot_status.current_HP;
 
             jetson_send_feedback(bcJetson, jetson_send_ref, jetson_send_data);
-            jetson_send_feedback(bcJetson, jetson_send_ref, jetson_send_data, 1);
         }
 
         if ((timeStart - loopTimer) / 1000 > OUTER_LOOP_DT_MS){
@@ -203,8 +204,6 @@ int main(){
             cs = Chassis.getChassisSpeeds();
             remoteRead();
 
-            Jetson_read_data jetson_received_data;
-            Jetson_read_odom jetson_received_odom;
             int readResult = jetson_read_values(bcJetson, jetson_received_data, jetson_received_odom);
 
             if(cv_enabled){
@@ -214,7 +213,9 @@ int main(){
                         yaw_desired_angle = jetson_received_data.requested_yaw_rads / M_PI * 180;
                         pitch_desired_angle = jetson_received_data.requested_pitch_rads / M_PI * 180;
                         cv_shoot_status = jetson_received_data.shoot_status;
+                        // printff("yd: %.2f, pd: %.2f, s: %d\n", yaw_desired_angle, pitch_desired_angle, cv_shoot_status);
                     }
+                    // printff("%.2f %.2f %.2f %d\n", jetson_received_odom.x_vel, jetson_received_odom.y_vel, jetson_received_odom.rotation, jetson_received_odom.calibration);
                 }else{
                     led3 = 0;
                 }

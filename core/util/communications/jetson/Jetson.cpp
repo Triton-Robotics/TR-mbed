@@ -129,6 +129,54 @@ void jetson_send_feedback(BufferedSerial &bcJetson, const Jetson_send_ref& ref_d
         bcJetson.sync();
         bcJetson.write(nucleo_value, (data_buf.size + 2));
     }
+    else {
+        Jetson_send_ref_buf data_buf;
+
+        getBytesFromInt8(data_buf.game_state, ref_data.game_state);
+        getBytesFromInt16(data_buf.robot_hp, ref_data.robot_hp);
+
+        // 0  1 2 3 4    - 5 total bytes
+        // EF g h h checksum
+        //put the data into temp
+        int startPositions[2] = {1, 2};
+        nucleo_value[0] = REF_HEADER;
+        copy4Char(data_buf.game_state, nucleo_value, startPositions[0]);
+        copy4Char(data_buf.robot_hp, nucleo_value, startPositions[1]);
+
+        uint8_t lrc = calculateLRC(nucleo_value + 1, data_buf.size); //exclude header byte
+        char lrc_char = static_cast<uint8_t>(lrc);
+        nucleo_value[data_buf.size + 1] = lrc_char;
+
+        Jetson_send_data_buf data_buf2;
+
+        getBytesFromFloat(data_buf2.chassis_x_velocity_char, data.chassis_x_velocity);
+        getBytesFromFloat(data_buf2.chassis_y_velocity_char, data.chassis_y_velocity);
+        getBytesFromFloat(data_buf2.chassis_rotation_char, data.chassis_rotation);
+        getBytesFromFloat(data_buf2.yaw_angle_char, data.yaw_angle_rads);
+        getBytesFromFloat(data_buf2.yaw_velocity_char, data.yaw_velocity);
+        getBytesFromFloat(data_buf2.pitch_angle_char, data.pitch_angle_rads);
+        getBytesFromFloat(data_buf2.pitch_velocity_char, data.pitch_velocity);
+
+        // 0  1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29    - 30 total bytes
+        // EE x x x x y y y y r r  r  r  p  p  p  p  y  y  y  y  pv pv pv pv yv yv yv yv checksum
+        //put the data into temp
+        int offset = data_buf.size + 2;
+        int startPositions2[7] = {offset + 1, offset + 5, offset + 9, offset + 13, offset + 17, offset + 21, offset + 25};
+        nucleo_value[offset] = DATA_HEADER;
+        copy4Char(data_buf2.chassis_x_velocity_char, nucleo_value, startPositions2[0]);
+        copy4Char(data_buf2.chassis_y_velocity_char, nucleo_value, startPositions2[1]);
+        copy4Char(data_buf2.chassis_rotation_char, nucleo_value, startPositions2[2]);
+        copy4Char(data_buf2.pitch_angle_char, nucleo_value, startPositions2[3]);
+        copy4Char(data_buf2.yaw_angle_char, nucleo_value, startPositions2[4]);
+        copy4Char(data_buf2.pitch_velocity_char, nucleo_value, startPositions2[5]);
+        copy4Char(data_buf2.yaw_velocity_char, nucleo_value, startPositions2[6]);
+        uint8_t lrc2 = calculateLRC(nucleo_value + offset + 1, data_buf2.size); //exclude header byte
+        char lrc_char2 = static_cast<uint8_t>(lrc2);
+        nucleo_value[offset + data_buf2.size + 1] = lrc_char2;
+
+        bcJetson.sync();
+        bcJetson.write(nucleo_value, (data_buf.size + 2) + (data_buf2.size + 2));
+    }
 }
 /**
 * Read desired pitch and yaw position data from Jetson
