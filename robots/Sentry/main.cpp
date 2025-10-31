@@ -89,19 +89,6 @@ struct SetValues {
     float rx;
 };
 
-int calculateDeltaYaw(int ref_yaw, int beforeBeybladeYaw)
-{
-    int deltaYaw = beforeBeybladeYaw - ref_yaw;
-    if (abs(deltaYaw) > 180)
-    {
-        if (deltaYaw > 0)
-            deltaYaw -= 360;
-        else
-            deltaYaw += 360;
-    }
-    return deltaYaw;
-}
-
 float calculateDistance(float posx, float posy, float final_x, float final_y) {
     return sqrt(pow((final_x - posx), 2) + pow((final_y - posy), 2));
 }

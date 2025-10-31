@@ -49,19 +49,6 @@ DJIMotor feeder(5, CANHandler::CANBUS_2, C610);
 BNO055_ANGULAR_POSITION_typedef imuAngles;
 #endif
 
-int calculateDeltaYaw(int ref_yaw, int beforeBeybladeYaw)
-{
-    int deltaYaw = beforeBeybladeYaw - ref_yaw;
-    if (abs(deltaYaw) > 180)
-    {
-        if (deltaYaw > 0)
-            deltaYaw -= 360;
-        else
-            deltaYaw += 360;
-    }
-    return deltaYaw;
-}
-
 int main(){
 
     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);

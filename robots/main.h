@@ -120,7 +120,6 @@ unsigned long timeStartCV;
 unsigned long timeStartRef;
 unsigned long timeStartImu;
 unsigned long loopTimer = us_ticker_read();
-unsigned long controlStart = us_ticker_read();
 unsigned long loopTimerCV = loopTimer;
 unsigned long loopTimerRef = loopTimer;
 unsigned long loopTimerImu = loopTimer;
@@ -226,5 +225,19 @@ float BeybladeModulation(ChassisSpeeds cs){
         return 0;
     }
 }
+
+int calculateDeltaYaw(int ref_yaw, int beforeBeybladeYaw)
+{
+    int deltaYaw = beforeBeybladeYaw - ref_yaw;
+    if (abs(deltaYaw) > 180)
+    {
+        if (deltaYaw > 0)
+            deltaYaw -= 360;
+        else
+            deltaYaw += 360;
+    }
+    return deltaYaw;
+}
+
 
 #endif // TR_EMBEDDED_MAIN_H
