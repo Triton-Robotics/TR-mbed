@@ -322,9 +322,13 @@ int main(){
                                           jy * max_linear_vel,
                                           0},
                                           ChassisSubsystem::YAW_ORIENTED);
-                // if (cv_enabled) {
-                //     Chassis.setChassisSpeeds({jetson_received_odom.x_vel, jetson_received_odom.y_vel, 0}, ChassisSubsystem::YAW_ORIENTED);
-                // }
+
+                if (cv_enabled && jetson_received_odom.calibration == 1){
+                    Chassis.setChassisSpeeds({jetson_received_odom.x_vel, 
+                                              jetson_received_odom.y_vel, 
+                                              jetson_received_odom.rotation}, 
+                                              ChassisSubsystem::YAW_ORIENTED);
+                }
             }else if (drive == 'd' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::DOWN)){
                 //BEYBLADE DRIVING CODE
                 
