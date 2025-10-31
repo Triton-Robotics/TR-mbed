@@ -37,9 +37,10 @@ constexpr int FLYWHEEL_VELO = 5500;
 //CHASSIS DEFINING
 I2C i2c(I2C_SDA, I2C_SCL);
 
-SPI spiIMU(D11, D12, D13, D10); // MOSI, MISO, SCK, NSS/CS
+SPI spiIMU(PB_15, PB_14, PA_9, PB_9); // MOSI, MISO, SCK, NSS/CS
 ISM330 imu2(spiIMU, D10);
 
+bool pluh = imu2.begin();
 auto accel = imu2.getAccel();
 float x = std::get<0>(accel);
 float y = std::get<1>(accel);
@@ -69,8 +70,8 @@ int main(){
     DJIMotor::s_sendValues();
     DJIMotor::s_getFeedback();
     usbSerial.set_blocking(false);
-
     bcJetson.set_blocking(false);
+    imu2.reset();
 
     /*
     * MOTORS SETUP AND PIDS
@@ -164,8 +165,6 @@ int main(){
     ChassisSpeeds cs;
 
     while(true){
-
-        printf("A");
         timeStart = us_ticker_read();
 
         //CV loop runs every 2ms
@@ -208,6 +207,10 @@ int main(){
 
             Chassis.periodic();
             cs = Chassis.getChassisSpeeds();
+            accel = imu2.getAccel();
+            x = std::get<0>(accel);
+            y = std::get<1>(accel);
+            z = std::get<2>(accel);
             remoteRead();
 
             Jetson_read_data jetson_received_data;
@@ -479,95 +482,9 @@ int main(){
             printLoop ++;
             if (printLoop >= PRINT_FREQUENCY){
                 printLoop = 0;
-                printf("This is infantry");
+                // printff("hi\n");
                 
-                printf("%.2f, %.2f, %.2f", x, y, z);
-
-                // printff("cv_enable: %d | cv_shoot_status: %d\n", cv_enabled == true, cv_shoot_status);
-                //printff("Prints:\n");
-                //printff("lX:%.1f lY:%.1f rX:%.1f rY:%.1f lS:%d rS:%d\n", remote.leftX(), remote.leftY(), remote.rightX(), remote.rightY(), remote.leftSwitch(), remote.rightSwitch());
-                //printff("jx:%.3f jy:%.3f jpitch:%.3f jyaw:%.3f\n", jx, jy, jpitch, jyaw);
-                #ifdef USE_IMU
-                // printff("%d\n", remote.getMouseL());
-                //printff("ydv:%d yav:%d PWR:%d ", yawVelo, yaw>>VELOCITY, yaw>>POWEROUT);
-                //printff("V[%.1f][%.1f][%.1f]E:%.3f ", yaw.pidSpeed.pC, yaw.pidSpeed.iC, yaw.pidSpeed.dC, yawVelo - (yaw>>VELOCITY));
-                //printff("YD:%.3f YA:%.3f CVY:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180, CV_yaw_angle_radians * 180 / M_PI);
-                // printff("ERR:%.3f\n", error);
-                //printff("YD:%.3f YA:%.3f CVY:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180, CV_yaw_angle_radians * 180 / M_PI);
-                //printff("ERR:%.3f\n", error);
-                #else
-                //printff("yaw_des_v:%d yaw_act_v:%d\n", yawVelo, yaw>>VELOCITY);
-                //printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
-                #endif
-                //printff("yaw_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
-
-                //printff("ydv:%d yav:%d PWR:%d ", pitchVelo, pitch>>VELOCITY, pitch>>POWEROUT);
-                //printff("yd:%.3f ya:%.3f [%d] %.3f ", pitch_desired_angle, pitch_current_angle, yaw>>ANGLE, pitch_desired_angle- pitch_current_angle);
-                //printff("[%d][%d][%d]\n", (int)pitch.pidSpeed.pC, (int)pitch.pidSpeed.iC, (int)pitch.pidSpeed.dC);
-                // printff("[%.1f][%.1f][%.1f] %.2f\n", pitchCascade.pC, pitchCascade.iC, pitchCascade.dC, pitch_desired_angle- pitch_current_angle);
-                // printff("%d | [%.1f][%.1f][%.1f] %d | %d\n", shoot, indexer.pidSpeed.pC, indexer.pidSpeed.iC, indexer.pidSpeed.dC,  indexer_target_velocity - (indexer>>VELOCITY), indexer_target_velocity);
-                // printff("%d | %d\n", LFLYWHEEL>>VELOCITY, RFLYWHEEL>>VELOCITY);
-                //printff("%lu %.2f %.2f\n", loopTimer, pitch_desired_angle, pitch_current_angle);
-                
-                //printff("pitch_des:%.3f pitch_act:%.3f [%d]\n", pitch_desired_angle, pitch_current_angle, pitch>>ANGLE);
-                //printff("cX%.1f cY%.1f cOmega%.3f cRPM%.1f\n", cs.vX, cs.vY, cs.vOmega, cs.vOmega * 60 / (2*M_PI) * 4);
-                // printff("Chassis: LF:%c RF:%c LB:%c RB:%c Yaw:%c Pitch:%c Flywheel_L:%c Flywheel_R:%c Indexer:%c\n", 
-                //     Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).isConnected() ? 'y' : 'n', 
-                //     Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).isConnected() ? 'y' : 'n', 
-                //     Chassis.getMotor(ChassisSubsystem::LEFT_BACK).isConnected() ? 'y' : 'n', 
-                //     Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).isConnected() ? 'y' : 'n',
-                //     yaw.isConnected() ? 'y' : 'n', 
-                //     pitch.isConnected() ? 'y' : 'n', 
-                //     LFLYWHEEL.isConnected() ? 'y' : 'n', 
-                //     RFLYWHEEL.isConnected() ? 'y' : 'n',
-                //     indexer.isConnected() ? 'y' : 'n');
-                #ifdef USE_IMU
-                // printff("IMU %.3f %.3f %.3f\n",imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
-                #endif
-                //printff("pwr:%u max:%d heat:%d\n", chassis_buffer, robot_status.chassis_power_limit, power_heat_data.shooter_17mm_1_barrel_heat);
-                //printff("ID:%d LVL:%d HP:%d MAX_HP:%d\n", robot_status.robot_id, robot_status.robot_level, robot_status.current_HP, robot_status.maximum_HP);
-                // printff("elap:%.5fms\n", elapsedms);
-                //printff("[HEAT] lim:%d buf:%d b1:%d b2:%d sp:%.1f fr:%d\n", robot_status.shooter_barrel_heat_limit, power_heat_data.buffer_energy, power_heat_data.shooter_17mm_1_barrel_heat, power_heat_data.shooter_17mm_2_barrel_heat, shoot_data.initial_speed, shoot_data.launching_frequency);
-
-                // if(nucleo_value[24] != 0 && remote.rightSwitch() == Remote::SwitchState::UP){
-                //     printff("[");
-                //     for(int i = 0; i < 30; i ++){
-                //         printff("%x,", nucleo_value[i]);
-                //     }
-                //     printff("]");
-                // }
-                //printff("CS: %.1f %.1f %.1f ", cs.vX, cs.vY, cs.vOmega);
-                //printff("DS: %.1f %.1f %.1f\n", beybladeSpeeds.vX, beybladeSpeeds.vY, beybladeSpeeds.vOmega);
-                // WheelSpeeds ac = Chassis.getWheelSpeeds();
-                // WheelSpeeds ws = Chassis.chassisSpeedsToWheelSpeeds(beybladeSpeeds);
-                //printff("CH: %.2f %.2f %.2f %.2f ", ws.LF,ws.RF,ws.LB,ws.RB);
-                //printff("A: %.2f %.2f %.2f %.2f\n", ac.LF,ac.RF,ac.LB,ac.RB);
-                // printff("A_RAW: %d %d %d %d\n", 
-                //     Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).getData(VELOCITY), 
-                //     Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).getData(VELOCITY), 
-                //     Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(VELOCITY), 
-                //     Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).getData(VELOCITY));
-                // printff("A_MPS: %.2f %.2f %.2f %.2f\n", 
-                //     Chassis.getMotorSpeed(ChassisSubsystem::LEFT_FRONT, ChassisSubsystem::METER_PER_SECOND), 
-                //     Chassis.getMotorSpeed(ChassisSubsystem::RIGHT_FRONT, ChassisSubsystem::METER_PER_SECOND), 
-                //     Chassis.getMotorSpeed(ChassisSubsystem::LEFT_BACK, ChassisSubsystem::METER_PER_SECOND), 
-                //     Chassis.getMotorSpeed(ChassisSubsystem::RIGHT_BACK, ChassisSubsystem::METER_PER_SECOND));
-                //printff("%d,%d,%d,%d\n", abs(LFLYWHEEL>>VELOCITY), abs(LFLYWHEEL>>POWEROUT), abs(RFLYWHEEL>>VELOCITY), abs(RFLYWHEEL>>POWEROUT));
-                // if(remote.rightSwitch() == Remote::SwitchState::UP){
-                    // printff("%d %d %u %u %u %f ", abs(LFLYWHEEL>>VELOCITY), abs(RFLYWHEEL>>VELOCITY), shoot_data.bullet_type, shoot_data.shooter_number, shoot_data.launching_frequency, *(float*)(((uint8_t*)&shoot_data)+4) /*((shoot_data.initial_speed / 0.06) * (30 / M_PI))*/);
-                    // for(int i = 0; i < 7; i ++){
-                    //    printff("(%2x)", (uint8_t)*((((uint8_t*)&shoot_data)+i)));
-                    // }
-                    // float c = 0;
-                    // memcpy(&c, ((uint8_t*)&shoot_data)+3, 4);
-                    // for(int i = 0; i < 4; i ++){
-                    //    printff("[%2x]", (uint8_t)*((((uint8_t*)&c)+i)));
-                    // }
-                    // printff(" %f %f %8x\n", shoot_data.initial_speed, c, c);
-                    // printff("%d %d %f %f\n", abs(LFLYWHEEL>>VELOCITY), abs(RFLYWHEEL>>VELOCITY), ((c / 0.06) * (30 / M_PI)), c);
-                    //printff("%d %d\n", abs(LFLYWHEEL>>VELOCITY), abs(RFLYWHEEL>>VELOCITY));
-                    
-                // }
+                printf("%.2f, %.2f, %.2f\n", x, y, z);
             }
 
             DJIMotor::s_sendValues();
