@@ -287,6 +287,7 @@
 
 #include "main.h"
 #include "subsystems/ChassisSubsystem.h"
+#include <random>
 
 DigitalOut led(L25);
 DigitalOut led2(L26);
@@ -309,11 +310,22 @@ int main(){
     // usbserial nonblocking
     usbSerial.set_blocking(false);
 
-
     unsigned long timeStart;
     unsigned long loopTimer = us_ticker_read();
 
     int powerBuffer = 0;
+    int timer = 0;
+
+    float amp = 4000 * (random() / (float)(1 << 31 - 1));
+    float omega = (random() / (float)(1 << 31 - 1)) / 2 * M_PI;
+    if (omega < 0.01) {
+        omega = 0.01;
+    }
+
+    std::random_device rd;
+    std::mt19937 generator(rd());
+
+    std::uniform_real_distribution<double> distribution(-100, 100);
 
     while(true){
         timeStart = us_ticker_read();
@@ -324,13 +336,35 @@ int main(){
             led3 = !led3;
             remoteRead();
 
+            // step response
             int stepAmplitude = IMPULSE_STRENGTH;
 
             if (remote.leftSwitch() == Remote::SwitchState::UP) {
                 powerBuffer = stepAmplitude;
             }
+            else if (remote.leftSwitch() == Remote::SwitchState::MID) {
+                // Ramp response
+                if (powerBuffer < stepAmplitude && (timer % 10 == 0)) {
+                    timer = 0;
+                    powerBuffer += 100;
+                }
+                else {
+                    powerBuffer = stepAmplitude;
+                }
+            }
             else {
                 powerBuffer = 0;
+                if (remote.rightSwitch() == Remote::SwitchState::UP) {
+                    // sinusoidal response
+                    powerBuffer = amp * sin(omega * (timeStart / 1000));
+                }
+                else if (remote.rightSwitch() == Remote::SwitchState::DOWN) {
+                    // white noise response
+                    powerBuffer = stepAmplitude + distribution(generator);
+                }
+                else {
+                    powerBuffer = 0;
+                }
             }
 
             yaw.setPower(powerBuffer);
@@ -341,6 +375,7 @@ int main(){
                 printff("%d\t%d\n", powerBuffer, velo);
             }
 
+            timer += 1;
             DJIMotor::s_sendValues();
         }
         DJIMotor::s_getFeedback();
