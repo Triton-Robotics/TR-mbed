@@ -317,7 +317,7 @@ int main(){
     int timer = 0;
 
     float amp = 4000 * (random() / (float)(1 << 31 - 1));
-    float omega = (random() / (float)(1 << 31 - 1)) / 2 * M_PI;
+    float omega = (random() / (float)(1 << 31 - 1));
     if (omega < 0.01) {
         omega = 0.01;
     }
@@ -356,7 +356,7 @@ int main(){
                 powerBuffer = 0;
                 if (remote.rightSwitch() == Remote::SwitchState::UP) {
                     // sinusoidal response
-                    powerBuffer = amp * sin(omega * (timeStart / 1000));
+                    powerBuffer = amp * sin(2 * M_PI * omega * (timeStart / 1000));
                 }
                 else if (remote.rightSwitch() == Remote::SwitchState::DOWN) {
                     // white noise response
@@ -372,7 +372,7 @@ int main(){
             int velo = yaw>>VELOCITY;
 
             if (remote.leftSwitch() == Remote::SwitchState::UP) {
-                printff("%d\t%d\n", powerBuffer, velo);
+                printff("%d\t%d\t%.3f\n", powerBuffer, velo, omega);
             }
 
             timer += 1;
