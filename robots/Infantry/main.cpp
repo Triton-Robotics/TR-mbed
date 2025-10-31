@@ -48,6 +48,8 @@ DJIMotor LFLYWHEEL(2, CANHandler::CANBUS_2, M3508,"LeftFly");
 static BufferedSerial bcJetson(PC_12, PD_2, 115200);  //JETSON PORT
 Jetson_read_data jetson_received_data;
 Jetson_read_odom jetson_received_odom;
+Jetson_send_ref jetson_send_ref;
+Jetson_send_data jetson_send_data;
 
 
 #ifdef USE_IMU
@@ -161,7 +163,6 @@ int main(){
         if((timeStart - loopTimerCV) / 1000 > 1) { //1 with sync or 2 without
             loopTimerCV = timeStart;
             
-            Jetson_send_data jetson_send_data;
             jetson_send_data.chassis_x_velocity = cs.vX;
             jetson_send_data.chassis_y_velocity = cs.vY;
             jetson_send_data.chassis_rotation = cs.vOmega;
@@ -172,7 +173,6 @@ int main(){
             jetson_send_data.yaw_angle_rads = (imuAngles.yaw + 180.0) * (M_PI / 180.0);
             jetson_send_data.yaw_velocity = yaw.getData(VELOCITY)/60.0;
 
-            Jetson_send_ref jetson_send_ref;
             jetson_send_ref.game_state = game_status.game_progress;
             jetson_send_ref.robot_hp = robot_status.current_HP;
 
