@@ -10,6 +10,9 @@
 #include "algorithms/PID.h"
 #include "algorithms/TRMutex.h"
 #include "peripherals/imu/BNO055.h"
+
+#include "peripherals/imu/ISM330.h"
+
 #include "peripherals/oled/SSD1308.h"
 // #include "subsystems/Chassis.h"
 #include "subsystems/ChassisSubsystem.h"
@@ -37,6 +40,13 @@
 
 DigitalIn jumperPC9(PC_9);
 DigitalIn jumperPB1(PB_1);
+
+// SPI MISO, MOSI, CS, and SCL define
+
+#define MOSI PA_9
+#define MISO PB_9
+#define CS PB14
+#define CLK PB15
 
 DigitalIn userButton(BUTTON1);
 TRMutex printer;

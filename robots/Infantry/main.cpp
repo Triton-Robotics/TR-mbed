@@ -1,5 +1,6 @@
 #include "main.h"
 #include "subsystems/ChassisSubsystem.h"
+#include "util/peripherals/imu/ISM330.h"
 
 DigitalOut led(L25);
 DigitalOut led2(L26);
@@ -35,6 +36,15 @@ constexpr int FLYWHEEL_VELO = 5500;
 
 //CHASSIS DEFINING
 I2C i2c(I2C_SDA, I2C_SCL);
+
+SPI spiIMU(D11, D12, D13, D10); // MOSI, MISO, SCK, NSS/CS
+ISM330 imu2(spiIMU, D10);
+
+auto accel = imu2.getAccel();
+float x = std::get<0>(accel);
+float y = std::get<1>(accel);
+float z = std::get<2>(accel);
+
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.22617); // radius is 9 in
 DJIMotor yaw(4, CANHandler::CANBUS_1, GIMBLY,"Yeah");
@@ -154,6 +164,8 @@ int main(){
     ChassisSpeeds cs;
 
     while(true){
+
+        printf("A");
         timeStart = us_ticker_read();
 
         //CV loop runs every 2ms
@@ -467,6 +479,10 @@ int main(){
             printLoop ++;
             if (printLoop >= PRINT_FREQUENCY){
                 printLoop = 0;
+                printf("This is infantry");
+                
+                printf("%.2f, %.2f, %.2f", x, y, z);
+
                 // printff("cv_enable: %d | cv_shoot_status: %d\n", cv_enabled == true, cv_shoot_status);
                 //printff("Prints:\n");
                 //printff("lX:%.1f lY:%.1f rX:%.1f rY:%.1f lS:%d rS:%d\n", remote.leftX(), remote.leftY(), remote.rightX(), remote.rightY(), remote.leftSwitch(), remote.rightSwitch());
