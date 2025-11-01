@@ -373,10 +373,10 @@ void init() {
     * MOTORS SETUP AND PIDS
     */
     //YAW
-    yaw.setSpeedPID(550, 4, 0);
+    yaw.setSpeedPID(569.2333, 0.988, 2.6284);
     yaw.setSpeedIntegralCap(8000);
     yaw.setSpeedOutputCap(32000);
-    yaw.setPositionPID(0.5, 0, 0);
+    yaw.setPositionPID(0.98, 0, 0);
     yaw.pidPosition.dBuffer.lastY = 5;
     yaw.pidPosition.setIntegralCap(2);
     yaw.pidPosition.setOutputCap(90);
