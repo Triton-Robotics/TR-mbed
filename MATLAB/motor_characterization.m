@@ -5,11 +5,18 @@ syms s
 
 
 %% Load data from .txt
-filename = 'readings/inf_yaw_vel_1011.txt';
+filename = 'response_readings/inf_yaw_ramp.txt';
+% response_raw = readtable(filename);
+% response_raw = table2array(response_raw);
 response_raw = readmatrix(filename);
+% [rows, columns] = size(response_raw);
+    
+
 % Parameters
-step_amp = 4095;  % imaginary power number, we should switch this with a real value
-dt_ms = 0.015; % we might get to change this FINALLY
+step_amp = 8191;  % imaginary power number, we should switch this with a real value
+dt_ms = 0.001; % sampling time
+Ts = dt_ms;
+F = 1 / Ts;
 
 
 %% Step Response
@@ -18,16 +25,35 @@ idx = input == step_amp;
 input = response_raw(idx,1);
 response = response_raw(idx,2);
 
+plot(response)
+
 % creating iddata obj so we can process it in the file
-data = iddata(response, input, dt_ms);
+data = iddata(response, input, Ts);
 
 
-%% Ramp Response
+%% Other Response Types (Ramp, Sinusoidal, White noise + Amp)
 input = response_raw(:,1);
-response = response_raw(idx,2);
+response = response_raw(:,2);
+omega = response_raw(1,3);
 
 % creating iddata obj so we can process it in the file
 data = iddata(response, input, dt_ms);
+
+
+%% DFT for function
+
+U = fft(input);
+Ym = fft(response);
+pluh = "hi";
+
+H_est = Ym ./ U;
+
+tf_est = idfrd(H_est, omega, Ts);
+
+%bode(tf_est);
+
+sys_tf = tfest(tf_est, 2, 1);
+[b, a] = tfdata(sys_tf, 'v');
 
 
 %% Direct transfer function estimation
@@ -103,7 +129,7 @@ root_locus(numerator, denominator)
 final_tf = tf(b, a, dt_ms);
 
 opts = pidtuneOptions('DesignFocus', 'reference-tracking');
-crossover = 1/(10*dt_ms); % target crossover freq is 1/10 the hz
+crossover = 100; % target crossover freq is 1/10 the hz
 [C_PID, info] = pidtune(final_tf, "PID", crossover);
 
 Kp = C_PID.Kp;
@@ -116,10 +142,10 @@ info
 
 %% Systune using our SLX file
 
-mdl = "leadlag";
+mdl = "pid_autotune";
 open_system(mdl)
 
-st = slTuner(mdl,"vel_leadlag");
+st = slTuner(mdl,"vel_PID");
 
 % use SYSTUNE ITS SO GOOD
 
@@ -127,19 +153,16 @@ addPoint(st, "vel_out");
 addPoint(st, "vel_in");
 
 % figure out tuninggoals
-req1 = TuningGoal.Tracking('az ref','az',1);
-req2 = TuningGoal.Gain('delta fin','delta fin',tf(25,[1 0]));
-req3 = TuningGoal.Margins('delta fin',7,45);
-max_gain = frd([2 200 200],[0.02 2 200]);
-req4 = TuningGoal.Gain('delta fin','az',max_gain);
+req3 = TuningGoal.Margins('vel_out',10,80);
+req4 = TuningGoal.Overshoot('vel_in','out',20);
 
 opt = systuneOptions('RandomStart',3);
 rng(0);
-[st,fSoft,~,info] = systune(st0,[req1,req2,req3,req4],opt);
+[st,fSoft,~,info] = systune(st,[req3,req4],opt);
 
 showTunable(st)
 
-refresh(st)
+% refresh(st)
 
 
 %% Visualize PID tune results

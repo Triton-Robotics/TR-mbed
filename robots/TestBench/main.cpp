@@ -344,12 +344,14 @@ int main(){
             }
             else if (remote.leftSwitch() == Remote::SwitchState::MID) {
                 // Ramp response
-                if (powerBuffer < stepAmplitude && (timer % 10 == 0)) {
+                if ((timer % 100 == 0)) {
                     timer = 0;
-                    powerBuffer += 100;
-                }
-                else {
-                    powerBuffer = stepAmplitude;
+                    if (powerBuffer < stepAmplitude) {
+                        powerBuffer += 100;
+                    }
+                    else{
+                        powerBuffer = stepAmplitude;
+                    }
                 }
             }
             else {
@@ -371,9 +373,8 @@ int main(){
 
             int velo = yaw>>VELOCITY;
 
-            if (remote.leftSwitch() == Remote::SwitchState::UP) {
-                printff("%d\t%d\t%.3f\n", powerBuffer, velo, omega);
-            }
+            // always print tbh
+            printff("%d\t%d\t%.3f\n", powerBuffer, velo, omega);
 
             timer += 1;
             DJIMotor::s_sendValues();
