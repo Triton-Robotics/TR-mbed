@@ -215,14 +215,14 @@ int main(){
                         cv_shoot_status = jetson_received_data.shoot_status;
                         // printff("yd: %.2f, pd: %.2f, s: %d\n", yaw_desired_angle, pitch_desired_angle, cv_shoot_status);
                     }
-                    // printff("%.2f %.2f %.2f %d\n", jetson_received_odom.x_vel, jetson_received_odom.y_vel, jetson_received_odom.rotation, jetson_received_odom.calibration);
                 }else{
                     led3 = 0;
                 }
             } else {
-              cv_shoot_status = 0;
-              led3 = 0;
+                cv_shoot_status = 0;
+                led3 = 0;
             }
+            printff("%.2f %.2f %.2f %d\n", jetson_received_odom.x_vel, jetson_received_odom.y_vel, jetson_received_odom.rotation, jetson_received_odom.calibration);
 
             #ifdef USE_IMU
             imu.get_angular_position_quat(&imuAngles);
@@ -318,17 +318,15 @@ int main(){
                                           -omega_speed};
             if (drive == 'u' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::UP)){
                 //REGULAR DRIVING CODE
-                Chassis.setChassisSpeeds({jx * max_linear_vel,
-                                          jy * max_linear_vel,
-                                          0},
-                                          ChassisSubsystem::YAW_ORIENTED);
+                // Chassis.setChassisSpeeds({jx * max_linear_vel,
+                //                           jy * max_linear_vel,
+                //                           0},
+                //                           ChassisSubsystem::YAW_ORIENTED);
 
-                if (cv_enabled && jetson_received_odom.calibration == 1){
-                    Chassis.setChassisSpeeds({jetson_received_odom.x_vel, 
-                                              jetson_received_odom.y_vel, 
-                                              jetson_received_odom.rotation}, 
-                                              ChassisSubsystem::YAW_ORIENTED);
-                }
+                Chassis.setChassisSpeeds({jetson_received_odom.x_vel * max_linear_vel, 
+                                            jetson_received_odom.y_vel * max_linear_vel, 
+                                            0}, 
+                                            ChassisSubsystem::YAW_ORIENTED);
             }else if (drive == 'd' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::DOWN)){
                 //BEYBLADE DRIVING CODE
                 

@@ -1,7 +1,6 @@
 #include "Jetson.h"
 #define DATA_HEADER 0xAA
 #define REF_HEADER 0xBB
-#define CONTROL_HEADER 0xFF
 #define AIM_HEADER 0xCC
 #define ODOM_HEADER 0xDD
 #define JETSON_READ_BUFF_SIZE 500
