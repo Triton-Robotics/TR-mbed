@@ -325,7 +325,7 @@ int main(){
 
                 Chassis.setChassisSpeeds({jetson_received_odom.x_vel * max_linear_vel, 
                                             jetson_received_odom.y_vel * max_linear_vel, 
-                                            0}, 
+                                            jetson_received_odom.rotation * available_beyblade * max_omega}, 
                                             ChassisSubsystem::YAW_ORIENTED);
             }else if (drive == 'd' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::DOWN)){
                 //BEYBLADE DRIVING CODE
