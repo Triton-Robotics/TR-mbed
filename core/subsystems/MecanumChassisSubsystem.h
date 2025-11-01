@@ -1,5 +1,5 @@
-#ifndef TR_EMBEDDED_CHASSIS_SUBSYSTEM_H
-#define TR_EMBEDDED_CHASSIS_SUBSYSTEM_H
+// #ifndef TR_EMBEDDED_CHASSIS_SUBSYSTEM_H
+// #define TR_EMBEDDED_CHASSIS_SUBSYSTEM_H
 
 #include "mbed.h"
 #include "../util/peripherals/imu/BNO055.h"
@@ -34,12 +34,12 @@
 #define BEYBLADE_ACCELERATION 0.05
 #define MAX_VEL 2.92
 
-struct OmniKinematics
+struct MecanumOmniKinematics
 {
     double r1x, r1y, r2x, r2y, r3x, r3y, r4x, r4y;
 }; 
 
-struct WheelSpeeds
+struct MecanumWheelSpeeds
 {
     double LF;
     double RF;
@@ -62,14 +62,14 @@ struct WheelSpeeds
     }
 };
 
-struct ChassisSpeeds
+struct MecanumChassisSpeeds
 {
     double vX;
     double vY;
     double vOmega;
 };
 
-struct OmniKinematicsLimits
+struct MecanumOmniKinematicsLimits
 {
     double max_Vel;
     double max_vOmega;
@@ -81,7 +81,7 @@ struct OmniKinematicsLimits
  * The ChassisSubsystem class also contains methods for controlling the chassis with the IMU. The IMU is used to control the
  * chassis in a field-relative manner, and to control the chassis with an offset angle.
  */
-class ChassisSubsystem
+class MecanumChassisSubsystem
 {
 public:
     /**
@@ -91,7 +91,7 @@ public:
      * @param lbId Left back motor CAN ID
      * @param rbId Right back motor CAN ID
      */
-    ChassisSubsystem(short lfId, short rfId, short lbId, short rbId, BNO055 &imu, double radius);
+    MecanumChassisSubsystem(short lfId, short rfId, short lbId, short rbId, BNO055 &imu, double radius);
 
     /**
      * The BrakeMode enum is used to set the brake mode of the chassis.
@@ -138,38 +138,38 @@ public:
      * Gets the chassis's current WheelSpeeds
      * @return The chassis's current WheelSpeeds
      */
-    WheelSpeeds getWheelSpeeds() const;
+    MecanumWheelSpeeds getWheelSpeeds() const;
 
     /**
      * The setWheelSpeeds method drives each motor at a specific speed
      * @param wheelSpeeds The speeds in RPM to drive each motor at
      */
-    float setWheelSpeeds(WheelSpeeds wheelSpeeds);
+    float setWheelSpeeds(MecanumWheelSpeeds wheelSpeeds);
 
     /**
      * The normalizeWheelSpeeds method normalizes each motor with respect to m_OmniKinematicsLimits.max_Vel
      * @param wheelSpeeds The speeds in m/s to drive each motor at
      */
-    WheelSpeeds normalizeWheelSpeeds(WheelSpeeds wheelSpeeds) const;
+    MecanumWheelSpeeds normalizeWheelSpeeds(MecanumWheelSpeeds wheelSpeeds) const;
 
     /**
      * The driveMotors method drives each motor at a specific speed
      * @param wheelPower The speeds in [-1, 1] to drive each motor at
      */
-    void setWheelPower(WheelSpeeds wheelPower);
+    void setWheelPower(MecanumWheelSpeeds wheelPower);
 
     /**
      * Gets the chassis's current ChassisSpeeds from odometry (only velocity state)
      * @return The chassis's current ChassisSpeeds
      */
-    ChassisSpeeds getChassisSpeeds() const;
+    MecanumChassisSpeeds getChassisSpeeds() const;
 
     /**
      * The setChassisSpeeds method is used to drive the chassis in a chassis relative manner.
      *
      * @param desiredChassisSpeeds The robot-relative speeds (vX, vY, and vOmega) in m/s
      */
-    float setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode = ROBOT_ORIENTED);
+    float setChassisSpeeds(MecanumChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode = ROBOT_ORIENTED);
 
     /**
      * The rotateChassisSpeed method
@@ -177,7 +177,7 @@ public:
      * @param speeds The relative speeds (vX, vY, and vOmega) in m/s
      * @param yawCurrent The CCW-positive angle in degrees
      */
-    ChassisSpeeds rotateChassisSpeed(ChassisSpeeds speeds, double yawCurrent);
+    MecanumChassisSpeeds rotateChassisSpeed(MecanumChassisSpeeds speeds, double yawCurrent);
 
     /**
      * A helper method to find a DJIMotor object from an index.
@@ -298,17 +298,17 @@ public:
      */
     void setYawReference(DJIMotor *motor, double initial_offset_ticks);
 
-    ChassisSpeeds desiredChassisSpeeds;
-    WheelSpeeds desiredWheelSpeeds;
+    MecanumChassisSpeeds desiredChassisSpeeds;
+    MecanumWheelSpeeds desiredWheelSpeeds;
 
-    OmniKinematicsLimits m_OmniKinematicsLimits;
-    WheelSpeeds chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds);
-    ChassisSpeeds wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds);
+    MecanumOmniKinematicsLimits m_OmniKinematicsLimits;
+    MecanumWheelSpeeds chassisSpeedsToWheelSpeeds(MecanumChassisSpeeds chassisSpeeds);
+    MecanumChassisSpeeds wheelSpeedsToChassisSpeeds(MecanumWheelSpeeds wheelSpeeds);
     char *MatrixtoString(Eigen::MatrixXd mat);
 
-    ChassisSpeeds m_chassisSpeeds;
-    WheelSpeeds m_wheelSpeeds;
-    
+    MecanumChassisSpeeds m_chassisSpeeds;
+    MecanumWheelSpeeds m_wheelSpeeds;
+
     int PEAK_POWER_ALL;
     int PEAK_POWER_SINGLE;
 
@@ -347,10 +347,10 @@ private:
     static double rpmToRadPerSecond(double RPM);
     static double radPerSecondToRPM(double radPerSecond);
 
-    OmniKinematics m_OmniKinematics;
+    MecanumOmniKinematics m_OmniKinematics;
     float chassis_radius;
     void setOmniKinematics(double radius);
-    // Eigen::MatrixXd wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds);
+    // Eigen::MatrixXd wheelSpeedsToChassisSpeeds(MecanumWheelSpeeds wheelSpeeds);
 
     double FF_Ks;
 
@@ -371,4 +371,4 @@ private:
     short rbId;
 };
 
-#endif // TR_EMBEDDED_CHASSIS_SUBSYSTEM_H
+// #endif // TR_EMBEDDED_MECANUM_CHASSIS_SUBSYSTEM_H
