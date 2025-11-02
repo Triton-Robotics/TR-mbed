@@ -46,6 +46,11 @@ float x = std::get<0>(accel);
 float y = std::get<1>(accel);
 float z = std::get<2>(accel);
 
+auto gyro = imu2.getGyro();
+float gx = std::get<0>(gyro);
+float gy = std::get<1>(gyro);
+float gz = std::get<2>(gyro);
+
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.22617); // radius is 9 in
 DJIMotor yaw(4, CANHandler::CANBUS_1, GIMBLY,"Yeah");
@@ -66,6 +71,11 @@ BNO055_ANGULAR_POSITION_typedef imuAngles;
 
 
 int main(){
+    //SPI TESTING
+
+    imu2.setAccelRange(2);
+    imu2.setGyroRange(500);
+
     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
     DJIMotor::s_sendValues();
     DJIMotor::s_getFeedback();
@@ -208,9 +218,13 @@ int main(){
             Chassis.periodic();
             cs = Chassis.getChassisSpeeds();
             accel = imu2.getAccel();
+            gyro = imu2.getGyro();
             x = std::get<0>(accel);
             y = std::get<1>(accel);
             z = std::get<2>(accel);
+            gx = std::get<0>(gyro);
+            gy = std::get<1>(gyro);
+            gz = std::get<2>(gyro);
             remoteRead();
 
             Jetson_read_data jetson_received_data;
@@ -484,7 +498,8 @@ int main(){
                 printLoop = 0;
                 // printff("hi\n");
                 
-                printf("%.2f, %.2f, %.2f\n", x, y, z);
+                printf("%.2f, %.2f, %.2f, %.2f, %.2f, %.2f\n", x, y, z, gx, gy, gz);
+                
             }
 
             DJIMotor::s_sendValues();
