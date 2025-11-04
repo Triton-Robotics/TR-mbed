@@ -5,7 +5,7 @@ syms s
 
 
 %% Load data from .txt
-filename = 'response_readings/inf_yaw_ramp.txt';
+filename = 'response_readings/inf_yaw_noise.txt';
 % response_raw = readtable(filename);
 % response_raw = table2array(response_raw);
 response_raw = readmatrix(filename);
@@ -129,7 +129,7 @@ root_locus(numerator, denominator)
 final_tf = tf(b, a, dt_ms);
 
 opts = pidtuneOptions('DesignFocus', 'reference-tracking');
-crossover = 100; % target crossover freq is 1/10 the hz
+crossover = 200; % target crossover freq is 1/10 the hz
 [C_PID, info] = pidtune(final_tf, "PID", crossover);
 
 Kp = C_PID.Kp;

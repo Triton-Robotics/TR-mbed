@@ -316,8 +316,11 @@ int main(){
     int powerBuffer = 0;
     int timer = 0;
 
-    float amp = 4000 * (random() / (float)(1 << 31 - 1));
-    float omega = (random() / (float)(1 << 31 - 1));
+    std::mt19937 gen(us_ticker_read() + 1);
+    std::uniform_real_distribution<double> dis(0.0, 1.0);
+
+    float amp = 4000 * (dis(gen));
+    float omega = (dis(gen) / 10);
     if (omega < 0.01) {
         omega = 0.01;
     }
@@ -325,7 +328,7 @@ int main(){
     std::random_device rd;
     std::mt19937 generator(rd());
 
-    std::uniform_real_distribution<double> distribution(-100, 100);
+    std::uniform_real_distribution<double> distribution(-1000, 1000);
 
     while(true){
         timeStart = us_ticker_read();
@@ -336,10 +339,10 @@ int main(){
             led3 = !led3;
             remoteRead();
 
-            // step response
             int stepAmplitude = IMPULSE_STRENGTH;
-
+            
             if (remote.leftSwitch() == Remote::SwitchState::UP) {
+                // step response
                 powerBuffer = stepAmplitude;
             }
             else if (remote.leftSwitch() == Remote::SwitchState::MID) {
@@ -358,7 +361,7 @@ int main(){
                 powerBuffer = 0;
                 if (remote.rightSwitch() == Remote::SwitchState::UP) {
                     // sinusoidal response
-                    powerBuffer = amp * sin(2 * M_PI * omega * (timeStart / 1000));
+                    powerBuffer = amp + amp * sin(2 * M_PI * omega * (us_ticker_read() / 1000));
                 }
                 else if (remote.rightSwitch() == Remote::SwitchState::DOWN) {
                     // white noise response
