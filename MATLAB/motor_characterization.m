@@ -5,7 +5,7 @@ syms s
 
 
 %% Load data from .txt
-filename = 'response_readings/inf_yaw_noise.txt';
+filename = 'response_readings/inf_yaw_ramp.txt';
 % response_raw = readtable(filename);
 % response_raw = table2array(response_raw);
 response_raw = readmatrix(filename);
@@ -42,32 +42,24 @@ data = iddata(response, input, dt_ms);
 
 %% DFT for function
 
+% Doesn't work, need to fix or make sense of it
+
 U = fft(input);
 Ym = fft(response);
-pluh = "hi";
 
 H_est = Ym ./ U;
 
-tf_est = idfrd(H_est, omega, Ts);
+tf_est = idfrd(H_est, F, Ts);
 
-%bode(tf_est);
+bode(H_est);
 
 sys_tf = tfest(tf_est, 2, 1);
 [b, a] = tfdata(sys_tf, 'v');
 
 
-%% Direct transfer function estimation
-
-sys_tf  = tfest(data, 2, 1); % 2 poles 1 zero
-
-[b, a] = tfdata(sys_tf,'v'); 
-
-% Change numerator and denominator to "b" and "a" to test this
-
-
 %% Find State Space response then Convert to Transfer Fn
 
-% tbh direct tf is better
+% Best method for consistently good model + PID values
 
 sys_ss = n4sid(data, 2); % second order discrete ss
 ss_est = ss(sys_ss);
@@ -123,13 +115,10 @@ root_locus(numerator, denominator)
 
 %% PID Tuning OR PUT IT INTO PID_AUTOTUNE.SLX
 
-% I can use pidtune to tune the pid here itself!!! (i wanna use
-% pidautotune tho)
-
 final_tf = tf(b, a, dt_ms);
 
 opts = pidtuneOptions('DesignFocus', 'reference-tracking');
-crossover = 200; % target crossover freq is 1/10 the hz
+crossover = 100; % target crossover freq is 1/10 the hz
 [C_PID, info] = pidtune(final_tf, "PID", crossover);
 
 Kp = C_PID.Kp;
@@ -140,29 +129,51 @@ Ki = C_PID.Ki;
 info
 
 
+%% Testing bs
+
+margins = allmargin(final_tf);
+
+
+%% Lead-Lag
+
+alpha = 0.1;
+w_c = 4;
+tau = 1/(sqrt(alpha)*w_c);
+K = 1;     % initial guess
+
+lead = K * (tau*s + 1)/(alpha*tau*s + 1);
+
+beta = 10;
+tau_l = 1;  % pick lag corner lower than crossover
+lag = (beta*tau_l*s + 1)/(tau_l*s + 1);
+
+C_leadlag = lead * lag;
+
+
 %% Systune using our SLX file
 
-mdl = "pid_autotune";
+mdl = "leadlag";
 open_system(mdl)
 
-st = slTuner(mdl,"vel_PID");
+st = slTuner(mdl,"vel_leadlag");
 
 % use SYSTUNE ITS SO GOOD
 
 addPoint(st, "vel_out");
 addPoint(st, "vel_in");
+addPoint(st, "out");
 
 % figure out tuninggoals
-req3 = TuningGoal.Margins('vel_out',10,80);
-req4 = TuningGoal.Overshoot('vel_in','out',20);
+req3 = TuningGoal.Margins('vel_out',margins.GainMargin,60);
+req4 = TuningGoal.Overshoot('vel_in','vel_out',20);
 
-opt = systuneOptions('RandomStart',3);
 rng(0);
-[st,fSoft,~,info] = systune(st,[req3,req4],opt);
+TunedST = systune(st,[req3,req4]);
 
-showTunable(st)
-
-% refresh(st)
+showTunable(TunedST)
+C = getBlockValue(TunedST, 'vel_leadlag');
+tf(C)
+refresh(st)
 
 
 %% Visualize PID tune results
