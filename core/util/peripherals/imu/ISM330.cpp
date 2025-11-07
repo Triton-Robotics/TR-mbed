@@ -26,7 +26,7 @@ bool ISM330::begin() noexcept{
     // Configure SPI: Mbed uses format/frequency rather than begin().
     // Adjust mode/clock as required by your hardware/device.
     _spi.format(8, 3); // 8-bit, mode 3 (CPOL=1, CPHA=1)
-    _spi.frequency(100000); 
+    _spi.frequency(1000); 
 
 
     return whoAmI() == ISM330_CHIP_ID;

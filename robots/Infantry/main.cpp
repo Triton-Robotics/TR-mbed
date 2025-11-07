@@ -40,17 +40,6 @@ I2C i2c(I2C_SDA, I2C_SCL);
 SPI spiIMU(PB_15, PB_14, PA_9, PB_9); // MOSI, MISO, SCK, NSS/CS
 ISM330 imu2(spiIMU, D10);
 
-bool pluh = imu2.begin();
-auto accel = imu2.getAccel();
-float x = std::get<0>(accel);
-float y = std::get<1>(accel);
-float z = std::get<2>(accel);
-
-auto gyro = imu2.getGyro();
-float gx = std::get<0>(gyro);
-float gy = std::get<1>(gyro);
-float gz = std::get<2>(gyro);
-
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.22617); // radius is 9 in
 DJIMotor yaw(4, CANHandler::CANBUS_1, GIMBLY,"Yeah");
@@ -72,7 +61,7 @@ BNO055_ANGULAR_POSITION_typedef imuAngles;
 
 int main(){
     //SPI TESTING
-
+    imu2.begin();
     imu2.setAccelRange(2);
     imu2.setGyroRange(500);
 
@@ -217,14 +206,6 @@ int main(){
 
             Chassis.periodic();
             cs = Chassis.getChassisSpeeds();
-            accel = imu2.getAccel();
-            gyro = imu2.getGyro();
-            x = std::get<0>(accel);
-            y = std::get<1>(accel);
-            z = std::get<2>(accel);
-            gx = std::get<0>(gyro);
-            gy = std::get<1>(gyro);
-            gz = std::get<2>(gyro);
             remoteRead();
 
             Jetson_read_data jetson_received_data;
@@ -497,7 +478,8 @@ int main(){
             if (printLoop >= PRINT_FREQUENCY){
                 printLoop = 0;
                 // printff("hi\n");
-                
+                auto [x,y,z] = imu2.getAccel();
+                auto [gx, gy, gz] = imu2.getGyro();
                 printf("%.2f, %.2f, %.2f, %.2f, %.2f, %.2f\n", x, y, z, gx, gy, gz);
                 
             }
