@@ -29,37 +29,40 @@ ISM330::ISM330(SPI &spi, PinName csPin) noexcept
 bool ISM330::begin() noexcept
 {
     _cs = 1;
-    _spi.format(8, 0);          // SPI mode 0 (CPOL=0, CPHA=0)
-    _spi.frequency(1'000'000);  // 1 MHz safe startup
+    _spi.format(8, 3);          // ✅ ISM330 requires mode 3 (CPOL=1, CPHA=1)
+    _spi.frequency(1'000'000);
 
-    // Software reset
+    // --- Software reset ---
     writeRegister(CTRL3_C, 0x01);
     ThisThread::sleep_for(5ms);
-
-    // Wait until reset completes
     while (readRegister(CTRL3_C) & 0x01) {
         ThisThread::sleep_for(1ms);
     }
 
-    // Enable IF_INC (auto-increment) + BDU (block data update)
+    // --- IF_INC + BDU ---
     uint8_t ctrl3 = readRegister(CTRL3_C);
-    ctrl3 |= (1 << 2) | (1 << 6);  // IF_INC=bit2, BDU=bit6
+    ctrl3 |= (1 << 2) | (1 << 6);
     writeRegister(CTRL3_C, ctrl3);
 
-    // Enable accelerometer (104 Hz, ±4g)
-    // ODR_XL=0b0100 (104Hz), FS_XL=0b10 (±4g)
-    writeRegister(CTRL1_XL, (0b0100 << 4) | (0b10 << 2));
+    // --- Enable accelerometer ---
+    // ODR_XL=0b0100 (104 Hz), FS_XL=0b10 (±4g),
+    // BW0_XL=1 (LPF enable) -> bits [1:0] = 10 for 100 Hz LPF
+    writeRegister(CTRL1_XL, 0x4A);   // ✅ 0b0100_1010
 
-    // Enable gyroscope (104 Hz, 2000 dps)
-    // ODR_G=0b0100 (104Hz), FS_G=0b11 (2000 dps)
-    writeRegister(CTRL2_G, (0b0100 << 4) | (0b11 << 2));
+    // --- Enable gyro ---
+    // ODR_G=0b0100 (104 Hz), FS_G=0b11 (2000 dps)
+    writeRegister(CTRL2_G, 0x4C);    // ✅ same as before, correct bits
 
-    // Cache scale values for conversion
-    accelScale = 0.122f;  // mg/LSB
-    gyroScale  = 70.0f;   // mdps/LSB
+    // --- Wait for sensor to start producing data ---
+    ThisThread::sleep_for(20ms);
 
-    // Verify device identity
-    return whoAmI() == ISM330_CHIP_ID;
+    // --- Verify device ID ---
+    uint8_t id = whoAmI();
+    uint8_t xl = readRegister(CTRL1_XL);
+    uint8_t g  = readRegister(CTRL2_G);
+    printf("CTRL1_XL=0x%02X, CTRL2_G=0x%02X\n", xl, g);
+    printf("id check: %d", id == ISM330_CHIP_ID);
+    return id == ISM330_CHIP_ID;
 }
 
 

@@ -62,8 +62,8 @@ BNO055_ANGULAR_POSITION_typedef imuAngles;
 int main(){
     //SPI TESTING
     imu2.begin();
-    imu2.setAccelRange(2);
-    imu2.setGyroRange(500);
+    // imu2.setAccelRange(2);
+    // imu2.setGyroRange(500);
 
     // DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
     // DJIMotor::s_sendValues();
