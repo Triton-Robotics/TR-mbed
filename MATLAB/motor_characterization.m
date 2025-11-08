@@ -5,7 +5,7 @@ syms s
 
 
 %% Load data from .txt
-filename = 'response_readings/inf_yaw_ramp.txt';
+filename = 'inf_yaw_ramp.txt';
 % response_raw = readtable(filename);
 % response_raw = table2array(response_raw);
 response_raw = readmatrix(filename);
@@ -70,7 +70,7 @@ bode(final_tf)
 %% PID Tuning OR PUT IT INTO PID_AUTOTUNE.SLX
 
 opts = pidtuneOptions('DesignFocus', 'reference-tracking');
-crossover = F /  10; % target crossover freq is 1/10 the hz
+crossover = F / 10; % target crossover freq is 1/10 the hz
 [C_PID, info] = pidtune(final_tf, "PID", crossover);
 
 Kp = C_PID.Kp;
@@ -83,7 +83,8 @@ info
 
 %% Lead Lag
 
-margins = allmargin(final_tf);
+lead_num = [3.819, 1];
+lead_den = [1, 1];
 
 mdl = 'leadlag';
 blk = 'vel_leadlag';
@@ -94,15 +95,16 @@ addPoint(ST0, {'r','y'});
 
 opt = looptuneOptions( ...
     'RandomStart', 5, ...            % try multiple initial guesses
-    'MaxIter', 200, ...              % allow more optimization iterations
-    'PhaseMargin', 60);
+    'MaxIter', 200);
 
 [ST, fSoft, gHard] = looptune(ST0, 'r', 'y', crossover, opt);
 
 % Extract tuned controller
 C_LL = getBlockValue(ST, blk);
 disp('Tuned Lead-Lag Controller:');
-tf(C_LL)
+LL_tf = tf(C_LL)
+
+[lead_num, lead_den] = tfdata(LL_tf, 'v');
 
 writeBlockValue(ST)
 
@@ -132,6 +134,10 @@ lag = (beta*tau_l*s + 1)/(tau_l*s + 1);
 
 C_leadlag = lead * lag;
 
+
+%% Control sys tuner
+
+controlSystemTuner(mdl);
 
 %% Visualize PID tune results
 
