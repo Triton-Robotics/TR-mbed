@@ -92,12 +92,8 @@ load_system(mdl);
 ST0 = slTuner(mdl, blk);
 addPoint(ST0, {'r','y'});
 
-opt = looptuneOptions( ...
-    'RandomStart', 5, ...            % try multiple initial guesses
-    'MaxIter', 200, ...              % allow more optimization iterations
-    'PhaseMargin', 60);
 
-[ST, fSoft, gHard] = looptune(ST0, 'r', 'y', crossover, opt);
+[ST, fSoft, gHard] = looptune(ST0, 'r', 'y', crossover);
 
 % Extract tuned controller
 C_LL = getBlockValue(ST, blk);
@@ -115,10 +111,7 @@ allmargin(getIOTransfer(ST0, 'r', 'y'));
 
 
 
-%% Lead Lag manually
-
-C_lead_lag = tunableTF('LeadLag', 'leadlag', 2);
-
+%% b
 alpha = 0.1;
 w_c = 4;
 tau = 1/(sqrt(alpha)*w_c);
@@ -133,12 +126,38 @@ lag = (beta*tau_l*s + 1)/(tau_l*s + 1);
 C_leadlag = lead * lag;
 
 
+%% Systune using our SLX file
+
+mdl = "leadlag";
+open_system(mdl)
+
+st = slTuner(mdl,"vel_leadlag");
+
+% use SYSTUNE ITS SO GOOD
+
+addPoint(st, "vel_out");
+addPoint(st, "vel_in");
+addPoint(st, "out");
+
+% figure out tuninggoals
+req3 = TuningGoal.Margins('vel_out',margins.GainMargin,60);
+req4 = TuningGoal.Overshoot('vel_in','vel_out',20);
+
+rng(0);
+TunedST = systune(st,[req3,req4]);
+
+showTunable(TunedST)
+C = getBlockValue(TunedST, 'vel_leadlag');
+tf(C)
+refresh(st)
+
+
 %% Visualize PID tune results
 
 % Simulate closed-loop step response
 Tcl = feedback(C_PID*final_tf, step_amp);      % unity-feedback
 t = 0:dt_ms:10;                   % choose simulation window
-figure(7)
+figure(3)
 step(Tcl, t);
 grid on;
 title('Closed-loop step response with pidtune result');
@@ -151,15 +170,28 @@ disp([Gm, Pm, Wcg]);
 
 % Open-loop transfer function (Controller * Plant)
 L = C_PID * final_tf;
+
+% Closed-loop transfer function
 T = feedback(L, 1);
 
-% Root Locus of tuned closed-loop system
+% Root Locus of tuned open-loop system
+figure(4);
+rlocus(L);
+title('Root Locus of Tuned Open-Loop System');
+
+% Bode plot of tuned open-loop system
 figure(5);
+bode(L);
+grid on;
+title('Bode Plot of Tuned Open-Loop System');
+
+% Root Locus of tuned closed-loop system
+figure(6);
 rlocus(T);
 title('Root Locus of Tuned Open-Loop System');
 
 % Bode plot of closed-loop system
-figure(6);
+figure(7);
 bode(T);
 grid on;
 title('Bode Plot of Closed-Loop System');

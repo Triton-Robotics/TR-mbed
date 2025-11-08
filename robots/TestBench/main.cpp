@@ -320,9 +320,9 @@ int main(){
     std::uniform_real_distribution<double> dis(0.0, 1.0);
 
     float amp = 4000 * (dis(gen));
-    float omega = (dis(gen) / 10);
-    if (omega < 0.01) {
-        omega = 0.01;
+    float omega = dis(gen) / 10;
+    if (omega < 0.0001) {
+        omega = 0.0001;
     }
 
     std::random_device rd;
@@ -361,6 +361,10 @@ int main(){
                 powerBuffer = 0;
                 if (remote.rightSwitch() == Remote::SwitchState::UP) {
                     // sinusoidal response
+                    omega = (dis(gen) / 10);
+                    if (omega < 0.0001) {
+                        omega = 0.0001;
+                    }
                     powerBuffer = amp + amp * sin(2 * M_PI * omega * (us_ticker_read() / 1000));
                 }
                 else if (remote.rightSwitch() == Remote::SwitchState::DOWN) {
