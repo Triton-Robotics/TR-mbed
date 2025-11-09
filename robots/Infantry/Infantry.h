@@ -8,14 +8,6 @@
 constexpr float LOWERBOUND = -35.0;
 constexpr float UPPERBOUND = 40.0;
 
-//DEGREES PER SECOND AT MAX
-constexpr float JOYSTICK_SENSITIVITY_YAW_DPS = 180.0;
-constexpr float JOYSTICK_SENSITIVITY_PITCH_DPS = 180.0;
-
-// Mouse sensitivity initialized
-constexpr float MOUSE_SENSITIVITY_YAW_DPS = 10.0;
-constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 10.0;
-
 constexpr int OUTER_LOOP_DT_MS = 1;
 
 constexpr float CHASSIS_FF_KICK = 0.065;
@@ -130,12 +122,6 @@ void gimbal_executor() {
         float chassis_rotation_radps = cs.vOmega;
         int chassis_rotation_rpm = chassis_rotation_radps * 60 / (2*PI) * 1.5; //I added this 4 but I don't know why.
         
-        //Regular Yaw Code
-        yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * elapsedms / 1000;
-        yaw_desired_angle -= jyaw * JOYSTICK_SENSITIVITY_YAW_DPS * elapsedms / 1000;
-    
-        yaw_desired_angle = fmod((fmod(yaw_desired_angle, 360.0) + 360.0), 360.0); 
-    
         #ifdef USE_IMU
         error = DJIMotor::s_calculateDeltaPhaseF(yaw_desired_angle, imuAngles.yaw + 180, 360);
         yawVelo = yaw.calculatePeriodicPosition(error, timeSure - prevTimeSure, chassis_rotation_rpm);
@@ -168,17 +154,6 @@ void gimbal_executor() {
     pitch_current_angle = (pitch_zero_offset_ticks - (pitch>>ANGLE)) / TICKS_REVOLUTION * 360;
     if (drive == 'u' || drive == 'd' || (drive =='o' && (remote.rightSwitch() == Remote::SwitchState::UP || remote.rightSwitch() == Remote::SwitchState::DOWN))){
         //Regular Pitch Code
-        pitch_desired_angle += mpitch * MOUSE_SENSITIVITY_PITCH_DPS * elapsedms / 1000;
-        pitch_desired_angle += jpitch * JOYSTICK_SENSITIVITY_PITCH_DPS * elapsedms / 1000;
-    
-        // if(jpitch > -0.33 && jpitch < 0.33){
-        //     pitch_desired_angle = 0;
-        // }else if(jpitch > 0.33){
-        //     pitch_desired_angle = 30;
-        // }else if(jpitch < -0.33){
-        //     pitch_desired_angle = -30;
-        // }       
-    
         if (pitch_desired_angle <= LOWERBOUND) {
             pitch_desired_angle = LOWERBOUND;
         }

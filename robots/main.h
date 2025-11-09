@@ -57,13 +57,13 @@ static BufferedSerial bc(PA_0, PA_1, 115200);
 static BufferedSerial usbSerial(USBTX, USBRX, 115200);
 // static SPI spi_imu(PB_15, PB_14, PA_9, PB_9); // MOSI, MISO, SCLK, NSS
 
+// LED Definitions
 DigitalOut led(L25);
 DigitalOut led2(L26);
 DigitalOut led3(L27);
 DigitalOut ledbuiltin(LED1);
 
-
-// CHASSIS DEFINING
+// CHASSIS Definitions
 I2C i2c(I2C_SDA, I2C_SCL);
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 
@@ -101,6 +101,14 @@ float tolerance = 0.05;
 float mult = 0.7;
 float omega_speed = 0;
 float max_linear_vel = 0;
+
+//DEGREES PER SECOND AT MAX
+constexpr float JOYSTICK_SENSITIVITY_YAW_DPS = 180.0;
+constexpr float JOYSTICK_SENSITIVITY_PITCH_DPS = 180.0;
+
+// Mouse sensitivity initialized
+constexpr float MOUSE_SENSITIVITY_YAW_DPS = 10.0;
+constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 10.0;
 
 // GENERAL VARIABLES
 // drive and shooting mode
@@ -236,6 +244,15 @@ inline static void remoteRead()
 
     float available_beyblade = 1.0 - linear_hypo;
     omega_speed = max_omega * available_beyblade;
+
+    //Regular Yaw Code
+    yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * elapsedms / 1000;
+    yaw_desired_angle -= jyaw * JOYSTICK_SENSITIVITY_YAW_DPS * elapsedms / 1000;
+    yaw_desired_angle = fmod((fmod(yaw_desired_angle, 360.0) + 360.0), 360.0); 
+
+    // Regular Pitch Code
+    pitch_desired_angle += mpitch * MOUSE_SENSITIVITY_PITCH_DPS * elapsedms / 1000;
+    pitch_desired_angle += jpitch * JOYSTICK_SENSITIVITY_PITCH_DPS * elapsedms / 1000;
 }
 
 static void remotePrint()
