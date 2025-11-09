@@ -145,16 +145,6 @@ void printfESP(const char *format, ...){
     va_end(args);
 }
 
-void print(char statement[], priorityLevels priority = DEFAULT)
-{
-    printer.print(statement, priority);
-}
-
-void print(int integer, priorityLevels priority = DEFAULT)
-{
-    printer.print(integer, priority);
-}
-
 void printff(const char *format, ...)
 {
     char temp[50];
@@ -164,26 +154,6 @@ void printff(const char *format, ...)
     if (len > 0)
        usbSerial.write(temp, len);
     va_end(args);
-}
-
-void fprintff(priorityLevels priority, const char *format, ...)
-{
-    char temp[50];
-    va_list args;
-    va_start(args, format);
-    vsnprintf(temp, 50, format, args);
-    printer.print(temp, priority);
-    va_end(args);
-}
-
-void println(char statement[], priorityLevels priority = DEFAULT)
-{
-    printer.println(statement, priority);
-}
-
-void println(int integer, priorityLevels priority = DEFAULT)
-{
-    printer.println(integer, priority);
 }
 
 inline static void remoteRead()
