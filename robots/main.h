@@ -85,7 +85,7 @@ int shootTargetPosition = 36*8190 ;
 bool shootReady = false;
 int remoteTimer = 0;
 
-
+// Remote control variables
 float scalar = 1;
 float jx = 0; // -1 to 1
 float jy = 0; // -1 to 1
@@ -94,22 +94,24 @@ float jpitch = 0; // -1 to 1
 float jyaw = 0; // -1 to 1
 float myaw = 0;
 float mpitch = 0;
-float yaw_desired_angle = 0;
-float yaw_current_angle = 0;
 int pitchVelo = 0;
-float pitch_current_angle = 0;
-float pitch_desired_angle = 0;
+// joystick tolerance
+float tolerance = 0.05; 
+// Keyboard Driving
+float mult = 0.7;
+float omega_speed = 0;
+float max_linear_vel = 0;
 
 // GENERAL VARIABLES
 // drive and shooting mode
 char drive = 'o'; //default o when using joystick
 char shot = 'o'; //default o when using joystick
 
-// joystick tolerance
-float tolerance = 0.05; 
-
-// Keyboard Driving
-float mult = 0.7;
+// turret controls variables
+float yaw_desired_angle = 0;
+float yaw_current_angle = 0;
+float pitch_current_angle = 0;
+float pitch_desired_angle = 0;
 
 // ref variables
 uint16_t chassis_power_limit;
@@ -187,6 +189,83 @@ void println(int integer, priorityLevels priority = DEFAULT)
 inline static void remoteRead()
 {
     remote.read();
+
+    //Keyboard-based drive and shoot mode
+    if(remote.keyPressed(Remote::Key::R)){
+        drive = 'm';
+    }else if(remote.keyPressed(Remote::Key::E)){
+        drive = 'u';
+    }else if(remote.keyPressed(Remote::Key::Q)){
+        drive = 'd';        
+    }
+    if(remote.keyPressed(Remote::Key::V)){
+        shot = 'm';
+    }else if(remote.keyPressed(Remote::Key::C)){
+        shot = 'd';        
+    }
+    
+    if(remote.getMouseR() || remote.leftSwitch() == Remote::SwitchState::MID){
+        cv_enabled = true;
+    }else if(!remote.getMouseR() ){
+        cv_enabled = false;
+    }
+
+    //Driving input
+    scalar = 1;
+    jx = remote.leftX() / 660.0 * scalar; // -1 to 1
+    jy = remote.leftY() / 660.0 * scalar; // -1 to 1
+    //Pitch, Yaw
+    jpitch = remote.rightY() / 660.0 * scalar; // -1 to 1
+    jyaw = remote.rightX() / 660.0 * scalar; // -1 to 1
+
+    myaw = remote.getMouseX();
+    mpitch = -remote.getMouseY();
+
+    jx = (abs(jx) < tolerance) ? 0 : jx;
+    jy = (abs(jy) < tolerance) ? 0 : jy;
+    jpitch = (abs(jpitch) < tolerance) ? 0 : jpitch;
+    jyaw = (abs(jyaw) < tolerance) ? 0 : jyaw;
+    
+
+    // Shift to make robot go slower
+    if (remote.keyPressed(Remote::Key::SHIFT)) {
+        mult = 0.5;
+    }
+    if(remote.keyPressed(Remote::Key::CTRL)){
+        mult = 1;
+    }
+
+    jx += mult * ((remote.keyPressed(Remote::Key::D) ? 1 : 0) + (remote.keyPressed(Remote::Key::A) ? -1 : 0));
+    jy += mult * ((remote.keyPressed(Remote::Key::W) ? 1 : 0) + (remote.keyPressed(Remote::Key::S) ? -1 : 0));
+
+    float j_hypo = sqrt(jx * jx + jy * jy);
+    if(j_hypo > 1.0){
+        jx = jx / j_hypo;
+        jy = jy / j_hypo;
+    }
+    //Bounding the four j variables
+    jx = max(-1.0F, min(1.0F, jx));
+    jy = max(-1.0F, min(1.0F, jy));
+    jpitch = max(-1.0F, min(1.0F, jpitch));
+    jyaw = max(-1.0F, min(1.0F, jyaw));
+
+    max_linear_vel = -1.24 + 0.0513 * chassis_power_limit + -0.000216 * (chassis_power_limit * chassis_power_limit);
+    // float max_omega = 0.326 + 0.0857 * chassis_power_limit + -0.000183 * (chassis_power_limit * chassis_power_limit);
+    float max_omega = 4.8;
+
+    if(remote.keyPressed(Remote::Key::CTRL)){
+        jx = 0.0;
+        jy = 0.0;
+        max_omega = 6.1;
+    }
+
+    float linear_hypo = sqrtf(jx * jx + jy * jy);
+    if(linear_hypo > 0.8){
+        linear_hypo = 0.8;
+    }
+
+    float available_beyblade = 1.0 - linear_hypo;
+    omega_speed = max_omega * available_beyblade;
 }
 
 static void remotePrint()

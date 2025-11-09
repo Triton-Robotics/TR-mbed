@@ -30,8 +30,6 @@ int main(){
             }
             remoteTimer += 1;
 
-            max_linear_vel = remote_executor();
-
             //Chassis Code - 100-150 us
             chassis_executor();
             
