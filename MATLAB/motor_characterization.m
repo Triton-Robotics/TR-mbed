@@ -5,7 +5,7 @@ syms s
 
 
 %% Load data from .txt
-filename = 'inf_yaw_ramp.txt';
+filename = 'response_readings/inf_yaw_ramp.txt';
 % response_raw = readtable(filename);
 % response_raw = table2array(response_raw);
 response_raw = readmatrix(filename);
@@ -33,7 +33,7 @@ data = iddata(response, input, Ts);
 
 %% Other Response Types (Ramp, Sinusoidal, White noise + Amp)
 input = response_raw(:,1);
-response = response_raw(:,2);
+response = response_raw(:,2)*2*pi/60; % rpm to rad/s
 omega = response_raw(1,3);
 
 % creating iddata obj so we can process it in the file
@@ -69,9 +69,9 @@ bode(final_tf)
 
 %% PID Tuning OR PUT IT INTO PID_AUTOTUNE.SLX
 
-opts = pidtuneOptions('DesignFocus', 'reference-tracking');
+opts = pidtuneOptions('DesignFocus', 'reference-tracking', 'NumUnstablePoles', 2);
 crossover = F / 10; % target crossover freq is 1/10 the hz
-[C_PID, info] = pidtune(final_tf, "PID", crossover);
+[C_PID, info] = pidtune(final_tf, "PID", crossover, opts);
 
 Kp = C_PID.Kp;
 Kd = C_PID.Kd;
@@ -86,7 +86,7 @@ info
 lead_num = [3.819, 1];
 lead_den = [1, 1];
 
-mdl = 'leadlag';
+mdl = 'turret_system';
 blk = 'vel_leadlag';
 
 load_system(mdl);
@@ -114,25 +114,6 @@ figure(4)
 rlocus(getIOTransfer(ST0, 'r', 'y'))
 
 allmargin(getIOTransfer(ST0, 'r', 'y'));
-
-
-
-%% Lead Lag manually
-
-C_lead_lag = tunableTF('LeadLag', 'leadlag', 2);
-
-alpha = 0.1;
-w_c = 4;
-tau = 1/(sqrt(alpha)*w_c);
-K = 1;     % initial guess
-
-lead = K * (tau*s + 1)/(alpha*tau*s + 1);
-
-beta = 10;
-tau_l = 1;  % pick lag corner lower than crossover
-lag = (beta*tau_l*s + 1)/(tau_l*s + 1);
-
-C_leadlag = lead * lag;
 
 
 %% Control sys tuner
