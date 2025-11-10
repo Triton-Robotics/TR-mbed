@@ -301,6 +301,33 @@ DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY,"Peach");
 #define IMPULSE_STRENGTH 8191
 #define REMOTE_MAX 660
 
+// LFSR-based PRBS generator (order 9 → 511-sample sequence)
+static uint16_t lfsr = 0x1FF;   // 9-bit nonzero seed
+static int prbs_output = 0;
+static int prbs_counter = 0;
+
+// Tunable parameters
+#define PRBS_PERIOD    25        // Update every 25 control loops (~25 ms)
+
+// Call this once per outer control loop (1 ms loop)
+void updatePRBS(void) {
+    // Update every PRBS_PERIOD iterations
+    prbs_counter++;
+    if (prbs_counter >= PRBS_PERIOD) {
+        prbs_counter = 0;
+
+        // Compute next bit from taps x^9 + x^5 + 1
+        uint8_t bit = ((lfsr >> 8) ^ (lfsr >> 4)) & 1;
+        lfsr = ((lfsr << 1) | bit) & 0x1FF;  // keep 9 bits
+
+        // Convert to +1 / -1 output
+        if (lfsr & 1)
+            prbs_output = IMPULSE_STRENGTH;
+        else
+            prbs_output = -IMPULSE_STRENGTH;
+    }
+}
+
 int main(){
 
     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
@@ -329,6 +356,7 @@ int main(){
     std::mt19937 generator(rd());
 
     std::uniform_real_distribution<double> distribution(-1000, 1000);
+    float t = 0.0f;
 
     while(true){
         timeStart = us_ticker_read();
@@ -365,11 +393,13 @@ int main(){
                     if (omega < 0.0001) {
                         omega = 0.0001;
                     }
-                    powerBuffer = amp + amp * sin(2 * M_PI * omega * (us_ticker_read() / 1000));
+                    t += OUTER_LOOP_DT_MS / 1000.0f;
+                    powerBuffer = amp * sin(2 * M_PI * omega * t);
                 }
                 else if (remote.rightSwitch() == Remote::SwitchState::DOWN) {
-                    // white noise response
-                    powerBuffer = stepAmplitude + distribution(generator);
+                    // PRBS
+                    updatePRBS();
+                    powerBuffer = prbs_output;
                 }
                 else {
                     powerBuffer = 0;
