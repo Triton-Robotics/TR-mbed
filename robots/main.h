@@ -68,7 +68,7 @@ I2C i2c(I2C_SDA, I2C_SCL);
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 
 // CV STUFF
-static BufferedSerial bcJetson(PC_12, PD_2, 115200);  //JETSON PORT
+static BufferedSerial bcJetson(PC_12, PD_2, 921600);  //JETSON PORT
 Jetson_read_data jetson_received_data;
 Jetson_read_odom jetson_received_odom;
 Jetson_send_ref jetson_send_ref;
@@ -83,7 +83,7 @@ BNO055_ANGULAR_POSITION_typedef imuAngles;
 unsigned long timeSure;
 unsigned long prevTimeSure;
 bool shoot = false;
-int shootTargetPosition = 36*8190 ;
+int shootTargetPosition = 36*8190;
 bool shootReady = false;
 int remoteTimer = 0;
 
@@ -246,15 +246,6 @@ inline static void remoteRead()
 
     float available_beyblade = 1.0 - linear_hypo;
     omega_speed = max_omega * available_beyblade;
-
-    //Regular Yaw Code
-    yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * elapsedms / 1000;
-    yaw_desired_angle -= jyaw * JOYSTICK_SENSITIVITY_YAW_DPS * elapsedms / 1000;
-    yaw_desired_angle = fmod((fmod(yaw_desired_angle, 360.0) + 360.0), 360.0); 
-
-    // Regular Pitch Code
-    pitch_desired_angle += mpitch * MOUSE_SENSITIVITY_PITCH_DPS * elapsedms / 1000;
-    pitch_desired_angle += jpitch * JOYSTICK_SENSITIVITY_PITCH_DPS * elapsedms / 1000;
 }
 
 static void remotePrint()

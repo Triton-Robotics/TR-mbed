@@ -9,6 +9,15 @@
 char nucleo_value[50] = {0};
 char jetson_read_buff[JETSON_READ_BUFF_SIZE] = {0};
 int jetson_read_buff_pos = 0;
+bool jetson_data_ready = false;
+
+void on_jetson_rx() {
+    jetson_data_ready = true;
+}
+
+void init_jetson(BufferedSerial &bcJetson) {
+    bcJetson.sigio(callback(on_jetson_rx));
+}
 
 /**
  * Copy float `value` bytes into single bytes in `byteArr` array
@@ -185,79 +194,78 @@ void jetson_send_feedback(BufferedSerial &bcJetson, const Jetson_send_ref& ref_d
 */
 //TODO: remove printf's
 ssize_t jetson_read_values(BufferedSerial &bcJetson, Jetson_read_data& read_data, Jetson_read_odom& odom_data) {
-    if(!bcJetson.readable()) {
-        return -1;
-    }
+    if (jetson_data_ready) {
+        jetson_data_ready = false;
+        int available_space = JETSON_READ_BUFF_SIZE - jetson_read_buff_pos;
+        if (available_space < JETSON_MAX_PACKET_SIZE) {
+            jetson_read_buff_pos = 0;
+            available_space = JETSON_MAX_PACKET_SIZE;
+        }
+        else if (available_space > JETSON_MAX_PACKET_SIZE) {
+            available_space = JETSON_MAX_PACKET_SIZE;
+        }
 
-    int available_space = JETSON_READ_BUFF_SIZE - jetson_read_buff_pos;
-    if (available_space < JETSON_MAX_PACKET_SIZE) {
-        jetson_read_buff_pos = 0;
-        available_space = JETSON_MAX_PACKET_SIZE;
-    }
-    else if (available_space > JETSON_MAX_PACKET_SIZE) {
-        available_space = JETSON_MAX_PACKET_SIZE;
-    }
+        ssize_t bytes_read = bcJetson.read(jetson_read_buff + jetson_read_buff_pos, available_space);
 
-    ssize_t bytes_read = bcJetson.read(jetson_read_buff + jetson_read_buff_pos, available_space);
+        if(bytes_read == -EAGAIN) {
+            return -EAGAIN;
+        }
 
-    if(bytes_read == -EAGAIN) {
-        return -EAGAIN;
-    }
+        //error other than no data to read 
+        if (bytes_read <= 0) {
+            jetson_read_buff_pos = 0; //reset buffer
+            return bytes_read; //return error code
+        }
 
-    //error other than no data to read 
-    if (bytes_read <= 0) {
-        jetson_read_buff_pos = 0; //reset buffer
-        return bytes_read; //return error code
-    }
+        if (bytes_read < JETSON_READ_MSG_SIZE) {
+            jetson_read_buff_pos += bytes_read;
+            return -1;
+        }
 
-    if (bytes_read < JETSON_READ_MSG_SIZE) {
+        for (int i = 0; i < bytes_read; ++i) {
+            if (jetson_read_buff[jetson_read_buff_pos + i] == AIM_HEADER) {
+                // process aim data
+                if (jetson_read_buff_pos + i + 10 <= JETSON_READ_BUFF_SIZE) {
+                    uint8_t checksum = jetson_read_buff[jetson_read_buff_pos + i + 10];
+                    uint8_t calculated_checksum = calculateLRC(&jetson_read_buff[jetson_read_buff_pos + i + 1], 9);
+
+                    if (checksum != calculated_checksum) {
+                        // checksum mismatch, skip this packet
+                        continue;
+                    }
+                    
+                    memcpy(&read_data.requested_pitch_rads, &jetson_read_buff[jetson_read_buff_pos + i + 1], sizeof(float));
+                    memcpy(&read_data.requested_yaw_rads, &jetson_read_buff[jetson_read_buff_pos + i + 5], sizeof(float));
+                    memcpy(&read_data.shoot_status, &jetson_read_buff[jetson_read_buff_pos + i + 9], sizeof(char));
+                    jetson_read_buff_pos += bytes_read;
+
+                    return 1;
+                }
+            }
+            else if (jetson_read_buff[jetson_read_buff_pos + i] == ODOM_HEADER) {
+                // process odom data
+                if (jetson_read_buff_pos + i + 13 <= JETSON_READ_BUFF_SIZE) {
+                    uint8_t checksum = jetson_read_buff[jetson_read_buff_pos + i + 14];
+                    uint8_t calculated_checksum = calculateLRC(&jetson_read_buff[jetson_read_buff_pos + i + 1], 13);
+
+                    if (checksum != calculated_checksum) {
+                        // checksum mismatch, skip this packet
+                        continue;
+                    }
+
+                    memcpy(&odom_data.x_vel, &jetson_read_buff[jetson_read_buff_pos + i + 1], sizeof(float));
+                    memcpy(&odom_data.y_vel, &jetson_read_buff[jetson_read_buff_pos + i + 5], sizeof(float));
+                    memcpy(&odom_data.rotation, &jetson_read_buff[jetson_read_buff_pos + i + 9], sizeof(float));
+                    memcpy(&odom_data.calibration, &jetson_read_buff[jetson_read_buff_pos + i + 13], sizeof(char));
+                    jetson_read_buff_pos += bytes_read;
+                    
+                    return 2;
+                }
+            }
+        }
+
         jetson_read_buff_pos += bytes_read;
-        return -1;
     }
-
-    for (int i = 0; i < bytes_read; ++i) {
-        if (jetson_read_buff[jetson_read_buff_pos + i] == AIM_HEADER) {
-            // process aim data
-            if (jetson_read_buff_pos + i + 10 <= JETSON_READ_BUFF_SIZE) {
-                uint8_t checksum = jetson_read_buff[jetson_read_buff_pos + i + 10];
-                uint8_t calculated_checksum = calculateLRC(&jetson_read_buff[jetson_read_buff_pos + i + 1], 9);
-
-                if (checksum != calculated_checksum) {
-                    // checksum mismatch, skip this packet
-                    continue;
-                }
-                
-                memcpy(&read_data.requested_pitch_rads, &jetson_read_buff[jetson_read_buff_pos + i + 1], sizeof(float));
-                memcpy(&read_data.requested_yaw_rads, &jetson_read_buff[jetson_read_buff_pos + i + 5], sizeof(float));
-                memcpy(&read_data.shoot_status, &jetson_read_buff[jetson_read_buff_pos + i + 9], sizeof(char));
-                jetson_read_buff_pos += bytes_read;
-
-                return 1;
-            }
-        }
-        else if (jetson_read_buff[jetson_read_buff_pos + i] == ODOM_HEADER) {
-            // process odom data
-            if (jetson_read_buff_pos + i + 13 <= JETSON_READ_BUFF_SIZE) {
-                uint8_t checksum = jetson_read_buff[jetson_read_buff_pos + i + 14];
-                uint8_t calculated_checksum = calculateLRC(&jetson_read_buff[jetson_read_buff_pos + i + 1], 13);
-
-                if (checksum != calculated_checksum) {
-                    // checksum mismatch, skip this packet
-                    continue;
-                }
-
-                memcpy(&odom_data.x_vel, &jetson_read_buff[jetson_read_buff_pos + i + 1], sizeof(float));
-                memcpy(&odom_data.y_vel, &jetson_read_buff[jetson_read_buff_pos + i + 5], sizeof(float));
-                memcpy(&odom_data.rotation, &jetson_read_buff[jetson_read_buff_pos + i + 9], sizeof(float));
-                memcpy(&odom_data.calibration, &jetson_read_buff[jetson_read_buff_pos + i + 13], sizeof(char));
-                jetson_read_buff_pos += bytes_read;
-                
-                return 2;
-            }
-        }
-    }
-
-    jetson_read_buff_pos += bytes_read;
 
     return -1;
 }

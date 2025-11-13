@@ -55,6 +55,8 @@ struct Jetson_read_odom {
 };
 
 // BufferedSerial bcJetson(PC_12, PD_2, 115200);
+void on_jetson_rx();
+void init_jetson(BufferedSerial &bcJetson);
 
 // we want to be able to send both struct types, so we could have 4 args:
 // bcJetson, &jetson_send_data = nullptr, &jetson_send_ref = nullptr, ref_data = False
