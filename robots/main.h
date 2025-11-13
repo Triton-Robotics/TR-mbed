@@ -69,8 +69,10 @@ BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 
 // CV STUFF
 static BufferedSerial bcJetson(PC_12, PD_2, 115200);  //JETSON PORT
-Jetson_send_data jetson_send_data;
 Jetson_read_data jetson_received_data;
+Jetson_read_odom jetson_received_odom;
+Jetson_send_ref jetson_send_ref;
+Jetson_send_data jetson_send_data;
 
 // imu
 #ifdef USE_IMU
