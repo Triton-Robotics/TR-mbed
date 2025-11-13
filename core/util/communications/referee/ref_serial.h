@@ -128,44 +128,20 @@ typedef struct
 }ext_map_command_t;
 
 /* ID: 0x0001    Byte: 11     比赛状态数据 */
-typedef struct
-{
-  union {
-		uint8_t dataBuff[11];
-		__packed struct {
-			uint8_t game_type : 4;             //比赛类型
-			uint8_t game_progress : 4;         //当前比赛阶段
-			uint16_t stage_remain_time;        //当前阶段剩余时间  单位s
-			uint64_t SyncTimeStamp;
-		};
-	}data;
-	uint8_t infoUpdateFlag;
-}ext_game_status_t;
-
 typedef __packed struct
 {
  uint8_t game_type : 4;
  uint8_t game_progress : 4;
  uint16_t stage_remain_time;
  uint64_t SyncTimeStamp;
+ uint8_t infoUpdateFlag;
 }game_status_t;
 
 /* ID: 0x0002    Byte: 1       比赛结果数据 */
-typedef struct
-{
-    union{
-        uint8_t dataBuff[1];
-        __packed struct
-        {
-            uint8_t winner;//0平局 1红胜 2蓝胜
-        };
-    }data;
-    uint8_t InfoUpdataFlag;
-}ext_game_result_t;
-
 typedef __packed struct
 {
  uint8_t winner;
+ uint8_t InfoUpdataFlag;
 }game_result_t;
 
 /* ID: 0x0003     Byte: 32     比赛机器人血量数据 */
@@ -273,25 +249,12 @@ typedef struct
 }ext_supply_projectile_action_t;
 
 /* ID: 0X0104          Byte: 2       裁判警告数据 */
-typedef struct
-{
-    union
-    {
-        uint8_t dataBuff[2];
-        __packed struct
-        {
-            uint8_t level;//警告等级：
-            uint8_t foul_robot_id; //犯规机器人 ID：判负时，机器人 ID 为 0 黄牌、红牌时，机器人 ID 为犯规机器人 ID
-        };
-    }data;
-    uint8_t InfoUpdataFlag;
-}ext_referee_warning_t;
-
 typedef __packed struct
 {
  uint8_t level;
  uint8_t offending_robot_id;
  uint8_t count;
+ uint8_t InfoUpdataFlag;
 }referee_warning_t;
 
 /* ID: 0x0105          Byte: 1       飞镖发射口倒计时  */
@@ -341,28 +304,10 @@ typedef __packed struct
  uint16_t shooter_barrel_heat_limit;
  uint16_t chassis_power_limit;
  uint8_t power_management_output;
+ uint8_t InfoUpdataFlag;
 }robot_status_t;
 
 /* ID: 0X0202          Byte: 16      实时功率热量数据 */
-typedef struct
-{
-  union
-	{
-		uint8_t dataBuff[16];
-		__packed struct
-		{
-			uint16_t chassis_volt; //底盘输出电压 单位 毫伏
-			uint16_t chassis_current; //底盘输出电流 单位 毫安
-			float chassis_power;//底盘输出功率 单位 W 瓦
-			uint16_t chassis_power_buffer;//底盘功率缓冲 单位 J 焦耳 备注：飞坡根据规则增加至 250J
-			uint16_t shooter_id1_17mm_cooling_heat;//枪口热量
-			uint16_t shooter_id2_17mm_cooling_heat;
-			uint16_t shooter_id1_42mm_cooling_heat;	
-		};
-	}data;
-	uint8_t InfoUpdataFlag;
-}ext_power_heat_data_t;
-
 typedef __packed struct
 {
  uint16_t reserved1; //REMOVED chassis_voltage
@@ -372,29 +317,16 @@ typedef __packed struct
  uint16_t shooter_17mm_1_barrel_heat;
  uint16_t shooter_17mm_2_barrel_heat;
  uint16_t shooter_42mm_barrel_heat;
+ uint8_t InfoUpdataFlag;
 }power_heat_data_t;
 
 /* ID: 0X0203          Byte: 16      机器人位置数据  */
-typedef struct __packed
-{
-  union
-	{
-		uint8_t dataBuff[16];
-		__packed struct
-		{
-		 float x;//位置 x 坐标
-			float y;//位置 y 坐标
-			float angle;//位置枪口
-		};
-	}data;
-	uint8_t InfoUpdataFlag;
-}ext_game_robot_pos_t;
-
 typedef __packed struct
 {
  float x;
  float y;
  float angle;
+ uint8_t InfoUpdataFlag;
 }robot_pos_t;
 
 /* ID: 0X0204          Byte: 1       机器人增益数据 */
@@ -438,78 +370,30 @@ typedef struct
 }aerial_robot_energy_t;
 
 /* ID: 0X0206          Byte: 1       伤害状态数据 */
-typedef struct
-{
-    union
-    {
-        uint8_t dataBuff[1];
-        __packed struct
-        {
-            uint8_t armor_id : 4;/*bit 0-3：当血量变化类型为装甲伤害，代表装甲 ID，其中数值为 0-4 号代表机器人的
-                             五个装甲片，其他血量变化类型，该变量数值为 0。*/
-            uint8_t hurt_type : 4;/*bit 4-7：血量变化类型,0x0 装甲伤害扣血；
-                              0x1 模块掉线扣血；
-                              0x2 超射速扣血；
-                              0x3 超枪口热量扣血；
-                              0x4 超底盘功率扣血；
-                              0x5 装甲撞击扣血*/
-        };
-    }data;
-    uint8_t InfoUpdataFlag;
-}ext_robot_hurt_t;
-
 typedef __packed struct
 {
  uint8_t armor_id : 4;
  uint8_t HP_deduction_reason : 4;
+ uint8_t InfoUpdataFlag;
 }hurt_data_t;
 
 /* ID: 0X0207          Byte: 7       实时射击数据 */
-typedef struct
-{
-    union
-    {
-        uint8_t dataBuff[7];
-        __packed struct
-        {
-            uint8_t bullet_type;//子弹类型: 1：17mm 弹丸 2：42mm 弹丸
-            uint8_t shooter_id;//发射机构 ID
-            uint8_t bullet_freq;//子弹射频 单位 Hz
-            float bullet_speed;//子弹射速 单位 m/s
-        };
-    }data;
-    uint8_t InfoUpdataFlag;
-}ext_shoot_data_t;
-
 typedef __packed struct
 {
  uint8_t bullet_type;
  uint8_t shooter_number;
  uint8_t launching_frequency;
  float initial_speed;
+ uint8_t InfoUpdataFlag;
 }shoot_data_t;
 
 /* ID: 0X0208          Byte: 6       子弹剩余发送数 */
-typedef struct
-{
-    union
-    {
-        uint8_t dataBuff[6];
-        __packed struct
-        {
-            uint16_t bullet_remaining_num_17mm;//17mm 子弹剩余发射数目
-            uint16_t bullet_remaining_num_42mm;//42mm 子弹剩余发射数目
-            uint16_t coin_remaining_num;//剩余金币数量
-        };
-    }data;
-    uint8_t InfoUpdataFlag;
-}ext_bullet_remaining_t;
-
 typedef __packed struct
 {
  uint16_t projectile_allowance_17mm;
  uint16_t projectile_allowance_42mm;
  uint16_t remaining_gold_coin;
+ uint8_t InfoUpdataFlag;
 }projectile_allowance_t;
 
 /* ID: 0X0209          Byte: 4       机器人RFID状态 */
@@ -738,32 +622,32 @@ void Judge_GetMessage(uint16_t Data_Length);
 void Judge_sendPC(BufferedSerial* b);
 void RobotStatus_LEDYellow(BufferedSerial* b);
 
-extern ext_game_status_t      ext_game_status; //
+// extern ext_game_status_t      ext_game_status; //
 extern game_status_t 		game_status;
-extern ext_game_result_t     ext_game_result; //
+// extern ext_game_result_t     ext_game_result; //
 extern game_result_t game_result;
 extern ext_game_robot_HP_t   ext_game_robot_HP;
 extern ext_dart_status_t     ext_dart_status;
 extern ext_ICRA_buff_debuff_zone_status_t    ext_ICRA_buff_debuff_zone_status;
 extern ext_event_data_t ext_even_data;
 extern ext_supply_projectile_action_t  ext_supply_projectile_action;
-extern ext_referee_warning_t         ext_referee_warning; //
+// extern ext_referee_warning_t         ext_referee_warning; //
 extern referee_warning_t referee_warning;
 extern ext_dart_remaining_time_t     ext_dart_remaining_time;
-extern ext_game_robot_status_t  ext_game_robot_state; //
+// extern ext_game_robot_status_t  ext_game_robot_state; //
 extern robot_status_t   robot_status;
-extern ext_power_heat_data_t  ext_power_heat_data; //
+// extern ext_power_heat_data_t  ext_power_heat_data; //
 extern power_heat_data_t	power_heat_data;
-extern ext_game_robot_pos_t  ext_game_robot_pos; //
+// extern ext_game_robot_pos_t  ext_game_robot_pos; //
 extern robot_pos_t robot_pos;
 extern ext_buff_t Buff;
 extern buff_t buff;
 extern aerial_robot_energy_t  aerial_robot_energy;
-extern ext_robot_hurt_t  ext_robot_hurt; //
+// extern ext_robot_hurt_t  ext_robot_hurt; //
 extern hurt_data_t hurt_data;
-extern ext_shoot_data_t  ext_shoot_data; //
+// extern ext_shoot_data_t  ext_shoot_data; //
 extern shoot_data_t shoot_data;
-extern ext_bullet_remaining_t  ext_bullet_remaining; //
+// extern ext_bullet_remaining_t  ext_bullet_remaining; //
 extern projectile_allowance_t projectile_allowance;
 extern ext_rfid_status_t        ext_rfid_status;
 extern ext_dart_client_cmd_t   ext_dart_client_cmd;

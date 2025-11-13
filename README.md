@@ -59,42 +59,27 @@ Note: Go to the Embed Discord and search up makefile. After you find it, downloa
 
 After completing all of this you can make and flash your code to the nucleo using `make testbench`, `make hero`, `make infantry`, and `make sentry`. You should see a block with many numbers when the code is flashed. If you see a red text regarding "missing embed-tools" it is likely becuase you don't have the serial monitor downloaded which is not required to make and flash code. 
 
+## Flashing and building code
+
+### Finding the Makefile
+
+1. Go into the Makefiles folder, and copy the appropriate makefile for your operating system outside the folder.
+
+2. Now, you can build your code with the following command:
+
+```shell
+make testbench-build
+```
+
 ### Flashing to JLink
 
-1. Download the [JLink](https://www.segger.com/downloads/jlink/) software and the [Ozone](https://www.segger.com/downloads/jlink/#Ozone) debugger on your devices.
+1. Download the [JLink](https://www.segger.com/downloads/jlink/) software on your device.
 
 2. Flash using the makefile, similar to the cmake setup:
 
 ```shell
 make testbench-jlink
 ```
-
-### Debugging with Ozone
-
-1. To debug with Ozone, you need to open the Ozone debugger, then create a new project.
-
-2. In devices, you should select the STM32F446RE device, then press Next:
-
-<img width="599" height="673" alt="image" src="https://github.com/user-attachments/assets/09b85499-3bea-4122-bb26-876b41bdf92e" />
-
-3. Now, for the Connection settings, select SWD as the Target Interface, USB as the Host Interface, and 4MHz as the Interface Speed
-
-<img width="600" height="682" alt="image" src="https://github.com/user-attachments/assets/c0949765-56de-4f36-9fa7-2495f13ceefb" />
-
-4. Finally, select the correct .elf file from your cmake-build-debug folder in the repository to configure Ozone
-
-<img width="596" height="679" alt="image" src="https://github.com/user-attachments/assets/79d86231-8c65-461d-842a-af0ef8510bf2" />
-
-5. Press Finish since we do not need to change the Optional Settings. Congrats, you have the Ozone Debugger set up!
-
-6. To debug your stack while the robot is running, I advise flashing the JLink with Ozone open to ensure a secure connection to the device.
-
-7. Then, you should click the arrow next to the power button on the top left of the Ozone Window to select Attach to Running Program.
-
-8. You can then use the "View" window to open up various windows. The Memory, Global, Local and Watched Data and the Registers Windows show information about the current state and content of the target.
-
-9. Use the Watched Data Window to specify certain local or global data to trace and plot the current value, or use the Data Sampling window to track and export values.
-
 
 ## Flashing STM32
 
@@ -128,6 +113,8 @@ See the [Troubleshooting](.md/TROUBLESHOOTING.md) guide for common issues and so
 ## Debugging
 
 See the [Debugging](.md/debug/stm32cubeide.md) guide on how to run the debugger using STM32CubeIDE
+
+See the [Ozone Debugger](.md/debug/ozone_debugger.md) guide on how to run the debugger using the Ozone Debugger.
 
 --- 
 

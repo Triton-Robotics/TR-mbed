@@ -120,8 +120,8 @@ void refereeThread(BufferedSerial* referee){
         ui_delete_layer(referee, 5);
         referee_data_pack_handle(0xA5,0x0301,(uint8_t *)&custom_graphic_draw,sizeof(custom_graphic_draw),referee);
 
-        string powerStr = "power: " + to_string((int)ext_power_heat_data.data.chassis_power);
-        ui_graph_characters(referee, 1, powerStr, SCREEN_LENGTH/2 +100, SCREEN_WIDTH/2 +100, 99);
+        // string powerStr = "power: " + to_string((int)power_heat_data.chassis_power);
+        // ui_graph_characters(referee, 1, powerStr, SCREEN_LENGTH/2 +100, SCREEN_WIDTH/2 +100, 99);
 
         // // string angleStr = "angle: " + to_string((int)ext_game_robot_pos.data.yaw);
         // ui_graph_characters(referee, 1, angleStr, SCREEN_LENGTH/2 +100, SCREEN_WIDTH/2 +150, 10);
