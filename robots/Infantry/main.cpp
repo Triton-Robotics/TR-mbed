@@ -30,10 +30,10 @@ int main(){
             led = !led;
 
 
-            Chassis.periodic();
+            Chassis.periodic(&imuAnglesLocal);
             cs = Chassis.getChassisSpeeds();
             
-            if (remoteTimer > 10) {
+            if (remoteTimer > 15) {
                 remoteTimer = 0;
                 remoteRead();
             }
@@ -316,6 +316,9 @@ void jetson_executor() {
     } else {
         cv_shoot_status = 0;
         led3 = 0;
+    }
+    if (jetson_received_odom.calibration == 1) {
+        calibrated = Chassis.setOdomReference();
     }
 }
 
