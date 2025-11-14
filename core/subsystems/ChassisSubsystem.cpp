@@ -362,6 +362,17 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
     {
         desiredChassisSpeeds = desiredChassisSpeeds_; // ChassisSpeeds in m/s
     }
+    else if (mode == ODOM_ORIENTED) 
+    {
+        double yawCurrent = -(1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0;
+        double yawDelta = yawOdom - yawCurrent;
+        double imuDelta = imuOdom - imuAngles.yaw;
+        double delta = imuDelta - yawDelta;
+        double del = yawOdom + delta;
+        while (del > 360.0) del -= 360;
+        while (del < 0) del += 360;
+        desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yawOdom + delta);
+    }
     WheelSpeeds wheelSpeeds = chassisSpeedsToWheelSpeeds(desiredChassisSpeeds); // in m/s (for now)
     wheelSpeeds = normalizeWheelSpeeds(wheelSpeeds);
     wheelSpeeds *= (1 / (WHEEL_DIAMETER_METERS / 2) / (2 * PI / 60) * M3508_GEAR_RATIO);
@@ -459,9 +470,11 @@ void ChassisSubsystem::readImu()
     imu.get_angular_position_quat(&imuAngles);
 }
 
-void ChassisSubsystem::periodic()
+void ChassisSubsystem::periodic(BNO055_ANGULAR_POSITION_typedef *imuCurr)
 {   
-    // readImu();
+    imuAngles.yaw = imuCurr->yaw;
+    imuAngles.pitch = imuCurr->pitch;
+    imuAngles.roll = imuCurr->roll;
     m_wheelSpeeds = {getMotorSpeed(LEFT_FRONT, METER_PER_SECOND), getMotorSpeed(RIGHT_FRONT, METER_PER_SECOND),
                      getMotorSpeed(LEFT_BACK, METER_PER_SECOND), getMotorSpeed(RIGHT_BACK, METER_PER_SECOND)};
 
@@ -631,6 +644,12 @@ void ChassisSubsystem::setYawReference(DJIMotor *motor, double initial_offset_ti
 {
     yaw = motor;
     yawPhase = 360.0 * (1.0 - (initial_offset_ticks / TICKS_REVOLUTION)); // change Yaw to CCW +, and ranges from 0 to 360
+}
+
+bool ChassisSubsystem::setOdomReference() {
+    yawOdom = -(1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0;
+    imuOdom = imuAngles.yaw;
+    return true;
 }
 
 double ChassisSubsystem::radiansToTicks(double radians)
