@@ -121,7 +121,8 @@ public:
     {
         YAW_ORIENTED,
         REVERSE_YAW_ORIENTED,
-        ROBOT_ORIENTED
+        ROBOT_ORIENTED,
+        ODOM_ORIENTED
     };
 
     float previousRPM[4] = {0, 0, 0, 0};
@@ -238,7 +239,7 @@ public:
     /**
      * A method that should be run every main loop to update the Chassis's estimated position
      */
-    void periodic();
+    void periodic(BNO055_ANGULAR_POSITION_typedef *imuCurr = nullptr);
 
     /**
      * Helper method to convert an angle from degrees to radians
@@ -298,6 +299,13 @@ public:
      */
     void setYawReference(DJIMotor *motor, double initial_offset_ticks);
 
+    /**
+     * Yaw motor is a motor that controls the Turret
+     * yawOdom is the world pose representation of our robot
+     * (basically which direction you want your Heading to be w.r.t Yaw Motor)
+     */
+    bool setOdomReference();
+
     ChassisSpeeds desiredChassisSpeeds;
     WheelSpeeds desiredWheelSpeeds;
 
@@ -327,6 +335,8 @@ public:
      * yawPhase is an initial offset of your Yaw Motor Angle (basically which direction you want your Heading to be w.r.t Yaw Motor)
     */
     double yawPhase;
+    double yawOdom;
+    double imuOdom;
     int testData[300][4];
     int testDataIndex = 0;
 

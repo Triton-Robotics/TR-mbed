@@ -153,6 +153,7 @@ int main(){
     
     bool cv_enabled = false;
     char cv_shoot_status = 0;
+    bool calibrated = false;
     
     ChassisSpeeds cs;
 
@@ -200,7 +201,7 @@ int main(){
                 chassis_buffer = power_heat_data.buffer_energy;
             }
 
-            Chassis.periodic();
+            Chassis.periodic(&imuAngles);
             cs = Chassis.getChassisSpeeds();
             remoteRead();
 
@@ -221,6 +222,9 @@ int main(){
             } else {
                 cv_shoot_status = 0;
                 led3 = 0;
+            }
+            if (jetson_received_odom.calibration == 1) {
+                calibrated = Chassis.setOdomReference();
             }
             printff("%.2f %.2f %.2f %d\n", jetson_received_odom.x_vel, jetson_received_odom.y_vel, jetson_received_odom.rotation, jetson_received_odom.calibration);
 
@@ -323,10 +327,15 @@ int main(){
                 //                           0},
                 //                           ChassisSubsystem::YAW_ORIENTED);
 
-                Chassis.setChassisSpeeds({-jetson_received_odom.y_vel * max_linear_vel, 
-                                            jetson_received_odom.x_vel * max_linear_vel, 
-                                            jetson_received_odom.rotation * available_beyblade * max_omega}, 
-                                            ChassisSubsystem::YAW_ORIENTED);
+                if (calibrated) {
+                    Chassis.setChassisSpeeds({-jetson_received_odom.y_vel * max_linear_vel, 
+                                                jetson_received_odom.x_vel * max_linear_vel, 
+                                                jetson_received_odom.rotation * available_beyblade * max_omega}, 
+                                                ChassisSubsystem::ODOM_ORIENTED);
+                }
+                else {
+                    Chassis.setWheelPower({0,0,0,0});
+                }
             }else if (drive == 'd' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::DOWN)){
                 //BEYBLADE DRIVING CODE
                 
