@@ -317,9 +317,6 @@ void jetson_executor() {
         cv_shoot_status = 0;
         led3 = 0;
     }
-    if (jetson_received_odom.calibration == 1) {
-        calibrated = Chassis.setOdomReference();
-    }
 }
 
 
