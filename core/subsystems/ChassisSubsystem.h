@@ -16,7 +16,7 @@
 // #include <algorithms/ChassisSpeeds.h>
 #include "algorithms/eigen-3.4.0/Eigen/QR"
 
-#define CAN_BUS_TYPE CANHandler::CANBUS_1
+#define CAN_BUS_TYPE CANHandler::CANBUS_2
 #define MOTOR_TYPE M3508
 #define M3508_POST_MAX_RPM 469
 #define INPUT_THRESHOLD 0.01

@@ -1,5 +1,5 @@
 #include "main.h"
-#include "subsystems/ChassisSubsystem.h"
+#include "subsystems/MecanumChassisSubsystem.h"
 
 DigitalOut led(L25);
 DigitalOut led2(L26);
@@ -31,18 +31,19 @@ constexpr int FLYWHEEL_VELO = 5500;
 
 #define READ_DEBUG 0
 #define MAGICBYTE 0xEE
-#define USE_IMU
+// #define USE_IMU
 
 //CHASSIS DEFINING
 I2C i2c(I2C_SDA, I2C_SCL);
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
-ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.22617); // radius is 9 in
-DJIMotor yaw(4, CANHandler::CANBUS_1, GIMBLY,"Yeah");
-DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY,"Peach"); // right
+//ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.22617); // radius is 9 in
+MecanumChassisSubsystem Chassis(4, 1, 3, 2, imu, 0.17);
+DJIMotor yaw(5, CANHandler::CANBUS_2, M3508,"Yeah");
+DJIMotor pitch(7, CANHandler::CANBUS_1, GIMBLY,"Peach"); // right
 
-DJIMotor indexer(7, CANHandler::CANBUS_2, C610,"Indexer");
-DJIMotor RFLYWHEEL(1, CANHandler::CANBUS_2, M3508,"RightFly");
-DJIMotor LFLYWHEEL(2, CANHandler::CANBUS_2, M3508,"LeftFly");
+DJIMotor indexer(7, CANHandler::CANBUS_1, C610,"Indexer");
+DJIMotor RFLYWHEEL(1, CANHandler::CANBUS_1, M3508,"RightFly");
+DJIMotor LFLYWHEEL(2, CANHandler::CANBUS_1, M3508,"LeftFly");
 
 //CV STUFF
 static BufferedSerial bcJetson(PC_12, PD_2, 115200);  //JETSON PORT
@@ -66,7 +67,7 @@ int main(){
     * MOTORS SETUP AND PIDS
     */
     //YAW
-    yaw.setSpeedPID(708.1461, 4.721, 2.6555);
+    yaw.setSpeedPID(1,0,0);
     yaw.setSpeedIntegralCap(8000);
     yaw.setSpeedOutputCap(32000);
 
@@ -151,7 +152,7 @@ int main(){
     bool cv_enabled = false;
     char cv_shoot_status = 0;
 
-    ChassisSpeeds cs;
+    MecanumChassisSpeeds cs;
 
     while(true){
         timeStart = us_ticker_read();
@@ -164,10 +165,10 @@ int main(){
             jetson_send_data.chassis_x_velocity = 0.0;
             jetson_send_data.chassis_y_velocity = 0.0;
 
-            jetson_send_data.pitch_angle_rads = ChassisSubsystem::ticksToRadians( (pitch_zero_offset_ticks - pitch.getData(ANGLE)) );
+            jetson_send_data.pitch_angle_rads = MecanumChassisSubsystem::ticksToRadians( (pitch_zero_offset_ticks - pitch.getData(ANGLE)) );
             jetson_send_data.pitch_velocity = pitch.getData(VELOCITY) / 60.0;
 
-            jetson_send_data.yaw_angle_rads = (imuAngles.yaw + 180.0) * (M_PI / 180.0);
+            // jetson_send_data.yaw_angle_rads = (imuAngles.yaw + 180.0) * (M_PI / 180.0);
             jetson_send_data.yaw_velocity = yaw.getData(VELOCITY)/60.0;
 
             jetson_send_feedback(bcJetson, jetson_send_data);
@@ -304,7 +305,7 @@ int main(){
             float omega_speed = max_omega * available_beyblade;
 
             //Chassis Code
-            ChassisSpeeds beybladeSpeeds = {jx * max_linear_vel,
+            MecanumChassisSpeeds beybladeSpeeds = {jx * max_linear_vel,
                                           jy * max_linear_vel,
                                           -omega_speed};
             if (drive == 'u' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::UP)){
@@ -312,12 +313,12 @@ int main(){
                 Chassis.setChassisSpeeds({jx * max_linear_vel,
                                           jy * max_linear_vel,
                                           0},
-                                          ChassisSubsystem::YAW_ORIENTED);
+                                          MecanumChassisSubsystem::YAW_ORIENTED);
             }else if (drive == 'd' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::DOWN)){
                 //BEYBLADE DRIVING CODE
                 
                 Chassis.setChassisSpeeds(beybladeSpeeds,
-                                          ChassisSubsystem::YAW_ORIENTED);
+                                          MecanumChassisSubsystem::YAW_ORIENTED);
             }else{
                 //OFF
                 Chassis.setWheelPower({0,0,0,0});
@@ -531,11 +532,11 @@ int main(){
                 //     Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).getData(VELOCITY), 
                 //     Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(VELOCITY), 
                 //     Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).getData(VELOCITY));
-                // printff("A_MPS: %.2f %.2f %.2f %.2f\n", 
-                //     Chassis.getMotorSpeed(ChassisSubsystem::LEFT_FRONT, ChassisSubsystem::METER_PER_SECOND), 
-                //     Chassis.getMotorSpeed(ChassisSubsystem::RIGHT_FRONT, ChassisSubsystem::METER_PER_SECOND), 
-                //     Chassis.getMotorSpeed(ChassisSubsystem::LEFT_BACK, ChassisSubsystem::METER_PER_SECOND), 
-                //     Chassis.getMotorSpeed(ChassisSubsystem::RIGHT_BACK, ChassisSubsystem::METER_PER_SECOND));
+                printff("A_MPS: %.2f %.2f %.2f %.2f\n", 
+                    Chassis.getMotorSpeed(MecanumChassisSubsystem::LEFT_FRONT, MecanumChassisSubsystem::METER_PER_SECOND), 
+                    Chassis.getMotorSpeed(MecanumChassisSubsystem::RIGHT_FRONT, MecanumChassisSubsystem::METER_PER_SECOND), 
+                    Chassis.getMotorSpeed(MecanumChassisSubsystem::LEFT_BACK, MecanumChassisSubsystem::METER_PER_SECOND), 
+                    Chassis.getMotorSpeed(MecanumChassisSubsystem::RIGHT_BACK, MecanumChassisSubsystem::METER_PER_SECOND));
                 //printff("%d,%d,%d,%d\n", abs(LFLYWHEEL>>VELOCITY), abs(LFLYWHEEL>>POWEROUT), abs(RFLYWHEEL>>VELOCITY), abs(RFLYWHEEL>>POWEROUT));
                 // if(remote.rightSwitch() == Remote::SwitchState::UP){
                     // printff("%d %d %u %u %u %f ", abs(LFLYWHEEL>>VELOCITY), abs(RFLYWHEEL>>VELOCITY), shoot_data.bullet_type, shoot_data.shooter_number, shoot_data.launching_frequency, *(float*)(((uint8_t*)&shoot_data)+4) /*((shoot_data.initial_speed / 0.06) * (30 / M_PI))*/);

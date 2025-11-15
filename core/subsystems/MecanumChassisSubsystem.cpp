@@ -394,25 +394,28 @@ void MecanumChassisSubsystem::setYawReference(DJIMotor *motor, double initial_of
 
 MecanumWheelSpeeds MecanumChassisSubsystem::chassisSpeedsToWheelSpeeds(MecanumChassisSpeeds chassisSpeeds)
 {
-    // return {(chassisSpeeds.vX + chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r1x) + (m_OmniKinematics.r1y))),
-    //         (chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y))),
-    //         (-chassisSpeeds.vX + chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y))),
-    //         (-chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r4x) + (m_OmniKinematics.r4y)))};
-    return{
-        ((chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * (m_OmniKinematics.r1x + m_OmniKinematics.r1y)) / (WHEEL_DIAMETER_METERS / 2)),
-        ((chassisSpeeds.vX + chassisSpeeds.vY + chassisSpeeds.vOmega * (m_OmniKinematics.r2x + m_OmniKinematics.r2y)) / (WHEEL_DIAMETER_METERS / 2)),
-        ((chassisSpeeds.vX + chassisSpeeds.vY - chassisSpeeds.vOmega * (m_OmniKinematics.r3x + m_OmniKinematics.r3y)) / (WHEEL_DIAMETER_METERS / 2)),
-        ((chassisSpeeds.vX - chassisSpeeds.vY + chassisSpeeds.vOmega * (m_OmniKinematics.r4x + m_OmniKinematics.r4y)) / (WHEEL_DIAMETER_METERS / 2)),
-    };
+    return {(chassisSpeeds.vX + chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r1x) + (m_OmniKinematics.r1y))),
+            (chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y))),
+            (-chassisSpeeds.vX + chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y))),
+            (-chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r4x) + (m_OmniKinematics.r4y)))};
+    // return{
+    //     ((chassisSpeeds.vX + chassisSpeeds.vY - chassisSpeeds.vOmega * chassis_radius) / (WHEEL_DIAMETER_METERS / 2)),
+    //     ((chassisSpeeds.vX - chassisSpeeds.vY + chassisSpeeds.vOmega * chassis_radius) / (WHEEL_DIAMETER_METERS / 2)),
+    //     ((chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * chassis_radius) / (WHEEL_DIAMETER_METERS / 2)),
+    //     ((chassisSpeeds.vX + chassisSpeeds.vY + chassisSpeeds.vOmega * chassis_radius) / (WHEEL_DIAMETER_METERS / 2)),
+    // };
 }
 
 
 MecanumChassisSpeeds MecanumChassisSubsystem::wheelSpeedsToChassisSpeeds(MecanumWheelSpeeds wheelSpeeds)
 {
     float dist = chassis_radius/sqrt(2);
-    float vX = (wheelSpeeds.LF + wheelSpeeds.RF - wheelSpeeds.LB - wheelSpeeds.RB) / 4;
-    float vY = (wheelSpeeds.LF - wheelSpeeds.RF + wheelSpeeds.LB - wheelSpeeds.RB) / 4;
-    float vOmega = (-wheelSpeeds.LF - wheelSpeeds.RF - wheelSpeeds.LB - wheelSpeeds.RB) / (4*(2 * dist));
+    // float vX = (wheelSpeeds.LF + wheelSpeeds.RF - wheelSpeeds.LB - wheelSpeeds.RB) / 4;
+    // float vY = (wheelSpeeds.LF - wheelSpeeds.RF + wheelSpeeds.LB - wheelSpeeds.RB) / 4;
+    // float vOmega = (-wheelSpeeds.LF - wheelSpeeds.RF - wheelSpeeds.LB - wheelSpeeds.RB) / (4*(2 * dist));
+    float vX = (wheelSpeeds.LF + wheelSpeeds.RF + wheelSpeeds.LB + wheelSpeeds.RB) / 4;
+    float vY = (wheelSpeeds.LF - wheelSpeeds.RF - wheelSpeeds.LB + wheelSpeeds.RB) / 4;
+    float vOmega = (-wheelSpeeds.LF + wheelSpeeds.RF - wheelSpeeds.LB + wheelSpeeds.RB) / (4*(2 * dist));
     return {vX, vY, vOmega};
 }
 

@@ -16,7 +16,7 @@
 // #include <algorithms/ChassisSpeeds.h>
 #include "algorithms/eigen-3.4.0/Eigen/QR"
 
-#define CAN_BUS_TYPE CANHandler::CANBUS_1
+#define CAN_BUS_TYPE CANHandler::CANBUS_2
 #define MOTOR_TYPE M3508
 #define M3508_POST_MAX_RPM 469
 #define INPUT_THRESHOLD 0.01
@@ -28,11 +28,11 @@
 #define PI 3.14159265
 #define SECONDS_PER_MINUTE 60
 #define TICKS_PER_ROTATION 8192.0
-#define WHEEL_DIAMETER_METERS 0.146
+#define WHEEL_DIAMETER_METERS 0.146 //0.1525
 
 #define MAX_BEYBLADE_SPEED 1800
 #define BEYBLADE_ACCELERATION 0.05
-#define MAX_VEL 2.92
+#define MAX_VEL 1
 
 struct MecanumOmniKinematics
 {
