@@ -337,10 +337,15 @@ int main(){
     // usbserial nonblocking
     usbSerial.set_blocking(false);
 
+    yaw.setSpeedPID(708.1461, 4.721, 2.6555);
+    yaw.setSpeedIntegralCap(8000);
+    yaw.setSpeedOutputCap(32000);
+
     unsigned long timeStart;
     unsigned long loopTimer = us_ticker_read();
 
     int powerBuffer = 0;
+    int velBuffer = 0;
     int timer = 0;
 
     std::mt19937 gen(us_ticker_read() + 1);
@@ -398,21 +403,27 @@ int main(){
                 }
                 else if (remote.rightSwitch() == Remote::SwitchState::DOWN) {
                     // PRBS
-                    updatePRBS();
-                    powerBuffer = prbs_output;
+                    // updatePRBS();
+                    // powerBuffer = prbs_output;
+                    powerBuffer = 0;
+                    velBuffer = 35;
+                    
                 }
                 else {
+                    velBuffer = 0;
                     powerBuffer = 0;
                 }
             }
-
+            
             yaw.setPower(powerBuffer);
-
+            yaw.setSpeed(velBuffer);
+            
             int velo = yaw>>VELOCITY;
-
+            int torq = yaw>>TORQUE;
+            
             // always print tbh
-            printff("%d\t%d\t%.3f\n", powerBuffer, velo, omega);
-
+            printff("%d\t%d\t%d\n", torq, velo, velBuffer);
+            
             timer += 1;
             DJIMotor::s_sendValues();
         }
