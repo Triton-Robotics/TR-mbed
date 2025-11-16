@@ -52,6 +52,9 @@ endif()
 # Enable cmake for mbed
 include(${MBED_PATH}/tools/cmake/app.cmake)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+
 project(${APP_TARGET})
 
 add_subdirectory(${MBED_PATH})
