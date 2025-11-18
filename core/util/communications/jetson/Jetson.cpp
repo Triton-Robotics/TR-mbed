@@ -262,66 +262,133 @@ ssize_t jetson_read_values(BufferedSerial &bcJetson, Jetson_read_data& read_data
     return -1;
 }
 
-ssize_t jetson_send_read_spi(SPI &spiJetson, const Jetson_send_data& input, Jetson_read_data& output) {
-  char chassis_x_velocity_char[4];
-  char chassis_y_velocity_char[4];
-  char yaw_angle_char[4];
-  char yaw_velocity_char[4];
-  char pitch_angle_char[4];
-  char pitch_velocity_char[4];
 
-  getBytesFromFloat(chassis_x_velocity_char, input.chassis_x_velocity);
-  getBytesFromFloat(chassis_y_velocity_char, input.chassis_y_velocity);
-  getBytesFromFloat(yaw_angle_char, input.yaw_angle_rads);
-  getBytesFromFloat(yaw_velocity_char, input.yaw_velocity);
-  getBytesFromFloat(pitch_angle_char, input.pitch_angle_rads);
-  getBytesFromFloat(pitch_velocity_char, input.pitch_velocity);
+/**
+ * Read packets from Jetson for aiming and odometry,
+ * as well as writing to Jetson from Chassis and turret data.
+ * 
+ * @param spiJetson SPI object for read/write
+ * @param ref_data Jetson_send_ref object; ref info
+ * @param data Jetson_send_data object; chassis info
+ * @param read_data Jetson_read_data object; desired turret position
+ * @param odom_data Jetson_read_odom object; desired chassis position
+ * 
+ * @return number of bytes read, -1 if fail
+ */
+ssize_t jetson_send_read_spi(SPI &spiJetson, const Jetson_send_ref& ref_data, const Jetson_send_data& data, Jetson_read_data& read_data, Jetson_read_odom& odom_data) {
+    Jetson_send_ref_buf data_buf;
 
-  // 0  1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25    - 26 total bytes
-  // EE x x x x y y y y p p  p  p  y  y  y  y  pv pv pv pv yv yv yv yv checksum
-  //put the data into temp
-  int startPositions[6] = {1, 5, 9, 13, 17, 21};
-  nucleo_value[0] = DATA_HEADER;
-  copy4Char(chassis_x_velocity_char, nucleo_value, startPositions[0]);
-  copy4Char(chassis_y_velocity_char, nucleo_value, startPositions[1]);
-  copy4Char(pitch_angle_char, nucleo_value, startPositions[2]);
-  copy4Char(yaw_angle_char, nucleo_value, startPositions[3]);
-  copy4Char(pitch_velocity_char, nucleo_value, startPositions[4]);
-  copy4Char(yaw_velocity_char, nucleo_value, startPositions[5]);
+    getBytesFromInt8(data_buf.game_state, ref_data.game_state);
+    getBytesFromInt16(data_buf.robot_hp, ref_data.robot_hp);
 
+    // 0  1 2 3 4    - 5 total bytes
+    // EF g h h checksum
+    //put the data into temp
+    int startPositions[2] = {1, 2};
+    nucleo_value[0] = REF_HEADER;
+    copy4Char(data_buf.game_state, nucleo_value, startPositions[0]);
+    copy4Char(data_buf.robot_hp, nucleo_value, startPositions[1]);
 
-  uint8_t lrc = calculateLRC(nucleo_value + 1, 24); //exclude header byte
-  char lrc_char = static_cast<uint8_t>(lrc);
-  nucleo_value[25] = lrc_char;
+    uint8_t lrc = calculateLRC(nucleo_value + 1, data_buf.size); //exclude header byte
+    char lrc_char = static_cast<uint8_t>(lrc);
+    nucleo_value[data_buf.size + 1] = lrc_char;
 
+    Jetson_send_data_buf data_buf2;
 
-  if(jetson_read_buff_pos > (JETSON_READ_BUFF_SIZE - JETSON_READ_MSG_SIZE)){
-    // printf("WARN: jetson read buffer overflow. Resetting buffer to 0\n");
-    jetson_read_buff_pos = 0;
-  }
+    getBytesFromFloat(data_buf2.chassis_x_velocity_char, data.chassis_x_velocity);
+    getBytesFromFloat(data_buf2.chassis_y_velocity_char, data.chassis_y_velocity);
+    getBytesFromFloat(data_buf2.chassis_rotation_char, data.chassis_rotation);
+    getBytesFromFloat(data_buf2.yaw_angle_char, data.yaw_angle_rads);
+    getBytesFromFloat(data_buf2.yaw_velocity_char, data.yaw_velocity);
+    getBytesFromFloat(data_buf2.pitch_angle_char, data.pitch_angle_rads);
+    getBytesFromFloat(data_buf2.pitch_velocity_char, data.pitch_velocity);
 
-  spiJetson.write(nucleo_value, 26, jetson_read_buff, JETSON_READ_MSG_SIZE);
+    // 0  1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29    - 30 total bytes
+    // EE x x x x y y y y r r  r  r  p  p  p  p  y  y  y  y  pv pv pv pv yv yv yv yv checksum
+    //put the data into temp
+    int offset = data_buf.size + 2;
+    int startPositions2[7] = {offset + 1, offset + 5, offset + 9, offset + 13, offset + 17, offset + 21, offset + 25};
+    nucleo_value[offset] = DATA_HEADER;
+    copy4Char(data_buf2.chassis_x_velocity_char, nucleo_value, startPositions2[0]);
+    copy4Char(data_buf2.chassis_y_velocity_char, nucleo_value, startPositions2[1]);
+    copy4Char(data_buf2.chassis_rotation_char, nucleo_value, startPositions2[2]);
+    copy4Char(data_buf2.pitch_angle_char, nucleo_value, startPositions2[3]);
+    copy4Char(data_buf2.yaw_angle_char, nucleo_value, startPositions2[4]);
+    copy4Char(data_buf2.pitch_velocity_char, nucleo_value, startPositions2[5]);
+    copy4Char(data_buf2.yaw_velocity_char, nucleo_value, startPositions2[6]);
+    uint8_t lrc2 = calculateLRC(nucleo_value + offset + 1, data_buf2.size); //exclude header byte
+    char lrc_char2 = static_cast<uint8_t>(lrc2);
+    nucleo_value[offset + data_buf2.size + 1] = lrc_char2;
 
-  jetson_read_buff_pos += JETSON_READ_MSG_SIZE;
-
-  for(int i = jetson_read_buff_pos - 1 ; i >= 10 ; --i) {
-    //calculating checksum without magic header bytes
-    //check for magic byte, check checksum != 0, check calculated checksum matches message checksum
-    if ((jetson_read_buff[i-10] == DATA_HEADER) &&
-        (jetson_read_buff[i] != 0) && 
-        (calculateLRC(&jetson_read_buff[i - 9], 9) == jetson_read_buff[i])){
-
-        uint8_t checkSum;
-        decode_toSTM32(&jetson_read_buff[i-9], 
-          output.requested_pitch_rads, 
-          output.requested_yaw_rads, 
-          output.shoot_status, 
-          checkSum);
-        //TODO: as an optimization we can clear onto the message we extracted. Leaving any potential partial messages in the buffer
+    int available_space = JETSON_READ_BUFF_SIZE - jetson_read_buff_pos;
+    if (available_space < JETSON_MAX_PACKET_SIZE) {
         jetson_read_buff_pos = 0;
-        return 1;
+        available_space = JETSON_MAX_PACKET_SIZE;
     }
-  }
+    else if (available_space > JETSON_MAX_PACKET_SIZE) {
+        available_space = JETSON_MAX_PACKET_SIZE;
+    }
 
-  return -1;
+    ssize_t bytes_read = spiJetson.write(nucleo_value, (ref_data.size + data.size + 4), jetson_read_buff + jetson_read_buff_pos, available_space);
+
+    if(bytes_read == -EAGAIN) {
+        return -EAGAIN;
+    }
+
+    //error other than no data to read 
+    if (bytes_read <= 0) {
+        jetson_read_buff_pos = 0; //reset buffer
+        return bytes_read; //return error code
+    }
+
+    if (bytes_read < JETSON_READ_MSG_SIZE) {
+        jetson_read_buff_pos += bytes_read;
+        return -1;
+    }
+
+    for (int i = 0; i < bytes_read; ++i) {
+        if (jetson_read_buff[jetson_read_buff_pos + i] == AIM_HEADER) {
+            // process aim data
+            if (jetson_read_buff_pos + i + 10 <= JETSON_READ_BUFF_SIZE) {
+                uint8_t checksum = jetson_read_buff[jetson_read_buff_pos + i + 10];
+                uint8_t calculated_checksum = calculateLRC(&jetson_read_buff[jetson_read_buff_pos + i + 1], 9);
+
+                if (checksum != calculated_checksum) {
+                    // checksum mismatch, skip this packet
+                    continue;
+                }
+                
+                memcpy(&read_data.requested_pitch_rads, &jetson_read_buff[jetson_read_buff_pos + i + 1], sizeof(float));
+                memcpy(&read_data.requested_yaw_rads, &jetson_read_buff[jetson_read_buff_pos + i + 5], sizeof(float));
+                memcpy(&read_data.shoot_status, &jetson_read_buff[jetson_read_buff_pos + i + 9], sizeof(char));
+                jetson_read_buff_pos += bytes_read;
+
+                return 1;
+            }
+        }
+        else if (jetson_read_buff[jetson_read_buff_pos + i] == ODOM_HEADER) {
+            // process odom data
+            if (jetson_read_buff_pos + i + 13 <= JETSON_READ_BUFF_SIZE) {
+                uint8_t checksum = jetson_read_buff[jetson_read_buff_pos + i + 14];
+                uint8_t calculated_checksum = calculateLRC(&jetson_read_buff[jetson_read_buff_pos + i + 1], 13);
+
+                if (checksum != calculated_checksum) {
+                    // checksum mismatch, skip this packet
+                    continue;
+                }
+
+                memcpy(&odom_data.x_vel, &jetson_read_buff[jetson_read_buff_pos + i + 1], sizeof(float));
+                memcpy(&odom_data.y_vel, &jetson_read_buff[jetson_read_buff_pos + i + 5], sizeof(float));
+                memcpy(&odom_data.rotation, &jetson_read_buff[jetson_read_buff_pos + i + 9], sizeof(float));
+                memcpy(&odom_data.calibration, &jetson_read_buff[jetson_read_buff_pos + i + 13], sizeof(char));
+                jetson_read_buff_pos += bytes_read;
+                
+                return 2;
+            }
+        }
+    }
+
+    jetson_read_buff_pos += bytes_read;
+
+    return -1;
 }
