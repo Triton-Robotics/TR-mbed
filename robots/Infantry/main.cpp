@@ -10,6 +10,9 @@ DigitalOut ledbuiltin(LED1);
 constexpr float LOWERBOUND = -35.0;
 constexpr float UPPERBOUND = 40.0;
 
+// YAW ENCODER FOR ALIGNMENT
+constexpr int YAW_ALIGN = 1680; // (6500 + 8192/8) % 8192;
+
 //DEGREES PER SECOND AT MAX
 constexpr float JOYSTICK_SENSITIVITY_YAW_DPS = 180.0; 
 constexpr float JOYSTICK_SENSITIVITY_PITCH_DPS = 180.0;
@@ -222,7 +225,7 @@ int main(){
                 cv_shoot_status = 0;
                 led3 = 0;
             }
-            printff("%.2f %.2f %.2f %d\n", jetson_received_odom.x_vel, jetson_received_odom.y_vel, jetson_received_odom.rotation, jetson_received_odom.calibration);
+            // printff("%.2f %.2f %.2f %d\n", jetson_received_odom.x_vel, jetson_received_odom.y_vel, jetson_received_odom.rotation, jetson_received_odom.calibration);
 
             #ifdef USE_IMU
             imu.get_angular_position_quat(&imuAngles);
@@ -318,15 +321,15 @@ int main(){
                                           -omega_speed};
             if (drive == 'u' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::UP)){
                 //REGULAR DRIVING CODE
-                // Chassis.setChassisSpeeds({jx * max_linear_vel,
-                //                           jy * max_linear_vel,
-                //                           0},
-                //                           ChassisSubsystem::YAW_ORIENTED);
+                Chassis.setChassisSpeeds({jx * max_linear_vel,
+                                          jy * max_linear_vel,
+                                          0},
+                                          ChassisSubsystem::YAW_ORIENTED);
 
-                Chassis.setChassisSpeeds({-jetson_received_odom.y_vel * max_linear_vel, 
-                                            jetson_received_odom.x_vel * max_linear_vel, 
-                                            jetson_received_odom.rotation * available_beyblade * max_omega}, 
-                                            ChassisSubsystem::YAW_ORIENTED);
+                // Chassis.setChassisSpeeds({-jetson_received_odom.y_vel * max_linear_vel, 
+                //                             jetson_received_odom.x_vel * max_linear_vel, 
+                //                             jetson_received_odom.rotation * available_beyblade * max_omega}, 
+                //                             ChassisSubsystem::YAW_ORIENTED);
             }else if (drive == 'd' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::DOWN)){
                 //BEYBLADE DRIVING CODE
                 // imuAngles.yaw to get the angle
@@ -335,18 +338,32 @@ int main(){
                 //use encoder tick to use beyblade to rotate to proper alignment
 
                 // Desired chassis orientation (still testing)
-                double targetYawDeg = 45.0;
-
-                double yawCurrentDeg = imuAngles.yaw;
+                int yawCurrentDeg = yaw.getData(ANGLE);
 
                 // Compute yaw error(how much the yaw needs to recorrect)
-                double yawError = targetYawDeg - yawCurrentDeg;
+                float yawError = 360.0 * ((yawCurrentDeg - YAW_ALIGN) % 8192) / 8192;
                 while (yawError > 180) yawError -= 360;
                 while (yawError < -180) yawError += 360;
+                
+                if (abs(yawError) < 5) yawError = 0;
 
-                float omegaCmd = yawError;
+                // if ((yawError >= 45 && yawError < 135)) {
+                //     yawError -= 90;
+                // }
+                // if ((yawError >= 135)) {
+                //     yawError -= 180;
+                // }
+                // if (yawError < -135) {
+                //     yawError += 180;
+                // }
+                // if ((yawError >= -135 && yawError < -45)) {
+                //     yawError += 90;
+                // }
 
-                ChassisSpeeds xAlignSpeeds = {0.0, 0.0, omegaCmd};
+                float gain_align = 2 * PI/180; // convert to rad and just run at 2x that rad/s
+                float omegaCmd = gain_align * yawError;
+
+                ChassisSpeeds xAlignSpeeds = {jx * max_linear_vel, jy * max_linear_vel, omegaCmd};
 
                 Chassis.setChassisSpeeds(xAlignSpeeds, ChassisSubsystem::ROBOT_ORIENTED);
 
@@ -356,6 +373,7 @@ int main(){
                 //OFF
                 Chassis.setWheelPower({0,0,0,0});
             }
+            printff("%d\n", yaw.getData(ANGLE));
 
             
             //YAW CODE
