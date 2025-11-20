@@ -347,21 +347,12 @@ int main(){
                 
                 if (abs(yawError) < 5) yawError = 0;
 
-                // if ((yawError >= 45 && yawError < 135)) {
-                //     yawError -= 90;
-                // }
-                // if ((yawError >= 135)) {
-                //     yawError -= 180;
-                // }
-                // if (yawError < -135) {
-                //     yawError += 180;
-                // }
-                // if ((yawError >= -135 && yawError < -45)) {
-                //     yawError += 90;
-                // }
+                float gain_align = 2;
+                float gain_yaw = 3;
+                float deg2rad = PI/180; // convert to rad and just run at 2x that rad/s
+                float omegaCmd = (gain_align * yawError + gain_yaw * yawVelo) * deg2rad;
 
-                float gain_align = 2 * PI/180; // convert to rad and just run at 2x that rad/s
-                float omegaCmd = gain_align * yawError;
+                if (abs(omegaCmd) < 0.1) omegaCmd = 0;
 
                 ChassisSpeeds xAlignSpeeds = {jx * max_linear_vel, jy * max_linear_vel, omegaCmd};
 
