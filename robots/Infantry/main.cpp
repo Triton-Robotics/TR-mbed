@@ -329,9 +329,29 @@ int main(){
                                             ChassisSubsystem::YAW_ORIENTED);
             }else if (drive == 'd' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::DOWN)){
                 //BEYBLADE DRIVING CODE
-                
-                Chassis.setChassisSpeeds(beybladeSpeeds,
-                                          ChassisSubsystem::YAW_ORIENTED);
+                // imuAngles.yaw to get the angle
+                //no need to find tolerance if it's just a switch: only implementation
+                // edit code in here to set x-drive
+                //use encoder tick to use beyblade to rotate to proper alignment
+
+                // Desired chassis orientation (still testing)
+                double targetYawDeg = 45.0;
+
+                double yawCurrentDeg = imuAngles.yaw;
+
+                // Compute yaw error(how much the yaw needs to recorrect)
+                double yawError = targetYawDeg - yawCurrentDeg;
+                while (yawError > 180) yawError -= 360;
+                while (yawError < -180) yawError += 360;
+
+                float omegaCmd = yawError;
+
+                ChassisSpeeds xAlignSpeeds = {0.0, 0.0, omegaCmd};
+
+                Chassis.setChassisSpeeds(xAlignSpeeds, ChassisSubsystem::ROBOT_ORIENTED);
+
+                // Chassis.setChassisSpeeds(beybladeSpeeds,
+                //                           ChassisSubsystem::YAW_ORIENTED);
             }else{
                 //OFF
                 Chassis.setWheelPower({0,0,0,0});
