@@ -339,6 +339,7 @@ int main(){
 
                 // Desired chassis orientation (still testing)
                 int yawCurrentDeg = yaw.getData(ANGLE);
+                //takes data from yaw encoder rather than IMU for better stability
 
                 // Compute yaw error(how much the yaw needs to recorrect)
                 float yawError = 360.0 * ((yawCurrentDeg - YAW_ALIGN) % 8192) / 8192;
@@ -360,7 +361,7 @@ int main(){
                     yawError += 90;
                 }
 
-                float gain_align = 2;
+                float gain_align = 2; //tune these two for optimal performance
                 float gain_yaw = 3;
                 float deg2rad = PI/180; // convert to rad and just run at 2x that rad/s
                 float omegaCmd = (gain_align * yawError + gain_yaw * yawVelo) * deg2rad;

@@ -344,7 +344,7 @@ ChassisSpeeds ChassisSubsystem::getChassisSpeeds() const
     return m_chassisSpeeds;
 }
 
-float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode)
+float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode, ChassisSpeeds yawVelo)
 {
     if (mode == REVERSE_YAW_ORIENTED)
     {
@@ -361,6 +361,14 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
     else if (mode == ROBOT_ORIENTED)
     {
         desiredChassisSpeeds = desiredChassisSpeeds_; // ChassisSpeeds in m/s
+    }
+    else if (mode == ROBOT_ALIGNED){
+        //copy code in yawOriented when implementing robotAlignment mode
+        //objective: compute your chassis alignment
+        double yawCurrent = -(1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
+        desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yawCurrent);
+
+
     }
     WheelSpeeds wheelSpeeds = chassisSpeedsToWheelSpeeds(desiredChassisSpeeds); // in m/s (for now)
     wheelSpeeds = normalizeWheelSpeeds(wheelSpeeds);

@@ -121,7 +121,8 @@ public:
     {
         YAW_ORIENTED,
         REVERSE_YAW_ORIENTED,
-        ROBOT_ORIENTED
+        ROBOT_ORIENTED,
+        ROBOT_ALIGNED
     };
 
     float previousRPM[4] = {0, 0, 0, 0};
@@ -169,7 +170,7 @@ public:
      *
      * @param desiredChassisSpeeds The robot-relative speeds (vX, vY, and vOmega) in m/s
      */
-    float setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode = ROBOT_ORIENTED);
+    float setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode = ROBOT_ORIENTED, ChassisSpeeds yawVelo);
 
     /**
      * The rotateChassisSpeed method
