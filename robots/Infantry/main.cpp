@@ -347,6 +347,19 @@ int main(){
                 
                 if (abs(yawError) < 5) yawError = 0;
 
+                if ((yawError >= 45 && yawError < 135)) {
+                    yawError -= 90;
+                }
+                if ((yawError >= 135)) {
+                    yawError -= 180;
+                }
+                if (yawError < -135) {
+                    yawError += 180;
+                }
+                if ((yawError >= -135 && yawError < -45)) {
+                    yawError += 90;
+                }
+
                 float gain_align = 2;
                 float gain_yaw = 3;
                 float deg2rad = PI/180; // convert to rad and just run at 2x that rad/s
@@ -356,7 +369,7 @@ int main(){
 
                 ChassisSpeeds xAlignSpeeds = {jx * max_linear_vel, jy * max_linear_vel, omegaCmd};
 
-                Chassis.setChassisSpeeds(xAlignSpeeds, ChassisSubsystem::ROBOT_ORIENTED);
+                Chassis.setChassisSpeeds(xAlignSpeeds, ChassisSubsystem::YAW_ORIENTED);
 
                 // Chassis.setChassisSpeeds(beybladeSpeeds,
                 //                           ChassisSubsystem::YAW_ORIENTED);
