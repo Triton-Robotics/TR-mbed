@@ -69,7 +69,7 @@ int main(){
     //YAW
     yaw.setSpeedPID(1,0,0);
     yaw.setSpeedIntegralCap(8000);
-    yaw.setSpeedOutputCap(32000);
+    yaw.setSpeedOutputCap(10000);
 
     yaw.setPositionPID(1.18, 0, 0);
     yaw.pidPosition.dBuffer.lastY = 5;

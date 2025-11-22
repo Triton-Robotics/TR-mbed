@@ -410,12 +410,12 @@ MecanumWheelSpeeds MecanumChassisSubsystem::chassisSpeedsToWheelSpeeds(MecanumCh
 MecanumChassisSpeeds MecanumChassisSubsystem::wheelSpeedsToChassisSpeeds(MecanumWheelSpeeds wheelSpeeds)
 {
     float dist = chassis_radius/sqrt(2);
-    // float vX = (wheelSpeeds.LF + wheelSpeeds.RF - wheelSpeeds.LB - wheelSpeeds.RB) / 4;
-    // float vY = (wheelSpeeds.LF - wheelSpeeds.RF + wheelSpeeds.LB - wheelSpeeds.RB) / 4;
-    // float vOmega = (-wheelSpeeds.LF - wheelSpeeds.RF - wheelSpeeds.LB - wheelSpeeds.RB) / (4*(2 * dist));
-    float vX = (wheelSpeeds.LF + wheelSpeeds.RF + wheelSpeeds.LB + wheelSpeeds.RB) / 4;
-    float vY = (wheelSpeeds.LF - wheelSpeeds.RF - wheelSpeeds.LB + wheelSpeeds.RB) / 4;
-    float vOmega = (-wheelSpeeds.LF + wheelSpeeds.RF - wheelSpeeds.LB + wheelSpeeds.RB) / (4*(2 * dist));
+    float vX = (wheelSpeeds.LF + wheelSpeeds.RF - wheelSpeeds.LB - wheelSpeeds.RB) / 4;
+    float vY = (wheelSpeeds.LF - wheelSpeeds.RF + wheelSpeeds.LB - wheelSpeeds.RB) / 4;
+    float vOmega = (-wheelSpeeds.LF - wheelSpeeds.RF - wheelSpeeds.LB - wheelSpeeds.RB) / (4*(2 * dist));
+    // float vX = (wheelSpeeds.LF + wheelSpeeds.RF + wheelSpeeds.LB + wheelSpeeds.RB) / 4;
+    // float vY = (wheelSpeeds.LF - wheelSpeeds.RF - wheelSpeeds.LB + wheelSpeeds.RB) / 4;
+    // float vOmega = (-wheelSpeeds.LF + wheelSpeeds.RF - wheelSpeeds.LB + wheelSpeeds.RB) / (4*(2 * dist));
     return {vX, vY, vOmega};
 }
 
