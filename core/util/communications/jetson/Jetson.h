@@ -68,4 +68,6 @@ ssize_t jetson_read_values(BufferedSerial &bcJetson, Jetson_read_data& read_data
 
 
 // spi bs
-ssize_t jetson_send_read_spi(SPI &spiJetson, const Jetson_send_data& input, Jetson_read_data& output);
+void jetson_send_spi(SPISlave &spiJetson, const Jetson_send_ref& ref_data, const Jetson_send_data& data, int msg_type = 0);
+
+ssize_t jetson_read_spi(SPISlave &spiJetson, Jetson_read_data& read_data, Jetson_read_odom& odom_data);

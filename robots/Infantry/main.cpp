@@ -46,6 +46,7 @@ DJIMotor LFLYWHEEL(2, CANHandler::CANBUS_2, M3508,"LeftFly");
 
 //CV STUFF
 static BufferedSerial bcJetson(PC_12, PD_2, 115200);  //JETSON PORT
+static SPISlave spiJetson(PB_15, PB_14, PA_9, PB_9);
 Jetson_read_data jetson_received_data;
 Jetson_read_odom jetson_received_odom;
 Jetson_send_ref jetson_send_ref;
@@ -64,6 +65,8 @@ int main(){
     usbSerial.set_blocking(false);
 
     bcJetson.set_blocking(false);
+    spiJetson.format(8, 3);
+    spiJetson.frequency(1000000);
 
     /*
     * MOTORS SETUP AND PIDS
@@ -161,7 +164,7 @@ int main(){
         timeStart = us_ticker_read();
 
         //CV loop runs every 2ms
-        if((timeStart - loopTimerCV) / 1000 > 1) { //1 with sync or 2 without
+        if((timeStart - loopTimerCV) / 1000 > 2) { //1 with sync or 2 without
             loopTimerCV = timeStart;
             
             jetson_send_data.chassis_x_velocity = cs.vX;
@@ -177,7 +180,9 @@ int main(){
             jetson_send_ref.game_state = game_status.game_progress;
             jetson_send_ref.robot_hp = robot_status.current_HP;
 
-            jetson_send_feedback(bcJetson, jetson_send_ref, jetson_send_data);
+            // jetson_send_feedback(bcJetson, jetson_send_ref, jetson_send_data);
+            // printff("PLUH\n");
+            jetson_send_spi(spiJetson, jetson_send_ref, jetson_send_data);
         }
 
         if ((timeStart - loopTimer) / 1000 > OUTER_LOOP_DT_MS){
@@ -205,7 +210,8 @@ int main(){
             cs = Chassis.getChassisSpeeds();
             remoteRead();
 
-            int readResult = jetson_read_values(bcJetson, jetson_received_data, jetson_received_odom);
+            // int readResult = jetson_read_values(bcJetson, jetson_received_data, jetson_received_odom);
+            int readResult = jetson_read_spi(spiJetson, jetson_received_data, jetson_received_odom);
 
             if(cv_enabled){
                 if(readResult > 0){
@@ -214,7 +220,7 @@ int main(){
                         yaw_desired_angle = jetson_received_data.requested_yaw_rads / M_PI * 180;
                         pitch_desired_angle = jetson_received_data.requested_pitch_rads / M_PI * 180;
                         cv_shoot_status = jetson_received_data.shoot_status;
-                        // printff("yd: %.2f, pd: %.2f, s: %d\n", yaw_desired_angle, pitch_desired_angle, cv_shoot_status);
+                        printff("yd: %.2f, pd: %.2f, s: %d\n", yaw_desired_angle, pitch_desired_angle, cv_shoot_status);
                     }
                 }else{
                     led3 = 0;
@@ -226,7 +232,12 @@ int main(){
             if (jetson_received_odom.calibration == 1) {
                 calibrated = Chassis.setOdomReference();
             }
-            printff("%.2f %.2f %.2f %d\n", jetson_received_odom.x_vel, jetson_received_odom.y_vel, jetson_received_odom.rotation, jetson_received_odom.calibration);
+            if (!spiJetson.receive()) {
+                printff("A\n");
+            }
+            else {
+                printff("%.2f %.2f %.2f %d\n", jetson_received_odom.x_vel, jetson_received_odom.y_vel, jetson_received_odom.rotation, jetson_received_odom.calibration);
+            }
 
             #ifdef USE_IMU
             imu.get_angular_position_quat(&imuAngles);

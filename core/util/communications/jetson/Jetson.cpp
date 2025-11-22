@@ -263,62 +263,126 @@ ssize_t jetson_read_values(BufferedSerial &bcJetson, Jetson_read_data& read_data
 }
 
 
-/**
- * Read packets from Jetson for aiming and odometry,
- * as well as writing to Jetson from Chassis and turret data.
- * 
- * @param spiJetson SPI object for read/write
- * @param ref_data Jetson_send_ref object; ref info
- * @param data Jetson_send_data object; chassis info
- * @param read_data Jetson_read_data object; desired turret position
- * @param odom_data Jetson_read_odom object; desired chassis position
- * 
- * @return number of bytes read, -1 if fail
- */
-ssize_t jetson_send_read_spi(SPI &spiJetson, const Jetson_send_ref& ref_data, const Jetson_send_data& data, Jetson_read_data& read_data, Jetson_read_odom& odom_data) {
-    Jetson_send_ref_buf data_buf;
+void jetson_send_spi(SPISlave &spiJetson, const Jetson_send_ref& ref_data, const Jetson_send_data& data, int msg_type) {
+    if (msg_type == 1) {
+        // Send ref data
+        Jetson_send_ref_buf data_buf;
 
-    getBytesFromInt8(data_buf.game_state, ref_data.game_state);
-    getBytesFromInt16(data_buf.robot_hp, ref_data.robot_hp);
+        getBytesFromInt8(data_buf.game_state, ref_data.game_state);
+        getBytesFromInt16(data_buf.robot_hp, ref_data.robot_hp);
 
-    // 0  1 2 3 4    - 5 total bytes
-    // EF g h h checksum
-    //put the data into temp
-    int startPositions[2] = {1, 2};
-    nucleo_value[0] = REF_HEADER;
-    copy4Char(data_buf.game_state, nucleo_value, startPositions[0]);
-    copy4Char(data_buf.robot_hp, nucleo_value, startPositions[1]);
+        // 0  1 2 3 4    - 5 total bytes
+        // EF g h h checksum
+        //put the data into temp
+        int startPositions[2] = {1, 2};
+        nucleo_value[0] = REF_HEADER;
+        copy4Char(data_buf.game_state, nucleo_value, startPositions[0]);
+        copy4Char(data_buf.robot_hp, nucleo_value, startPositions[1]);
 
-    uint8_t lrc = calculateLRC(nucleo_value + 1, data_buf.size); //exclude header byte
-    char lrc_char = static_cast<uint8_t>(lrc);
-    nucleo_value[data_buf.size + 1] = lrc_char;
+        uint8_t lrc = calculateLRC(nucleo_value + 1, data_buf.size); //exclude header byte
+        char lrc_char = static_cast<uint8_t>(lrc);
+        nucleo_value[data_buf.size + 1] = lrc_char;
 
-    Jetson_send_data_buf data_buf2;
+        // bcJetson.sync();
+        // bcJetson.write(nucleo_value, (data_buf.size + 2));
+        for (int i = 0; i < (data_buf.size + 2); i++) {
+            if (spiJetson.receive()) spiJetson.reply(nucleo_value[i]);
+        }
+    }
+    else if (msg_type == 2) {
+        // Send data
+        Jetson_send_data_buf data_buf;
+        
+        getBytesFromFloat(data_buf.chassis_x_velocity_char, data.chassis_x_velocity);
+        getBytesFromFloat(data_buf.chassis_y_velocity_char, data.chassis_y_velocity);
+        getBytesFromFloat(data_buf.chassis_rotation_char, data.chassis_rotation);
+        getBytesFromFloat(data_buf.yaw_angle_char, data.yaw_angle_rads);
+        getBytesFromFloat(data_buf.yaw_velocity_char, data.yaw_velocity);
+        getBytesFromFloat(data_buf.pitch_angle_char, data.pitch_angle_rads);
+        getBytesFromFloat(data_buf.pitch_velocity_char, data.pitch_velocity);
 
-    getBytesFromFloat(data_buf2.chassis_x_velocity_char, data.chassis_x_velocity);
-    getBytesFromFloat(data_buf2.chassis_y_velocity_char, data.chassis_y_velocity);
-    getBytesFromFloat(data_buf2.chassis_rotation_char, data.chassis_rotation);
-    getBytesFromFloat(data_buf2.yaw_angle_char, data.yaw_angle_rads);
-    getBytesFromFloat(data_buf2.yaw_velocity_char, data.yaw_velocity);
-    getBytesFromFloat(data_buf2.pitch_angle_char, data.pitch_angle_rads);
-    getBytesFromFloat(data_buf2.pitch_velocity_char, data.pitch_velocity);
+        // 0  1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29    - 30 total bytes
+        // EE x x x x y y y y r r  r  r  p  p  p  p  y  y  y  y  pv pv pv pv yv yv yv yv checksum
+        //put the data into temp
+        int startPositions[7] = {1, 5, 9, 13, 17, 21, 25};
+        nucleo_value[0] = DATA_HEADER;
+        copy4Char(data_buf.chassis_x_velocity_char, nucleo_value, startPositions[0]);
+        copy4Char(data_buf.chassis_y_velocity_char, nucleo_value, startPositions[1]);
+        copy4Char(data_buf.chassis_rotation_char, nucleo_value, startPositions[2]);
+        copy4Char(data_buf.pitch_angle_char, nucleo_value, startPositions[3]);
+        copy4Char(data_buf.yaw_angle_char, nucleo_value, startPositions[4]);
+        copy4Char(data_buf.pitch_velocity_char, nucleo_value, startPositions[5]);
+        copy4Char(data_buf.yaw_velocity_char, nucleo_value, startPositions[6]);
 
-    // 0  1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29    - 30 total bytes
-    // EE x x x x y y y y r r  r  r  p  p  p  p  y  y  y  y  pv pv pv pv yv yv yv yv checksum
-    //put the data into temp
-    int offset = data_buf.size + 2;
-    int startPositions2[7] = {offset + 1, offset + 5, offset + 9, offset + 13, offset + 17, offset + 21, offset + 25};
-    nucleo_value[offset] = DATA_HEADER;
-    copy4Char(data_buf2.chassis_x_velocity_char, nucleo_value, startPositions2[0]);
-    copy4Char(data_buf2.chassis_y_velocity_char, nucleo_value, startPositions2[1]);
-    copy4Char(data_buf2.chassis_rotation_char, nucleo_value, startPositions2[2]);
-    copy4Char(data_buf2.pitch_angle_char, nucleo_value, startPositions2[3]);
-    copy4Char(data_buf2.yaw_angle_char, nucleo_value, startPositions2[4]);
-    copy4Char(data_buf2.pitch_velocity_char, nucleo_value, startPositions2[5]);
-    copy4Char(data_buf2.yaw_velocity_char, nucleo_value, startPositions2[6]);
-    uint8_t lrc2 = calculateLRC(nucleo_value + offset + 1, data_buf2.size); //exclude header byte
-    char lrc_char2 = static_cast<uint8_t>(lrc2);
-    nucleo_value[offset + data_buf2.size + 1] = lrc_char2;
+
+        uint8_t lrc = calculateLRC(nucleo_value + 1, data_buf.size); //exclude header byte
+        char lrc_char = static_cast<uint8_t>(lrc);
+        nucleo_value[data_buf.size + 1] = lrc_char;
+
+        // bcJetson.sync();
+        // bcJetson.write(nucleo_value, (data_buf.size + 2));
+        for (int i = 0; i < (data_buf.size + 2); i++) {
+            if (spiJetson.receive()) spiJetson.reply(nucleo_value[i]);
+        }
+    }
+    else {
+        Jetson_send_ref_buf data_buf;
+
+        getBytesFromInt8(data_buf.game_state, ref_data.game_state);
+        getBytesFromInt16(data_buf.robot_hp, ref_data.robot_hp);
+
+        // 0  1 2 3 4    - 5 total bytes
+        // EF g h h checksum
+        //put the data into temp
+        int startPositions[2] = {1, 2};
+        nucleo_value[0] = REF_HEADER;
+        copy4Char(data_buf.game_state, nucleo_value, startPositions[0]);
+        copy4Char(data_buf.robot_hp, nucleo_value, startPositions[1]);
+
+        uint8_t lrc = calculateLRC(nucleo_value + 1, data_buf.size); //exclude header byte
+        char lrc_char = static_cast<uint8_t>(lrc);
+        nucleo_value[data_buf.size + 1] = lrc_char;
+
+        Jetson_send_data_buf data_buf2;
+
+        getBytesFromFloat(data_buf2.chassis_x_velocity_char, data.chassis_x_velocity);
+        getBytesFromFloat(data_buf2.chassis_y_velocity_char, data.chassis_y_velocity);
+        getBytesFromFloat(data_buf2.chassis_rotation_char, data.chassis_rotation);
+        getBytesFromFloat(data_buf2.yaw_angle_char, data.yaw_angle_rads);
+        getBytesFromFloat(data_buf2.yaw_velocity_char, data.yaw_velocity);
+        getBytesFromFloat(data_buf2.pitch_angle_char, data.pitch_angle_rads);
+        getBytesFromFloat(data_buf2.pitch_velocity_char, data.pitch_velocity);
+
+        // 0  1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29    - 30 total bytes
+        // EE x x x x y y y y r r  r  r  p  p  p  p  y  y  y  y  pv pv pv pv yv yv yv yv checksum
+        //put the data into temp
+        int offset = data_buf.size + 2;
+        int startPositions2[7] = {offset + 1, offset + 5, offset + 9, offset + 13, offset + 17, offset + 21, offset + 25};
+        nucleo_value[offset] = DATA_HEADER;
+        copy4Char(data_buf2.chassis_x_velocity_char, nucleo_value, startPositions2[0]);
+        copy4Char(data_buf2.chassis_y_velocity_char, nucleo_value, startPositions2[1]);
+        copy4Char(data_buf2.chassis_rotation_char, nucleo_value, startPositions2[2]);
+        copy4Char(data_buf2.pitch_angle_char, nucleo_value, startPositions2[3]);
+        copy4Char(data_buf2.yaw_angle_char, nucleo_value, startPositions2[4]);
+        copy4Char(data_buf2.pitch_velocity_char, nucleo_value, startPositions2[5]);
+        copy4Char(data_buf2.yaw_velocity_char, nucleo_value, startPositions2[6]);
+        uint8_t lrc2 = calculateLRC(nucleo_value + offset + 1, data_buf2.size); //exclude header byte
+        char lrc_char2 = static_cast<uint8_t>(lrc2);
+        nucleo_value[offset + data_buf2.size + 1] = lrc_char2;
+
+        // bcJetson.sync();
+        // bcJetson.write(nucleo_value, (data_buf.size + 2) + (data_buf2.size + 2));
+        for (int i = 0; i < (data_buf.size + 2) + (data_buf2.size + 2); i++) {
+            if (spiJetson.receive()) spiJetson.reply(nucleo_value[i]);
+        }
+    }
+}
+
+
+ssize_t jetson_read_spi(SPISlave &spiJetson, Jetson_read_data& read_data, Jetson_read_odom& odom_data) {
+    if(!spiJetson.receive()) {
+        return -1;
+    }
 
     int available_space = JETSON_READ_BUFF_SIZE - jetson_read_buff_pos;
     if (available_space < JETSON_MAX_PACKET_SIZE) {
@@ -329,7 +393,13 @@ ssize_t jetson_send_read_spi(SPI &spiJetson, const Jetson_send_ref& ref_data, co
         available_space = JETSON_MAX_PACKET_SIZE;
     }
 
-    ssize_t bytes_read = spiJetson.write(nucleo_value, (ref_data.size + data.size + 4), jetson_read_buff + jetson_read_buff_pos, available_space);
+    ssize_t bytes_read = 0; // bcJetson.read(jetson_read_buff + jetson_read_buff_pos, available_space);
+    while (spiJetson.receive() && available_space > 0) {
+        jetson_read_buff[jetson_read_buff_pos + bytes_read] = spiJetson.read();
+
+        bytes_read += 1;
+        available_space -= 1;
+    }
 
     if(bytes_read == -EAGAIN) {
         return -EAGAIN;
