@@ -37,16 +37,17 @@ constexpr int FLYWHEEL_VELO = 5500;
 //CHASSIS DEFINING
 I2C i2c(I2C_SDA, I2C_SCL);
 
-SPI spiIMU(PB_15, PB_14, PA_9, PB_9); // MOSI, MISO, SCK, NSS/CS
+// SPI spiIMU(PB_15, PB_14, PA_9, PB_9); // MOSI, MISO, SCK, NSS/CS
 // ISM330 imu2(spiIMU, D10);
 
 
 int main(){
-    spiIMU.format(8, 0);
-    spiIMU.frequency(1000000);
+    // spiIMU.format(8, 0);
+    // spiIMU.frequency(1000000);
     // potentially needed to read from data registers (PG 38 of datasheet)
-    spiIMU.write(0x01 | 0x80);
-    spiIMU.write(0x40);
+    // spiIMU.write(0x01 | 0x80);
+    // spiIMU.write(0x40);
+    i2c.frequency(400'000);
 
     unsigned long timeStart;
     unsigned long loopTimer = us_ticker_read();
@@ -55,21 +56,22 @@ int main(){
         if (timeStart - loopTimer > OUTER_LOOP_DT_MS) {
             loopTimer = us_ticker_read();
             uint8_t whoami = 0x6B; // 0b0110_1011
-            uint8_t whoami2 = spiIMU.write(0x8F);
-            uint8_t read_whoami = spiIMU.write(0x00);
+            char whoami2;
+            i2c.read(0x0F, &whoami2, 1);
+            // uint8_t read_whoami = spiIMU.write(0x00);
 
-            // printff("%x, %x\n", whoami, read_whoami);
-            if (whoami == read_whoami) {
-                spiIMU.write(0x22 | 0x80);
-                uint8_t pitch_x_l = spiIMU.write(0x00);
+            printff("%x, %x\n", whoami, whoami2);
+            // if (whoami == read_whoami) {
+            //     spiIMU.write(0x22 | 0x80);
+            //     uint8_t pitch_x_l = spiIMU.write(0x00);
                 
-                spiIMU.write(0x23 | 0x80);
-                uint8_t pitch_x_h = spiIMU.write(0x00);
+            //     spiIMU.write(0x23 | 0x80);
+            //     uint8_t pitch_x_h = spiIMU.write(0x00);
 
-                uint16_t pitch_x = (static_cast<uint16_t>(pitch_x_h) << 8) | pitch_x_l;
+            //     uint16_t pitch_x = (static_cast<uint16_t>(pitch_x_h) << 8) | pitch_x_l;
 
-                printff("pitch: %.2f\n", pitch_x);
-            }
+            //     printff("pitch: %.2f\n", pitch_x);
+            // }
         }
         ThisThread::sleep_for(1ms);
     }
