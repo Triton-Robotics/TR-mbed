@@ -23,8 +23,6 @@ public:
 
     // Accel and Gyroscale variables (class-scope so they can be referenced
     // as `ISM330::accelScale` from other compilation units if needed)
-    static float accelScale;
-    static float gyroScale;
 
     /**
     * @brief Construct a new ISM330 object.

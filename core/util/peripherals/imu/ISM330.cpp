@@ -9,6 +9,7 @@ static constexpr uint8_t ISM330_WHO_AM_I = 0x0F;
 static constexpr uint8_t CTRL1_XL = 0x10;
 static constexpr uint8_t CTRL2_G  = 0x11;
 static constexpr uint8_t CTRL3_C  = 0x12;
+static constexpr uint8_t CTRL4_C  = 0x13;
 static constexpr uint8_t STATUS_REG = 0x1E;
 static constexpr uint8_t OUTX_L_G = 0x22;
 static constexpr uint8_t OUTX_L_XL = 0x28;
@@ -19,7 +20,7 @@ static constexpr float gyroScale  = 70.0f;   // mdps/LSB @ ±2000 dps
 
 // ------------------- CONSTRUCTOR -------------------
 ISM330::ISM330(SPI &spi, PinName csPin) noexcept
-    : _spi(spi), _cs(csPin)
+    : _spi{spi}, _cs{csPin}
 {
     _cs = 1; // Deselect by default
 }
@@ -28,41 +29,36 @@ ISM330::ISM330(SPI &spi, PinName csPin) noexcept
 // ------------------- INITIALIZATION -------------------
 bool ISM330::begin() noexcept
 {
-    _cs = 1;
-    _spi.format(8, 3);          // ✅ ISM330 requires mode 3 (CPOL=1, CPHA=1)
+    _spi.format(8, 3);                 // Using mode 3 since that's what the libraries do
     _spi.frequency(1'000'000);
+    _cs = 1; ThisThread::sleep_for(3ms);
 
-    // --- Software reset ---
-    writeRegister(CTRL3_C, 0x01);
-    ThisThread::sleep_for(5ms);
-    while (readRegister(CTRL3_C) & 0x01) {
-        ThisThread::sleep_for(1ms);
-    }
+    uint8_t id = whoAmI();
+    printf("WHO_AM_I: 0x%02X\r\n", id);
+    if (id != 0x6B) return false;      // DHCX id
 
-    // --- IF_INC + BDU ---
-    uint8_t ctrl3 = readRegister(CTRL3_C);
-    ctrl3 |= (1 << 2) | (1 << 6);
-    writeRegister(CTRL3_C, ctrl3);
-
-    // --- Enable accelerometer ---
-    // ODR_XL=0b0100 (104 Hz), FS_XL=0b10 (±4g),
-    // BW0_XL=1 (LPF enable) -> bits [1:0] = 10 for 100 Hz LPF
-    writeRegister(CTRL1_XL, 0x4A);   // ✅ 0b0100_1010
-
-    // --- Enable gyro ---
-    // ODR_G=0b0100 (104 Hz), FS_G=0b11 (2000 dps)
-    writeRegister(CTRL2_G, 0x4C);    // ✅ same as before, correct bits
-
-    // --- Wait for sensor to start producing data ---
+    writeRegister(CTRL3_C, 0x01);      // SW_RESET
     ThisThread::sleep_for(20ms);
 
-    // --- Verify device ID ---
-    uint8_t id = whoAmI();
-    uint8_t xl = readRegister(CTRL1_XL);
-    uint8_t g  = readRegister(CTRL2_G);
-    printf("CTRL1_XL=0x%02X, CTRL2_G=0x%02X\n", xl, g);
-    printf("id check: %d", id == ISM330_CHIP_ID);
-    return id == ISM330_CHIP_ID;
+    // User bank
+    // writeRegister(0x01, 0x00);
+
+    // BDU=1, IF_INC=1
+    writeRegister(CTRL3_C, 0x44);
+
+    //Setting SPI MODE CTRL4_C 
+    writeRegister(19, 0x04);
+
+    // Accel: 104 Hz, ±4g, BW=100 Hz -> 0x4A CTRL1_XL
+    writeRegister(16, 0x4A); //0b0100'1010
+    // Gyro: 104 Hz, 2000 dps        -> 0x4C
+    writeRegister(17, 0x4C); //0b0100'1100 CTRL2_G 
+    ThisThread::sleep_for(20ms);
+
+    printf("CTRL3_C=0x%02X, CTRL1_XL=0x%02X, CTRL2_G=0x%02X\n",
+           readRegister(CTRL3_C), readRegister(CTRL1_XL), readRegister(CTRL2_G));
+
+    return true;
 }
 
 
@@ -81,30 +77,84 @@ void ISM330::reset() noexcept
 uint8_t ISM330::readRegister(uint8_t reg) noexcept
 {
     _cs = 0;
-    _spi.write(reg | 0x80);  // MSB=1 for read
-    uint8_t value = _spi.write(0x00);
+
+    _spi.write(reg | 0x80);
+    uint8_t value = static_cast<uint8_t>(_spi.write(0x00));
     _cs = 1;
     return value;
+    
+    // uint8_t tx[2] = { static_cast<uint8_t>(reg | 0x80), 0x00 };
+    // uint8_t rx[2] = { 0, 0 };
+    // wait_ns(50);
+    // _spi.write(reinterpret_cast<const char*>(tx), 2, reinterpret_cast<char*>(rx), 2);
+    // wait_ns(50);
+    // _cs = 1;
+    // return rx[1];
 }
 
-void ISM330::readMultiple(uint8_t reg, uint8_t *buf, uint8_t len) noexcept
+void ISM330::readMultiple(uint8_t reg, uint8_t* buf, uint8_t len) noexcept
 {
-    uint8_t addr = reg | 0xC0;  // Read + auto-increment
+    uint8_t addr = static_cast<uint8_t>(reg | 0x80); // R=1, auto-inc=1
     _cs = 0;
-    _spi.write(addr);
-    for (uint8_t i = 0; i < len; i++) {
-        buf[i] = _spi.write(0x00);
-    }
+    wait_ns(50);
+    _spi.write(reinterpret_cast<const char*>(&addr), 1, nullptr, 0);
+    _spi.write(nullptr, 0, reinterpret_cast<char*>(buf), len); // clock out N bytes
+    wait_ns(50);
     _cs = 1;
 }
+
+// void ISM330::writeRegister(int reg, int value) noexcept
+// {
+//     // uint8_t tx[2] = { static_cast<uint8_t>(reg & 0x7F), value };
+//     _cs = 0;
+//     wait_ns(50); // tCSS setup
+//     // Use the buffered form so both bytes go under one CS window
+//     // _spi.write(reg);
+//     // _spi.write(value);
+    
+//     //_spi.write(reinterpret_cast<const char*>(tx), 2, nullptr, 0);
+//     _cs = 1;    
+//}
+
+
+// //Helper 'Callback' function for SPI transfer
+// void ISM330::transferCallBack(int event) {
+//     if (event & SPI_EVENT_COMPLETE) {
+//         printf("SPI transfer complete!\n");
+//     }
+    
+//     if (event & SPI_EVENT_ERROR) {
+//         printf("SPI error occurred!\n");
+//     }
+// }
 
 void ISM330::writeRegister(uint8_t reg, uint8_t value) noexcept
-{
-    _cs = 0;
-    _spi.write(reg & 0x7F); // MSB=0 for write
-    _spi.write(value);
-    _cs = 1;
+{    uint8_t tx[2] = { static_cast<uint8_t>(reg & 0x7F), value };
+     uint8_t rx[2];
+_cs = 0;
+// _spi.write(reg & 0x7F); // MSB=0 for write
+// _spi.write(value);
+//trying with transfer
+
+_spi.transfer(
+    tx,
+    2,
+    rx,
+    2,
+    [](int event){
+        if (event & SPI_EVENT_COMPLETE) {
+            printf("SPI transfer complete!\n");
+        }
+    
+        if (event & SPI_EVENT_ERROR) {
+            printf("SPI error occurred!\n");
+        }
+    }  );
+
+_cs = 1;
 }
+
+
 
 
 // ------------------- SENSOR READOUT -------------------

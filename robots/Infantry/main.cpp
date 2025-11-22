@@ -35,10 +35,9 @@ constexpr int FLYWHEEL_VELO = 5500;
 #define USE_IMU
 
 //CHASSIS DEFINING
-I2C i2c(I2C_SDA, I2C_SCL);
 
-SPI spiIMU(PB_15, PB_14, PA_9, PB_9); // MOSI, MISO, SCK, NSS/CS
-ISM330 imu2(spiIMU, D10);
+//SPI spiIMU(PB_15, PB_14, PA_9, PB_9); // MOSI, MISO, SCK, NSS/CS
+//ISM330 imu2(spiIMU, PB_9);
 
 // BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 // ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.22617); // radius is 9 in
@@ -58,25 +57,69 @@ ISM330 imu2(spiIMU, D10);
 BNO055_ANGULAR_POSITION_typedef imuAngles;
 #endif
 
+I2C i2c(I2C_SDA, I2C_SCL);
+
+const int readAddr = 0b11010101;
+const int writeAddr = 0b11010100;
+
+const char SWRST[] = {0x12,0x01};
+const char xEnable[] = {0x10, 0x4A};
+
+const char WhoAmIReg[] = {0x0F};
+const char gReg[] = {0x22,0x23,0x24,0x25,0x26,0x27};
+const char xReg[] = {0x28,0x29,0x30,0x31,0x32,0x33};
+
+uint8_t xValues[6];
+
+uint8_t whoAmIReading;
+
+std::tuple<int16_t, int16_t, int16_t> readingToRaw(const uint8_t *readings) {
+    int16_t rawX = (int16_t)((readings[1] << 8) | readings[0]);
+    int16_t rawY = (int16_t)((readings[3] << 8) | readings[2]);
+    int16_t rawZ = (int16_t)((readings[5] << 8) | readings[4]);
+
+    return std::make_tuple(rawX, rawY, rawZ);
+}
+
 
 int main(){
+    ThisThread::sleep_for(3);
+    i2c.frequency(100000);
+    i2c.write(writeAddr, SWRST, 2, false); // Must be false on write, true on reads according to Datasheet
+    ThisThread::sleep_for(100ms);
+
+    i2c.write(writeAddr, xEnable, 2, false);
+    
+    i2c.write(writeAddr, WhoAmIReg, 1, false);
+    
+    i2c.read(readAddr, reinterpret_cast<char*>(&whoAmIReading), 1, true);
+
+    printf("WHO_AM_I: 0x%02X\r\n", whoAmIReading);
+    
     //SPI TESTING
-    imu2.begin();
+    //DigitalOut cs(PB_9,0);
+    // imu2.begin();
     // imu2.setAccelRange(2);
     // imu2.setGyroRange(500);
-
+    
     // DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
     // DJIMotor::s_sendValues();
     // DJIMotor::s_getFeedback();
     // usbSerial.set_blocking(false);
     // bcJetson.set_blocking(false);
-    imu2.reset();
     while (true){
-        auto [x,y,z] = imu2.getAccel();
-        auto [gx, gy, gz] = imu2.getGyro();
-        printf("%.2f, %.2f, %.2f | %.2f, %.2f, %.2f\n", x, y, z, gx, gy, gz);
-        ThisThread::sleep_for(200ms);
+    i2c.write(writeAddr, xReg, 1, false);  
+
+    // Step 2: read data from that register
+    i2c.read(readAddr, reinterpret_cast<char*>(xValues), 6, true);
+    auto [x,y,z] = readingToRaw(xValues);
+
+        // auto [x,y,z] = imu2.getAccel();
+        // auto [gx, gy, gz] = imu2.getGyro();
+        printf("%.2d, %.2d, %.2d \n", x, y, z);
+        // ThisThread::sleep_for(200ms);
     }
+    } 
     /*
     * MOTORS SETUP AND PIDS
     */
@@ -494,4 +537,4 @@ int main(){
     //     DJIMotor::s_getFeedback();
     //    ThisThread::sleep_for(1ms);
     //}
-}
+//}
