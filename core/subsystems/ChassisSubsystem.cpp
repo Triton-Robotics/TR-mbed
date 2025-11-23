@@ -344,7 +344,7 @@ ChassisSpeeds ChassisSubsystem::getChassisSpeeds() const
     return m_chassisSpeeds;
 }
 
-float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode, ChassisSpeeds yawVelo)
+float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode, double yawVelo)
 {
     if (mode == REVERSE_YAW_ORIENTED)
     {
@@ -363,11 +363,41 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
         desiredChassisSpeeds = desiredChassisSpeeds_; // ChassisSpeeds in m/s
     }
     else if (mode == ROBOT_ALIGNED){
-        //copy code in yawOriented when implementing robotAlignment mode
-        //objective: compute your chassis alignment
-        double yawCurrent = -(1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
-        desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yawCurrent);
+        // double yawCurrent = -(1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
+        int yawCurrentDeg = yaw->getData(ANGLE);
+        desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yawCurrentDeg);
 
+        // Compute yaw error(how much the yaw needs to recorrect)
+        float yawError = 360.0 * ((yawCurrentDeg - yawAlign) % 8192) / 8192;
+        while (yawError > 180) yawError -= 360;
+        while (yawError < -180) yawError += 360;
+        
+        if (abs(yawError) < 5) yawError = 0;
+
+        if ((yawError >= 45 && yawError < 135)) {
+            yawError -= 90;
+        }
+        if ((yawError >= 135)) {
+            yawError -= 180;
+        }
+        if (yawError < -135) {
+            yawError += 180;
+        }
+        if ((yawError >= -135 && yawError < -45)) {
+            yawError += 90;
+        }
+
+        float gain_align = 2; //tune these two for optimal performance
+        float gain_yaw = 3;
+        float deg2rad = PI/180; // convert to rad and just run at 2x that rad/s
+        float omegaCmd = (gain_align * yawError + gain_yaw * yawVelo) * deg2rad;
+
+        if (abs(omegaCmd) < 0.1) omegaCmd = 0;
+
+        ChassisSpeeds xAlignSpeeds = {desiredChassisSpeeds_.vX, desiredChassisSpeeds_.vY, omegaCmd};
+
+        double yawCurrent = -(1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
+        desiredChassisSpeeds = rotateChassisSpeed(xAlignSpeeds, yawCurrent);
 
     }
     WheelSpeeds wheelSpeeds = chassisSpeedsToWheelSpeeds(desiredChassisSpeeds); // in m/s (for now)
@@ -635,8 +665,9 @@ int ChassisSubsystem::motorPIDtoPower(MotorLocation location, double speed, uint
     return power;
 }
 
-void ChassisSubsystem::setYawReference(DJIMotor *motor, double initial_offset_ticks)
+void ChassisSubsystem::setYawReference(DJIMotor *motor, double initial_offset_ticks, int yawAlign_)
 {
+    yawAlign = yawAlign_;
     yaw = motor;
     yawPhase = 360.0 * (1.0 - (initial_offset_ticks / TICKS_REVOLUTION)); // change Yaw to CCW +, and ranges from 0 to 360
 }

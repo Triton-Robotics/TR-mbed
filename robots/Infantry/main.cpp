@@ -11,7 +11,7 @@ constexpr float LOWERBOUND = -35.0;
 constexpr float UPPERBOUND = 40.0;
 
 // YAW ENCODER FOR ALIGNMENT
-constexpr int YAW_ALIGN = 1680; // (6500 + 8192/8) % 8192;
+constexpr int YAW_ALIGN = 3750; // (6500 + 8192/8) % 8192;
 
 //DEGREES PER SECOND AT MAX
 constexpr float JOYSTICK_SENSITIVITY_YAW_DPS = 180.0; 
@@ -134,7 +134,7 @@ int main(){
     bool shootReady = false;
 
     //CHASSIS
-    Chassis.setYawReference(&yaw, 6500); //the number of ticks of yaw considered to be robot-front
+    Chassis.setYawReference(&yaw, 6500, YAW_ALIGN); //the number of ticks of yaw considered to be robot-front
     //Common values for reference are 6500 and 2500
     Chassis.setSpeedFF_Ks(CHASSIS_FF_KICK); //feed forward "kick" for wheels, a constant multiplier of max power in the direcion of movment
 
@@ -324,7 +324,7 @@ int main(){
                 Chassis.setChassisSpeeds({jx * max_linear_vel,
                                           jy * max_linear_vel,
                                           0},
-                                          ChassisSubsystem::YAW_ORIENTED);
+                                          ChassisSubsystem::ROBOT_ALIGNED, yawVelo);
 
                 // Chassis.setChassisSpeeds({-jetson_received_odom.y_vel * max_linear_vel, 
                 //                             jetson_received_odom.x_vel * max_linear_vel, 
@@ -338,42 +338,42 @@ int main(){
                 //use encoder tick to use beyblade to rotate to proper alignment
 
                 // Desired chassis orientation (still testing)
-                int yawCurrentDeg = yaw.getData(ANGLE);
-                //takes data from yaw encoder rather than IMU for better stability
+                // int yawCurrentDeg = yaw.getData(ANGLE);
+                // //takes data from yaw encoder rather than IMU for better stability
 
-                // Compute yaw error(how much the yaw needs to recorrect)
-                float yawError = 360.0 * ((yawCurrentDeg - YAW_ALIGN) % 8192) / 8192;
-                while (yawError > 180) yawError -= 360;
-                while (yawError < -180) yawError += 360;
+                // // Compute yaw error(how much the yaw needs to recorrect)
+                // float yawError = 360.0 * ((yawCurrentDeg - YAW_ALIGN) % 8192) / 8192;
+                // while (yawError > 180) yawError -= 360;
+                // while (yawError < -180) yawError += 360;
                 
-                if (abs(yawError) < 5) yawError = 0;
+                // if (abs(yawError) < 5) yawError = 0;
 
-                if ((yawError >= 45 && yawError < 135)) {
-                    yawError -= 90;
-                }
-                if ((yawError >= 135)) {
-                    yawError -= 180;
-                }
-                if (yawError < -135) {
-                    yawError += 180;
-                }
-                if ((yawError >= -135 && yawError < -45)) {
-                    yawError += 90;
-                }
+                // if ((yawError >= 45 && yawError < 135)) {
+                //     yawError -= 90;
+                // }
+                // if ((yawError >= 135)) {
+                //     yawError -= 180;
+                // }
+                // if (yawError < -135) {
+                //     yawError += 180;
+                // }
+                // if ((yawError >= -135 && yawError < -45)) {
+                //     yawError += 90;
+                // }
 
-                float gain_align = 2; //tune these two for optimal performance
-                float gain_yaw = 3;
-                float deg2rad = PI/180; // convert to rad and just run at 2x that rad/s
-                float omegaCmd = (gain_align * yawError + gain_yaw * yawVelo) * deg2rad;
+                // float gain_align = 2; //tune these two for optimal performance
+                // float gain_yaw = 3;
+                // float deg2rad = PI/180; // convert to rad and just run at 2x that rad/s
+                // float omegaCmd = (gain_align * yawError + gain_yaw * yawVelo) * deg2rad;
 
-                if (abs(omegaCmd) < 0.1) omegaCmd = 0;
+                // if (abs(omegaCmd) < 0.1) omegaCmd = 0;
 
-                ChassisSpeeds xAlignSpeeds = {jx * max_linear_vel, jy * max_linear_vel, omegaCmd};
+                // ChassisSpeeds xAlignSpeeds = {jx * max_linear_vel, jy * max_linear_vel, omegaCmd};
 
-                Chassis.setChassisSpeeds(xAlignSpeeds, ChassisSubsystem::YAW_ORIENTED);
+                // Chassis.setChassisSpeeds(xAlignSpeeds, ChassisSubsystem::YAW_ORIENTED);
 
-                // Chassis.setChassisSpeeds(beybladeSpeeds,
-                //                           ChassisSubsystem::YAW_ORIENTED);
+                Chassis.setChassisSpeeds(beybladeSpeeds,
+                                          ChassisSubsystem::YAW_ORIENTED);
             }else{
                 //OFF
                 Chassis.setWheelPower({0,0,0,0});

@@ -170,7 +170,7 @@ public:
      *
      * @param desiredChassisSpeeds The robot-relative speeds (vX, vY, and vOmega) in m/s
      */
-    float setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode = ROBOT_ORIENTED, ChassisSpeeds yawVelo);
+    float setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode = ROBOT_ORIENTED, double yawVelo = 0.0);
 
     /**
      * The rotateChassisSpeed method
@@ -297,7 +297,8 @@ public:
      * @param motor your Yaw Motor reference as in `&{motor_name}`
      * @param initial_offset_ticks initial offset of your Yaw Motor Angle in ticks (try pass it as double)
      */
-    void setYawReference(DJIMotor *motor, double initial_offset_ticks);
+    void setYawReference(DJIMotor *motor, double initial_offset_ticks, int
+         yawAlign);
 
     ChassisSpeeds desiredChassisSpeeds;
     WheelSpeeds desiredWheelSpeeds;
@@ -328,6 +329,7 @@ public:
      * yawPhase is an initial offset of your Yaw Motor Angle (basically which direction you want your Heading to be w.r.t Yaw Motor)
     */
     double yawPhase;
+    int yawAlign;
     int testData[300][4];
     int testDataIndex = 0;
 
