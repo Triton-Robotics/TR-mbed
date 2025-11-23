@@ -332,46 +332,6 @@ int main(){
                 //                             ChassisSubsystem::YAW_ORIENTED);
             }else if (drive == 'd' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::DOWN)){
                 //BEYBLADE DRIVING CODE
-                // imuAngles.yaw to get the angle
-                //no need to find tolerance if it's just a switch: only implementation
-                // edit code in here to set x-drive
-                //use encoder tick to use beyblade to rotate to proper alignment
-
-                // Desired chassis orientation (still testing)
-                // int yawCurrentDeg = yaw.getData(ANGLE);
-                // //takes data from yaw encoder rather than IMU for better stability
-
-                // // Compute yaw error(how much the yaw needs to recorrect)
-                // float yawError = 360.0 * ((yawCurrentDeg - YAW_ALIGN) % 8192) / 8192;
-                // while (yawError > 180) yawError -= 360;
-                // while (yawError < -180) yawError += 360;
-                
-                // if (abs(yawError) < 5) yawError = 0;
-
-                // if ((yawError >= 45 && yawError < 135)) {
-                //     yawError -= 90;
-                // }
-                // if ((yawError >= 135)) {
-                //     yawError -= 180;
-                // }
-                // if (yawError < -135) {
-                //     yawError += 180;
-                // }
-                // if ((yawError >= -135 && yawError < -45)) {
-                //     yawError += 90;
-                // }
-
-                // float gain_align = 2; //tune these two for optimal performance
-                // float gain_yaw = 3;
-                // float deg2rad = PI/180; // convert to rad and just run at 2x that rad/s
-                // float omegaCmd = (gain_align * yawError + gain_yaw * yawVelo) * deg2rad;
-
-                // if (abs(omegaCmd) < 0.1) omegaCmd = 0;
-
-                // ChassisSpeeds xAlignSpeeds = {jx * max_linear_vel, jy * max_linear_vel, omegaCmd};
-
-                // Chassis.setChassisSpeeds(xAlignSpeeds, ChassisSubsystem::YAW_ORIENTED);
-
                 Chassis.setChassisSpeeds(beybladeSpeeds,
                                           ChassisSubsystem::YAW_ORIENTED);
             }else{
