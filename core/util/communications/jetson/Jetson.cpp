@@ -5,7 +5,7 @@
 #define ODOM_HEADER 0xDD
 #define JETSON_READ_BUFF_SIZE 500
 #define JETSON_READ_MSG_SIZE 11 // old code
-#define JETSON_MAX_PACKET_SIZE 117
+#define JETSON_MAX_PACKET_SIZE (9+2) * (13+2)
 char nucleo_value[50] = {0};
 char jetson_read_buff[JETSON_READ_BUFF_SIZE] = {0};
 int jetson_read_buff_pos = 0;
@@ -286,7 +286,7 @@ void jetson_send_spi(SPISlave &spiJetson, const Jetson_send_ref& ref_data, const
         // bcJetson.sync();
         // bcJetson.write(nucleo_value, (data_buf.size + 2));
         for (int i = 0; i < (data_buf.size + 2); i++) {
-            if (spiJetson.receive()) spiJetson.reply(nucleo_value[i]);
+            spiJetson.reply(nucleo_value[i]);
         }
     }
     else if (msg_type == 2) {
@@ -322,7 +322,7 @@ void jetson_send_spi(SPISlave &spiJetson, const Jetson_send_ref& ref_data, const
         // bcJetson.sync();
         // bcJetson.write(nucleo_value, (data_buf.size + 2));
         for (int i = 0; i < (data_buf.size + 2); i++) {
-            if (spiJetson.receive()) spiJetson.reply(nucleo_value[i]);
+            spiJetson.reply(nucleo_value[i]);
         }
     }
     else {
@@ -373,16 +373,16 @@ void jetson_send_spi(SPISlave &spiJetson, const Jetson_send_ref& ref_data, const
         // bcJetson.sync();
         // bcJetson.write(nucleo_value, (data_buf.size + 2) + (data_buf2.size + 2));
         for (int i = 0; i < (data_buf.size + 2) + (data_buf2.size + 2); i++) {
-            if (spiJetson.receive()) spiJetson.reply(nucleo_value[i]);
+            spiJetson.reply(nucleo_value[i]);
         }
     }
 }
 
 
 ssize_t jetson_read_spi(SPISlave &spiJetson, Jetson_read_data& read_data, Jetson_read_odom& odom_data) {
-    if(!spiJetson.receive()) {
-        return -1;
-    }
+    // if(!spiJetson.receive()) {
+    //     return -1;
+    // }
 
     int available_space = JETSON_READ_BUFF_SIZE - jetson_read_buff_pos;
     if (available_space < JETSON_MAX_PACKET_SIZE) {
@@ -394,11 +394,13 @@ ssize_t jetson_read_spi(SPISlave &spiJetson, Jetson_read_data& read_data, Jetson
     }
 
     ssize_t bytes_read = 0; // bcJetson.read(jetson_read_buff + jetson_read_buff_pos, available_space);
-    while (spiJetson.receive() && available_space > 0) {
-        jetson_read_buff[jetson_read_buff_pos + bytes_read] = spiJetson.read();
+    while (available_space > 0) {
+        if (spiJetson.receive()) {
+            jetson_read_buff[jetson_read_buff_pos + bytes_read] = spiJetson.read();
 
-        bytes_read += 1;
-        available_space -= 1;
+            bytes_read += 1;
+            available_space -= 1;
+        }
     }
 
     if(bytes_read == -EAGAIN) {
@@ -413,7 +415,7 @@ ssize_t jetson_read_spi(SPISlave &spiJetson, Jetson_read_data& read_data, Jetson
 
     if (bytes_read < JETSON_READ_MSG_SIZE) {
         jetson_read_buff_pos += bytes_read;
-        return -1;
+        return -2;
     }
 
     for (int i = 0; i < bytes_read; ++i) {
@@ -460,5 +462,5 @@ ssize_t jetson_read_spi(SPISlave &spiJetson, Jetson_read_data& read_data, Jetson
 
     jetson_read_buff_pos += bytes_read;
 
-    return -1;
+    return bytes_read;
 }

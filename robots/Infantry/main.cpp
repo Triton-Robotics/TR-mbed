@@ -65,8 +65,9 @@ int main(){
     usbSerial.set_blocking(false);
 
     bcJetson.set_blocking(false);
-    spiJetson.format(8, 3);
+    spiJetson.format(8, 0);
     spiJetson.frequency(1000000);
+    spiJetson.reply(0x00);
 
     /*
     * MOTORS SETUP AND PIDS
@@ -212,6 +213,7 @@ int main(){
 
             // int readResult = jetson_read_values(bcJetson, jetson_received_data, jetson_received_odom);
             int readResult = jetson_read_spi(spiJetson, jetson_received_data, jetson_received_odom);
+            printff("%d\n", readResult);
 
             if(cv_enabled){
                 if(readResult > 0){
@@ -232,12 +234,7 @@ int main(){
             if (jetson_received_odom.calibration == 1) {
                 calibrated = Chassis.setOdomReference();
             }
-            if (!spiJetson.receive()) {
-                printff("A\n");
-            }
-            else {
-                printff("%.2f %.2f %.2f %d\n", jetson_received_odom.x_vel, jetson_received_odom.y_vel, jetson_received_odom.rotation, jetson_received_odom.calibration);
-            }
+            printff("%.2f %.2f %.2f %d\n", jetson_received_odom.x_vel, jetson_received_odom.y_vel, jetson_received_odom.rotation, jetson_received_odom.calibration);
 
             #ifdef USE_IMU
             imu.get_angular_position_quat(&imuAngles);
