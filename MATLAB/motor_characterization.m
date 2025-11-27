@@ -67,6 +67,39 @@ figure(2)
 bode(final_tf)
 
 
+%% Generating the Hessian
+
+function [F, G] = buildPrediction(Ad,Bd,Cd,Dd,N)
+    nx = size(Ad,1);
+    nu = size(Bd,2);
+    ny = size(Cd,1);
+
+    % preallocate
+    F = zeros(ny*N, nx);
+    G = zeros(ny*N, nu*N);
+
+    Ad_pow = eye(nx);
+    for i = 1:N
+        Ad_pow = Ad_pow * Ad;               % Ad^i
+        F(((i-1)*ny+1):(i*ny), :) = Cd * Ad_pow;
+        for j = 1:i
+            % contribution of u_{j-1} to y_i
+            G_block = Cd * (Ad^(i-j)) * Bd;
+            if ~isempty(Dd) && j==i
+                G_block = G_block + Dd;    % direct feedthrough for same-step input
+            end
+            G(((i-1)*ny+1):(i*ny), ((j-1)*nu+1):(j*nu)) = G_block;
+        end
+    end
+end
+
+N = 1;
+
+[F_h, G] = buildPrediction(A, B, C, D, N);
+
+
+
+
 %% PID Tuning OR PUT IT INTO PID_AUTOTUNE.SLX
 
 opts = pidtuneOptions('DesignFocus', 'reference-tracking', 'NumUnstablePoles', 2);
