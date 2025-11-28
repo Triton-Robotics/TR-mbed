@@ -50,7 +50,6 @@ if (DISABLE_WARNINGS)
     add_compile_options(-w)
 endif()
 
-add_compile_options(-O3)
 
 # Enable cmake for mbed
 include(${MBED_PATH}/tools/cmake/app.cmake)
