@@ -5,6 +5,7 @@ DigitalOut led(L25);
 DigitalOut led2(L26);
 DigitalOut led3(L27);
 DigitalOut ledbuiltin(LED1);
+AnalogIn encoder(PA_7);
 
 //CONSTANTS
 constexpr float LOWERBOUND = -35.0;
@@ -56,6 +57,7 @@ BNO055_ANGULAR_POSITION_typedef imuAngles;
 
 
 int main(){
+    float yaw_percent = encoder.read();
     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
     DJIMotor::s_sendValues();
     DJIMotor::s_getFeedback();
@@ -67,26 +69,26 @@ int main(){
     * MOTORS SETUP AND PIDS
     */
     //YAW
-    yaw.setSpeedPID(1,0,0);
+    yaw.setSpeedPID(5,0,0);
     yaw.setSpeedIntegralCap(8000);
     yaw.setSpeedOutputCap(32000);
 
-    yaw.setPositionPID(1.18, 0, 0);
+    yaw.setPositionPID(1, 0, 0);
     yaw.pidPosition.dBuffer.lastY = 5;
     yaw.pidPosition.setIntegralCap(2);
     yaw.pidPosition.setOutputCap(90);
 
     yaw.outputCap = 16000;
     yaw.useAbsEncoder = false;
-    
-
     int yawVelo = 0;
     #ifdef USE_IMU
     imu.get_angular_position_quat(&imuAngles);
     float yaw_desired_angle = imuAngles.yaw + 180;
     #else
-    float yaw_desired_angle = (yaw>>ANGLE) * 360.0 / TICKS_REVOLUTION;
-    float yaw_current_angle = (yaw>>ANGLE) * 360.0 / TICKS_REVOLUTION;
+    // float yaw_desired_angle = (yaw>>ANGLE) * 360.0 / TICKS_REVOLUTION;
+    // float yaw_current_angle = (yaw>>ANGLE) * 360.0 / TICKS_REVOLUTION;
+    float yaw_desired_angle = yaw_percent * 360.0;
+    float yaw_current_angle = yaw_percent * 360.0;
     #endif
 
     //PITCH
@@ -127,9 +129,8 @@ int main(){
     bool shoot = false;
     int shootTargetPosition = 36*8190 ;
     bool shootReady = false;
-
     //CHASSIS
-    Chassis.setYawReference(&yaw, 6500); //the number of ticks of yaw considered to be robot-front
+    Chassis.setYawReference(&yaw, yaw_percent); //the number of ticks of yaw considered to be robot-front
     //Common values for reference are 6500 and 2500
     Chassis.setSpeedFF_Ks(CHASSIS_FF_KICK); //feed forward "kick" for wheels, a constant multiplier of max power in the direcion of movment
 
@@ -154,8 +155,11 @@ int main(){
 
     MecanumChassisSpeeds cs;
 
+    float chassis_rotation_radps = 0;
+    int chassis_rotation_rpm = 0;
     while(true){
         timeStart = us_ticker_read();
+        yaw_percent = encoder.read();
 
         //CV loop runs every 2ms
         if((timeStart - loopTimerCV) / 1000 > 1) { //1 with sync or 2 without
@@ -195,6 +199,9 @@ int main(){
                 chassis_buffer = power_heat_data.buffer_energy;
             }
 
+            // Get accumulated multi-turn position (pre-gearbox)
+            int multiTurnTicks = yaw.getData(MULTITURNANGLE);
+
             Chassis.periodic();
             cs = Chassis.getChassisSpeeds();
             remoteRead();
@@ -219,7 +226,8 @@ int main(){
             #ifdef USE_IMU
             imu.get_angular_position_quat(&imuAngles);
             #else
-            yaw_current_angle = (yaw>>ANGLE) * 360.0 / TICKS_REVOLUTION;
+            // yaw_current_angle = (yaw>>ANGLE) * 360.0 / TICKS_REVOLUTION;
+            yaw_current_angle = yaw_percent * 360.0;
             #endif
 
             //Keyboard-based drive and shoot mode
@@ -288,7 +296,7 @@ int main(){
 
             float max_linear_vel = -1.24 + 0.0513 * chassis_power_limit + -0.000216 * (chassis_power_limit * chassis_power_limit);
             // float max_omega = 0.326 + 0.0857 * chassis_power_limit + -0.000183 * (chassis_power_limit * chassis_power_limit);
-            float max_omega = 4.8;
+            float max_omega = 2.4; //4.8
 
             if(remote.keyPressed(Remote::Key::CTRL)){
               jx = 0.0;
@@ -312,13 +320,13 @@ int main(){
                 //REGULAR DRIVING CODE
                 Chassis.setChassisSpeeds({jx * max_linear_vel,
                                           jy * max_linear_vel,
-                                          0},
-                                          MecanumChassisSubsystem::YAW_ORIENTED);
+                                          0}, yaw_percent,
+                                          MecanumChassisSubsystem::YAW_ORIENTED); // pass in yaw_percent to be read instead of yaw.getData(ANGLE)/TICKS_REVOLUTION
             }else if (drive == 'd' || (drive =='o' && remote.rightSwitch() == Remote::SwitchState::DOWN)){
                 //BEYBLADE DRIVING CODE
                 
-                Chassis.setChassisSpeeds(beybladeSpeeds,
-                                          MecanumChassisSubsystem::YAW_ORIENTED);
+                Chassis.setChassisSpeeds(beybladeSpeeds,yaw_percent,
+                                          MecanumChassisSubsystem::YAW_ORIENTED); // pass in yaw_percent to be read instead of yaw.getData(ANGLE)/TICKS_REVOLUTION
             }else{
                 //OFF
                 Chassis.setWheelPower({0,0,0,0});
@@ -328,9 +336,8 @@ int main(){
             //YAW CODE
             float error = 0;
             if (drive == 'u' || drive == 'd' || (drive =='o' && (remote.rightSwitch() == Remote::SwitchState::UP || remote.rightSwitch() == Remote::SwitchState::DOWN))){
-                float chassis_rotation_radps = cs.vOmega;
-                int chassis_rotation_rpm = chassis_rotation_radps * 60 / (2*PI) * 1.5; //I added this 4 but I don't know why.
-                
+                chassis_rotation_radps = cs.vOmega;
+                chassis_rotation_rpm = chassis_rotation_radps * 60 / (2*PI) * 0.7; // need an added constant scalar term because cs.Vomega is off
                 //Regular Yaw Code
                 yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * elapsedms / 1000;
                 yaw_desired_angle -= jyaw * JOYSTICK_SENSITIVITY_YAW_DPS * elapsedms / 1000;
@@ -341,10 +348,10 @@ int main(){
                 error = DJIMotor::s_calculateDeltaPhaseF(yaw_desired_angle, imuAngles.yaw + 180, 360);
                 yawVelo = yaw.calculatePeriodicPosition(error, timeSure - prevTimeSure, chassis_rotation_rpm);
                 #else
-                yawVelo = -jyaw * JOYSTICK_SENSITIVITY_YAW_DPS / 360.0 * 60;
+                yawVelo = -jyaw * JOYSTICK_SENSITIVITY_YAW_DPS / 360.0 * 60; // convert dps to rpm
                 #endif
                 //yawVelo = 0;
-                // yawVelo -= chassis_rotation_rpm;
+                yawVelo -= chassis_rotation_rpm; // this is necessary for imuless chassis rotation??
 
                 int dir = 0;
                 if(yawVelo > 1){
@@ -352,7 +359,8 @@ int main(){
                 }else if(yawVelo < -1){
                     dir = -1;
                 }
-                yaw.pidSpeed.feedForward = 1221 * dir + 97.4 * yawVelo;
+                // yaw.pidSpeed.feedForward = 1221 * dir + 97.4 * yawVelo; // this ff is for gm6020
+                yawVelo *= M3508_GEAR_RATIO; // rpm of postgear shaft
                 yaw.setSpeed(yawVelo);
             }else{
                 //Off
@@ -397,7 +405,7 @@ int main(){
                 }
 
                 float pitch_current_radians = -(pitch_current_angle / 360) * 2 * M_PI;
-                pitch.pidSpeed.feedForward = (cos(pitch_current_radians) * -2600) + (1221 * dir + 97.4 * yawVelo);
+                pitch.pidSpeed.feedForward = (cos(pitch_current_radians) * -2600) + (1221 * dir + 97.4 * pitchVelo);
                 //pitch.setPosition(-int((pitch_desired_angle / 360) * TICKS_REVOLUTION - pitch_zero_offset_ticks));
                 pitch.setSpeed(pitchVelo);
             }else{
@@ -484,7 +492,7 @@ int main(){
                 //printff("yaw_des_v:%d yaw_act_v:%d\n", yawVelo, yaw>>VELOCITY);
                 //printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
                 #endif
-                //printff("yaw_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
+                // printff("yaw_des_v:%d yaw_act_v:%d\n", yawVelo, yaw>>VELOCITY);
 
                 //printff("ydv:%d yav:%d PWR:%d ", pitchVelo, pitch>>VELOCITY, pitch>>POWEROUT);
                 //printff("yd:%.3f ya:%.3f [%d] %.3f ", pitch_desired_angle, pitch_current_angle, yaw>>ANGLE, pitch_desired_angle- pitch_current_angle);
@@ -495,7 +503,7 @@ int main(){
                 //printff("%lu %.2f %.2f\n", loopTimer, pitch_desired_angle, pitch_current_angle);
                 
                 //printff("pitch_des:%.3f pitch_act:%.3f [%d]\n", pitch_desired_angle, pitch_current_angle, pitch>>ANGLE);
-                //printff("cX%.1f cY%.1f cOmega%.3f cRPM%.1f\n", cs.vX, cs.vY, cs.vOmega, cs.vOmega * 60 / (2*M_PI) * 4);
+                //printff("cX%.1f cY%.1f cOmega%.3f cRPM%.1f\n", cs.vX, cs.vY, cs`.vOmega, cs.vOmega * 60 / (2*M_PI) * 4);
                 // printff("Chassis: LF:%c RF:%c LB:%c RB:%c Yaw:%c Pitch:%c Flywheel_L:%c Flywheel_R:%c Indexer:%c\n", 
                 //     Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).isConnected() ? 'y' : 'n', 
                 //     Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).isConnected() ? 'y' : 'n', 
@@ -526,18 +534,21 @@ int main(){
                 // WheelSpeeds ac = Chassis.getWheelSpeeds();
                 // WheelSpeeds ws = Chassis.chassisSpeedsToWheelSpeeds(beybladeSpeeds);
                 //printff("CH: %.2f %.2f %.2f %.2f ", ws.LF,ws.RF,ws.LB,ws.RB);
-                //printff("A: %.2f %.2f %.2f %.2f\n", ac.LF,ac.RF,ac.LB,ac.RB);
+                // printff("%d, %.3f\n",multiTurnTicks, postGearboxAngle);
+
+                printff("%.3f %d %.3f\n", yaw_current_angle, yawVelo, chassis_rotation_radps);
+                
                 // printff("A_RAW: %d %d %d %d\n", 
                 //     Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).getData(VELOCITY), 
                 //     Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).getData(VELOCITY), 
                 //     Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(VELOCITY), 
                 //     Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).getData(VELOCITY));
-                printff("A_MPS: %.2f %.2f %.2f %.2f\n", 
-                    Chassis.getMotorSpeed(MecanumChassisSubsystem::LEFT_FRONT, MecanumChassisSubsystem::METER_PER_SECOND), 
-                    Chassis.getMotorSpeed(MecanumChassisSubsystem::RIGHT_FRONT, MecanumChassisSubsystem::METER_PER_SECOND), 
-                    Chassis.getMotorSpeed(MecanumChassisSubsystem::LEFT_BACK, MecanumChassisSubsystem::METER_PER_SECOND), 
-                    Chassis.getMotorSpeed(MecanumChassisSubsystem::RIGHT_BACK, MecanumChassisSubsystem::METER_PER_SECOND));
-                //printff("%d,%d,%d,%d\n", abs(LFLYWHEEL>>VELOCITY), abs(LFLYWHEEL>>POWEROUT), abs(RFLYWHEEL>>VELOCITY), abs(RFLYWHEEL>>POWEROUT));
+                // printff("A_MPS: %.2f %.2f %.2f %.2f\n", 
+                //     Chassis.getMotorSpeed(MecanumChassisSubsystem::LEFT_FRONT, MecanumChassisSubsystem::METER_PER_SECOND), 
+                //     Chassis.getMotorSpeed(MecanumChassisSubsystem::RIGHT_FRONT, MecanumChassisSubsystem::METER_PER_SECOND), 
+                //     Chassis.getMotorSpeed(MecanumChassisSubsystem::LEFT_BACK, MecanumChassisSubsystem::METER_PER_SECOND), 
+                //     Chassis.getMotorSpeed(MecanumChassisSubsystem::RIGHT_BACK, MecanumChassisSubsystem::METER_PER_SECOND));
+                // printff("%d,%d,%d,%d\n", abs(LFLYWHEEL>>VELOCITY), abs(LFLYWHEEL>>POWEROUT), abs(RFLYWHEEL>>VELOCITY), abs(RFLYWHEEL>>POWEROUT));
                 // if(remote.rightSwitch() == Remote::SwitchState::UP){
                     // printff("%d %d %u %u %u %f ", abs(LFLYWHEEL>>VELOCITY), abs(RFLYWHEEL>>VELOCITY), shoot_data.bullet_type, shoot_data.shooter_number, shoot_data.launching_frequency, *(float*)(((uint8_t*)&shoot_data)+4) /*((shoot_data.initial_speed / 0.06) * (30 / M_PI))*/);
                     // for(int i = 0; i < 7; i ++){

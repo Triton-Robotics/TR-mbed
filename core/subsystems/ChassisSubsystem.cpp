@@ -62,105 +62,25 @@ float ChassisSubsystem::limitAcceleration(float desiredRPM, float previousRPM, i
 {
     float maxAccel = 100;
     float diff = desiredRPM - previousRPM;
-
     
     if ((desiredRPM > 0 && previousRPM < 0) || (desiredRPM < 0 && previousRPM > 0)) { // if robot trying to sudden change direction
         return 0;
     }
     
-    
     if (diff > maxAccel){   // if the difference is greater than the max acceleration
-
-
         if(power == 0) {
             return desiredRPM; // let robot do its thing b/c it wont take power
         }
-
         return previousRPM + maxAccel;
-
-    }
-    else if (diff < -maxAccel) {
+    } else if (diff < -maxAccel) {
         if(power == 0) {
             return desiredRPM; // let robot do its thing b/c it wont take power
         }
-
         return previousRPM - maxAccel;
     }
-
     else {
         return desiredRPM; // under acceleration cap
     }
-
-
-
-
-    // if (diff > maxAccel){   // if the difference is greater than the max acceleration
-
-    //     if(power > 0) { // power: + rpm: + (acceleraiton)
-    //         return previousRPM + maxAccel;
-    //     }
-
-    //     else if(power < 0 && desiredRPM > 0) { // power: - rpm: + (deceleration)
-    //         return previousRPM + maxAccel; // ignore diff, just decelerate 
-    //     }
-
-    //     else if(power == 0) {
-    //         return desiredRPM; // let robot do its thing b/c it wont take power
-    //     }
-
-    // }
-    // else if (diff < -maxAccel) {
-        
-    //     if(power < 0 && desiredRPM < 0) { // power: - rpm: - (acceleration)
-    //         return previousRPM - maxAccel; 
-    //     }
-
-    //     else if(power > 0 && desiredRPM < 0) { // power: + rpm: - (deceleration)
-    //         return previousRPM - maxAccel; // ignore diff, just decelerate
-    //     }
-
-    //     else if(power == 0) {
-    //         return desiredRPM; // let robot do its thing b/c it wont take power
-    //     }
-
-    // }
-    // else {
-    //     return desiredRPM; // under acceleration
-    // }
-
-
-
-
-
-
-
-
-
-    // if(previousRPM > 0){
-    //     float maxRPMthisFrame = previousRPM + maxAccel;
-    //     if(desiredRPM > 0){
-    //         if(desiredRPM > maxRPMthisFrame){
-    //             return maxRPMthisFrame;
-    //         }else {
-    //             return desiredRPM;
-    //         }
-    //     }else {
-    //         return 0;
-    //     }
-    // }else if(previousRPM < 0){
-    //     float minRPMthisFrame = previousRPM - maxAccel;
-    //     if(desiredRPM < 0){
-    //         if(desiredRPM < minRPMthisFrame){
-    //             return minRPMthisFrame;
-    //         }else {
-    //             return desiredRPM;
-    //         }
-    //     }else{
-    //         return 0;
-    //     }
-    // }else{
-    //     return 0;
-    // }
 }
 
 float ChassisSubsystem::p_theory(int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm){
@@ -292,9 +212,6 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     float scale = Bisection(p1, p2, p3, p4, r1, r2, r3, r4, power_limit);
 
 
-
-    
-
     // printf("Before Set:%.3f\n", p_theory(p1*scale, p2*scale, p3*scale, p4*scale, r1, r2, r3, r4));
 
     LF.setPower(powers[0]*scale);
@@ -308,9 +225,6 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     p4 = abs(RB.getData(POWEROUT));
 
     // printf("After Set:%.3f\n", p_theory(p1, p2, p3, p4, r1, r2, r3, r4));
-
-
-
     return scale;
 }
 

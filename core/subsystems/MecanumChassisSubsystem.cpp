@@ -43,10 +43,10 @@ MecanumChassisSubsystem::MecanumChassisSubsystem(short lfId, short rfId, short l
     // LB.setSpeedPID(3, 0, 0);
     // RB.setSpeedPID(3 , 0, 0);
 
-    pid_LF.setPID(3, 0, 0);
-    pid_RF.setPID(3, 0, 0);
-    pid_LB.setPID(3, 0, 0);
-    pid_RB.setPID(3, 0, 0);
+    pid_LF.setPID(1.5, 0, 0);
+    pid_RF.setPID(1.5, 0, 0);
+    pid_LB.setPID(1.5, 0, 0);
+    pid_RB.setPID(1.5, 0, 0);
 
     brakeMode = COAST;
 
@@ -244,18 +244,41 @@ MecanumChassisSpeeds MecanumChassisSubsystem::getChassisSpeeds() const
     return m_chassisSpeeds;
 }
 
-float MecanumChassisSubsystem::setChassisSpeeds(MecanumChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode)
+float MecanumChassisSubsystem::setChassisSpeeds(MecanumChassisSpeeds desiredChassisSpeeds_, float encoder, DRIVE_MODE mode)
 {
+    // if (mode == REVERSE_YAW_ORIENTED)
+    // {
+    //     // printf("%f\n", double(yaw->getData(ANGLE)));
+    //     double yawCurrent = (1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
+    //     desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yawCurrent);
+    // }
+    // else if (mode == YAW_ORIENTED)
+    // {
+    //     // printf("%f\n", double(yaw->getData(ANGLE)));
+    //     double yawCurrent = -(1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
+
+    //     desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yawCurrent);
+    // }
+    // else if (mode == ROBOT_ORIENTED)
+    // {
+    //     desiredChassisSpeeds = desiredChassisSpeeds_; // ChassisSpeeds in m/s
+    // }
+    // MecanumWheelSpeeds wheelSpeeds = chassisSpeedsToWheelSpeeds(desiredChassisSpeeds); // in m/s (for now)
+    // wheelSpeeds = normalizeWheelSpeeds(wheelSpeeds);
+    // wheelSpeeds *= (1 / (WHEEL_DIAMETER_METERS / 2) / (2 * PI / 60) * M3508_GEAR_RATIO);
+    // float scale = setWheelSpeeds(wheelSpeeds);
+    // return scale;
+
     if (mode == REVERSE_YAW_ORIENTED)
     {
         // printf("%f\n", double(yaw->getData(ANGLE)));
-        double yawCurrent = (1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
+        double yawCurrent = (1.0 - encoder) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
         desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yawCurrent);
     }
     else if (mode == YAW_ORIENTED)
     {
         // printf("%f\n", double(yaw->getData(ANGLE)));
-        double yawCurrent = -(1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
+        double yawCurrent = -(1.0 - encoder) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
         desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yawCurrent);
     }
     else if (mode == ROBOT_ORIENTED)
@@ -386,10 +409,12 @@ void MecanumChassisSubsystem::readImu()
     imu.get_angular_position_quat(&imuAngles);
 }
 
-void MecanumChassisSubsystem::setYawReference(DJIMotor *motor, double initial_offset_ticks)
+void MecanumChassisSubsystem::setYawReference(DJIMotor *motor, float initial_offset_ticks)
 {
+    // yaw = motor;
+    // yawPhase = 360.0 * (1.0 - (initial_offset_ticks / TICKS_REVOLUTION)); // change Yaw to CCW +, and ranges from 0 to 360
     yaw = motor;
-    yawPhase = 360.0 * (1.0 - (initial_offset_ticks / TICKS_REVOLUTION)); // change Yaw to CCW +, and ranges from 0 to 360
+    yawPhase = 360.0 * (1.0 - initial_offset_ticks); // change Yaw to CCW +, and ranges from 0 to 360
 }
 
 MecanumWheelSpeeds MecanumChassisSubsystem::chassisSpeedsToWheelSpeeds(MecanumChassisSpeeds chassisSpeeds)
@@ -412,10 +437,10 @@ MecanumChassisSpeeds MecanumChassisSubsystem::wheelSpeedsToChassisSpeeds(Mecanum
     float dist = chassis_radius/sqrt(2);
     // float vX = (wheelSpeeds.LF + wheelSpeeds.RF - wheelSpeeds.LB - wheelSpeeds.RB) / 4;
     // float vY = (wheelSpeeds.LF - wheelSpeeds.RF + wheelSpeeds.LB - wheelSpeeds.RB) / 4;
-    // float vOmega = (-wheelSpeeds.LF - wheelSpeeds.RF - wheelSpeeds.LB - wheelSpeeds.RB) / (4*(2 * dist));
+    float vOmega = (-wheelSpeeds.LF - wheelSpeeds.RF - wheelSpeeds.LB - wheelSpeeds.RB) / (4*(2 * dist));
     float vX = (wheelSpeeds.LF + wheelSpeeds.RF + wheelSpeeds.LB + wheelSpeeds.RB) / 4;
     float vY = (wheelSpeeds.LF - wheelSpeeds.RF - wheelSpeeds.LB + wheelSpeeds.RB) / 4;
-    float vOmega = (-wheelSpeeds.LF + wheelSpeeds.RF - wheelSpeeds.LB + wheelSpeeds.RB) / (4*(2 * dist));
+    // float vOmega = (-wheelSpeeds.LF + wheelSpeeds.RF - wheelSpeeds.LB + wheelSpeeds.RB) / (4*(2 * dist));
     return {vX, vY, vOmega};
 }
 

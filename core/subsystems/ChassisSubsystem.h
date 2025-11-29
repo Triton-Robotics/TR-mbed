@@ -327,6 +327,8 @@ public:
      * yawPhase is an initial offset of your Yaw Motor Angle (basically which direction you want your Heading to be w.r.t Yaw Motor)
     */
     double yawPhase;
+    double yawGearRatio;
+    double m3508wrapped;
     int testData[300][4];
     int testDataIndex = 0;
 
