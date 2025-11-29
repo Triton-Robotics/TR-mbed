@@ -212,7 +212,7 @@ void DJIMotor::DEPRECATEDs_getFeedback(bool debug){
             }
         }
     }
-    s_updateMultiTurnPosition();
+    DEPRECATEDs_updateMultiTurnPosition();
 }
 
 // Callback function to populate for CANBus_1
@@ -505,7 +505,7 @@ void DJIMotor::DEPRECATEDs_updateMultiTurnPosition() {
 */
 void DJIMotor::s_feedbackThread() {
     while (true) {
-        s_getFeedback();
+        DEPRECATEDs_getFeedback();
         ThisThread::sleep_for(1ms);
     }
 }

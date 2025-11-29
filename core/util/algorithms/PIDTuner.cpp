@@ -27,7 +27,7 @@ void PIDTuner::tune(unsigned long time_s, size_t iterations, size_t generations,
             motor.pidPosition.resetPID(static_cast<float>(population[i].kP), static_cast<float>(population[i].kI), static_cast<float>(population[i].kD));
 
             DJIMotor::s_sendValues();
-            DJIMotor::s_getFeedback();
+            DJIMotor::DEPRECATEDs_getFeedback();
 
             double lastError_ = DJIMotor::s_calculateDeltaPhase(0, motor.getData(ANGLE));
             double integralAbsErrorSum_ = 0;
@@ -62,7 +62,7 @@ void PIDTuner::tune(unsigned long time_s, size_t iterations, size_t generations,
                         loopTimer = timeStart;
                         DJIMotor::s_sendValues();
                     }
-                    DJIMotor::s_getFeedback();
+                    DJIMotor::DEPRECATEDs_getFeedback();
                     ThisThread::sleep_for(1ms);
                 }
                 randomizePosition();
