@@ -183,7 +183,7 @@ void DJIMotor::s_sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool de
 
 }
 
-void DJIMotor::s_getFeedback(bool debug){
+void DJIMotor::DEPRECATEDs_getFeedback(bool debug){
 
     for(int canBus = 0; canBus < CAN_HANDLER_NUMBER; canBus++){
         uint8_t receivedBytes[8] = {0, 0, 0, 0, 0, 0, 0, 0};
@@ -213,6 +213,68 @@ void DJIMotor::s_getFeedback(bool debug){
         }
     }
     s_updateMultiTurnPosition();
+}
+
+// Callback function to populate for CANBus_1
+void DJIMotor::s_getCan1Feedback(const CANMsg * msg) {
+    int canBus = 0;
+    int canID_0 = msg->id - 0x201;
+
+    // Find which motor line we are in (0x200, 0x1FF, 0x2FF)
+    int can_line = canID_0 / 4;
+
+    // Find which motor it is
+    int motor_id = canID_0 % 4;
+
+    // Update motor specific data
+    if(s_motorsExist[canBus][can_line][motor_id]) {
+        DJIMotor* motor = s_allMotors[canBus][canID_0 / 4][canID_0 % 4];
+
+        motor -> motorData[ANGLE]       = static_cast<int16_t>(msg->data[0] << 8 | msg->data[1]);
+        motor -> motorData[VELOCITY]    = static_cast<int16_t>(msg->data[2] << 8 | msg->data[3]);
+        motor -> motorData[TORQUE]      = static_cast<int16_t>(msg->data[4] << 8 | msg->data[5]);
+        motor -> motorData[TEMPERATURE] = static_cast<int16_t>(msg->data[6]);
+        motor -> timeOfLastFeedback     = us_ticker_read() / 1000;
+
+    if(motor -> motorData[TEMPERATURE] > 80)
+        printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS %d DEGREES CELSIUS ON BUS [%d] ID [%d], \"%s\" \n", msg->id, motor -> motorData[TEMPERATURE], canBus + 1, motor -> motorID_0 + 1, motor -> name.c_str());
+
+    }else if(initializedWarning){
+        printf("[WARNING] YOU HAVE A MOTOR [0x%x] {%d}{%d}{%d} ATTACHED THAT IS NOT INITIALIZED.. WHY: \n", msg->id, canBus, can_line, motor_id);
+    }
+
+    s_updateOneMultiTurn(canBus, can_line, motor_id);
+}
+
+// Callback function to populate for CANBus_2
+void DJIMotor::s_getCan2Feedback(const CANMsg * msg) {
+    int canBus = 1;
+    int canID_0 = msg->id - 0x201;
+
+    // Find which motor line we are in (0x200, 0x1FF, 0x2FF)
+    int can_line = canID_0 / 4;
+
+    // Find which motor it is
+    int motor_id = canID_0 % 4;
+
+    // Update motor specific data
+    if(s_motorsExist[canBus][can_line][motor_id]) {
+        DJIMotor* motor = s_allMotors[canBus][canID_0 / 4][canID_0 % 4];
+
+        motor -> motorData[ANGLE]       = static_cast<int16_t>(msg->data[0] << 8 | msg->data[1]);
+        motor -> motorData[VELOCITY]    = static_cast<int16_t>(msg->data[2] << 8 | msg->data[3]);
+        motor -> motorData[TORQUE]      = static_cast<int16_t>(msg->data[4] << 8 | msg->data[5]);
+        motor -> motorData[TEMPERATURE] = static_cast<int16_t>(msg->data[6]);
+        motor -> timeOfLastFeedback     = us_ticker_read() / 1000;
+
+    if(motor -> motorData[TEMPERATURE] > 80)
+        printf("[WARNING] YOU HAVE A MOTOR [0x%x] ATTACHED THAT IS %d DEGREES CELSIUS ON BUS [%d] ID [%d], \"%s\" \n", msg->id, motor -> motorData[TEMPERATURE], canBus + 1, motor -> motorID_0 + 1, motor -> name.c_str());
+
+    }else if(initializedWarning){
+        printf("[WARNING] YOU HAVE A MOTOR [0x%x] {%d}{%d}{%d} ATTACHED THAT IS NOT INITIALIZED.. WHY: \n", msg->id, canBus, can_line, motor_id);
+    }
+
+    s_updateOneMultiTurn(canBus, can_line, motor_id);
 }
 
 bool DJIMotor::s_theseConnected(DJIMotor* motors[], int size, bool debug) {
@@ -309,7 +371,76 @@ float DJIMotor::s_calculateDeltaPhaseF(float target, float current, float max) {
     return deltaPhase;
 }
 
-void DJIMotor::s_updateMultiTurnPosition() {
+void DJIMotor::s_updateOneMultiTurn(int canBus, int can_line, int motor_id) {
+    int Threshold = 3000; // From 0 to 8191
+    int curAngle, lastAngle, deltaAngle, speed;
+    DJIMotor *curMotor;
+
+    unsigned long time = us_ticker_read();
+
+    if (s_motorsExist[canBus][can_line][motor_id]) {
+        curMotor = s_allMotors[canBus][can_line][motor_id];
+
+        // Update data from most recent frame
+        curAngle = curMotor->getData(ANGLE);
+        lastAngle = curMotor->lastMotorAngle;
+        speed = curMotor->getData(VELOCITY);
+        deltaAngle = curAngle - lastAngle;
+
+        // Update multiturn data using latest data
+        double dt = 0;
+        if (curMotor->lastIntegrationTime != -1) {
+            dt = (double) (time - curMotor->lastIntegrationTime) / 1000.0;
+        }
+        
+        curMotor->integratedAngle += (int) (speed * dt * 19 * 6 / 1000.0);
+        int positiveDiff = curAngle - curMotor->integratedAngle % 8192;
+        
+        if (positiveDiff >= 0 && positiveDiff < 4096) {
+            curMotor->integratedAngle += positiveDiff;
+        } 
+        else if (positiveDiff < 0 && positiveDiff > -4096) {
+            curMotor->integratedAngle += positiveDiff;
+        } 
+        else if (positiveDiff >= 4096) {
+            curMotor->integratedAngle += positiveDiff - 8192;
+        } 
+        else if (positiveDiff <= -4096) {
+            curMotor->integratedAngle += positiveDiff + 8192;
+        } 
+        else {
+            //printf("Don't know what to do with this %i\n", positiveDiff);
+        }
+
+        if (abs(speed) < 100) {
+            if (curAngle > (8191 - Threshold) && lastAngle < Threshold)
+                curMotor->multiTurn -= deltaAngle - 8191;
+            else if (curAngle < Threshold && lastAngle > (8191 - Threshold))
+                curMotor->multiTurn += deltaAngle + 8191;
+            else
+                curMotor->multiTurn += deltaAngle;
+        }
+        else {
+            if (speed < 0 && deltaAngle > 0)     {
+                // neg skip
+                // printf("positive overclock: %i\n", (int) speed);
+                curMotor->multiTurn += deltaAngle - 8191;
+            }
+            else if (speed > 0 && deltaAngle < 0)     {
+                // pos skip
+                // printf("negative overclock: %i\n", (int) speed);
+                curMotor->multiTurn += deltaAngle + 8191;
+            }
+            else
+                curMotor->multiTurn += deltaAngle;
+        }
+        // Update new multiturn
+        curMotor->lastMotorAngle = curAngle;
+        curMotor->lastIntegrationTime = long(time);
+    }
+}
+
+void DJIMotor::DEPRECATEDs_updateMultiTurnPosition() {
     int Threshold = 3000; // From 0 to 8191
     int curAngle, lastAngle, deltaAngle, speed;
     DJIMotor *curMotor;
@@ -372,7 +503,6 @@ void DJIMotor::s_updateMultiTurnPosition() {
 /**
 * @brief the thread that runs the ever-necessary DJIMotor::s_getFeedback()
 */
-
 void DJIMotor::s_feedbackThread() {
     while (true) {
         s_getFeedback();
@@ -383,7 +513,6 @@ void DJIMotor::s_feedbackThread() {
 /**
 * @brief the thread that runs the ever-necessary DJIMotor::s_sendValues()
 */
-
 void DJIMotor::s_sendThread() {
     while (true) {
         s_sendValues();

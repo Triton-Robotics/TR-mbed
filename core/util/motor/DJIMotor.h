@@ -114,7 +114,8 @@ private:
     uint32_t timeOfLastFeedback = 0;
     uint32_t timeOfLastPID = 0;
 
-    static void s_updateMultiTurnPosition();
+    static void DEPRECATEDs_updateMultiTurnPosition();
+    static void s_updateOneMultiTurn(int canBus, int can_line, int motor_id);
     static void s_sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool debug = false);
 //    static int s_calculateDeltaTicks(int target, int current);
     void setOutput();
@@ -144,7 +145,9 @@ public:
     ~DJIMotor();
 
     static void s_setCANHandlers(CANHandler* bus_1, CANHandler* bus_2, bool threadSend = true, bool threadFeedback = true);
-    static void s_getFeedback(bool debug = false);
+    static void DEPRECATEDs_getFeedback(bool debug = false);
+    static void s_getCan1Feedback(const CANMsg * msg);
+    static void s_getCan2Feedback(const CANMsg * msg);
     static void s_sendValues(bool debug = false);
     static void s_feedbackThread();
     static void s_sendThread();

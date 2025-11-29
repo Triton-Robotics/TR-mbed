@@ -15,30 +15,32 @@ int main(){
         imuAnglesLocal.roll = imuAngles.roll;
         mutex_test.unlock();
         unsigned long mutex_ms = us_ticker_read();
-
+        
+        // jetson comms - 50-200us ish?
         if((timeStartCV - loopTimerCV) / 1000 > OUTER_LOOP_DT_MS) {
             loopTimerCV = timeStartCV;
             jetson_executor();
         }
         unsigned long cv_ms = us_ticker_read();
-
+        
         timeStart = us_ticker_read();
-
+        
         if ((timeStart - loopTimer) / 1000 > OUTER_LOOP_DT_MS){
             elapsedms = (timeStart - loopTimer) / 1000;
             loopTimer = timeStart;
             led = !led;
-
-
+            
+            
+            // Chassis updates - 50us
             Chassis.periodic(&imuAnglesLocal);
             cs = Chassis.getChassisSpeeds();
             
-            if (remoteTimer > 15) {
+            if (remoteTimer > 20) {
                 remoteTimer = 0;
                 remoteRead();
             }
             remoteTimer += 1;
-
+            
             //Chassis Code - 100-150 us
             chassis_executor();
             
@@ -47,12 +49,20 @@ int main(){
             
             // dexer + flywheel - 100us
             shoot_executor();
-
+            
+            // send CAN - 100us
             DJIMotor::s_sendValues();
         }
-        DJIMotor::s_getFeedback();
-        printff("%d,%d,%d\n", (us_ticker_read() - timeStartCV), (mutex_ms - timeStartCV), (cv_ms - timeStartCV));
-        ThisThread::sleep_for(1ms);
+        // canread - 100-200us
+        canHandler1.readAllCan();
+        canHandler2.readAllCan();
+
+        printff("tt%d\n", (us_ticker_read() - timeStartCV));
+
+        // Sleep if our loop is shorter than 1ms to finish other executions
+        if ((us_ticker_read() - timeStartCV) < 1000) {
+            ThisThread::sleep_until(us_ticker_read() - timeStartCV);
+        }
     }
 }
 
@@ -60,7 +70,17 @@ int main(){
 void init() {
     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
     DJIMotor::s_sendValues();
-    DJIMotor::s_getFeedback();
+    canHandler1.registerCallback(0x201, 0x20D, DJIMotor::s_getCan1Feedback);
+    canHandler2.registerCallback(0x201, 0x20D, DJIMotor::s_getCan2Feedback);
+
+    // Testing Non DJI devices on CAN
+    canHandler2.registerCallback(0x100, [](const CANMsg* msg) {
+        printff("0x%x 0x%x\n", msg->data[6], msg->data[7]);
+    });
+
+    canHandler1.readAllCan();
+    canHandler2.readAllCan();
+
     usbSerial.set_blocking(false);
     bcJetson.set_blocking(false);
     
