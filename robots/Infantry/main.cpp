@@ -1,6 +1,7 @@
 // #include "Infantry.h"
 #include "subsystems/ChassisSubsystem.h"
 #include "MainLoop.h"
+#include "subsystems/ShooterSubsystem.h"
 
 constexpr float LOWERBOUND = -35.0;
 constexpr float UPPERBOUND = 40.0;
@@ -27,6 +28,27 @@ PID pitchCascade(1.5, 0.0005, 0.05);
 PID sure(0.1, 0, 0.001);
 ChassisSpeeds cs;
 
+static void init()
+{
+    ShooterSubsystem::config shooter_config =
+        {
+            .flywheelL_id = 1,
+            .flywheelR_id = 2,
+        };
+}
+
+static void periodic()
+{
+}
+
+static void end_of_loop()
+{
+}
+
+static void print_rate_limited()
+{
+}
+
 int main()
 {
 
@@ -41,28 +63,12 @@ int main()
     run_main_loop(hooks);
 }
 
-// TODO: 
+// TODO:
 /**
- * Subsystems should have a periodic function 
+ * Subsystems should have a periodic function
  * we define a enum for the state of the subsystem (SHOOT, STOP, BURST3, etc.)
  * on controller input we just change enum. Shooter.setState(SHOOT)
  */
-
-void init()
-{
-}
-
-void periodic()
-{
-}
-
-void end_of_loop()
-{
-}
-
-void print_rate_limited()
-{
-}
 
 // function for hooks.init
 // function for hooks.end_of_loop
