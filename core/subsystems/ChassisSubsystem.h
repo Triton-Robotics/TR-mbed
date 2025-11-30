@@ -93,6 +93,8 @@ public:
      */
     ChassisSubsystem(short lfId, short rfId, short lbId, short rbId, BNO055 &imu, double radius);
 
+    ChassisSubsystem();
+
     /**
      * The BrakeMode enum is used to set the brake mode of the chassis.
      */
@@ -293,7 +295,7 @@ public:
      * Yaw motor is a motor that controls the Turret
      * yawPhase is an initial offset of your Yaw Motor Angle
      * (basically which direction you want your Heading to be w.r.t Yaw Motor)
-     * 
+     *
      * @param motor your Yaw Motor reference as in `&{motor_name}`
      * @param initial_offset_ticks initial offset of your Yaw Motor Angle in ticks (try pass it as double)
      */
@@ -316,7 +318,7 @@ public:
 
     ChassisSpeeds m_chassisSpeeds;
     WheelSpeeds m_wheelSpeeds;
-    
+
     int PEAK_POWER_ALL;
     int PEAK_POWER_SINGLE;
 
@@ -333,7 +335,7 @@ public:
 
     /**
      * yawPhase is an initial offset of your Yaw Motor Angle (basically which direction you want your Heading to be w.r.t Yaw Motor)
-    */
+     */
     double yawPhase;
     double yawOdom;
     double imuOdom;
