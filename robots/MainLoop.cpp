@@ -93,12 +93,13 @@ void run_main_loop(TR::look_hooks &hooks)
             remoteTimer += 1;
 
             // Chassis Code - 100-150 us
-            hooks.chassis_executor();
+            // hooks.chassis_executor();
 
-            // YAW + PITCH - 150us
-            hooks.turret_executor();
-            // dexer + flywheel - 100us
-            hooks.shooter_executor();
+            // // YAW + PITCH - 150us
+            // hooks.turret_executor();
+            // // dexer + flywheel - 100us
+            // hooks.shooter_executor();
+            hooks.periodic();
 
             // send CAN - 100us
             DJIMotor::s_sendValues();

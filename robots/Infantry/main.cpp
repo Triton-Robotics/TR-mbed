@@ -31,9 +31,37 @@ int main()
 {
 
     TR::look_hooks hooks = {
-        .init = nullptr};
+        .init = init,
+        .periodic = periodic,
+        .end_of_loop = end_of_loop,
+        .print_rate_limited = print_rate_limited,
+
+    };
 
     run_main_loop(hooks);
+}
+
+// TODO: 
+/**
+ * Subsystems should have a periodic function 
+ * we define a enum for the state of the subsystem (SHOOT, STOP, BURST3, etc.)
+ * on controller input we just change enum. Shooter.setState(SHOOT)
+ */
+
+void init()
+{
+}
+
+void periodic()
+{
+}
+
+void end_of_loop()
+{
+}
+
+void print_rate_limited()
+{
 }
 
 // function for hooks.init
