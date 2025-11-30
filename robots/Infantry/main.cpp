@@ -159,9 +159,9 @@ int main(){
     int chassis_rotation_rpm = 0;
     while(true){
         timeStart = us_ticker_read();
-        yaw_percent = encoder.read();
-
+        
         //CV loop runs every 2ms
+        float yaw_percent = encoder.read();
         if((timeStart - loopTimerCV) / 1000 > 1) { //1 with sync or 2 without
             loopTimerCV = timeStart;
             
@@ -536,7 +536,7 @@ int main(){
                 //printff("CH: %.2f %.2f %.2f %.2f ", ws.LF,ws.RF,ws.LB,ws.RB);
                 // printff("%d, %.3f\n",multiTurnTicks, postGearboxAngle);
 
-                printff("%.3f %d %.3f\n", yaw_current_angle, yawVelo, chassis_rotation_radps);
+                printff("curr: %.3f desired: %.3f y_p: %.3f\n", yaw_current_angle, yaw_desired_angle, yaw_percent * 360.0);
                 
                 // printff("A_RAW: %d %d %d %d\n", 
                 //     Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).getData(VELOCITY), 
