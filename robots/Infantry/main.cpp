@@ -1,5 +1,5 @@
 // #include "Infantry.h"
-#include "subsystems/ChassisSubsystem.h"
+// #include "subsystems/ChassisSubsystem.h"
 #include "MainLoop.h"
 #include "subsystems/ShooterSubsystem.h"
 
@@ -28,21 +28,38 @@ PID pitchCascade(1.5, 0.0005, 0.05);
 PID sure(0.1, 0, 0.001);
 ChassisSpeeds cs;
 
+ShooterSubsystem shooter_subsystem;
+TurretSubsystem turret_subsystem;
+ChassisSubsystem chassis_subsystem;
+
 static void init()
 {
+    // ShooterSubsystem::config shooter_config(1, 2, 7);
     ShooterSubsystem::config shooter_config =
         {
             .flywheelL_id = 1,
             .flywheelR_id = 2,
+            .indexer_id   = 7,
+            .flywheelL_PID = {1, 0, 0},
+            .flywheelR_PID = {1, 0, 0},
+            .indexer_PID = {1, 0, 0},
         };
 }
 
 static void periodic()
 {
+    // Update all subsystems
+    chassis_subsystem.periodic();
+    shooter_subsystem.periodic();
+    turret_subsystem.periodic();
 }
 
 static void end_of_loop()
 {
+    DJIMotor::s_sendValues();
+
+    TR::canHandler1.readAllCan();
+    TR::canHandler2.readAllCan();
 }
 
 static void print_rate_limited()

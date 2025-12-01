@@ -8,8 +8,6 @@
 #include "algorithms/TRMutex.h"
 #include "peripherals/imu/BNO055.h"
 #include "peripherals/oled/SSD1308.h"
-// #include "subsystems/Chassis.h"
-#include "subsystems/ChassisSubsystem.h"
 
 #include "motor/PWMMotor.h"
 #include "motor/DJIMotor.h"
@@ -22,6 +20,8 @@
 #include "communications/referee/ref_operations.h"
 #include "communications/jetson/Jetson.h"
 
+// #include "subsystems/Chassis.h"
+#include "subsystems/ChassisSubsystem.h"
 #include "subsystems/TurretSubsystem.h"
 #include "subsystems/ShooterSubsystem.h"
 
@@ -38,10 +38,9 @@
 namespace TR
 {
     // TODO add a configure method to every subsystem
-    extern ShooterSubsystem shooter_subsystem;
     // extern ShooterSubsystem shooter_subsystem;
-    extern TurretSubsystem turret_subsystem;
-    extern ChassisSubsystem chassis_subsystem;
+    // extern TurretSubsystem turret_subsystem;
+    // extern ChassisSubsystem chassis_subsystem;
 
     // TODO remove static?
     extern Remote remote;

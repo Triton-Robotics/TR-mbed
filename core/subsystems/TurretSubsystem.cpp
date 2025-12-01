@@ -19,6 +19,7 @@ double TurretSubsystem::get_yaw_vel_rads_per_sec()
     return 0.0;
 }
 
-void TurretSubsystem::configure(int a, int b)
+void TurretSubsystem::periodic()
 {
+    // TODO do we recalculate our values here?
 }
