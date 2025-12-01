@@ -43,7 +43,9 @@ static void init()
             .flywheelL_PID = {1, 0, 0},
             .flywheelR_PID = {1, 0, 0},
             .indexer_PID = {1, 0, 0},
+            .canBus = CANHandler::CANBUS_2,
         };
+        shooter_subsystem = ShooterSubsystem(shooter_config);
 }
 
 static void periodic()

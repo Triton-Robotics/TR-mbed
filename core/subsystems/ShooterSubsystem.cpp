@@ -8,9 +8,9 @@ ShooterSubsystem::ShooterSubsystem()
 ShooterSubsystem::ShooterSubsystem(config configuration)
 {
     // TODO populate all necessary shooting objects
-    flywheelL = DJIMotor(configuration.flywheelL_id, CAN_BUS_TYPE, M3508);
-    flywheelR = DJIMotor(configuration.flywheelR_id, CAN_BUS_TYPE, M3508);
-    indexer = DJIMotor(configuration.indexer_id, CAN_BUS_TYPE, M2006);
+    flywheelL = DJIMotor(configuration.flywheelL_id, configuration.canBus, M3508);
+    flywheelR = DJIMotor(configuration.flywheelR_id, configuration.canBus, M3508);
+    indexer = DJIMotor(configuration.indexer_id, configuration.canBus, M2006);
 
     flywheelL.setSpeedPID(configuration.flywheelL_PID.kp,
                           configuration.flywheelL_PID.ki,
@@ -28,7 +28,6 @@ ShooterSubsystem::ShooterSubsystem(config configuration)
     configured = true;
     shoot = OFF;
     shooter_time = us_ticker_read();
-    shooter_type = configuration.shoot_type;
 }
 
 void ShooterSubsystem::setState(ShootState shoot_state)

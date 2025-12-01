@@ -3,9 +3,9 @@
 namespace TR
 {
     // TODO add a configure method to every subsystem
-    // ShooterSubsystem shooter_subsystem{};
-    // TurretSubsystem turret_subsystem{};
-    // ChassisSubsystem chassis_subsystem{};
+    ShooterSubsystem shooter_subsystem();
+    TurretSubsystem turret_subsystem();
+    ChassisSubsystem chassis_subsystem();
 
     // TODO remove static?
     Remote remote(PA_10);

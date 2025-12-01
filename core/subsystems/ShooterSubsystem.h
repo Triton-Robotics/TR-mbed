@@ -6,9 +6,7 @@
 #include <communications/CANHandler.h>
 #include <motor/DJIMotor.h>
 
-// Constant 
-#define CAN_BUS_TYPE CANHandler::CANBUS_1
-
+// Constants
 constexpr int NUM_BALLS_SHOT = 3;
 constexpr int FLYWHEEL_VELO = 5500;
 
@@ -37,7 +35,7 @@ public:
         PID_config flywheelL_PID;
         PID_config flywheelR_PID;
         PID_config indexer_PID;
-        ShooterType shoot_type = BURST; // lowk idk how to put an enum in main
+        CANHandler::CANBus canBus;
     };
 
     // TODO probably want explicate constructors?
