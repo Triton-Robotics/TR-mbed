@@ -70,7 +70,7 @@ void run_main_loop(TR::look_hooks &hooks)
             // TODO we should make a jetson subsystem so we are not dependent on global variable readresult
             // TR::readResult = jetson_read_values(TR::bcJetson, TR::jetson_received_data, TR::jetson_received_odom);
         }
-        unsigned long cv_ms = us_ticker_read();
+        unsigned long cv_ms = us_ticker_read();\
 
         timeStart = us_ticker_read();
 
@@ -89,6 +89,22 @@ void run_main_loop(TR::look_hooks &hooks)
                 remoteTimer = 0;
                 // TODO FIX this
                 // remoteRead();
+                TR::remote.read();
+
+                // TODO update states with remote values
+                if (TR::remote.leftSwitch() == Remote::SwitchState::UP)
+                    TR::shooter_subsystem.setState(ShootState::SHOOT);
+                else if (TR::remote.leftSwitch() == Remote::SwitchState::MID)
+                    TR::shooter_subsystem.setState(ShootState::FLYWHEEL);
+                else
+                    TR::shooter_subsystem.setState(ShootState::OFF);
+
+                if (TR::remote.rightSwitch() == Remote::SwitchState::UP)
+                    TR::chassis_subsystem.setState(ChassisSubsystem::YAW_ORIENTED);
+                else if (TR::remote.rightSwitch() == Remote::SwitchState::DOWN)
+                    TR::chassis_subsystem.setState(ChassisSubsystem::BEYBLADE);
+                else
+                    TR::chassis_subsystem.setState(ChassisSubsystem::OFF);
             }
             remoteTimer += 1;
 
@@ -101,6 +117,8 @@ void run_main_loop(TR::look_hooks &hooks)
             // hooks.shooter_executor();
             hooks.periodic();
 
+            hooks.print_rate_limited();
+
             // send CAN - 100us
             DJIMotor::s_sendValues();
         }
@@ -108,6 +126,7 @@ void run_main_loop(TR::look_hooks &hooks)
         TR::canHandler1.readAllCan();
         TR::canHandler2.readAllCan();
 
+        hooks.end_of_loop();
         // printff("tt%d\n", (us_ticker_read() - timeStartCV));
 
         // Sleep if our loop is shorter than 1ms to finish other executions

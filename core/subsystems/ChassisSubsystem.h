@@ -124,7 +124,10 @@ public:
         YAW_ORIENTED,
         REVERSE_YAW_ORIENTED,
         ROBOT_ORIENTED,
-        ODOM_ORIENTED
+        ODOM_ORIENTED,
+        YAW_ALIGNED,
+        OFF,
+        BEYBLADE
     };
 
     float previousRPM[4] = {0, 0, 0, 0};
@@ -136,6 +139,8 @@ public:
     static float Bisection(int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm, float chassisPowerLimit);
 
     float power_limit;
+
+    void setState(DRIVE_MODE state);
 
     /**
      * Gets the chassis's current WheelSpeeds
@@ -166,6 +171,9 @@ public:
      * @return The chassis's current ChassisSpeeds
      */
     ChassisSpeeds getChassisSpeeds() const;
+
+
+    float setSpeeds(ChassisSpeeds desiredSpeeds);
 
     /**
      * The setChassisSpeeds method is used to drive the chassis in a chassis relative manner.
@@ -244,26 +252,6 @@ public:
     void periodic(BNO055_ANGULAR_POSITION_typedef *imuCurr = nullptr);
 
     /**
-     * Helper method to convert an angle from degrees to radians
-     * @param radians An angle measurement in radians
-     * @return The angle converted to degree
-     */
-    static double radiansToDegrees(double radians);
-
-    /**
-     * Helper method to convert an angle from radians to degrees
-     * @param degrees An angle measurement in degrees
-     * @return The angle converted to radians
-     */
-    static double degreesToRadians(double degrees);
-
-    /**
-     * Gets the IMU's current angle reading in degrees
-     * @return The IMU's current angle reading in degrees
-     */
-    int getHeadingDegrees() const;
-
-    /**
      * Gets the chassis's current 2D position (TO BE DONE)
      * @return The chassis's current 2D position
      */
@@ -314,7 +302,6 @@ public:
     OmniKinematicsLimits m_OmniKinematicsLimits;
     WheelSpeeds chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds);
     ChassisSpeeds wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds);
-    char *MatrixtoString(Eigen::MatrixXd mat);
 
     ChassisSpeeds m_chassisSpeeds;
     WheelSpeeds m_wheelSpeeds;
@@ -342,22 +329,18 @@ public:
     int testData[300][4];
     int testDataIndex = 0;
 
-    static double radiansToTicks(double radians);
-    static double ticksToRadians(double ticks);
-
 private:
     DJIMotor LF, RF, LB, RB;
     DJIMotor *yaw = 0;
     // double yawPhase;
     BrakeMode brakeMode;
 
+    DRIVE_MODE chassis_state;
+
     // double beybladeSpeed;
     // bool beybladeIncreasing;
     BNO055 imu;
     BNO055_ANGULAR_POSITION_typedef imuAngles;
-
-    static double rpmToRadPerSecond(double RPM);
-    static double radPerSecondToRPM(double radPerSecond);
 
     OmniKinematics m_OmniKinematics;
     float chassis_radius;

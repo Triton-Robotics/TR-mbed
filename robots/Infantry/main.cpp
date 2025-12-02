@@ -12,8 +12,8 @@ constexpr float CHASSIS_FF_KICK = 0.065;
 
 constexpr float pitch_zero_offset_ticks = 1500;
 
-constexpr int NUM_BALLS_SHOT = 3;
-constexpr int FLYWHEEL_VELO = 5500;
+// constexpr int NUM_BALLS_SHOT = 3;
+// constexpr int FLYWHEEL_VELO = 5500;
 
 // ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.22617); // radius is 9 in
 // DJIMotor yaw(4, CANHandler::CANBUS_1, GIMBLY, "Yeah");
@@ -51,17 +51,14 @@ static void init()
 static void periodic()
 {
     // Update all subsystems
-    chassis_subsystem.periodic();
+    chassis_subsystem.periodic(&TR::imuAngles);
     shooter_subsystem.periodic();
     turret_subsystem.periodic();
 }
 
 static void end_of_loop()
 {
-    DJIMotor::s_sendValues();
 
-    TR::canHandler1.readAllCan();
-    TR::canHandler2.readAllCan();
 }
 
 static void print_rate_limited()

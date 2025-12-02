@@ -53,7 +53,24 @@ void ShooterSubsystem::execute_shooter()
     {
         // TODO: shoot logic here
         if (shooter_type == BURST)
-        shootTargetPosition = (8192 * M2006_GEAR_RATIO / 9 * NUM_BALLS_SHOT) + (indexer >> MULTITURNANGLE);
+        {
+            shootTargetPosition = (8192 * M2006_GEAR_RATIO / 9 * NUM_BALLS_SHOT) + (indexer >> MULTITURNANGLE);
+
+            // 1 degree of error allowed
+            if (abs((indexer >> MULTITURNANGLE) - shootTargetPosition) <= 819)
+            {
+                // indexer.setSpeed(indexer_target_velocity);
+                // indexer.pidSpeed.feedForward = 0;
+                shoot = FLYWHEEL;
+            }
+            else
+            {
+                // TODO: we need to set position PID for indexer!
+                float indexer_target_velocity = indexer.calculatePositionPID(shootTargetPosition, indexer >> MULTITURNANGLE, us_ticker_read() - shooter_time);
+                indexer.setSpeed(indexer_target_velocity); //
+                indexer.pidSpeed.feedForward = (indexer >> VALUE) / 4788 * 630;
+            }
+        }
     }
 }
 

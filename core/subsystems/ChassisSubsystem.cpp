@@ -2,10 +2,6 @@
 #include <cmath>
 #include <stdexcept>
 
-// ChassisSubsystem::ChassisSubsystem()
-// {
-//     // TODO FIX ME
-// }
 /**
  * @param radius radius in meters
  */
@@ -38,31 +34,29 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
 
     FF_Ks = 0;
 
-    //    LF.setSpeedPID(2, 0, 0);
-    //    RF.setSpeedPID(2, 0, 0);
-    //    LB.setSpeedPID(2, 0, 0);
-    //    RB.setSpeedPID(2, 0, 0);
-    // LF.setSpeedPID(3, 0, 0);
-    // RF.setSpeedPID(3, 0, 0);
-    // LB.setSpeedPID(3, 0, 0);
-    // RB.setSpeedPID(3 , 0, 0);
-
     pid_LF.setPID(3, 0, 0);
     pid_RF.setPID(3, 0, 0);
     pid_LB.setPID(3, 0, 0);
     pid_RB.setPID(3, 0, 0);
 
     brakeMode = COAST;
-
-    // isInverted[0] = 1; isInverted[1] = 1; isInverted[2] = 1; isInverted[3] = 1;
 }
 
 // TODO fix me temp default constructor for testing
 #include "PinNames.h"
 
+// ChassisSubsystem::ChassisSubsystem()
+// {
+//     // TODO FIX ME
+// }
 ChassisSubsystem::ChassisSubsystem()
     : imu(BNO055(PC_0, PC_0, PC_0))
 {
+}
+
+void ChassisSubsystem::setState(DRIVE_MODE state) 
+{
+    chassis_state = state;
 }
 
 WheelSpeeds ChassisSubsystem::getWheelSpeeds() const
@@ -70,9 +64,11 @@ WheelSpeeds ChassisSubsystem::getWheelSpeeds() const
     return m_wheelSpeeds;
 }
 
+// TODO FIX ACCEL LIMIT
 float ChassisSubsystem::limitAcceleration(float desiredRPM, float previousRPM, int power)
 {
-    float maxAccel = 100;
+    // TODO: no more hardcode
+    float maxAccel = 100; // rpm ps?
     float diff = desiredRPM - previousRPM;
 
     if ((desiredRPM > 0 && previousRPM < 0) || (desiredRPM < 0 && previousRPM > 0))
@@ -104,66 +100,6 @@ float ChassisSubsystem::limitAcceleration(float desiredRPM, float previousRPM, i
     {
         return desiredRPM; // under acceleration cap
     }
-
-    // if (diff > maxAccel){   // if the difference is greater than the max acceleration
-
-    //     if(power > 0) { // power: + rpm: + (acceleraiton)
-    //         return previousRPM + maxAccel;
-    //     }
-
-    //     else if(power < 0 && desiredRPM > 0) { // power: - rpm: + (deceleration)
-    //         return previousRPM + maxAccel; // ignore diff, just decelerate
-    //     }
-
-    //     else if(power == 0) {
-    //         return desiredRPM; // let robot do its thing b/c it wont take power
-    //     }
-
-    // }
-    // else if (diff < -maxAccel) {
-
-    //     if(power < 0 && desiredRPM < 0) { // power: - rpm: - (acceleration)
-    //         return previousRPM - maxAccel;
-    //     }
-
-    //     else if(power > 0 && desiredRPM < 0) { // power: + rpm: - (deceleration)
-    //         return previousRPM - maxAccel; // ignore diff, just decelerate
-    //     }
-
-    //     else if(power == 0) {
-    //         return desiredRPM; // let robot do its thing b/c it wont take power
-    //     }
-
-    // }
-    // else {
-    //     return desiredRPM; // under acceleration
-    // }
-
-    // if(previousRPM > 0){
-    //     float maxRPMthisFrame = previousRPM + maxAccel;
-    //     if(desiredRPM > 0){
-    //         if(desiredRPM > maxRPMthisFrame){
-    //             return maxRPMthisFrame;
-    //         }else {
-    //             return desiredRPM;
-    //         }
-    //     }else {
-    //         return 0;
-    //     }
-    // }else if(previousRPM < 0){
-    //     float minRPMthisFrame = previousRPM - maxAccel;
-    //     if(desiredRPM < 0){
-    //         if(desiredRPM < minRPMthisFrame){
-    //             return minRPMthisFrame;
-    //         }else {
-    //             return desiredRPM;
-    //         }
-    //     }else{
-    //         return 0;
-    //     }
-    // }else{
-    //     return 0;
-    // }
 }
 
 float ChassisSubsystem::p_theory(int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm)
@@ -203,10 +139,6 @@ float ChassisSubsystem::Bisection(int LeftFrontPower, int RightFrontPower, int L
         for (int i = 0; i < 6; i++)
         {
 
-            // if (abs(powerScaled - chassisPowerLimit) < 0.1) {
-            //     printf("ppppp \n");
-            //     break;
-            // }
             if (powerScaled > chassisPowerLimit)
             {
                 scale = scale - precision;
@@ -248,16 +180,6 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     float LBrpm = limitAcceleration(wheelSpeeds.LB, previousRPM[2], powers[2]);
     float RBrpm = limitAcceleration(wheelSpeeds.RB, previousRPM[3], powers[3]);
 
-    // float LFrpm = wheelSpeeds.LF;
-    // float RFrpm = wheelSpeeds.RF;
-    // float LBrpm = wheelSpeeds.LB;
-    // float RBrpm = wheelSpeeds.RB;
-
-    // float LFrpm = limitAcceleration(wheelSpeeds.LF, previousRPM[0], LF.getData(POWEROUT));
-    // float RFrpm = limitAcceleration(wheelSpeeds.RF, previousRPM[1], RF.getData(POWEROUT));
-    // float LBrpm = limitAcceleration(wheelSpeeds.LB, previousRPM[2], LB.getData(POWEROUT));
-    // float RBrpm = limitAcceleration(wheelSpeeds.RB, previousRPM[3], RB.getData(POWEROUT));
-
     previousRPM[0] = LFrpm;
     previousRPM[1] = RFrpm;
     previousRPM[2] = LBrpm;
@@ -269,15 +191,6 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     powers[3] = motorPIDtoPower(RIGHT_BACK, RBrpm, (time - lastPIDTime));
     lastPIDTime = time;
 
-    // int sum = powers[0] + powers[1] + powers[2] + powers[3];
-
-    // if(sum > PEAK_POWER_ALL){
-    //     powers[0] = (powers[0] * PEAK_POWER_ALL)/sum;
-    //     powers[1] = (powers[1] * PEAK_POWER_ALL)/sum;
-    //     powers[2] = (powers[2] * PEAK_POWER_ALL)/sum;
-    //     powers[3] = (powers[3] * PEAK_POWER_ALL)/sum;
-    // }
-
     int p1 = abs(powers[0]);
     int p2 = abs(powers[1]);
     int p3 = abs(powers[2]);
@@ -288,21 +201,13 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     int r3 = abs(LB.getData(VELOCITY));
     int r4 = abs(RB.getData(VELOCITY));
 
+    // TODO: FIX POWER LIMITING, MAKE IT MORE REAL (comes along w current control)
     float scale = Bisection(p1, p2, p3, p4, r1, r2, r3, r4, power_limit);
-
-    // printf("Before Set:%.3f\n", p_theory(p1*scale, p2*scale, p3*scale, p4*scale, r1, r2, r3, r4));
 
     LF.setPower(powers[0] * scale);
     RF.setPower(powers[1] * scale);
     LB.setPower(powers[2] * scale);
     RB.setPower(powers[3] * scale);
-
-    p1 = abs(LF.getData(POWEROUT));
-    p2 = abs(RF.getData(POWEROUT));
-    p3 = abs(LB.getData(POWEROUT));
-    p4 = abs(RB.getData(POWEROUT));
-
-    // printf("After Set:%.3f\n", p_theory(p1, p2, p3, p4, r1, r2, r3, r4));
 
     return scale;
 }
@@ -334,6 +239,22 @@ void ChassisSubsystem::setWheelPower(WheelSpeeds wheelPower)
 ChassisSpeeds ChassisSubsystem::getChassisSpeeds() const
 {
     return m_chassisSpeeds;
+}
+
+float ChassisSubsystem::setSpeeds(ChassisSpeeds desiredSpeeds) {
+    if (chassis_state == OFF) 
+    {
+        setChassisSpeeds({0, 0, 0}, YAW_ORIENTED);
+    }
+    if (chassis_state == BEYBLADE) 
+    {
+        setChassisSpeeds({desiredSpeeds.vX, desiredSpeeds.vY, 4.8}, YAW_ORIENTED);
+    }
+    else
+    {
+        setChassisSpeeds(desiredSpeeds, chassis_state);
+    } 
+
 }
 
 float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode)
@@ -471,6 +392,7 @@ void ChassisSubsystem::readImu()
     imu.get_angular_position_quat(&imuAngles);
 }
 
+// TODO: Change periodic to execute chassis stuff?
 void ChassisSubsystem::periodic(BNO055_ANGULAR_POSITION_typedef *imuCurr)
 {
     imuAngles.yaw = imuCurr->yaw;
@@ -482,21 +404,6 @@ void ChassisSubsystem::periodic(BNO055_ANGULAR_POSITION_typedef *imuCurr)
     m_chassisSpeeds = wheelSpeedsToChassisSpeeds(m_wheelSpeeds);
 }
 
-double ChassisSubsystem::degreesToRadians(double degrees)
-{
-    return degrees * PI / 180.0;
-}
-
-double ChassisSubsystem::radiansToDegrees(double radians)
-{
-    return radians / PI * 180.0;
-}
-
-int ChassisSubsystem::getHeadingDegrees() const
-{
-    return (int)imuAngles.yaw;
-}
-
 void ChassisSubsystem::setOmniKinematicsLimits(double max_Vel, double max_vOmega)
 {
     m_OmniKinematicsLimits.max_Vel = max_Vel;
@@ -504,22 +411,6 @@ void ChassisSubsystem::setOmniKinematicsLimits(double max_Vel, double max_vOmega
 }
 
 // NEW STUFF FROM THIS PAPER: https://research.ijcaonline.org/volume113/number3/pxc3901586.pdf
-
-// void ChassisSubsystem::setOmniKinematics(double radius)
-// {
-//     float SQRT_2 = sqrt(2);
-//     m_OmniKinematics.r1x = -sqrt(radius);
-//     m_OmniKinematics.r1y = sqrt(radius);
-
-//     m_OmniKinematics.r2x = sqrt(radius);
-//     m_OmniKinematics.r2y = sqrt(radius);
-
-//     m_OmniKinematics.r3x = -sqrt(radius);
-//     m_OmniKinematics.r3y = -sqrt(radius);
-
-//     m_OmniKinematics.r4x = sqrt(radius);
-//     m_OmniKinematics.r4y = -sqrt(radius);
-// }
 
 void ChassisSubsystem::setOmniKinematics(double radius)
 {
@@ -537,61 +428,22 @@ void ChassisSubsystem::setOmniKinematics(double radius)
     m_OmniKinematics.r4y = radius / SQRT_2;
 }
 
-// WheelSpeeds ChassisSubsystem::chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds)
-// {
-//     return {(1 / sqrt(2)) * (chassisSpeeds.vX + chassisSpeeds.vY + chassisSpeeds.vOmega * ((m_OmniKinematics.r1x) - (m_OmniKinematics.r1y))),
-//             (1 / sqrt(2)) * (chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y))),
-//             (1 / sqrt(2)) * (-chassisSpeeds.vX + chassisSpeeds.vY + chassisSpeeds.vOmega * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y))),
-//             (1 / sqrt(2)) * (-chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y)))};
-// }
-
 // inputs chassis speeds in m/s, outputs wheel speeds in m/s
 WheelSpeeds ChassisSubsystem::chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds)
 {
-    return {(chassisSpeeds.vX + chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r1x) + (m_OmniKinematics.r1y))),
-            (chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y))),
-            (-chassisSpeeds.vX + chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y))),
-            (-chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r4x) + (m_OmniKinematics.r4y)))};
+    return {(chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r1x) + (m_OmniKinematics.r1y))),
+            (-chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y))),
+            (chassisSpeeds.vX + chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y))),
+            (-chassisSpeeds.vX + chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r4x) + (m_OmniKinematics.r4y)))};
 }
-
-// ChassisSpeeds ChassisSubsystem::wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds)
-// {
-//     Eigen::MatrixXd Inv_K(4, 3);
-//     float coef = 1 / sqrt(2);
-//     Inv_K << coef, coef, coef * ((m_OmniKinematics.r1x) - (m_OmniKinematics.r1y)),
-//         coef, -coef, -coef * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y)),
-//         -coef, coef, coef * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y)),
-//         -coef, -coef, -coef * ((m_OmniKinematics.r4x) - (m_OmniKinematics.r4y));
-//     Eigen::MatrixXd FWD_K(3, 4);
-//     FWD_K = Inv_K.completeOrthogonalDecomposition().pseudoInverse();
-//     // printf("[%.1f %.1f %.1f %.1f\n%.1f %.1f %.1f %.1f\n%.1f %.1f %.1f %.1f]\n",
-//     //     FWD_K(0,0), FWD_K(0,1), FWD_K(0,2), FWD_K(0,3),
-//     //     FWD_K(1,0), FWD_K(1,1), FWD_K(1,2), FWD_K(1,3),
-//     //     FWD_K(2,0), FWD_K(2,1), FWD_K(2,2), FWD_K(2,3));
-//     Eigen::MatrixXd WS(4, 1);
-//     WS << wheelSpeeds.LF, wheelSpeeds.RF, wheelSpeeds.LB, wheelSpeeds.RB;
-//     Eigen::MatrixXd CS(3, 1);
-//     CS = FWD_K * WS;
-//     return {CS(0, 0), CS(1, 0), CS(2, 0)};
-// }
 
 ChassisSpeeds ChassisSubsystem::wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds)
 {
     float dist = chassis_radius / sqrt(2);
-    float vX = (wheelSpeeds.LF + wheelSpeeds.RF - wheelSpeeds.LB - wheelSpeeds.RB) / 4;
-    float vY = (wheelSpeeds.LF - wheelSpeeds.RF + wheelSpeeds.LB - wheelSpeeds.RB) / 4;
+    float vX = (wheelSpeeds.LF - wheelSpeeds.RF + wheelSpeeds.LB - wheelSpeeds.RB) / 4;
+    float vY = (-wheelSpeeds.LF - wheelSpeeds.RF + wheelSpeeds.LB + wheelSpeeds.RB) / 4;
     float vOmega = (-wheelSpeeds.LF - wheelSpeeds.RF - wheelSpeeds.LB - wheelSpeeds.RB) / (4 * (2 * dist));
     return {vX, vY, vOmega};
-}
-
-char *ChassisSubsystem::MatrixtoString(Eigen::MatrixXd mat)
-{
-    std::stringstream ss;
-    ss << mat;
-    ss << '\0';
-    ss << '\n';
-    const char *a = ss.str().c_str();
-    return strdup(a);
 }
 
 void ChassisSubsystem::setMotorPower(MotorLocation location, double power)
@@ -653,24 +505,4 @@ bool ChassisSubsystem::setOdomReference()
     yawOdom = -(1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0;
     imuOdom = imuAngles.yaw;
     return true;
-}
-
-double ChassisSubsystem::radiansToTicks(double radians)
-{
-    return radians / (2 * PI) * TICKS_PER_ROTATION;
-}
-
-double ChassisSubsystem::ticksToRadians(double ticks)
-{
-    return ticks / TICKS_PER_ROTATION * (2 * PI);
-}
-
-double ChassisSubsystem::rpmToRadPerSecond(double RPM)
-{
-    return RPM * (2 * PI) / SECONDS_PER_MINUTE;
-}
-
-double ChassisSubsystem::radPerSecondToRPM(double radPerSecond)
-{
-    return radPerSecond / (2 * PI) * SECONDS_PER_MINUTE;
 }

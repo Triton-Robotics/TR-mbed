@@ -10,16 +10,17 @@
 constexpr int NUM_BALLS_SHOT = 3;
 constexpr int FLYWHEEL_VELO = 5500;
 
-// enum for states'
+// enum for states
 // TODO simplify enums
 enum ShootState {OFF, FLYWHEEL, SHOOT};
-enum ShooterType {BURST, HERO, AUTO};
 
 // struct for config
 class ShooterSubsystem
 {
 public:
     // TODO add compiler flag -Wmissing-field-initializers
+
+    enum ShooterType {BURST, HERO, AUTO};
     struct PID_config 
     {
         float kp;
@@ -50,6 +51,7 @@ public:
     void periodic();
 
 private:
+    // TODO Decide necessary variables for state and control
     bool configured;
 
     unsigned long shooter_time;
@@ -57,9 +59,7 @@ private:
     DJIMotor flywheelL, flywheelR, indexer;
 
     ShootState shoot;
-
     ShooterType shooter_type;
 
     int shootTargetPosition;
-    
 };

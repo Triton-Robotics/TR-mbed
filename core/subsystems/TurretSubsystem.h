@@ -1,6 +1,11 @@
 #pragma once
 
 #include "peripherals/imu/BNO055.h"
+#include <communications/CANHandler.h>
+#include <motor/DJIMotor.h>
+
+// enums for state
+enum TurretState {SLEEP, AIM};
 
 class TurretSubsystem
 {
@@ -8,9 +13,30 @@ public:
     // pitch zero offset ticks
     // pitch motor
     // yaw motor
+    struct PID_config 
+    {
+        float kp;
+        float ki;
+        float kd;
+    };
+
+    struct config
+    {
+        int yaw_id;
+        int pitch_id;
+        int pitch_offset_ticks;
+        PID_config yaw_vel_PID;
+        PID_config yaw_pos_PID;
+        PID_config pitch_vel_PID;
+        PID_config pitch_pos_PID;
+        CANHandler::CANBus yawCanBus;
+        CANHandler::CANBus pitchCanBus;
+        BNO055_ANGULAR_POSITION_typedef* imuAngles;
+    };
+
     TurretSubsystem();
 
-    TurretSubsystem(int yaw_id, int pitch_id, BNO055_ANGULAR_POSITION_typedef* imuAngles);
+    TurretSubsystem(config configuration);
 
     // get angle zero offsetted
     double get_pitch_angle_rads_zero_offsetted();
@@ -19,8 +45,24 @@ public:
 
     double get_yaw_vel_rads_per_sec();
 
+    void setState (TurretState state);
+
+    void set_desired_turret(float des_yaw_angle, float des_pitch_angle, float chassisRpm);
+
+    void execute_turret();
+
     void periodic();
 
 private:
     bool configured;
+
+    DJIMotor yaw, pitch;
+
+    TurretState turretState;
+
+    int pitch_offset_ticks;
+
+    unsigned long turret_time;
+
+    float des_yaw, des_pitch, chassis_rpm;
 };
