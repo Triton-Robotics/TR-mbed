@@ -69,9 +69,9 @@ void TurretSubsystem::execute_turret()
     }
     else if (turretState == AIM) 
     {
-        // TODO correctly, refactor DJIMotor
-        // yaw.setPosition(des_yaw, 0, chassis_rpm); // desired position, positional ff, velocity ff
-        // pitch.setPosition(des_pitch);
+        yaw.pidSpeed.feedForward = chassis_rpm;
+        yaw.setPosition(des_yaw);
+        pitch.setPosition(des_pitch);
     }
     return;
 }

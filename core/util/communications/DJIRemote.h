@@ -1,7 +1,18 @@
 #include "mbed.h"
+#include "ChassisSubsystem.h"
 
 #ifndef DJI_REMOTE
 #define DJI_REMOTE
+
+// I don't like constants being here but also they're robot independent (?)
+//DEGREES PER SECOND AT MAX
+constexpr float JOYSTICK_SENSITIVITY_YAW_DPS = 180.0;
+constexpr float JOYSTICK_SENSITIVITY_PITCH_DPS = 180.0;
+
+// Mouse sensitivity initialized
+constexpr float MOUSE_SENSITIVITY_YAW_DPS = 10.0;
+constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 10.0;
+
 /**
  * A unique UART handler that uses timing in leu of DBUS communication (mbed does not
  * support DBUS) to interact with the DR16 receiver.
@@ -98,6 +109,31 @@ public:
     void dumpInfo() const;
 
     /**
+     * @return The Chassis X velocity
+     */
+    float getChassisX();
+
+    /**
+     * @return The Chassis Y velocity
+     */
+    float getChassisY();
+
+    /**
+     * @return The Yaw velocity
+     */
+    float getYaw();
+
+    /**
+     * @return The Pitch velocity
+     */
+    float getPitch();
+
+    /**
+     * @return get ChassisSpeeds
+     */
+    ChassisSpeeds getChassisSpeed();
+
+    /**
      * @return The state of the given switch.
      */
     SwitchState getSwitch(Switch sw) const;
@@ -146,20 +182,20 @@ public:
     long goodDataChainNumber = 0;
     bool unfiltered = false;
 
-    inline int leftX() const{
-        return remote.leftHorizontal;
+    inline float leftX() const{
+        return remote.leftHorizontal / 660.0;
     }
 
-    inline int leftY() const{
-        return remote.leftVertical;
+    inline float leftY() const{
+        return remote.leftVertical / 660.0;
     }
 
-    inline int rightX() const{
-        return remote.rightHorizontal;
+    inline float rightX() const{
+        return remote.rightHorizontal / 660.0;
     }
 
-    inline int rightY() const{
-        return remote.rightVertical;
+    inline float rightY() const{
+        return remote.rightVertical / 660.0;
     }
 
     inline Remote::SwitchState leftSwitch() const{

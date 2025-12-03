@@ -249,7 +249,7 @@ public:
     /**
      * A method that should be run every main loop to update the Chassis's estimated position
      */
-    void periodic(BNO055_ANGULAR_POSITION_typedef *imuCurr = nullptr);
+    void periodic(BNO055_ANGULAR_POSITION_typedef *imuCurr = nullptr, ChassisSpeeds des_speeds = {0.0, 0.0, 0.0});
 
     /**
      * Gets the chassis's current 2D position (TO BE DONE)

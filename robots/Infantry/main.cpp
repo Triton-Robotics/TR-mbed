@@ -28,9 +28,9 @@ PID pitchCascade(1.5, 0.0005, 0.05);
 PID sure(0.1, 0, 0.001);
 ChassisSpeeds cs;
 
-ShooterSubsystem shooter_subsystem;
-TurretSubsystem turret_subsystem;
-ChassisSubsystem chassis_subsystem;
+// ShooterSubsystem shooter_subsystem;
+// TurretSubsystem turret_subsystem;
+// ChassisSubsystem chassis_subsystem;
 
 static void init()
 {
@@ -45,15 +45,24 @@ static void init()
             .indexer_PID = {1, 0, 0},
             .canBus = CANHandler::CANBUS_2,
         };
-        shooter_subsystem = ShooterSubsystem(shooter_config);
+    TR::shooter_subsystem = ShooterSubsystem(shooter_config);
+
+    TurretSubsystem::config turret_config = 
+        {
+        };
+    TR::turret_subsystem = TurretSubsystem(turret_config);
+
+    // ChassisSubsystem::config chassis_config = {};
+    // TR::chassis_subsystem = ChassisSubsystem();
 }
 
 static void periodic()
 {
     // Update all subsystems
-    chassis_subsystem.periodic(&TR::imuAngles);
-    shooter_subsystem.periodic();
-    turret_subsystem.periodic();
+    // for chassis, this is robot specific since sentry will be TR::jetson.getChassisSpeed();
+    TR::chassis_subsystem.periodic(&TR::imuAngles, TR::remote.getChassisSpeed());
+    TR::shooter_subsystem.periodic();
+    TR::turret_subsystem.periodic();
 }
 
 static void end_of_loop()

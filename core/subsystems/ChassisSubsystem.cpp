@@ -248,7 +248,16 @@ float ChassisSubsystem::setSpeeds(ChassisSpeeds desiredSpeeds) {
     }
     if (chassis_state == BEYBLADE) 
     {
-        setChassisSpeeds({desiredSpeeds.vX, desiredSpeeds.vY, 4.8}, YAW_ORIENTED);
+        // TODO: BEYBLADE LOGIC HERE
+        float linear_hypo = sqrtf(desiredSpeeds.vX * desiredSpeeds.vX + 
+                                  desiredSpeeds.vY * desiredSpeeds.vY);
+        if(linear_hypo > 0.8){
+            linear_hypo = 0.8;
+        }
+
+        float available_beyblade = 1.0 - linear_hypo;
+        float omega_speed = 4.8 * available_beyblade;
+        setChassisSpeeds({desiredSpeeds.vX, desiredSpeeds.vY, omega_speed}, YAW_ORIENTED);
     }
     else
     {
@@ -393,7 +402,7 @@ void ChassisSubsystem::readImu()
 }
 
 // TODO: Change periodic to execute chassis stuff?
-void ChassisSubsystem::periodic(BNO055_ANGULAR_POSITION_typedef *imuCurr)
+void ChassisSubsystem::periodic(BNO055_ANGULAR_POSITION_typedef *imuCurr, ChassisSpeeds des_speeds)
 {
     imuAngles.yaw = imuCurr->yaw;
     imuAngles.pitch = imuCurr->pitch;
@@ -402,6 +411,8 @@ void ChassisSubsystem::periodic(BNO055_ANGULAR_POSITION_typedef *imuCurr)
                      getMotorSpeed(LEFT_BACK, METER_PER_SECOND), getMotorSpeed(RIGHT_BACK, METER_PER_SECOND)};
 
     m_chassisSpeeds = wheelSpeedsToChassisSpeeds(m_wheelSpeeds);
+
+    setSpeeds(des_speeds);
 }
 
 void ChassisSubsystem::setOmniKinematicsLimits(double max_Vel, double max_vOmega)

@@ -100,11 +100,27 @@ void run_main_loop(TR::look_hooks &hooks)
                     TR::shooter_subsystem.setState(ShootState::OFF);
 
                 if (TR::remote.rightSwitch() == Remote::SwitchState::UP)
+                {
                     TR::chassis_subsystem.setState(ChassisSubsystem::YAW_ORIENTED);
+
+                    TR::turret_subsystem.setState(TurretState::AIM);
+                }
                 else if (TR::remote.rightSwitch() == Remote::SwitchState::DOWN)
+                {
                     TR::chassis_subsystem.setState(ChassisSubsystem::BEYBLADE);
+
+                    TR::turret_subsystem.setState(TurretState::AIM);
+                }
                 else
+                {
                     TR::chassis_subsystem.setState(ChassisSubsystem::OFF);
+                    TR::turret_subsystem.setState(TurretState::SLEEP);
+                }
+                // Set desired outside of state since state determines if this will run 
+                TR::turret_subsystem.set_desired_turret(TR::remote.getYaw(), 
+                                        TR::remote.getPitch(), 
+                                        TR::chassis_subsystem.getChassisSpeeds().vOmega);
+
             }
             remoteTimer += 1;
 

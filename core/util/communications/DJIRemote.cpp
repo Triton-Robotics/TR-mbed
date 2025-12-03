@@ -85,6 +85,54 @@ int16_t Remote::getChannelInt(Channel ch) const{
     return 0;
 }
 
+
+float Remote::getChassisX()
+{
+    return ((remote.leftVertical / 660.0) + 
+            (keyPressed(Key::SHIFT) ? 0.5 : 1 * 
+                ((keyPressed(Key::W) ? 1 : 0) + 
+                 (keyPressed(Key::S) ? -1 : 0))
+            ));
+}
+
+float Remote::getChassisY()
+{
+    return ((remote.leftHorizontal / 660.0) + 
+            ((keyPressed(Key::SHIFT) ? 0.5 : 1) * 
+                ((keyPressed(Key::A) ? 1 : 0) + 
+                (keyPressed(Key::D) ? -1 : 0)
+                )
+            ));
+}
+
+ChassisSpeeds Remote::getChassisSpeed()
+{
+    float jx = getChassisX();
+    float jy = getChassisY();
+    float j_hypo = sqrt(jx * jx + jy * jy);
+    if(j_hypo > 1.0){
+        jx = jx / j_hypo;
+        jy = jy / j_hypo;
+    }
+    //Bounding the four j variables
+    jx = max(-1.0F, min(1.0F, jx));
+    jy = max(-1.0F, min(1.0F, jy));
+
+    return {jx, jy, 0.0};
+}
+
+float Remote::getYaw()
+{
+    return ((remote.rightHorizontal / 660.0) * JOYSTICK_SENSITIVITY_YAW_DPS + 
+        remote.mouse.y * MOUSE_SENSITIVITY_YAW_DPS);
+}
+
+float Remote::getPitch()
+{
+    return ((remote.rightVertical / 660.0) * JOYSTICK_SENSITIVITY_PITCH_DPS + 
+            remote.mouse.y * MOUSE_SENSITIVITY_PITCH_DPS);
+}
+
 Remote::SwitchState Remote::getSwitch(Switch sw) const{
     switch (sw){
         case Switch::LEFT_SWITCH:
