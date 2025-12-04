@@ -5,6 +5,7 @@ mbed_configure_app_target(${PROJECT_NAME})
 add_executable(${PROJECT_NAME}
     main.cpp
     RobotConfigInfantry.cpp
+    RobotStateInfantry.cpp
 )
 target_link_libraries(${PROJECT_NAME} PRIVATE robots_common)
 

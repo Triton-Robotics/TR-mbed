@@ -1,21 +1,21 @@
 #include "MainLoop.h"
 
-BNO055_ANGULAR_POSITION_typedef imuAnglesLocal;
+// BNO055_ANGULAR_POSITION_typedef imuAnglesLocal;
 
 static void imu_thread();
 static void ref_thread();
 
-// TODO maybe better to put these in header file and make it extern so robot specific mains have access to these?
-unsigned long timeStart;
-unsigned long timeStartCV;
-unsigned long timeStartRef;
-unsigned long timeStartImu;
-// TODO this used to be = us_ticker_read() might cause problems
-unsigned long loopTimer;
-unsigned long loopTimerCV = loopTimer;
-unsigned long loopTimerRef = loopTimer;
-unsigned long loopTimerImu = loopTimer;
-float elapsedms;
+// // TODO maybe better to put these in header file and make it extern so robot specific mains have access to these?
+// unsigned long timeStart;
+// unsigned long timeStartCV;
+// unsigned long timeStartRef;
+// unsigned long timeStartImu;
+// // TODO this used to be = us_ticker_read() might cause problems
+// unsigned long loopTimer;
+// unsigned long loopTimerCV = loopTimer;
+// unsigned long loopTimerRef = loopTimer;
+// unsigned long loopTimerImu = loopTimer;
+// float elapsedms;
 
 // TODO this is bad
 int remoteTimer = 0;
@@ -23,28 +23,37 @@ int remoteTimer = 0;
 void run_main_loop(TR::look_hooks &hooks)
 {
     // init();
+    // made it us_ticker_read() here so there are no problems
+    // Init timers
+    TR::loopTimer = us_ticker_read();
+    TR::loopTimerCV = TR::loopTimer;
+    TR::loopTimerRef = TR::loopTimer;
+    TR::loopTimerImu = TR::loopTimer;
+    
+    // Init subsystems
     hooks.init();
+    // TODO: make jetson class!
     init_jetson(TR::bcJetson);
     TR::imuThread.start(imu_thread);
     TR::refThread.start(ref_thread);
 
-    while (true)
+    while (1)
     {
 
-        timeStartCV = us_ticker_read();
+        TR::timeStartCV = us_ticker_read();
 
         // TODO this mutex should probably not be TR scoped, should be locally scoped?
         TR::mutex_test.lock();
-        imuAnglesLocal.yaw = TR::imuAngles.yaw;
-        imuAnglesLocal.pitch = TR::imuAngles.pitch;
-        imuAnglesLocal.roll = TR::imuAngles.roll;
+        TR::imuAnglesLocal.yaw = TR::imuAngles.yaw;
+        TR::imuAnglesLocal.pitch = TR::imuAngles.pitch;
+        TR::imuAnglesLocal.roll = TR::imuAngles.roll;
         TR::mutex_test.unlock();
         unsigned long mutex_ms = us_ticker_read();
 
         // jetson comms - 50-200us ish?
-        if ((timeStartCV - loopTimerCV) / 1000 > TR::OUTER_LOOP_DT_MS)
+        if ((TR::timeStartCV - TR::loopTimerCV) / 1000 > TR::OUTER_LOOP_DT_MS)
         {
-            loopTimerCV = timeStartCV;
+            TR::loopTimerCV = TR::timeStartCV;
 
             // TR::jetson_send_data.chassis_x_velocity = cs.vX;
             // TR::jetson_send_data.chassis_y_velocity = cs.vY;
@@ -58,7 +67,7 @@ void run_main_loop(TR::look_hooks &hooks)
             // TR::jetson_send_data.pitch_velocity = pitch.getData(VELOCITY) / 60.0;
             TR::jetson_send_data.pitch_velocity = TR::turret_subsystem.get_pitch_vel_rads_per_sec();
 
-            TR::jetson_send_data.yaw_angle_rads = (imuAnglesLocal.yaw + 180.0) * (M_PI / 180.0);
+            TR::jetson_send_data.yaw_angle_rads = (TR::imuAnglesLocal.yaw + 180.0) * (M_PI / 180.0);
             // TR::jetson_send_data.yaw_velocity = yaw.getData(VELOCITY) / 60.0;
             TR::jetson_send_data.yaw_velocity = TR::turret_subsystem.get_yaw_vel_rads_per_sec();
 
@@ -72,16 +81,16 @@ void run_main_loop(TR::look_hooks &hooks)
         }
         unsigned long cv_ms = us_ticker_read();\
 
-        timeStart = us_ticker_read();
+        TR::timeStart = us_ticker_read();
 
-        if ((timeStart - loopTimer) / 1000 > TR::OUTER_LOOP_DT_MS)
+        if ((TR::timeStart - TR::loopTimer) / 1000 > TR::OUTER_LOOP_DT_MS)
         {
-            elapsedms = (timeStart - loopTimer) / 1000;
-            loopTimer = timeStart;
+            TR::elapsedms = (TR::timeStart - TR::loopTimer) / 1000;
+            TR::loopTimer = TR::timeStart;
             TR::led = !TR::led;
 
             // Chassis updates - 50us
-            TR::chassis_subsystem.periodic(&imuAnglesLocal);
+            TR::chassis_subsystem.periodic(&TR::imuAnglesLocal);
             // cs = TR::chassis_subsystem.getChassisSpeeds();
 
             if (remoteTimer > 20)
@@ -146,9 +155,9 @@ void run_main_loop(TR::look_hooks &hooks)
         // printff("tt%d\n", (us_ticker_read() - timeStartCV));
 
         // Sleep if our loop is shorter than 1ms to finish other executions
-        if ((us_ticker_read() - timeStartCV) < 1000)
+        if ((us_ticker_read() - TR::timeStartCV) < 1000)
         {
-            ThisThread::sleep_until(us_ticker_read() - timeStartCV);
+            ThisThread::sleep_until(us_ticker_read() - TR::timeStartCV);
         }
     }
 }
@@ -158,11 +167,11 @@ static void imu_thread()
     while (1)
     {
 
-        timeStartImu = us_ticker_read();
+        TR::timeStartImu = us_ticker_read();
 
-        if ((timeStartImu - loopTimerImu) / 1000 > 10)
+        if ((TR::timeStartImu - TR::loopTimerImu) / 1000 > 10)
         {
-            loopTimerImu = timeStartImu;
+            TR::loopTimerImu = TR::timeStartImu;
 
 #ifdef USE_IMU
             TR::mutex_test.lock();
@@ -181,13 +190,13 @@ static void ref_thread()
 {
     while (1)
     {
-        timeStartRef = us_ticker_read();
+        TR::timeStartRef = us_ticker_read();
 
         // referee loop every 15ms - seems like 6ms when dc and 600us when connected
         // TODO I dont think this works properly
-        if ((timeStart - loopTimerRef) / 1000 > 5 * TR::OUTER_LOOP_DT_MS)
+        if ((TR::timeStart - TR::loopTimerRef) / 1000 > 5 * TR::OUTER_LOOP_DT_MS)
         {
-            loopTimerRef = timeStart;
+            TR::loopTimerRef = TR::timeStart;
             TR::led2 = TR::referee.readable();
             refereeThread(&TR::referee);
 

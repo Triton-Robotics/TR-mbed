@@ -84,16 +84,26 @@ struct OmniKinematicsLimits
 class ChassisSubsystem
 {
 public:
-    /**
-     * The Chassis constructor. This constructor takes in the CAN IDs of the four motors on the chassis.
-     * @param lfId Left front motor CAN ID
-     * @param rfId Right front motor CAN ID
-     * @param lbId Left back motor CAN ID
-     * @param rbId Right back motor CAN ID
-     */
-    ChassisSubsystem(short lfId, short rfId, short lbId, short rbId, BNO055 &imu, double radius);
 
-    ChassisSubsystem();
+    struct PID_config 
+    {
+        float kp;
+        float ki;
+        float kd;
+    };
+
+    struct config {
+        short lfId;
+        short rfId;
+        short lbId; 
+        short rbId;
+        PID_config lf_PID;
+        PID_config rf_PID;
+        PID_config lb_PID;
+        PID_config rb_PID;
+        double radius;
+        double power_limit;
+    };
 
     /**
      * The BrakeMode enum is used to set the brake mode of the chassis.
@@ -132,6 +142,16 @@ public:
 
     float previousRPM[4] = {0, 0, 0, 0};
 
+    // Empty Constructor
+    ChassisSubsystem();
+
+    /**
+     * @brief The Chassis constructor. This constructor takes in the CAN IDs of the four motors on the chassis.
+     * @param configuration: contains config details for the motors and PIDs
+     */
+    ChassisSubsystem(config configuration);
+
+
     static float limitAcceleration(float desiredRPM, float previousRPM, int power);
 
     static float p_theory(int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm);
@@ -140,6 +160,9 @@ public:
 
     float power_limit;
 
+    /**
+     * @brief Set state for chassis operation: Can be any DRIVE_MODE
+     */
     void setState(DRIVE_MODE state);
 
     /**
@@ -228,34 +251,9 @@ public:
     void setSpeedFF_Ks(double Ks);
 
     /**
-     * A helper method to find the brake mode of the chassis.
-     *
-     * @return An enum representing the brake mode of the chassis
-     */
-    BrakeMode getBrakeMode();
-
-    /**
-     * A helper method to set the brake mode of the chassis.
-     *
-     * @param brakeMode An enum representing the brake mode of the chassis
-     */
-    void setBrakeMode(BrakeMode brakeMode);
-
-    /**
-     * A helper method to initialize the IMU.
-     */
-    void initializeImu();
-
-    /**
      * A method that should be run every main loop to update the Chassis's estimated position
      */
     void periodic(BNO055_ANGULAR_POSITION_typedef *imuCurr = nullptr, ChassisSpeeds des_speeds = {0.0, 0.0, 0.0});
-
-    /**
-     * Gets the chassis's current 2D position (TO BE DONE)
-     * @return The chassis's current 2D position
-     */
-    Pose2D getPose();
 
     /**
      * gets motor speed based on location and speed unit
@@ -273,11 +271,6 @@ public:
      * @param max_vOmega maximum angular velocity of chassis
      */
     void setOmniKinematicsLimits(double max_Vel, double max_vOmega);
-
-    /**
-     * A helper method to read/update the IMU.
-     */
-    void readImu();
 
     /**
      * Yaw motor is a motor that controls the Turret
@@ -330,40 +323,28 @@ public:
     int testDataIndex = 0;
 
 private:
+    bool configured;
     DJIMotor LF, RF, LB, RB;
     DJIMotor *yaw = 0;
-    // double yawPhase;
-    BrakeMode brakeMode;
 
+    BrakeMode brakeMode;
     DRIVE_MODE chassis_state;
 
-    // double beybladeSpeed;
-    // bool beybladeIncreasing;
-    BNO055 imu;
     BNO055_ANGULAR_POSITION_typedef imuAngles;
 
     OmniKinematics m_OmniKinematics;
     float chassis_radius;
     void setOmniKinematics(double radius);
-    // Eigen::MatrixXd wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds);
 
     double FF_Ks;
 
     void setMotorPower(MotorLocation location, double power);
     void setMotorSpeedRPM(MotorLocation location, double speed);
-    // void setMotorSpeedTicksPerSecond(int index, double speed);
-
     double getMotorSpeedRPM(MotorLocation location);
     int motorPIDtoPower(MotorLocation location, double speed, uint32_t dt);
 
-    // ChassisKalman chassisKalman;
     double testAngle;
     int lastTimeMs;
-
-    short lfId;
-    short rfId;
-    short lbId;
-    short rbId;
 };
 
 #endif // TR_EMBEDDED_CHASSIS_SUBSYSTEM_H

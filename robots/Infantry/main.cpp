@@ -1,7 +1,6 @@
 // #include "Infantry.h"
 // #include "subsystems/ChassisSubsystem.h"
 #include "MainLoop.h"
-#include "subsystems/ShooterSubsystem.h"
 
 constexpr float LOWERBOUND = -35.0;
 constexpr float UPPERBOUND = 40.0;
@@ -49,11 +48,33 @@ static void init()
 
     TurretSubsystem::config turret_config = 
         {
+            .yaw_id = 4,
+            .pitch_id = 7,
+            .pitch_offset_ticks = 0,
+            .yaw_vel_PID = {569.2333, 0.988, 2.6284},
+            .yaw_pos_PID = {0.1, 0, 0.001},
+            .pitch_vel_PID = {500, 0.8, 0},
+            .pitch_pos_PID = {1.5, 0.0005, 0.05},
+            .yawCanBus = CANHandler::CANBUS_1,
+            .pitchCanBus = CANHandler::CANBUS_2,
+            .imuAngles = &TR::imuAngles,
         };
     TR::turret_subsystem = TurretSubsystem(turret_config);
 
-    // ChassisSubsystem::config chassis_config = {};
-    // TR::chassis_subsystem = ChassisSubsystem();
+    ChassisSubsystem::config chassis_config = 
+        {
+            .lfId = 1,
+            .rfId = 2,
+            .lbId = 3,
+            .rbId = 4,
+            .lf_PID = {3, 0, 0},
+            .rf_PID = {3, 0, 0},
+            .lb_PID = {3, 0, 0},
+            .rb_PID = {3, 0, 0},
+            .radius = 0.22617,
+            .power_limit = 50.0,
+        };
+    TR::chassis_subsystem = ChassisSubsystem(chassis_config);
 }
 
 static void periodic()

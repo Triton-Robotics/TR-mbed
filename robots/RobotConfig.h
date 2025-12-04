@@ -72,6 +72,8 @@ namespace TR
     extern BNO055 imu;
 
     // CV STUFF
+    // TODO make Jetson class for this
+    // extern JetsonSubsystem jetson;
     extern BufferedSerial bcJetson; // JETSON PORT
     extern Jetson_read_data jetson_received_data;
     extern Jetson_read_odom jetson_received_odom;

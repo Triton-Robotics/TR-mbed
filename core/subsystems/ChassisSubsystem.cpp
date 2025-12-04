@@ -5,41 +5,34 @@
 /**
  * @param radius radius in meters
  */
-ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbId, BNO055 &imu, double radius)
-    : LF(lfId, CAN_BUS_TYPE, MOTOR_TYPE),
-      RF(rfId, CAN_BUS_TYPE, MOTOR_TYPE),
-      LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE),
-      RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE),
-      imu(imu),
-      power_limit(50.0F),
-      chassis_radius(radius)
-// chassisKalman()
-{
+ChassisSubsystem::ChassisSubsystem(config configuration)
+    : LF(configuration.lfId, CAN_BUS_TYPE, MOTOR_TYPE),
+      RF(configuration.rfId, CAN_BUS_TYPE, MOTOR_TYPE),
+      LB(configuration.lbId, CAN_BUS_TYPE, MOTOR_TYPE),
+      RB(configuration.rbId, CAN_BUS_TYPE, MOTOR_TYPE),
+      power_limit(configuration.power_limit),
+      chassis_radius(configuration.radius)
+{    
+    setOmniKinematics(configuration.radius);
+    m_OmniKinematicsLimits.max_Vel = MAX_VEL; // m/s
+    m_OmniKinematicsLimits.max_vOmega = 8;    // rad/s
+    
+    PEAK_POWER_ALL = 10000;
+    PEAK_POWER_SINGLE = 8000;
+    
+    FF_Ks = 0;
+    
     LF.outputCap = 16000; // DJIMotor class has a max outputCap: 16384
     RF.outputCap = 16000;
     LB.outputCap = 16000;
     RB.outputCap = 16000;
-
-    this->lfId = lfId;
-    this->rfId = rfId;
-    this->lbId = lbId;
-    this->rbId = rbId;
-
-    setOmniKinematics(radius);
-    m_OmniKinematicsLimits.max_Vel = MAX_VEL; // m/s
-    m_OmniKinematicsLimits.max_vOmega = 8;    // rad/s
-
-    PEAK_POWER_ALL = 10000;
-    PEAK_POWER_SINGLE = 8000;
-
-    FF_Ks = 0;
-
-    pid_LF.setPID(3, 0, 0);
-    pid_RF.setPID(3, 0, 0);
-    pid_LB.setPID(3, 0, 0);
-    pid_RB.setPID(3, 0, 0);
+    pid_LF.setPID(configuration.lf_PID.kp, configuration.lf_PID.ki, configuration.lf_PID.kd);
+    pid_RF.setPID(configuration.rf_PID.kp, configuration.rf_PID.ki, configuration.rf_PID.kd);
+    pid_LB.setPID(configuration.lb_PID.kp, configuration.lb_PID.ki, configuration.lb_PID.kd);
+    pid_RB.setPID(configuration.rb_PID.kp, configuration.rb_PID.ki, configuration.rb_PID.kd);
 
     brakeMode = COAST;
+    configured = true;
 }
 
 // TODO fix me temp default constructor for testing
@@ -50,8 +43,8 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
 //     // TODO FIX ME
 // }
 ChassisSubsystem::ChassisSubsystem()
-    : imu(BNO055(PC_0, PC_0, PC_0))
 {
+    configured = false;
 }
 
 void ChassisSubsystem::setState(DRIVE_MODE state) 
@@ -369,21 +362,6 @@ void ChassisSubsystem::setSpeedFF_Ks(double Ks)
     FF_Ks = Ks;
 }
 
-ChassisSubsystem::BrakeMode ChassisSubsystem::getBrakeMode()
-{
-    return brakeMode;
-}
-
-void ChassisSubsystem::setBrakeMode(BrakeMode brakeMode)
-{
-    this->brakeMode = brakeMode;
-}
-
-void ChassisSubsystem::initializeImu()
-{
-    imu.set_mounting_position(MT_P1);
-}
-
 double ChassisSubsystem::getMotorSpeed(MotorLocation location, SPEED_UNIT unit = RPM)
 {
     double speed = getMotor(location).getData(VELOCITY);
@@ -394,11 +372,6 @@ double ChassisSubsystem::getMotorSpeed(MotorLocation location, SPEED_UNIT unit =
     case METER_PER_SECOND:
         return (speed / M3508_GEAR_RATIO) * (2 * PI / 60) * (WHEEL_DIAMETER_METERS / 2);
     }
-}
-
-void ChassisSubsystem::readImu()
-{
-    imu.get_angular_position_quat(&imuAngles);
 }
 
 // TODO: Change periodic to execute chassis stuff?

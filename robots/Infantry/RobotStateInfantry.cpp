@@ -1,7 +1,4 @@
-#pragma once
-
-#include <stdint.h>
-#include "peripherals/imu/BNO055.h"
+#include "RobotState.h"
 
 namespace TR
 {
@@ -42,15 +39,15 @@ namespace TR
     // GENERAL VARIABLES
     // TODO: make a general IMU class that other imu classes inherit
     // IMU
-    extern BNO055_ANGULAR_POSITION_typedef imuAnglesLocal;
+    BNO055_ANGULAR_POSITION_typedef imuAnglesLocal;
 
     // Chassis control variables
-    extern float chassis_x;
-    extern float chassis_y;
+    float chassis_x = 0;
+    float chassis_y = 0;
 
     // Turret controls variables
-    extern float yaw_desired_angle;
-    extern float pitch_desired_angle;
+    float yaw_desired_angle = 0;
+    float pitch_desired_angle = 0;
     // float yaw_current_angle = 0;
     // float pitch_current_angle = 0;
 
@@ -58,16 +55,16 @@ namespace TR
     // uint16_t chassis_power_limit;
 
     // timers
-    extern unsigned long timeStart;
-    extern unsigned long timeStartCV;
-    extern unsigned long timeStartRef;
-    extern unsigned long timeStartImu;
+    unsigned long timeStart;
+    unsigned long timeStartCV;
+    unsigned long timeStartRef;
+    unsigned long timeStartImu;
     // TODO this used to be = us_ticker_read() might cause problems
-    extern unsigned long loopTimer;
-    extern unsigned long loopTimerCV;
-    extern unsigned long loopTimerRef;
-    extern unsigned long loopTimerImu;
-    extern float elapsedms; // TODO see if this is still needed
+    unsigned long loopTimer = us_ticker_read();
+    unsigned long loopTimerCV = loopTimer;
+    unsigned long loopTimerRef = loopTimer;
+    unsigned long loopTimerImu = loopTimer;
+    float elapsedms = 0.0; // TODO see if this is still needed
 
     // int readResult = 0;
     // bool cv_enabled = false;
