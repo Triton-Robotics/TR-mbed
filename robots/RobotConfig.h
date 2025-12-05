@@ -75,10 +75,11 @@ namespace TR
     // TODO make Jetson class for this
     // extern JetsonSubsystem jetson;
     extern BufferedSerial bcJetson; // JETSON PORT
-    extern Jetson_read_data jetson_received_data;
-    extern Jetson_read_odom jetson_received_odom;
-    extern Jetson_send_ref jetson_send_ref;
-    extern Jetson_send_data jetson_send_data;
+    extern Jetson jetson;
+    extern Jetson::Jetson_read_data jetson_received_data;
+    extern Jetson::Jetson_read_odom jetson_received_odom;
+    extern Jetson::Jetson_send_ref jetson_send_ref;
+    extern Jetson::Jetson_send_data jetson_send_data;
 
 // imu
 #ifdef USE_IMU

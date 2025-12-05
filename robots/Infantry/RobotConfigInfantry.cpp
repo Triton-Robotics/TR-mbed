@@ -36,11 +36,13 @@ namespace TR
     BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 
     // CV STUFF
+    // TODO Keyush check this out and make sure all is good (i dont like how ive done the vars im ngl)
     BufferedSerial bcJetson(PC_12, PD_2, 921600); // JETSON PORT
-    Jetson_read_data jetson_received_data;
-    Jetson_read_odom jetson_received_odom;
-    Jetson_send_ref jetson_send_ref;
-    Jetson_send_data jetson_send_data;
+    Jetson jetson(bcJetson);
+    Jetson::Jetson_read_data jetson_received_data;
+    Jetson::Jetson_read_odom jetson_received_odom;
+    Jetson::Jetson_send_ref jetson_send_ref;
+    Jetson::Jetson_send_data jetson_send_data;
 
 // imu
 #ifdef USE_IMU

@@ -74,9 +74,12 @@ void run_main_loop(TR::look_hooks &hooks)
             TR::jetson_send_ref.game_state = game_status.game_progress;
             TR::jetson_send_ref.robot_hp = robot_status.current_HP;
 
-            jetson_send_feedback(TR::bcJetson, TR::jetson_send_ref, TR::jetson_send_data);
+            TR::jetson.jetson_send_feedback(TR::jetson_send_ref, TR::jetson_send_data);
 
             // TODO we should make a jetson subsystem so we are not dependent on global variable readresult
+            TR::jetson.jetson_read_values();
+            TR::jetson_received_data = TR::jetson.get_aim();
+            TR::jetson_received_odom = TR::jetson.get_odom();
             // TR::readResult = jetson_read_values(TR::bcJetson, TR::jetson_received_data, TR::jetson_received_odom);
         }
         unsigned long cv_ms = us_ticker_read();\
