@@ -3,18 +3,13 @@
 
 #include "mbed.h"
 #include "../util/peripherals/imu/BNO055.h"
+#include "Subsystem.h"
 
 #include <motor/DJIMotor.h>
 #include <communications/CANHandler.h>
 #include <peripherals/imu/BNO055.h>
 #include <peripherals/oled/SSD1308.h>
-// #include <subsystems/ChassisKalman.h>
-// #include <algorithms/WheelKalman.h>
-// #include <algorithms/Pose2D.h>
-// #include <algorithms/PID.h>
-// #include <algorithms/WheelSpeeds.h>
-// #include <algorithms/ChassisSpeeds.h>
-// #include "algorithms/eigen-3.4.0/Eigen/QR"
+
 
 #define CAN_BUS_TYPE CANHandler::CANBUS_1
 #define MOTOR_TYPE M3508
@@ -81,7 +76,7 @@ struct OmniKinematicsLimits
  * The ChassisSubsystem class also contains methods for controlling the chassis with the IMU. The IMU is used to control the
  * chassis in a field-relative manner, and to control the chassis with an offset angle.
  */
-class ChassisSubsystem
+class ChassisSubsystem : public Subsystem
 {
 public:
 
@@ -151,6 +146,7 @@ public:
      */
     ChassisSubsystem(config configuration);
 
+    void init(config configuration);
 
     static float limitAcceleration(float desiredRPM, float previousRPM, int power);
 
@@ -159,6 +155,8 @@ public:
     static float Bisection(int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm, float chassisPowerLimit);
 
     float power_limit;
+
+    DRIVE_MODE setState();
 
     /**
      * @brief Set state for chassis operation: Can be any DRIVE_MODE

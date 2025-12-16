@@ -3,11 +3,12 @@
 #include "peripherals/imu/BNO055.h"
 #include <communications/CANHandler.h>
 #include <motor/DJIMotor.h>
+#include "Subsystem.h"
 
 // enums for state
 enum TurretState {SLEEP, AIM};
 
-class TurretSubsystem
+class TurretSubsystem : public Subsystem
 {
 public:
     // pitch zero offset ticks
@@ -34,16 +35,21 @@ public:
         BNO055_ANGULAR_POSITION_typedef* imuAngles;
     };
 
+    struct TurretInfo
+    {
+        float yaw_angle;
+        float yaw_velo;
+        float pitch_angle;
+        float pitch_velo;
+    };
+
     TurretSubsystem();
 
     TurretSubsystem(config configuration);
 
-    // get angle zero offsetted
-    double get_pitch_angle_rads_zero_offsetted();
+    void init(config configuration);
 
-    double get_pitch_vel_rads_per_sec();
-
-    double get_yaw_vel_rads_per_sec();
+    TurretInfo getState();
 
     void setState (TurretState state);
 
@@ -53,12 +59,21 @@ public:
 
     void periodic();
 
+    // get angle zero offsetted
+    double get_pitch_angle_rads_zero_offsetted();
+
+    double get_pitch_vel_rads_per_sec();
+
+    double get_yaw_vel_rads_per_sec();
+
 private:
     bool configured;
 
     DJIMotor yaw, pitch;
 
     TurretState turretState;
+
+    TurretInfo turret_state;
 
     int pitch_offset_ticks;
 

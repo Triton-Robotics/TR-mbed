@@ -21,6 +21,7 @@
 #include "communications/jetson/Jetson.h"
 
 // #include "subsystems/Chassis.h"
+#include "subsystems/Subsystem.h"
 #include "subsystems/ChassisSubsystem.h"
 #include "subsystems/TurretSubsystem.h"
 #include "subsystems/ShooterSubsystem.h"

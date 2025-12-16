@@ -5,6 +5,7 @@
 #include <algorithms/PID.h>
 #include <communications/CANHandler.h>
 #include <motor/DJIMotor.h>
+#include "Subsystem.h"
 
 // Constants
 constexpr int NUM_BALLS_SHOT = 3;
@@ -15,7 +16,7 @@ constexpr int FLYWHEEL_VELO = 5500;
 enum ShootState {OFF, FLYWHEEL, SHOOT};
 
 // struct for config
-class ShooterSubsystem
+class ShooterSubsystem : public Subsystem
 {
 public:
     // TODO add compiler flag -Wmissing-field-initializers
@@ -44,6 +45,10 @@ public:
 
     ShooterSubsystem(config configuration);
 
+    void init(config configuration);
+
+    ShootState getState();
+    
     void setState(ShootState shoot_state);
 
     void execute_shooter();

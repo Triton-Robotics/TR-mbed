@@ -31,9 +31,44 @@ ShooterSubsystem::ShooterSubsystem(config configuration)
     shooter_time = us_ticker_read();
 }
 
+void ShooterSubsystem::init(config configuration)
+{
+    if (configured == false)
+    {
+        flywheelL = DJIMotor(configuration.flywheelL_id, configuration.canBus, M3508);
+        flywheelR = DJIMotor(configuration.flywheelR_id, configuration.canBus, M3508);
+        indexer = DJIMotor(configuration.indexer_id, configuration.canBus, M2006);
+
+        flywheelL.setSpeedPID(configuration.flywheelL_PID.kp,
+                            configuration.flywheelL_PID.ki,
+                            configuration.flywheelL_PID.kd);
+
+        flywheelR.setSpeedPID(configuration.flywheelR_PID.kp,
+                            configuration.flywheelR_PID.ki,
+                            configuration.flywheelR_PID.kd);
+
+        indexer.setSpeedPID(configuration.indexer_PID.kp,
+                            configuration.indexer_PID.ki,
+                            configuration.indexer_PID.kd);
+
+        // initialize all other vars
+        configured = true;
+        shoot = OFF;
+        shooter_type = BURST;
+        shooter_time = us_ticker_read();
+    }
+}
+
+
 void ShooterSubsystem::setState(ShootState shoot_state)
 {
     shoot = shoot_state;
+}
+
+// TODO: figure out what we want to return?
+ShootState ShooterSubsystem::getState()
+{
+    return shoot;
 }
 
 void ShooterSubsystem::execute_shooter() 
