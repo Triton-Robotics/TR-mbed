@@ -10,11 +10,11 @@
 #include <peripherals/oled/SSD1308.h>
 // #include <subsystems/ChassisKalman.h>
 // #include <algorithms/WheelKalman.h>
-#include <algorithms/Pose2D.h>
-#include <algorithms/PID.h>
+// #include <algorithms/Pose2D.h>
+// #include <algorithms/PID.h>
 // #include <algorithms/WheelSpeeds.h>
 // #include <algorithms/ChassisSpeeds.h>
-#include "algorithms/eigen-3.4.0/Eigen/QR"
+// #include "algorithms/eigen-3.4.0/Eigen/QR"
 
 #define CAN_BUS_TYPE CANHandler::CANBUS_1
 #define MOTOR_TYPE M3508
