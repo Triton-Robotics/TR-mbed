@@ -1,21 +1,23 @@
-#include "base_robot/MainLoop.h"
+#include "base_robot/BaseRobot.h"
+#include "mbed.h"
 
-void main_loop(BaseRobot &base_robot) {
+void BaseRobot::main_loop()
+{
     unsigned long loop_clock_us = us_ticker_read();
     unsigned long prev_loop_time_us = loop_clock_us;
-    unsigned long last_periodic_call_us = 0;
 
-    unsigned long main_loop_dt_ms = base_robot.main_loop_dt_ms();
+    unsigned long main_loop_dt_ms = 1; // idk how to call main_loop_dt_ms() without erroring for some reason
 
-    base_robot.init();
+    init();
 
-    while (true) {
-        // TODO > vs >=
-        if ((loop_clock_us - prev_loop_time_us) / 1000 >= main_loop_dt_ms) {
-
-            base_robot.periodic(loop_clock_us - last_periodic_call_us);
-            // TODO make sure this periodic dt logic is correct
-            last_periodic_call_us = us_ticker_read();
+    while (true)
+    {
+        loop_clock_us = us_ticker_read();
+        if ((loop_clock_us - prev_loop_time_us) / 1000 >= main_loop_dt_ms)
+        {
+            periodic(loop_clock_us - prev_loop_time_us);
+            prev_loop_time_us = us_ticker_read();
         }
+        end_of_loop();
     }
 }

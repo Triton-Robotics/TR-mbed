@@ -11,4 +11,6 @@ class BaseRobot {
 
     // default 1000hz main loop. Can be overriden
     virtual unsigned int main_loop_dt_ms() { return 1; };
+
+    virtual void main_loop();
 };

@@ -1,5 +1,4 @@
 #include "base_robot/BaseRobot.h"
-#include "base_robot/MainLoop.h"
 
 class Infantry : public BaseRobot {
   public:
@@ -20,5 +19,5 @@ int main() {
     Infantry infantry = Infantry();
 
     // blocking
-    main_loop(infantry);
+    infantry.main_loop();
 }
