@@ -104,6 +104,19 @@ mbed-tools sterm -b 115200
 
 ---
 
+## Formatting 
+
+Install the `Clang-Format (Xaver Hellauer)` on vscode 
+
+### Linux 
+```
+sudo apt update 
+sudo apt install clang-format
+```
+
+### Windows 
+todo
+
 ## Troubleshooting
 
 See the [Troubleshooting](.md/TROUBLESHOOTING.md) guide for common issues and solutions.
