@@ -1,11 +1,4 @@
-add_library(robots_common STATIC 
-    MainLoop.cpp
-    MainLoop.h
-    LoopHook.h
-    RobotConfig.h
-    RobotConstants.h
-    RobotState.h
-)
+add_library(robots_common)
 
 target_include_directories(robots_common PUBLIC 
     ${CMAKE_CURRENT_SOURCE_DIR}

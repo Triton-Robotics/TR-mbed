@@ -3,11 +3,7 @@ project(TR-Infantry)
 mbed_configure_app_target(${PROJECT_NAME})
 
 add_executable(${PROJECT_NAME}
-    # main.cpp
-    Infantry.cpp
-    RobotConfigInfantry.cpp
-    RobotStateInfantry.cpp
-)
+    Infantry.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE robots_common)
 
 # TODO this doesnt work
