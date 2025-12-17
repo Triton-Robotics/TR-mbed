@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stdint.h>
-#include "peripherals/imu/BNO055.h"
+#include "util/peripherals/imu/BNO055.h"
 
 namespace TR
 {

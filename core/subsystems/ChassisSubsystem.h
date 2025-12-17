@@ -5,10 +5,10 @@
 #include "../util/peripherals/imu/BNO055.h"
 #include "Subsystem.h"
 
-#include <motor/DJIMotor.h>
-#include <communications/CANHandler.h>
-#include <peripherals/imu/BNO055.h>
-#include <peripherals/oled/SSD1308.h>
+#include <util/motor/DJIMotor.h>
+#include <util/communications/CANHandler.h>
+#include <util/peripherals/imu/BNO055.h>
+#include <util/peripherals/oled/SSD1308.h>
 
 
 #define CAN_BUS_TYPE CANHandler::CANBUS_1

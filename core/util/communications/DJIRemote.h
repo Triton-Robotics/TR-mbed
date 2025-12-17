@@ -1,11 +1,11 @@
 #include "mbed.h"
-#include "ChassisSubsystem.h"
+#include "subsystems/ChassisSubsystem.h"
 
 #ifndef DJI_REMOTE
 #define DJI_REMOTE
 
 // I don't like constants being here but also they're robot independent (?)
-//DEGREES PER SECOND AT MAX
+// DEGREES PER SECOND AT MAX
 constexpr float JOYSTICK_SENSITIVITY_YAW_DPS = 180.0;
 constexpr float JOYSTICK_SENSITIVITY_PITCH_DPS = 180.0;
 
@@ -22,7 +22,6 @@ class Remote
 {
 public:
     Remote(PinName dbus);
-
 
     /**
      * Specifies a particular joystick.
@@ -182,40 +181,45 @@ public:
     long goodDataChainNumber = 0;
     bool unfiltered = false;
 
-    inline float leftX() const{
+    inline float leftX() const
+    {
         return remote.leftHorizontal / 660.0;
     }
 
-    inline float leftY() const{
+    inline float leftY() const
+    {
         return remote.leftVertical / 660.0;
     }
 
-    inline float rightX() const{
+    inline float rightX() const
+    {
         return remote.rightHorizontal / 660.0;
     }
 
-    inline float rightY() const{
+    inline float rightY() const
+    {
         return remote.rightVertical / 660.0;
     }
 
-    inline Remote::SwitchState leftSwitch() const{
+    inline Remote::SwitchState leftSwitch() const
+    {
         return remote.leftSwitch;
     }
 
-    inline Remote::SwitchState rightSwitch() const{
+    inline Remote::SwitchState rightSwitch() const
+    {
         return remote.rightSwitch;
     }
 
 private:
-
     BufferedSerial receiver;
     Timer readTimer;
 
-    static const int REMOTE_BUF_LEN = 18;              /// Length of the remote recieve buffer.
-    static const int REMOTE_READ_TIMEOUT = 6;          /// Timeout delay between valid packets.
-    static const int REMOTE_DISCONNECT_TIMEOUT = 200;  /// Timeout delay for remote disconnect.
-    static const int REMOTE_INT_PRI = 12;              /// Interrupt priority.
-    static constexpr float STICK_MAX_VALUE = 660.0f;   /// Max value received by one of the sticks.
+    static const int REMOTE_BUF_LEN = 18;             /// Length of the remote recieve buffer.
+    static const int REMOTE_READ_TIMEOUT = 6;         /// Timeout delay between valid packets.
+    static const int REMOTE_DISCONNECT_TIMEOUT = 200; /// Timeout delay for remote disconnect.
+    static const int REMOTE_INT_PRI = 12;             /// Interrupt priority.
+    static constexpr float STICK_MAX_VALUE = 660.0f;  /// Max value received by one of the sticks.
 
     /// The current remote information
     struct RemoteInfo
@@ -228,15 +232,15 @@ private:
         SwitchState leftSwitch = SwitchState::UNKNOWN;
         SwitchState rightSwitch = SwitchState::UNKNOWN;
         struct
-        {  /// Mouse information
+        { /// Mouse information
             int16_t x = 0;
             int16_t y = 0;
             int16_t z = 0;
             bool l = false;
             bool r = false;
         } mouse;
-        uint16_t key = 0;   /// Keyboard information
-        int16_t wheel = 0;  /// Remote wheel information
+        uint16_t key = 0;  /// Keyboard information
+        int16_t wheel = 0; /// Remote wheel information
     };
 
     RemoteInfo remote;
@@ -266,6 +270,5 @@ private:
     /// Resets the current remote info.
     void reset();
 
-};  // class Remote
+}; // class Remote
 #endif
-

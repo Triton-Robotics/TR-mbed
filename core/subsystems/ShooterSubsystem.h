@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include <algorithms/PID.h>
-#include <communications/CANHandler.h>
-#include <motor/DJIMotor.h>
+#include <util/algorithms/PID.h>
+#include <util/communications/CANHandler.h>
+#include <util/motor/DJIMotor.h>
 #include "Subsystem.h"
 
 // Constants

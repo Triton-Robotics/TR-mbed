@@ -1,8 +1,8 @@
 #pragma once
 
-#include "peripherals/imu/BNO055.h"
-#include <communications/CANHandler.h>
-#include <motor/DJIMotor.h>
+#include "util/peripherals/imu/BNO055.h"
+#include <util/communications/CANHandler.h>
+#include <util/motor/DJIMotor.h>
 #include "Subsystem.h"
 
 // enums for state

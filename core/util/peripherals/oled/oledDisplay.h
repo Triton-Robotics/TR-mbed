@@ -5,7 +5,7 @@
 #include <cmath>
 #include <string>
 #include "Adafruit_SSD1306.h"
-#include "motor/DJIMotor.h"
+#include "util/motor/DJIMotor.h"
 //we will be using Adafruit_SSD1306
 
 //I2C i2c(PB_7,PB_8);

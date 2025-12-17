@@ -2,8 +2,8 @@
 #define TR_EMBEDDED_DJIMOTOR_H
 
 #include "mbed.h"
-#include "algorithms/PID.h"
-#include "communications/CANHandler.h"
+#include "util/algorithms/PID.h"
+#include "util/communications/CANHandler.h"
 #include <cmath>
 #include <string>
 
