@@ -2,7 +2,10 @@
 
 class Infantry : public BaseRobot {
   public:
-    Infantry() {}
+    Infantry() : BaseRobot(config_) {}
+
+    // default config
+    const Config config_ = Config();
 
     ~Infantry() {}
 
@@ -16,7 +19,7 @@ class Infantry : public BaseRobot {
 };
 
 int main() {
-    Infantry infantry = Infantry();
+    Infantry infantry;
 
     // blocking
     infantry.main_loop();
