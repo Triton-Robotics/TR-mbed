@@ -33,6 +33,7 @@ public:
 
 private:
     BufferedSerial ref;
+    Mutex mutex_;
 };
 
 

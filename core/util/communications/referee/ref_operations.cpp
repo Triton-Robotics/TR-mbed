@@ -6,8 +6,10 @@ void Referee::refereeThread(){
 
     // int loop=0;
     // while(1){
-    if(ref.readable()){
-        int rad = JudgeSystem_USART_Receive_DMA(&ref);
+        if(ref.readable()){
+            mutex_.lock();
+            int rad = JudgeSystem_USART_Receive_DMA(&ref);
+            mutex_.unlock();
         Judge_GetMessage(rad);
 
         // if(loop % 10==0){ // print out only every 10 iterations

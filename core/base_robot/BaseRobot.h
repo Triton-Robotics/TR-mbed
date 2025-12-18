@@ -75,11 +75,15 @@ class BaseRobot {
         init();
 
         while (true) {
-            // TODO: StmIO comms (Ref and Jetson)
-            jetson.write(&stm_state);
-            // TODO update stm_state with ref.read?
+            // StmIO comms (Ref and Jetson)
             // TODO Mutex referee class and make it a good class bru
+            // TODO update stm_state with ref.read?
             referee.refereeThread();
+            
+            stm_state.game_state = game_status.game_progress;
+            stm_state.robot_hp = robot_status.current_HP;
+            
+            jetson.write(&stm_state);
 
             loop_clock_us = us_ticker_read();
             if ((loop_clock_us - prev_loop_time_us) / 1000 >= main_loop_dt_ms) {
