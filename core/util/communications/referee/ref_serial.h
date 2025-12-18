@@ -3,17 +3,33 @@
 
 #include "mbed.h"
 #include "crc.h"
+#include "util/communications/StmIO.h"
+#include <string>
+
+// Screen resolution of your Robomaster Client
+#define SCREEN_LENGTH 1920
+#define SCREEN_WIDTH 1080
+
 
 /**
  * The Referee class was an experiment and is not implemented yet. (maybe it's not needed)
  */
-class Referee {
+class Referee: public StmIO {
 public:
     Referee(PinName pin_tx, PinName pin_rx);
     void clearRxBuffer();
     void read();
     //BufferedSerial getRef();
     bool readable();
+
+    void refereeThread();
+
+    // Draw text on the UI
+    void ui_graph_characters(BufferedSerial* serial, int operation_type, string str, int x, int y, char name);
+
+    // Delete a layer of UI drawing
+    void ui_delete_layer(BufferedSerial* serial, int layer);
+
 
 private:
     BufferedSerial ref;

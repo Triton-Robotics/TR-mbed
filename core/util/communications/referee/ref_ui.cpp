@@ -1,6 +1,6 @@
-#include "ref_ui.h"
+#include "ref_serial.h"
 
-void ui_graph_characters(BufferedSerial* serial, int operation_type, string str, int x, int y, char name){
+void Referee::ui_graph_characters(BufferedSerial* serial, int operation_type, string str, int x, int y, char name){
     ext_student_interactive_header_data_character_t custom_character_draw;
     {            
         custom_character_draw.data_cmd_id=0x0110; //0104 for 7 diagrams, 0110 for drawing text		
@@ -29,7 +29,7 @@ void ui_graph_characters(BufferedSerial* serial, int operation_type, string str,
     referee_data_pack_handle(0xA5,0x0301,(uint8_t *)&custom_character_draw,sizeof(custom_character_draw), serial);
 }
 
-void ui_delete_layer(BufferedSerial* serial, int layer){
+void Referee::ui_delete_layer(BufferedSerial* serial, int layer){
     ext_student_interactive_header_data_delete_t custom_delete_draw;
     {
         custom_delete_draw.data_cmd_id=0x0100;		

@@ -1,7 +1,10 @@
 #pragma once
 
 #include "mbed.h"
+#include "PinNames.h"
 #include "util/communications/DJIRemote.h"
+#include "util/communications/jetson/Jetson.h"
+#include "util/communications/referee/ref_serial.h"
 
 class BaseRobot {
   public:
@@ -24,19 +27,27 @@ class BaseRobot {
 
     Remote remote_;
     BufferedSerial referee_;
+    Referee referee;
+
     BufferedSerial jetson_serial_;
+    Jetson jetson;
+    Jetson::WriteState stm_state;
+    Jetson::ReadState jetson_state;
+
     CANHandler canHandler1_;
     CANHandler canHandler2_;
     DigitalOut led0_;
     DigitalOut led1_;
     DigitalOut led2_;
-    // TODO maybe usb serial? 
+    // TODO maybe usb serial?
 
     // clang-format off
     BaseRobot(const Config &config)
         : remote_(config.remote_pin),
           referee_(config.referee_tx_pin, config.referee_rx_pin, config.referee_baud),
+          referee(config.referee_tx_pin, config.referee_rx_pin), //TODO make sure this is right
           jetson_serial_(config.jetson_tx_pin, config.jetson_rx_pin, config.jetson_baud),
+          jetson(jetson_serial_),
           canHandler1_(config.can1_rx_pin, config.can1_tx_pin),
           canHandler2_(config.can2_rx_pin, config.can2_tx_pin),
           led0_(config.led0_pin),
@@ -65,18 +76,26 @@ class BaseRobot {
 
         while (true) {
             // TODO: StmIO comms (Ref and Jetson)
-            
+            jetson.write(&stm_state);
+            // TODO update stm_state with ref.read?
+            // TODO Mutex referee class and make it a good class bru
+            referee.refereeThread();
 
             loop_clock_us = us_ticker_read();
             if ((loop_clock_us - prev_loop_time_us) / 1000 >= main_loop_dt_ms) {
                 // Add subsystems in periodic
                 periodic(loop_clock_us - prev_loop_time_us);
                 prev_loop_time_us = us_ticker_read();
+                
+                // Motor updates
+                DJIMotor::s_sendValues();
             }
             // Add sensors updates in your end of loop
             end_of_loop();
 
-            // TODO: Motor updates
+            jetson.read(&jetson_state);
+            canHandler1_.readAllCan();
+            canHandler2_.readAllCan();
         }
     }
 };

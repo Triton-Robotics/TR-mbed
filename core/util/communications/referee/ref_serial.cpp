@@ -14,7 +14,7 @@ void Referee::clearRxBuffer(){
 }
 
 void Referee::read(){
-    
+    refereeThread();
 }
 
 bool Referee::readable(){

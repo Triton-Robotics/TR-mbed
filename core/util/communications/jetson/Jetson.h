@@ -2,7 +2,7 @@
 #include "mbed.h"
 #include <cstring>
 #include <stdint.h>
-// #include "StmIO.h"
+#include "util/communications/StmIO.h"
 
 // TODO Constant definition here?
 #define DATA_HEADER 0xAA
@@ -13,7 +13,7 @@
 #define JETSON_READ_MSG_SIZE 11 // old code
 #define JETSON_MAX_PACKET_SIZE 117
 
-class Jetson {
+class Jetson: public StmIO {
   public:
     struct Jetson_send_data {
         float chassis_x_velocity;
@@ -58,7 +58,7 @@ class Jetson {
 
         int8_t game_state;
         int16_t robot_hp;
-        static constexpr int size = 28 + 3;
+        // static constexpr int size = 28 + 3;
     };
 
     struct ReadState {
@@ -71,13 +71,10 @@ class Jetson {
         float desired_angular_vel;
         char localization_calibration;
 
-        static constexpr int size = 13 + 9;
+        // static constexpr int size = 13 + 9;
     };
 
     Jetson();
-
-    // Init Jetson with the Pins and baud for the UART device
-    Jetson(PinName tx, PinName rx, int baud);
 
     // Init Jetson with a BufferedSerial Object
     Jetson(BufferedSerial &UARTJetson);
@@ -115,21 +112,13 @@ class Jetson {
      */
     ssize_t jetson_read_spi();
 
-    // Get aim data from Jetson
-    Jetson_read_data get_aim();
+    // TODO potentially useless?
+    void write_robot_state(Jetson_send_data *curr_robot_state);
+    void write_ref_state(Jetson_send_ref *curr_ref_state);
 
-    // Get Odometry data from Jetson
-    Jetson_read_odom get_odom();
-
-    // TODO idk what this is bruh
-    // Jetson callback for rx?
-    void on_jetson_rx();
-
-    void init_jetson();
-
-    // TODO add paramaters
-    void write_robot_state();
-    void write_ref_state();
+    // StmIO things
+    void read(ReadState *jetson_state = nullptr);
+    void write(WriteState *stm_state = nullptr);
 
   private:
     struct Jetson_send_data_buf {
@@ -149,7 +138,7 @@ class Jetson {
         int size = 3;
     };
 
-    Mutex mutex_();
+    Mutex mutex_;
     void write_thread();
     void read_thread();
 
@@ -158,6 +147,9 @@ class Jetson {
 
     Jetson_read_data read_data;
     Jetson_read_odom odom_data;
+
+    Jetson_send_data robot_state;
+    Jetson_send_ref ref_state;
 
     char nucleo_value[50] = {0};
     char jetson_read_buff[JETSON_READ_BUFF_SIZE] = {0};
@@ -179,24 +171,16 @@ class Jetson {
 };
 
 
-
-
-
-
-// BufferedSerial bcJetson(PC_12, PD_2, 115200);
-void on_jetson_rx();
-void init_jetson(BufferedSerial &bcJetson);
-
 // we want to be able to send both struct types, so we could have 4 args:
 // bcJetson, &jetson_send_data = nullptr, &jetson_send_ref = nullptr, ref_data = False
 // void jetson_send_feedback(BufferedSerial &bcJetson, const Jetson_send_ref& ref_data, const Jetson_send_data& data, int msg_type = 0);
 
-// // same w receiving
-// // bcJetson, &jetson_read_data = nullptr, &jetson_read_new_odom = nullptr
-// // here we return num bytes to determine which type? or we can give a bool to know which one is updated
-// // well either way we look at both :D
+// same w receiving
+// bcJetson, &jetson_read_data = nullptr, &jetson_read_new_odom = nullptr
+// here we return num bytes to determine which type? or we can give a bool to know which one is updated
+// well either way we look at both :D
 // ssize_t jetson_read_values(BufferedSerial &bcJetson, Jetson_read_data& read_data, Jetson_read_odom& odom_data);
 
 
-// // spi bs
+// spi bs
 // ssize_t jetson_send_read_spi(SPI &spiJetson, const Jetson_send_data& input, Jetson_read_data& output);

@@ -186,7 +186,7 @@ int main(){
             refLoop++;
             if (refLoop >= 5){
                 led2 = referee.readable();
-                refereeThread(&referee);
+                referee.refereeThread();
                 refLoop = 0;
 
                 //POWER LIMIT OVERRIDE INCASE

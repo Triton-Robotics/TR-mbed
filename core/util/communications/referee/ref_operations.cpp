@@ -1,11 +1,13 @@
-#include "ref_operations.h"
+#include "ref_serial.h"
 
-void refereeThread(BufferedSerial* referee){
+static bool enablePrintRefData = 0;
+
+void Referee::refereeThread(){
 
     // int loop=0;
     // while(1){
-    if(referee->readable()){
-        int rad = JudgeSystem_USART_Receive_DMA(referee);
+    if(ref.readable()){
+        int rad = JudgeSystem_USART_Receive_DMA(&ref);
         Judge_GetMessage(rad);
 
         // if(loop % 10==0){ // print out only every 10 iterations
@@ -47,7 +49,7 @@ void refereeThread(BufferedSerial* referee){
         // }
     }
 
-    if(referee->writable()){
+    if(ref.writable()){
 
         // For graphing diagrams ----------------------------
         ext_student_interactive_header_data_graphic_t custom_graphic_draw;	//自定义图像
@@ -117,14 +119,14 @@ void refereeThread(BufferedSerial* referee){
             }
         }
 
-        ui_delete_layer(referee, 5);
-        referee_data_pack_handle(0xA5,0x0301,(uint8_t *)&custom_graphic_draw,sizeof(custom_graphic_draw),referee);
+        ui_delete_layer(&ref, 5);
+        referee_data_pack_handle(0xA5,0x0301,(uint8_t *)&custom_graphic_draw,sizeof(custom_graphic_draw), &ref);
 
         // string powerStr = "power: " + to_string((int)power_heat_data.chassis_power);
-        // ui_graph_characters(referee, 1, powerStr, SCREEN_LENGTH/2 +100, SCREEN_WIDTH/2 +100, 99);
+        // ui_graph_characters(&ref, 1, powerStr, SCREEN_LENGTH/2 +100, SCREEN_WIDTH/2 +100, 99);
 
         // // string angleStr = "angle: " + to_string((int)ext_game_robot_pos.data.yaw);
-        // ui_graph_characters(referee, 1, angleStr, SCREEN_LENGTH/2 +100, SCREEN_WIDTH/2 +150, 10);
+        // ui_graph_characters(&ref, 1, angleStr, SCREEN_LENGTH/2 +100, SCREEN_WIDTH/2 +150, 10);
 
         /* Robot communication to be worked on in the future */
         /*
@@ -149,7 +151,7 @@ void refereeThread(BufferedSerial* referee){
                 memcpy(&custom_comm.data.data, toSend, sizeof(toSend));
             }
         }
-        referee_data_pack_handle(0xA5,0x0301,(uint8_t *)&custom_comm,sizeof(custom_comm),referee);
+        referee_data_pack_handle(0xA5,0x0301,(uint8_t *)&custom_comm,sizeof(custom_comm), &ref);
         */
     }
     else {

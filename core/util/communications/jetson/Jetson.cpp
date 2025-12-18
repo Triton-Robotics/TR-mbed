@@ -1,51 +1,17 @@
 #include "Jetson.h"
 
-void Jetson::on_jetson_rx() 
-{
-    jetson_data_ready = true;
-}
-
-bool jetson_data_ready;
-void on_jetson_rx() 
-{
-    jetson_data_ready = true;
-}
-
-// TODO: Remove this maybe? idk why keyush put it here
-void init_jetson(BufferedSerial &bcJetson) 
-{
-    bcJetson.sigio(callback(on_jetson_rx));
-}
-
-// Jetson::Jetson()
-// : bcJetson(nullptr), spiJetson(nullptr)
-// {
-// }
-
-// Jetson::Jetson(PinName tx, PinName rx, int baud) 
-// : bcJetson(new BufferedSerial(tx, rx, baud)), spiJetson(nullptr)
-// {
-// }
 
 Jetson::Jetson(BufferedSerial& UARTJetson)
 : bcJetson(&UARTJetson), spiJetson(nullptr)
 {
 }
 
+
 Jetson::Jetson(SPISlave &SPIJetson) 
 : bcJetson(nullptr), spiJetson(&SPIJetson)
 {
 }
 
-Jetson::Jetson_read_data Jetson::get_aim()
-{
-    return read_data;
-}
-
-Jetson::Jetson_read_odom Jetson::get_odom()
-{
-    return odom_data;
-}
 
 void Jetson::jetson_send_feedback(const Jetson_send_ref& ref_data, const Jetson_send_data& data, int msg_type) 
 {
@@ -442,7 +408,6 @@ ssize_t Jetson::jetson_read_spi()
 }
 
 
-
 /**
  * Copy float `value` bytes into single bytes in `byteArr` array
  * @param byteArr destination char array for value individual bytes
@@ -453,15 +418,18 @@ void Jetson::getBytesFromFloat(char* byteArr, float value)
   std::memcpy(byteArr, &value, sizeof(float));
 }
 
+
 void Jetson::getBytesFromInt16(char* byteArr, int16_t value) 
 {
   std::memcpy(byteArr, &value, sizeof(int16_t));
 }
 
+
 void Jetson::getBytesFromInt8(char* byteArr, int8_t value) 
 {
   std::memcpy(byteArr, &value, sizeof(int8_t));
 }
+
 
 /**
 * Writes 9 bytes of read_buf into received_one and received_two as floats for pitch & yaw positions
@@ -478,6 +446,7 @@ void Jetson::decode_toSTM32(char *read_buf, float &received_one, float &received
   checksum = read_buf[9];
 }
 
+
 /**
 * Copies 4 bytes from srcBuf[0] into destBuf[offset]
 * @param srcBuf source buffer
@@ -490,6 +459,7 @@ void Jetson::copy4Char(char* srcBuf, char* destBuf, int offset)
       destBuf[offset+i] = srcBuf[i];
   }
 }
+
 
 /**
 * Performs a Longitudinal Redundancy Check
@@ -510,101 +480,25 @@ uint8_t Jetson::calculateLRC(const char* data, size_t length)
 
 void Jetson::write_thread() {
     // mutex lock
-    // parse local struct containing values to write 
+    mutex_.lock();
     // write serial
+    jetson_send_feedback(ref_state, robot_state);
     // unlock mutex
+    mutex_.unlock();
 }
+
 
 void Jetson::read_thread() {
     // mutex lock
+    mutex_.lock();
     // read serial
-    // populate local struct with appropriate values 
+    jetson_read_values();
     // mutex unlock
-    while(true){
-
-        if(!bcJetson->readable()) {
-            // return -1;
-            continue;
-        }
-
-        int available_space = JETSON_READ_BUFF_SIZE - jetson_read_buff_pos;
-        if (available_space < JETSON_MAX_PACKET_SIZE) {
-            jetson_read_buff_pos = 0;
-            available_space = JETSON_MAX_PACKET_SIZE;
-        }
-        else if (available_space > JETSON_MAX_PACKET_SIZE) {
-            available_space = JETSON_MAX_PACKET_SIZE;
-        }
-
-        ssize_t bytes_read = bcJetson->read(jetson_read_buff + jetson_read_buff_pos, available_space);
-
-        if(bytes_read == -EAGAIN) {
-            // return -EAGAIN;
-            continue;
-        }
-
-        //error other than no data to read 
-        if (bytes_read <= 0) {
-            jetson_read_buff_pos = 0; //reset buffer
-            // return bytes_read; //return error code
-            continue;
-
-        }
-
-        // TODO this is broken I think for small incoming packets 
-        if (bytes_read < JETSON_READ_MSG_SIZE) {
-            jetson_read_buff_pos += bytes_read;
-            continue;
-        }
-
-        for (int i = 0; i < bytes_read; ++i) {
-            if (jetson_read_buff[jetson_read_buff_pos + i] == AIM_HEADER) {
-                // process aim data
-                if (jetson_read_buff_pos + i + 10 <= JETSON_READ_BUFF_SIZE) {
-                    uint8_t checksum = jetson_read_buff[jetson_read_buff_pos + i + 10];
-                    uint8_t calculated_checksum = calculateLRC(&jetson_read_buff[jetson_read_buff_pos + i + 1], 9);
-
-                    if (checksum != calculated_checksum) {
-                        // checksum mismatch, skip this packet
-                        continue;
-                    }
-                    
-                    memcpy(&read_data.requested_pitch_rads, &jetson_read_buff[jetson_read_buff_pos + i + 1], sizeof(float));
-                    memcpy(&read_data.requested_yaw_rads, &jetson_read_buff[jetson_read_buff_pos + i + 5], sizeof(float));
-                    memcpy(&read_data.shoot_status, &jetson_read_buff[jetson_read_buff_pos + i + 9], sizeof(char));
-                    jetson_read_buff_pos += bytes_read;
-
-                    continue;
-                }
-            }
-            else if (jetson_read_buff[jetson_read_buff_pos + i] == ODOM_HEADER) {
-                // process odom data
-                if (jetson_read_buff_pos + i + 13 <= JETSON_READ_BUFF_SIZE) {
-                    uint8_t checksum = jetson_read_buff[jetson_read_buff_pos + i + 14];
-                    uint8_t calculated_checksum = calculateLRC(&jetson_read_buff[jetson_read_buff_pos + i + 1], 13);
-
-                    if (checksum != calculated_checksum) {
-                        // checksum mismatch, skip this packet
-                        continue;
-                    }
-
-                    memcpy(&odom_data.x_vel, &jetson_read_buff[jetson_read_buff_pos + i + 1], sizeof(float));
-                    memcpy(&odom_data.y_vel, &jetson_read_buff[jetson_read_buff_pos + i + 5], sizeof(float));
-                    memcpy(&odom_data.rotation, &jetson_read_buff[jetson_read_buff_pos + i + 9], sizeof(float));
-                    memcpy(&odom_data.calibration, &jetson_read_buff[jetson_read_buff_pos + i + 13], sizeof(char));
-                    jetson_read_buff_pos += bytes_read;
-                    
-                    continue;;
-                }
-            }
-        }
-
-        jetson_read_buff_pos += bytes_read;
-
-        continue;
-    }
+    mutex_.unlock();
 }
 
+
+// yea idk what this is for twin :3
 /**
  * StateStruct Jetson::get_data() {
  *   create new StateStruct
@@ -614,21 +508,64 @@ void Jetson::read_thread() {
  *   return
  * 
  * }
+ *
  */
 
- /**
-  * void Jetson::write_robot_state(int chassis_vel_x, int chassis_vel_y, ...)
-  *     mutex lock 
-  *     copy passed variables into local StateStruct 
-  *     mutex unlock
-  *     return
-  */
+
+void Jetson::write(WriteState *stm_state)
+{
+    if (stm_state != nullptr)
+    {
+        robot_state.chassis_rotation = stm_state->chassis_rotation;
+        robot_state.chassis_x_velocity = stm_state->chassis_x_velocity;
+        robot_state.chassis_y_velocity = stm_state->chassis_y_velocity;
+        robot_state.pitch_angle_rads = stm_state->pitch_angle_rads;
+        robot_state.pitch_velocity = stm_state->pitch_velocity;
+        robot_state.yaw_angle_rads = stm_state->yaw_angle_rads;
+        robot_state.yaw_velocity = stm_state->yaw_velocity;
+
+        ref_state.game_state = stm_state->game_state;
+        ref_state.robot_hp = stm_state->robot_hp;
+    }
+
+    write_thread();
+}
 
 
- /**
-  * void Jetson::write_ref_state(int game state, int hp ...)
-  *     mutex lock 
-  *     copy passed variables into local StateStruct 
-  *     mutex unlock
-  *     return
-  */
+void Jetson::read(ReadState *jetson_state)
+{
+    read_thread();
+
+    if (jetson_state != nullptr)
+    {
+        jetson_state->desired_x_vel = odom_data.x_vel;
+        jetson_state->desired_y_vel = odom_data.y_vel;
+        jetson_state->desired_angular_vel = odom_data.rotation;
+        jetson_state->localization_calibration = odom_data.calibration;
+        
+        jetson_state->desired_yaw_rads = read_data.requested_yaw_rads;
+        jetson_state->desired_pitch_rads = read_data.requested_pitch_rads;
+        jetson_state->shoot_status = read_data.shoot_status;
+    }
+}
+
+
+void Jetson::write_robot_state(Jetson_send_data *curr_robot_state)
+{
+    robot_state.chassis_rotation = curr_robot_state->chassis_rotation;
+    robot_state.chassis_x_velocity = curr_robot_state->chassis_x_velocity;
+    robot_state.chassis_y_velocity = curr_robot_state->chassis_y_velocity;
+    robot_state.pitch_angle_rads = curr_robot_state->pitch_angle_rads;
+    robot_state.pitch_velocity = curr_robot_state->pitch_velocity;
+    robot_state.yaw_angle_rads = curr_robot_state->yaw_angle_rads;
+    robot_state.yaw_velocity = curr_robot_state->yaw_velocity;
+}
+
+
+void Jetson::write_ref_state(Jetson_send_ref *curr_ref_state)
+{
+    // Copy data not ptr
+    ref_state.game_state = curr_ref_state->game_state;
+    ref_state.robot_hp = curr_ref_state->robot_hp;
+    ref_state.size = curr_ref_state->size;
+}

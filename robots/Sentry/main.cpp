@@ -342,7 +342,7 @@ void ref_thread() {
         if ((timeStart - loopTimerRef) / 1000 > 5 * OUTER_LOOP_DT_MS){ 
             loopTimerRef = timeStart;
             led2 = referee.readable();
-            refereeThread(&referee);
+            referee.refereeThread();
 
             //POWER LIMIT OVERRIDE INCASE
             if(robot_status.chassis_power_limit < 10){
