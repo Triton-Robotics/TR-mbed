@@ -1,7 +1,7 @@
 #pragma once
+#include "mbed.h"
 #include <cstring>
 #include <stdint.h>
-#include "mbed.h"
 // #include "StmIO.h"
 
 // TODO Constant definition here?
@@ -14,7 +14,7 @@
 #define JETSON_MAX_PACKET_SIZE 117
 
 class Jetson {
-public:
+  public:
     struct Jetson_send_data {
         float chassis_x_velocity;
         float chassis_y_velocity;
@@ -47,6 +47,33 @@ public:
         int size = 13;
     };
 
+    struct WriteState {
+        float chassis_x_velocity;
+        float chassis_y_velocity;
+        float chassis_rotation;
+        float pitch_angle_rads;
+        float yaw_angle_rads;
+        float pitch_velocity;
+        float yaw_velocity;
+
+        int8_t game_state;
+        int16_t robot_hp;
+        static constexpr int size = 28 + 3;
+    };
+
+    struct ReadState {
+        float desired_pitch_rads;
+        float desired_yaw_rads;
+        char shoot_status;
+
+        float desired_x_vel;
+        float desired_y_vel;
+        float desired_angular_vel;
+        char localization_calibration;
+
+        static constexpr int size = 13 + 9;
+    };
+
     Jetson();
 
     // Init Jetson with the Pins and baud for the UART device
@@ -60,7 +87,7 @@ public:
 
     /**
      * @brief Send state data to Jetson through UART.
-     * 
+     *
      * @param ref_data: Referee system data: game_state and robot_hp
      * @param data: Robot data: Chassis vX,vY,vOmega, YawPos, YawVel, PitchPos, PitchVel
      */
@@ -68,14 +95,14 @@ public:
 
     /**
      * @brief Read state data from Jetson through UART.
-     * 
+     *
      * @return Number of bytes read
      */
     ssize_t jetson_read_values();
 
     /**
      * @brief Send state data to Jetson through SPI.
-     * 
+     *
      * @param ref_data: Referee system data: game_state and robot_hp
      * @param data: Robot data: Chassis vX,vY,vOmega, YawPos, YawVel, PitchPos, PitchVel
      */
@@ -83,7 +110,7 @@ public:
 
     /**
      * @brief Read data from the Jetson via SPI.
-     * 
+     *
      * @return Number of bytes read
      */
     ssize_t jetson_read_spi();
@@ -100,7 +127,11 @@ public:
 
     void init_jetson();
 
-private:
+    // TODO add paramaters
+    void write_robot_state();
+    void write_ref_state();
+
+  private:
     struct Jetson_send_data_buf {
         char chassis_x_velocity_char[4];
         char chassis_y_velocity_char[4];
@@ -117,6 +148,10 @@ private:
         char robot_hp[2];
         int size = 3;
     };
+
+    Mutex mutex_();
+    void write_thread();
+    void read_thread();
 
     BufferedSerial* bcJetson;
     SPISlave* spiJetson;

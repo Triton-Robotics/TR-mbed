@@ -17,15 +17,15 @@ void init_jetson(BufferedSerial &bcJetson)
     bcJetson.sigio(callback(on_jetson_rx));
 }
 
-Jetson::Jetson()
-: bcJetson(nullptr), spiJetson(nullptr)
-{
-}
+// Jetson::Jetson()
+// : bcJetson(nullptr), spiJetson(nullptr)
+// {
+// }
 
-Jetson::Jetson(PinName tx, PinName rx, int baud) 
-: bcJetson(new BufferedSerial(tx, rx, baud)), spiJetson(nullptr)
-{
-}
+// Jetson::Jetson(PinName tx, PinName rx, int baud) 
+// : bcJetson(new BufferedSerial(tx, rx, baud)), spiJetson(nullptr)
+// {
+// }
 
 Jetson::Jetson(BufferedSerial& UARTJetson)
 : bcJetson(&UARTJetson), spiJetson(nullptr)
@@ -183,6 +183,7 @@ ssize_t Jetson::jetson_read_values()
         return bytes_read; //return error code
     }
 
+    // TODO this is broken I think for small incoming packets 
     if (bytes_read < JETSON_READ_MSG_SIZE) {
         jetson_read_buff_pos += bytes_read;
         return -1;
@@ -505,3 +506,129 @@ uint8_t Jetson::calculateLRC(const char* data, size_t length)
   lrc = ((lrc ^ 0xff) + 1) & 0xff;
   return lrc;
 }
+
+
+void Jetson::write_thread() {
+    // mutex lock
+    // parse local struct containing values to write 
+    // write serial
+    // unlock mutex
+}
+
+void Jetson::read_thread() {
+    // mutex lock
+    // read serial
+    // populate local struct with appropriate values 
+    // mutex unlock
+    while(true){
+
+        if(!bcJetson->readable()) {
+            // return -1;
+            continue;
+        }
+
+        int available_space = JETSON_READ_BUFF_SIZE - jetson_read_buff_pos;
+        if (available_space < JETSON_MAX_PACKET_SIZE) {
+            jetson_read_buff_pos = 0;
+            available_space = JETSON_MAX_PACKET_SIZE;
+        }
+        else if (available_space > JETSON_MAX_PACKET_SIZE) {
+            available_space = JETSON_MAX_PACKET_SIZE;
+        }
+
+        ssize_t bytes_read = bcJetson->read(jetson_read_buff + jetson_read_buff_pos, available_space);
+
+        if(bytes_read == -EAGAIN) {
+            // return -EAGAIN;
+            continue;
+        }
+
+        //error other than no data to read 
+        if (bytes_read <= 0) {
+            jetson_read_buff_pos = 0; //reset buffer
+            // return bytes_read; //return error code
+            continue;
+
+        }
+
+        // TODO this is broken I think for small incoming packets 
+        if (bytes_read < JETSON_READ_MSG_SIZE) {
+            jetson_read_buff_pos += bytes_read;
+            continue;
+        }
+
+        for (int i = 0; i < bytes_read; ++i) {
+            if (jetson_read_buff[jetson_read_buff_pos + i] == AIM_HEADER) {
+                // process aim data
+                if (jetson_read_buff_pos + i + 10 <= JETSON_READ_BUFF_SIZE) {
+                    uint8_t checksum = jetson_read_buff[jetson_read_buff_pos + i + 10];
+                    uint8_t calculated_checksum = calculateLRC(&jetson_read_buff[jetson_read_buff_pos + i + 1], 9);
+
+                    if (checksum != calculated_checksum) {
+                        // checksum mismatch, skip this packet
+                        continue;
+                    }
+                    
+                    memcpy(&read_data.requested_pitch_rads, &jetson_read_buff[jetson_read_buff_pos + i + 1], sizeof(float));
+                    memcpy(&read_data.requested_yaw_rads, &jetson_read_buff[jetson_read_buff_pos + i + 5], sizeof(float));
+                    memcpy(&read_data.shoot_status, &jetson_read_buff[jetson_read_buff_pos + i + 9], sizeof(char));
+                    jetson_read_buff_pos += bytes_read;
+
+                    continue;
+                }
+            }
+            else if (jetson_read_buff[jetson_read_buff_pos + i] == ODOM_HEADER) {
+                // process odom data
+                if (jetson_read_buff_pos + i + 13 <= JETSON_READ_BUFF_SIZE) {
+                    uint8_t checksum = jetson_read_buff[jetson_read_buff_pos + i + 14];
+                    uint8_t calculated_checksum = calculateLRC(&jetson_read_buff[jetson_read_buff_pos + i + 1], 13);
+
+                    if (checksum != calculated_checksum) {
+                        // checksum mismatch, skip this packet
+                        continue;
+                    }
+
+                    memcpy(&odom_data.x_vel, &jetson_read_buff[jetson_read_buff_pos + i + 1], sizeof(float));
+                    memcpy(&odom_data.y_vel, &jetson_read_buff[jetson_read_buff_pos + i + 5], sizeof(float));
+                    memcpy(&odom_data.rotation, &jetson_read_buff[jetson_read_buff_pos + i + 9], sizeof(float));
+                    memcpy(&odom_data.calibration, &jetson_read_buff[jetson_read_buff_pos + i + 13], sizeof(char));
+                    jetson_read_buff_pos += bytes_read;
+                    
+                    continue;;
+                }
+            }
+        }
+
+        jetson_read_buff_pos += bytes_read;
+
+        continue;
+    }
+}
+
+/**
+ * StateStruct Jetson::get_data() {
+ *   create new StateStruct
+ *   mutex lock 
+ *   copy local struct into the to return struct 
+ *   mutex unlock
+ *   return
+ * 
+ * }
+ */
+
+ /**
+  * void Jetson::write_robot_state(int chassis_vel_x, int chassis_vel_y, ...)
+  *     mutex lock 
+  *     copy passed variables into local StateStruct 
+  *     mutex unlock
+  *     return
+  */
+
+
+ /**
+  * void Jetson::write_ref_state(int game state, int hp ...)
+  *     mutex lock 
+  *     copy passed variables into local StateStruct 
+  *     mutex unlock
+  *     return
+  */
