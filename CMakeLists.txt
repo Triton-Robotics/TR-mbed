@@ -5,7 +5,7 @@ find_program(MBED_CLI mbed-tools PATHS "~/.local/bin" REQUIRED)
 # User variables, feel free to change as necessary
 set(MBED_PLATFORM NUCLEO_F446RE)
 set(MBED_TOOLCHAIN GCC_ARM)
-set(DISABLE_WARNINGS ON)
+set(DISABLE_WARNINGS OFF)
 set(CMAKE_BUILD_TYPE Release)
 
 # Check if mbed-os is downloaded, if not download it
