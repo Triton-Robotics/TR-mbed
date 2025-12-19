@@ -6,15 +6,6 @@ add_executable(${PROJECT_NAME}
     Infantry.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE robots_common)
 
-# TODO this doesnt work
-target_compile_options(${PROJECT_NAME} PRIVATE 
-    -Wall
-    -Wextra
-    -Wpedantic
-    -Wreturn-type
-    -Wunused
-    # -Werror
-)
 
 # TODO FIX this cmake file 
 
