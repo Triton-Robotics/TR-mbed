@@ -80,8 +80,8 @@ class BaseRobot {
             // TODO update stm_state with ref.read?
             referee.refereeThread();
             
-            stm_state.game_state = game_status.game_progress;
-            stm_state.robot_hp = robot_status.current_HP;
+            stm_state.game_state = referee.get_game_progress();
+            stm_state.robot_hp = referee.get_remain_hp();
             
             jetson.write(&stm_state);
 

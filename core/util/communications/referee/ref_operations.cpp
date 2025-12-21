@@ -1,15 +1,27 @@
 #include "ref_serial.h"
 
-static bool enablePrintRefData = 0;
 
-void Referee::refereeThread(){
+Referee::Referee(PinName pin_tx, PinName pin_rx) : ref(pin_tx, pin_rx, 115200) {
+    printf("constructor!");
+}
 
-    // int loop=0;
-    // while(1){
-        if(ref.readable()){
-            mutex_.lock();
-            int rad = JudgeSystem_USART_Receive_DMA(&ref);
-            mutex_.unlock();
+
+void Referee::clearRxBuffer(){
+
+}
+
+
+bool Referee::readable(){
+    return ref.readable();
+}
+
+
+void Referee::read()
+{
+    if(ref.readable()){
+        mutex_.lock();
+        int rad = JudgeSystem_USART_Receive_DMA();
+        mutex_.unlock();
         Judge_GetMessage(rad);
 
         // if(loop % 10==0){ // print out only every 10 iterations
@@ -50,7 +62,12 @@ void Referee::refereeThread(){
         }
         // }
     }
+}
 
+
+// TODO FIGURE OUT HOW THIS WORKS
+void Referee::write()
+{
     if(ref.writable()){
 
         // For graphing diagrams ----------------------------
@@ -121,8 +138,11 @@ void Referee::refereeThread(){
             }
         }
 
-        ui_delete_layer(&ref, 5);
-        referee_data_pack_handle(0xA5,0x0301,(uint8_t *)&custom_graphic_draw,sizeof(custom_graphic_draw), &ref);
+        // TODO remove mutex lock and put into referee_data_pack_handle function
+        mutex_.lock();
+        ui_delete_layer(5);
+        referee_data_pack_handle(0xA5,0x0301,(uint8_t *)&custom_graphic_draw,sizeof(custom_graphic_draw));
+        mutex_.unlock();
 
         // string powerStr = "power: " + to_string((int)power_heat_data.chassis_power);
         // ui_graph_characters(&ref, 1, powerStr, SCREEN_LENGTH/2 +100, SCREEN_WIDTH/2 +100, 99);
@@ -161,11 +181,47 @@ void Referee::refereeThread(){
             printf("Not writable!\n"); // usually it is never not writable
         }
     }
+}
 
 
-    // loop++;
-    // if(loop>100){loop=0;}
-    // While loop interval
-    //     ThisThread::sleep_for(50ms);
-    // }
+void Referee::refereeThread()
+{
+    read();
+   
+    write();
+}
+
+uint8_t Referee::get_robot_id(void)
+{
+    return robot_status.robot_id;
+}
+
+uint8_t Referee::get_remain_hp(void)
+{
+    return robot_status.current_HP;
+}
+
+uint8_t Referee::get_game_progress(void)
+{
+    return game_status.game_progress;
+}
+
+/**
+  * @brief  判断自己红蓝方
+  * @param  void
+  * @retval RED   BLUE
+  * @attention  数据打包,打包完成后通过串口发送到裁判系统
+  */
+bool Referee::is_red_or_blue(void)
+{
+    Judge_Self_ID = robot_status.robot_id; //读取当前机器人ID
+
+    if (robot_status.robot_id > 10)
+    {
+        return 0; //蓝方 (blue)
+    }
+    else
+    {
+        return 1; //红方 (red)
+    }
 }
