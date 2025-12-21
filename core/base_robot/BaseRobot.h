@@ -12,7 +12,6 @@ class BaseRobot {
         PinName remote_pin = PA_10;
         PinName referee_tx_pin = PC_10;
         PinName referee_rx_pin = PC_11;
-        int referee_baud = 115200;
         PinName can1_rx_pin = PA_11;
         PinName can1_tx_pin = PA_11;
         PinName can2_rx_pin = PB_12;
@@ -26,7 +25,6 @@ class BaseRobot {
     };
 
     Remote remote_;
-    BufferedSerial referee_;
     Referee referee;
 
     BufferedSerial jetson_serial_;
@@ -44,7 +42,6 @@ class BaseRobot {
     // clang-format off
     BaseRobot(const Config &config)
         : remote_(config.remote_pin),
-          referee_(config.referee_tx_pin, config.referee_rx_pin, config.referee_baud),
           referee(config.referee_tx_pin, config.referee_rx_pin), //TODO make sure this is right
           jetson_serial_(config.jetson_tx_pin, config.jetson_rx_pin, config.jetson_baud),
           jetson(jetson_serial_),

@@ -1,6 +1,7 @@
 #ifndef _REFEREE_HPP
 #define _REFEREE_HPP
 
+#pragma once
 #include "mbed.h"
 #include <string>
 #include "util/communications/StmIO.h"
