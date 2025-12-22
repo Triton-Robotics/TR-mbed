@@ -4,7 +4,7 @@
 ![vscode_2.png](../.assets/vscode_2.png)
 
 2. Open the project folder. Upon opening the folder, you will have to select the correct
-   compiler as shown:
+   compiler as shown (you may have to scan for kits to see the correct compiler):
 
 ![vscode_3.png](../.assets/vscode_3.png)
 
@@ -19,8 +19,8 @@ times.
 > Note :you may have to change the `-j 16` arg to the number of processes your CPU
 can handle, which can be found via the `nproc` command.
 
-4. Use `CTRL + SHIFT + P` to open the command palette, then select `C/C++: Edit Configurations (JSON)`.
-   Append the following to your `c_cpp_properties.json`
+4. Use `CTRL + SHIFT + P` to open the command palette, then select `C/C++: Edit Configurations (JSON)`. Remember to restart your VSCode after installing the extensions for this to work.
+   Append the following to your `c_cpp_properties.json`:
 
 ```json
 {
@@ -34,6 +34,10 @@ can handle, which can be found via the `nproc` command.
     "version": 4
 }
 ```
+
+
+### Optional Steps
+
 
 5. Use `CTRL + SHIFT + P` to open the command palette, then select `CMake: Configure`. The
    configure step should only be run once per project, or after editing any `CMakeLists.txt`.
