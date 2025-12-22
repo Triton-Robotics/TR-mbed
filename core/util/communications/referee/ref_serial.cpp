@@ -441,7 +441,7 @@ void Referee::Judge_GetMessage(uint16_t Data_Length)
   * @retval RED   BLUE
   * @attention  数据打包,打包完成后通过串口发送到裁判系统
   */
-void Referee::determine_ID(void)
+void Referee::determine_ID()
 {
     bool Color = is_red_or_blue();
     if (Color == BLUE)
@@ -464,7 +464,7 @@ void Referee::determine_ID(void)
 
 // MY PART -------------------------------------
 
-void Referee::init_referee_struct_data(void)
+void Referee::init_referee_struct_data()
 {
     memset(&robot_status, 0, sizeof(robot_status_t));
 }

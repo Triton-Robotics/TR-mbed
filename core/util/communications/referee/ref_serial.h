@@ -12,8 +12,7 @@
 class Referee: public StmIO {
 public:
     Referee(PinName pin_tx, PinName pin_rx);
-    void clearRxBuffer();
-
+    
     //BufferedSerial getRef();
     bool readable();
 
@@ -25,16 +24,16 @@ public:
     void write();
 
     // Return 1 if robot is in red team, 0 if blue.
-    bool is_red_or_blue(void);
+    bool is_red_or_blue();
 
     // Return robot ID.
-    uint8_t get_robot_id(void);
+    uint8_t get_robot_id();
 
     // Return robot remaining HP.
-    uint8_t get_remain_hp(void);
+    uint8_t get_remain_hp();
 
     // Return game progress
-    uint8_t get_game_progress(void);
+    uint8_t get_game_progress();
 
 
 private:
@@ -100,9 +99,9 @@ private:
     */
     void referee_data_pack_handle(uint8_t sof,uint16_t cmd_id, uint8_t *p_data, uint16_t len);
 
-    void determine_ID(void);
+    void determine_ID();
 
-    void init_referee_struct_data(void);
+    void init_referee_struct_data();
 };
 
 #endif

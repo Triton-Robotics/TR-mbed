@@ -1,17 +1,14 @@
 #include "ref_serial.h"
 
 
-Referee::Referee(PinName pin_tx, PinName pin_rx) : ref(pin_tx, pin_rx, 115200) {
-    printf("constructor!");
+Referee::Referee(PinName pin_tx, PinName pin_rx) : ref(pin_tx, pin_rx, 115200) 
+{
+    memset(JudgeSystem_rxBuff, 0, JUDGESYSTEM_PACKSIZE);
 }
 
 
-void Referee::clearRxBuffer(){
-
-}
-
-
-bool Referee::readable(){
+bool Referee::readable()
+{
     return ref.readable();
 }
 
@@ -191,17 +188,17 @@ void Referee::refereeThread()
     write();
 }
 
-uint8_t Referee::get_robot_id(void)
+uint8_t Referee::get_robot_id()
 {
     return robot_status.robot_id;
 }
 
-uint8_t Referee::get_remain_hp(void)
+uint8_t Referee::get_remain_hp()
 {
     return robot_status.current_HP;
 }
 
-uint8_t Referee::get_game_progress(void)
+uint8_t Referee::get_game_progress()
 {
     return game_status.game_progress;
 }
@@ -212,7 +209,7 @@ uint8_t Referee::get_game_progress(void)
   * @retval RED   BLUE
   * @attention  数据打包,打包完成后通过串口发送到裁判系统
   */
-bool Referee::is_red_or_blue(void)
+bool Referee::is_red_or_blue()
 {
     Judge_Self_ID = robot_status.robot_id; //读取当前机器人ID
 
