@@ -1366,7 +1366,7 @@ var searchData=
   ['stlfunctors_2eh_1363',['StlFunctors.h',['../StlFunctors_8h.html',1,'']]],
   ['stliterators_2eh_1364',['StlIterators.h',['../StlIterators_8h.html',1,'']]],
   ['stlthreadenvironment_1365',['StlThreadEnvironment',['../structEigen_1_1StlThreadEnvironment.html',1,'Eigen']]],
-  ['stm32_1366',['Flashing STM32',['../index.html#autotoc_md11',1,'']]],
+  ['stm32_20old_20method_1366',['Flashing STM32 (Old Method)',['../index.html#autotoc_md11',1,'']]],
   ['stop_1367',['stop',['../classEigen_1_1BenchTimer.html#a367e14b2e9c1ab6d3f0ff7bcfcd5ee37',1,'Eigen::BenchTimer::stop()'],['../classX86__Timer.html#ab1b153b8e942f23d6ff809ed30d348cc',1,'X86_Timer::stop()'],['../classPortable__Timer.html#a810bbe10973b2f269039257959d2ba31',1,'Portable_Timer::stop()']]],
   ['stopanimation_1368',['stopAnimation',['../classRenderingWidget.html#a050a478fb26a1fa12d50ae345bad61e4',1,'RenderingWidget']]],
   ['stopbenchmarktiming_1369',['stopbenchmarktiming',['../benchmark_8h.html#ab6381967bb4cc054c8071f2630990027',1,'StopBenchmarkTiming():&#160;benchmark_main.cc'],['../benchmark__main_8cc.html#ab6381967bb4cc054c8071f2630990027',1,'StopBenchmarkTiming():&#160;benchmark_main.cc']]],
