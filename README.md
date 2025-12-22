@@ -55,9 +55,7 @@ cmake --build cmake-build-debug --target TR-TestBench -j $(nproc)
 Viable targets for build are: `TR-Engineer`, `TR-Infantry`, `TR-Sentry`, `TR-Hero`, and `TR-TestBench`
 
 ---
-Note: Go to the Embed Discord and search up makefile. After you find it, download it and upload it to your local TR-Embed folder. Most likely your computer will not work with E drive, to which you have to change it to D in the makefile. If you have problems with this, contact a embed member or the team lead. 
 
-After completing all of this you can make and flash your code to the nucleo using `make testbench`, `make hero`, `make infantry`, and `make sentry`. You should see a block with many numbers when the code is flashed. If you see a red text regarding "missing embed-tools" it is likely becuase you don't have the serial monitor downloaded which is not required to make and flash code. 
 
 ## Flashing and building code
 
@@ -71,6 +69,11 @@ After completing all of this you can make and flash your code to the nucleo usin
 make testbench-build
 ```
 
+Note: If the makefile does not work with your system, contact an embed member or team lead for assistance since it might be an issue with the drive (your computer will not work with E drive, to which you have to change it to D in the makefile).
+
+After completing all of this you can make and flash your code to the nucleo using `make testbench-jlink`, `make hero-jlink`, `make infantry-jlink`, and `make sentry-jlink`, or build with `make infantry-build`, `make sentry-build`, `make hero-build`, or `make testbench-build`. You should see a block with many numbers when the code is flashed. If you see a red text regarding "missing embed-tools" it is likely becuase you don't have the serial monitor downloaded which is not required to make and flash code. 
+
+
 ### Flashing to JLink
 
 1. Download the [JLink](https://www.segger.com/downloads/jlink/) software on your device.
@@ -81,7 +84,7 @@ make testbench-build
 make testbench-jlink
 ```
 
-## Flashing STM32
+## Flashing STM32 (Old Method)
 
 1. Locate the generated executable:
 
