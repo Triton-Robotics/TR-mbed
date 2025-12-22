@@ -38,15 +38,15 @@ pip install jinja2 --break-system-packages
 pip install intelhex --break-system-packages
 ```
 and download each one of them one by one. 
-### Enable mebed-tools
+### Enable mebed-tools (REQUIRED)
 
-Type `nano ~/.bashrc` (or `nano ~/.bash_profile`) in the terminal, append the following to enable `mbed-tools` via command line:
+Type `nano ~/.bashrc` (or `nano ~/.bash_profile`) in the terminal, append the following to enable `mbed-tools` to the end of the file via command line:
 
 ```shell
 export PATH="${PATH}:/home/${USER}/.local/bin"
 ```
  
-### Flashing STM32 (Better for flashing but optional) 
+### Flashing STM32 (REQUIRED for WSL) 
 
 Author: Michael Owens
 
@@ -54,7 +54,7 @@ Flashing is where WSL begins to diverge from normal Linux. We have to pass throu
 
 1. Follow [this guide](https://learn.microsoft.com/en-us/windows/wsl/connect-usb#attach-a-usb-device) to install `usbipd-win`
 
-2. Start windows powershell / windows terminal (not cmd, don't be cringe) and try running `usbipd list`. The output should look something like this:
+2. Start windows powershell / windows terminal (not cmd, don't be cringe) and try running `usbipd list`. The output should look something like this (or with a device named SEGGER instead of ST-Link once you have the J-Link software installed):
 
    ```
    PS C:\Users\legor> usbipd list
@@ -77,7 +77,7 @@ Flashing is where WSL begins to diverge from normal Linux. We have to pass throu
    Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
    ```
 
-5. Flash the board with OpenOCD:
+5. Flash the board with OpenOCD (not needed since the board is now a J-Link):
 
 ```shell
 sudo openocd -f board/st_nucleo_f4.cfg -c "program cmake-build-debug/robots/TestBench/TR-TestBench.elf verify reset exit"
