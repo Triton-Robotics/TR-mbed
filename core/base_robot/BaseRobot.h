@@ -89,7 +89,7 @@ class BaseRobot {
                 prev_loop_time_us = us_ticker_read();
                 
                 // Motor updates
-                DJIMotor::s_sendValues();
+                DJIMotor::sendValues();
             }
             // Add sensors updates in your end of loop
             end_of_loop();
