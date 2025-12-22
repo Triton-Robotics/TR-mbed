@@ -61,7 +61,7 @@ Viable targets for build are: `TR-Engineer`, `TR-Infantry`, `TR-Sentry`, `TR-Her
 
 ### Finding the Makefile
 
-1. Go into the Makefiles folder, and copy the appropriate makefile for your operating system outside the folder.
+1. Go into the Makefiles folder, and copy the appropriate makefile for your operating system outside the folder (aka move it one level up in the directory). Also, rename it from `Makefile-OS` to `Makefile` for it to work with the terminal.
 
 2. Now, you can build your code with the following command:
 
