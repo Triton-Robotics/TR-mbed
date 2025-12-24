@@ -76,7 +76,7 @@ After completing all of this you can make and flash your code to the nucleo usin
 
 ### Flashing to JLink
 
-1. Download the [JLink](https://www.segger.com/downloads/jlink/) software on your device.
+1. Download the [JLink](https://www.segger.com/downloads/jlink/) software on your device (J-Link Software and Documentation pack and Ozone - The J-Link Debugger).
 
 2. Flash using the makefile, similar to the cmake setup:
 
