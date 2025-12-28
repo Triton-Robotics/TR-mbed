@@ -60,16 +60,8 @@ public:
         CANHandler::CANBus canBus;
         motorType type = STANDARD;
         std::string name = "NO_NAME";
-        float vp = 1;
-        float vi = 0;
-        float vd = 0;
-        float voutCap = 15000;
-        float vintegralCap = 500;
-        float pp = 1;
-        float pi = 0;
-        float pd = 0;
-        float poutCap = 3000;
-        float pintegralCap = 300;
+        PID::config vel_cfg;
+        PID::config pos_cfg;
     };
 
 

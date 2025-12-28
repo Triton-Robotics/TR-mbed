@@ -136,6 +136,15 @@ PID::PID(float kP, float kI, float kD, float integralCap, float outputCap)
     this->outputCap = outputCap;
 }
 
+PID::PID(PID::config cfg)
+{
+    kP = cfg.p;
+    kI = cfg.i;
+    kD = cfg.d;
+    integralCap = cfg.integralCap;
+    outputCap = cfg.outCap;
+}
+
 void PID::setPID(float kP, float kI, float kD, float integralCap, float outputCap)
 {
     this->kP = kP;

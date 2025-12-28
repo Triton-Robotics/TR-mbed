@@ -66,13 +66,8 @@ DJIMotor::DJIMotor(short motorID, CANHandler::CANBus canBus, motorType type, con
 DJIMotor::DJIMotor(config cfg)
     : DJIMotor(cfg.motorID, cfg.canBus, cfg.type, cfg.name)
 {
-    setSpeedPID(cfg.vp, cfg.vi, cfg.vd);
-    setSpeedOutputCap(cfg.voutCap);
-    setSpeedIntegralCap(cfg.vintegralCap);
-
-    setPositionPID(cfg.pp, cfg.pi, cfg.pd);
-    setPositionOutputCap(cfg.poutCap);
-    setPositionIntegralCap(cfg.pintegralCap);
+    pidSpeed = PID(cfg.vel_cfg);
+    pidPosition = PID(cfg.pos_cfg);
 }
 
 
