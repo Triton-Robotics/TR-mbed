@@ -81,7 +81,7 @@ make testbench-build
 make testbench-jlink
 ```
 
-## Flashing STM32
+### Flashing STM32
 
 1. Locate the generated executable:
 
@@ -104,16 +104,34 @@ mbed-tools sterm -b 115200
 
 ---
 
-## Formatting 
+## Intellisense and Formatting  
 
-Install the `Clang-Format (Xaver Hellauer)` on vscode 
+### Intellisense 
+we **HIGHLY** recommend using clangd instead of the microsoft C++ vscode extension
 
-TODO put these in windows.md and mac.md
+1. Install the `clangd (LLVM)` vscode extension (you may be prompted to install clangd if you don't have it installed on your system)
+2. Copy `.vscode/settings.json.example` to `.vscode/settings.json` and adjust the relevant paths
+3. __Disable the C/C++ (Microsoft) vscode extension !!!__ 
+4. Enjoy a significantly better developer experience!
 
-### Windows 
-todo
 
-### Mac
+### Formatting 
+
+Add the following to your user settings.json
+
+```json
+    "[cpp]": {
+        "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
+    },
+```
+
+optionally also add the following to save on format
+
+```json
+    "editor.formatOnSave": true,
+```
+
+
 
 ## Troubleshooting
 

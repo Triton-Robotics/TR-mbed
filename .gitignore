@@ -4,7 +4,6 @@ build
 projectfiles
 *.py*
 .idea/
-.vscode
 venv
 
 BUILD
@@ -22,3 +21,6 @@ micro-ros/
 .DS_STORE
 *.ps1
 Makefile
+
+.vscode/c_cpp_properties.json
+.vscode/settings.json
