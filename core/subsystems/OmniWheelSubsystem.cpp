@@ -223,9 +223,14 @@ void OmniWheelSubsystem::calculateWheelSpeed(ChassisSpeed chassisSpeeds)
 void OmniWheelSubsystem::calculateChassisSpeed()
 {
     float dist = radius / sqrt(2);
-    float vY = (-curr_wheelspeed.fl + curr_wheelspeed.fr - curr_wheelspeed.bl + curr_wheelspeed.br) / 4;
     float vX = (-curr_wheelspeed.fl - curr_wheelspeed.fr + curr_wheelspeed.bl + curr_wheelspeed.br) / 4;
+    float vY = (-curr_wheelspeed.fl + curr_wheelspeed.fr - curr_wheelspeed.bl + curr_wheelspeed.br) / 4;
     float vOmega = (-curr_wheelspeed.fl - curr_wheelspeed.fr - curr_wheelspeed.bl - curr_wheelspeed.br) / (4 * (2 * dist));
+
+    // Convert from RPM to m/s and rad/s
+    vX = (vX / M3508_GEAR_RATIO) * (2 * PI / 60) * (WHEEL_DIAMETER_METERS / 2);
+    vY = (vY / M3508_GEAR_RATIO) * (2 * PI / 60) * (WHEEL_DIAMETER_METERS / 2);
+    vOmega = (vOmega / M3508_GEAR_RATIO) * (2 * PI / 60) * (WHEEL_DIAMETER_METERS / 2);
     
     curr_state.vel = {vX, vY, vOmega};
 }
