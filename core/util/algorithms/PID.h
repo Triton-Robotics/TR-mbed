@@ -149,6 +149,17 @@ private:
     double errorIntegral = 0;
 
 public:
+
+    struct config
+    {
+        float p = 1;
+        float i = 0;
+        float d = 0;
+        float outCap = 15000;
+        float integralCap = 500;
+    };
+
+
     float feedForward = 0;
 
     float pC, iC, dC = 0;
@@ -169,6 +180,8 @@ public:
      * @param outputCap The maximum output of the PID, above which the output will be capped
      */
     PID(float kP, float kI, float kD, float integralCap = 0, float outputCap = 0);
+
+    PID(config cfg);
 
     /**
      * Sets the P, I, and D control parameters

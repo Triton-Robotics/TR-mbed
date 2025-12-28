@@ -21,6 +21,11 @@
 #pragma ide diagnostic ignored "UnusedParameter"
 #pragma ide diagnostic ignored "UnusedLocalVariable"
 
+BNO055::BNO055():
+    _i2c_p(new I2C(PB_9, PB_8)), _i2c(*_i2c_p), _res(PA_8)
+{
+}
+
 BNO055::BNO055 (PinName p_sda, PinName p_scl, PinName p_reset, uint8_t addr, uint8_t mode):
     _i2c_p(new I2C(p_sda, p_scl)), _i2c(*_i2c_p), _res(p_reset)
 {

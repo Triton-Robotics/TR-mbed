@@ -140,6 +140,9 @@ enum {MT_P0 = 0, MT_P1, MT_P2, MT_P3, MT_P4, MT_P5, MT_P6, MT_P7};
 class BNO055
 {
 public:
+    // Unconfigured IMU
+    BNO055();
+
     /** Configure data pin
       * @param data SDA and SCL pins
       * @param device address
