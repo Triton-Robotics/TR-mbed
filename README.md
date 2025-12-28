@@ -117,7 +117,7 @@ we **HIGHLY** recommend using clangd instead of the microsoft C++ vscode extensi
 
 ### Formatting 
 
-Add the following to your user settings.json
+Add the following to your user settings.json (`ctrl + shift + p` and select `Preferences: Open User Settings (JSON)`)
 
 ```json
     "[cpp]": {
