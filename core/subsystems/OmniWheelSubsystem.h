@@ -2,6 +2,7 @@
 
 #include "mbed.h"
 #include "util/peripherals/Sensor.h"
+#include <cstdint>
 #include <util/motor/DJIMotor.h>
 #include <util/communications/CANHandler.h>
 #include "Subsystem.h"
@@ -20,6 +21,11 @@ public:
 
         float radius;
         float power_limit;
+
+        float max_vel = 2.92;
+        float max_accel = 100;
+        float feed_forward = 0.065 * INT16_MAX;
+        float max_beyblade = 4.8;
         
         PID::config fl_vel_config;
         PID::config fr_vel_config;
@@ -96,13 +102,10 @@ private:
 
     ChassisState desired_state;
     ChassisState curr_state;
-    ChassisState prev_state;
 
     WheelSpeed desired_wheelspeed;
     WheelSpeed curr_wheelspeed;
-    WheelSpeed prev_wheelspeed;
 
-    float FF_Ks; // TODO init this var
     unsigned long prev_time;
     unsigned long dt; // delta time in ms
 
@@ -124,16 +127,16 @@ private:
 
     float radius;
     float power_limit;
-    float max_vel;
-    float maxAccel; // TODO init this
+    
+    float FF_Ks;
+    float maxVel;
+    float maxAccel;
+    float maxBeyblade;
 
     void calculateAccelLimit();
     void setOmniKinematics();
 
-    // Update wheel speed from the current rpm of the motors
-    void getWheelSpeed();
-
-    // Updates chassis velocity from curr_wheelspeed
+    // Updates curr_state and curr_wheelspeed from motors
     void getOmniState();
 
     // Calculates necessary wheelspeeds for the desired state
@@ -144,6 +147,9 @@ private:
 
     // Calculate and update the desired wheelSpeed using the rotated chassisSpeed
     void calculateWheelSpeed(ChassisSpeed chassisSpeeds);
+
+    // Calculate the ChassisSpeed from the current WheelSpeed
+    void calculateChassisSpeed();
 
     // Sends the power needed for the wheels to reach the desired speeds
     void sendPower();

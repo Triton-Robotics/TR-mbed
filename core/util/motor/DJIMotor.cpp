@@ -57,8 +57,10 @@ DJIMotor::DJIMotor(short motorID, CANHandler::CANBus canBus, motorType type, con
     }
     
     if (motorID > 8 || motorID < 1)
-    printf("[ERROR] The canID [%d] not within correct bounds\n", motorID);
-    
+    {
+        printf("[ERROR] The canID [%d] not within correct bounds\n", motorID);
+    }
+
     powerOut = 0;
 }
 

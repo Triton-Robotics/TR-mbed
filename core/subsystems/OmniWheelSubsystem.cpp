@@ -58,6 +58,13 @@ OmniWheelSubsystem::OmniWheelSubsystem(config cfg)
     radius = cfg.radius;
     power_limit = cfg.power_limit;
 
+    // TODO: figure out how to set a good maxVel and maxAccel
+    // maxVel = cfg.max_vel;
+    maxVel = -1.24 + 0.0513 * cfg.power_limit + -0.000216 * (cfg.power_limit * cfg.power_limit);
+    maxAccel = cfg.max_accel;
+    FF_Ks = cfg.feed_forward;
+    maxBeyblade = cfg.max_beyblade;
+
     dt = (us_ticker_read() - prev_time) / 1000;
     prev_time = us_ticker_read();
 
@@ -69,7 +76,12 @@ OmniWheelSubsystem::OmniWheelSubsystem(config cfg)
 
 void OmniWheelSubsystem::setChassisState(ChassisState state)
 {
-    desired_state = state;
+    // Convert state velocity from a range of [-1,1] to real values
+    desired_state.vel.vX = state.vel.vX * maxVel;
+    desired_state.vel.vY = state.vel.vY * maxVel;
+    desired_state.vel.vOmega = state.vel.vOmega * maxBeyblade;
+
+    desired_state.mode = state.mode;
 }
 
 OmniWheelSubsystem::ChassisState OmniWheelSubsystem::getChassisState()
@@ -93,17 +105,27 @@ bool OmniWheelSubsystem::setOdomReference()
 
 void OmniWheelSubsystem::periodic()
 {
-    prev_state = curr_state;
-    prev_wheelspeed = curr_wheelspeed;
-
-    getWheelSpeed();
+    // Update curr_state and curr_wheelspeed
     getOmniState();
 
+    // Set the correct desired_wheelspeed and desired power
     setDesiredWheelSpeed();
 
     sendPower();
 }
 
+void OmniWheelSubsystem::getOmniState()
+{
+    // Updating wheelspeeds
+    curr_wheelspeed.fl = fl.getData(VELOCITY);
+    curr_wheelspeed.fr = fr.getData(VELOCITY);
+    curr_wheelspeed.bl = bl.getData(VELOCITY);
+    curr_wheelspeed.br = br.getData(VELOCITY);
+
+    calculateChassisSpeed();
+
+    curr_state.mode = desired_state.mode;
+}
 
 void OmniWheelSubsystem::setDesiredWheelSpeed()
 {
@@ -112,14 +134,21 @@ void OmniWheelSubsystem::setDesiredWheelSpeed()
 
     if (curr_state.mode == YAW_ORIENTED)
     {
-        // printf("%f\n", double(yaw->getData(ANGLE)));
         desiredChassisSpeeds = rotateChassisSpeed(desired_state.vel, yawCurrent);
     }
     else if (curr_state.mode == BEYBLADE)
     {
-        // TODO: add maximum possible beyblade to this chassisspeeds
+        // TODO: change maxBeyblade dynamically based on keypress (add another state?)
+        float jx = desired_state.vel.vX / maxVel;
+        float jy = desired_state.vel.vY / maxVel;
+        float linear_hypo = sqrtf(jx * jx + jy * jy);
 
-        // printf("%f\n", double(yaw->getData(ANGLE)));
+        if(linear_hypo > 1.0){
+            linear_hypo = 1.0;
+        }
+
+        desired_state.vel.vOmega = maxBeyblade * (1.0 - linear_hypo);
+
         desiredChassisSpeeds = rotateChassisSpeed(desired_state.vel, yawCurrent);
     }
     else if (curr_state.mode == ROBOT_ORIENTED)
@@ -190,6 +219,17 @@ void OmniWheelSubsystem::calculateWheelSpeed(ChassisSpeed chassisSpeeds)
     
 }
 
+// TODO: Verify calculations PLEASE
+void OmniWheelSubsystem::calculateChassisSpeed()
+{
+    float dist = radius / sqrt(2);
+    float vY = (-curr_wheelspeed.fl + curr_wheelspeed.fr - curr_wheelspeed.bl + curr_wheelspeed.br) / 4;
+    float vX = (-curr_wheelspeed.fl - curr_wheelspeed.fr + curr_wheelspeed.bl + curr_wheelspeed.br) / 4;
+    float vOmega = (-curr_wheelspeed.fl - curr_wheelspeed.fr - curr_wheelspeed.bl - curr_wheelspeed.br) / (4 * (2 * dist));
+    
+    curr_state.vel = {vX, vY, vOmega};
+}
+
 void OmniWheelSubsystem::sendPower()
 {
     std::array<DJIMotor*, 4> motors = { &fl, &fr, &bl, &br };
@@ -202,10 +242,10 @@ void OmniWheelSubsystem::sendPower()
     };
     std::array<double, 4> previous = 
     {
-        prev_wheelspeed.fl,
-        prev_wheelspeed.fr,
-        prev_wheelspeed.bl,
-        prev_wheelspeed.br
+        curr_wheelspeed.fl,
+        curr_wheelspeed.fr,
+        curr_wheelspeed.bl,
+        curr_wheelspeed.br
     };
 
     for (size_t i = 0; i < 4; ++i) 
