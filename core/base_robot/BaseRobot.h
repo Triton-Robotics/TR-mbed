@@ -80,7 +80,7 @@ class BaseRobot {
             stm_state.game_state = referee.get_game_progress();
             stm_state.robot_hp = referee.get_remain_hp();
             
-            jetson.write(&stm_state);
+            // jetson.write(&stm_state);
 
             loop_clock_us = us_ticker_read();
             if ((loop_clock_us - prev_loop_time_us) / 1000 >= main_loop_dt_ms) {
@@ -94,7 +94,7 @@ class BaseRobot {
             // Add sensors updates in your end of loop
             end_of_loop();
 
-            jetson.read(&jetson_state);
+            // jetson.read(&jetson_state);
             canHandler1_.readAllCan();
             canHandler2_.readAllCan();
         }
