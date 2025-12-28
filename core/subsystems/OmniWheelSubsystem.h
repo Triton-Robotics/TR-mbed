@@ -8,6 +8,9 @@
 #include "Subsystem.h"
 #include "TurretSubsystem.h"
 
+#define WHEEL_DIAMETER_METERS 0.146
+#define PI 3.14159265
+
 
 class OmniWheelSubsystem: public Subsystem
 {
