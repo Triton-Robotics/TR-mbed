@@ -1,7 +1,7 @@
 #pragma once
 
 #include "mbed.h"
-#include "util/peripherals/imu/BNO055.h"
+#include "util/peripherals/Sensor.h"
 #include <util/motor/DJIMotor.h>
 #include <util/communications/CANHandler.h>
 #include "Subsystem.h"
@@ -28,7 +28,7 @@ public:
         
         CANHandler::CANBus canBus;
 
-        BNO055 *imu; // We should change this to be of type IMU which will obv have all the same read function
+        Sensor *imu; // We should change this to be of type IMU which will obv have all the same read function
 
         TurretSubsystem *turret;
         float initial_angle = 0;
@@ -108,7 +108,7 @@ private:
 
     int motor_power[4];
 
-    BNO055 *imu;
+    Sensor *imu;
     BNO055_ANGULAR_POSITION_typedef imuAngles;
 
     DJIMotor fl;

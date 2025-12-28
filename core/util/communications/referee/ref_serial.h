@@ -16,6 +16,7 @@ public:
     //BufferedSerial getRef();
     bool readable();
 
+    // Old referee thread code
     void refereeThread();
 
     void read();
