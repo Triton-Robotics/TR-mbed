@@ -114,7 +114,7 @@ we **HIGHLY** recommend using clangd instead of the microsoft C++ vscode extensi
 3. __Disable the C/C++ (Microsoft) vscode extension !!!__ 
 4. Enjoy a significantly better developer experience!
 
-if you have randomly have unexpected issues with intellisense you can try running `cmake -S . -B cmake-build-debug -GNinja` to reconfigure the project,  generating compile_commands.json again which clangd relies on. 
+if you randomly have unexpected issues with intellisense you can try running `cmake -S . -B cmake-build-debug -GNinja` to reconfigure the project,  generating compile_commands.json again which clangd relies on. 
 
 
 ### Formatting 
