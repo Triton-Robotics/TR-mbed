@@ -1,5 +1,4 @@
 #include "util/communications/jetson/Jetson.h"
-#include "util/communications/jetson/Packet.h"
 
 Jetson::Jetson(BufferedSerial &UARTJetson)
     : bcJetson(&UARTJetson), spiJetson(nullptr) {
@@ -11,8 +10,8 @@ Jetson::Jetson(BufferedSerial &UARTJetson)
 
     bcJetson->set_blocking(true);
 
-    this->write_thread_.start(callback(this, Jetson::writeThread));
-    this->read_thread_.start(callback(this, Jetson::readThread));
+    this->write_thread_.start(callback(this, &Jetson::writeThread));
+    this->read_thread_.start(callback(this, &Jetson::readThread));
 }
 
 // TODO need to properly add SPI support
