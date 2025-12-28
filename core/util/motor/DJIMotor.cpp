@@ -239,7 +239,7 @@ void DJIMotor::getCan2Feedback(const CANMsg * msg)
     updateOneMultiTurn(canBus, can_line, motor_id);
 }
 
-
+// TODO: Fix again
 void DJIMotor::updateOneMultiTurn(int canBus, int can_line, int motor_id) 
 {
     int Threshold = 3000; // From 0 to 8191
