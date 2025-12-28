@@ -21,43 +21,22 @@ void Referee::read()
         mutex_.unlock();
         Judge_GetMessage(rad);
 
-        // if(loop % 10==0){ // print out only every 10 iterations
         if(enablePrintRefData){
-            // string id="robot id: " + to_string(get_robot_id()) + "  ";
             string output = "robot id: %s  ";
-            // string hp="robot hp: " + to_string(get_remain_hp() ) +"  ";
 
-            // cout << id;
             if(is_red_or_blue()){
-                // cout<<"RED  ";
                 output += "RED  ";
             }
             else{
-                // cout<<"BLUE  ";
                 output += "BLUE  ";
             }
-            // printf("robot hp: %d  ", ext_game_robot_state.data.remain_HP);
-            // printf("max hp: %d  ", ext_game_robot_state.data.max_HP);
-            // printf("angle: %d  \n", (int)ext_game_robot_pos.data.yaw);
-            // cout << "angle: "<< ext_game_robot_pos.data.yaw;
             output += "robot hp: %d  max hp: %d  angle: %d  power: %d  current: %d  volt: %d \n";
-
-            // printf("power: %d  ", ext_power_heat_data.data.chassis_power);
-            // printf("current: %d  ", ext_power_heat_data.data.chassis_current);
-            // printf("volt: %d \n", ext_power_heat_data.data.chassis_volt);
-
-            // printf(output.c_str(), get_robot_id(), ext_game_robot_state.data.remain_HP, ext_game_robot_state.data.max_HP, (int)ext_game_robot_pos.data.yaw,
-            // (int)ext_power_heat_data.data.chassis_power, ext_power_heat_data.data.chassis_current, ext_power_heat_data.data.chassis_volt);
-
-            // }
         }
     }
     else{
-        // if(loop % 10==0){ // print out only every 10 iterations
         if(enablePrintRefData){
             printf("REFEREE - Not readable!\n");
         }
-        // }
     }
 }
 
@@ -188,20 +167,24 @@ void Referee::refereeThread()
     write();
 }
 
+
 uint8_t Referee::get_robot_id()
 {
     return robot_status.robot_id;
 }
+
 
 uint8_t Referee::get_remain_hp()
 {
     return robot_status.current_HP;
 }
 
+
 uint8_t Referee::get_game_progress()
 {
     return game_status.game_progress;
 }
+
 
 /**
   * @brief  判断自己红蓝方
