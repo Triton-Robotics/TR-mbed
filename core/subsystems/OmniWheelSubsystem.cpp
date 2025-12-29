@@ -1,4 +1,5 @@
 #include "OmniWheelSubsystem.h"
+#include "util/motor/DJIMotor.h"
 
 OmniWheelSubsystem::OmniWheelSubsystem()
 {
@@ -68,7 +69,7 @@ OmniWheelSubsystem::OmniWheelSubsystem(config cfg)
     dt = (us_ticker_read() - prev_time) / 1000;
     prev_time = us_ticker_read();
 
-    setYawReference(cfg.turret, cfg.initial_angle, cfg.yawAlign);
+    setYawReference(cfg.yaw, cfg.initial_angle, cfg.yawAlign);
 
     calculateAccelLimit();
     setOmniKinematics();
@@ -89,16 +90,16 @@ OmniWheelSubsystem::ChassisState OmniWheelSubsystem::getChassisState()
     return curr_state;
 }
 
-void OmniWheelSubsystem::setYawReference(TurretSubsystem *_turret, float initial_angle, float _yawAlign)
+void OmniWheelSubsystem::setYawReference(DJIMotor *_yaw, float initial_angle, float _yawAlign)
 {
-    turret = _turret;
+    yaw = _yaw;
     yawAlign = _yawAlign;
     yawPhase = initial_angle;
 }
 
 bool OmniWheelSubsystem::setOdomReference()
 {
-    yawOdom = turret->getState().yaw_angle;
+    yawOdom = yaw->getData(ANGLE);
     imuOdom = imuAngles.yaw;
     return true;
 }
@@ -107,9 +108,6 @@ void OmniWheelSubsystem::periodic()
 {
     // Update curr_state and curr_wheelspeed
     getOmniState();
-
-    // Set the correct desired_wheelspeed and desired power
-    setDesiredWheelSpeed();
 
     sendPower();
 }
@@ -129,14 +127,17 @@ void OmniWheelSubsystem::getOmniState()
 
 void OmniWheelSubsystem::setDesiredWheelSpeed()
 {
-    double yawCurrent = turret->getState().yaw_angle;
+    double yawCurrent = yaw->getData(ANGLE);
     ChassisSpeed desiredChassisSpeeds;
 
-    if (curr_state.mode == YAW_ORIENTED)
+    switch (curr_state.mode)
+    {
+    case YAW_ORIENTED:
     {
         desiredChassisSpeeds = rotateChassisSpeed(desired_state.vel, yawCurrent);
+        break;
     }
-    else if (curr_state.mode == BEYBLADE)
+    case BEYBLADE:
     {
         // TODO: change maxBeyblade dynamically based on keypress (add another state?)
         float jx = desired_state.vel.vX / maxVel;
@@ -150,12 +151,14 @@ void OmniWheelSubsystem::setDesiredWheelSpeed()
         desired_state.vel.vOmega = maxBeyblade * (1.0 - linear_hypo);
 
         desiredChassisSpeeds = rotateChassisSpeed(desired_state.vel, yawCurrent);
+        break;
     }
-    else if (curr_state.mode == ROBOT_ORIENTED)
+    case ROBOT_ORIENTED:
     {
         desiredChassisSpeeds = desired_state.vel; // ChassisSpeeds in m/s
+        break;
     }
-    else if (curr_state.mode == ODOM_ORIENTED)
+    case ODOM_ORIENTED:
     {
         double yawDelta = yawOdom - yawCurrent;
         double imuDelta = imuOdom - imuAngles.yaw;
@@ -166,8 +169,9 @@ void OmniWheelSubsystem::setDesiredWheelSpeed()
         while (del < 0)
             del += 360;
         desiredChassisSpeeds = rotateChassisSpeed(desired_state.vel, yawOdom + delta);
+        break;
     }
-    else if (curr_state.mode == YAW_ALIGNED)
+    case YAW_ALIGNED:
     {
         // Compute yaw error(how much the yaw needs to recorrect)
         float yawError = (yawCurrent - yawAlign);
@@ -193,17 +197,20 @@ void OmniWheelSubsystem::setDesiredWheelSpeed()
         float gain_align = 2;
         float gain_yaw = 3;
         float deg2rad = PI/180; // convert to rad and just run at 2x that rad/s
-        float omegaCmd = (gain_align * yawError * deg2rad + gain_yaw * turret->getState().yaw_velo);
+        float omegaCmd = (gain_align * yawError * deg2rad + gain_yaw * yaw->getData(ANGLE));
 
         if (abs(omegaCmd) < 0.1) omegaCmd = 0;
 
         ChassisSpeed xAlignSpeeds = {desired_state.vel.vX, desired_state.vel.vY, omegaCmd};
 
         desiredChassisSpeeds = rotateChassisSpeed(xAlignSpeeds, yawCurrent);
+        break;
     }
-    else 
+    case OFF: 
     {
         desiredChassisSpeeds = {0.0, 0.0, 0.0};
+        break;
+    }
     }
 
     calculateWheelSpeed(desiredChassisSpeeds); // in m/s
@@ -237,6 +244,9 @@ void OmniWheelSubsystem::calculateChassisSpeed()
 
 void OmniWheelSubsystem::sendPower()
 {
+    // Set the correct desired_wheelspeed and desired power
+    setDesiredWheelSpeed();
+
     std::array<DJIMotor*, 4> motors = { &fl, &fr, &bl, &br };
     std::array<double, 4> desired = 
     {
@@ -312,6 +322,8 @@ void OmniWheelSubsystem::sendPower()
             motors[i]->pidSpeed.feedForward = 0.0;
         }
     }
+
+    // I lowk cba to do this, make someone else do it plz :3
     float scale = Bisection
     (
         motor_power[0], 

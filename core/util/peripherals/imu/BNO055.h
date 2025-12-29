@@ -28,6 +28,7 @@
 #define BNO055_H
 
 #include "mbed.h"
+#include "IMU.h"
 
 #define PI 3.14159265
 
@@ -137,7 +138,7 @@ enum {MT_P0 = 0, MT_P1, MT_P2, MT_P3, MT_P4, MT_P5, MT_P6, MT_P7};
  * @endcode
  */
 
-class BNO055
+class BNO055: public IMU
 {
 public:
     // Unconfigured IMU
@@ -180,7 +181,7 @@ public:
     /** Get Angular position from quaternion
      *  @param double type of 3D data address
      */
-    void get_angular_position_quat(BNO055_ANGULAR_POSITION_typedef *an_pos);
+    void get_angular_position_quat(IMU::EulerAngles *an_pos);
 
     /** Get Linear accel data
      * @param double type of 3D data address
@@ -309,8 +310,6 @@ public:
     bool use_celsius();
 
     int cantReadDataCount;
-
-    double multiturnYaw;
 
 protected:
     void initialize(void);
