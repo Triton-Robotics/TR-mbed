@@ -1,9 +1,13 @@
+#include "ThisThread.h"
 #include "ref_serial.h"
 
 
 Referee::Referee(PinName pin_tx, PinName pin_rx) : ref(pin_tx, pin_rx, 115200) 
 {
     memset(JudgeSystem_rxBuff, 0, JUDGESYSTEM_PACKSIZE);
+
+    // TODO: should we hve it like this?
+    refereeThread();
 }
 
 
@@ -15,10 +19,12 @@ bool Referee::readable()
 
 void Referee::read()
 {
-    if(ref.readable()){
-        mutex_.lock();
+    if(ref.readable())
+    {
         int rad = JudgeSystem_USART_Receive_DMA();
-        mutex_.unlock();
+        mutex_read_.lock();
+        memcpy(JudgeSystem_rxBuff, JudgeSystem_rxBuff_priv, JUDGESYSTEM_PACKSIZE);
+        mutex_read_.unlock();
         Judge_GetMessage(rad);
 
         if(enablePrintRefData){
@@ -114,11 +120,8 @@ void Referee::write()
             }
         }
 
-        // TODO remove mutex lock and put into referee_data_pack_handle function
-        mutex_.lock();
         ui_delete_layer(5);
         referee_data_pack_handle(0xA5,0x0301,(uint8_t *)&custom_graphic_draw,sizeof(custom_graphic_draw));
-        mutex_.unlock();
 
         // string powerStr = "power: " + to_string((int)power_heat_data.chassis_power);
         // ui_graph_characters(&ref, 1, powerStr, SCREEN_LENGTH/2 +100, SCREEN_WIDTH/2 +100, 99);
@@ -162,9 +165,56 @@ void Referee::write()
 
 void Referee::refereeThread()
 {
-    read();
-   
-    write();
+    this->readThread_.start(callback(this, &Referee::readThread));
+    this->writeThread_.start(callback(this, &Referee::writeThread));
+}
+
+
+void Referee::readThread()
+{
+    while(1)
+    {
+        // Un-nested read since all it does is call another fn
+        // read();
+        if(ref.readable())
+        {
+            int rad = JudgeSystem_USART_Receive_DMA();
+            mutex_read_.lock();
+            memcpy(JudgeSystem_rxBuff, JudgeSystem_rxBuff_priv, JUDGESYSTEM_PACKSIZE);
+            mutex_read_.unlock();
+            Judge_GetMessage(rad);
+
+            if(enablePrintRefData){
+                string output = "robot id: %s  ";
+
+                if(is_red_or_blue()){
+                    output += "RED  ";
+                }
+                else{
+                    output += "BLUE  ";
+                }
+                output += "robot hp: %d  max hp: %d  angle: %d  power: %d  current: %d  volt: %d \n";
+            }
+        }
+        else{
+            if(enablePrintRefData){
+                printf("REFEREE - Not readable!\n");
+            }
+        }
+
+        ThisThread::yield();
+    }
+}
+
+
+void Referee::writeThread()
+{
+    while(1)
+    {
+        // TODO: figure out write then un-nest it
+        write();
+        ThisThread::yield();
+    }
 }
 
 

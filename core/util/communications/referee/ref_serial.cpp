@@ -13,7 +13,7 @@ int Referee::JudgeSystem_USART_Receive_DMA() // modified
     // memset(JudgeSystem_rxBuff, 0, sizeof(JudgeSystem_rxBuff));
     ref.enable_output(true);
     //memset (JudgeSystem_rxBuff,0,JUDGESYSTEM_PACKSIZE);
-    return ref.read(JudgeSystem_rxBuff, JUDGESYSTEM_PACKSIZE);
+    return ref.read(JudgeSystem_rxBuff_priv, JUDGESYSTEM_PACKSIZE);
 }
 
 
@@ -478,6 +478,7 @@ void Referee::referee_data_pack_handle(uint8_t sof,uint16_t cmd_id, uint8_t *p_d
 	unsigned char i=i;
 	uint8_t tx_buff[MAX_SIZE];
 
+    mutex_write_.lock();
 	uint16_t frame_length = frameheader_len + cmd_len + len + crc_len;   //数据帧长度	
 
 	memset(tx_buff,0,frame_length);  //存储数据的数组清零
@@ -514,8 +515,7 @@ void Referee::referee_data_pack_handle(uint8_t sof,uint16_t cmd_id, uint8_t *p_d
 		while(LL_USART_IsActiveFlag_TC(USART3) == RESET);
     }
     */
+    mutex_write_.unlock();
     
-    mutex_.lock();
     ref.write(tx_buff, frame_length);
-    mutex_.unlock();
 }

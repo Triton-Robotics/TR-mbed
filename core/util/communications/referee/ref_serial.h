@@ -19,6 +19,10 @@ public:
     // Old referee thread code
     void refereeThread();
 
+    void readThread();
+
+    void writeThread();
+
     void read();
 
     // TODO: figure out how to write ui or interobot comms 
@@ -39,9 +43,13 @@ public:
 
 private:
     BufferedSerial ref;
-    Mutex mutex_;
+    Mutex mutex_write_;
+    Mutex mutex_read_;
+    Thread readThread_;
+    Thread writeThread_;
     bool enablePrintRefData = 0;
 
+    uint8_t JudgeSystem_rxBuff_priv[JUDGESYSTEM_PACKSIZE];
     uint8_t JudgeSystem_rxBuff[JUDGESYSTEM_PACKSIZE]; //接收buff
     uint8_t Judge_Self_ID;        //当前机器人ID
     uint16_t Judge_SelfClient_ID; //发送者机器人对应的客户端ID
