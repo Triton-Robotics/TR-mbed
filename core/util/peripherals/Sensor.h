@@ -3,7 +3,7 @@
 
 class Sensor  
 {
-    public:
+public:
     void init();
     void read();
     void reset();
