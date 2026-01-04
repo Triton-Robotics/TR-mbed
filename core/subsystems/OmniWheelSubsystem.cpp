@@ -1,4 +1,5 @@
 #include "OmniWheelSubsystem.h"
+#include "subsystems/TurretSubsystem.h"
 #include "util/motor/DJIMotor.h"
 
 OmniWheelSubsystem::OmniWheelSubsystem()
@@ -90,7 +91,7 @@ OmniWheelSubsystem::ChassisState OmniWheelSubsystem::getChassisState()
     return curr_state;
 }
 
-void OmniWheelSubsystem::setYawReference(DJIMotor *_yaw, float initial_angle, float _yawAlign)
+void OmniWheelSubsystem::setYawReference(TurretSubsystem *_yaw, float initial_angle, float _yawAlign)
 {
     yaw = _yaw;
     yawAlign = _yawAlign;
@@ -99,7 +100,7 @@ void OmniWheelSubsystem::setYawReference(DJIMotor *_yaw, float initial_angle, fl
 
 bool OmniWheelSubsystem::setOdomReference()
 {
-    yawOdom = yaw->getData(ANGLE);
+    yawOdom = yaw->getTicks();
     imuOdom = imuAngles.yaw;
     return true;
 }
@@ -127,7 +128,7 @@ void OmniWheelSubsystem::getOmniState()
 
 void OmniWheelSubsystem::setDesiredWheelSpeed()
 {
-    double yawCurrent = yaw->getData(ANGLE);
+    double yawCurrent = yaw->getTicks();
     ChassisSpeed desiredChassisSpeeds;
 
     switch (curr_state.mode)
@@ -197,7 +198,7 @@ void OmniWheelSubsystem::setDesiredWheelSpeed()
         float gain_align = 2;
         float gain_yaw = 3;
         float deg2rad = PI/180; // convert to rad and just run at 2x that rad/s
-        float omegaCmd = (gain_align * yawError * deg2rad + gain_yaw * yaw->getData(ANGLE));
+        float omegaCmd = (gain_align * yawError * deg2rad + gain_yaw * yaw->getTicks());
 
         if (abs(omegaCmd) < 0.1) omegaCmd = 0;
 

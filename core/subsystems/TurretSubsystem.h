@@ -66,6 +66,8 @@ public:
 
     double get_yaw_vel_rads_per_sec();
 
+    int getTicks();
+
 private:
     bool configured;
 

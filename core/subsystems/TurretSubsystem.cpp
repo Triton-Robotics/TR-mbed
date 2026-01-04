@@ -1,4 +1,5 @@
 #include "TurretSubsystem.h"
+#include "util/motor/DJIMotor.h"
 
 TurretSubsystem::TurretSubsystem()
 {
@@ -72,6 +73,11 @@ TurretSubsystem::TurretInfo TurretSubsystem::getState()
 void TurretSubsystem::setState (TurretState des_state)
 {
     turretState = des_state;
+}
+
+int TurretSubsystem::getTicks()
+{
+    return yaw.getData(ANGLE);
 }
 
 double TurretSubsystem::get_pitch_angle_rads_zero_offsetted()

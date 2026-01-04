@@ -39,7 +39,7 @@ public:
 
         IMU *imu; // We should change this to be of type IMU which will obv have all the same read function
 
-        DJIMotor *yaw;
+        TurretSubsystem *yaw; // Need to expose turretsubsystem yaw, or just expose the yaw>>ANGLE
         float initial_angle = 0;
         float yawAlign = 0;
     };
@@ -83,7 +83,7 @@ public:
      * @param motor your Yaw Motor reference as in `&{motor_name}`
      * @param initial_offset_ticks initial offset of your Yaw Motor Angle in ticks (try pass it as float)
      */
-    void setYawReference(DJIMotor *_yaw, float initial_offset_ticks = 0, float _yawAlign = 0);
+    void setYawReference(TurretSubsystem *_yaw, float initial_offset_ticks = 0, float _yawAlign = 0);
 
     /**
      * Yaw motor is a motor that controls the Turret
@@ -123,7 +123,7 @@ private:
     DJIMotor br;
 
     // We need to establish a yaw encoder reference here for head to body conversion
-    DJIMotor *yaw; // pointer to turret for head reference
+    TurretSubsystem *yaw; // pointer to turret for head reference
     int yawAlign;
     float yawPhase;
     float yawOdom;
