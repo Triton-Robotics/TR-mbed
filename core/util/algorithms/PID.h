@@ -165,7 +165,7 @@ public:
      * @param kP The P (proportional) parameter
      * @param kI The I (integral) parameter
      * @param kD The D (derivative) parameter
-     * @param integralCAp The maximum integral that can be achieved, above which the integral will be capped
+     * @param integralCap The maximum integral that can be achieved, above which the integral will be capped
      * @param outputCap The maximum output of the PID, above which the output will be capped
      */
     PID(float kP, float kI, float kD, float integralCap = 0, float outputCap = 0);
