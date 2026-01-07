@@ -1,69 +1,49 @@
 #include "ShooterSubsystem.h"
+#include "us_ticker_defines.h"
+#include "util/motor/DJIMotor.h"
 
 ShooterSubsystem::ShooterSubsystem()
 {
     configured = false;
 }
 
-ShooterSubsystem::ShooterSubsystem(config configuration)
+ShooterSubsystem::ShooterSubsystem(config cfg)
 {
     // TODO populate all necessary shooting objects
-    flywheelL = DJIMotor(configuration.flywheelL_id, configuration.canBus, M3508);
-    flywheelR = DJIMotor(configuration.flywheelR_id, configuration.canBus, M3508);
-    indexer = DJIMotor(configuration.indexer_id, configuration.canBus, M2006);
+    flywheelL = DJIMotor(cfg.flywheelL_id, cfg.canBus, M3508);
+    flywheelR = DJIMotor(cfg.flywheelR_id, cfg.canBus, M3508);
+    indexer = DJIMotor(cfg.indexer_id, cfg.canBus, M2006);
 
-    flywheelL.setSpeedPID(configuration.flywheelL_PID.kp,
-                          configuration.flywheelL_PID.ki,
-                          configuration.flywheelL_PID.kd);
+    flywheelL.setSpeedPID(cfg.flywheelL_PID.kp,
+                          cfg.flywheelL_PID.ki,
+                          cfg.flywheelL_PID.kd);
 
-    flywheelR.setSpeedPID(configuration.flywheelR_PID.kp,
-                          configuration.flywheelR_PID.ki,
-                          configuration.flywheelR_PID.kd);
+    flywheelR.setSpeedPID(cfg.flywheelR_PID.kp,
+                          cfg.flywheelR_PID.ki,
+                          cfg.flywheelR_PID.kd);
 
-    indexer.setSpeedPID(configuration.indexer_PID.kp,
-                        configuration.indexer_PID.ki,
-                        configuration.indexer_PID.kd);
+    indexer.setSpeedPID(cfg.indexer_PID.kp,
+                        cfg.indexer_PID.ki,
+                        cfg.indexer_PID.kd);
 
     // initialize all other vars
     configured = true;
     shoot = OFF;
-    shooter_type = BURST;
+    shootReady = true;
+
+    barrel_heat_limit = cfg.heat_limit;
+
+    shooter_type = cfg.type;
     shooter_time = us_ticker_read();
 }
 
-void ShooterSubsystem::init(config configuration)
-{
-    if (configured == false)
-    {
-        flywheelL = DJIMotor(configuration.flywheelL_id, configuration.canBus, M3508);
-        flywheelR = DJIMotor(configuration.flywheelR_id, configuration.canBus, M3508);
-        indexer = DJIMotor(configuration.indexer_id, configuration.canBus, M2006);
 
-        flywheelL.setSpeedPID(configuration.flywheelL_PID.kp,
-                            configuration.flywheelL_PID.ki,
-                            configuration.flywheelL_PID.kd);
-
-        flywheelR.setSpeedPID(configuration.flywheelR_PID.kp,
-                            configuration.flywheelR_PID.ki,
-                            configuration.flywheelR_PID.kd);
-
-        indexer.setSpeedPID(configuration.indexer_PID.kp,
-                            configuration.indexer_PID.ki,
-                            configuration.indexer_PID.kd);
-
-        // initialize all other vars
-        configured = true;
-        shoot = OFF;
-        shooter_type = BURST;
-        shooter_time = us_ticker_read();
-    }
-}
-
-
-void ShooterSubsystem::setState(ShootState shoot_state)
+void ShooterSubsystem::setState(ShootState shoot_state, int curr_heat)
 {
     shoot = shoot_state;
+    barrel_heat = curr_heat;
 }
+
 
 // TODO: figure out what we want to return?
 ShootState ShooterSubsystem::getState()
@@ -78,6 +58,7 @@ void ShooterSubsystem::execute_shooter()
         flywheelL.setPower(0);
         flywheelR.setPower(0);
         indexer.setPower(0);
+        shootReady = true;
     }
     else if (shoot == FLYWHEEL)
     {
@@ -86,38 +67,56 @@ void ShooterSubsystem::execute_shooter()
 
         indexer.pidSpeed.feedForward = 0;
         indexer.setSpeed(0);
+        shootReady = true;
     }
     else if (shoot == SHOOT)
     {
         if (shooter_type == BURST)
         {
-            shootTargetPosition = (8192 * M2006_GEAR_RATIO / 9 * NUM_BALLS_SHOT) + (indexer >> MULTITURNANGLE);
+            flywheelL.setSpeed(-FLYWHEEL_VELO);
+            flywheelR.setSpeed(FLYWHEEL_VELO);
+
+            setTargetPos();
 
             // TODO fix to 1 degree of error allowed (this is more than 1 degree)
             if (abs((indexer >> MULTITURNANGLE) - shootTargetPosition) <= 819)
             {
-                shoot = FLYWHEEL;
+                shoot = FLYWHEEL; // Move to neutral state after shooting
             }
             else
             {
-                indexer.pidSpeed.feedForward = (indexer >> VALUE) / 4788 * 630;
+                indexer.pidSpeed.feedForward = (indexer >> VELOCITY) / 4788 * 630;
                 indexer.setPosition(shootTargetPosition);
             }
         }
         else if (shooter_type = AUTO) 
         {
+            // TODO
         }
         else if (shooter_type == HERO) 
         {
+            // TODO
         }
+    }
+}
+
+void ShooterSubsystem::setTargetPos()
+{
+    if (shootReady && (abs(flywheelR>>VELOCITY) > (FLYWHEEL_VELO - 500) && abs(flywheelL>>VELOCITY) > (FLYWHEEL_VELO - 500))) 
+    {
+        // heat limit
+        if(barrel_heat_limit < 10 || barrel_heat < barrel_heat_limit - 40) {
+            shootReady = false; // Cant shoot twice immediately
+
+            shootTargetPosition = (8192 * M2006_GEAR_RATIO / 9 * NUM_BALLS_SHOT) + (indexer>>MULTITURNANGLE);
+        }    
+        
     }
 }
 
 void ShooterSubsystem::periodic() 
 {
-    unsigned long curr_time = us_ticker_read();
-    // TODO Update all dynamic vars: time, shootready, shot (how to get remote data to update these?)
-    // Logic to shoot goes here / in a function called here: execute_flywheels, execute_indexer
     execute_shooter();
-    shooter_time = curr_time;
+
+    shooter_time = us_ticker_read();
 }

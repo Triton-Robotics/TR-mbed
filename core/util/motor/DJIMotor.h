@@ -75,7 +75,7 @@ public:
 
     int multiTurn = 0;
     int outputCap = INT16_T_MAX;
-    bool useAbsEncoder = true;
+    bool useAbsEncoder = false; // false for everything except gm6020s
     bool printAngle = false;
 
     motorType type = NONE;

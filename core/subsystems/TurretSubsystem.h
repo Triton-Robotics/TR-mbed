@@ -5,15 +5,17 @@
 #include <util/motor/DJIMotor.h>
 #include "Subsystem.h"
 
+
+// TODO add to cfg
+constexpr float LOWERBOUND = -35.0;
+constexpr float UPPERBOUND = 40.0;
+
 // enums for state
 enum TurretState {SLEEP, AIM};
 
 class TurretSubsystem : public Subsystem
 {
 public:
-    // pitch zero offset ticks
-    // pitch motor
-    // yaw motor
     struct PID_config 
     {
         float kp;
@@ -26,13 +28,17 @@ public:
         int yaw_id;
         int pitch_id;
         int pitch_offset_ticks;
+
         PID_config yaw_vel_PID;
         PID_config yaw_pos_PID;
+
         PID_config pitch_vel_PID;
         PID_config pitch_pos_PID;
+
         CANHandler::CANBus yawCanBus;
         CANHandler::CANBus pitchCanBus;
-        BNO055_ANGULAR_POSITION_typedef* imuAngles;
+
+        IMU *imu;
     };
 
     struct TurretInfo
@@ -45,9 +51,7 @@ public:
 
     TurretSubsystem();
 
-    TurretSubsystem(config configuration);
-
-    void init(config configuration);
+    TurretSubsystem(config cfg);
 
     TurretInfo getState();
 
@@ -59,13 +63,6 @@ public:
 
     void periodic();
 
-    // get angle zero offsetted
-    double get_pitch_angle_rads_zero_offsetted();
-
-    double get_pitch_vel_rads_per_sec();
-
-    double get_yaw_vel_rads_per_sec();
-
     int getTicks();
 
 private:
@@ -74,12 +71,23 @@ private:
     DJIMotor yaw, pitch;
 
     TurretState turretState;
-
     TurretInfo turret_state;
+
+    IMU *imu;
+    IMU::EulerAngles imuAngles;
 
     int pitch_offset_ticks;
 
     unsigned long turret_time;
 
     float des_yaw, des_pitch, chassis_rpm;
+
+    // get angle zero offsetted
+    double get_pitch_angle_rads_zero_offsetted();
+
+    double get_yaw_angle_rads();
+
+    double get_pitch_vel_rads_per_sec();
+
+    double get_yaw_vel_rads_per_sec();
 };

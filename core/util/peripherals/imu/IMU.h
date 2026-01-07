@@ -20,6 +20,6 @@ public:
     };
 
     void init();
-    void read();
+    EulerAngles read();
     void reset();
 };

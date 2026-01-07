@@ -31,12 +31,17 @@ public:
 
     struct config
     {
+        ShooterType type;
+        int heat_limit;
+
         int flywheelL_id;
         int flywheelR_id;
         int indexer_id;
+
         PID_config flywheelL_PID;
         PID_config flywheelR_PID;
         PID_config indexer_PID;
+
         CANHandler::CANBus canBus;
     };
 
@@ -49,7 +54,7 @@ public:
 
     ShootState getState();
     
-    void setState(ShootState shoot_state);
+    void setState(ShootState shoot_state, int curr_heat);
 
     void execute_shooter();
 
@@ -65,6 +70,13 @@ private:
 
     ShootState shoot;
     ShooterType shooter_type;
+    
+    int barrel_heat;
+    int barrel_heat_limit;
+    bool shootReady;
 
     int shootTargetPosition;
+
+    // If ready to shoot, set the desired position for indexer to move
+    void setTargetPos();
 };

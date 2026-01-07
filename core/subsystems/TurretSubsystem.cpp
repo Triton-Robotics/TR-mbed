@@ -1,4 +1,5 @@
 #include "TurretSubsystem.h"
+#include "us_ticker_defines.h"
 #include "util/motor/DJIMotor.h"
 
 TurretSubsystem::TurretSubsystem()
@@ -6,64 +7,34 @@ TurretSubsystem::TurretSubsystem()
     configured = false;
 }
 
-TurretSubsystem::TurretSubsystem(config configuration)
+TurretSubsystem::TurretSubsystem(config cfg)
 {
-    yaw = DJIMotor(configuration.yaw_id, configuration.yawCanBus, M3508);
-    pitch = DJIMotor(configuration.pitch_id, configuration.pitchCanBus, M3508_FLYWHEEL);
+    yaw = DJIMotor(cfg.yaw_id, cfg.yawCanBus, M3508);
+    pitch = DJIMotor(cfg.pitch_id, cfg.pitchCanBus, M3508_FLYWHEEL);
 
-    yaw.setSpeedPID(configuration.yaw_vel_PID.kp,
-                    configuration.yaw_vel_PID.ki,
-                    configuration.yaw_vel_PID.kd);
+    yaw.setSpeedPID(cfg.yaw_vel_PID.kp,
+                    cfg.yaw_vel_PID.ki,
+                    cfg.yaw_vel_PID.kd);
 
-    yaw.setPositionPID(configuration.yaw_pos_PID.kp,
-                    configuration.yaw_pos_PID.ki,
-                    configuration.yaw_pos_PID.kd);
+    yaw.setPositionPID(cfg.yaw_pos_PID.kp,
+                    cfg.yaw_pos_PID.ki,
+                    cfg.yaw_pos_PID.kd);
     
-    pitch.setSpeedPID(configuration.pitch_vel_PID.kp,
-                    configuration.pitch_vel_PID.ki,
-                    configuration.pitch_vel_PID.kd);
+    pitch.setSpeedPID(cfg.pitch_vel_PID.kp,
+                    cfg.pitch_vel_PID.ki,
+                    cfg.pitch_vel_PID.kd);
 
-    pitch.setPositionPID(configuration.pitch_vel_PID.kp,
-                    configuration.pitch_vel_PID.ki,
-                    configuration.pitch_vel_PID.kd);
+    pitch.setPositionPID(cfg.pitch_vel_PID.kp,
+                    cfg.pitch_vel_PID.ki,
+                    cfg.pitch_vel_PID.kd);
     
-    pitch_offset_ticks = configuration.pitch_offset_ticks;
+    pitch_offset_ticks = cfg.pitch_offset_ticks;
 
     turretState = SLEEP;
 
     configured = true;
 }
 
-void TurretSubsystem::init(config configuration)
-{
-    if (configured == false)
-    {
-        yaw = DJIMotor(configuration.yaw_id, configuration.yawCanBus, M3508);
-        pitch = DJIMotor(configuration.pitch_id, configuration.pitchCanBus, M3508_FLYWHEEL);
-
-        yaw.setSpeedPID(configuration.yaw_vel_PID.kp,
-                        configuration.yaw_vel_PID.ki,
-                        configuration.yaw_vel_PID.kd);
-
-        yaw.setPositionPID(configuration.yaw_pos_PID.kp,
-                        configuration.yaw_pos_PID.ki,
-                        configuration.yaw_pos_PID.kd);
-        
-        pitch.setSpeedPID(configuration.pitch_vel_PID.kp,
-                        configuration.pitch_vel_PID.ki,
-                        configuration.pitch_vel_PID.kd);
-
-        pitch.setPositionPID(configuration.pitch_vel_PID.kp,
-                        configuration.pitch_vel_PID.ki,
-                        configuration.pitch_vel_PID.kd);
-        
-        pitch_offset_ticks = configuration.pitch_offset_ticks;
-
-        turretState = SLEEP;
-
-        configured = true;
-    }
-}
 
 TurretSubsystem::TurretInfo TurretSubsystem::getState()
 {
@@ -82,17 +53,23 @@ int TurretSubsystem::getTicks()
 
 double TurretSubsystem::get_pitch_angle_rads_zero_offsetted()
 {
-    return 0.0;
+    return (pitch_offset_ticks - (pitch>>ANGLE)) / TICKS_REVOLUTION * 360;
+}
+
+// Unsure if this is the best way to expose yaw, but we could do a similar thing for pitch once pitch imu
+double TurretSubsystem::get_yaw_angle_rads()
+{
+    return imu->read().yaw;
 }
 
 double TurretSubsystem::get_pitch_vel_rads_per_sec()
 {
-    return 0.0;
+    return pitch.getData(VELOCITY);
 }
 
 double TurretSubsystem::get_yaw_vel_rads_per_sec()
 {
-    return 0.0;
+    return yaw.getData(VELOCITY);
 }
 
 void TurretSubsystem::set_desired_turret(float des_yaw_angle, float des_pitch_angle, float chassisRpm)
@@ -111,11 +88,35 @@ void TurretSubsystem::execute_turret()
     }
     else if (turretState == AIM) 
     {
-        yaw.pidSpeed.feedForward = chassis_rpm;
-        yaw.setPosition(des_yaw);
-        pitch.setPosition(des_pitch);
+        // Yaw calc
+        int dir = 0;
+        if(turret_state.yaw_velo > 1){
+            dir = 1;
+        }else if(turret_state.yaw_velo < -1){
+            dir = -1;
+        }
+        yaw.pidSpeed.feedForward = 1221 * dir + 97.4 * turret_state.yaw_velo;
+        int des_yaw_power = yaw.calculatePositionPID(des_yaw, turret_state.yaw_angle, turret_time, chassis_rpm);
+        yaw.setPower(des_yaw_power);
+
+
+        // Pitch calc
+        float pitch_current_radians = -(turret_state.pitch_angle / 360) * 2 * M_PI;
+        
+        if (des_pitch <= LOWERBOUND) {
+            des_pitch = LOWERBOUND;
+        }
+        else if (des_pitch >= UPPERBOUND) {
+            des_pitch = UPPERBOUND;
+        }
+
+        int dir_p = (-1 ? des_pitch < turret_state.pitch_angle : 1);
+        pitch.pidSpeed.feedForward = (cos(pitch_current_radians) * -2600) + (1221 * dir_p + 97.4 * turret_state.pitch_velo);
+
+        float des_pitch_power = pitch.calculatePositionPID(des_pitch, turret_state.pitch_angle, us_ticker_read() - turret_time);
+        
+        pitch.setPower(des_pitch_power);
     }
-    return;
 }
 
 void TurretSubsystem::periodic()
@@ -124,7 +125,7 @@ void TurretSubsystem::periodic()
     execute_turret();
     
     // Update turret_state here!
-    turret_state.yaw_angle = yaw.getData(ANGLE);
+    turret_state.yaw_angle = get_yaw_angle_rads();
     turret_state.pitch_angle = get_pitch_angle_rads_zero_offsetted();
     turret_state.yaw_velo = get_yaw_vel_rads_per_sec();
     turret_state.pitch_velo = get_pitch_vel_rads_per_sec();

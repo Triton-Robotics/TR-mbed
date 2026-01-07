@@ -39,6 +39,7 @@ DJIMotor::DJIMotor(short motorID, CANHandler::CANBus canBus, motorType type, con
     // Adding 4 to move to the next ID line
     if(type == GM6020){
         canID_0 += 4;
+        useAbsEncoder = true;
     }
 
     int can_line = canID_0 / 4; // The can line depends on the motor id and type: M3508 1-4 on line 0, 5-8 on line 1, GM6020 1-4 on line 1, 5-8 on line 2
