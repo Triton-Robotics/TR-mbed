@@ -129,8 +129,16 @@ void BNO055::get_angular_position_quat(IMU::EulerAngles *result){
 //    result -> pitch = (float)asin(2 * q.w * q.y - q.x * q.z) * 180 / PI;
 //    result -> yaw   = (float)atan2(2 * (q.w * q.z + q.x * q.y), 1 - 2 * (q.y * q.y + q.z * q.z)) * 180 / PI;
     result -> roll  = atan2(2 * (q.w * q.x + q.y * q.z), 1 - 2 * (q.x * q.x + q.y * q.y)) * 180 / PI;
+    imuAngles.roll  = result->roll;
     result -> pitch = asin(2 * q.w * q.y - q.x * q.z) * 180 / PI;
+    imuAngles.pitch = result->pitch;
     result -> yaw   = atan2(2 * (q.w * q.z + q.x * q.y), 1 - 2 * (q.y * q.y + q.z * q.z)) * 180 / PI;
+    imuAngles.yaw   = result->yaw;
+}
+
+IMU::EulerAngles BNO055::read()
+{
+    return imuAngles;
 }
 
 void BNO055::get_linear_accel(BNO055_VECTOR_TypeDef *result)

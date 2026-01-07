@@ -311,6 +311,8 @@ public:
 
     int cantReadDataCount;
 
+    IMU::EulerAngles read();
+
 protected:
     void initialize(void);
     void initialize_reset_pin(void);
@@ -337,6 +339,8 @@ private:
     uint8_t  gyr_id;
     uint8_t  bootldr_rev_id;
     uint16_t sw_rev_id;
+
+    IMU::EulerAngles imuAngles;
 
     bool unit_flag_is_set(uint8_t flag);
 };
