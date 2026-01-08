@@ -25,15 +25,16 @@ public:
 
     struct config
     {
-        int yaw_id;
-        int pitch_id;
+        short yaw_id;
+        short pitch_id;
+        
         int pitch_offset_ticks;
 
-        PID_config yaw_vel_PID;
-        PID_config yaw_pos_PID;
+        PID::config yaw_vel_PID;
+        PID::config yaw_pos_PID;
 
-        PID_config pitch_vel_PID;
-        PID_config pitch_pos_PID;
+        PID::config pitch_vel_PID;
+        PID::config pitch_pos_PID;
 
         CANHandler::CANBus yawCanBus;
         CANHandler::CANBus pitchCanBus;
@@ -83,9 +84,9 @@ private:
     float des_yaw, des_pitch, chassis_rpm;
 
     // get angle zero offsetted
-    double get_pitch_angle_rads_zero_offsetted();
+    double get_pitch_angle_degs_zero_offsetted();
 
-    double get_yaw_angle_rads();
+    double get_yaw_angle_degs();
 
     double get_pitch_vel_rads_per_sec();
 

@@ -57,6 +57,8 @@ OmniWheelSubsystem::OmniWheelSubsystem(config cfg)
     br = DJIMotor(brcfg);
 
     imu = cfg.imu;
+    imuAngles = imu->getImuAngles();
+    
     radius = cfg.radius;
     power_limit = cfg.power_limit;
 
@@ -108,6 +110,7 @@ bool OmniWheelSubsystem::setOdomReference()
 void OmniWheelSubsystem::periodic()
 {
     // Update curr_state and curr_wheelspeed
+    imuAngles = imu->getImuAngles();
     getOmniState();
 
     sendPower();

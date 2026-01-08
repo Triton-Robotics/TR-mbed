@@ -313,6 +313,8 @@ public:
 
     IMU::EulerAngles read();
 
+    IMU::EulerAngles getImuAngles();
+
 protected:
     void initialize(void);
     void initialize_reset_pin(void);
@@ -327,6 +329,8 @@ protected:
     DigitalOut _res;
 
 private:
+    Mutex mutex_;
+
     char     dt[10];      // working buffer
     uint8_t  chip_addr;
     uint8_t  chip_mode;

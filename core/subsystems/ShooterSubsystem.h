@@ -22,25 +22,20 @@ public:
     // TODO add compiler flag -Wmissing-field-initializers
 
     enum ShooterType {BURST, HERO, AUTO};
-    struct PID_config 
-    {
-        float kp;
-        float ki;
-        float kd;
-    };
 
     struct config
     {
         ShooterType type;
         int heat_limit;
 
-        int flywheelL_id;
-        int flywheelR_id;
-        int indexer_id;
+        short flywheelL_id;
+        short flywheelR_id;
+        short indexer_id;
 
-        PID_config flywheelL_PID;
-        PID_config flywheelR_PID;
-        PID_config indexer_PID;
+        PID::config flywheelL_PID;
+        PID::config flywheelR_PID;
+        PID::config indexer_PID_vel;
+        PID::config indexer_PID_pos;
 
         CANHandler::CANBus canBus;
     };

@@ -9,22 +9,35 @@ ShooterSubsystem::ShooterSubsystem()
 
 ShooterSubsystem::ShooterSubsystem(config cfg)
 {
-    // TODO populate all necessary shooting objects
-    flywheelL = DJIMotor(cfg.flywheelL_id, cfg.canBus, M3508);
-    flywheelR = DJIMotor(cfg.flywheelR_id, cfg.canBus, M3508);
-    indexer = DJIMotor(cfg.indexer_id, cfg.canBus, M2006);
+    DJIMotor::config flyLcfg =
+    {
+        cfg.flywheelL_id,
+        cfg.canBus,
+        M3508_FLYWHEEL,
+        "Left Flywheel",
+        cfg.flywheelL_PID
+    };
+    DJIMotor::config flyRcfg =
+    {
+        cfg.flywheelR_id,
+        cfg.canBus,
+        M3508_FLYWHEEL,
+        "Right Flywheel",
+        cfg.flywheelR_PID
+    };
+    DJIMotor::config indexcfg =
+    {
+        cfg.indexer_id,
+        cfg.canBus,
+        M3508,
+        "Indexer",
+        cfg.indexer_PID_vel,
+        cfg.indexer_PID_pos
+    };
 
-    flywheelL.setSpeedPID(cfg.flywheelL_PID.kp,
-                          cfg.flywheelL_PID.ki,
-                          cfg.flywheelL_PID.kd);
-
-    flywheelR.setSpeedPID(cfg.flywheelR_PID.kp,
-                          cfg.flywheelR_PID.ki,
-                          cfg.flywheelR_PID.kd);
-
-    indexer.setSpeedPID(cfg.indexer_PID.kp,
-                        cfg.indexer_PID.ki,
-                        cfg.indexer_PID.kd);
+    flywheelL = DJIMotor(flyLcfg);
+    flywheelR = DJIMotor(flyRcfg);
+    indexer = DJIMotor(indexcfg);
 
     // initialize all other vars
     configured = true;

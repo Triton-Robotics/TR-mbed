@@ -128,15 +128,26 @@ void BNO055::get_angular_position_quat(IMU::EulerAngles *result){
 //    result -> roll  = (float)atan2(2 * (q.w * q.x + q.y * q.z), 1 - 2 * (q.x * q.x + q.y * q.y)) * 180 / PI;
 //    result -> pitch = (float)asin(2 * q.w * q.y - q.x * q.z) * 180 / PI;
 //    result -> yaw   = (float)atan2(2 * (q.w * q.z + q.x * q.y), 1 - 2 * (q.y * q.y + q.z * q.z)) * 180 / PI;
-    result -> roll  = atan2(2 * (q.w * q.x + q.y * q.z), 1 - 2 * (q.x * q.x + q.y * q.y)) * 180 / PI;
-    imuAngles.roll  = result->roll;
-    result -> pitch = asin(2 * q.w * q.y - q.x * q.z) * 180 / PI;
-    imuAngles.pitch = result->pitch;
-    result -> yaw   = atan2(2 * (q.w * q.z + q.x * q.y), 1 - 2 * (q.y * q.y + q.z * q.z)) * 180 / PI;
-    imuAngles.yaw   = result->yaw;
+    float roll  = atan2(2 * (q.w * q.x + q.y * q.z), 1 - 2 * (q.x * q.x + q.y * q.y)) * 180 / PI;
+    // imuAngles.roll  = result->roll;
+    float pitch = asin(2 * q.w * q.y - q.x * q.z) * 180 / PI;
+    // imuAngles.pitch = result->pitch;
+    float yaw   = atan2(2 * (q.w * q.z + q.x * q.y), 1 - 2 * (q.y * q.y + q.z * q.z)) * 180 / PI;
+    // imuAngles.yaw   = result->yaw;
+    memcpy(&result->roll, &roll, sizeof(float));
+    memcpy(&result->pitch, &pitch, sizeof(float));
+    memcpy(&result->yaw, &yaw, sizeof(float));
 }
 
 IMU::EulerAngles BNO055::read()
+{
+    mutex_.lock();
+    get_angular_position_quat(&imuAngles);
+    mutex_.unlock();
+    return imuAngles;
+}
+
+IMU::EulerAngles BNO055::getImuAngles()
 {
     return imuAngles;
 }

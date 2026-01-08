@@ -9,26 +9,32 @@ TurretSubsystem::TurretSubsystem()
 
 TurretSubsystem::TurretSubsystem(config cfg)
 {
-    yaw = DJIMotor(cfg.yaw_id, cfg.yawCanBus, M3508);
-    pitch = DJIMotor(cfg.pitch_id, cfg.pitchCanBus, M3508_FLYWHEEL);
-
-    yaw.setSpeedPID(cfg.yaw_vel_PID.kp,
-                    cfg.yaw_vel_PID.ki,
-                    cfg.yaw_vel_PID.kd);
-
-    yaw.setPositionPID(cfg.yaw_pos_PID.kp,
-                    cfg.yaw_pos_PID.ki,
-                    cfg.yaw_pos_PID.kd);
+    DJIMotor::config yawcfg =
+    {
+        cfg.yaw_id,
+        cfg.yawCanBus,
+        M3508,
+        "Yaw",
+        cfg.yaw_vel_PID,
+        cfg.yaw_pos_PID
+    };
+    yaw = DJIMotor(yawcfg);
     
-    pitch.setSpeedPID(cfg.pitch_vel_PID.kp,
-                    cfg.pitch_vel_PID.ki,
-                    cfg.pitch_vel_PID.kd);
-
-    pitch.setPositionPID(cfg.pitch_vel_PID.kp,
-                    cfg.pitch_vel_PID.ki,
-                    cfg.pitch_vel_PID.kd);
+    DJIMotor::config pitchcfg =
+    {
+        cfg.pitch_id,
+        cfg.pitchCanBus,
+        M3508,
+        "Pitch",
+        cfg.pitch_vel_PID,
+        cfg.pitch_pos_PID
+    };
+    pitch = DJIMotor(pitchcfg);
     
     pitch_offset_ticks = cfg.pitch_offset_ticks;
+
+    imu = cfg.imu;
+    imuAngles = imu->getImuAngles();
 
     turretState = SLEEP;
 
@@ -51,15 +57,15 @@ int TurretSubsystem::getTicks()
     return yaw.getData(ANGLE);
 }
 
-double TurretSubsystem::get_pitch_angle_rads_zero_offsetted()
+double TurretSubsystem::get_pitch_angle_degs_zero_offsetted()
 {
     return (pitch_offset_ticks - (pitch>>ANGLE)) / TICKS_REVOLUTION * 360;
 }
 
 // Unsure if this is the best way to expose yaw, but we could do a similar thing for pitch once pitch imu
-double TurretSubsystem::get_yaw_angle_rads()
+double TurretSubsystem::get_yaw_angle_degs()
 {
-    return imu->read().yaw;
+    return imuAngles.yaw;
 }
 
 double TurretSubsystem::get_pitch_vel_rads_per_sec()
@@ -122,13 +128,15 @@ void TurretSubsystem::execute_turret()
 void TurretSubsystem::periodic()
 {
     // TODO do we recalculate our values here?
-    execute_turret();
+    imuAngles = imu->getImuAngles();
     
     // Update turret_state here!
-    turret_state.yaw_angle = get_yaw_angle_rads();
-    turret_state.pitch_angle = get_pitch_angle_rads_zero_offsetted();
+    turret_state.yaw_angle = get_yaw_angle_degs();
+    turret_state.pitch_angle = get_pitch_angle_degs_zero_offsetted();
     turret_state.yaw_velo = get_yaw_vel_rads_per_sec();
     turret_state.pitch_velo = get_pitch_vel_rads_per_sec();
+    
+    execute_turret();
 
     turret_time = us_ticker_read();
 }

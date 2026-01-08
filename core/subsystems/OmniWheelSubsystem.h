@@ -23,7 +23,7 @@ public:
         short brid;
 
         float radius;
-        float power_limit;
+        int power_limit;
 
         float max_vel = 2.92;
         float max_accel = 100;
@@ -130,7 +130,7 @@ private:
     float imuOdom;
 
     float radius;
-    float power_limit;
+    int power_limit;
     
     float FF_Ks;
     float maxVel;

@@ -21,5 +21,6 @@ public:
 
     void init();
     EulerAngles read();
+    EulerAngles getImuAngles();
     void reset();
 };
