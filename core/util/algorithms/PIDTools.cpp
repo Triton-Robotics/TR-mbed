@@ -12,6 +12,10 @@
 PIDTools::PIDTools(DJIMotor* motor, int des_val, TYPE type)
     :motor(motor), des_val(des_val), type(type) {}
 
+float     PIDTools::initial_value = 0.0f;
+uint32_t  PIDTools::start_time = 0;
+uint32_t  PIDTools::start_settle_time = 0;
+uint32_t  PIDTools::time_in_range = 0;
  /*void PIDTools::test_velocity()
 {
     motor->setSpeed(des_val);
@@ -33,18 +37,21 @@ void PIDTools::test_velocity()
     {
         if (calc_overshoot)
         {
+            motor->setSpeed(des_val);
             calculateOvershootVelocity();
         }
         if (calc_settling_time)
         {
+            motor->setSpeed(des_val);
             calculateSettlingTimeVelocity();
         }
         if (print_settling_time && print_overshoot)
         {
-            std::cout << "Results: " << std::endl;
-            std::cout << "Overshoot: " << overshoot << "degrees" << std::endl;
-            std::cout << "Rise Time: " << rise_time << "seconds" << std::endl;
-            std::cout << "Settling Time: " << settling_time << "seconds" << std::endl;
+           printf("Results: \n");
+            printf("Overshoot: %.2f degrees\n", overshoot);
+            printf("Rise Time: %lu seconds\n", rise_time);
+            printf("Settling Time: %lu seconds\n", settling_time);
+            running = false;
         }
     }
 }
@@ -55,18 +62,25 @@ void PIDTools::test_position()
     {
         if (calc_overshoot)
         {
+            motor->setPosition(des_val);
             calculateOvershootVelocity();
         }
         if (calc_settling_time)
         {
+            motor->setPosition(des_val);
             PIDTools:calculateSettlingTimeVelocity();
         }
         if (print_settling_time && print_overshoot)
         {
-            std::cout << "Results: " << std::endl;
-            std::cout << "Overshoot: " << overshoot << "degrees" << std::endl;
-            std::cout << "Rise Time: " << rise_time << "seconds" << std::endl;
-            std::cout << "Settling Time: " << settling_time << "seconds" << std::endl;
+            printf("Results: \n");
+            printf("Overshoot: %.2f degrees\n", overshoot);
+            printf("Rise Time: %lu seconds\n", rise_time);
+            printf("Settling Time: %lu seconds\n", settling_time);
+            running = false;
+            // std::cout << "Results: " << std::endl;
+            // std::cout << "Overshoot: " << overshoot << "degrees" << std::endl;
+            // std::cout << "Rise Time: " << rise_time << "seconds" << std::endl;
+            // std::cout << "Settling Time: " << settling_time << "seconds" << std::endl;
         }
     }
 }
@@ -96,6 +110,9 @@ std::string PIDTools::run()
     {
         test_position();
     }
+    if(!running){
+        motor->setPower(0);
+    }
     return "Testing complete";
 }
 
@@ -106,6 +123,8 @@ void PIDTools::calculateOvershootVelocity()
     if (abs(current_value) >= abs(max_value))
     {
         max_value = current_value;
+        // overshoot = abs(max_value - des_val);
+        // printf("Overshoot: %.2f degrees\n", overshoot); 
     }
 
     if (current_value >= des_val && calc_rise_time)
@@ -114,6 +133,7 @@ void PIDTools::calculateOvershootVelocity()
         end_time = us_ticker_read();
         rise_time = end_time - start_time;
         calc_rise_time = false;
+
     }
 
     if (abs(current_value) < abs(max_value) && passed_des)
@@ -146,6 +166,8 @@ void PIDTools::calculateOvershootPosition()
     if (abs(current_value) >= abs(max_value))
     {
         max_value = current_value;
+        // overshoot = abs(max_value - des_val);
+        // printf("Overshoot: %.2f degrees\n", overshoot);
     }
 
     if (current_value >= des_val && calc_rise_time)
@@ -170,7 +192,7 @@ void PIDTools::calculateSettlingTimeVelocity()
     float current_value = motor->getData(VELOCITY);
     auto now = us_ticker_read();
     if (!(current_value >= lower_bound && current_value <= upper_bound))
-    {
+    { 
         time_in_range = us_ticker_read();
     }
 
