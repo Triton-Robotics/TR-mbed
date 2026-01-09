@@ -39,6 +39,13 @@ void PIDTools::test_velocity()
         {
             calculateSettlingTimeVelocity();
         }
+        if (print_settling_time && print_overshoot)
+        {
+            std::cout << "Results: " << std::endl;
+            std::cout << "Overshoot: " << overshoot << "degrees" << std::endl;
+            std::cout << "Rise Time: " << rise_time << "seconds" << std::endl;
+            std::cout << "Settling Time: " << settling_time << "seconds" << std::endl;
+        }
     }
 }
 
@@ -52,7 +59,14 @@ void PIDTools::test_position()
         }
         if (calc_settling_time)
         {
-            calculateSettlingTimeVelocity();
+            PIDTools:calculateSettlingTimeVelocity();
+        }
+        if (print_settling_time && print_overshoot)
+        {
+            std::cout << "Results: " << std::endl;
+            std::cout << "Overshoot: " << overshoot << "degrees" << std::endl;
+            std::cout << "Rise Time: " << rise_time << "seconds" << std::endl;
+            std::cout << "Settling Time: " << settling_time << "seconds" << std::endl;
         }
     }
 }
@@ -88,7 +102,6 @@ std::string PIDTools::run()
 
 void PIDTools::calculateOvershootVelocity()
 {
-    start_time = us_ticker_read();
     current_value = motor->getData(VELOCITY);
     if (abs(current_value) >= abs(max_value))
     {
@@ -107,12 +120,12 @@ void PIDTools::calculateOvershootVelocity()
     {
         overshoot = abs(max_value - des_val);
         calc_overshoot = false;
+        print_overshoot = true;
     }
 }
 
 void PIDTools::calculateOvershootPosition()
 {
-    start_time = us_ticker_read();
     current_value = motor->getData(VELOCITY);
     current_value -= initial_value;
 
@@ -147,13 +160,13 @@ void PIDTools::calculateOvershootPosition()
     {
         calc_overshoot = false;
         overshoot = abs(max_value - des_val);
+        print_overshoot = true;
     }
 }
 
 void PIDTools::calculateSettlingTimeVelocity()
 {
-    start_settle_time = us_ticker_read();
-    time_in_range = us_ticker_read();
+
     float current_value = motor->getData(VELOCITY);
     auto now = us_ticker_read();
     if (!(current_value >= lower_bound && current_value <= upper_bound))
@@ -165,13 +178,13 @@ void PIDTools::calculateSettlingTimeVelocity()
     {
         settling_time = now-start_time;
         calc_settling_time = false;
+        print_settling_time = true;
     }
 
 }
 
 void PIDTools::calculateSettlingTimePosition()
 {
-
     float current_value = motor->getData(ANGLE) - initial_value;
     auto now = us_ticker_read();
     if (!(current_value >= lower_bound && current_value <= upper_bound))
@@ -183,6 +196,7 @@ void PIDTools::calculateSettlingTimePosition()
     {
         settling_time = now-start_time;
         calc_settling_time = false;
+        print_settling_time = true;
     }
 }
 

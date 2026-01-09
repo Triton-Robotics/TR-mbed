@@ -480,6 +480,10 @@ int main(){
             }
 
             DJIMotor::s_sendValues();
+
+            // put PID TOOLS HERE
+
+
         }
         DJIMotor::s_getFeedback();
         ThisThread::sleep_for(1ms);

@@ -25,7 +25,11 @@ class PIDTools
         {
             motor->setSpeed(des_val);
             current_value = motor->getData(VELOCITY);
+            initial_value = motor->getData(VELOCITY);
             max_value = current_value;
+            start_settle_time = us_ticker_read();
+            time_in_range = us_ticker_read();
+            start_time = us_ticker_read();
         }
         else
         {
@@ -33,6 +37,9 @@ class PIDTools
             current_value = motor->getData(ANGLE);
             initial_value = motor->getData(ANGLE);
             max_value = current_value;
+            start_settle_time = us_ticker_read();
+            time_in_range = us_ticker_read();
+            start_time = us_ticker_read();
         }
     }
     void test_velocity();
@@ -47,6 +54,8 @@ class PIDTools
     float current_value;
     float max_value;
     static float initial_value;
+    bool print_overshoot = false;
+    bool print_settling_time = false;
 
     float overshoot;
     unsigned long rise_time;
@@ -63,8 +72,6 @@ class PIDTools
     int lower_bound = 0.98 * (des_val - initial_value);
     int upper_bound = 1.02 * (des_val - initial_value);
     static uint32_t time_in_range;
-
-    std::string printData();
 
     void calculateOvershootVelocity();
     void calculateOvershootPosition();
