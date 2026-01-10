@@ -1,5 +1,6 @@
 #pragma once
 
+#include "BufferedSerial.h"
 #include "mbed.h"
 #include "PinNames.h"
 #include "util/communications/DJIRemote.h"
@@ -15,7 +16,7 @@ class BaseRobot {
         PinName referee_rx_pin = PC_11;
 
         PinName can1_rx_pin = PA_11;
-        PinName can1_tx_pin = PA_11;
+        PinName can1_tx_pin = PA_12;
 
         PinName can2_rx_pin = PB_12;
         PinName can2_tx_pin = PB_13;
@@ -32,8 +33,6 @@ class BaseRobot {
     Remote remote_;
     Referee referee;
 
-    BufferedSerial jetson_serial_;
-    Jetson jetson;
     Jetson::WriteState stm_state;
     Jetson::ReadState jetson_state;
 
@@ -42,21 +41,16 @@ class BaseRobot {
     DigitalOut led0_;
     DigitalOut led1_;
     DigitalOut led2_;
-    // TODO maybe usb serial?
-    BufferedSerial usbSerial;
 
     // clang-format off
     BaseRobot(const Config &config)
         : remote_(config.remote_pin),
           referee(config.referee_tx_pin, config.referee_rx_pin), //TODO make sure this is right
-          jetson_serial_(config.jetson_tx_pin, config.jetson_rx_pin, config.jetson_baud),
-          jetson(jetson_serial_),
           canHandler1_(config.can1_rx_pin, config.can1_tx_pin),
           canHandler2_(config.can2_rx_pin, config.can2_tx_pin),
           led0_(config.led0_pin),
           led1_(config.led1_pin),
-          led2_(config.led2_pin),
-          usbSerial(USBTX, USBRX, 115200)
+          led2_(config.led2_pin)
     {};
     // clang-format on
 
@@ -70,7 +64,6 @@ class BaseRobot {
     virtual unsigned int main_loop_dt_ms() { return 1; };
 
     virtual void main_loop() {
-        usbSerial.set_blocking(false);
         unsigned long loop_clock_us = us_ticker_read();
         unsigned long prev_loop_time_us = loop_clock_us;
 
@@ -81,19 +74,18 @@ class BaseRobot {
         
         while (true) {
             // StmIO comms (Ref and Jetson)
-            // TODO Mutex referee class and make it a good class bru
+            // TODO Mutex referee class and make it a good class
             // TODO update stm_state with ref.read?
-            referee.refereeThread();
             
             stm_state.game_state = referee.get_game_progress();
             stm_state.robot_hp = referee.get_remain_hp();
             
-            // jetson.write(&stm_state);
-
             loop_clock_us = us_ticker_read();
             if ((loop_clock_us - prev_loop_time_us) / 1000 >= main_loop_dt_ms) {
                 // Add subsystems in periodic
+                printf("init\n");
                 led0_ = !led0_;
+
                 periodic(loop_clock_us - prev_loop_time_us);
                 prev_loop_time_us = us_ticker_read();
                 
@@ -103,20 +95,20 @@ class BaseRobot {
             // Add sensors updates in your end of loop
             end_of_loop();
 
-            // jetson.read(&jetson_state);
             canHandler1_.readAllCan();
             canHandler2_.readAllCan();
         }
     }
 
-    void printff(const char *format, ...)
-    {
-        char temp[50];
-        va_list args;
-        va_start(args, format);
-        int len = vsnprintf(temp, 50, format, args);
-        if (len > 0)
-        usbSerial.write(temp, len);
-        va_end(args);
-    }
+    // TODO: make header file
+    // void printff(const char *format, ...)
+    // {
+    //     char temp[50];
+    //     va_list args;
+    //     va_start(args, format);
+    //     int len = vsnprintf(temp, 50, format, args);
+    //     if (len > 0)
+    //     // usbSerial.write(temp, len);
+    //     va_end(args);
+    // }
 };
