@@ -74,8 +74,8 @@ OmniWheelSubsystem::OmniWheelSubsystem(config cfg)
 
     setYawReference(cfg.yaw, cfg.initial_angle, cfg.yawAlign);
 
-    calculateAccelLimit();
-    setOmniKinematics();
+    // calculateAccelLimit();
+    // setOmniKinematics();
 }
 
 void OmniWheelSubsystem::setChassisState(ChassisState state)
@@ -218,6 +218,14 @@ void OmniWheelSubsystem::setDesiredWheelSpeed()
     }
 
     calculateWheelSpeed(desiredChassisSpeeds); // in m/s
+}
+
+OmniWheelSubsystem::ChassisSpeed OmniWheelSubsystem::rotateChassisSpeed(ChassisSpeed desired_vel, float frame_angle)
+{
+    float theta = (frame_angle - yawPhase) / 180 * PI;
+    return {desired_vel.vX * cos(theta) - desired_vel.vY * sin(theta),
+            desired_vel.vX * sin(theta) + desired_vel.vY * cos(theta),
+            desired_vel.vOmega};
 }
 
 void OmniWheelSubsystem::calculateWheelSpeed(ChassisSpeed chassisSpeeds)

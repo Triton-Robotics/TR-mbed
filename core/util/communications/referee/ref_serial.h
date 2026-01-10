@@ -36,12 +36,13 @@ public:
 
     // Return robot remaining HP.
     uint8_t get_remain_hp();
-
+    
     // Return game progress
     uint8_t get_game_progress();
-
+    
     
     robot_status_t                          robot_status;
+    power_heat_data_t                       power_heat_data;
 private:
     BufferedSerial ref;
     Mutex mutex_write_;
@@ -84,7 +85,6 @@ private:
     ext_supply_projectile_action_t          ext_supply_projectile_action;
     referee_warning_t                       referee_warning;
     ext_dart_remaining_time_t               ext_dart_remaining_time;
-    power_heat_data_t                       power_heat_data;
     robot_pos_t                             robot_pos;
     ext_buff_t                              Buff;
     buff_t                                  buff;

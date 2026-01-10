@@ -311,9 +311,9 @@ public:
 
     int cantReadDataCount;
 
-    IMU::EulerAngles read();
+    IMU::EulerAngles read() override;
 
-    IMU::EulerAngles getImuAngles();
+    IMU::EulerAngles getImuAngles() override;
 
 protected:
     void initialize(void);

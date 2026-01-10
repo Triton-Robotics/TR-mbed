@@ -137,8 +137,9 @@ private:
     float maxAccel;
     float maxBeyblade;
 
-    void calculateAccelLimit();
-    void setOmniKinematics();
+    // TODO :) (idk if we need em)
+    // void calculateAccelLimit();
+    // void setOmniKinematics();
 
     // Updates curr_state and curr_wheelspeed from motors
     void getOmniState();

@@ -43,6 +43,7 @@ class BaseRobot {
     DigitalOut led1_;
     DigitalOut led2_;
     // TODO maybe usb serial?
+    BufferedSerial usbSerial;
 
     // clang-format off
     BaseRobot(const Config &config)
@@ -54,7 +55,8 @@ class BaseRobot {
           canHandler2_(config.can2_rx_pin, config.can2_tx_pin),
           led0_(config.led0_pin),
           led1_(config.led1_pin),
-          led2_(config.led2_pin) 
+          led2_(config.led2_pin),
+          usbSerial(USBTX, USBRX, 115200)
     {};
     // clang-format on
 
@@ -68,6 +70,7 @@ class BaseRobot {
     virtual unsigned int main_loop_dt_ms() { return 1; };
 
     virtual void main_loop() {
+        usbSerial.set_blocking(false);
         unsigned long loop_clock_us = us_ticker_read();
         unsigned long prev_loop_time_us = loop_clock_us;
 
@@ -75,7 +78,7 @@ class BaseRobot {
 
         // Init all constants, subsystems, sensors, IO, etc.
         init();
-
+        
         while (true) {
             // StmIO comms (Ref and Jetson)
             // TODO Mutex referee class and make it a good class bru
@@ -90,6 +93,7 @@ class BaseRobot {
             loop_clock_us = us_ticker_read();
             if ((loop_clock_us - prev_loop_time_us) / 1000 >= main_loop_dt_ms) {
                 // Add subsystems in periodic
+                led0_ = !led0_;
                 periodic(loop_clock_us - prev_loop_time_us);
                 prev_loop_time_us = us_ticker_read();
                 
@@ -103,5 +107,16 @@ class BaseRobot {
             canHandler1_.readAllCan();
             canHandler2_.readAllCan();
         }
+    }
+
+    void printff(const char *format, ...)
+    {
+        char temp[50];
+        va_list args;
+        va_start(args, format);
+        int len = vsnprintf(temp, 50, format, args);
+        if (len > 0)
+        usbSerial.write(temp, len);
+        va_end(args);
     }
 };

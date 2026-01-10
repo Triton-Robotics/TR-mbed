@@ -21,10 +21,10 @@ PID::config pitch_vel_PID;
 PID::config pitch_pos_PID;
 TurretSubsystem turret;
 
-PID::config fl_vel_config;
-PID::config fr_vel_config;
-PID::config bl_vel_config;
-PID::config br_vel_config;
+PID::config fl_vel_config = {3, 0, 0};
+PID::config fr_vel_config = {3, 0, 0};
+PID::config bl_vel_config = {3, 0, 0};
+PID::config br_vel_config = {3, 0, 0};
 OmniWheelSubsystem chassis;
 
 // TODO: put acc values
@@ -33,6 +33,12 @@ PID::config flywheelR_PID;
 PID::config indexer_PID_vel;
 PID::config indexer_PID_pos;
 ShooterSubsystem shooter;
+
+// State variables
+OmniWheelSubsystem::ChassisState des_chassis_state;
+TurretState des_turret_state;
+ShootState des_shoot_state;
+
 
 class Infantry : public BaseRobot {
 public:
@@ -43,7 +49,8 @@ public:
 
     ~Infantry() {}
 
-    void init() override {
+    void init() override 
+    {
         TurretSubsystem::config turret_cfg =
         {
             4,
@@ -98,15 +105,58 @@ public:
         };
         shooter = ShooterSubsystem(shooter_cfg);
     }
-
+    
     void periodic(unsigned long dt_us) override {
-      // TODO: use remote to setState for all subsystems
+        // TODO: use remote to setState for all subsystems
+        remote_.read();
+        imu.read();
 
-      imu.read();
+        printff("Remote can read\n");
+        
+        // Chassis + Turret Logic
+        des_chassis_state.vel.vX = remote_.getChassisX();
+        des_chassis_state.vel.vY = remote_.getChassisY();
+        if (remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP)
+        {
+            des_chassis_state.mode = OmniWheelSubsystem::ChassisMode::YAW_ORIENTED;
+            des_chassis_state.vel.vOmega = 0;
 
-      turret.periodic();
-      chassis.periodic();
-      shooter.periodic();
+            des_turret_state = TurretState::AIM;
+        }
+        else if (remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::DOWN)
+        {
+            des_chassis_state.mode = OmniWheelSubsystem::ChassisMode::BEYBLADE;
+
+            des_turret_state = TurretState::AIM;
+        }
+        else
+        {
+            des_chassis_state.mode = OmniWheelSubsystem::ChassisMode::OFF;
+            des_turret_state = TurretState::SLEEP;
+        }
+        chassis.setChassisState(des_chassis_state);
+
+        // Set turret state
+        turret.set_desired_turret(remote_.getYaw(), remote_.getPitch(), chassis.getChassisState().vel.vOmega);
+
+        // Shooter Logic
+        if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP)
+        {
+            des_shoot_state = ShootState::SHOOT;
+        }
+        else if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID)
+        {
+            des_shoot_state = ShootState::FLYWHEEL;
+        }
+        else
+        {
+            des_shoot_state = ShootState::OFF;
+        }
+        shooter.setState(des_shoot_state, referee.power_heat_data.shooter_17mm_1_barrel_heat);
+
+        turret.periodic();
+        chassis.periodic();
+        shooter.periodic();
     }
 
     void end_of_loop() override {}

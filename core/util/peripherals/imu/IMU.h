@@ -20,7 +20,7 @@ public:
     };
 
     void init();
-    EulerAngles read();
-    EulerAngles getImuAngles();
+    virtual EulerAngles read();
+    virtual EulerAngles getImuAngles();
     void reset();
 };
