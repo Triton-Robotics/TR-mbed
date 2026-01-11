@@ -8,9 +8,9 @@
 #include "util/motor/DJIMotor.h"
 #include "util/peripherals/imu/BNO055.h"
 
-#define I2C_SDA PB_7
-#define I2C_SCL PB_8
-#define IMU_RESET PA_8
+constexpr auto IMU_I2C_SDA = PB_7;
+constexpr auto IMU_I2C_SCL = PB_8;
+constexpr auto IMU_RESET = PA_8;
 
 constexpr int pitch_zero_offset_ticks = 1500;
 

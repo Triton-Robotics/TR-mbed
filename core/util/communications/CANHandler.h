@@ -11,6 +11,7 @@
 
 #include "mbed.h"
 #include "CANMsg.h"
+#include <cstdint>
 #include <vector>
 
 
@@ -18,14 +19,14 @@
 
 // Exact ID callback
 struct ExactCallback {
-    int id;
+    uint32_t id;
     std::function<void(const CANMsg*)> func;
 };
 
 // Range callback (inclusive)
 struct RangeCallback {
-    int start_id;
-    int end_id;
+    uint32_t start_id;
+    uint32_t end_id;
     std::function<void(const CANMsg*)> func;
 };
 
