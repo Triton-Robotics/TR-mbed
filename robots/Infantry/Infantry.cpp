@@ -18,13 +18,15 @@ I2C i2c(I2C_SDA, I2C_SCL);
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 
 // TODO: put acc values
-PID::config yaw_vel_PID;
-PID::config yaw_pos_PID;
-PID::config pitch_vel_PID;
-PID::config pitch_pos_PID;
+PID::config yaw_vel_PID = {708.1461, 4.721, 2.6555, 32000, 8000};
+PID::config yaw_pos_PID = {1.18, 0, 0, 90, 2};
+PID::config pitch_vel_PID = {500,0.8,0, 32000, 2000};
+PID::config pitch_pos_PID = {1.5,0.0005,0.05, 30, 2};
 TurretSubsystem turret({
     4,
+    GM6020,
     7,
+    GM6020,
     pitch_zero_offset_ticks,
     yaw_vel_PID,
     yaw_pos_PID,
@@ -95,6 +97,7 @@ ShootState des_shoot_state;
 // };
 // DJIMotor testmot(flyLcfg);
 
+int remoteTimer = 0;
 
 class Infantry : public BaseRobot {
 public:
@@ -115,7 +118,12 @@ public:
     
     void periodic(unsigned long dt_us) override {
         // TODO: use remote to setState for all subsystems
-        remote_.read();
+        if (remoteTimer > 20) {
+            remoteTimer = 0;
+            remote_.read();
+        }
+        remoteTimer += 1;
+
         imu.read();
 
         
@@ -142,7 +150,8 @@ public:
         // chassis.setChassisState(des_chassis_state);
         
         // Set turret state
-        turret.set_desired_turret(remote_.getYaw(), remote_.getPitch(), chassis.getChassisState().vel.vOmega);
+        turret.setState(des_turret_state);
+        turret.set_desired_turret(turret.getState().yaw_angle + remote_.getYaw(), remote_.getPitch(), chassis.getChassisState().vel.vOmega);
         
         // Shooter Logic
         if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP)
@@ -167,7 +176,10 @@ public:
 
 
         // Debug print statements
-        printf("%d\n", shooter.getState());
+        printf("y: %.2f\n", turret.getState().yaw_angle);
+        // printf("p: %.2f\n", turret.getState().pitch_angle + remote_.getPitch());
+        // printf("p: %.2f\n", turret.getState().pitch_angle);
+        // printf("%d\n", shooter.getState());
         // printf("v:%d\n",testmot>>VELOCITY);
         // printf("cx: %.2f\n", remote_.getChassisX());
         // printf("switch: %d\n", remote_.getSwitch(Remote::Switch::RIGHT_SWITCH));

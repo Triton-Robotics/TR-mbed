@@ -108,13 +108,18 @@ float Remote::getChassisY()
 
 float Remote::getYaw()
 {
-    return ((remote.rightHorizontal / 660.0) * JOYSTICK_SENSITIVITY_YAW_DPS + 
+    // TODO: make this a helper fn
+    float normal_rh = remote.rightHorizontal / 660.0;
+    normal_rh = abs(normal_rh) > 0.05 ? normal_rh : 0;
+    return ((normal_rh) * JOYSTICK_SENSITIVITY_YAW_DPS + 
         remote.mouse.y * MOUSE_SENSITIVITY_YAW_DPS);
 }
 
 float Remote::getPitch()
 {
-    return ((remote.rightVertical / 660.0) * JOYSTICK_SENSITIVITY_PITCH_DPS + 
+    float normal_rv = remote.rightVertical / 660.0;
+    normal_rv = abs(normal_rv) > 0.05 ? normal_rv : 0;
+    return ((normal_rv) * JOYSTICK_SENSITIVITY_PITCH_DPS + 
             remote.mouse.y * MOUSE_SENSITIVITY_PITCH_DPS);
 }
 

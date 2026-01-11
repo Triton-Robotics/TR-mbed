@@ -1,4 +1,6 @@
 #include "TurretSubsystem.h"
+#include "subsystems/ChassisSubsystem.h"
+#include "util/motor/DJIMotor.h"
 
 TurretSubsystem::TurretSubsystem()
 {
@@ -9,7 +11,7 @@ TurretSubsystem::TurretSubsystem(config cfg):
 yaw({
     cfg.yaw_id,
         cfg.yawCanBus,
-        M3508,
+        cfg.yaw_type,
         "Yaw",
         cfg.yaw_vel_PID,
         cfg.yaw_pos_PID
@@ -17,7 +19,7 @@ yaw({
 pitch({
     cfg.pitch_id,
         cfg.pitchCanBus,
-        M3508,
+        cfg.pitch_type,
         "Pitch",
         cfg.pitch_vel_PID,
         cfg.pitch_pos_PID
@@ -49,23 +51,24 @@ int TurretSubsystem::getTicks()
     return yaw.getData(ANGLE);
 }
 
-double TurretSubsystem::get_pitch_angle_degs_zero_offsetted()
+float TurretSubsystem::get_pitch_angle_degs_zero_offsetted()
 {
-    return (pitch_offset_ticks - (pitch>>ANGLE)) / TICKS_REVOLUTION * 360;
+    // return (pitch_offset_ticks - (pitch>>ANGLE)) / TICKS_REVOLUTION * 360;
+    return ((float)(pitch_offset_ticks - (pitch>>ANGLE)) / TICKS_REVOLUTION) * 360;
 }
 
 // Unsure if this is the best way to expose yaw, but we could do a similar thing for pitch once pitch imu
-double TurretSubsystem::get_yaw_angle_degs()
+float TurretSubsystem::get_yaw_angle_degs()
 {
     return imuAngles.yaw;
 }
 
-double TurretSubsystem::get_pitch_vel_rads_per_sec()
+float TurretSubsystem::get_pitch_vel_rads_per_sec()
 {
     return pitch.getData(VELOCITY);
 }
 
-double TurretSubsystem::get_yaw_vel_rads_per_sec()
+float TurretSubsystem::get_yaw_vel_rads_per_sec()
 {
     return yaw.getData(VELOCITY);
 }

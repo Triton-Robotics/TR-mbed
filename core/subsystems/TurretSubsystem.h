@@ -26,7 +26,9 @@ public:
     struct config
     {
         short yaw_id;
+        motorType yaw_type = motorType::GM6020;
         short pitch_id;
+        motorType pitch_type = motorType::GM6020;
         
         int pitch_offset_ticks;
 
@@ -84,11 +86,11 @@ private:
     float des_yaw, des_pitch, chassis_rpm;
 
     // get angle zero offsetted
-    double get_pitch_angle_degs_zero_offsetted();
+    float get_pitch_angle_degs_zero_offsetted();
 
-    double get_yaw_angle_degs();
+    float get_yaw_angle_degs();
 
-    double get_pitch_vel_rads_per_sec();
+    float get_pitch_vel_rads_per_sec();
 
-    double get_yaw_vel_rads_per_sec();
+    float get_yaw_vel_rads_per_sec();
 };
