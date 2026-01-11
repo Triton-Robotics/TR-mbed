@@ -114,7 +114,7 @@ typedef struct
 {
     union {
         uint8_t dataBuff[11];
-        __packed struct {
+        struct __packed {
             uint8_t game_type : 4;             //比赛类型
             uint8_t game_progress : 4;         //当前比赛阶段
             uint16_t stage_remain_time;        //当前阶段剩余时间  单位s
@@ -125,7 +125,7 @@ typedef struct
 }ext_map_command_t;
 
 /* ID: 0x0001    Byte: 11     比赛状态数据 */
-typedef __packed struct
+typedef struct __packed
 {
  uint8_t game_type : 4;
  uint8_t game_progress : 4;
@@ -135,7 +135,7 @@ typedef __packed struct
 }game_status_t;
 
 /* ID: 0x0002    Byte: 1       比赛结果数据 */
-typedef __packed struct
+typedef struct __packed
 {
  uint8_t winner;
  uint8_t InfoUpdataFlag;
@@ -147,7 +147,7 @@ typedef struct
     union
     {
         uint8_t dataBuff[32];
-        __packed struct
+        struct __packed
         {
             uint16_t red_1_robot_HP;//红 1 英雄机器人血量，未上场以及罚下血量为 0
             uint16_t red_2_robot_HP;//红 2 工程机器人血量
@@ -176,7 +176,7 @@ typedef struct
     union
     {
         uint8_t dataBuff[3];
-        __packed struct
+        struct __packed
         {
             uint8_t dart_belong;//发射飞镖的队伍：1：红方飞镖2：蓝方飞镖
             uint16_t stage_remaining_time;//发射时的剩余比赛时间，单位 s
@@ -191,7 +191,7 @@ typedef struct
     union
     {
         uint8_t dataBuff[11];
-        __packed struct
+        struct __packed
         {
             uint8_t F1_zone_status:1;
             uint8_t F1_zone_buff_debuff_status:3;
@@ -220,7 +220,7 @@ typedef struct
     union
     {
         uint8_t dataBuff[4];
-        __packed struct
+        struct __packed
         {
             uint32_t event_type;
         };
@@ -234,7 +234,7 @@ typedef struct
     union
     {
         uint8_t dataBuff[4];
-        __packed struct
+        struct __packed
         {
             uint8_t supply_projectile_id;  //补给站口 ID
             uint8_t supply_robot_id;       //补弹机器人 ID
@@ -246,7 +246,7 @@ typedef struct
 }ext_supply_projectile_action_t;
 
 /* ID: 0X0104          Byte: 2       裁判警告数据 */
-typedef __packed struct
+typedef struct __packed
 {
  uint8_t level;
  uint8_t offending_robot_id;
@@ -256,11 +256,11 @@ typedef __packed struct
 
 /* ID: 0x0105          Byte: 1       飞镖发射口倒计时  */
 typedef struct
-{
+    {
     union
     {
         uint8_t dataBuff[1];
-        __packed struct
+        struct __packed
         {
             uint8_t dart_remaining_time;//15s 倒计时
         };
@@ -274,7 +274,7 @@ typedef struct
     union
     {
         uint8_t dataBuff[27];
-        __packed struct
+        struct __packed
         {
             uint8_t robot_id;
 
@@ -291,7 +291,7 @@ typedef struct
 	uint8_t InfoUpdataFlag;
 }ext_game_robot_status_t;
 
-typedef __packed struct 
+typedef struct __packed
 {
  uint8_t robot_id;
  uint8_t robot_level;
@@ -305,7 +305,7 @@ typedef __packed struct
 }robot_status_t;
 
 /* ID: 0X0202          Byte: 16      实时功率热量数据 */
-typedef __packed struct
+typedef struct __packed
 {
  uint16_t reserved1; //REMOVED chassis_voltage
  uint16_t reserved2; //REMOVED chassis_current
@@ -318,7 +318,7 @@ typedef __packed struct
 }power_heat_data_t;
 
 /* ID: 0X0203          Byte: 16      机器人位置数据  */
-typedef __packed struct
+typedef struct __packed
 {
  float x;
  float y;
@@ -332,7 +332,7 @@ typedef struct
     union
     {
         uint8_t dataBuff[1];
-        __packed struct
+        struct __packed
         {
             uint8_t power_rune_buff;/*bit 0：机器人血量补血状态
                                 bit 1：枪口热量冷却加速
@@ -343,7 +343,7 @@ typedef struct
     uint8_t InfoUpdataFlag;
 }ext_buff_t;
 
-typedef __packed struct
+typedef struct __packed
 {
  uint8_t recovery_buff;
  uint8_t cooling_buff;
@@ -358,7 +358,7 @@ typedef struct
     union
     {
         uint8_t dataBuff[2];
-        __packed struct
+        struct __packed
         {
             uint8_t attack_time;//可攻击时间 单位 s。30s 递减至 0
         };
@@ -367,7 +367,7 @@ typedef struct
 }aerial_robot_energy_t;
 
 /* ID: 0X0206          Byte: 1       伤害状态数据 */
-typedef __packed struct
+typedef struct __packed
 {
  uint8_t armor_id : 4;
  uint8_t HP_deduction_reason : 4;
@@ -375,7 +375,7 @@ typedef __packed struct
 }hurt_data_t;
 
 /* ID: 0X0207          Byte: 7       实时射击数据 */
-typedef __packed struct
+typedef struct __packed
 {
  uint8_t bullet_type;
  uint8_t shooter_number;
@@ -385,7 +385,7 @@ typedef __packed struct
 }shoot_data_t;
 
 /* ID: 0X0208          Byte: 6       子弹剩余发送数 */
-typedef __packed struct
+typedef struct __packed
 {
  uint16_t projectile_allowance_17mm;
  uint16_t projectile_allowance_42mm;
@@ -409,7 +409,7 @@ typedef struct
     union
     {
         uint8_t dataBuff[4];
-        __packed struct
+        struct __packed
         {
             uint32_t rfid_status;
         };
@@ -423,7 +423,7 @@ typedef struct
     union
     {
         uint8_t dataBuff[12];
-        __packed struct
+        struct __packed
         {
             uint8_t dart_launch_opening_status;//当前飞镖发射口的状态
             uint8_t dart_attack_target;//飞镖的打击目标，默认为前哨站
