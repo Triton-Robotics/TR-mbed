@@ -310,7 +310,7 @@ float DJIMotor::s_calculateDeltaPhaseF(float target, float current, float max) {
 }
 
 void DJIMotor::s_updateMultiTurnPosition() {
-    int Threshold = 3000; // From 0 to 8191
+    int Threshold = 3590; // From 0 to 8191
     int curAngle, lastAngle, deltaAngle, speed;
     DJIMotor *curMotor;
 
@@ -352,17 +352,17 @@ void DJIMotor::s_updateMultiTurnPosition() {
                             curMotor->multiTurn += deltaAngle;
 
                     else
-                    if (speed < 0 && deltaAngle > 0)     {
+                    if (speed < 0 && deltaAngle > 0)     { //neg speed, pos delta - forward wrap
                         // neg skip
 //                            printf("positive overclock: %i\n", (int) speed);
                         curMotor->multiTurn += deltaAngle - 8191;
                     }
-                    else if (speed > 0 && deltaAngle < 0)     {
+                    else if (speed > 0 && deltaAngle < 0)     { //pos speed, neg delta - reverse wrap
 //                            printf("negative overclock: %i\n", (int) speed);       // pos skip
                         curMotor->multiTurn += deltaAngle + 8191;
                     }
                     else
-                        curMotor->multiTurn += deltaAngle;
+                        curMotor->multiTurn += deltaAngle;  //normal movement
 
                     curMotor->lastMotorAngle = curAngle;
                     curMotor->lastIntegrationTime = long(time);
