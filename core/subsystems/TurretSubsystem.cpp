@@ -1,36 +1,28 @@
 #include "TurretSubsystem.h"
-#include "us_ticker_defines.h"
-#include "util/motor/DJIMotor.h"
 
 TurretSubsystem::TurretSubsystem()
 {
     configured = false;
 }
 
-TurretSubsystem::TurretSubsystem(config cfg)
-{
-    DJIMotor::config yawcfg =
-    {
-        cfg.yaw_id,
+TurretSubsystem::TurretSubsystem(config cfg):
+yaw({
+    cfg.yaw_id,
         cfg.yawCanBus,
         M3508,
         "Yaw",
         cfg.yaw_vel_PID,
         cfg.yaw_pos_PID
-    };
-    yaw = DJIMotor(yawcfg);
-    
-    DJIMotor::config pitchcfg =
-    {
-        cfg.pitch_id,
+}), 
+pitch({
+    cfg.pitch_id,
         cfg.pitchCanBus,
         M3508,
         "Pitch",
         cfg.pitch_vel_PID,
         cfg.pitch_pos_PID
-    };
-    pitch = DJIMotor(pitchcfg);
-    
+})
+{
     pitch_offset_ticks = cfg.pitch_offset_ticks;
 
     imu = cfg.imu;

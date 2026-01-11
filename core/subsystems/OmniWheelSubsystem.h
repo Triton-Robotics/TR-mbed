@@ -1,7 +1,6 @@
 #pragma once
 
 #include "mbed.h"
-#include "util/peripherals/Sensor.h"
 #include <cstdint>
 #include <util/motor/DJIMotor.h>
 #include <util/communications/CANHandler.h>
@@ -70,6 +69,8 @@ public:
     OmniWheelSubsystem();
 
     OmniWheelSubsystem(config cfg);
+
+    inline void setPowerLimit(int powerLimit) {power_limit = powerLimit;};
 
     void setChassisState(ChassisState state);
 

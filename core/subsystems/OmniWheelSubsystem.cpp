@@ -1,6 +1,4 @@
 #include "OmniWheelSubsystem.h"
-#include "subsystems/TurretSubsystem.h"
-#include "util/motor/DJIMotor.h"
 
 OmniWheelSubsystem::OmniWheelSubsystem()
 {
@@ -9,53 +7,36 @@ OmniWheelSubsystem::OmniWheelSubsystem()
     };
 }
 
-OmniWheelSubsystem::OmniWheelSubsystem(config cfg)
-{
-    PID::config pos_config;
-    DJIMotor::config flcfg = 
-    {
+OmniWheelSubsystem::OmniWheelSubsystem(config cfg):
+fl({
         cfg.flid,
         cfg.canBus,
         M3508,
         "Front Left",
         cfg.fl_vel_config,
-        pos_config,
-    };
-    fl = DJIMotor(flcfg);
-    
-    DJIMotor::config frcfg = 
-    {
+}),
+fr({
         cfg.frid,
         cfg.canBus,
         M3508,
         "Front Right",
         cfg.fr_vel_config,
-        pos_config,
-    };
-    fr = DJIMotor(frcfg);
-    
-    DJIMotor::config blcfg = 
-    {
+}),
+bl({
         cfg.blid,
         cfg.canBus,
         M3508,
         "Back Left",
         cfg.bl_vel_config,
-        pos_config,
-    };
-    bl = DJIMotor(blcfg);
-    
-    DJIMotor::config brcfg = 
-    {
+}),
+br({
         cfg.brid,
         cfg.canBus,
         M3508,
         "Back Right",
         cfg.br_vel_config,
-        pos_config,
-    };
-    br = DJIMotor(brcfg);
-
+})
+{
     imu = cfg.imu;
     imuAngles = imu->getImuAngles();
     

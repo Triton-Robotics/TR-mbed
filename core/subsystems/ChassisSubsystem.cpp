@@ -35,38 +35,38 @@ ChassisSubsystem::ChassisSubsystem(config configuration)
     configured = true;
 }
 
-void ChassisSubsystem::init(config configuration)
-{
-    if (configured == false)
-    {
-        LF = DJIMotor(configuration.lfId, CAN_BUS_TYPE, MOTOR_TYPE);
-        RF = DJIMotor(configuration.rfId, CAN_BUS_TYPE, MOTOR_TYPE);
-        LB = DJIMotor(configuration.lbId, CAN_BUS_TYPE, MOTOR_TYPE);
-        RB = DJIMotor(configuration.rbId, CAN_BUS_TYPE, MOTOR_TYPE);
-        power_limit = configuration.power_limit;
-        chassis_radius = configuration.radius;
-        setOmniKinematics(configuration.radius);
-        m_OmniKinematicsLimits.max_Vel = MAX_VEL; // m/s
-        m_OmniKinematicsLimits.max_vOmega = 8;    // rad/s
+// void ChassisSubsystem::init(config configuration):
+// {
+//     if (configured == false)
+//     {
+//         LF = DJIMotor(configuration.lfId, CAN_BUS_TYPE, MOTOR_TYPE);
+//         RF = DJIMotor(configuration.rfId, CAN_BUS_TYPE, MOTOR_TYPE);
+//         LB = DJIMotor(configuration.lbId, CAN_BUS_TYPE, MOTOR_TYPE);
+//         RB = DJIMotor(configuration.rbId, CAN_BUS_TYPE, MOTOR_TYPE);
+//         power_limit = configuration.power_limit;
+//         chassis_radius = configuration.radius;
+//         setOmniKinematics(configuration.radius);
+//         m_OmniKinematicsLimits.max_Vel = MAX_VEL; // m/s
+//         m_OmniKinematicsLimits.max_vOmega = 8;    // rad/s
         
-        PEAK_POWER_ALL = 10000;
-        PEAK_POWER_SINGLE = 8000;
+//         PEAK_POWER_ALL = 10000;
+//         PEAK_POWER_SINGLE = 8000;
         
-        FF_Ks = 0;
+//         FF_Ks = 0;
         
-        LF.outputCap = 16000; // DJIMotor class has a max outputCap: 16384
-        RF.outputCap = 16000;
-        LB.outputCap = 16000;
-        RB.outputCap = 16000;
-        pid_LF.setPID(configuration.lf_PID.kp, configuration.lf_PID.ki, configuration.lf_PID.kd);
-        pid_RF.setPID(configuration.rf_PID.kp, configuration.rf_PID.ki, configuration.rf_PID.kd);
-        pid_LB.setPID(configuration.lb_PID.kp, configuration.lb_PID.ki, configuration.lb_PID.kd);
-        pid_RB.setPID(configuration.rb_PID.kp, configuration.rb_PID.ki, configuration.rb_PID.kd);
+//         LF.outputCap = 16000; // DJIMotor class has a max outputCap: 16384
+//         RF.outputCap = 16000;
+//         LB.outputCap = 16000;
+//         RB.outputCap = 16000;
+//         pid_LF.setPID(configuration.lf_PID.kp, configuration.lf_PID.ki, configuration.lf_PID.kd);
+//         pid_RF.setPID(configuration.rf_PID.kp, configuration.rf_PID.ki, configuration.rf_PID.kd);
+//         pid_LB.setPID(configuration.lb_PID.kp, configuration.lb_PID.ki, configuration.lb_PID.kd);
+//         pid_RB.setPID(configuration.rb_PID.kp, configuration.rb_PID.ki, configuration.rb_PID.kd);
 
-        brakeMode = COAST;
-        configured = true;
-    }
-}
+//         brakeMode = COAST;
+//         configured = true;
+//     }
+// }
 
 // TODO fix me temp default constructor for testing
 #include "PinNames.h"
