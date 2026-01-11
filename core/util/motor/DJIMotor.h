@@ -89,6 +89,7 @@ public:
     static int calculateDeltaPhase(int target, int current, int max = TICKS_REVOLUTION);
     static float calculateDeltaPhase(float target, float current, float max);
 
+    static void setCanHandlers(CANHandler * can_1, CANHandler * can_2);
     static void getCan1Feedback(const CANMsg * msg);
     static void getCan2Feedback(const CANMsg * msg);
     static void sendValues(bool debug = false);
@@ -127,6 +128,9 @@ public:
     }
 
     inline int operator>>(motorDataType data)                                                       { return getData(data); }
+    DJIMotor(const DJIMotor&) = delete;
+    DJIMotor& operator=(const DJIMotor&) = delete;
+
 
     inline void setPositionPID(float kP, float kI, float kD)                                        { pidPosition.setPID(kP, kI, kD); }
     inline void setPositionIntegralCap(double cap)                                                  { pidPosition.setIntegralCap((float)cap); }

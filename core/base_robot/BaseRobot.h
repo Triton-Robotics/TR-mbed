@@ -6,6 +6,7 @@
 #include "util/communications/DJIRemote.h"
 #include "util/communications/jetson/Jetson.h"
 #include "util/communications/referee/ref_serial.h"
+#include "util/motor/DJIMotor.h"
 
 class BaseRobot {
   public:
@@ -70,6 +71,11 @@ class BaseRobot {
         unsigned long main_loop_dt_ms = this->main_loop_dt_ms();
 
         // Init all constants, subsystems, sensors, IO, etc.
+        // Each can message has an id and data, and djimotor ids start from 0x201(m3508 id 1) and end at 0x20D (gm6020 id 8), there is an overlap of 4 motors (M3508 id 5-8 and gm6020 id 1-4), so that is why we have 12 values only
+        canHandler1_.registerCallback(0x201, 0x20D, DJIMotor::getCan1Feedback);
+        canHandler2_.registerCallback(0x201, 0x20D, DJIMotor::getCan2Feedback);
+        DJIMotor::setCanHandlers(&canHandler1_, &canHandler2_);
+        
         init();
         
         while (true) {
@@ -83,7 +89,6 @@ class BaseRobot {
             loop_clock_us = us_ticker_read();
             if ((loop_clock_us - prev_loop_time_us) / 1000 >= main_loop_dt_ms) {
                 // Add subsystems in periodic
-                printf("init\n");
                 led0_ = !led0_;
 
                 periodic(loop_clock_us - prev_loop_time_us);

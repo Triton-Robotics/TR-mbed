@@ -134,16 +134,16 @@ void BNO055::get_angular_position_quat(IMU::EulerAngles *result){
     // imuAngles.pitch = result->pitch;
     float yaw   = atan2(2 * (q.w * q.z + q.x * q.y), 1 - 2 * (q.y * q.y + q.z * q.z)) * 180 / PI;
     // imuAngles.yaw   = result->yaw;
+    mutex_.lock();
     memcpy(&result->roll, &roll, sizeof(float));
     memcpy(&result->pitch, &pitch, sizeof(float));
     memcpy(&result->yaw, &yaw, sizeof(float));
+    mutex_.unlock();
 }
 
 IMU::EulerAngles BNO055::read()
 {
-    mutex_.lock();
     get_angular_position_quat(&imuAngles);
-    mutex_.unlock();
     return imuAngles;
 }
 

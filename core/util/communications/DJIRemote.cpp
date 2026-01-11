@@ -105,21 +105,6 @@ float Remote::getChassisY()
             ));
 }
 
-ChassisSpeeds Remote::getChassisSpeed()
-{
-    float jx = getChassisX();
-    float jy = getChassisY();
-    float j_hypo = sqrt(jx * jx + jy * jy);
-    if(j_hypo > 1.0){
-        jx = jx / j_hypo;
-        jy = jy / j_hypo;
-    }
-    //Bounding the four j variables
-    jx = max(-1.0F, min(1.0F, jx));
-    jy = max(-1.0F, min(1.0F, jy));
-
-    return {jx, jy, 0.0};
-}
 
 float Remote::getYaw()
 {

@@ -1,5 +1,4 @@
 #include "mbed.h"
-#include "subsystems/ChassisSubsystem.h"
 
 #ifndef DJI_REMOTE
 #define DJI_REMOTE
@@ -127,10 +126,6 @@ public:
      */
     float getPitch();
 
-    /**
-     * @return get ChassisSpeeds
-     */
-    ChassisSpeeds getChassisSpeed();
 
     /**
      * @return The state of the given switch.

@@ -7,38 +7,31 @@ ShooterSubsystem::ShooterSubsystem()
     configured = false;
 }
 
-ShooterSubsystem::ShooterSubsystem(config cfg)
-{
-    DJIMotor::config flyLcfg =
-    {
+// TODO: add a way to invert which flywheel is -ve
+ShooterSubsystem::ShooterSubsystem(config cfg):
+    flywheelL({
         cfg.flywheelL_id,
         cfg.canBus,
-        M3508_FLYWHEEL,
+        M3508,
         "Left Flywheel",
         cfg.flywheelL_PID
-    };
-    DJIMotor::config flyRcfg =
-    {
+    }),
+    flywheelR({
         cfg.flywheelR_id,
         cfg.canBus,
-        M3508_FLYWHEEL,
+        M3508,
         "Right Flywheel",
         cfg.flywheelR_PID
-    };
-    DJIMotor::config indexcfg =
-    {
+    }),
+    indexer({
         cfg.indexer_id,
         cfg.canBus,
         M3508,
         "Indexer",
         cfg.indexer_PID_vel,
         cfg.indexer_PID_pos
-    };
-
-    flywheelL = DJIMotor(flyLcfg);
-    flywheelR = DJIMotor(flyRcfg);
-    indexer = DJIMotor(indexcfg);
-
+    })
+{
     // initialize all other vars
     configured = true;
     shoot = OFF;
@@ -48,6 +41,7 @@ ShooterSubsystem::ShooterSubsystem(config cfg)
 
     shooter_type = cfg.type;
     shooter_time = us_ticker_read();
+    // printf("shooterinit\n");
 }
 
 
@@ -84,6 +78,7 @@ void ShooterSubsystem::execute_shooter()
     }
     else if (shoot == SHOOT)
     {
+        // TODO: make state shoot unnested (shoot_burst, shoot_hero, shoot_auto)
         if (shooter_type == BURST)
         {
             flywheelL.setSpeed(-FLYWHEEL_VELO);
@@ -102,7 +97,7 @@ void ShooterSubsystem::execute_shooter()
                 indexer.setPosition(shootTargetPosition);
             }
         }
-        else if (shooter_type = AUTO) 
+        else if (shooter_type == AUTO) 
         {
             // TODO
         }
@@ -122,8 +117,7 @@ void ShooterSubsystem::setTargetPos()
             shootReady = false; // Cant shoot twice immediately
 
             shootTargetPosition = (8192 * M2006_GEAR_RATIO / 9 * NUM_BALLS_SHOT) + (indexer>>MULTITURNANGLE);
-        }    
-        
+        }
     }
 }
 

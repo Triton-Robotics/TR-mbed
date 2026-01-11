@@ -48,6 +48,9 @@ public:
     void init(config configuration);
 
     ShootState getState();
+
+    // TODO: make this nicer
+    inline void setHeatLimit(int heat_limit) {barrel_heat_limit = heat_limit;};
     
     void setState(ShootState shoot_state, int curr_heat);
 
