@@ -192,19 +192,22 @@ float ChassisSubsystem::Bisection(int LeftFrontPower, int RightFrontPower, int L
     float powerInit = p_theory(LeftFrontPower, RightFrontPower, LeftBackPower, RightBackPower, LeftFrontRpm, RightFrontRpm, LeftBackRpm, RightBackRpm);
 
 
-    if (powerInit > chassisPowerLimit) {
+    if(powerInit > chassisPowerLimit) {
 
         float powerScaled = p_theory(LeftFrontPower*scale, RightFrontPower*scale, LeftBackPower*scale, RightBackPower*scale, LeftFrontRpm, RightFrontRpm, LeftBackRpm, RightBackRpm);
         
-        for (int i = 0; i < 6; i++) {
+        for(int i = 0; i < 10; i++) { // I changed this from 6 to 10 so that the outcome (should) be smoother, also 10 is nicer number than 6 why did we choose 6 anyways?
             
             // if (abs(powerScaled - chassisPowerLimit) < 0.1) {
             //     printf("ppppp \n");
             //     break;
             // }
+
+            /*
             if (powerScaled > chassisPowerLimit) {
                 scale = scale - precision;
                 precision = precision / 2;
+                
                 powerScaled = p_theory(LeftFrontPower*scale, RightFrontPower*scale, LeftBackPower*scale, RightBackPower*scale, LeftFrontRpm, RightFrontRpm, LeftBackRpm, RightBackRpm);
                 // printf("powerScaled Down: %f\n", powerScaled);
             }
@@ -212,9 +215,27 @@ float ChassisSubsystem::Bisection(int LeftFrontPower, int RightFrontPower, int L
             else { // power is low enough
                 scale = scale + precision;
                 precision = precision / 2;
+                
                 powerScaled = p_theory(LeftFrontPower*scale, RightFrontPower*scale, LeftBackPower*scale, RightBackPower*scale, LeftFrontRpm, RightFrontRpm, LeftBackRpm, RightBackRpm);
                 // printf("powerScaled Up: %f\n", powerScaled);
+            */
+
+            if (powerScaled > chassisPowerLimit) {
+                scale = scale - precision;
             }
+            else {
+                scale = scale + precision;
+            }
+
+            // changed the code a bit so that it is cleaner (you are welcome)
+            precision = (precision) / 2;
+            // When a lot of noise is present (which seems to be a really common problem from what I am seeing in the data sheet) the motor will be confused with accelerating forwards and slowing down.
+            // meaning while the motor is moving forward it might suddenly jerk backward
+            if (scale < 0.0f) scale = 0.0f;
+            if (scale > 1.0f) scale = 1.0f;
+
+            powerScaled = p_theory(LeftFrontPower*scale, RightFrontPower*scale, LeftBackPower*scale, RightBackPower*scale, LeftFrontRpm, RightFrontRpm, LeftBackRpm, RightBackRpm);
+
         }
         return scale;
     }
@@ -278,6 +299,7 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     //     powers[3] = (powers[3] * PEAK_POWER_ALL)/sum;
     // }
 
+    /*
     int p1 = abs(powers[0]);
     int p2 = abs(powers[1]);
     int p3 = abs(powers[2]);
@@ -288,15 +310,30 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     int r2 = abs(RF.getData(VELOCITY));
     int r3 = abs(LB.getData(VELOCITY));
     int r4 = abs(RB.getData(VELOCITY));
+    
+    float scale = Bisection(p1, p2, p3, p4, r1, r2, r3, r4, power_limit);
+
+    */
+    int p1 = powers[0];
+    int p2 = powers[1];
+    int p3 = powers[2];
+    int p4 = powers[3];
+
+    int r1 = LF.getData(VELOCITY);
+    int r2 = RF.getData(VELOCITY);
+    int r3 = LB.getData(VELOCITY);
+    int r4 = RB.getData(VELOCITY);
 
     float scale = Bisection(p1, p2, p3, p4, r1, r2, r3, r4, power_limit);
 
-
-
+    // abs() implies that the sign of the power does not matter at all. Powers and RPM can both in the negative direction 
+    // However, if we are ignoring the signs of the powers, the code (for example in Line 193) will not change based on direction. 
+    // Specifically, P-Theory uses the vector product of power and RPM, meaning the direction should never be ignored.
     
 
     // printf("Before Set:%.3f\n", p_theory(p1*scale, p2*scale, p3*scale, p4*scale, r1, r2, r3, r4));
 
+    // I am assuming this part is only for debugging ????
     LF.setPower(powers[0]*scale);
     RF.setPower(powers[1]*scale);
     LB.setPower(powers[2]*scale);
@@ -613,10 +650,29 @@ int ChassisSubsystem::motorPIDtoPower(MotorLocation location, double speed, uint
     }
     
     int power = 0;
-    PID pids[4] = {pid_LF,pid_RF,pid_LB,pid_RB};
+    //PID pids[4] = {pid_LF,pid_RF,pid_LB,pid_RB};
     
-    power = pids[location].calculate(speed, getMotor(location).getData(VELOCITY), dt);
+    //power = pids[location].calculate(speed, getMotor(location).getData(VELOCITY), dt);
     // printf("[%d]",power);
+
+    // copying the PID will wipe the history so modify it instead, advisor notes that it might not be important to the code though...
+    PID* pid = nullptr;
+    switch(location){
+        case LEFT_FRONT:  
+            pid = &pid_LF; 
+            break;
+        case RIGHT_FRONT: 
+            pid = &pid_RF; 
+            break;
+        case LEFT_BACK:   
+            pid = &pid_LB; 
+            break;
+        case RIGHT_BACK:  
+            pid = &pid_RB; 
+            break;
+    }
+    power = pid->calculate(speed, getMotor(location).getData(VELOCITY), dt);
+
 
     if(speed == 0) {
         setSpeedFeedforward(location, 0);
