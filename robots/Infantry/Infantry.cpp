@@ -1,3 +1,4 @@
+#include "I2C.h"
 #include "ThisThread.h"
 #include "base_robot/BaseRobot.h"
 // #include "subsystems/ChassisSubsystem.h"
@@ -7,6 +8,7 @@
 #include "util/communications/CANHandler.h"
 #include "util/motor/DJIMotor.h"
 #include "util/peripherals/imu/BNO055.h"
+#include <memory>
 
 constexpr auto IMU_I2C_SDA = PB_7;
 constexpr auto IMU_I2C_SCL = PB_8;
@@ -14,54 +16,56 @@ constexpr auto IMU_RESET = PA_8;
 
 constexpr int pitch_zero_offset_ticks = 1500;
 
-I2C i2c(I2C_SDA, I2C_SCL);
-BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 
 // TODO: put acc values
 PID::config yaw_vel_PID = {708.1461, 4.721, 2.6555, 32000, 8000};
 PID::config yaw_pos_PID = {1.18, 0, 0, 90, 2};
 PID::config pitch_vel_PID = {500,0.8,0, 32000, 2000};
 PID::config pitch_pos_PID = {1.5,0.0005,0.05, 30, 2};
-TurretSubsystem turret({
-    4,
-    GM6020,
-    7,
-    GM6020,
-    pitch_zero_offset_ticks,
-    yaw_vel_PID,
-    yaw_pos_PID,
-    pitch_vel_PID,
-    pitch_pos_PID,
-    CANHandler::CANBUS_1,
-    CANHandler::CANBUS_2,
-    &imu
-});
+
+// TurretSubsystem::config turret_config {
+//     4,
+//     GM6020,
+//     7,
+//     GM6020,
+//     pitch_zero_offset_ticks,
+//     yaw_vel_PID,
+//     yaw_pos_PID,
+//     pitch_vel_PID,
+//     pitch_pos_PID,
+//     CANHandler::CANBUS_1,
+//     CANHandler::CANBUS_2,
+//     imu_ptr.get()
+// };
+
+
+// TurretSubsystem turret(turret_config);
 
 PID::config fl_vel_config = {3, 0, 0};
 PID::config fr_vel_config = {3, 0, 0};
 PID::config bl_vel_config = {3, 0, 0};
 PID::config br_vel_config = {3, 0, 0};
-OmniWheelSubsystem chassis({
-    1,
-    2,
-    3,
-    4,
-    0.22617,
-    60,
-    2.92,
-    100,
-    0.065 * INT16_MAX,
-    4.8,
-    fl_vel_config,
-    fr_vel_config,
-    bl_vel_config,
-    br_vel_config,
-    CANHandler::CANBUS_1,
-    &imu,
-    &turret,
-    6500,
-    0 // TODO add correct yaw_align
-});
+// OmniWheelSubsystem chassis({
+//     1,
+//     2,
+//     3,
+//     4,
+//     0.22617,
+//     60,
+//     2.92,
+//     100,
+//     0.065 * INT16_MAX,
+//     4.8,
+//     fl_vel_config,
+//     fr_vel_config,
+//     bl_vel_config,
+//     br_vel_config,
+//     CANHandler::CANBUS_1,
+//     imu_ptr.get(),
+//     &turret,
+//     6500,
+//     0 // TODO add correct yaw_align
+// });
 
 // // TODO: put acc values
 PID::config flywheelL_PID = {7.1849, 0.000042634, 0};
@@ -101,7 +105,15 @@ int remoteTimer = 0;
 
 class Infantry : public BaseRobot {
 public:
-    Infantry(Config &config) : BaseRobot(config) {}
+
+    I2C i2c_;
+    BNO055 imu_;
+
+    Infantry(Config &config) : 
+        BaseRobot(config),     
+    i2c_(IMU_I2C_SDA, IMU_I2C_SCL),
+    imu_(i2c_, IMU_RESET, MODE_IMU)
+    {}
 
     // default config
     // inline static Config config_ = Config();
@@ -111,7 +123,7 @@ public:
     void init() override 
     {
         // TODO: better way to do this
-        chassis.setPowerLimit(referee.robot_status.chassis_power_limit);
+        // chassis.setPowerLimit(referee.robot_status.chassis_power_limit);
         shooter.setHeatLimit(referee.robot_status.shooter_barrel_heat_limit);
         // printf("init\n");
     }
@@ -124,8 +136,9 @@ public:
         }
         remoteTimer += 1;
 
-        imu.read();
-
+        // TODO this should be threaded inside imu instead
+        IMU::EulerAngles imuAngles = imu_.read();
+        printf("%.2f", imuAngles.yaw);
         
         // Chassis + Turret Logic
         des_chassis_state.vel.vX = remote_.getChassisX();
@@ -150,8 +163,8 @@ public:
         // chassis.setChassisState(des_chassis_state);
         
         // Set turret state
-        turret.setState(des_turret_state);
-        turret.set_desired_turret(turret.getState().yaw_angle + remote_.getYaw(), remote_.getPitch(), chassis.getChassisState().vel.vOmega);
+        // turret.setState(des_turret_state);
+        // turret.set_desired_turret(turret.getState().yaw_angle + remote_.getYaw(), remote_.getPitch(), chassis.getChassisState().vel.vOmega);
         
         // Shooter Logic
         if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP)
@@ -170,13 +183,13 @@ public:
         }
         // shooter.setState(des_shoot_state, referee.power_heat_data.shooter_17mm_1_barrel_heat);
         
-        turret.periodic();
+        // turret.periodic();
         // chassis.periodic();
         // shooter.periodic();
 
 
         // Debug print statements
-        printf("y: %.2f\n", turret.getState().yaw_angle);
+        // printf("y: %.2f\n", turret.getState().yaw_angle);
         // printf("p: %.2f\n", turret.getState().pitch_angle + remote_.getPitch());
         // printf("p: %.2f\n", turret.getState().pitch_angle);
         // printf("%d\n", shooter.getState());

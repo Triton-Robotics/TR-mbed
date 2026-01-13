@@ -2,10 +2,10 @@
 #include "subsystems/ChassisSubsystem.h"
 #include "util/motor/DJIMotor.h"
 
-TurretSubsystem::TurretSubsystem()
-{
-    configured = false;
-}
+// TurretSubsystem::TurretSubsystem()
+// {
+//     configured = false;
+// }
 
 TurretSubsystem::TurretSubsystem(config cfg):
 yaw({

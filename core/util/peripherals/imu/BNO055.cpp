@@ -21,11 +21,6 @@
 #pragma ide diagnostic ignored "UnusedParameter"
 #pragma ide diagnostic ignored "UnusedLocalVariable"
 
-BNO055::BNO055():
-    _i2c_p(new I2C(PB_9, PB_8)), _i2c(*_i2c_p), _res(PA_8)
-{
-}
-
 BNO055::BNO055 (PinName p_sda, PinName p_scl, PinName p_reset, uint8_t addr, uint8_t mode):
     _i2c_p(new I2C(p_sda, p_scl)), _i2c(*_i2c_p), _res(p_reset)
 {
@@ -120,6 +115,7 @@ void BNO055::get_quaternion(BNO055_QUATERNION_TypeDef *result)
     }
 }
 
+// TODO make this threaded like actually and not fake 
 void BNO055::get_angular_position_quat(IMU::EulerAngles *result){
 
     BNO055_QUATERNION_TypeDef q;
@@ -134,11 +130,11 @@ void BNO055::get_angular_position_quat(IMU::EulerAngles *result){
     // imuAngles.pitch = result->pitch;
     float yaw   = atan2(2 * (q.w * q.z + q.x * q.y), 1 - 2 * (q.y * q.y + q.z * q.z)) * 180 / PI;
     // imuAngles.yaw   = result->yaw;
-    mutex_.lock();
+    // mutex_.lock();
     memcpy(&result->roll, &roll, sizeof(float));
     memcpy(&result->pitch, &pitch, sizeof(float));
     memcpy(&result->yaw, &yaw, sizeof(float));
-    mutex_.unlock();
+    // mutex_.unlock();
 }
 
 IMU::EulerAngles BNO055::read()
