@@ -102,6 +102,7 @@ void TurretSubsystem::execute_turret()
         }
         yaw.pidSpeed.feedForward = 1221 * dir + 97.4 * turret_state.yaw_velo;
         int des_yaw_power = yaw.calculatePositionPID(des_yaw, turret_state.yaw_angle, turret_time, chassis_rpm);
+        // printf("%.2f | %.2f | %.2f \n", des_yaw, turret_state.yaw_angle, imu.getImuAngles().yaw);
         yaw.setPower(des_yaw_power);
 
 

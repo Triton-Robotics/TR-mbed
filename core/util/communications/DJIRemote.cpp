@@ -53,20 +53,26 @@ void Remote::read(){
 
 __attribute__((unused)) bool Remote::isConnected() const { return connected; }
 
+float apply_deadzone(float num){
+    const float deadzone = 0.05;
+    return fabs(num) < deadzone ? 0.0 : num; 
+}
+
 float Remote::getChannel(Channel ch) const{
     switch (ch)
     {
         case Channel::RIGHT_HORIZONTAL:
-            return float(remote.rightHorizontal) / STICK_MAX_VALUE;
+            return  apply_deadzone(float(remote.rightHorizontal) / STICK_MAX_VALUE);
         case Channel::RIGHT_VERTICAL:
-            return float(remote.rightVertical) / STICK_MAX_VALUE;
+            return apply_deadzone(float(remote.rightVertical) / STICK_MAX_VALUE);
         case Channel::LEFT_HORIZONTAL:
-            return float(remote.leftHorizontal) / STICK_MAX_VALUE;
+            return apply_deadzone(float(remote.leftHorizontal) / STICK_MAX_VALUE);
         case Channel::LEFT_VERTICAL:
-            return float(remote.leftVertical) / STICK_MAX_VALUE;
+            return apply_deadzone(float(remote.leftVertical) / STICK_MAX_VALUE);
     }
     return 0;
 }
+
 
 int16_t Remote::getChannelInt(Channel ch) const{
     switch (ch){

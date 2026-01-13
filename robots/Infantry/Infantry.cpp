@@ -8,6 +8,7 @@
 #include "util/communications/CANHandler.h"
 #include "util/motor/DJIMotor.h"
 #include "util/peripherals/imu/BNO055.h"
+#include <cmath>
 #include <memory>
 
 constexpr auto IMU_I2C_SDA = PB_7;
@@ -15,6 +16,9 @@ constexpr auto IMU_I2C_SCL = PB_8;
 constexpr auto IMU_RESET = PA_8;
 
 constexpr int pitch_zero_offset_ticks = 1500;
+
+constexpr float JOYSTICK_YAW_SENSITIVITY_DPS = 300;
+constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 100;
 
 
 // TODO: put acc values
@@ -103,6 +107,9 @@ ShootState des_shoot_state;
 
 int remoteTimer = 0;
 
+float pitch_desired_angle = 0.0;
+float yaw_desired_angle = 0.0;
+
 class Infantry : public BaseRobot {
 public:
 
@@ -168,6 +175,10 @@ public:
         // chassis.setPowerLimit(referee.robot_status.chassis_power_limit);
         shooter.setHeatLimit(referee.robot_status.shooter_barrel_heat_limit);
         printf("init\n");
+
+        turret.periodic();
+        pitch_desired_angle = 0.0;
+        yaw_desired_angle = imu_.read().yaw;
     }
     
     void periodic(unsigned long dt_us) override {
@@ -208,7 +219,22 @@ public:
         
         // Set turret state
         turret.setState(des_turret_state);
-        turret.set_desired_turret(turret.getState().yaw_angle + remote_.getYaw(), remote_.getPitch(), chassis.getChassisState().vel.vOmega);
+
+        float joystick_yaw = remote_.getChannel(Remote::Channel::RIGHT_HORIZONTAL);
+
+        yaw_desired_angle += joystick_yaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
+        // normalize between [-180, 180)
+        // TODO yaw pid does not properly respect the discontinuity at 180, -180 it goes the long way around instead
+        yaw_desired_angle = remainder(yaw_desired_angle, 360.0);
+
+
+        float joystick_pitch = remote_.getChannel(Remote::Channel::RIGHT_VERTICAL);
+
+        // TODO need to limit this to between lower and upper bound of pitch
+        pitch_desired_angle += joystick_pitch * JOYSTICK_PITCH_SENSITIVITY_DPS * dt_us / 1000000;
+        // printf("%.2f | %.2f || %.2f\n", yaw_desired_angle, pitch_desired_angle, joystick_yaw);
+        // printf("%.2f\n", imu_.read().yaw);
+        turret.set_desired_turret(yaw_desired_angle, 0.0, chassis.getChassisState().vel.vOmega);
         // printf("curr: %.2f, des: %.2f\n", turret.getState().pitch_angle, 0.0);
 
         // Shooter Logic
