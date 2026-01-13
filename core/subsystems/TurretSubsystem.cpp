@@ -102,7 +102,7 @@ void TurretSubsystem::execute_turret()
         }
         yaw.pidSpeed.feedForward = 1221 * dir + 97.4 * turret_state.yaw_velo;
         int des_yaw_power = yaw.calculatePositionPID(des_yaw, turret_state.yaw_angle, turret_time, chassis_rpm);
-        // yaw.setPower(des_yaw_power);
+        yaw.setPower(des_yaw_power);
 
 
         // Pitch calc

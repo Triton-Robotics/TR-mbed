@@ -18,8 +18,8 @@ constexpr int pitch_zero_offset_ticks = 1500;
 
 
 // TODO: put acc values
-PID::config yaw_vel_PID = {708.1461, 4.721, 2.6555, 32000, 8000};
-PID::config yaw_pos_PID = {1.18, 0, 0, 90, 2};
+PID::config yaw_vel_PID = {350, 0.5, 2.5, 32000, 2000};
+PID::config yaw_pos_PID = {0.5, 0, 0, 90, 2};
 PID::config pitch_vel_PID = {500,0.8,0, 32000, 2000};
 PID::config pitch_pos_PID = {1.5,0.0005,0.05, 30, 2};
 
@@ -208,8 +208,7 @@ public:
         
         // Set turret state
         turret.setState(des_turret_state);
-        // turret.set_desired_turret(turret.getState().yaw_angle + remote_.getYaw(), remote_.getPitch(), chassis.getChassisState().vel.vOmega);
-        turret.set_desired_turret(turret.getState().yaw_angle, remote_.getPitch(), 0);
+        turret.set_desired_turret(turret.getState().yaw_angle + remote_.getYaw(), remote_.getPitch(), chassis.getChassisState().vel.vOmega);
         // printf("curr: %.2f, des: %.2f\n", turret.getState().pitch_angle, 0.0);
 
         // Shooter Logic
