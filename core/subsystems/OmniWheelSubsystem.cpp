@@ -1,11 +1,5 @@
 #include "OmniWheelSubsystem.h"
 
-OmniWheelSubsystem::OmniWheelSubsystem()
-{
-    curr_state = {
-        OFF
-    };
-}
 
 OmniWheelSubsystem::OmniWheelSubsystem(config cfg):
 fl({
@@ -35,10 +29,12 @@ br({
         M3508,
         "Back Right",
         cfg.br_vel_config,
-})
+}),
+
+imu(cfg.imu),
+yaw(cfg.yaw)
 {
-    imu = cfg.imu;
-    imuAngles = imu->getImuAngles();
+    imuAngles = imu.getImuAngles();
     
     radius = cfg.radius;
     power_limit = cfg.power_limit;
@@ -74,16 +70,16 @@ OmniWheelSubsystem::ChassisState OmniWheelSubsystem::getChassisState()
     return curr_state;
 }
 
-void OmniWheelSubsystem::setYawReference(TurretSubsystem *_yaw, float initial_angle, float _yawAlign)
+void OmniWheelSubsystem::setYawReference(TurretSubsystem &_yaw, float initial_angle, float _yawAlign)
 {
-    yaw = _yaw;
+    // yaw = _yaw;
     yawAlign = _yawAlign;
     yawPhase = initial_angle;
 }
 
 bool OmniWheelSubsystem::setOdomReference()
 {
-    yawOdom = yaw->getTicks();
+    yawOdom = yaw.getTicks();
     imuOdom = imuAngles.yaw;
     return true;
 }
@@ -91,7 +87,7 @@ bool OmniWheelSubsystem::setOdomReference()
 void OmniWheelSubsystem::periodic()
 {
     // Update curr_state and curr_wheelspeed
-    imuAngles = imu->getImuAngles();
+    imuAngles = imu.getImuAngles();
     getOmniState();
 
     sendPower();
@@ -112,7 +108,7 @@ void OmniWheelSubsystem::getOmniState()
 
 void OmniWheelSubsystem::setDesiredWheelSpeed()
 {
-    double yawCurrent = yaw->getTicks();
+    double yawCurrent = yaw.getTicks();
     ChassisSpeed desiredChassisSpeeds;
 
     switch (curr_state.mode)
@@ -182,7 +178,7 @@ void OmniWheelSubsystem::setDesiredWheelSpeed()
         float gain_align = 2;
         float gain_yaw = 3;
         float deg2rad = PI/180; // convert to rad and just run at 2x that rad/s
-        float omegaCmd = (gain_align * yawError * deg2rad + gain_yaw * yaw->getTicks());
+        float omegaCmd = (gain_align * yawError * deg2rad + gain_yaw * yaw.getTicks());
 
         if (abs(omegaCmd) < 0.1) omegaCmd = 0;
 

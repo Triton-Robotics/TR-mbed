@@ -36,9 +36,9 @@ public:
         
         CANHandler::CANBus canBus;
 
-        IMU *imu; // We should change this to be of type IMU which will obv have all the same read function
+        IMU &imu; // We should change this to be of type IMU which will obv have all the same read function
 
-        TurretSubsystem *yaw; // Need to expose turretsubsystem yaw, or just expose the yaw>>ANGLE
+        TurretSubsystem &yaw; // Need to expose turretsubsystem yaw, or just expose the yaw>>ANGLE
         float initial_angle = 0;
         float yawAlign = 0;
     };
@@ -66,7 +66,6 @@ public:
         ChassisMode mode = OFF;
     };
 
-    OmniWheelSubsystem();
 
     OmniWheelSubsystem(config cfg);
 
@@ -84,7 +83,7 @@ public:
      * @param motor your Yaw Motor reference as in `&{motor_name}`
      * @param initial_offset_ticks initial offset of your Yaw Motor Angle in ticks (try pass it as float)
      */
-    void setYawReference(TurretSubsystem *_yaw, float initial_offset_ticks = 0, float _yawAlign = 0);
+    void setYawReference(TurretSubsystem &_yaw, float initial_offset_ticks = 0, float _yawAlign = 0);
 
     /**
      * Yaw motor is a motor that controls the Turret
@@ -115,16 +114,17 @@ private:
 
     int motor_power[4];
 
-    IMU *imu;
-    IMU::EulerAngles imuAngles;
 
     DJIMotor fl;
     DJIMotor fr;
     DJIMotor bl;
     DJIMotor br;
 
+    IMU &imu;
+    IMU::EulerAngles imuAngles;
+
     // We need to establish a yaw encoder reference here for head to body conversion
-    TurretSubsystem *yaw; // pointer to turret for head reference
+    TurretSubsystem &yaw; // pointer to turret for head reference
     int yawAlign;
     float yawPhase;
     float yawOdom;

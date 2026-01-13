@@ -40,8 +40,9 @@ public:
 
         CANHandler::CANBus yawCanBus;
         CANHandler::CANBus pitchCanBus;
+        int forward;
 
-        IMU *imu;
+        IMU &imu;
     };
 
     struct TurretInfo
@@ -51,8 +52,6 @@ public:
         float pitch_angle;
         float pitch_velo;
     };
-
-    TurretSubsystem();
 
     TurretSubsystem(config cfg);
 
@@ -69,15 +68,17 @@ public:
     int getTicks();
 
 private:
-    bool configured;
 
     DJIMotor yaw, pitch;
 
     TurretState turretState;
     TurretInfo turret_state;
 
-    IMU *imu;
+    IMU &imu;
     IMU::EulerAngles imuAngles;
+
+    bool configured;
+    const int forward_;
 
     int pitch_offset_ticks;
 
