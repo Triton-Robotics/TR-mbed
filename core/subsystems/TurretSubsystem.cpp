@@ -2,10 +2,19 @@
 #include "subsystems/ChassisSubsystem.h"
 #include "util/motor/DJIMotor.h"
 
-// TurretSubsystem::TurretSubsystem()
-// {
-//     configured = false;
-// }
+int calculateDeltaYaw(int curr_yaw, int des_yaw)
+{
+    int deltaYaw = des_yaw - curr_yaw;
+    if (abs(deltaYaw) > 180)
+    {
+        if (deltaYaw > 0)
+            deltaYaw -= 360;
+        else
+            deltaYaw += 360;
+    }
+    return deltaYaw;
+}
+
 
 TurretSubsystem::TurretSubsystem(config cfg):
 yaw({
@@ -101,7 +110,9 @@ void TurretSubsystem::execute_turret()
             dir = -1;
         }
         yaw.pidSpeed.feedForward = 1221 * dir + 97.4 * turret_state.yaw_velo;
-        int des_yaw_power = yaw.calculatePositionPID(des_yaw, turret_state.yaw_angle, turret_time, chassis_rpm);
+
+        float deltaYaw = calculateDeltaYaw(turret_state.yaw_angle, des_yaw);
+        int des_yaw_power = yaw.calculatePeriodicPosition(deltaYaw, turret_time, chassis_rpm);
         // printf("%.2f | %.2f | %.2f \n", des_yaw, turret_state.yaw_angle, imu.getImuAngles().yaw);
         yaw.setPower(des_yaw_power);
 

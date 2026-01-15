@@ -239,7 +239,7 @@ public:
 
         float joystick_yaw = remote_.getChannel(Remote::Channel::RIGHT_HORIZONTAL);
 
-        yaw_desired_angle += joystick_yaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
+        yaw_desired_angle -= joystick_yaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
         // normalize between [-180, 180)
         // TODO yaw pid does not properly respect the discontinuity at 180, -180 it goes the long way around instead
         yaw_desired_angle = remainder(yaw_desired_angle, 360.0);
@@ -249,10 +249,8 @@ public:
 
         // TODO need to limit this to between lower and upper bound of pitch
         pitch_desired_angle += joystick_pitch * JOYSTICK_PITCH_SENSITIVITY_DPS * dt_us / 1000000;
-        // printf("%.2f | %.2f || %.2f\n", yaw_desired_angle, pitch_desired_angle, joystick_yaw);
-        // printf("%.2f\n", imu_.read().yaw);
-        turret.set_desired_turret(yaw_desired_angle, 0.0, chassis.getChassisState().vel.vOmega);
-        // printf("curr: %.2f, des: %.2f\n", turret.getState().pitch_angle, 0.0);
+
+        turret.set_desired_turret(yaw_desired_angle, pitch_desired_angle, chassis.getChassisState().vel.vOmega);
 
         // Shooter Logic
         if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP)
