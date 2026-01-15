@@ -140,7 +140,7 @@ void Jetson::writeThread() {
             for (auto &packet : write_packets_) {
                 mutex_write_.lock();
                 int bytes_wrote =
-                    packet->write_data_to_buff(write_state_, buff, 256);
+                    packet->write_data_to_buff(write_state_, buff + buff_pos, 256);
                 mutex_write_.unlock();
 
                 if (bytes_wrote < 0) {

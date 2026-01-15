@@ -1,3 +1,4 @@
+#include "BufferedSerial.h"
 #include "I2C.h"
 #include "ThisThread.h"
 #include "base_robot/BaseRobot.h"
@@ -6,6 +7,7 @@
 #include "subsystems/ShooterSubsystem.h"
 #include "subsystems/TurretSubsystem.h"
 #include "util/communications/CANHandler.h"
+#include "util/communications/jetson/Jetson.h"
 #include "util/motor/DJIMotor.h"
 #include "util/peripherals/imu/BNO055.h"
 #include <cmath>
@@ -116,6 +118,13 @@ public:
     I2C i2c_;
     BNO055 imu_;
 
+    // TODO: put the BufferedSerial inside Jetson (idk if we wanna do that tho for SPI)
+    BufferedSerial jetson_;
+    Jetson jetson;
+
+    Jetson::WriteState stm_state;
+    Jetson::ReadState jetson_state;
+
     TurretSubsystem::config turret_config; 
     TurretSubsystem turret;
 
@@ -126,6 +135,8 @@ public:
         BaseRobot(config),     
     i2c_(IMU_I2C_SDA, IMU_I2C_SCL),
     imu_(i2c_, IMU_RESET, MODE_IMU),
+    jetson_(PC_12, PD_2, 115200), // TODO: check higher baud to see if still works
+    jetson(jetson_),
     turret_config{
         4,
         GM6020,
@@ -188,6 +199,12 @@ public:
             remote_.read();
         }
         remoteTimer += 1;
+
+        // TODO: fill out state update
+        // stm_state.game_state = 4;
+        // stm_state.robot_hp = 60;
+        // jetson.write(stm_state);
+
 
         // TODO this should be threaded inside imu instead
         IMU::EulerAngles imuAngles = imu_.read();
@@ -260,6 +277,7 @@ public:
 
 
         // Debug print statements
+        // printf("des: %.2f, %.2f, %.2f %d \n", jetson.read().desired_x_vel, jetson.read().desired_y_vel, jetson.read().desired_angular_vel, jetson.read().localization_calibration);
         // printf("y: %.2f\n", turret.getState().yaw_angle);
         // printf("p: %.2f\n", turret.getState().pitch_angle + remote_.getPitch());
         // printf("p: %.2f\n", turret.getState().pitch_angle);

@@ -25,17 +25,10 @@ class BaseRobot {
         PinName led0_pin = PB_0;
         PinName led1_pin = PC_1;
         PinName led2_pin = PC_0;
-
-        PinName jetson_rx_pin = PC_12;
-        PinName jetson_tx_pin = PD_2;
-        int jetson_baud = 912600;
     };
 
     Remote remote_;
     Referee referee;
-
-    Jetson::WriteState stm_state;
-    Jetson::ReadState jetson_state;
 
     CANHandler canHandler1_;
     CANHandler canHandler2_;
@@ -82,10 +75,7 @@ class BaseRobot {
             // StmIO comms (Ref and Jetson)
             // TODO Mutex referee class and make it a good class
             // TODO update stm_state with ref.read?
-            
-            stm_state.game_state = referee.get_game_progress();
-            stm_state.robot_hp = referee.get_remain_hp();
-            
+                        
             loop_clock_us = us_ticker_read();
             if ((loop_clock_us - prev_loop_time_us) / 1000 >= main_loop_dt_ms) {
                 // Add subsystems in periodic
