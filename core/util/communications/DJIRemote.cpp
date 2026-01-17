@@ -94,7 +94,7 @@ int16_t Remote::getChannelInt(Channel ch) const{
 
 float Remote::getChassisX()
 {
-    return ((remote.leftVertical / 660.0) + 
+    return ((remote.leftHorizontal / 660.0) + 
             (keyPressed(Key::SHIFT) ? 0.5 : 1 * 
                 ((keyPressed(Key::W) ? 1 : 0) + 
                  (keyPressed(Key::S) ? -1 : 0))
@@ -103,7 +103,7 @@ float Remote::getChassisX()
 
 float Remote::getChassisY()
 {
-    return ((remote.leftHorizontal / 660.0) + 
+    return ((remote.leftVertical / 660.0) + 
             ((keyPressed(Key::SHIFT) ? 0.5 : 1) * 
                 ((keyPressed(Key::A) ? 1 : 0) + 
                 (keyPressed(Key::D) ? -1 : 0)

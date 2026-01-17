@@ -2,23 +2,21 @@
 #define TR_EMBEDDED_CHASSIS_SUBSYSTEM_H
 
 #include "mbed.h"
-#include "../util/peripherals/imu/BNO055.h"
-#include "Subsystem.h"
+#include "util/peripherals/imu/BNO055.h"
 
 #include <util/motor/DJIMotor.h>
 #include <util/communications/CANHandler.h>
-#include <util/peripherals/imu/BNO055.h>
 #include <util/peripherals/oled/SSD1308.h>
-
+// #include <subsystems/ChassisKalman.h>
+// #include <algorithms/WheelKalman.h>
+#include <util/algorithms/PID.h>
+// #include <algorithms/WheelSpeeds.h>
+// #include <algorithms/ChassisSpeeds.h>
 
 #define CAN_BUS_TYPE CANHandler::CANBUS_1
 #define MOTOR_TYPE M3508
 #define M3508_POST_MAX_RPM 469
 #define INPUT_THRESHOLD 0.01
-
-#define I2C_SDA PB_7
-#define I2C_SCL PB_8
-#define IMU_RESET PA_8
 
 #define PI 3.14159265
 #define SECONDS_PER_MINUTE 60
@@ -76,29 +74,17 @@ struct OmniKinematicsLimits
  * The ChassisSubsystem class also contains methods for controlling the chassis with the IMU. The IMU is used to control the
  * chassis in a field-relative manner, and to control the chassis with an offset angle.
  */
-class ChassisSubsystem : public Subsystem
+class ChassisSubsystem
 {
 public:
-
-    struct PID_config 
-    {
-        float kp;
-        float ki;
-        float kd;
-    };
-
-    struct config {
-        short lfId;
-        short rfId;
-        short lbId; 
-        short rbId;
-        PID_config lf_PID;
-        PID_config rf_PID;
-        PID_config lb_PID;
-        PID_config rb_PID;
-        double radius;
-        double power_limit;
-    };
+    /**
+     * The Chassis constructor. This constructor takes in the CAN IDs of the four motors on the chassis.
+     * @param lfId Left front motor CAN ID
+     * @param rfId Right front motor CAN ID
+     * @param lbId Left back motor CAN ID
+     * @param rbId Right back motor CAN ID
+     */
+    ChassisSubsystem(short lfId, short rfId, short lbId, short rbId, BNO055 &imu, double radius);
 
     /**
      * The BrakeMode enum is used to set the brake mode of the chassis.
@@ -129,24 +115,10 @@ public:
         YAW_ORIENTED,
         REVERSE_YAW_ORIENTED,
         ROBOT_ORIENTED,
-        ODOM_ORIENTED,
-        YAW_ALIGNED,
-        OFF,
-        BEYBLADE
+        ODOM_ORIENTED
     };
 
     float previousRPM[4] = {0, 0, 0, 0};
-
-    // Empty Constructor
-    ChassisSubsystem();
-
-    /**
-     * @brief The Chassis constructor. This constructor takes in the CAN IDs of the four motors on the chassis.
-     * @param configuration: contains config details for the motors and PIDs
-     */
-    ChassisSubsystem(config configuration);
-
-    void init(config configuration);
 
     static float limitAcceleration(float desiredRPM, float previousRPM, int power);
 
@@ -155,13 +127,6 @@ public:
     static float Bisection(int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm, float chassisPowerLimit);
 
     float power_limit;
-
-    DRIVE_MODE setState();
-
-    /**
-     * @brief Set state for chassis operation: Can be any DRIVE_MODE
-     */
-    void setState(DRIVE_MODE state);
 
     /**
      * Gets the chassis's current WheelSpeeds
@@ -192,9 +157,6 @@ public:
      * @return The chassis's current ChassisSpeeds
      */
     ChassisSpeeds getChassisSpeeds() const;
-
-
-    float setSpeeds(ChassisSpeeds desiredSpeeds);
 
     /**
      * The setChassisSpeeds method is used to drive the chassis in a chassis relative manner.
@@ -249,9 +211,49 @@ public:
     void setSpeedFF_Ks(double Ks);
 
     /**
+     * A helper method to find the brake mode of the chassis.
+     *
+     * @return An enum representing the brake mode of the chassis
+     */
+    BrakeMode getBrakeMode();
+
+    /**
+     * A helper method to set the brake mode of the chassis.
+     *
+     * @param brakeMode An enum representing the brake mode of the chassis
+     */
+    void setBrakeMode(BrakeMode brakeMode);
+
+    /**
+     * A helper method to initialize the IMU.
+     */
+    void initializeImu();
+
+    /**
      * A method that should be run every main loop to update the Chassis's estimated position
      */
-    void periodic(BNO055_ANGULAR_POSITION_typedef *imuCurr = nullptr, ChassisSpeeds des_speeds = {0.0, 0.0, 0.0});
+    void periodic(IMU::EulerAngles *imuCurr = nullptr);
+
+    /**
+     * Helper method to convert an angle from degrees to radians
+     * @param radians An angle measurement in radians
+     * @return The angle converted to degree
+     */
+    static double radiansToDegrees(double radians);
+
+    /**
+     * Helper method to convert an angle from radians to degrees
+     * @param degrees An angle measurement in degrees
+     * @return The angle converted to radians
+     */
+    static double degreesToRadians(double degrees);
+
+    /**
+     * Gets the IMU's current angle reading in degrees
+     * @return The IMU's current angle reading in degrees
+     */
+    int getHeadingDegrees() const;
+
 
     /**
      * gets motor speed based on location and speed unit
@@ -271,10 +273,15 @@ public:
     void setOmniKinematicsLimits(double max_Vel, double max_vOmega);
 
     /**
+     * A helper method to read/update the IMU.
+     */
+    void readImu();
+
+    /**
      * Yaw motor is a motor that controls the Turret
      * yawPhase is an initial offset of your Yaw Motor Angle
      * (basically which direction you want your Heading to be w.r.t Yaw Motor)
-     *
+     * 
      * @param motor your Yaw Motor reference as in `&{motor_name}`
      * @param initial_offset_ticks initial offset of your Yaw Motor Angle in ticks (try pass it as double)
      */
@@ -296,7 +303,7 @@ public:
 
     ChassisSpeeds m_chassisSpeeds;
     WheelSpeeds m_wheelSpeeds;
-
+    
     int PEAK_POWER_ALL;
     int PEAK_POWER_SINGLE;
 
@@ -313,36 +320,52 @@ public:
 
     /**
      * yawPhase is an initial offset of your Yaw Motor Angle (basically which direction you want your Heading to be w.r.t Yaw Motor)
-     */
+    */
     double yawPhase;
     double yawOdom;
     double imuOdom;
     int testData[300][4];
     int testDataIndex = 0;
 
+    static double radiansToTicks(double radians);
+    static double ticksToRadians(double ticks);
+
 private:
-    bool configured;
     DJIMotor LF, RF, LB, RB;
     DJIMotor *yaw = 0;
-
+    // double yawPhase;
     BrakeMode brakeMode;
-    DRIVE_MODE chassis_state;
 
+    // double beybladeSpeed;
+    // bool beybladeIncreasing;
+    BNO055 &imu;
     BNO055_ANGULAR_POSITION_typedef imuAngles;
+
+    static double rpmToRadPerSecond(double RPM);
+    static double radPerSecondToRPM(double radPerSecond);
 
     OmniKinematics m_OmniKinematics;
     float chassis_radius;
     void setOmniKinematics(double radius);
+    // Eigen::MatrixXd wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds);
 
     double FF_Ks;
 
     void setMotorPower(MotorLocation location, double power);
     void setMotorSpeedRPM(MotorLocation location, double speed);
+    // void setMotorSpeedTicksPerSecond(int index, double speed);
+
     double getMotorSpeedRPM(MotorLocation location);
     int motorPIDtoPower(MotorLocation location, double speed, uint32_t dt);
 
+    // ChassisKalman chassisKalman;
     double testAngle;
     int lastTimeMs;
+
+    short lfId;
+    short rfId;
+    short lbId;
+    short rbId;
 };
 
 #endif // TR_EMBEDDED_CHASSIS_SUBSYSTEM_H

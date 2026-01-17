@@ -1,17 +1,18 @@
 #include "BufferedSerial.h"
+// #include "ChassisSubsystem.h"
 #include "I2C.h"
 #include "ThisThread.h"
 #include "base_robot/BaseRobot.h"
-// #include "subsystems/ChassisSubsystem.h"
-#include "subsystems/OmniWheelSubsystem.h"
+#include "subsystems/ChassisSubsystem.h"
+// #include "subsystems/OmniWheelSubsystem.h"
 #include "subsystems/ShooterSubsystem.h"
 #include "subsystems/TurretSubsystem.h"
+#include "us_ticker_defines.h"
 #include "util/communications/CANHandler.h"
 #include "util/communications/jetson/Jetson.h"
 #include "util/motor/DJIMotor.h"
 #include "util/peripherals/imu/BNO055.h"
 #include <cmath>
-#include <memory>
 
 constexpr auto IMU_I2C_SDA = PB_7;
 constexpr auto IMU_I2C_SCL = PB_8;
@@ -92,7 +93,7 @@ ShooterSubsystem shooter({
 });
 
 // State variables
-OmniWheelSubsystem::ChassisState des_chassis_state;
+ChassisSpeeds des_chassis_state;
 TurretState des_turret_state;
 ShootState des_shoot_state;
 
@@ -128,8 +129,7 @@ public:
     TurretSubsystem::config turret_config; 
     TurretSubsystem turret;
 
-    OmniWheelSubsystem::config chassis_config;
-    OmniWheelSubsystem chassis;
+    ChassisSubsystem chassis;
 
     Infantry(Config &config) : 
         BaseRobot(config),     
@@ -154,28 +154,7 @@ public:
     },
     turret(turret_config),
 
-    chassis_config{
-    1,
-    2,
-    3,
-    4,
-    0.22617,
-    60,
-    2.92,
-    100,
-    0.065 * INT16_MAX,
-    4.8,
-    fl_vel_config,
-    fr_vel_config,
-    bl_vel_config,
-    br_vel_config,
-    CANHandler::CANBUS_1,
-    imu_,
-    turret,
-    6500,
-    0 // TODO add correct yaw_align
-    },
-    chassis(chassis_config)
+    chassis(1,2,3,4,imu_,0.22617)
     {}
 
     ~Infantry() {}
@@ -184,7 +163,9 @@ public:
     {
         // TODO: better way to do this
         // chassis.setPowerLimit(referee.robot_status.chassis_power_limit);
-        shooter.setHeatLimit(referee.robot_status.shooter_barrel_heat_limit);
+        chassis.setSpeedFF_Ks(0.065);
+        chassis.setYawReference(&turret.yaw, 6500);
+        // shooter.setHeatLimit(referee.robot_status.shooter_barrel_heat_limit);
         printf("init\n");
 
         turret.periodic();
@@ -211,28 +192,27 @@ public:
         // printf("%.2f", imuAngles.yaw);
         
         // Chassis + Turret Logic
-        // des_chassis_state.vel.vX = remote_.getChassisX();
-        // des_chassis_state.vel.vY = remote_.getChassisY();
+        des_chassis_state.vX = remote_.getChassisX();
+        des_chassis_state.vY = remote_.getChassisY();
         // printf("remote %d\n", remote_.getSwitch(Remote::Switch::RIGHT_SWITCH));
         // printf("remotel %d\n", remote_.getSwitch(Remote::Switch::LEFT_SWITCH));
         if (remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP)
         {
-            // des_chassis_state.mode = OmniWheelSubsystem::ChassisMode::YAW_ORIENTED;
-            // des_chassis_state.vel.vOmega = 0;
-
+            des_chassis_state.vOmega = 0;
+            chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state = TurretState::AIM;
         }
         else if (remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::DOWN)
         {
-            // des_chassis_state.mode = OmniWheelSubsystem::ChassisMode::BEYBLADE;
+            des_chassis_state.vOmega = 4.8;
+            chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state = TurretState::AIM;
         }
         else
         {
-            // des_chassis_state.mode = OmniWheelSubsystem::ChassisMode::OFF;
+            chassis.setWheelPower({0, 0, 0, 0});
             des_turret_state = TurretState::SLEEP;
         }
-        // chassis.setChassisState(des_chassis_state);
         
         // Set turret state
         turret.setState(des_turret_state);
@@ -250,7 +230,7 @@ public:
         // TODO need to limit this to between lower and upper bound of pitch
         pitch_desired_angle += joystick_pitch * JOYSTICK_PITCH_SENSITIVITY_DPS * dt_us / 1000000;
 
-        turret.set_desired_turret(yaw_desired_angle, pitch_desired_angle, chassis.getChassisState().vel.vOmega);
+        turret.set_desired_turret(yaw_desired_angle, pitch_desired_angle, chassis.getChassisSpeeds().vOmega);
 
         // Shooter Logic
         if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP)
@@ -269,10 +249,13 @@ public:
         }
         // shooter.setState(des_shoot_state, referee.power_heat_data.shooter_17mm_1_barrel_heat);
         
+        printf("time %d", us_ticker_read());
+
         turret.periodic();
-        // chassis.periodic();
+        chassis.periodic(&imuAngles);
         // shooter.periodic();
 
+        printf("time %d", us_ticker_read());
 
         // Debug print statements
         // printf("des: %.2f, %.2f, %.2f %d \n", jetson.read().desired_x_vel, jetson.read().desired_y_vel, jetson.read().desired_angular_vel, jetson.read().localization_calibration);

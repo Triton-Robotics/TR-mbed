@@ -66,10 +66,11 @@ public:
     void periodic();
 
     int getTicks();
-
+    
+    DJIMotor yaw; 
 private:
 
-    DJIMotor yaw, pitch;
+    DJIMotor pitch;
 
     TurretState turretState;
     TurretInfo turret_state;
