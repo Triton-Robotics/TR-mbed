@@ -1,12 +1,17 @@
 #include "main.h"
 #include "subsystems/ChassisSubsystem.h"
 
+
 I2C i2c(I2C_SDA, I2C_SCL);
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 DigitalOut led(L27);
 DigitalOut led2(L26);
 DigitalOut led3(L25);
 DigitalOut ledbuiltin(LED1);
+
+AnalogIn   ain(PA_7);
+DigitalOut dout(LED1);
+
 // ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.22617); // radius is 9 in - DISABLED FOR RAW TESTING
 DJIMotor feeder(5, CANHandler::CANBUS_2, M2006);
 DJIMotor RFLYWHEEL(6, CANHandler::CANBUS_1, M3508,"RightFly");
@@ -211,9 +216,22 @@ int main(){
         }
         // printf("Motor Data: ");
         // feeder.printAllMotorData();
-
-
         
+
+        printff("Sensor Value: %2.2f A\n\r", dev);
+
+        // if(ain > 0.3f) {  // test the voltage on the initialized analog pin and if greater than 0.3 * VCC set the digital pin
+        //     dout = 1;    //  to a logic 1 otherwise a logic 0
+        // }  
+        // else {
+        //     dout = 0;
+        // }
+        // // print the percentage and 16 bit normalized values
+        // printff("percentage: %3.3f%%\n", ain.read()*100.0f);
+        // printff("normalized: %.2f \n", ain.read_u16());
+        
+
+
         DJIMotor::s_getFeedback();
         ThisThread::sleep_for(1ms);
                     // Check if all 4 motors are connected
