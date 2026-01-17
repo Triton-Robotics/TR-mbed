@@ -170,7 +170,7 @@ std::tuple<float, float, float> ISM330::readGyro() noexcept
     float sampleRate = 0.001; // Assuming 1khz for now 
     float ds = sampleRate *0.001; // Time step, not exactly sure why its 1/1000 sample rate but hopefully its good?
 
-void imuKalmanUpdate(float accelX, float accelY, float accelZ, float gyroX, float gyroY) {
+std::tuple<float, float> ISM330::imuKalmanUpdate(float accelX, float accelY, float accelZ, float gyroX, float gyroY) {
     // Updating inputs
     w_x = gyroX; // input
     w_y = gyroY; // input
@@ -194,4 +194,5 @@ void imuKalmanUpdate(float accelX, float accelY, float accelZ, float gyroX, floa
     phi_n = phi_p + ds*w_x;
     phi_p = phi_n + K_phi*(phi_s - phi_n);
     P_phi_p = (1-K_phi)*P_phi_n;
+    return std::make_tuple(theta_p, phi_p);
 }

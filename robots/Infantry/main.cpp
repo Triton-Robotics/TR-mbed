@@ -88,11 +88,23 @@ int main(){
 
     imu.begin();
     
-    while (true) {
-    auto [ax, ay, az] = imu.readAccel();
-    auto [gx, gy, gz] = imu.readGyro();
+    // // Basic IMU Readings Check
+    // while (true) {
+    // auto [ax, ay, az] = imu.readAccel();
+    // auto [gx, gy, gz] = imu.readGyro();
     
-    printf("Accel %.2f, %.2f, %.2f | Gyro %.2f, %.2f, %.2f\n", ax, ay, az, gx, gy, gz);
+    // printf("Accel %.2f, %.2f, %.2f | Gyro %.2f, %.2f, %.2f\n", ax, ay, az, gx, gy, gz);
+    // }
+
+    // Kalman Filter time (Horror)
+    
+    while (true) {
+        auto [ax, ay, az] = imu.readAccel();
+        auto [gx, gy, gz] = imu.readGyro();
+        auto [kf_yaw, kf_pitch] = imu.imuKalmanUpdate(ax, ay, az, gx, gy);
+
+        printf("Accel %.2f, %.2f, %.2f | Gyro %.2f, %.2f, %.2f | KF Pitch: %.2f | KF Yaw: %.2f\n", ax, ay, az, gx, gy, gz, kf_pitch, kf_yaw);
+        ThisThread::sleep_for(10ms);
     }
 
 
