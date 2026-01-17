@@ -63,8 +63,7 @@ public:
     std::tuple<int16_t, int16_t, int16_t> readGyro() noexcept;
 
     // IMU Sensor Fusion
-    void imuKalmanUpdate(float accelX, float accelY, float accelZ, float gyroX, float gyroY)
-
+    void imuKalmanUpdate(float accelX, float accelY, float accelZ, float gyroX, float gyroY);
 
     private:
     I2C &i2c;
