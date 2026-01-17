@@ -17,21 +17,8 @@ const float ACS712_SENSITIVITY = 0.066f;    // 66 mV per Ampere for 30A model
 const float ACS712_VOLTAGE_AT_ZERO_A = 3.3f / 2.0f;  // Assuming 3.3V VCC
 const float VCC = 3.3f;                     // Your board's analog reference voltage
 
-// Current calculation function
-float readCurrentACS712() {
-    // Read raw analog value (0.0 to 1.0)
-    float analog_value = ain.read();
-    
-    // Convert to voltage (0.0 to VCC)
-    float sensor_voltage = analog_value * VCC;
-    
-    // Calculate current: (V_sensor - V_zero) / sensitivity
-    // For bidirectional sensing (positive and negative current)
-    float current = (sensor_voltage - ACS712_VOLTAGE_AT_ZERO_A) / ACS712_SENSITIVITY;
-    
-    return current;
-}
-
+const float Kt = 0.18f;
+const float GEAR_RATIO = 36.0f;
 
 
 // ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.22617); // radius is 9 in - DISABLED FOR RAW TESTING
@@ -51,8 +38,6 @@ DJIMotor motor4(4, CANHandler::CANBUS_1, M3508, "Motor4");
 bool send_power = false;
 
 float TorqueFromCurrent(int torque_raw) {
-const float Kt = 0.18f;
-const float GEAR_RATIO = 36.0f;
 
 float current_A = (torque_raw / 16384.0f) * 20.0f;
 float motor_torque = Kt * current_A;
@@ -60,6 +45,28 @@ float output_torque = motor_torque * GEAR_RATIO;
 
 return output_torque;
 }
+
+float readCurrentACS712() {
+    // Read raw analog value (0.0 to 1.0)
+    float analog_value = ain.read();
+    
+    // Convert to voltage (0.0 to VCC)
+    float sensor_voltage = analog_value * VCC;
+    
+    // Calculate current: (V_sensor - V_zero) / sensitivity
+    // For bidirectional sensing (positive and negative current)
+    float current = (sensor_voltage - ACS712_VOLTAGE_AT_ZERO_A) / ACS712_SENSITIVITY;
+    
+    return current;
+}
+
+float calculateTorqueFromACS712(float current_A) {
+    float motor_torque = Kt * current_A;          // Motor shaft torque
+    float output_torque = motor_torque * GEAR_RATIO; // Output torque
+    
+    return output_torque;
+}
+
 
 int main(){    
 
@@ -225,29 +232,28 @@ int main(){
         //             }
         
 
-        
-
         // Debug output - reduce frequency to save memory
         static int debugCounter = 0;
         if(debugCounter++ % 50 == 0) {  // Only print every 50 loops
+
+            float acs_current = readCurrentACS712();
+            printff("ACS712 Current: %.2f A\n", acs_current);
+            
+            float acs_torque = calculateTorqueFromACS712(acs_current);
+            printff("ACS Torque: %7.3f Nm\n", acs_torque);
+
             int torque_raw = feeder.getData(TORQUE);
-            printff("Torque-raw: %d\n", torque_raw);
-        
-            float value = TorqueFromCurrent(torque_raw);
-            printff("Value: %.3f\n",value);
+            float torque_calc = TorqueFromCurrent(torque_raw);
+            printff("Motor Torque Raw: %4d | Calc: %7.3f Nm\n", torque_raw, torque_calc);
+            
+            float difference = acs_torque - torque_calc;
+            float percent_diff = (difference / torque_calc) * 100.0f;
+            printff("Difference: %7.3f Nm (%5.1f%%)\n", difference, percent_diff);
         }
+
         // printf("Motor Data: ");
         // feeder.printAllMotorData();
-        
 
-        float current_reading = readCurrentACS712();
-        static int current_counter = 0;
-        if(current_counter++ % 100 == 0) {  // Print every 100ms
-            printff("ACS712 Current: %.2f A\n", current_reading);
-        }
-        
-
-        
         DJIMotor::s_getFeedback();
         ThisThread::sleep_for(1ms);
                     // Check if all 4 motors are connected
