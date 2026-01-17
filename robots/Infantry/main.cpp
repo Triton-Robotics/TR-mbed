@@ -59,42 +59,58 @@ BNO055_ANGULAR_POSITION_typedef imuAngles;
 
 I2C i2c(I2C_SDA, I2C_SCL);
 
-const int readAddr = 0b11010101;
-const int writeAddr = 0b11010100;
+ISM330 imu(i2c, 0x6B);
 
-const char SWRST[] = {0x12,0x01};
-const char xEnable[] = {0x10, 0x4A};
+// // const int readAddr = 0b11010101;
+// // const int writeAddr = 0b11010100;
 
-const char WhoAmIReg[] = {0x0F};
-const char gReg[] = {0x22,0x23,0x24,0x25,0x26,0x27};
-const char xReg[] = {0x28,0x29,0x30,0x31,0x32,0x33};
+// // const char SWRST[] = {0x12,0x01};
+// // const char xEnable[] = {0x10, 0x4A};
 
-uint8_t xValues[6];
+// // const char WhoAmIReg[] = {0x0F};
+// // const char gReg[] = {0x22,0x23,0x24,0x25,0x26,0x27};
+// // const char xReg[] = {0x28,0x29,0x30,0x31,0x32,0x33};
 
-uint8_t whoAmIReading;
+// // uint8_t xValues[6];
 
-std::tuple<int16_t, int16_t, int16_t> readingToRaw(const uint8_t *readings) {
-    int16_t rawX = (int16_t)((readings[1] << 8) | readings[0]);
-    int16_t rawY = (int16_t)((readings[3] << 8) | readings[2]);
-    int16_t rawZ = (int16_t)((readings[5] << 8) | readings[4]);
+// // uint8_t whoAmIReading;
 
-    return std::make_tuple(rawX, rawY, rawZ);
-}
+// std::tuple<int16_t, int16_t, int16_t> readingToRaw(const uint8_t *readings) {
+//     int16_t rawX = (int16_t)((readings[1] << 8) | readings[0]);
+//     int16_t rawY = (int16_t)((readings[3] << 8) | readings[2]);
+//     int16_t rawZ = (int16_t)((readings[5] << 8) | readings[4]);
+
+//     return std::make_tuple(rawX, rawY, rawZ);
+// }
 
 
 int main(){
-    ThisThread::sleep_for(3);
-    i2c.frequency(100000);
-    i2c.write(writeAddr, SWRST, 2, false); // Must be false on write, true on reads according to Datasheet
-    ThisThread::sleep_for(100ms);
 
-    i2c.write(writeAddr, xEnable, 2, false);
+    imu.begin();
     
-    i2c.write(writeAddr, WhoAmIReg, 1, false);
+    while (true) {
+    auto [ax, ay, az] = imu.readAccel();
+    auto [gx, gy, gz] = imu.readGyro();
     
-    i2c.read(readAddr, reinterpret_cast<char*>(&whoAmIReading), 1, true);
+    printf("Accel %.2d, %.2d, %.2d | Gyro %.2d, %.2d, %.2d\n", ax, ay, az, gx, gy, gz);
+    }
 
-    printf("WHO_AM_I: 0x%02X\r\n", whoAmIReading);
+
+}
+
+
+//     ThisThread::sleep_for(3);
+//     i2c.frequency(100000);
+//     i2c.write(writeAddr, SWRST, 2, false); // Must be false on write, true on reads according to Datasheet
+//     ThisThread::sleep_for(100ms);
+
+//     i2c.write(writeAddr, xEnable, 2, false);
+    
+//     i2c.write(writeAddr, WhoAmIReg, 1, false);
+    
+//     i2c.read(readAddr, reinterpret_cast<char*>(&whoAmIReading), 1, true);
+
+//    printf("WHO_AM_I: 0x%02X\r\n", whoAmIReading);
     
     //SPI TESTING
     //DigitalOut cs(PB_9,0);
@@ -107,19 +123,23 @@ int main(){
     // DJIMotor::s_getFeedback();
     // usbSerial.set_blocking(false);
     // bcJetson.set_blocking(false);
-    while (true){
-    i2c.write(writeAddr, xReg, 1, false);  
+    
+    
+    // while (true){
+    // i2c.write(writeAddr, xReg, 1, false);  
 
-    // Step 2: read data from that register
-    i2c.read(readAddr, reinterpret_cast<char*>(xValues), 6, true);
-    auto [x,y,z] = readingToRaw(xValues);
+    // // Step 2: read data from that register
+    // i2c.read(readAddr, reinterpret_cast<char*>(xValues), 6, true);
+    // auto [x,y,z] = readingToRaw(xValues);
 
-        // auto [x,y,z] = imu2.getAccel();
-        // auto [gx, gy, gz] = imu2.getGyro();
-        printf("%.2d, %.2d, %.2d \n", x, y, z);
-        // ThisThread::sleep_for(200ms);
-    }
-    } 
+    //     // auto [x,y,z] = imu2.getAccel();
+    //     // auto [gx, gy, gz] = imu2.getGyro();
+    //     printf("%.2d, %.2d, %.2d \n", x, y, z);
+    //     // ThisThread::sleep_for(200ms);
+    // }
+    // }
+    
+    
     /*
     * MOTORS SETUP AND PIDS
     */

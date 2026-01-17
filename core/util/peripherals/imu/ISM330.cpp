@@ -3,7 +3,15 @@
 #include <cstdint>
 
 static constexpr uint8_t ISM330_CHIP_ID = 0x6B;   // Expected WHO_AM_I
-static constexpr uint8_t ISM330_WHO_AM_I = 0x0F;
+const char WhoAmIReg[] = {0x0F};
+
+//Reading and Write Addresses
+const int readAddr = 0b11010101;
+const int writeAddr = 0b11010100;
+
+const char SWRST[] = {0x12,0x01}; // Software Reset command
+const char xEnable[] = {0x10, 0x4A}; // Enable accelerometer at 104Hz, +/-4g
+const char gEnable[] = {0x11, 0x4C}; // Enable gyroscope at 104Hz, 2000dps
 
 // Accelerometer and gyro register definitions
 static constexpr uint8_t CTRL1_XL = 0x10;
@@ -11,208 +19,176 @@ static constexpr uint8_t CTRL2_G  = 0x11;
 static constexpr uint8_t CTRL3_C  = 0x12;
 static constexpr uint8_t CTRL4_C  = 0x13;
 static constexpr uint8_t STATUS_REG = 0x1E;
-static constexpr uint8_t OUTX_L_G = 0x22;
-static constexpr uint8_t OUTX_L_XL = 0x28;
+const char gReg[] = {0x22,0x23,0x24,0x25,0x26,0x27}; //Gyro Register values
+const char xReg[] = {0x28,0x29,0x30,0x31,0x32,0x33}; //Accel Register Values
+
 
 static constexpr float accelScale = 0.122f;  // mg/LSB @ ±4g
 static constexpr float gyroScale  = 70.0f;   // mdps/LSB @ ±2000 dps
 
-
 // ------------------- CONSTRUCTOR -------------------
-ISM330::ISM330(SPI &spi, PinName csPin) noexcept
-    : _spi{spi}, _cs{csPin}
-{
-    _cs = 1; // Deselect by default
-}
-
+ISM330::ISM330(I2C &i2c, uint8_t address)  //Put in an i2c object, and the device address (in this case 0x6B)
+        : i2c(i2c), _address(address)
+    {
+    }
 
 // ------------------- INITIALIZATION -------------------
+
+
 bool ISM330::begin() noexcept
 {
-    _spi.format(8, 3);                 // Using mode 3 since that's what the libraries do
-    _spi.frequency(1'000'000);
-    _cs = 1; ThisThread::sleep_for(3ms);
+    i2c.frequency(1000000);
 
-    uint8_t id = whoAmI();
-    printf("WHO_AM_I: 0x%02X\r\n", id);
-    if (id != 0x6B) return false;      // DHCX id
+    i2c.write(writeAddr, SWRST, 2, false); // Must be false on write, true on reads according to Datasheet
+    ThisThread::sleep_for(100ms);
 
-    writeRegister(CTRL3_C, 0x01);      // SW_RESET
-    ThisThread::sleep_for(20ms);
+    i2c.write(writeAddr, xEnable, 2, false);
 
-    // User bank
-    // writeRegister(0x01, 0x00);
+    i2c.write(writeAddr, gEnable, 2, false);
+    
+    i2c.write(writeAddr, WhoAmIReg, 1, false);
+    
+    i2c.read(readAddr, reinterpret_cast<char*>(&whoAmIReading), 1, true);
 
-    // BDU=1, IF_INC=1
-    writeRegister(CTRL3_C, 0x44);
-
-    //Setting SPI MODE CTRL4_C 
-    writeRegister(19, 0x04);
-
-    // Accel: 104 Hz, ±4g, BW=100 Hz -> 0x4A CTRL1_XL
-    writeRegister(16, 0x4A); //0b0100'1010
-    // Gyro: 104 Hz, 2000 dps        -> 0x4C
-    writeRegister(17, 0x4C); //0b0100'1100 CTRL2_G 
-    ThisThread::sleep_for(20ms);
-
-    printf("CTRL3_C=0x%02X, CTRL1_XL=0x%02X, CTRL2_G=0x%02X\n",
-           readRegister(CTRL3_C), readRegister(CTRL1_XL), readRegister(CTRL2_G));
-
+    printf("WHO_AM_I: 0x%02X\r\n", whoAmIReading);
     return true;
 }
 
 
-// ------------------- BASIC REGISTER ACCESS -------------------
+// ------------------- BASIC DEBUG FUNCTIONS -------------------
 uint8_t ISM330::whoAmI() noexcept
 {
-    return readRegister(ISM330_WHO_AM_I);
+    i2c.write(writeAddr, WhoAmIReg, 1, false);
+    uint8_t whoAmIReading;
+    i2c.read(readAddr, reinterpret_cast<char*>(&whoAmIReading), 1, true);
+    return whoAmIReading;
+
 }
 
 void ISM330::reset() noexcept
 {
-    writeRegister(CTRL3_C, 0x01);
+    i2c.write(writeAddr, SWRST, 2, false); 
     ThisThread::sleep_for(100ms);
 }
 
-uint8_t ISM330::readRegister(uint8_t reg) noexcept
-{
-    _cs = 0;
-
-    _spi.write(reg | 0x80);
-    uint8_t value = static_cast<uint8_t>(_spi.write(0x00));
-    _cs = 1;
-    return value;
-    
-    // uint8_t tx[2] = { static_cast<uint8_t>(reg | 0x80), 0x00 };
-    // uint8_t rx[2] = { 0, 0 };
-    // wait_ns(50);
-    // _spi.write(reinterpret_cast<const char*>(tx), 2, reinterpret_cast<char*>(rx), 2);
-    // wait_ns(50);
-    // _cs = 1;
-    // return rx[1];
-}
-
-void ISM330::readMultiple(uint8_t reg, uint8_t* buf, uint8_t len) noexcept
-{
-    uint8_t addr = static_cast<uint8_t>(reg | 0x80); // R=1, auto-inc=1
-    _cs = 0;
-    wait_ns(50);
-    _spi.write(reinterpret_cast<const char*>(&addr), 1, nullptr, 0);
-    _spi.write(nullptr, 0, reinterpret_cast<char*>(buf), len); // clock out N bytes
-    wait_ns(50);
-    _cs = 1;
-}
-
-// void ISM330::writeRegister(int reg, int value) noexcept
-// {
-//     // uint8_t tx[2] = { static_cast<uint8_t>(reg & 0x7F), value };
-//     _cs = 0;
-//     wait_ns(50); // tCSS setup
-//     // Use the buffered form so both bytes go under one CS window
-//     // _spi.write(reg);
-//     // _spi.write(value);
-    
-//     //_spi.write(reinterpret_cast<const char*>(tx), 2, nullptr, 0);
-//     _cs = 1;    
-//}
-
-
-// //Helper 'Callback' function for SPI transfer
-// void ISM330::transferCallBack(int event) {
-//     if (event & SPI_EVENT_COMPLETE) {
-//         printf("SPI transfer complete!\n");
-//     }
-    
-//     if (event & SPI_EVENT_ERROR) {
-//         printf("SPI error occurred!\n");
-//     }
-// }
-
-void ISM330::writeRegister(uint8_t reg, uint8_t value) noexcept
-{    uint8_t tx[2] = { static_cast<uint8_t>(reg & 0x7F), value };
-     uint8_t rx[2];
-_cs = 0;
-// _spi.write(reg & 0x7F); // MSB=0 for write
-// _spi.write(value);
-//trying with transfer
-
-_spi.transfer(
-    tx,
-    2,
-    rx,
-    2,
-    [](int event){
-        if (event & SPI_EVENT_COMPLETE) {
-            printf("SPI transfer complete!\n");
-        }
-    
-        if (event & SPI_EVENT_ERROR) {
-            printf("SPI error occurred!\n");
-        }
-    }  );
-
-_cs = 1;
-}
-
-
+//i2c.write and read are simple enough that we don't need private functions for them
+//unlike SPI which is more annoying
 
 
 // ------------------- SENSOR READOUT -------------------
-void ISM330::readAccel(float *x, float *y, float *z) noexcept
-{
-    uint8_t status = readRegister(STATUS_REG);
-    if (!(status & 0x01)) {
-        *x = *y = *z = 0.0f;  // accel not ready
-        return;
-    }
 
-    uint8_t buf[6];
-    readMultiple(OUTX_L_XL, buf, 6);
+//Helper functions to convert accel readings to real values
+//Raw values to Acceleration (m/s^2)
+std::tuple<int16_t, int16_t, int16_t> ISM330::readingToAccel(const uint8_t *readings) {
+    int16_t rawX = (int16_t)((readings[1] << 8) | readings[0]);
+    int16_t rawY = (int16_t)((readings[3] << 8) | readings[2]);
+    int16_t rawZ = (int16_t)((readings[5] << 8) | readings[4]);
 
-    int16_t rawX = (int16_t)((buf[1] << 8) | buf[0]);
-    int16_t rawY = (int16_t)((buf[3] << 8) | buf[2]);
-    int16_t rawZ = (int16_t)((buf[5] << 8) | buf[4]);
-
-    constexpr float g = 9.80665f;
-    *x = rawX * accelScale * g / 1000.0f;
-    *y = rawY * accelScale * g / 1000.0f;
-    *z = rawZ * accelScale * g / 1000.0f;
-}
+    constexpr float g = 9.80665f; 
+    int16_t x = rawX * accelScale * g / 1000.0f;
+    int16_t y = rawY * accelScale * g / 1000.0f;
+    int16_t z = rawZ * accelScale * g / 1000.0f;
 
 
-void ISM330::readGyro(float *x, float *y, float *z) noexcept
-{
-    uint8_t status = readRegister(STATUS_REG);
-    if (!(status & 0x02)) {
-        *x = *y = *z = 0.0f;  // gyro not ready
-        return;
-    }
-
-    uint8_t buf[6];
-    readMultiple(OUTX_L_G, buf, 6);
-
-    int16_t rawX = (int16_t)((buf[1] << 8) | buf[0]);
-    int16_t rawY = (int16_t)((buf[3] << 8) | buf[2]);
-    int16_t rawZ = (int16_t)((buf[5] << 8) | buf[4]);
-
-    constexpr float DPS_TO_RAD = 3.14159265358979323846f / 180.0f;
-    *x = rawX * gyroScale * DPS_TO_RAD / 1000.0f;
-    *y = rawY * gyroScale * DPS_TO_RAD / 1000.0f;
-    *z = rawZ * gyroScale * DPS_TO_RAD / 1000.0f;
-}
-
-
-// ------------------- TUPLE HELPERS -------------------
-std::tuple<float, float, float> ISM330::getAccel() noexcept
-{
-    float x, y, z;
-    readAccel(&x, &y, &z);
     return std::make_tuple(x, y, z);
 }
 
-std::tuple<float, float, float> ISM330::getGyro() noexcept
-{
-    float x, y, z;
-    readGyro(&x, &y, &z);
+//Raw to Gyro (Radians/second)
+constexpr float dpsToRad = 3.14159265358979323846f / 180.0f;
+std::tuple<int16_t, int16_t, int16_t> ISM330::readingToGyro(const uint8_t *readings) {
+    int16_t rawX = (int16_t)((readings[1] << 8) | readings[0]);
+    int16_t rawY = (int16_t)((readings[3] << 8) | readings[2]);
+    int16_t rawZ = (int16_t)((readings[5] << 8) | readings[4]);
+
+    int16_t x = rawX * gyroScale * dpsToRad / 1000.0f;
+    int16_t y = rawY * gyroScale * dpsToRad / 1000.0f;
+    int16_t z = rawZ * gyroScale * dpsToRad / 1000.0f;
+
     return std::make_tuple(x, y, z);
+}
+
+
+uint8_t xReadings[6];
+
+std::tuple<int16_t, int16_t, int16_t> ISM330::readAccel() noexcept
+{
+    i2c.write(writeAddr, xReg, 1, false);
+
+    i2c.read(readAddr, reinterpret_cast<char*>(xReadings), 6, true);
+    auto [x,y,z] = readingToAccel(xReadings);
+    return std::make_tuple(x, y, z);
+}
+
+std::tuple<int16_t, int16_t, int16_t> ISM330::readGyro() noexcept
+{
+    uint8_t gReadings[6]; //Gyro Readings buffer
+
+    i2c.write(writeAddr, gReg, 1, false);
+
+    i2c.read(readAddr, reinterpret_cast<char*>(gReadings), 6, true);
+    auto [x,y,z] = readingToGyro(gReadings);
+    return std::make_tuple(x, y, z);
+}
+
+
+// Sensor Fusion Stuff; Stolen from https://sparxeng.com/blog/software/imu-signal-processing-with-kalman-filter
+
+// Variable Definitions
+
+    // Angular Velocities in x and y direction
+    float w_x;
+    float w_y;
+    
+    // States predicted by model (regarding the Gyroscope measurements as inputs)
+    float theta_m = 0;
+    float phi_m = 0;
+    
+    // States measured by sensor (accelerometer)
+    float theta_s;  // Yaw
+    float phi_s;    // Pitch
+    
+    // Kalman Filter parameters and initailization
+    float theta_n; // a priori estimation of Theta
+    float theta_p = 0; // a posteriori estimation on Theta (set to zero for the initial time step k=0)
+    float phi_n; // a priori estimation of Phi
+    float phi_p = 0; // a posteriori estimation on Phi (set to zero for the initial time step k=0)
+    
+    float P_theta_n; // a priori cobvariance of Theta
+    float P_phi_n; // a priori covariance of Phi
+    float P_theta_p = 0; // a posteriori covariance of Theta
+    float P_phi_p = 0; // a posteriori covariance of Phi
+    
+    float K_theta; // Observer gain or Kalman gain for Theta
+    float K_phi; // Observer gain or Kalman gain for Phi
+    
+    float Q = 0.1; // Covariance of disturbance (unknown disturbance affecting w_x and w_y)
+    float R = 4; // Covariance of noise (unknown noise affecting theta_s and phi_s)
+
+    float sampleRate = 0.001; // Assuming 1khz for now 
+    float ds = sampleRate *0.001; // Time step, not exactly sure why its 1/1000 sample rate but hopefully its good?
+
+void imuKalmanUpdate(float accelX, float accelY, float accelZ, float gyroX, float gyroY) {
+    // Updating inputs
+    w_x = gyroX; // input
+    w_y = gyroY; // input
+
+    // Updating models and the sensor measurements
+    theta_m = theta_m - w_y*0.1;
+    phi_m = phi_m + w_x*0.1;
+
+    theta_s=atan2(accelX/9.8,accelZ/9.8)/2/3.141592654*360; 
+    phi_s=atan2(accelY/9.8,accelZ/9.8)/2/3.141592654*360;   
+    
+    // Prediction
+    P_theta_n = P_theta_p + Q;
+    K_theta = P_theta_n/(P_theta_n + R);
+    theta_n = theta_p - ds*w_y;
+    theta_p = theta_n + K_theta*(theta_s - theta_n);
+    P_theta_p = (1-K_theta)*P_theta_n;
+    
+    P_phi_n = P_phi_p + Q;
+    K_phi = P_phi_n/(P_phi_n + R);
+    phi_n = phi_p + ds*w_x;
+    phi_p = phi_n + K_phi*(phi_s - phi_n);
+    P_phi_p = (1-K_phi)*P_phi_n;
 }
