@@ -9,8 +9,30 @@ DigitalOut led2(L26);
 DigitalOut led3(L25);
 DigitalOut ledbuiltin(LED1);
 
-AnalogIn   ain(PA_7);
+AnalogIn ain(PA_7);
 DigitalOut dout(LED1);
+// ACS712-30A Current Sensor Configuration
+// Constants for ACS712-30A (66mV/A sensitivity, VCC/2 at 0A)
+const float ACS712_SENSITIVITY = 0.066f;    // 66 mV per Ampere for 30A model
+const float ACS712_VOLTAGE_AT_ZERO_A = 3.3f / 2.0f;  // Assuming 3.3V VCC
+const float VCC = 3.3f;                     // Your board's analog reference voltage
+
+// Current calculation function
+float readCurrentACS712() {
+    // Read raw analog value (0.0 to 1.0)
+    float analog_value = ain.read();
+    
+    // Convert to voltage (0.0 to VCC)
+    float sensor_voltage = analog_value * VCC;
+    
+    // Calculate current: (V_sensor - V_zero) / sensitivity
+    // For bidirectional sensing (positive and negative current)
+    float current = (sensor_voltage - ACS712_VOLTAGE_AT_ZERO_A) / ACS712_SENSITIVITY;
+    
+    return current;
+}
+
+
 
 // ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.22617); // radius is 9 in - DISABLED FOR RAW TESTING
 DJIMotor feeder(5, CANHandler::CANBUS_2, M2006);
@@ -218,20 +240,14 @@ int main(){
         // feeder.printAllMotorData();
         
 
-        printff("Sensor Value: %2.2f A\n\r", dev);
-
-        // if(ain > 0.3f) {  // test the voltage on the initialized analog pin and if greater than 0.3 * VCC set the digital pin
-        //     dout = 1;    //  to a logic 1 otherwise a logic 0
-        // }  
-        // else {
-        //     dout = 0;
-        // }
-        // // print the percentage and 16 bit normalized values
-        // printff("percentage: %3.3f%%\n", ain.read()*100.0f);
-        // printff("normalized: %.2f \n", ain.read_u16());
+        float current_reading = readCurrentACS712();
+        static int current_counter = 0;
+        if(current_counter++ % 100 == 0) {  // Print every 100ms
+            printff("ACS712 Current: %.2f A\n", current_reading);
+        }
         
 
-
+        
         DJIMotor::s_getFeedback();
         ThisThread::sleep_for(1ms);
                     // Check if all 4 motors are connected
