@@ -92,7 +92,7 @@ int main(){
     auto [ax, ay, az] = imu.readAccel();
     auto [gx, gy, gz] = imu.readGyro();
     
-    printf("Accel %.2d, %.2d, %.2d | Gyro %.2d, %.2d, %.2d\n", ax, ay, az, gx, gy, gz);
+    printf("Accel %.2f, %.2f, %.2f | Gyro %.2f, %.2f, %.2f\n", ax, ay, az, gx, gy, gz);
     }
 
 

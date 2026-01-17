@@ -54,13 +54,13 @@ public:
     //Accel and Gyro Reading functions
     
     //Raw I2C readings to actual measurements
-    std::tuple<int16_t, int16_t, int16_t> readingToAccel(const uint8_t *readings);
-    std::tuple<int16_t, int16_t, int16_t> readingToGyro(const uint8_t *readings);
+    std::tuple<float, float, float> readingToAccel(const uint8_t *readings);
+    std::tuple<float, float, float> readingToGyro(const uint8_t *readings);
 
     //Full read functions
-    std::tuple<int16_t, int16_t, int16_t> readAccel() noexcept;
+    std::tuple<float, float, float> readAccel() noexcept;
 
-    std::tuple<int16_t, int16_t, int16_t> readGyro() noexcept;
+    std::tuple<float, float, float> readGyro() noexcept;
 
     // IMU Sensor Fusion
     void imuKalmanUpdate(float accelX, float accelY, float accelZ, float gyroX, float gyroY);

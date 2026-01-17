@@ -37,7 +37,8 @@ ISM330::ISM330(I2C &i2c, uint8_t address)  //Put in an i2c object, and the devic
 
 bool ISM330::begin() noexcept
 {
-    i2c.frequency(1000000);
+
+    i2c.frequency(100000);
 
     i2c.write(writeAddr, SWRST, 2, false); // Must be false on write, true on reads according to Datasheet
     ThisThread::sleep_for(100ms);
@@ -59,7 +60,7 @@ bool ISM330::begin() noexcept
 uint8_t ISM330::whoAmI() noexcept
 {
     i2c.write(writeAddr, WhoAmIReg, 1, false);
-    uint8_t whoAmIReading;
+    char whoAmIReading;
     i2c.read(readAddr, reinterpret_cast<char*>(&whoAmIReading), 1, true);
     return whoAmIReading;
 
@@ -79,15 +80,15 @@ void ISM330::reset() noexcept
 
 //Helper functions to convert accel readings to real values
 //Raw values to Acceleration (m/s^2)
-std::tuple<int16_t, int16_t, int16_t> ISM330::readingToAccel(const uint8_t *readings) {
+std::tuple<float, float, float> ISM330::readingToAccel(const uint8_t *readings) {
     int16_t rawX = (int16_t)((readings[1] << 8) | readings[0]);
     int16_t rawY = (int16_t)((readings[3] << 8) | readings[2]);
     int16_t rawZ = (int16_t)((readings[5] << 8) | readings[4]);
 
     constexpr float g = 9.80665f; 
-    int16_t x = rawX * accelScale * g / 1000.0f;
-    int16_t y = rawY * accelScale * g / 1000.0f;
-    int16_t z = rawZ * accelScale * g / 1000.0f;
+    float x = rawX * accelScale * g / 1000.0f;
+    float y = rawY * accelScale * g / 1000.0f;
+    float z = rawZ * accelScale * g / 1000.0f;
 
 
     return std::make_tuple(x, y, z);
@@ -95,14 +96,16 @@ std::tuple<int16_t, int16_t, int16_t> ISM330::readingToAccel(const uint8_t *read
 
 //Raw to Gyro (Radians/second)
 constexpr float dpsToRad = 3.14159265358979323846f / 180.0f;
-std::tuple<int16_t, int16_t, int16_t> ISM330::readingToGyro(const uint8_t *readings) {
+std::tuple<float, float, float> ISM330::readingToGyro(const uint8_t *readings) {
     int16_t rawX = (int16_t)((readings[1] << 8) | readings[0]);
     int16_t rawY = (int16_t)((readings[3] << 8) | readings[2]);
     int16_t rawZ = (int16_t)((readings[5] << 8) | readings[4]);
 
-    int16_t x = rawX * gyroScale * dpsToRad / 1000.0f;
-    int16_t y = rawY * gyroScale * dpsToRad / 1000.0f;
-    int16_t z = rawZ * gyroScale * dpsToRad / 1000.0f;
+    float x = rawX * gyroScale * dpsToRad / 1000.0f;
+    float y = rawY * gyroScale * dpsToRad / 1000.0f;
+    float z = rawZ * gyroScale * dpsToRad / 1000.0f;
+
+
 
     return std::make_tuple(x, y, z);
 }
@@ -110,7 +113,7 @@ std::tuple<int16_t, int16_t, int16_t> ISM330::readingToGyro(const uint8_t *readi
 
 uint8_t xReadings[6];
 
-std::tuple<int16_t, int16_t, int16_t> ISM330::readAccel() noexcept
+std::tuple<float, float, float> ISM330::readAccel() noexcept
 {
     i2c.write(writeAddr, xReg, 1, false);
 
@@ -119,7 +122,7 @@ std::tuple<int16_t, int16_t, int16_t> ISM330::readAccel() noexcept
     return std::make_tuple(x, y, z);
 }
 
-std::tuple<int16_t, int16_t, int16_t> ISM330::readGyro() noexcept
+std::tuple<float, float, float> ISM330::readGyro() noexcept
 {
     uint8_t gReadings[6]; //Gyro Readings buffer
 
