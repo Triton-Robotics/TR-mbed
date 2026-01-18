@@ -26,4 +26,4 @@ Makefile
 .vscode/settings.json
 
 # For clangd
-.cache/
+.cache/.vscode/

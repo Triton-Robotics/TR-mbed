@@ -1,15 +1,30 @@
 #include "util/communications/jetson/Jetson.h"
 
+Jetson::Jetson()
+    : bcJetson(nullptr)
+{}
+
 Jetson::Jetson(BufferedSerial &UARTJetson)
-    : bcJetson(&UARTJetson), spiJetson(nullptr) {
+    : Jetson()
+{
+    bcJetson = &UARTJetson;
+    bcJetson->set_blocking(true);
+
+    init_common();
+    
+}
+
+void Jetson::init_common()
+{
+    //Setup write packets (Jetson <- STM32 telemetry, ref data)
     write_packets_.push_back(std::make_unique<RefWritePacket>());
     write_packets_.push_back(std::make_unique<RobotStateWritePacket>());
 
+    // Setup read packets (Jetson -> STM32 commands)
     read_packets_.push_back(std::make_unique<TurretPacket>());
     read_packets_.push_back(std::make_unique<ChassisReadPacket>());
 
-    bcJetson->set_blocking(true);
-
+    // Start worker threads
     this->write_thread_.start(callback(this, &Jetson::writeThread));
     this->read_thread_.start(callback(this, &Jetson::readThread));
 }
@@ -49,11 +64,19 @@ uint8_t Jetson::calculateLRC(const char *data, size_t length) {
 
 // TODO implement SPI here
 int Jetson::readIO(char *buff, int buff_size) {
+    if(!bcJetson){
+        return -1;
+    }
     return bcJetson->read(buff, buff_size);
 }
 
 // TODO implement SPI here
-int Jetson::readIOReadable() { return bcJetson->readable(); }
+int Jetson::readIOReadable() { 
+    if(!bcJetson){
+        return 0;
+    }
+    return bcJetson->readable(); 
+}
 
 void Jetson::readThread() {
     int constexpr BUFF_SIZE = 512;
@@ -122,6 +145,9 @@ void Jetson::readThread() {
 
 // TODO add spi support here
 int Jetson::writeIO(char *buff, int write_size) {
+    if(!bcJetson){
+        return -1;
+    }
     return bcJetson->write(buff, write_size);
 }
 
@@ -154,4 +180,50 @@ void Jetson::writeThread() {
         }
         ThisThread::yield();
     }
+}
+
+
+JetsonSPI::JetsonSPI(SPISlave &SPIJetson)
+    : Jetson()
+    , spiJetson_(&SPIJetson)
+    , tx_buffer_()
+    , tx_index_(0)
+{
+    init_common();
+}
+
+int JetsonSPI::writeIO(char *buff, int write_size){
+    if(!spiJetson_){
+        return -1;
+    }
+
+    tx_buffer_.assign(buff, buff + write_size);
+    tx_index_ = 0;
+    return write_size;
+}
+
+int JetsonSPI::readIOReadable(){
+    if(!spiJetson_){
+        return 0;
+    }
+    return spiJetson_->receive();
+}
+
+int JetsonSPI::readIO(char *buff, int buff_size){
+    if (!spiJetson_) {                                
+        return -1;                                  
+    }
+
+    int count = 0;
+    while(count < buff_size && spiJetson_->receive()){
+        int rx_byte = spiJetson_->read();
+        buff[count++] = static_cast<char>(rx_byte);
+
+        uint8_t tx_byte = 0x00;
+        if(tx_index_ < tx_buffer_.size()){
+            tx_byte=static_cast<uint8_t>(tx_buffer_[tx_index_++]);
+        }
+        spiJetson_->reply(tx_byte);
+    }
+    return count;
 }

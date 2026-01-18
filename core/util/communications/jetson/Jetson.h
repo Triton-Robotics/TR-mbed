@@ -3,6 +3,8 @@
 
 #include <memory>
 #include <vector>
+#include <cstdint>
+#include <cstring>
 
 class WritePacket;
 class ReadPacket;
@@ -37,14 +39,18 @@ class Jetson {
     Jetson(BufferedSerial &UARTJetson);
 
     // Init Jetson with a SPISlave Object
-    Jetson(SPISlave &SPIJetson);
 
     static uint8_t calculateLRC(const char *data, size_t length);
 
     Jetson::ReadState read();
     void write(Jetson::WriteState &to_write);
 
-  private:
+  protected:
+
+    Jetson();
+
+    void init_common();
+
     std::vector<std::unique_ptr<WritePacket>> write_packets_;
     std::vector<std::unique_ptr<ReadPacket>> read_packets_;
 
@@ -58,12 +64,11 @@ class Jetson {
     void writeThread();
     void readThread();
 
-    int writeIO(char *buff, int write_size);
-    int readIO(char *buff, int buff_size);
-    int readIOReadable();
+    virtual int writeIO(char *buff, int write_size);
+    virtual int readIO(char *buff, int buff_size);
+    virtual int readIOReadable();
 
     BufferedSerial *bcJetson;
-    SPISlave *spiJetson;
 
     static constexpr unsigned long WRITE_THREAD_LOOP_DT_MS = 1;
 };
@@ -219,4 +224,19 @@ class ChassisReadPacket : public ReadPacket {
         std::memcpy(&read_state.localization_calibration, &buff[12],
                     sizeof(uint8_t));
     }
+};
+
+class JetsonSPI : public Jetson {
+  public:
+    JetsonSPI(SPISlave &SPIJetson);
+
+  protected:
+    int writeIO(char *buff, int write_size) override;
+    int readIO(char *buff, int buff_size) override;
+    int readIOReadable() override;
+
+  private: 
+    SPISlave *spiJetson_;
+    std::vector<char> tx_buffer_;
+    size_t tx_index_;
 };
