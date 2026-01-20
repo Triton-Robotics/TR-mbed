@@ -23,9 +23,6 @@ const char gReg[] = {0x22,0x23,0x24,0x25,0x26,0x27}; //Gyro Register values
 const char xReg[] = {0x28,0x29,0x30,0x31,0x32,0x33}; //Accel Register Values
 
 
-static constexpr float accelScale = 0.122f;  // mg/LSB @ ±4g
-static constexpr float gyroScale  = 70.0f;   // mdps/LSB @ ±2000 dps
-
 // ------------------- CONSTRUCTOR -------------------
 ISM330::ISM330(I2C &i2c, uint8_t address)  //Put in an i2c object, and the device address (in this case 0x6B)
         : i2c(i2c), _address(address)
@@ -79,58 +76,78 @@ void ISM330::reset() noexcept
 // ------------------- SENSOR READOUT -------------------
 
 //Helper functions to convert accel readings to real values
+
+// Scale factors for calculations 
+static constexpr float accelRangeScale = 0.122f;  // mg/LSB @ ±4g; see datasheet for other ranges
+static constexpr float gyroRangeScale  = 70.0f;   // mdps/LSB @ ±2000 dps
+
+static constexpr float g = 9.80665f; 
+static constexpr float dpsToRad = 3.14159265358979323846f / 180.0f;
+
+static constexpr float accelConversion = accelRangeScale * g / 1000.0f; // The actual conversion factor from raw to m/s^2
+static constexpr float gyroConversion = gyroRangeScale * dpsToRad / 1000.0f;   // The conversion factor from raw to rad/s
+
 //Raw values to Acceleration (m/s^2)
 std::tuple<float, float, float> ISM330::readingToAccel(const uint8_t *readings) {
     int16_t rawX = (int16_t)((readings[1] << 8) | readings[0]);
     int16_t rawY = (int16_t)((readings[3] << 8) | readings[2]);
     int16_t rawZ = (int16_t)((readings[5] << 8) | readings[4]);
 
-    constexpr float g = 9.80665f; 
-    float x = rawX * accelScale * g / 1000.0f;
-    float y = rawY * accelScale * g / 1000.0f;
-    float z = rawZ * accelScale * g / 1000.0f;
+
+    float x = rawX * accelConversion;
+    float y = rawY * accelConversion;
+    float z = rawZ * accelConversion;
 
 
     return std::make_tuple(x, y, z);
 }
 
 //Raw to Gyro (Radians/second)
-constexpr float dpsToRad = 3.14159265358979323846f / 180.0f;
+
 std::tuple<float, float, float> ISM330::readingToGyro(const uint8_t *readings) {
     int16_t rawX = (int16_t)((readings[1] << 8) | readings[0]);
     int16_t rawY = (int16_t)((readings[3] << 8) | readings[2]);
     int16_t rawZ = (int16_t)((readings[5] << 8) | readings[4]);
 
-    float x = rawX * gyroScale * dpsToRad / 1000.0f;
-    float y = rawY * gyroScale * dpsToRad / 1000.0f;
-    float z = rawZ * gyroScale * dpsToRad / 1000.0f;
-
-
+    float x = rawX * gyroConversion;
+    float y = rawY * gyroConversion;
+    float z = rawZ * gyroConversion;
 
     return std::make_tuple(x, y, z);
 }
 
-
-uint8_t xReadings[6];
-
+// Actual Reading functions
+uint8_t xReadings[6]; //Accel Readings buffer
 std::tuple<float, float, float> ISM330::readAccel() noexcept
 {
     i2c.write(writeAddr, xReg, 1, false);
-
     i2c.read(readAddr, reinterpret_cast<char*>(xReadings), 6, true);
+    
     auto [x,y,z] = readingToAccel(xReadings);
     return std::make_tuple(x, y, z);
 }
 
+uint8_t gReadings[6]; //Gyro Readings buffer
 std::tuple<float, float, float> ISM330::readGyro() noexcept
 {
-    uint8_t gReadings[6]; //Gyro Readings buffer
-
     i2c.write(writeAddr, gReg, 1, false);
-
     i2c.read(readAddr, reinterpret_cast<char*>(gReadings), 6, true);
+
     auto [x,y,z] = readingToGyro(gReadings);
     return std::make_tuple(x, y, z);
+}
+
+
+// Combined Read function, should be more efficient because less I2C transactions
+uint8_t agReadings[12]; //Accel and Gyro Readings buffer;
+std::tuple<float, float, float, float, float, float> ISM330::readAG() noexcept//
+{
+    i2c.write(writeAddr, gReg, 1, false); 
+    i2c.read(readAddr, reinterpret_cast<char*>(agReadings), 12, true);
+
+    auto [gx,gy,gz] = readingToGyro(&agReadings[0]);
+    auto [ax,ay,az] = readingToAccel(&agReadings[6]);
+    return std::make_tuple(ax, ay, az, gx, gy, gz);
 }
 
 
@@ -156,7 +173,7 @@ std::tuple<float, float, float> ISM330::readGyro() noexcept
     float phi_n; // a priori estimation of Phi
     float phi_p = 0; // a posteriori estimation on Phi (set to zero for the initial time step k=0)
     
-    float P_theta_n; // a priori cobvariance of Theta
+    float P_theta_n; // a priori covariance of Theta
     float P_phi_n; // a priori covariance of Phi
     float P_theta_p = 0; // a posteriori covariance of Theta
     float P_phi_p = 0; // a posteriori covariance of Phi

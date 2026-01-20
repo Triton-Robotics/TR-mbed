@@ -1,6 +1,7 @@
 #include "main.h"
 #include "subsystems/ChassisSubsystem.h"
 #include "util/peripherals/imu/ISM330.h"
+#include "util/peripherals/imu/BNO055.h"
 
 DigitalOut led(L25);
 DigitalOut led2(L26);
@@ -39,7 +40,7 @@ constexpr int FLYWHEEL_VELO = 5500;
 //SPI spiIMU(PB_15, PB_14, PA_9, PB_9); // MOSI, MISO, SCK, NSS/CS
 //ISM330 imu2(spiIMU, PB_9);
 
-// BNO055 imu(i2c, IMU_RESET, MODE_IMU);
+// //BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 // ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.22617); // radius is 9 in
 // DJIMotor yaw(4, CANHandler::CANBUS_1, GIMBLY,"Yeah");
 // DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY,"Peach"); // right
@@ -48,45 +49,23 @@ constexpr int FLYWHEEL_VELO = 5500;
 // DJIMotor RFLYWHEEL(1, CANHandler::CANBUS_2, M3508,"RightFly");
 // DJIMotor LFLYWHEEL(2, CANHandler::CANBUS_2, M3508,"LeftFly");
 
-//CV STUFF
+// //CV STUFF
 // static BufferedSerial bcJetson(PC_12, PD_2, 115200);  //JETSON PORT
 
 
 
-#ifdef USE_IMU
-BNO055_ANGULAR_POSITION_typedef imuAngles;
-#endif
+// #ifdef USE_IMU
+// BNO055_ANGULAR_POSITION_typedef imuAngles;
+// #endif
 
 I2C i2c(I2C_SDA, I2C_SCL);
 
-ISM330 imu(i2c, 0x6B);
-
-// // const int readAddr = 0b11010101;
-// // const int writeAddr = 0b11010100;
-
-// // const char SWRST[] = {0x12,0x01};
-// // const char xEnable[] = {0x10, 0x4A};
-
-// // const char WhoAmIReg[] = {0x0F};
-// // const char gReg[] = {0x22,0x23,0x24,0x25,0x26,0x27};
-// // const char xReg[] = {0x28,0x29,0x30,0x31,0x32,0x33};
-
-// // uint8_t xValues[6];
-
-// // uint8_t whoAmIReading;
-
-// std::tuple<int16_t, int16_t, int16_t> readingToRaw(const uint8_t *readings) {
-//     int16_t rawX = (int16_t)((readings[1] << 8) | readings[0]);
-//     int16_t rawY = (int16_t)((readings[3] << 8) | readings[2]);
-//     int16_t rawZ = (int16_t)((readings[5] << 8) | readings[4]);
-
-//     return std::make_tuple(rawX, rawY, rawZ);
-// }
+ISM330 imu2(i2c, 0x6B);
 
 
 int main(){
 
-    imu.begin();
+    imu2.begin();
     
     // // Basic IMU Readings Check
     // while (true) {
@@ -99,9 +78,11 @@ int main(){
     // Kalman Filter time (Horror)
     
     while (true) {
-        auto [ax, ay, az] = imu.readAccel();
-        auto [gx, gy, gz] = imu.readGyro();
-        auto [kf_yaw, kf_pitch] = imu.imuKalmanUpdate(ax, ay, az, gx, gy);
+        // auto [ax, ay, az] = imu.readAccel();
+        // auto [gx, gy, gz] = imu.readGyro();
+
+        auto [ax, ay, az, gx, gy, gz] = imu2.readAG();
+        auto [kf_yaw, kf_pitch] = imu2.imuKalmanUpdate(ax, ay, az, gx, gy);
 
         printf("Accel %.2f, %.2f, %.2f | Gyro %.2f, %.2f, %.2f | KF Pitch: %.2f | KF Yaw: %.2f\n", ax, ay, az, gx, gy, gz, kf_pitch, kf_yaw);
         ThisThread::sleep_for(10ms);
@@ -110,51 +91,10 @@ int main(){
 
 }
 
-
-//     ThisThread::sleep_for(3);
-//     i2c.frequency(100000);
-//     i2c.write(writeAddr, SWRST, 2, false); // Must be false on write, true on reads according to Datasheet
-//     ThisThread::sleep_for(100ms);
-
-//     i2c.write(writeAddr, xEnable, 2, false);
     
-//     i2c.write(writeAddr, WhoAmIReg, 1, false);
-    
-//     i2c.read(readAddr, reinterpret_cast<char*>(&whoAmIReading), 1, true);
-
-//    printf("WHO_AM_I: 0x%02X\r\n", whoAmIReading);
-    
-    //SPI TESTING
-    //DigitalOut cs(PB_9,0);
-    // imu2.begin();
-    // imu2.setAccelRange(2);
-    // imu2.setGyroRange(500);
-    
-    // DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
-    // DJIMotor::s_sendValues();
-    // DJIMotor::s_getFeedback();
-    // usbSerial.set_blocking(false);
-    // bcJetson.set_blocking(false);
-    
-    
-    // while (true){
-    // i2c.write(writeAddr, xReg, 1, false);  
-
-    // // Step 2: read data from that register
-    // i2c.read(readAddr, reinterpret_cast<char*>(xValues), 6, true);
-    // auto [x,y,z] = readingToRaw(xValues);
-
-    //     // auto [x,y,z] = imu2.getAccel();
-    //     // auto [gx, gy, gz] = imu2.getGyro();
-    //     printf("%.2d, %.2d, %.2d \n", x, y, z);
-    //     // ThisThread::sleep_for(200ms);
-    // }
-    // }
-    
-    
-    /*
-    * MOTORS SETUP AND PIDS
-    */
+    // /*
+    // * MOTORS SETUP AND PIDS
+    // */
     // //YAW
     // yaw.setSpeedPID(708.1461, 4.721, 2.6555);
     // yaw.setSpeedIntegralCap(8000);
@@ -557,16 +497,65 @@ int main(){
     //         printLoop ++;
     //         if (printLoop >= PRINT_FREQUENCY){
     //             printLoop = 0;
-    //             // printff("hi\n");
-    //             auto [x,y,z] = imu2.getAccel();
-    //             auto [gx, gy, gz] = imu2.getGyro();
-    //             printf("%.2f, %.2f, %.2f, %.2f, %.2f, %.2f\n", x, y, z, gx, gy, gz);
+    //             //printff("%.3f Pitch\n", pitch_desired_angle);
+    //             //printff("Prints:\n");
+    //             //printff("lX:%.1f lY:%.1f rX:%.1f rY:%.1f lS:%d rS:%d\n", remote.leftX(), remote.leftY(), remote.rightX(), remote.rightY(), remote.leftSwitch(), remote.rightSwitch());
+    //             //printff("jx:%.3f jy:%.3f jpitch:%.3f jyaw:%.3f\n", jx, jy, jpitch, jyaw);
+
+    //             //printff("%.3f  %d\n", pitch_desired_angle, pitch.getData(ANGLE));
+    //             //printff("%d\n", indexer.getData(POWEROUT));
+
+    //             #ifdef USE_IMU
+    //             //printff("yaw_des_v:%d yaw_act_v:%d", yawVelo, yaw>>VELOCITY);
+    //             // printff("yaw_des:%.3f yaw_act:%.3f\n", yaw_desired_angle, imuAngles.yaw + 180);
+    //             #else
+    //             // printff("yaw_des_v:%d yaw_act_v:%d\n", yawVelo, yaw>>VELOCITY);
+    //             //printff("yaw_des:%.3f yaw_act:%.3f [%d]\n", yaw_desired_angle, yaw_current_angle, yaw>>ANGLE);
+    //             #endif
+    //             // printff("elap:%.5fms\n", elapsedms);
+    //             // printff("Chassis: LF:%c RF:%c LB:%c RB:%c\n", 
+    //             //     Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).isConnected() ? 'y' : 'n', 
+    //             //     Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).isConnected() ? 'y' : 'n', 
+    //             //     Chassis.getMotor(ChassisSubsystem::LEFT_BACK).isConnected() ? 'y' : 'n', 
+    //             //     Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).isConnected() ? 'y' : 'n');
+    //             // printff("Y:%c P:%c F_L:%c F_R:%c I:%c F:%c\n",
+    //             //     yaw.isConnected() ? 'y' : 'n', 
+    //             //     pitch.isConnected() ? 'y' : 'n', 
+    //             //     LFLYWHEEL.isConnected() ? 'y' : 'n', 
+    //             //     RFLYWHEEL.isConnected() ? 'y' : 'n',
+    //             //     indexer.isConnected() ? 'y' : 'n',
+    //             //     feeder.isConnected() ? 'y' : 'n');
+    //             #ifdef USE_IMU
+    //             //printff("IMU %.3f %.3f %.3f\n",imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
+    //             #endif
+
+    //             WheelSpeeds ac = Chassis.getWheelSpeeds();
+    //             ChassisSpeeds test = {jx * Chassis.m_OmniKinematicsLimits.max_Vel,
+    //                                 jy * Chassis.m_OmniKinematicsLimits.max_Vel,
+    //                                 -BEYBLADE_OMEGA};
+    //             WheelSpeeds ws = Chassis.chassisSpeedsToWheelSpeeds(test);
+                
+    //             // printff("CS: %.1f %.1f %.1f ", cs.vX, cs.vY, cs.vOmega);
+    //             // printff("DS: %.1f %.1f %.1f\n", test.vX, test.vY, test.vOmega);
+
+    //             // printff("CH: %.2f %.2f %.2f %.2f ", ws.LF,ws.RF,ws.LB,ws.RB);
+    //             // printff("A: %.2f %.2f %.2f %.2f\n", ac.LF,ac.RF,ac.LB,ac.RB);
+    //             // printff("A_RAW: %d %d %d %d\n", 
+    //             //     Chassis.getMotor(ChassisSubsystem::LEFT_FRONT).getData(VELOCITY), 
+    //             //     Chassis.getMotor(ChassisSubsystem::RIGHT_FRONT).getData(VELOCITY), 
+    //             //     Chassis.getMotor(ChassisSubsystem::LEFT_BACK).getData(VELOCITY), 
+    //             //     Chassis.getMotor(ChassisSubsystem::RIGHT_BACK).getData(VELOCITY));
+    //             // printff("A_MPS: %.2f %.2f %.2f %.2f\n", 
+    //             //     Chassis.getMotorSpeed(ChassisSubsystem::LEFT_FRONT, ChassisSubsystem::METER_PER_SECOND), 
+    //             //     Chassis.getMotorSpeed(ChassisSubsystem::RIGHT_FRONT, ChassisSubsystem::METER_PER_SECOND), 
+    //             //     Chassis.getMotorSpeed(ChassisSubsystem::LEFT_BACK, ChassisSubsystem::METER_PER_SECOND), 
+    //             //     Chassis.getMotorSpeed(ChassisSubsystem::RIGHT_BACK, ChassisSubsystem::METER_PER_SECOND));
+    //         }
+
                 
     //         }
 
     //         DJIMotor::s_sendValues();
     //     }
-    //     DJIMotor::s_getFeedback();
-    //    ThisThread::sleep_for(1ms);
-    //}
-//}
+    // DJIMotor::s_getFeedback();
+    // ThisThread::sleep_for(1ms);
