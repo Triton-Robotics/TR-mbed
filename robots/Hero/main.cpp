@@ -29,7 +29,8 @@ int main(){
 
             DJIMotor::s_sendValues();
         }
-        DJIMotor::s_getFeedback();
+        canHandler1.registerCallback(0x201, 0x20D, DJIMotor::s_getCan1Feedback);
+        canHandler2.registerCallback(0x201, 0x20D, DJIMotor::s_getCan2Feedback);
         ThisThread::sleep_for(1ms);
     }
 }

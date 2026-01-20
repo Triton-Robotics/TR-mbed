@@ -51,7 +51,8 @@ int main(){
 
             DJIMotor::s_sendValues();
         }
-        DJIMotor::s_getFeedback();
+        canHandler1.registerCallback(0x201, 0x20D, DJIMotor::s_getCan1Feedback);
+        canHandler2.registerCallback(0x201, 0x20D, DJIMotor::s_getCan2Feedback);
         printff("%d,%d,%d\n", (us_ticker_read() - timeStartCV), (mutex_ms - timeStartCV), (cv_ms - timeStartCV));
         ThisThread::sleep_for(1ms);
     }
@@ -61,7 +62,8 @@ int main(){
 void init() {
     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
     DJIMotor::s_sendValues();
-    DJIMotor::s_getFeedback();
+    canHandler1.registerCallback(0x201, 0x20D, DJIMotor::s_getCan1Feedback);
+    canHandler2.registerCallback(0x201, 0x20D, DJIMotor::s_getCan2Feedback);
     usbSerial.set_blocking(false);
     bcJetson.set_blocking(false);
     
