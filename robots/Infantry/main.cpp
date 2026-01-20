@@ -35,12 +35,18 @@ constexpr int FLYWHEEL_VELO = 5500;
 #define MAGICBYTE 0xEE
 #define USE_IMU
 
+
+
+#define I2C_SDA2 PC_12
+#define I2C_SCL2 PB_10
+
+
+
 //CHASSIS DEFINING
 
 //SPI spiIMU(PB_15, PB_14, PA_9, PB_9); // MOSI, MISO, SCK, NSS/CS
 //ISM330 imu2(spiIMU, PB_9);
 
-// //BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 // ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.22617); // radius is 9 in
 // DJIMotor yaw(4, CANHandler::CANBUS_1, GIMBLY,"Yeah");
 // DJIMotor pitch(7, CANHandler::CANBUS_2, GIMBLY,"Peach"); // right
@@ -54,14 +60,20 @@ constexpr int FLYWHEEL_VELO = 5500;
 
 
 
-// #ifdef USE_IMU
-// BNO055_ANGULAR_POSITION_typedef imuAngles;
-// #endif
+#ifdef USE_IMU
+BNO055_ANGULAR_POSITION_typedef imuAngles;
+#endif
 
 I2C i2c(I2C_SDA, I2C_SCL);
 
+I2C i2c2(I2C_SDA2, I2C_SCL2);
+
+
+
 ISM330 imu2(i2c, 0x6B);
 
+
+BNO055 imu(i2c2, IMU_RESET, MODE_IMU);
 
 int main(){
 
@@ -84,8 +96,16 @@ int main(){
         auto [ax, ay, az, gx, gy, gz] = imu2.readAG();
         auto [kf_yaw, kf_pitch] = imu2.imuKalmanUpdate(ax, ay, az, gx, gy);
 
-        printf("Accel %.2f, %.2f, %.2f | Gyro %.2f, %.2f, %.2f | KF Pitch: %.2f | KF Yaw: %.2f\n", ax, ay, az, gx, gy, gz, kf_pitch, kf_yaw);
-        ThisThread::sleep_for(10ms);
+        #ifdef USE_IMU
+        imu.get_angular_position_quat(&imuAngles);     
+        #endif   
+
+        //printf("Accel %.2f, %.2f, %.2f | Gyro %.2f, %.2f, %.2f | KF Pitch: %.2f | KF Yaw: %.2f\n", ax, ay, az, gx, gy, gz, kf_pitch, kf_yaw);
+        
+        printf("BNO Yaw: %.2f | Pitch: %.2f | Roll: %.2f| ISM Pitch: %.2f | Roll: %.2f\n", imuAngles.yaw, imuAngles.pitch, imuAngles.roll, kf_yaw, kf_pitch);
+        
+        ThisThread::sleep_for(1ms);
+
     }
 
 
