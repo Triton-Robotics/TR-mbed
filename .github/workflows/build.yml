@@ -1,0 +1,39 @@
+name: Mbed Build CI
+
+on:
+  push:
+    # branches: [ "main", "master" ]
+    branches: ["build_check"]
+  pull_request:
+    # branches: [ "main", "master" ]
+    branches: ["build_check"]
+jobs:
+  build:
+    name: Compile Firmware
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        robot: [Infantry, Sentry, Hero, TestBench]
+    
+    container:
+      image: ghcr.io/armmbed/mbed-os-env:master-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Configure Mbed
+        run: mbed-tools configure -m NUCLEO_F446RE -t GCC_ARM
+
+      - name: Build ${{ matrix.robot }}
+        run: cmake -S . -B cmake-build-debug -GNinja && cmake --build cmake-build-debug --target TR-${{ matrix.robot }}
+
+      - name: Upload Binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.robot }}-firmware
+          path: cmake-build-debug/**/*.bin
+          if-no-files-found: error
