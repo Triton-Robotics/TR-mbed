@@ -22,8 +22,9 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
+
+      - name: Deploy Mbed OS
+        run: mbed-tools deploy
 
       - name: Configure Mbed
         run: mbed-tools configure -m NUCLEO_F446RE -t GCC_ARM
