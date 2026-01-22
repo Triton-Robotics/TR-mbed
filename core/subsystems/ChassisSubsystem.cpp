@@ -5,14 +5,18 @@
 /**
  * @param radius radius in meters
  */
-ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbId, BNO055 &imu, double radius)
-    : LF(lfId, CAN_BUS_TYPE, MOTOR_TYPE),
-      RF(rfId, CAN_BUS_TYPE, MOTOR_TYPE),
-      LB(lbId, CAN_BUS_TYPE, MOTOR_TYPE),
-      RB(rbId, CAN_BUS_TYPE, MOTOR_TYPE),
-      imu(imu),
-      power_limit(50.0F),
-      chassis_radius(radius)
+ChassisSubsystem::ChassisSubsystem(const Config &config)
+    : power_limit(50.0F),
+      LF(config.left_front_can_id, CAN_BUS_TYPE, MOTOR_TYPE),
+      RF(config.right_front_can_id, CAN_BUS_TYPE, MOTOR_TYPE),
+      LB(config.left_back_can_id, CAN_BUS_TYPE, MOTOR_TYPE),
+      RB(config.right_back_can_id, CAN_BUS_TYPE, MOTOR_TYPE),
+      imu(config.imu),
+      chassis_radius(config.radius),
+      yaw(config.yaw_motor),
+      FF_Ks(config.speed_pid_ff_ks),
+      yawPhase{360.0 * (1.0 - ( (float) config.yaw_initial_offset_ticks / TICKS_REVOLUTION))} // change Yaw to CCW +, and ranges from 0 to 360
+      
 // chassisKalman()
 {
     LF.outputCap = 16000; // DJIMotor class has a max outputCap: 16384
@@ -20,19 +24,13 @@ ChassisSubsystem::ChassisSubsystem(short lfId, short rfId, short lbId, short rbI
     LB.outputCap = 16000;
     RB.outputCap = 16000;
 
-    this->lfId = lfId;
-    this->rfId = rfId;
-    this->lbId = lbId;
-    this->rbId = rbId;
-
-    setOmniKinematics(radius);
+    setOmniKinematics(config.radius);
     m_OmniKinematicsLimits.max_Vel = MAX_VEL; // m/s
     m_OmniKinematicsLimits.max_vOmega = 8; // rad/s
 
     PEAK_POWER_ALL = 10000;
     PEAK_POWER_SINGLE = 8000;
 
-    FF_Ks = 0;
 
 //    LF.setSpeedPID(2, 0, 0);
 //    RF.setSpeedPID(2, 0, 0);
@@ -433,10 +431,6 @@ void ChassisSubsystem::setSpeedFeedforward(MotorLocation location, double FF)
     }
 }
 
-void ChassisSubsystem::setSpeedFF_Ks(double Ks)
-{
-    FF_Ks = Ks;
-}
 
 ChassisSubsystem::BrakeMode ChassisSubsystem::getBrakeMode()
 {
@@ -631,11 +625,6 @@ int ChassisSubsystem::motorPIDtoPower(MotorLocation location, double speed, uint
     return power;
 }
 
-void ChassisSubsystem::setYawReference(DJIMotor *motor, double initial_offset_ticks)
-{
-    yaw = motor;
-    yawPhase = 360.0 * (1.0 - (initial_offset_ticks / TICKS_REVOLUTION)); // change Yaw to CCW +, and ranges from 0 to 360
-}
 
 bool ChassisSubsystem::setOdomReference() {
     yawOdom = -(1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0;

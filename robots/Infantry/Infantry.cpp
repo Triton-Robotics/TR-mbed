@@ -129,6 +129,7 @@ public:
     TurretSubsystem::config turret_config; 
     TurretSubsystem turret;
 
+    ChassisSubsystem::Config chassis_config;
     ChassisSubsystem chassis;
 
     Infantry(Config &config) : 
@@ -153,8 +154,19 @@ public:
         imu_
     },
     turret(turret_config),
+    chassis_config{
+        .left_front_can_id = 1,
+        .right_front_can_id = 2,
+        .left_back_can_id = 3,
+        .right_back_can_id = 4,
+        .radius = 0.22617,
+        .speed_pid_ff_ks = 0.065,
+        .yaw_motor = &turret.yaw,
+        .yaw_initial_offset_ticks = 6500,
+        .imu = imu_
+    },
 
-    chassis(1,2,3,4,imu_,0.22617)
+    chassis(chassis_config)
     {}
 
     ~Infantry() {}
@@ -163,8 +175,8 @@ public:
     {
         // TODO: better way to do this
         // chassis.setPowerLimit(referee.robot_status.chassis_power_limit);
-        chassis.setSpeedFF_Ks(0.065);
-        chassis.setYawReference(&turret.yaw, 6500);
+        // chassis.setSpeedFF_Ks(0.065);
+        // chassis.setYawReference(&turret.yaw, 6500);
         // shooter.setHeatLimit(referee.robot_status.shooter_barrel_heat_limit);
         printf("init\n");
 

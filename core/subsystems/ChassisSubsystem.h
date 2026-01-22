@@ -77,6 +77,21 @@ struct OmniKinematicsLimits
 class ChassisSubsystem
 {
 public:
+    
+    struct Config {
+        int left_front_can_id;
+        int right_front_can_id;
+        int left_back_can_id;
+        int right_back_can_id;
+
+        const double radius;
+        const double speed_pid_ff_ks;
+
+        DJIMotor *yaw_motor;
+        int yaw_initial_offset_ticks;
+        BNO055 &imu;
+    };
+
     /**
      * The Chassis constructor. This constructor takes in the CAN IDs of the four motors on the chassis.
      * @param lfId Left front motor CAN ID
@@ -84,7 +99,7 @@ public:
      * @param lbId Left back motor CAN ID
      * @param rbId Right back motor CAN ID
      */
-    ChassisSubsystem(short lfId, short rfId, short lbId, short rbId, BNO055 &imu, double radius);
+    ChassisSubsystem(const Config &config);
 
     /**
      * The BrakeMode enum is used to set the brake mode of the chassis.
@@ -204,11 +219,6 @@ public:
      */
     void setSpeedFeedforward(MotorLocation location, double FF);
 
-    /**
-     * Sets the Friction Feedforward compensation for the SpeedPID
-     * @param Ks The arbitrary Friction Feedforward Gain in [-1, 1]
-     */
-    void setSpeedFF_Ks(double Ks);
 
     /**
      * A helper method to find the brake mode of the chassis.
@@ -277,15 +287,6 @@ public:
      */
     void readImu();
 
-    /**
-     * Yaw motor is a motor that controls the Turret
-     * yawPhase is an initial offset of your Yaw Motor Angle
-     * (basically which direction you want your Heading to be w.r.t Yaw Motor)
-     * 
-     * @param motor your Yaw Motor reference as in `&{motor_name}`
-     * @param initial_offset_ticks initial offset of your Yaw Motor Angle in ticks (try pass it as double)
-     */
-    void setYawReference(DJIMotor *motor, double initial_offset_ticks);
 
     /**
      * Yaw motor is a motor that controls the Turret
@@ -361,11 +362,6 @@ private:
     // ChassisKalman chassisKalman;
     double testAngle;
     int lastTimeMs;
-
-    short lfId;
-    short rfId;
-    short lbId;
-    short rbId;
 };
 
 #endif // TR_EMBEDDED_CHASSIS_SUBSYSTEM_H
