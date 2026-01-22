@@ -20,8 +20,8 @@ constexpr auto IMU_RESET = PA_8;
 
 constexpr int pitch_zero_offset_ticks = 1500;
 
-constexpr float JOYSTICK_YAW_SENSITIVITY_DPS = 300;
-constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 100;
+constexpr float JOYSTICK_YAW_SENSITIVITY_DPS = 600;
+constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 300;
 
 
 // TODO: put acc values
