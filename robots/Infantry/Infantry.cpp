@@ -30,49 +30,11 @@ PID::config yaw_pos_PID = {0.5, 0, 0, 90, 2};
 PID::config pitch_vel_PID = {500,0.8,0, 32000, 2000};
 PID::config pitch_pos_PID = {1.5,0.0005,0.05, 30, 2};
 
-// TurretSubsystem::config turret_config {
-//     4,
-//     GM6020,
-//     7,
-//     GM6020,
-//     pitch_zero_offset_ticks,
-//     yaw_vel_PID,
-//     yaw_pos_PID,
-//     pitch_vel_PID,
-//     pitch_pos_PID,
-//     CANHandler::CANBUS_1,
-//     CANHandler::CANBUS_2,
-//     imu_ptr.get()
-// };
-
-
-// TurretSubsystem turret(turret_config);
 
 PID::config fl_vel_config = {3, 0, 0};
 PID::config fr_vel_config = {3, 0, 0};
 PID::config bl_vel_config = {3, 0, 0};
 PID::config br_vel_config = {3, 0, 0};
-// OmniWheelSubsystem chassis({
-//     1,
-//     2,
-//     3,
-//     4,
-//     0.22617,
-//     60,
-//     2.92,
-//     100,
-//     0.065 * INT16_MAX,
-//     4.8,
-//     fl_vel_config,
-//     fr_vel_config,
-//     bl_vel_config,
-//     br_vel_config,
-//     CANHandler::CANBUS_1,
-//     imu_ptr.get(),
-//     &turret,
-//     6500,
-//     0 // TODO add correct yaw_align
-// });
 
 // // TODO: put acc values
 PID::config flywheelL_PID = {7.1849, 0.000042634, 0};
@@ -96,17 +58,6 @@ ShooterSubsystem shooter({
 ChassisSpeeds des_chassis_state;
 TurretState des_turret_state;
 ShootState des_shoot_state;
-
-
-// DJIMotor::config flyLcfg =
-// {
-//     1,
-//     CANHandler::CANBUS_2,
-//     M3508,
-//     "Right Flywheel",
-//     flywheelL_PID
-// };
-// DJIMotor testmot(flyLcfg);
 
 int remoteTimer = 0;
 
@@ -248,12 +199,10 @@ public:
         if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP)
         {
             des_shoot_state = ShootState::SHOOT;
-            // testmot.setPower(0);
         }
         else if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID)
         {
             des_shoot_state = ShootState::FLYWHEEL;
-            // testmot.setPower(1000);
         }
         else
         {
