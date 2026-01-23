@@ -39,11 +39,11 @@ bool send_power = false;
 
 float TorqueFromCurrent(int torque_raw) {
 
-float current_A = (torque_raw / 16384.0f) * 20.0f;
-float motor_torque = Kt * current_A;
-float output_torque = motor_torque * GEAR_RATIO;
+    float current_A = (torque_raw / 16384.0f) * 20.0f;
+    float motor_torque = Kt * current_A;
+    float output_torque = motor_torque * GEAR_RATIO;
 
-return output_torque;
+    return output_torque;
 }
 
 float readCurrentACS712() {
@@ -151,7 +151,7 @@ int main(){
             //INDEXER CODE
             if (remote.leftSwitch() == Remote::SwitchState::UP) {
                 // if(robot_status.shooter_barrel_heat_limit < 10 || power_heat_data.shooter_17mm_1_barrel_heat < robot_status.shooter_barrel_heat_limit - 30) {
-                    feeder.setSpeed(5 * 16 * M2006_GEAR_RATIO);
+                    feeder.setSpeed(-10 * 16 * M2006_GEAR_RATIO);
                 // }
                 // else {
                 //     feeder.setSpeed(0);
@@ -243,11 +243,12 @@ int main(){
             printff("ACS Torque: %7.3f Nm\n", acs_torque);
 
             int torque_raw = feeder.getData(TORQUE);
-            float torque_calc = TorqueFromCurrent(torque_raw);
-            printff("Motor Torque Raw: %4d | Calc: %7.3f Nm\n", torque_raw, torque_calc);
+            // float torque_calc = TorqueFromCurrent(torque_raw);
+            // printff("Motor Torque Raw: %4d | Calc: %7.3f Nm\n", torque_raw, torque_calc);
+            printff("Motor Torque Raw: %4d Nm\n", torque_raw);
             
-            float difference = acs_torque - torque_calc;
-            float percent_diff = (difference / torque_calc) * 100.0f;
+            float difference = acs_torque - torque_raw;
+            float percent_diff = (difference / torque_raw) * 100.0f;
             printff("Difference: %7.3f Nm (%5.1f%%)\n", difference, percent_diff);
         }
 
