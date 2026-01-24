@@ -211,5 +211,5 @@ std::tuple<float, float> ISM330::imuKalmanUpdate(float accelX, float accelY, flo
     phi_n = phi_p + ds*w_x;
     phi_p = phi_n + K_phi*(phi_s - phi_n);
     P_phi_p = (1-K_phi)*P_phi_n;
-    return std::make_tuple(theta_p, phi_p);
+    return std::make_tuple(theta_p, phi_p); // returns pitch (theta) and roll (phi)
 }
