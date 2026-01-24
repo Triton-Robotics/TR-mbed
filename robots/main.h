@@ -24,6 +24,7 @@
 #include "communications/referee/ref_ui.h"
 #include "communications/referee/ref_operations.h"
 #include "communications/jetson/Jetson.h"
+#include "communications/PwmIn.h"
 
 
 #include <cstring>
