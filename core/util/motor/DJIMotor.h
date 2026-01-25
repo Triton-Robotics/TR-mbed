@@ -23,12 +23,12 @@ static Thread s_motorSendThread(osPriorityNormal);              //threading for 
 
 enum motorDataType {
     ANGLE,
-    VELOCITY,
-    TORQUE,
+    VELOCITY,  //actual
+    TORQUE,  //
     TEMPERATURE,
     MULTITURNANGLE,
-    POWEROUT,
-    VALUE
+    POWEROUT,  //custom, last power that's sent (power/ current)
+    VALUE  //desire, whatever you're setting
 };
 
 

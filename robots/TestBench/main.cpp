@@ -13,7 +13,7 @@ AnalogIn ain(PA_7);
 DigitalOut dout(LED1);
 // ACS712-30A Current Sensor Configuration
 // Constants for ACS712-30A (66mV/A sensitivity, VCC/2 at 0A)
-const float ACS712_SENSITIVITY = 0.066f;    // 66 mV per Ampere for 30A model
+const float ACS712_SENSITIVITY = 0.66f;    // 66 mV per Ampere for 30A model
 const float ACS712_VOLTAGE_AT_ZERO_A = 3.3f / 2.0f;  // Assuming 3.3V VCC
 const float VCC = 3.3f;                     // Your board's analog reference voltage
 
@@ -26,7 +26,7 @@ DJIMotor feeder(5, CANHandler::CANBUS_2, M2006);
 DJIMotor RFLYWHEEL(6, CANHandler::CANBUS_1, M3508,"RightFly");
 DJIMotor LFLYWHEEL(7, CANHandler::CANBUS_1, M3508,"LeftFly");
 
-// RAW MOTOR CONTROL - NO PID, NO CHASSIS SUBSYSTEM
+// RAW MOTOR CONTROL - NO PID, NO CHASSIS SUBSYSTEMAb
 DJIMotor motor1(1, CANHandler::CANBUS_1, M3508, "Motor1");
 DJIMotor motor2(2, CANHandler::CANBUS_1, M3508, "Motor2");
 DJIMotor motor3(3, CANHandler::CANBUS_1, M3508, "Motor3");
@@ -48,14 +48,13 @@ float TorqueFromCurrent(int torque_raw) {
 
 float readCurrentACS712() {
     // Read raw analog value (0.0 to 1.0)
-    float analog_value = ain.read();
+    float analog_value = ain.read();   // output voltage
     
     // Convert to voltage (0.0 to VCC)
     float sensor_voltage = analog_value * VCC;
     
-    // Calculate current: (V_sensor - V_zero) / sensitivity
     // For bidirectional sensing (positive and negative current)
-    float current = (sensor_voltage - ACS712_VOLTAGE_AT_ZERO_A) / ACS712_SENSITIVITY;
+    float current = (ACS712_VOLTAGE_AT_ZERO_A - sensor_voltage) / ACS712_SENSITIVITY;
     
     return current;
 }
@@ -151,7 +150,8 @@ int main(){
             //INDEXER CODE
             if (remote.leftSwitch() == Remote::SwitchState::UP) {
                 // if(robot_status.shooter_barrel_heat_limit < 10 || power_heat_data.shooter_17mm_1_barrel_heat < robot_status.shooter_barrel_heat_limit - 30) {
-                    feeder.setSpeed(-10 * 16 * M2006_GEAR_RATIO);
+                    // feeder.setSpeed(-10 * 16 * M2006_GEAR_RATIO);
+                    feeder.setPower(8000);
                 // }
                 // else {
                 //     feeder.setSpeed(0);
@@ -226,7 +226,7 @@ int main(){
             DJIMotor::s_sendValues();  // Enable debug output
         //             printff("%d %d %d %d\n",
         // motor1.getData(VELOCITY)/24,
-        // motor2.getData(VELOCITY)/24,
+        // qmotor2.getData(VELOCITY)/24,
         // motor3.getData(VELOCITY)/24,
         // motor4.getData(VELOCITY)/24);
         //             }
@@ -236,20 +236,22 @@ int main(){
         static int debugCounter = 0;
         if(debugCounter++ % 50 == 0) {  // Only print every 50 loops
 
-            float acs_current = readCurrentACS712();
-            printff("ACS712 Current: %.2f A\n", acs_current);
-            
-            float acs_torque = calculateTorqueFromACS712(acs_current);
-            printff("ACS Torque: %7.3f Nm\n", acs_torque);
+            printff(" %d,  %d, %.3f \n", feeder.getData(TORQUE), feeder.getData(POWEROUT), ain.read());
 
-            int torque_raw = feeder.getData(TORQUE);
-            // float torque_calc = TorqueFromCurrent(torque_raw);
-            // printff("Motor Torque Raw: %4d | Calc: %7.3f Nm\n", torque_raw, torque_calc);
-            printff("Motor Torque Raw: %4d Nm\n", torque_raw);
+            // float acs_current = readCurrentACS712();
+            // printff("ACS712 Current: %.2f A\n", acs_current);
             
-            float difference = acs_torque - torque_raw;
-            float percent_diff = (difference / torque_raw) * 100.0f;
-            printff("Difference: %7.3f Nm (%5.1f%%)\n", difference, percent_diff);
+            // float acs_torque = calculateTorqueFromACS712(acs_current);
+            // printff("ACS Torque: %7.3f Nm\n", acs_torque);
+
+            // int torque_raw = feeder.getData(TORQUE);
+            // // float torque_calc = TorqueFromCurrent(torque_raw);
+            // // printff("Motor Torque Raw: %4d | Calc: %7.3f Nm\n", torque_raw, torque_calc);
+            // printff("Motor Torque Raw: %4d Nm\n", torque_raw);
+            
+            // float difference = acs_torque - torque_raw;
+            // float percent_diff = (difference / torque_raw) * 100.0f;
+            // printff("Difference: %7.3f Nm (%5.1f%%)\n", difference, percent_diff);
         }
 
         // printf("Motor Data: ");
