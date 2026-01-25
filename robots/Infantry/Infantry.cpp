@@ -1,18 +1,12 @@
-#include "BufferedSerial.h"
-// #include "ChassisSubsystem.h"
-#include "I2C.h"
-#include "ThisThread.h"
 #include "base_robot/BaseRobot.h"
+#include "util/algorithms/general_functions.h"
+
 #include "subsystems/ChassisSubsystem.h"
-// #include "subsystems/OmniWheelSubsystem.h"
 #include "subsystems/ShooterSubsystem.h"
 #include "subsystems/TurretSubsystem.h"
-#include "us_ticker_defines.h"
-#include "util/communications/CANHandler.h"
+
 #include "util/communications/jetson/Jetson.h"
-#include "util/motor/DJIMotor.h"
 #include "util/peripherals/imu/BNO055.h"
-#include <cmath>
 
 constexpr auto IMU_I2C_SDA = PB_7;
 constexpr auto IMU_I2C_SCL = PB_8;
@@ -138,7 +132,7 @@ public:
     
     void periodic(unsigned long dt_us) override {
         // TODO: use remote to setState for all subsystems
-        if (remoteTimer > 20) {
+        if (remoteTimer > 10) {
             remoteTimer = 0;
             remote_.read();
         }
@@ -185,7 +179,7 @@ public:
         yaw_desired_angle -= joystick_yaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
         // normalize between [-180, 180)
         // TODO yaw pid does not properly respect the discontinuity at 180, -180 it goes the long way around instead
-        yaw_desired_angle = remainder(yaw_desired_angle, 360.0);
+        yaw_desired_angle = capAngle(yaw_desired_angle);
 
 
         float joystick_pitch = remote_.getChannel(Remote::Channel::RIGHT_VERTICAL);
@@ -193,7 +187,7 @@ public:
         // TODO need to limit this to between lower and upper bound of pitch
         pitch_desired_angle += joystick_pitch * JOYSTICK_PITCH_SENSITIVITY_DPS * dt_us / 1000000;
 
-        turret.set_desired_turret(yaw_desired_angle, pitch_desired_angle, chassis.getChassisSpeeds().vOmega);
+        turret.set_desired_turret(yaw_desired_angle, pitch_desired_angle, chassis.getChassisSpeeds().vOmega * 60 / (2*PI));
 
         // Shooter Logic
         if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP)

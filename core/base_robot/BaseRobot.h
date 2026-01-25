@@ -1,10 +1,8 @@
 #pragma once
 
-#include "BufferedSerial.h"
 #include "mbed.h"
 #include "PinNames.h"
 #include "util/communications/DJIRemote.h"
-#include "util/communications/jetson/Jetson.h"
 #include "util/communications/referee/ref_serial.h"
 #include "util/motor/DJIMotor.h"
 

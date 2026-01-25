@@ -1,19 +1,4 @@
 #include "TurretSubsystem.h"
-#include "subsystems/ChassisSubsystem.h"
-#include "util/motor/DJIMotor.h"
-
-int calculateDeltaYaw(int curr_yaw, int des_yaw)
-{
-    int deltaYaw = des_yaw - curr_yaw;
-    if (abs(deltaYaw) > 180)
-    {
-        if (deltaYaw > 0)
-            deltaYaw -= 360;
-        else
-            deltaYaw += 360;
-    }
-    return deltaYaw;
-}
 
 
 TurretSubsystem::TurretSubsystem(config cfg):

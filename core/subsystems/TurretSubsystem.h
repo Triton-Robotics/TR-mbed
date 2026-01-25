@@ -1,5 +1,6 @@
 #pragma once
 
+#include "util/algorithms/general_functions.h"
 #include "util/peripherals/imu/BNO055.h"
 #include <util/communications/CANHandler.h>
 #include <util/motor/DJIMotor.h>
