@@ -64,6 +64,11 @@ constexpr int FLYWHEEL_VELO = 5500;
 BNO055_ANGULAR_POSITION_typedef imuAngles;
 #endif
 
+ISM330::ISM330_VECTOR_TypeDef imuAccelISM;
+ISM330::ISM330_VECTOR_TypeDef imuGyroISM;
+ISM330::ISM330_ANGULAR_POSITION_typedef imuAnglesISM;
+
+
 I2C i2c(I2C_SDA, I2C_SCL);
 
 I2C i2c2(I2C_SDA2, I2C_SCL2);
@@ -93,16 +98,21 @@ int main(){
         // auto [ax, ay, az] = imu.readAccel();
         // auto [gx, gy, gz] = imu.readGyro();
 
-        auto [ax, ay, az, gx, gy, gz] = imu2.readAG();
-        auto [ism_pitch, ism_roll] = imu2.imuKalmanUpdate(ax, ay, az, gx, gy);
+        // auto [ax, ay, az, gx, gy, gz] = imu2.readAG();
+        // auto [ism_pitch, ism_roll] = imu2.imuKalmanUpdate(ax, ay, az, gx, gy);
 
         #ifdef USE_IMU
         imu.get_angular_position_quat(&imuAngles);     
         #endif   
 
+
+        imu2.getAGVectors(imuAccelISM, imuGyroISM);
+        imu2.getEulerAngles(imuAnglesISM);
         //printf("Accel %.2f, %.2f, %.2f | Gyro %.2f, %.2f, %.2f | KF Pitch: %.2f | KF Yaw: %.2f\n", ax, ay, az, gx, gy, gz, kf_pitch, kf_yaw);
         
-        printf("BNO Yaw: %.2f | Pitch: %.2f | Roll: %.2f| ISM Pitch: %.2f | Roll: %.2f\n", imuAngles.yaw, imuAngles.pitch, imuAngles.roll, ism_pitch, ism_roll);
+        printf("ISM Accel: %.2f, %.2f, %.2f | ISM Gyro: %.2f, %.2f, %.2f | ISM Pitch: %.2f | ISM Roll: %.2f\n", imuAccelISM.x, imuAccelISM.y, imuAccelISM.z, imuGyroISM.x, imuGyroISM.y, imuGyroISM.z, imuAnglesISM.pitch, imuAnglesISM.roll);
+
+        //printf("BNO Yaw: %.2f | Pitch: %.2f | Roll: %.2f| ISM Pitch: %.2f | Roll: %.2f\n", imuAngles.yaw, imuAngles.pitch, imuAngles.roll, ism_pitch, ism_roll);
         
         ThisThread::sleep_for(1ms);
 

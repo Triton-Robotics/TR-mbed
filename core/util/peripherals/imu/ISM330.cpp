@@ -147,8 +147,24 @@ std::tuple<float, float, float, float, float, float> ISM330::readAG() noexcept//
 
     auto [gx,gy,gz] = readingToGyro(&agReadings[0]);
     auto [ax,ay,az] = readingToAccel(&agReadings[6]);
+
+    ISM330_VECTOR_TypeDef accelVector = {ax, ay, az};
+    ISM330_VECTOR_TypeDef gyroVector = {gx, gy, gz};
+
     return std::make_tuple(ax, ay, az, gx, gy, gz);
 }
+
+    void ISM330::getAGVectors(ISM330_VECTOR_TypeDef& accel, ISM330_VECTOR_TypeDef& gyro){
+    auto [ax, ay, az, gx, gy, gz] = readAG();
+    accel.x = ax;
+    accel.y = ay;
+    accel.z = az;
+    gyro.x = gx;
+    gyro.y = gy;
+    gyro.z = gz;
+    }
+
+
 
 
 // Sensor Fusion Stuff; Stolen from https://sparxeng.com/blog/software/imu-signal-processing-with-kalman-filter
@@ -212,4 +228,13 @@ std::tuple<float, float> ISM330::imuKalmanUpdate(float accelX, float accelY, flo
     phi_p = phi_n + K_phi*(phi_s - phi_n);
     P_phi_p = (1-K_phi)*P_phi_n;
     return std::make_tuple(theta_p, phi_p); // returns pitch (theta) and roll (phi)
+}
+
+void ISM330::getEulerAngles(ISM330_ANGULAR_POSITION_typedef& angles) {
+    auto [ax, ay, az, gx, gy, gz] = readAG();
+
+    auto [pitch, roll] = imuKalmanUpdate(ax, ay, az, gx, gy);
+
+    angles.pitch = pitch;
+    angles.roll = roll;
 }

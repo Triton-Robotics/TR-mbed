@@ -52,21 +52,37 @@ public:
     void reset() noexcept;
 
     //Accel and Gyro Reading functions
+
+    // Structs
     
-    //Raw I2C readings to actual measurements
-    std::tuple<float, float, float> readingToAccel(const uint8_t *readings);
-    std::tuple<float, float, float> readingToGyro(const uint8_t *readings);
+    // Acceleration Vector (just be careful when you use it, could be used for linear and angular)
+
+    typedef struct {
+        float x;
+        float y;
+        float z;
+    } ISM330_VECTOR_TypeDef;
+
+    // Euler Angles
+    typedef struct{
+        float yaw;
+        float roll;
+        float pitch;
+    } ISM330_ANGULAR_POSITION_typedef;
+
 
     //Full read functions
-    std::tuple<float, float, float> readAccel() noexcept;
-
-    std::tuple<float, float, float> readGyro() noexcept;
 
     //Reads Accel and Gyro sequentially, reduces I2C transactions
     std::tuple<float, float, float, float, float, float> readAG() noexcept; 
 
+    // Update Structs
+    void getAGVectors(ISM330_VECTOR_TypeDef& accel, ISM330_VECTOR_TypeDef& gyro);
+
     // IMU Sensor Fusion
     std::tuple<float, float> imuKalmanUpdate(float accelX, float accelY, float accelZ, float gyroX, float gyroY);
+
+    void getEulerAngles(ISM330_ANGULAR_POSITION_typedef& angles);
 
 
     private:
@@ -74,7 +90,14 @@ public:
     uint8_t _address;
     uint8_t whoAmIReading;
 
+    
+    //Raw I2C readings to actual measurements
+    std::tuple<float, float, float> readingToAccel(const uint8_t *readings);
+    std::tuple<float, float, float> readingToGyro(const uint8_t *readings);
 
+    //Reading Accel one at a time
+    std::tuple<float, float, float> readAccel() noexcept;
+    std::tuple<float, float, float> readGyro() noexcept;
 };
 
 
