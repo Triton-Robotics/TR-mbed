@@ -62,6 +62,54 @@ project(${APP_TARGET})
 add_subdirectory(${MBED_PATH})
 link_libraries(mbed-os)
 
+# Recursively get all mbed targets and mark their includes as system
+function(make_target_system target)
+    if(TARGET ${target})
+        get_target_property(target_type ${target} TYPE)
+        if(NOT target_type STREQUAL "INTERFACE_LIBRARY")
+            # For regular libraries, mark include dirs as system
+            get_target_property(includes ${target} INTERFACE_INCLUDE_DIRECTORIES)
+            if(includes)
+                set_target_properties(${target} PROPERTIES
+                    INTERFACE_SYSTEM_INCLUDE_DIRECTORIES "${includes}"
+                )
+            endif()
+        else()
+            # For interface libraries, get their includes
+            get_target_property(includes ${target} INTERFACE_INCLUDE_DIRECTORIES)
+            if(includes)
+                set_target_properties(${target} PROPERTIES
+                    INTERFACE_SYSTEM_INCLUDE_DIRECTORIES "${includes}"
+                )
+            endif()
+        endif()
+        
+        # Process linked libraries recursively
+        get_target_property(link_libs ${target} INTERFACE_LINK_LIBRARIES)
+        if(link_libs)
+            foreach(lib ${link_libs})
+                make_target_system(${lib})
+            endforeach()
+        endif()
+    endif()
+endfunction()
+
+# Apply to all mbed-os targets
+make_target_system(mbed-os)
+make_target_system(mbed-core)
+make_target_system(mbed-rtos)
+
+
+add_compile_options(
+    -Wall
+    -Wextra
+    -Wpedantic         
+    -Wshadow           
+    -Wformat=2         
+    -Wcast-align       
+    -Wvla               
+)
+
 add_subdirectory(core)
 link_libraries(TR-core)
 
