@@ -1,5 +1,3 @@
-#pragma clang diagnostic push
-// #pragma ide diagnostic ignored "EndlessLoop"
 
 #include "DJIMotor.h"
 
@@ -80,25 +78,23 @@ DJIMotor::~DJIMotor() {
 
 void DJIMotor::setOutput() {
     uint32_t time = us_ticker_read();
-    int powerOut;
 
     if (mode == SPD)
-        powerOut = calculateSpeedPID(value, getData(VELOCITY),
+        powerOut = (short) calculateSpeedPID(value, getData(VELOCITY),
                                      static_cast<double>(time - timeOfLastPID));
 
     else if (mode == POS)
         if (!useAbsEncoder)
-            powerOut =
-                calculatePositionPID(value, getData(MULTITURNANGLE),
+            powerOut = (short) calculatePositionPID(value, getData(MULTITURNANGLE),
                                      static_cast<double>(time - timeOfLastPID));
 
         else
-            powerOut = calculatePeriodicPosition(
+            powerOut = (short) calculatePeriodicPosition(
                 static_cast<float>(calculateDeltaPhase(value, getData(ANGLE))),
                 static_cast<double>(time - timeOfLastPID));
 
     else if (mode == POW)
-        powerOut = value;
+        powerOut = (short) value;
 
     else if (mode == OFF)
         powerOut = 0;
@@ -111,17 +107,17 @@ void DJIMotor::setOutput() {
 
     if (type == M3508_FLYWHEEL || type == M3508 || type == M2006) {
         if (powerOut > outputCap || powerOut > INT15_T_MAX)
-            powerOut = min(outputCap, INT15_T_MAX);
+            powerOut = (short) min(outputCap, INT15_T_MAX);
 
         else if (powerOut < -outputCap || powerOut < -INT15_T_MAX)
-            powerOut = max(-outputCap, -INT15_T_MAX);
+            powerOut = (short) max(-outputCap, -INT15_T_MAX);
 
     } else {
         if (powerOut > outputCap || powerOut > INT16_T_MAX)
-            powerOut = min(outputCap, INT16_T_MAX);
+            powerOut = (short) min(outputCap, INT16_T_MAX);
 
         else if (powerOut < -outputCap || powerOut < -INT16_T_MAX)
-            powerOut = max(-outputCap, -INT16_T_MAX);
+            powerOut = (short) max(-outputCap, -INT16_T_MAX);
     }
 
     this->powerOut = static_cast<int16_t>(powerOut);
@@ -160,18 +156,20 @@ void DJIMotor::sendOneID(CANHandler::CANBus canBus, short sendIDindex,
             printf("NA\t");
     }
 
-    if (anyMotors)
-        if (s_canHandlers[canBus]->exists)
+    if (anyMotors) {
+        if (s_canHandlers[canBus]->exists){
             s_canHandlers[canBus]->rawSend(s_sendIDs[sendIDindex], bytes);
-
-        else
+        } else {
             printf("\n[ERROR] YOUR CANHANDLERS ARE NOT DEFINED YET. DO THIS "
                    "BEFORE YOU CALL ANY MOTORS,\n USING "
                    "[(DJIMotor::s_setCANHandlers(PA_11,PA_12,PB_12,PB_13)], "
                    "WHERE PA_11, PA_12 ARE TX, RX\n");
+            }
+    }
 
-    if (debug)
+    if (debug) {
         printf("\n");
+    }
 }
 
 void DJIMotor::setCanHandlers(CANHandler *can_1, CANHandler *can_2) {
@@ -364,5 +362,3 @@ float DJIMotor::calculateDeltaPhase(float target, float current, float max) {
     }
     return deltaPhase;
 }
-
-#pragma clang diagnostic pop

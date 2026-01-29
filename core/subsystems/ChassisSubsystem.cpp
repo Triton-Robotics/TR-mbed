@@ -11,13 +11,11 @@ ChassisSubsystem::ChassisSubsystem(const Config &config)
       RF(config.right_front_can_id, CAN_BUS_TYPE, MOTOR_TYPE),
       LB(config.left_back_can_id, CAN_BUS_TYPE, MOTOR_TYPE),
       RB(config.right_back_can_id, CAN_BUS_TYPE, MOTOR_TYPE),
+      yaw(config.yaw_motor),
+      yawPhase{360.0 * (1.0 - ( (float) config.yaw_initial_offset_ticks / TICKS_REVOLUTION))}, // change Yaw to CCW +, and ranges from 0 to 360
       imu(config.imu),
       chassis_radius(config.radius),
-      yaw(config.yaw_motor),
-      FF_Ks(config.speed_pid_ff_ks),
-      yawPhase{360.0 * (1.0 - ( (float) config.yaw_initial_offset_ticks / TICKS_REVOLUTION))} // change Yaw to CCW +, and ranges from 0 to 360
-      
-// chassisKalman()
+      FF_Ks(config.speed_pid_ff_ks)
 {
     LF.outputCap = 16000; // DJIMotor class has a max outputCap: 16384
     RF.outputCap = 16000;
@@ -405,6 +403,9 @@ DJIMotor &ChassisSubsystem::getMotor(MotorLocation location)
     case RIGHT_BACK:
         return RB;
     }
+    
+    assert(false && "Invalid MotorLocation");
+    __builtin_unreachable();
 }
 
 void ChassisSubsystem::setMotorSpeedPID(MotorLocation location, float kP, float kI, float kD)
@@ -456,7 +457,13 @@ double ChassisSubsystem::getMotorSpeed(MotorLocation location, SPEED_UNIT unit =
         return speed;
     case METER_PER_SECOND:
         return (speed / M3508_GEAR_RATIO) * (2 * PI / 60) * (WHEEL_DIAMETER_METERS / 2);
+    case RAD_PER_SECOND:
+        // TODO this should be handled properly
+        return 0;
     }
+
+    assert(false && "Invalid motor speed unit");
+    __builtin_unreachable();
 }
 
 void ChassisSubsystem::readImu()

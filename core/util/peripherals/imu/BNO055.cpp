@@ -17,10 +17,6 @@
 #include "mbed.h"
 #include "BNO055.h"
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "UnusedParameter"
-#pragma ide diagnostic ignored "UnusedLocalVariable"
-
 BNO055::BNO055 (PinName p_sda, PinName p_scl, PinName p_reset, uint8_t addr, uint8_t mode):
     _i2c_p(new I2C(p_sda, p_scl)), _i2c(*_i2c_p), _res(p_reset)
 {
@@ -711,5 +707,3 @@ uint8_t BNO055::write_reg1(uint8_t addr, uint8_t data)
     change_fusion_mode(current_mode);
     return d;
 }
-
-#pragma clang diagnostic pop

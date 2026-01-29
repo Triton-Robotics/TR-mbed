@@ -475,7 +475,6 @@ void Referee::init_referee_struct_data()
 void Referee::referee_data_pack_handle(uint8_t sof,uint16_t cmd_id, uint8_t *p_data, uint16_t len)
 {
     
-	unsigned char i=i;
 	uint8_t tx_buff[MAX_SIZE];
 
     mutex_write_.lock();

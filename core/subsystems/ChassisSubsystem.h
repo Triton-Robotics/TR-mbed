@@ -46,13 +46,6 @@ struct WheelSpeeds
         LB *= scalar;
         RB *= scalar;
     }
-
-    char *to_string()
-    {
-        char buffer[56];
-        sprintf(buffer, "LF: %4.2f RF: %4.2f LB: %4.2f RB: %4.2f\0", LF, RF, LB, RB);
-        return buffer;
-    }
 };
 
 struct ChassisSpeeds
@@ -322,7 +315,6 @@ public:
     /**
      * yawPhase is an initial offset of your Yaw Motor Angle (basically which direction you want your Heading to be w.r.t Yaw Motor)
     */
-    double yawPhase;
     double yawOdom;
     double imuOdom;
     int testData[300][4];
@@ -334,7 +326,7 @@ public:
 private:
     DJIMotor LF, RF, LB, RB;
     DJIMotor *yaw = 0;
-    // double yawPhase;
+    double yawPhase;
     BrakeMode brakeMode;
 
     // double beybladeSpeed;

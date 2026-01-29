@@ -146,8 +146,14 @@ void Remote::printAxisData() const{
 }
 
 void Remote::dumpInfo() const{
-    printf("%d %d %d %d %d %d\n", getChannelInt(Remote::Channel::LEFT_HORIZONTAL), getChannelInt(Remote::Channel::LEFT_VERTICAL), getChannelInt(Remote::Channel::RIGHT_HORIZONTAL), getChannelInt(Remote::Channel::RIGHT_VERTICAL),
-           getSwitch(Switch::LEFT_SWITCH), getSwitch(Switch::RIGHT_SWITCH));
+    printf("%d %d %d %d %d %d\n", 
+        getChannelInt(Remote::Channel::LEFT_HORIZONTAL), 
+        getChannelInt(Remote::Channel::LEFT_VERTICAL), 
+        getChannelInt(Remote::Channel::RIGHT_HORIZONTAL), 
+        getChannelInt(Remote::Channel::RIGHT_VERTICAL),
+        static_cast<int>(getSwitch(Switch::LEFT_SWITCH)), 
+        static_cast<int>(getSwitch(Switch::RIGHT_SWITCH))
+    );
 }
 
 int16_t Remote::getMouseX() const { return remote.mouse.x; }
@@ -198,8 +204,6 @@ void Remote::switchToState(RemoteInfo *remote){
 
 }
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "readability-convert-member-functions-to-static"
 bool Remote::badData(const uint8_t rxBuffer[], RemoteInfo *remote){
 
     auto lSwitch = SwitchState(((rxBuffer[5] >> 4) & 0x000C) >> 2);
@@ -235,7 +239,6 @@ bool Remote::badData(const uint8_t rxBuffer[], RemoteInfo *remote){
 
     return false;
 }
-#pragma clang diagnostic pop
 
 void Remote::parseBuffer(){
     // values implemented by shifting bits across based on the dr16
