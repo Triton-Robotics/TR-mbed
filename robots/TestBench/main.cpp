@@ -13,7 +13,7 @@ AnalogIn ain(PA_7);
 DigitalOut dout(LED1);
 // ACS712-30A Current Sensor Configuration
 // Constants for ACS712-30A (66mV/A sensitivity, VCC/2 at 0A)
-const float ACS712_SENSITIVITY = 0.66f;    // 66 mV per Ampere for 30A model
+const float ACS712_SENSITIVITY = 0.066f;    // 66 mV per Ampere for 30A model
 const float ACS712_VOLTAGE_AT_ZERO_A = 3.3f / 2.0f;  // Assuming 3.3V VCC
 const float VCC = 3.3f;                     // Your board's analog reference voltage
 
