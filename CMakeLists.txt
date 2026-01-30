@@ -104,10 +104,10 @@ add_compile_options(
     -Wall
     -Wextra
     -Wpedantic         
-    -Wshadow           
+    -Wshadow=compatible-local
     -Wformat=2         
     -Wcast-align       
-    -Wvla               
+    -Wvla   
 )
 
 add_subdirectory(core)

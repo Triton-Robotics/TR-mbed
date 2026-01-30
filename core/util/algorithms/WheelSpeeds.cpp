@@ -4,10 +4,5 @@
 
 #include "WheelSpeeds.h"
 
-
-WheelSpeeds::WheelSpeeds(double LF, double RF, double LB, double RB) {
-    this->LF = LF;
-    this->RF = RF;
-    this->LB = LB;
-    this->RB = RB;
-}
+WheelSpeeds::WheelSpeeds(double LF, double RF, double LB, double RB)
+    : LF{LF}, LB{LB}, RF{RF}, RB{RB} {}
