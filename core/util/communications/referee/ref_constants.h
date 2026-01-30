@@ -95,6 +95,10 @@
 #define       JudgeLength_Robot_Map              26
 
 
+// needed for anonymous structs defined below
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+
 
 // -------------------------------------
 // BELOW: from SCUT code line 733-1102
@@ -606,3 +610,5 @@ typedef  struct __packed
 // 	graphic_data_struct_t cilentData[5];//数据段
 // 	uint16_t		 						FrameTail;//帧尾
 // }ext_ShowCrossHair_t;
+
+#pragma GCC diagnostic pop
