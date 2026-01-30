@@ -100,15 +100,15 @@ public:
     },
     turret(turret_config),
     chassis_config{
-        .left_front_can_id = 1,
-        .right_front_can_id = 2,
-        .left_back_can_id = 3,
-        .right_back_can_id = 4,
-        .radius = 0.22617,
-        .speed_pid_ff_ks = 0.065,
-        .yaw_motor = &turret.yaw,
-        .yaw_initial_offset_ticks = 6500,
-        .imu = imu_
+        1,      // left_front_can_id
+        2,      // right_front_can_id
+        3,      // left_back_can_id
+        4,      // right_back_can_id
+        0.22617,  // radius
+        0.065,    // speed_pid_ff_ks
+        &turret.yaw,  // yaw_motor
+        6500,     // yaw_initial_offset_ticks
+        imu_     
     },
 
     chassis(chassis_config)
@@ -204,13 +204,13 @@ public:
         }
         // shooter.setState(des_shoot_state, referee.power_heat_data.shooter_17mm_1_barrel_heat);
         
-        printf("time %d", us_ticker_read());
+        // printf("time %ld", us_ticker_read());
 
         turret.periodic();
         chassis.periodic(&imuAngles);
         // shooter.periodic();
 
-        printf("time %d", us_ticker_read());
+        // printf("time %ld", us_ticker_read());
 
         // Debug print statements
         // printf("des: %.2f, %.2f, %.2f %d \n", jetson.read().desired_x_vel, jetson.read().desired_y_vel, jetson.read().desired_angular_vel, jetson.read().localization_calibration);
