@@ -59,3 +59,15 @@ bind:
 
 mount:
 	sudo mount E: /mnt/e
+
+infantry-jlink: infantry-build
+	JLinkExe -device STM32F446RE -if SWD -speed 4000 -CommanderScript ./JLink/flashInf.jlink
+
+sentry-jlink: sentry-build
+	JLinkExe -device STM32F446RE -if SWD -speed 4000 -CommanderScript ./JLink/flashSen.jlink
+
+hero-jlink: hero-build
+	JLinkExe -device STM32F446RE -if SWD -speed 4000 -CommanderScript ./JLink/flashHero.jlink
+
+testbench-jlink: testbench-build
+	JLinkExe -device STM32F446RE -if SWD -speed 4000 -CommanderScript ./JLink/flashTest.jlink
