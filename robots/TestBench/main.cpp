@@ -31,6 +31,9 @@ int main(){
     DJIMotor::s_sendValues();
     DJIMotor::s_getFeedback(); 
 
+    // Low pass filter for encoder noise
+    float filtered_yaw = 0.0f;
+    const float filter_alpha = 0.2f;  // 0.0-1.0: lower = more smoothing, higher = more responsive
 
     unsigned long timeStart;
     unsigned long loopTimer = us_ticker_read();
@@ -68,8 +71,14 @@ int main(){
             remoteRead(); 
 
             // Get yaw position from encoder (0-360 degrees)
-            float yaw_position = pwm_input.dutycycle() * 360.0;
-
+            // Encoder specs: duty cycle 2.943% to 97.058%
+            float duty_raw = pwm_input.dutycycle();
+            float duty_min = 0.02943f;   // 2.943%
+            float duty_max = 0.97058f;   // 97.058%
+            float yaw_position = abs(((duty_raw - duty_min) / (duty_max - duty_min)) * 360.0f);            
+            // Apply low pass filter to reduce noise
+            filtered_yaw = filtered_yaw * (1.0f - filter_alpha) + yaw_position *  filter_alpha;
+            
              //Driving input
             float scalar = 1;
             float jx = remote.leftX() / 660.0 * scalar; // -1 to 1
@@ -93,12 +102,9 @@ int main(){
 
             // Debug PID behavior - Status output every 100ms
             static int statusCounte = 0;
-            if(statusCounte++ % 100 == 0) {
-                printff("encoder angle: %.2f | pwm period: %.2f ms | pulsewidth: %.2f ms | dutycycle: %.2f\n", 
-                    yaw_position, 
-                    pwm_input.period(), 
-                    pwm_input.pulsewidth(), 
-                    pwm_input.dutycycle() * 100.0);
+            if(statusCounte++ % 1 == 0) {
+                printff("%.2f\n", 
+                    filtered_yaw/360.0f * 4095.0f);
 
             }
             DJIMotor::s_sendValues();  // Enable debug output
