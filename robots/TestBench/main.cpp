@@ -5,6 +5,7 @@ DigitalOut led(L25);
 DigitalOut led2(L26);
 DigitalOut led3(L27);
 DigitalOut ledbuiltin(LED1);
+AnalogIn currentsensor(PA7);
 
 //CONSTANTS
 constexpr float LOWERBOUND = 12.0;
@@ -424,12 +425,18 @@ int main(){
             printLoop ++;
             if (printLoop >= PRINT_FREQUENCY){
                 printLoop = 0;
+				float readcurrent = currentsensor.read();
+				float voltage = readcurrent*(5)/(1024);
+				float realcurrent = (voltage - 2.5)/(0.066);
+				float powerread = voltage * realcurrent;
+				printf("%1.3f", realcurrent);
+				printf("Power: %1.3f", powerread);
                 //printff("%.3f Pitch\n", pitch_desired_angle);
                 //printff("Prints:\n");
                 //printff("lX:%.1f lY:%.1f rX:%.1f rY:%.1f lS:%d rS:%d\n", remote.leftX(), remote.leftY(), remote.rightX(), remote.rightY(), remote.leftSwitch(), remote.rightSwitch());
                 //printff("jx:%.3f jy:%.3f jpitch:%.3f jyaw:%.3f\n", jx, jy, jpitch, jyaw);
 
-                //printff("%.3f  %d\n", pitch_desired_angle, pitch.getData(ANGLE));
+            	//printff("%.3f  %d\n", pitch_desired_angle, pitch.getData(ANGLE));
                 //printff("%d\n", indexer.getData(POWEROUT));
 
                 #ifdef USE_IMU
