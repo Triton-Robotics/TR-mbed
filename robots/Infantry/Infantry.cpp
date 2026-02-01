@@ -210,6 +210,8 @@ public:
         chassis.periodic(&imuAngles);
         // shooter.periodic();
 
+        printf("test");
+
         // printf("time %ld", us_ticker_read());
 
         // Debug print statements

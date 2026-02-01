@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.19.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.25.0 FATAL_ERROR)
 
 find_program(MBED_CLI mbed-tools PATHS "~/.local/bin" REQUIRED)
 
@@ -59,45 +59,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 project(${APP_TARGET})
 
-add_subdirectory(${MBED_PATH})
+# Mark as SYSTEM so that we don't get warnings from mbed-os headers
+add_subdirectory(${MBED_PATH} SYSTEM)
 link_libraries(mbed-os)
-
-# Recursively get all mbed targets and mark their includes as system
-function(make_target_system target)
-    if(TARGET ${target})
-        get_target_property(target_type ${target} TYPE)
-        if(NOT target_type STREQUAL "INTERFACE_LIBRARY")
-            # For regular libraries, mark include dirs as system
-            get_target_property(includes ${target} INTERFACE_INCLUDE_DIRECTORIES)
-            if(includes)
-                set_target_properties(${target} PROPERTIES
-                    INTERFACE_SYSTEM_INCLUDE_DIRECTORIES "${includes}"
-                )
-            endif()
-        else()
-            # For interface libraries, get their includes
-            get_target_property(includes ${target} INTERFACE_INCLUDE_DIRECTORIES)
-            if(includes)
-                set_target_properties(${target} PROPERTIES
-                    INTERFACE_SYSTEM_INCLUDE_DIRECTORIES "${includes}"
-                )
-            endif()
-        endif()
-        
-        # Process linked libraries recursively
-        get_target_property(link_libs ${target} INTERFACE_LINK_LIBRARIES)
-        if(link_libs)
-            foreach(lib ${link_libs})
-                make_target_system(${lib})
-            endforeach()
-        endif()
-    endif()
-endfunction()
-
-# Apply to all mbed-os targets
-make_target_system(mbed-os)
-make_target_system(mbed-core)
-make_target_system(mbed-rtos)
 
 
 add_compile_options(
