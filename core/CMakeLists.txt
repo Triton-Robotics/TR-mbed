@@ -23,3 +23,8 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
 )
 
 target_sources(TR-core PRIVATE ${SOURCES})
+set_target_properties(TR-core PROPERTIES
+    CXX_STANDARD 17
+    CXX_STANDARD_REQUIRED ON
+)
+

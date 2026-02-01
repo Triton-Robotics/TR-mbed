@@ -18,6 +18,8 @@ target_sources(TR-Infantry
 )
 set_target_properties(TR-Infantry PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Infantry"
+    CXX_STANDARD 17
+    CXX_STANDARD_REQUIRED ON
 )
 mbed_set_post_build(TR-Infantry)
 
@@ -31,6 +33,8 @@ target_sources(TR-Sentry
 )
 set_target_properties(TR-Sentry PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Sentry"
+    CXX_STANDARD 17
+    CXX_STANDARD_REQUIRED ON
 )
 mbed_set_post_build(TR-Sentry)
 
@@ -43,6 +47,8 @@ target_sources(TR-Hero
 )
 set_target_properties(TR-Hero PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Hero"
+    CXX_STANDARD 17
+    CXX_STANDARD_REQUIRED ON
 )
 mbed_set_post_build(TR-Hero)
 
@@ -55,5 +61,7 @@ target_sources(TR-TestBench
 )
 set_target_properties(TR-TestBench PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/TestBench"
+    CXX_STANDARD 17
+    CXX_STANDARD_REQUIRED ON
 )
 mbed_set_post_build(TR-TestBench)
