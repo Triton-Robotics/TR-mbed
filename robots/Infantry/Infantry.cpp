@@ -8,11 +8,15 @@
 #include "util/communications/jetson/Jetson.h"
 #include "util/peripherals/imu/BNO055.h"
 
+#include <algorithm>
+
 constexpr auto IMU_I2C_SDA = PB_7;
 constexpr auto IMU_I2C_SCL = PB_8;
 constexpr auto IMU_RESET = PA_8;
 
 constexpr int pitch_zero_offset_ticks = 1500;
+constexpr float PITCH_LOWER_BOUND{-32.0};
+constexpr float PITCH_UPPER_BOUND{35.0};
 
 constexpr float JOYSTICK_YAW_SENSITIVITY_DPS = 600;
 constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 300;
@@ -186,6 +190,7 @@ public:
 
         // TODO need to limit this to between lower and upper bound of pitch
         pitch_desired_angle += joystick_pitch * JOYSTICK_PITCH_SENSITIVITY_DPS * dt_us / 1000000;
+        pitch_desired_angle = std::clamp(pitch_desired_angle, PITCH_LOWER_BOUND, PITCH_UPPER_BOUND);
 
         turret.set_desired_turret(yaw_desired_angle, pitch_desired_angle, chassis.getChassisSpeeds().vOmega * 60 / (2*PI));
 
@@ -210,7 +215,6 @@ public:
         chassis.periodic(&imuAngles);
         // shooter.periodic();
 
-        printf("test");
 
         // printf("time %ld", us_ticker_read());
 
