@@ -242,8 +242,6 @@ public:
     unsigned int main_loop_dt_ms() override { return 2; } // 500 Hz loop
 };
 
-DigitalOut led0 = PC_1;
-
 int main() {
     printf("HELLO\n");
     BaseRobot::Config config = BaseRobot::Config{}; 
