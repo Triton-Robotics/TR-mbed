@@ -1,8 +1,5 @@
 #include "ShooterSubsystem.h"
-#include "us_ticker_defines.h"
-#include "util/motor/DJIMotor.h"
 
-// TODO: add a way to invert which flywheel is -ve
 ShooterSubsystem::ShooterSubsystem(config cfg):
     flywheelL({
         cfg.flywheelL_id,
@@ -30,25 +27,18 @@ ShooterSubsystem::ShooterSubsystem(config cfg):
     // initialize all other vars
     shoot = OFF;
     shootReady = true;
-
+    
     barrel_heat_limit = cfg.heat_limit;
-
+    
     shooter_type = cfg.type;
+    invert_flywheel = cfg.invert;
     shooter_time = us_ticker_read();
-    // printf("shooterinit\n");
 }
 
 
 void ShooterSubsystem::setState(ShootState shoot_state)
 {
     shoot = shoot_state;
-}
-
-
-// TODO: figure out what we want to return?
-ShootState ShooterSubsystem::getState()
-{
-    return shoot;
 }
 
 void ShooterSubsystem::periodic(int curr_heat, int heat_limit) 
@@ -65,8 +55,14 @@ void ShooterSubsystem::periodic(int curr_heat, int heat_limit)
     }
     else if (shoot == FLYWHEEL)
     {
-        flywheelL.setSpeed(-FLYWHEEL_VELO);
-        flywheelR.setSpeed(FLYWHEEL_VELO);
+        if (!invert_flywheel) {
+            flywheelL.setSpeed(-FLYWHEEL_VELO);
+            flywheelR.setSpeed(FLYWHEEL_VELO);
+        }
+        else {
+            flywheelL.setSpeed(FLYWHEEL_VELO);
+            flywheelR.setSpeed(-FLYWHEEL_VELO);
+        }
 
         indexer.pidSpeed.feedForward = 0;
         indexer.setSpeed(0);
@@ -74,8 +70,14 @@ void ShooterSubsystem::periodic(int curr_heat, int heat_limit)
     }
     else if (shoot == SHOOT && shooter_type == BURST)
     {
-        flywheelL.setSpeed(-FLYWHEEL_VELO);
-        flywheelR.setSpeed(FLYWHEEL_VELO);
+        if (!invert_flywheel) {
+            flywheelL.setSpeed(-FLYWHEEL_VELO);
+            flywheelR.setSpeed(FLYWHEEL_VELO);
+        }
+        else {
+            flywheelL.setSpeed(FLYWHEEL_VELO);
+            flywheelR.setSpeed(-FLYWHEEL_VELO);
+        }
 
         // Set target position
         if (shootReady && (abs(flywheelR>>VELOCITY) > (FLYWHEEL_VELO - 500) && abs(flywheelL>>VELOCITY) > (FLYWHEEL_VELO - 500))) 
@@ -101,16 +103,21 @@ void ShooterSubsystem::periodic(int curr_heat, int heat_limit)
     }
     else if (shoot == SHOOT && shooter_type == AUTO) 
     {
+        if (!invert_flywheel) {
+            flywheelL.setSpeed(-FLYWHEEL_VELO);
+            flywheelR.setSpeed(FLYWHEEL_VELO);
+        }
+        else {
+            flywheelL.setSpeed(FLYWHEEL_VELO);
+            flywheelR.setSpeed(-FLYWHEEL_VELO);
+        }
+
         if(barrel_heat_limit < 10 || barrel_heat < barrel_heat_limit - 30) {
             indexer.setSpeed(-5 * 16 * M2006_GEAR_RATIO);
         }
         else {
             indexer.setSpeed(0);
         }
-    }
-    else if (shoot == SHOOT && shooter_type == HERO) 
-    {
-        // TODO
     }
 
     shooter_time = us_ticker_read();

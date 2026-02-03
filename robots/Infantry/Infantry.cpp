@@ -90,7 +90,9 @@ public:
         CANHandler::CANBUS_1,
         CANHandler::CANBUS_2,
         -1,
-        imu_
+        imu_,
+        PITCH_LOWER_BOUND,
+        PITCH_UPPER_BOUND
     }    
     ),
 
@@ -104,7 +106,8 @@ public:
         flywheelR_PID,
         indexer_PID_vel,
         indexer_PID_pos,
-        CANHandler::CANBUS_2
+        CANHandler::CANBUS_2,
+        false
     }),
 
     chassis(ChassisSubsystem::Config{

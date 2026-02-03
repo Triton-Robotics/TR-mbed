@@ -20,7 +20,9 @@ TurretSubsystem::TurretSubsystem(config cfg):
             cfg.pitch_pos_PID
     }),
     imu(cfg.imu),
-    forward_(cfg.forward)
+    forward_(cfg.forward),
+    pitch_lowerbound(cfg.pitch_lower_bound),
+    pitch_upperbound(cfg.pitch_upper_bound)
 {
     pitch_offset_ticks = cfg.pitch_offset_ticks;
     pitch.pidPosition.dBuffer.lastY = 5;
@@ -107,19 +109,19 @@ void TurretSubsystem::periodic(float chassisRpm)
         yaw.pidSpeed.feedForward = 1221 * dir + 97.4 * turret_state.yaw_velo;
 
         float deltaYaw = calculateDeltaYaw(turret_state.yaw_angle, des_yaw);
-        int des_yaw_power = yaw.calculatePeriodicPosition(deltaYaw, turret_time, chassis_rpm);
-        // printf("%.2f | %.2f | %.2f \n", des_yaw, turret_state.yaw_angle, imu.getImuAngles().yaw);
+        yaw.pidPosition.feedForward = -chassis_rpm;
+        int des_yaw_power = yaw.calculatePeriodicPosition(deltaYaw, turret_time);
         yaw.setPower(des_yaw_power);
 
 
         // Pitch calc
         float pitch_current_radians = forward_ * (turret_state.pitch_angle / 360) * 2 * M_PI;
         
-        if (des_pitch <= LOWERBOUND) {
-            des_pitch = LOWERBOUND;
+        if (des_pitch <= pitch_lowerbound) {
+            des_pitch = pitch_lowerbound;
         }
-        else if (des_pitch >= UPPERBOUND) {
-            des_pitch = UPPERBOUND;
+        else if (des_pitch >= pitch_upperbound) {
+            des_pitch = pitch_upperbound;
         }
 
         int dir_p = forward_ * (des_pitch < turret_state.pitch_angle ? -1 : 1);

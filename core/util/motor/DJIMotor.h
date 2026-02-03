@@ -142,9 +142,8 @@ public:
     inline void setSpeedOutputCap(double cap)                                                       { pidSpeed.setOutputCap((float)cap); }
 
     inline int calculateSpeedPID(int desired, int current, double dt)                               { return pidSpeed.calculate(desired, current, dt); }
-    // TODO: Nicer way than adding a manual chassis_rpm ff (this is technically a positional ff)
-    inline int calculatePositionPID(int desired, int current, double dt, int chassis_rpm = 0)       { return pidSpeed.calculate(pidPosition.calculate(desired, current, dt) - chassis_rpm, getData(VELOCITY), dt); }
-    inline int calculatePeriodicPosition(float dE, double dt, int chassis_rpm = 0)                  { return pidSpeed.calculate(pidPosition.calculatePeriodic(dE, dt)       - chassis_rpm, getData(VELOCITY), dt); }
+    inline int calculatePositionPID(int desired, int current, double dt)                            { return pidSpeed.calculate(pidPosition.calculate(desired, current, dt), getData(VELOCITY), dt); }
+    inline int calculatePeriodicPosition(float dE, double dt)                                       { return pidSpeed.calculate(pidPosition.calculatePeriodic(dE, dt), getData(VELOCITY), dt); }
 
 private:
     static DJIMotor* s_allMotors  [CAN_HANDLER_NUMBER][3][4];

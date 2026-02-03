@@ -7,10 +7,6 @@
 #include "Subsystem.h"
 
 
-// TODO add to cfg
-constexpr float LOWERBOUND = -35.0;
-constexpr float UPPERBOUND = 40.0;
-
 // enums for state
 enum TurretState {SLEEP, AIM};
 
@@ -44,6 +40,9 @@ public:
         int forward;
 
         IMU &imu;
+
+        const float pitch_lower_bound;
+        const float pitch_upper_bound;
     };
 
     struct TurretInfo
@@ -79,6 +78,7 @@ private:
 
     bool configured;
     const int forward_;
+    const float pitch_lowerbound, pitch_upperbound;
 
     int pitch_offset_ticks;
 
