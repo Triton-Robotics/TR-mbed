@@ -5,7 +5,9 @@
 #include "subsystems/ShooterSubsystem.h"
 #include "subsystems/TurretSubsystem.h"
 
+#include "util/communications/CANHandler.h"
 #include "util/communications/jetson/Jetson.h"
+#include "util/motor/DJIMotor.h"
 #include "util/peripherals/imu/BNO055.h"
 
 #include <algorithm>
@@ -39,18 +41,6 @@ PID::config flywheelL_PID = {7.1849, 0.000042634, 0};
 PID::config flywheelR_PID = {7.1849, 0.000042634, 0};
 PID::config indexer_PID_vel = {2.7, 0.001, 0};
 PID::config indexer_PID_pos = {0.1,0,0.001};
-ShooterSubsystem shooter({
-    ShooterSubsystem::BURST,
-    0,
-    1,
-    2,
-    7,
-    flywheelL_PID,
-    flywheelR_PID,
-    indexer_PID_vel,
-    indexer_PID_pos,
-    CANHandler::CANBUS_2
-});
 
 // State variables
 ChassisSpeeds des_chassis_state;
@@ -61,6 +51,8 @@ int remoteTimer = 0;
 
 float pitch_desired_angle = 0.0;
 float yaw_desired_angle = 0.0;
+
+// TODOS make example directory with simple examples of how to use motors / subsystems as reference for testbench
 
 class Infantry : public BaseRobot {
 public:
@@ -75,10 +67,8 @@ public:
     Jetson::WriteState stm_state;
     Jetson::ReadState jetson_state;
 
-    TurretSubsystem::config turret_config; 
     TurretSubsystem turret;
-
-    ChassisSubsystem::Config chassis_config;
+    ShooterSubsystem shooter;
     ChassisSubsystem chassis;
 
     Infantry(Config &config) : 
@@ -87,7 +77,7 @@ public:
     imu_(i2c_, IMU_RESET, MODE_IMU),
     jetson_(PC_12, PD_2, 115200), // TODO: check higher baud to see if still works
     jetson(jetson_),
-    turret_config{
+    turret(TurretSubsystem::config{
         4,
         GM6020,
         7,
@@ -101,9 +91,23 @@ public:
         CANHandler::CANBUS_2,
         -1,
         imu_
-    },
-    turret(turret_config),
-    chassis_config{
+    }    
+    ),
+
+    shooter(ShooterSubsystem::config{
+        ShooterSubsystem::BURST,
+        0,
+        1,
+        2,
+        7,
+        flywheelL_PID,
+        flywheelR_PID,
+        indexer_PID_vel,
+        indexer_PID_pos,
+        CANHandler::CANBUS_2
+    }),
+
+    chassis(ChassisSubsystem::Config{
         1,      // left_front_can_id
         2,      // right_front_can_id
         3,      // left_back_can_id
@@ -113,34 +117,18 @@ public:
         &turret.yaw,  // yaw_motor
         6500,     // yaw_initial_offset_ticks
         imu_     
-    },
-
-    chassis(chassis_config)
+    }
+    )
     {}
 
     ~Infantry() {}
 
     void init() override 
     {
-        // TODO: better way to do this
-        // chassis.setPowerLimit(referee.robot_status.chassis_power_limit);
-        // chassis.setSpeedFF_Ks(0.065);
-        // chassis.setYawReference(&turret.yaw, 6500);
-        // shooter.setHeatLimit(referee.robot_status.shooter_barrel_heat_limit);
-        printf("init\n");
-
-        turret.periodic();
-        pitch_desired_angle = 0.0;
-        yaw_desired_angle = imu_.read().yaw;
+        
     }
     
     void periodic(unsigned long dt_us) override {
-        // TODO: use remote to setState for all subsystems
-        if (remoteTimer > 10) {
-            remoteTimer = 0;
-            remote_.read();
-        }
-        remoteTimer += 1;
 
         // TODO: fill out state update
         // stm_state.game_state = 4;
@@ -150,13 +138,12 @@ public:
 
         // TODO this should be threaded inside imu instead
         IMU::EulerAngles imuAngles = imu_.read();
-        // printf("%.2f", imuAngles.yaw);
         
         // Chassis + Turret Logic
         des_chassis_state.vX = remote_.getChassisX();
         des_chassis_state.vY = remote_.getChassisY();
-        // printf("remote %d\n", remote_.getSwitch(Remote::Switch::RIGHT_SWITCH));
-        // printf("remotel %d\n", remote_.getSwitch(Remote::Switch::LEFT_SWITCH));
+
+
         if (remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP)
         {
             des_chassis_state.vOmega = 0;
@@ -207,13 +194,14 @@ public:
         {
             des_shoot_state = ShootState::OFF;
         }
-        // shooter.setState(des_shoot_state, referee.power_heat_data.shooter_17mm_1_barrel_heat);
+
+        shooter.setState(des_shoot_state, referee.power_heat_data.shooter_17mm_1_barrel_heat);
         
         // printf("time %ld", us_ticker_read());
 
         turret.periodic();
         chassis.periodic(&imuAngles);
-        // shooter.periodic();
+        shooter.periodic();
 
 
         // printf("time %ld", us_ticker_read());

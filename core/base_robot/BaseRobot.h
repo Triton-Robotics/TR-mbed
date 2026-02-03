@@ -5,6 +5,7 @@
 #include "util/communications/DJIRemote.h"
 #include "util/communications/referee/ref_serial.h"
 #include "util/motor/DJIMotor.h"
+#include <us_ticker_api.h>
 
 class BaseRobot {
   public:
@@ -58,6 +59,7 @@ class BaseRobot {
     virtual void main_loop() {
         unsigned long loop_clock_us = us_ticker_read();
         unsigned long prev_loop_time_us = loop_clock_us;
+        unsigned long prev_remote_time_us = loop_clock_us;
 
         unsigned long main_loop_dt_ms = this->main_loop_dt_ms();
 
@@ -75,6 +77,14 @@ class BaseRobot {
             // TODO update stm_state with ref.read?
                         
             loop_clock_us = us_ticker_read();
+
+
+            // 20 ms remote read
+            if ((loop_clock_us - prev_remote_time_us) / 1000 >= 15) {
+                remote_.read();
+                prev_remote_time_us = us_ticker_read();
+            }
+
             if ((loop_clock_us - prev_loop_time_us) / 1000 >= main_loop_dt_ms) {
                 // Add subsystems in periodic
                 led0_ = !led0_;
