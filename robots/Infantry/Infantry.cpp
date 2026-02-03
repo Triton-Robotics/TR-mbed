@@ -69,6 +69,8 @@ public:
     ShooterSubsystem shooter;
     ChassisSubsystem chassis;
 
+    bool imu_initialized{false};
+
     Infantry(Config &config) : 
         BaseRobot(config),     
     i2c_(IMU_I2C_SDA, IMU_I2C_SCL),
@@ -131,14 +133,27 @@ public:
     
     void periodic(unsigned long dt_us) override {
 
-        // TODO: fill out state update
+
+        // TODO this should be threaded inside imu instead
+        IMU::EulerAngles imuAngles = imu_.read();
+
+        if (!imu_initialized){
+            IMU::EulerAngles angles = imu_.getImuAngles();
+            if (angles.pitch == 0.0 && angles.yaw == 0.0 && angles.roll == 0.0) {
+                return;
+            }
+
+            yaw_desired_angle = angles.yaw;
+            imu_initialized = true;
+        }
+
+
+        // TODO: fill out jetson comms
         // stm_state.game_state = 4;
         // stm_state.robot_hp = 60;
         // jetson.write(stm_state);
 
 
-        // TODO this should be threaded inside imu instead
-        IMU::EulerAngles imuAngles = imu_.read();
         
         // Chassis + Turret Logic
         // TODO migrate away from remote chassis/pitch/yaw specific code
