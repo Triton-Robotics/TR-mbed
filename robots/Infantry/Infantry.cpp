@@ -24,7 +24,6 @@ constexpr float JOYSTICK_YAW_SENSITIVITY_DPS = 600;
 constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 300;
 
 
-// TODO: put acc values
 PID::config yaw_vel_PID = {350, 0.5, 2.5, 32000, 2000};
 PID::config yaw_pos_PID = {0.5, 0, 0, 90, 2};
 PID::config pitch_vel_PID = {500,0.8,0, 32000, 2000};
@@ -36,7 +35,6 @@ PID::config fr_vel_config = {3, 0, 0};
 PID::config bl_vel_config = {3, 0, 0};
 PID::config br_vel_config = {3, 0, 0};
 
-// // TODO: put acc values
 PID::config flywheelL_PID = {7.1849, 0.000042634, 0};
 PID::config flywheelR_PID = {7.1849, 0.000042634, 0};
 PID::config indexer_PID_vel = {2.7, 0.001, 0};
@@ -61,7 +59,7 @@ public:
     BNO055 imu_;
 
     // TODO: put the BufferedSerial inside Jetson (idk if we wanna do that tho for SPI)
-    BufferedSerial jetson_;
+    BufferedSerial jetson_raw_serial;
     Jetson jetson;
 
     Jetson::WriteState stm_state;
@@ -75,8 +73,8 @@ public:
         BaseRobot(config),     
     i2c_(IMU_I2C_SDA, IMU_I2C_SCL),
     imu_(i2c_, IMU_RESET, MODE_IMU),
-    jetson_(PC_12, PD_2, 115200), // TODO: check higher baud to see if still works
-    jetson(jetson_),
+    jetson_raw_serial(PC_12, PD_2, 115200), // TODO: check higher baud to see if still works
+    jetson(jetson_raw_serial),
     turret(TurretSubsystem::config{
         4,
         GM6020,
@@ -143,6 +141,7 @@ public:
         IMU::EulerAngles imuAngles = imu_.read();
         
         // Chassis + Turret Logic
+        // TODO migrate away from remote chassis/pitch/yaw specific code
         des_chassis_state.vX = remote_.getChassisX();
         des_chassis_state.vY = remote_.getChassisY();
 
@@ -197,6 +196,8 @@ public:
         turret.periodic(chassis.getChassisSpeeds().vOmega * 60 / (2*PI));
         chassis.periodic(&imuAngles);
         shooter.periodic(referee.power_heat_data.shooter_17mm_1_barrel_heat, referee.robot_status.shooter_barrel_heat_limit);
+
+
 
 
         // printf("time %ld", us_ticker_read());

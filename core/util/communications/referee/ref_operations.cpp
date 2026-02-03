@@ -6,8 +6,8 @@ Referee::Referee(PinName pin_tx, PinName pin_rx) : ref(pin_tx, pin_rx, 115200)
 {
     memset(JudgeSystem_rxBuff, 0, JUDGESYSTEM_PACKSIZE);
 
-    // TODO: should we hve it like this?
-    refereeThread();
+    this->readThread_.start(callback(this, &Referee::readThread));
+    this->writeThread_.start(callback(this, &Referee::writeThread));
 }
 
 
@@ -160,13 +160,6 @@ void Referee::write()
             printf("Not writable!\n"); // usually it is never not writable
         }
     }
-}
-
-
-void Referee::refereeThread()
-{
-    this->readThread_.start(callback(this, &Referee::readThread));
-    this->writeThread_.start(callback(this, &Referee::writeThread));
 }
 
 

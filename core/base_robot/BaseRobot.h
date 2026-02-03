@@ -38,7 +38,7 @@ class BaseRobot {
     // clang-format off
     BaseRobot(const Config &config)
         : remote_(config.remote_pin),
-          referee(config.referee_tx_pin, config.referee_rx_pin), //TODO make sure this is right
+          referee(config.referee_tx_pin, config.referee_rx_pin), 
           canHandler1_(config.can1_rx_pin, config.can1_tx_pin),
           canHandler2_(config.can2_rx_pin, config.can2_tx_pin),
           led0_(config.led0_pin),
@@ -72,9 +72,7 @@ class BaseRobot {
         init();
         
         while (true) {
-            // StmIO comms (Ref and Jetson)
-            // TODO Mutex referee class and make it a good class
-            // TODO update stm_state with ref.read?
+            // TODO StmIO comms (Ref and Jetson)
                         
             loop_clock_us = us_ticker_read();
 
@@ -102,16 +100,4 @@ class BaseRobot {
             canHandler2_.readAllCan();
         }
     }
-
-    // TODO: make header file
-    // void printff(const char *format, ...)
-    // {
-    //     char temp[50];
-    //     va_list args;
-    //     va_start(args, format);
-    //     int len = vsnprintf(temp, 50, format, args);
-    //     if (len > 0)
-    //     // usbSerial.write(temp, len);
-    //     va_end(args);
-    // }
 };

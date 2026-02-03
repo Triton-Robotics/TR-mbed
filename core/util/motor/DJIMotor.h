@@ -61,7 +61,7 @@ public:
         motorType type = STANDARD;
         std::string name = "NO_NAME";
         PID::config vel_cfg;
-        PID::config pos_cfg;
+        PID::config pos_cfg = PID::config{0,0,0, 0, 0};
     };
 
 
