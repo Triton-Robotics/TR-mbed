@@ -11,14 +11,14 @@
  */
 
 #include    "mbed.h"
-#include    "BNO055.h"
+#include    "util/peripherals/imu/BNO055.h"
 
 
 I2C    i2c(PB_9, PB_8);                // SDA, SCL
 BNO055 imu(i2c, PA_8, MODE_NDOF);
 
 BNO055_ID_INF_TypeDef           bno055_id_inf;
-BNO055_ANGULAR_POSITION_typedef p;
+IMU::EulerAngles                p;
 BNO055_VECTOR_TypeDef           angular_acc;
 BNO055_VECTOR_TypeDef           linear_acc;
 BNO055_VECTOR_TypeDef           gravity;

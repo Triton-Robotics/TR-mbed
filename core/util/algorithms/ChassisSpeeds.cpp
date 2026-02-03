@@ -4,8 +4,5 @@
 
 #include "ChassisSpeeds.h"
 
-ChassisSpeeds::ChassisSpeeds(double x, double y, double rotation) {
-    this-> x = x;
-    this->y = y;
-    this->rotation = rotation;
-};
+ChassisSpeeds::ChassisSpeeds(double x, double y, double rotation)
+    : x{x}, y{y}, rotation{rotation} {}

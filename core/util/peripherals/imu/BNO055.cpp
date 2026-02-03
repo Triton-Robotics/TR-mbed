@@ -17,10 +17,6 @@
 #include "mbed.h"
 #include "BNO055.h"
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "UnusedParameter"
-#pragma ide diagnostic ignored "UnusedLocalVariable"
-
 BNO055::BNO055 (PinName p_sda, PinName p_scl, PinName p_reset, uint8_t addr, uint8_t mode):
     _i2c_p(new I2C(p_sda, p_scl)), _i2c(*_i2c_p), _res(p_reset)
 {
@@ -115,7 +111,8 @@ void BNO055::get_quaternion(BNO055_QUATERNION_TypeDef *result)
     }
 }
 
-void BNO055::get_angular_position_quat(BNO055_ANGULAR_POSITION_typedef *result){
+// TODO make this threaded like actually and not fake 
+void BNO055::get_angular_position_quat(IMU::EulerAngles *result){
 
     BNO055_QUATERNION_TypeDef q;
     get_quaternion(&q);
@@ -123,17 +120,28 @@ void BNO055::get_angular_position_quat(BNO055_ANGULAR_POSITION_typedef *result){
 //    result -> roll  = (float)atan2(2 * (q.w * q.x + q.y * q.z), 1 - 2 * (q.x * q.x + q.y * q.y)) * 180 / PI;
 //    result -> pitch = (float)asin(2 * q.w * q.y - q.x * q.z) * 180 / PI;
 //    result -> yaw   = (float)atan2(2 * (q.w * q.z + q.x * q.y), 1 - 2 * (q.y * q.y + q.z * q.z)) * 180 / PI;
-    result -> roll  = atan2(2 * (q.w * q.x + q.y * q.z), 1 - 2 * (q.x * q.x + q.y * q.y)) * 180 / PI;
-    result -> pitch = asin(2 * q.w * q.y - q.x * q.z) * 180 / PI;
-    result -> yaw   = atan2(2 * (q.w * q.z + q.x * q.y), 1 - 2 * (q.y * q.y + q.z * q.z)) * 180 / PI;
-    float target = multiturnYaw - ((int) multiturnYaw) % 360 + (int) (result -> yaw) % 360;
-    if (target - multiturnYaw > 180) {
-        multiturnYaw = target - 360;
-    } else if (target - multiturnYaw < -180) {
-        multiturnYaw = target + 360;
-    } else {
-        multiturnYaw = target;
-    }
+    float roll  = atan2(2 * (q.w * q.x + q.y * q.z), 1 - 2 * (q.x * q.x + q.y * q.y)) * 180 / PI;
+    // imuAngles.roll  = result->roll;
+    float pitch = asin(2 * q.w * q.y - q.x * q.z) * 180 / PI;
+    // imuAngles.pitch = result->pitch;
+    float yaw   = atan2(2 * (q.w * q.z + q.x * q.y), 1 - 2 * (q.y * q.y + q.z * q.z)) * 180 / PI;
+    // imuAngles.yaw   = result->yaw;
+    // mutex_.lock();
+    memcpy(&result->roll, &roll, sizeof(float));
+    memcpy(&result->pitch, &pitch, sizeof(float));
+    memcpy(&result->yaw, &yaw, sizeof(float));
+    // mutex_.unlock();
+}
+
+IMU::EulerAngles BNO055::read()
+{
+    get_angular_position_quat(&imuAngles);
+    return imuAngles;
+}
+
+IMU::EulerAngles BNO055::getImuAngles()
+{
+    return imuAngles;
 }
 
 void BNO055::get_linear_accel(BNO055_VECTOR_TypeDef *result)
@@ -699,5 +707,3 @@ uint8_t BNO055::write_reg1(uint8_t addr, uint8_t data)
     change_fusion_mode(current_mode);
     return d;
 }
-
-#pragma clang diagnostic pop

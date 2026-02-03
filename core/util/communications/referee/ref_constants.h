@@ -1,0 +1,614 @@
+#include "mbed.h"
+
+
+// Screen resolution of your Robomaster Client
+#define SCREEN_LENGTH 1920
+#define SCREEN_WIDTH 1080
+
+
+// Writing data stuff
+#define MAX_SIZE          128    //上传数据最大的长度
+#define frameheader_len  5       //帧头长度
+#define cmd_len          2       //命令码长度
+#define crc_len          2       //CRC16校验
+
+#define send_max_len 300 //200
+
+
+// -------------------------------------
+// From South China University of Technology 华南理工大学广州学院-野狼战队-步兵代码 ----------------------------------
+// https://github.com/wuzjun/2021RM_Infantry/blob/master/Devices/Devices.h/RM_JudgeSystem.h
+// 2021 section
+
+
+//对应通信协议格式   frame_header(5-byte)+cmd_id(2-byte)+data(n-byte)+frame_tail(2-byte,CRC16,整包校验)
+#define       LEN_HEADER        5/*frame_header*/
+#define       LEN_CMDID         2/*cmd_id*/
+#define       LEN_TAIL          2/*frame_tail*/
+
+//起始字节，协议固定为0xA5
+#define      JUDGE_FRAME_HEADER            0xA5
+#define      JUDGESYSTEM_PACKSIZE 		    389u		//裁判系统包大小(354+35)
+
+//红蓝方
+#define BLUE 0
+#define RED  1
+
+//信息传输
+#define TRUE 1
+#define FALSE 0
+
+/***********************************命令码ID*************************************/
+
+#define       Judge_Game_StatusData              0x0001 //11
+#define       Judge_Game_ResultData              0x0002 //1
+#define       Judge_Robot_HP                     0x0003 //32
+#define       Judge_Dart_Launch                  0x0004 //UNUSED
+#define       Judge_AI_ChallengeBuff             0x0005 //UNUSED
+#define       Judge_Event_Data                   0x0101 //4
+#define       Judge_Supply_Station               0x0102 //3
+//#define       Judge_Request_Recharge             0x0103(对抗赛未开放)
+#define       Judge_Referee_Warning              0x0104 //3
+#define       Judge_Dart_Countdown               0x0105 //3
+#define       Judge_Robot_State                  0x0201 //13
+#define       Judge_Power_Heat                   0x0202 //16
+#define       Judge_Robot_Position               0x0203 //16
+#define       Judge_Robot_Buff                   0x0204 //7
+#define       Judge_Aerial_Energy                0x0205 
+#define       Judge_Injury_State                 0x0206 //1
+#define       Judge_RealTime_Shoot               0x0207 //7
+#define       Judge_Remaining_Rounds             0x0208 //6
+#define       Judge_Robot_RFID                   0x0209 //4
+#define       Judge_Dart_Client                  0x020A //6
+#define       Judge_Robot_Communicate            0x0301 //127
+#define       Judge_User_Defined                 0x0302 //30
+#define       Judge_Map_Interaction              0x0303 //15
+#define       Judge_KeyMouse_Message             0x0304 //12
+#define       Judge_Client_Map                   0x0305 //24
+
+/***************************DATA_Length*************************/
+
+#define       JUDGE_EXTRA						9
+/*Calculation:frame_header(5-byte)+cmd_id(2-byte)+data(n-byte)+frame_tail(2-byte,CRC16)*/
+
+#define       JudgeLength_Game_StatusData        20
+#define       JudgeLength_Game_ResultData        10
+#define       JudgeLength_Robot_HP               41
+#define       JudgeLength_Dart_Launch            12 //UNUSED
+#define       JudgeLength_AI_ChallengeBuff       20 //UNUSED
+#define       JudgeLength_Event_Data             13
+#define       JudgeLength_Supply_Station         12
+//#define       JudgeLength_Request_Recharge       11(对抗赛未开放)
+#define       JudgeLength_Referee_Warning        12
+#define       JudgeLength_Dart_Countdown         12
+#define       JudgeLength_Robot_State            22
+#define       JudgeLength_Power_Heat             25
+#define       JudgeLength_Robot_Position         25
+#define       JudgeLength_Robot_Buff             15
+#define       JudgeLength_Aerial_Energy          11
+#define       JudgeLength_Injury_State           10
+#define       JudgeLength_RealTime_Shoot         16
+#define       JudgeLength_Remaining_Rounds       15
+#define       JudgeLength_Robot_RFID             13
+#define       JudgeLength_Dart_Client            21
+#define       JudgeLength_Robot_Commute          35
+#define       JudgeLength_Robot_Map              26
+
+
+// needed for anonymous structs defined below
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+
+
+// -------------------------------------
+// BELOW: from SCUT code line 733-1102
+
+/* 自定义帧头 */
+typedef struct //__packed struct
+{
+    uint8_t  SOF;
+    uint16_t DataLength;
+    uint8_t  Seq;
+    uint8_t  CRC8;
+
+}xFrameHeader;
+
+/* ID: 0x0001    Byte: 11     比赛状态数据 */
+typedef struct
+{
+    union {
+        uint8_t dataBuff[11];
+        struct __packed {
+            uint8_t game_type : 4;             //比赛类型
+            uint8_t game_progress : 4;         //当前比赛阶段
+            uint16_t stage_remain_time;        //当前阶段剩余时间  单位s
+        };
+    }data;
+    uint8_t infoUpdateFlag;
+
+}ext_map_command_t;
+
+/* ID: 0x0001    Byte: 11     比赛状态数据 */
+typedef struct __packed
+{
+ uint8_t game_type : 4;
+ uint8_t game_progress : 4;
+ uint16_t stage_remain_time;
+ uint64_t SyncTimeStamp;
+ uint8_t infoUpdateFlag;
+}game_status_t;
+
+/* ID: 0x0002    Byte: 1       比赛结果数据 */
+typedef struct __packed
+{
+ uint8_t winner;
+ uint8_t InfoUpdataFlag;
+}game_result_t;
+
+/* ID: 0x0003     Byte: 32     比赛机器人血量数据 */
+typedef struct
+{
+    union
+    {
+        uint8_t dataBuff[32];
+        struct __packed
+        {
+            uint16_t red_1_robot_HP;//红 1 英雄机器人血量，未上场以及罚下血量为 0
+            uint16_t red_2_robot_HP;//红 2 工程机器人血量
+            uint16_t red_3_robot_HP;//红 3 步兵机器人血量
+            uint16_t red_4_robot_HP;//红 4 步兵机器人血量
+            uint16_t red_5_robot_HP;//红 5 步兵机器人血量
+            uint16_t red_7_robot_HP;//红 7 步兵机器人血量
+            uint16_t red_outpost_HP;//红方前哨战血量
+            uint16_t red_base_HP;//红方基地血量
+            uint16_t blue_1_robot_HP;
+            uint16_t blue_2_robot_HP;
+            uint16_t blue_3_robot_HP;
+            uint16_t blue_4_robot_HP;
+            uint16_t blue_5_robot_HP;
+            uint16_t blue_7_robot_HP;
+            uint16_t blue_outpost_HP;
+            uint16_t blue_base_HP;
+        };
+    }data;
+    uint8_t InfoUpdataFlag;
+}ext_game_robot_HP_t;
+
+/* ID: 0x0004      Byte: 3    飞镖发射状态 */
+typedef struct
+{
+    union
+    {
+        uint8_t dataBuff[3];
+        struct __packed
+        {
+            uint8_t dart_belong;//发射飞镖的队伍：1：红方飞镖2：蓝方飞镖
+            uint16_t stage_remaining_time;//发射时的剩余比赛时间，单位 s
+        };
+    }data;
+    uint8_t InfoUpdataFlag;
+}ext_dart_status_t;
+
+/* ID: 0x0005      Byte: 11      人工智能挑战赛加成与惩罚 */
+typedef struct
+{
+    union
+    {
+        uint8_t dataBuff[11];
+        struct __packed
+        {
+            uint8_t F1_zone_status:1;
+            uint8_t F1_zone_buff_debuff_status:3;
+            uint8_t F2_zone_status:1;
+            uint8_t F2_zone_buff_debuff_status:3;
+            uint8_t F3_zone_status:1;
+            uint8_t F3_zone_buff_debuff_status:3;
+            uint8_t F4_zone_status:1;
+            uint8_t F4_zone_buff_debuff_status:3;
+            uint8_t F5_zone_status:1;
+            uint8_t F5_zone_buff_debuff_status:3;
+            uint8_t F6_zone_status:1;
+            uint8_t F6_zone_buff_debuff_status:3;
+            uint16_t red1_bullet_left;
+            uint16_t red2_bullet_left;
+            uint16_t blue1_bullet_left;
+            uint16_t blue2_bullet_left;
+        };
+    }data;
+    uint8_t InfoUpdataFlag;
+}ext_ICRA_buff_debuff_zone_status_t;
+
+/* ID: 0x0101     Byte: 4       场地事件数据 */
+typedef struct
+{
+    union
+    {
+        uint8_t dataBuff[4];
+        struct __packed
+        {
+            uint32_t event_type;
+        };
+    }data;
+    uint8_t InfoUpdataFlag;
+}ext_event_data_t;
+
+/* ID: 0x0102     Byte: 4       场地补给站动作标识数据 */
+typedef struct
+{
+    union
+    {
+        uint8_t dataBuff[4];
+        struct __packed
+        {
+            uint8_t supply_projectile_id;  //补给站口 ID
+            uint8_t supply_robot_id;       //补弹机器人 ID
+            uint8_t supply_projectile_step;//出弹口开闭状态
+            uint8_t supply_projectile_num; //补弹数量
+        };
+    }data;
+    uint8_t InfoUpdataFlag;
+}ext_supply_projectile_action_t;
+
+/* ID: 0X0104          Byte: 2       裁判警告数据 */
+typedef struct __packed
+{
+ uint8_t level;
+ uint8_t offending_robot_id;
+ uint8_t count;
+ uint8_t InfoUpdataFlag;
+}referee_warning_t;
+
+/* ID: 0x0105          Byte: 1       飞镖发射口倒计时  */
+typedef struct
+    {
+    union
+    {
+        uint8_t dataBuff[1];
+        struct __packed
+        {
+            uint8_t dart_remaining_time;//15s 倒计时
+        };
+    }data;
+    uint8_t InfoUpdataFlag;
+}ext_dart_remaining_time_t;
+
+/* ID: 0X0201          Byte: 27      机器人状态数据 */
+typedef struct
+{
+    union
+    {
+        uint8_t dataBuff[27];
+        struct __packed
+        {
+            uint8_t robot_id;
+
+			uint8_t robot_level;
+			uint16_t current_HP;//机器人剩余血量
+			uint16_t maximum_HP;//机器人上限血量
+			uint16_t shooter_barrel_cooling_value; //机器人 1 号 17mm 枪口每秒冷却值
+			uint16_t shooter_barrel_heat_limit;//机器人 1 号 17mm 枪口热量上限
+			uint16_t chassis_power_limit;  //机器人 1 号 17mm 枪口上限速度 单位 m/s
+			uint8_t power_management_output;
+
+		};
+	}data;
+	uint8_t InfoUpdataFlag;
+}ext_game_robot_status_t;
+
+typedef struct __packed
+{
+ uint8_t robot_id;
+ uint8_t robot_level;
+ uint16_t current_HP;
+ uint16_t maximum_HP;
+ uint16_t shooter_barrel_cooling_value;
+ uint16_t shooter_barrel_heat_limit;
+ uint16_t chassis_power_limit;
+ uint8_t power_management_output;
+ uint8_t InfoUpdataFlag;
+}robot_status_t;
+
+/* ID: 0X0202          Byte: 16      实时功率热量数据 */
+typedef struct __packed
+{
+ uint16_t reserved1; //REMOVED chassis_voltage
+ uint16_t reserved2; //REMOVED chassis_current
+ float reserved3; //REMOVED chassis_power
+ uint16_t buffer_energy;
+ uint16_t shooter_17mm_1_barrel_heat;
+ uint16_t shooter_17mm_2_barrel_heat;
+ uint16_t shooter_42mm_barrel_heat;
+ uint8_t InfoUpdataFlag;
+}power_heat_data_t;
+
+/* ID: 0X0203          Byte: 16      机器人位置数据  */
+typedef struct __packed
+{
+ float x;
+ float y;
+ float angle;
+ uint8_t InfoUpdataFlag;
+}robot_pos_t;
+
+/* ID: 0X0204          Byte: 1       机器人增益数据 */
+typedef struct
+{
+    union
+    {
+        uint8_t dataBuff[1];
+        struct __packed
+        {
+            uint8_t power_rune_buff;/*bit 0：机器人血量补血状态
+                                bit 1：枪口热量冷却加速
+                                bit 2：机器人防御加成
+                                bit 3：机器人攻击加成*/
+        };
+    }data;
+    uint8_t InfoUpdataFlag;
+}ext_buff_t;
+
+typedef struct __packed
+{
+ uint8_t recovery_buff;
+ uint8_t cooling_buff;
+ uint8_t defence_buff;
+ uint8_t vulnerability_buff;
+ uint16_t attack_buff;
+}buff_t;
+
+/* ID: 0X0205          Byte: 2       空中机器人能量状态数据 */
+typedef struct
+{
+    union
+    {
+        uint8_t dataBuff[2];
+        struct __packed
+        {
+            uint8_t attack_time;//可攻击时间 单位 s。30s 递减至 0
+        };
+    }data;
+    uint8_t InfoUpdataFlag;
+}aerial_robot_energy_t;
+
+/* ID: 0X0206          Byte: 1       伤害状态数据 */
+typedef struct __packed
+{
+ uint8_t armor_id : 4;
+ uint8_t HP_deduction_reason : 4;
+ uint8_t InfoUpdataFlag;
+}hurt_data_t;
+
+/* ID: 0X0207          Byte: 7       实时射击数据 */
+typedef struct __packed
+{
+ uint8_t bullet_type;
+ uint8_t shooter_number;
+ uint8_t launching_frequency;
+ float initial_speed;
+ uint8_t InfoUpdataFlag;
+}shoot_data_t;
+
+/* ID: 0X0208          Byte: 6       子弹剩余发送数 */
+typedef struct __packed
+{
+ uint16_t projectile_allowance_17mm;
+ uint16_t projectile_allowance_42mm;
+ uint16_t remaining_gold_coin;
+ uint8_t InfoUpdataFlag;
+}projectile_allowance_t;
+
+/* ID: 0X0209          Byte: 4       机器人RFID状态 */
+/*bit 0：基地增益点 RFID 状态；
+bit 1：高地增益点 RFID 状态；
+bit 2：能量机关激活点 RFID 状态；
+bit 3：飞坡增益点 RFID 状态；
+bit 4：前哨岗增益点 RFID 状态；
+bit 5：资源岛增益点 RFID 状态；
+bit 6：补血点增益点 RFID 状态；
+bit 7：工程机器人补血卡 RFID 状态；
+RFID 状态不完全代表对应的增益或处罚状态，例如敌方已占领的高地增益点，不能
+获取对应的增益效果。*/
+typedef struct
+{
+    union
+    {
+        uint8_t dataBuff[4];
+        struct __packed
+        {
+            uint32_t rfid_status;
+        };
+    }data;
+    uint8_t InfoUpdataFlag;
+}ext_rfid_status_t;
+
+/* ID: 0x020A          Byte: 12      飞镖机器人客户端指令书 */
+typedef struct
+{
+    union
+    {
+        uint8_t dataBuff[12];
+        struct __packed
+        {
+            uint8_t dart_launch_opening_status;//当前飞镖发射口的状态
+            uint8_t dart_attack_target;//飞镖的打击目标，默认为前哨站
+            uint16_t target_change_time;//切换打击目标时的比赛剩余时间，单位秒，从未切换默认为 0。
+            uint8_t first_dart_speed; //检测到的第一枚飞镖速度，单位 0.1m/s/LSB, 未检测是为 0
+            uint8_t second_dart_speed;//检测到的第二枚飞镖速度，单位 0.1m/s/LSB, 未检测是为 0
+            uint8_t third_dart_speed; //检测到的第三枚飞镖速度，单位 0.1m/s/LSB, 未检测是为 0
+            uint8_t fourth_dart_speed;//检测到的第四枚飞镖速度，单位 0.1m/s/LSB, 未检测是为 0
+            uint16_t last_dart_launch_time;//最近一次的发射飞镖的比赛剩余时间，单位秒，初始值为 0。
+            uint16_t operate_launch_cmd_time;	//最近一次操作手确定发射指令时的比赛剩余时间，单位秒, 初始值为 0。
+        };
+    }data;
+    uint8_t InfoUpdataFlag;
+}ext_dart_client_cmd_t;
+
+
+// ----------------------- Line 1163
+
+/* ID: 0X0301          Byte: n       机器人间交互数据 */
+typedef  struct __packed
+{
+    uint16_t data_cmd_id;
+    uint16_t sender_ID;
+    uint16_t receiver_ID;
+}ext_student_interactive_header_data_t;
+
+/* data */
+typedef  struct __packed
+{
+    uint8_t data[20];//数据段n小于113
+}robot_interactive_data_t;
+
+/* 
+	客户端 客户端自定义数据：cmd_id:0x0301。内容 ID:0x0100   0x0101  0x0102  0x0103  0x0110  0x0104
+	发送频率：上限 10Hz
+
+
+*/
+
+/* 客户端删除图形 机器人间通信：0x0301 */
+typedef  struct __packed
+{
+    uint8_t operate_tpye;
+    uint8_t layer;
+}ext_client_custom_graphic_delete_t;
+
+// my copy
+typedef  struct __packed
+{
+    uint16_t data_cmd_id;
+    uint16_t sender_ID;
+    uint16_t receiver_ID;
+    ext_client_custom_graphic_delete_t graphic_custom; // ADDED
+}ext_student_interactive_header_data_delete_t;
+
+/* 图形数据 */
+typedef  struct __packed
+{
+    uint8_t graphic_name[3];
+    uint32_t operate_tpye:3;
+    uint32_t graphic_tpye:3;
+    uint32_t layer:4;
+    uint32_t color:4;
+    uint32_t start_angle:9;
+    uint32_t end_angle:9;
+    uint32_t width:10;
+    uint32_t start_x:11;
+    uint32_t start_y:11;
+    uint32_t radius:10;
+    uint32_t end_x:11;
+    uint32_t end_y:11;
+}graphic_data_struct_t;
+
+typedef  struct __packed
+{
+    uint8_t graphic_name[3];
+    uint32_t operate_tpye:3;
+    uint32_t graphic_tpye:3;
+    uint32_t layer:4;
+    uint32_t color:4;
+    uint32_t start_angle:9;
+    uint32_t end_angle:9;
+    uint32_t width:10;
+    uint32_t start_x:11;
+    uint32_t start_y:11;
+    int32_t data;
+}ClientData_struct_t;
+
+/* 客户端绘制一个图形 机器人间通信：0x0301 */
+typedef  struct __packed
+{
+    graphic_data_struct_t grapic_data_struct;
+}ext_client_custom_graphic_single_t;
+
+/* 客户端绘制二个图形 机器人间通信：0x0301 */
+typedef  struct __packed
+{
+    graphic_data_struct_t grapic_data_struct[2];
+}ext_client_custom_graphic_double_t;
+
+/* 客户端绘制五个图形 机器人间通信：0x0301 */
+typedef  struct __packed
+{
+    graphic_data_struct_t grapic_data_struct[5];
+}ext_client_custom_graphic_five_t;
+
+/* 客户端绘制七个图形 机器人间通信：0x0301 */
+typedef  struct __packed
+{
+    graphic_data_struct_t grapic_data_struct[7];
+}ext_client_custom_graphic_seven_t;
+
+/* 客户端绘制字符 机器人间通信：0x0301 */
+typedef  struct __packed
+{
+    graphic_data_struct_t grapic_data_struct;
+    char data[30];
+}ext_client_custom_character_t;
+
+
+// MY ADDED STRUCTS ------------------
+
+/* ID: 0X0301          Byte: n       机器人间交互数据 */
+typedef  struct __packed
+{
+    uint16_t data_cmd_id;
+    uint16_t sender_ID;
+    uint16_t receiver_ID;
+    ext_client_custom_graphic_seven_t graphic_custom; // ADDED
+}ext_student_interactive_header_data_graphic_t;
+
+// my copy
+typedef  struct __packed
+{
+    uint16_t data_cmd_id;
+    uint16_t sender_ID;
+    uint16_t receiver_ID;
+    ext_client_custom_character_t graphic_custom; // ADDED
+}ext_student_interactive_header_data_character_t;
+
+// my copy
+typedef  struct __packed
+{
+    uint16_t data_cmd_id;
+    uint16_t sender_ID;
+    uint16_t receiver_ID;
+    robot_interactive_data_t data; // ADDED
+}ext_student_interactive_header_data_robot_comm_t;
+
+// ------------------- Line 1330
+
+// /*机器人交互信息：0x0301*/
+// typedef __packed struct
+// {
+// 	xFrameHeader   							txFrameHeader;//帧头
+// 	uint16_t								CmdID;//命令码
+// 	ext_student_interactive_header_data_t   dataFrameHeader;//数据段头结构
+// 	robot_interactive_data_t  	 			interactData;//数据段
+// 	uint16_t		 						FrameTail;//帧尾
+// }ext_CommunatianData_t;
+
+// //帧头  命令码   数据段头结构  数据段   帧尾
+
+// /*客户端结构体*/
+// //上传客户端
+// typedef __packed struct
+// {
+// 	xFrameHeader   							txFrameHeader;//帧头
+// 	uint16_t		 						CmdID;//命令码
+// 	ext_student_interactive_header_data_t   dataFrameHeader;//数据段头结构
+// 	graphic_data_struct_t cilentData[7];//数据段
+// 	uint16_t		 						FrameTail;//帧尾
+// }ext_SendClientData_t;
+
+// typedef __packed struct
+// {
+// 	xFrameHeader   							txFrameHeader;//帧头
+// 	uint16_t		 						CmdID;//命令码
+// 	ext_student_interactive_header_data_t   dataFrameHeader;//数据段头结构
+// 	graphic_data_struct_t cilentData[5];//数据段
+// 	uint16_t		 						FrameTail;//帧尾
+// }ext_ShowCrossHair_t;
+
+#pragma GCC diagnostic pop

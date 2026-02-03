@@ -1,11 +1,12 @@
-cmake_minimum_required(VERSION 3.19.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.25.0 FATAL_ERROR)
 
 find_program(MBED_CLI mbed-tools PATHS "~/.local/bin" REQUIRED)
 
 # User variables, feel free to change as necessary
 set(MBED_PLATFORM NUCLEO_F446RE)
 set(MBED_TOOLCHAIN GCC_ARM)
-set(DISABLE_WARNINGS ON)
+set(DISABLE_WARNINGS OFF)
+set(CMAKE_BUILD_TYPE Release)
 
 # Check if mbed-os is downloaded, if not download it
 if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/mbed-os)
@@ -49,13 +50,29 @@ if (DISABLE_WARNINGS)
     add_compile_options(-w)
 endif()
 
+
 # Enable cmake for mbed
 include(${MBED_PATH}/tools/cmake/app.cmake)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+
 project(${APP_TARGET})
 
-add_subdirectory(${MBED_PATH})
+# Mark as SYSTEM so that we don't get warnings from mbed-os headers
+add_subdirectory(${MBED_PATH} SYSTEM)
 link_libraries(mbed-os)
+
+
+add_compile_options(
+    -Wall
+    -Wextra
+    -Wpedantic         
+    -Wshadow=compatible-local
+    -Wformat=2         
+    -Wcast-align       
+    -Wvla   
+)
 
 add_subdirectory(core)
 link_libraries(TR-core)

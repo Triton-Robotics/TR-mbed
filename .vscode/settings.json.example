@@ -1,0 +1,8 @@
+
+{
+    "clangd.arguments": [
+        // NEED TO CHANGE THIS
+        // on linux you can find this by running "which arm-none-eabi-g++"
+        "--query-driver=/path/to/arm-none-eabi-g++",
+    ],
+}

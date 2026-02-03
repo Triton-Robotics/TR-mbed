@@ -28,6 +28,7 @@
 #define BNO055_H
 
 #include "mbed.h"
+#include "IMU.h"
 
 #define PI 3.14159265
 
@@ -137,9 +138,12 @@ enum {MT_P0 = 0, MT_P1, MT_P2, MT_P3, MT_P4, MT_P5, MT_P6, MT_P7};
  * @endcode
  */
 
-class BNO055
+class BNO055: public IMU
 {
 public:
+    // Unconfigured IMU
+    BNO055();
+
     /** Configure data pin
       * @param data SDA and SCL pins
       * @param device address
@@ -177,7 +181,7 @@ public:
     /** Get Angular position from quaternion
      *  @param double type of 3D data address
      */
-    void get_angular_position_quat(BNO055_ANGULAR_POSITION_typedef *an_pos);
+    void get_angular_position_quat(IMU::EulerAngles *an_pos);
 
     /** Get Linear accel data
      * @param double type of 3D data address
@@ -307,7 +311,9 @@ public:
 
     int cantReadDataCount;
 
-    double multiturnYaw;
+    IMU::EulerAngles read() override;
+
+    IMU::EulerAngles getImuAngles() override;
 
 protected:
     void initialize(void);
@@ -323,6 +329,8 @@ protected:
     DigitalOut _res;
 
 private:
+    Mutex mutex_;
+
     char     dt[10];      // working buffer
     uint8_t  chip_addr;
     uint8_t  chip_mode;
@@ -335,6 +343,8 @@ private:
     uint8_t  gyr_id;
     uint8_t  bootldr_rev_id;
     uint16_t sw_rev_id;
+
+    IMU::EulerAngles imuAngles;
 
     bool unit_flag_is_set(uint8_t flag);
 };

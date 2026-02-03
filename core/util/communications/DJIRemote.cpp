@@ -53,20 +53,26 @@ void Remote::read(){
 
 __attribute__((unused)) bool Remote::isConnected() const { return connected; }
 
+float apply_deadzone(float num){
+    const float deadzone = 0.05;
+    return fabs(num) < deadzone ? 0.0 : num; 
+}
+
 float Remote::getChannel(Channel ch) const{
     switch (ch)
     {
         case Channel::RIGHT_HORIZONTAL:
-            return float(remote.rightHorizontal) / STICK_MAX_VALUE;
+            return  apply_deadzone(float(remote.rightHorizontal) / STICK_MAX_VALUE);
         case Channel::RIGHT_VERTICAL:
-            return float(remote.rightVertical) / STICK_MAX_VALUE;
+            return apply_deadzone(float(remote.rightVertical) / STICK_MAX_VALUE);
         case Channel::LEFT_HORIZONTAL:
-            return float(remote.leftHorizontal) / STICK_MAX_VALUE;
+            return apply_deadzone(float(remote.leftHorizontal) / STICK_MAX_VALUE);
         case Channel::LEFT_VERTICAL:
-            return float(remote.leftVertical) / STICK_MAX_VALUE;
+            return apply_deadzone(float(remote.leftVertical) / STICK_MAX_VALUE);
     }
     return 0;
 }
+
 
 int16_t Remote::getChannelInt(Channel ch) const{
     switch (ch){
@@ -85,6 +91,9 @@ int16_t Remote::getChannelInt(Channel ch) const{
     return 0;
 }
 
+
+
+
 Remote::SwitchState Remote::getSwitch(Switch sw) const{
     switch (sw){
         case Switch::LEFT_SWITCH:
@@ -102,8 +111,14 @@ void Remote::printAxisData() const{
 }
 
 void Remote::dumpInfo() const{
-    printf("%d %d %d %d %d %d\n", getChannelInt(Remote::Channel::LEFT_HORIZONTAL), getChannelInt(Remote::Channel::LEFT_VERTICAL), getChannelInt(Remote::Channel::RIGHT_HORIZONTAL), getChannelInt(Remote::Channel::RIGHT_VERTICAL),
-           getSwitch(Switch::LEFT_SWITCH), getSwitch(Switch::RIGHT_SWITCH));
+    printf("%d %d %d %d %d %d\n", 
+        getChannelInt(Remote::Channel::LEFT_HORIZONTAL), 
+        getChannelInt(Remote::Channel::LEFT_VERTICAL), 
+        getChannelInt(Remote::Channel::RIGHT_HORIZONTAL), 
+        getChannelInt(Remote::Channel::RIGHT_VERTICAL),
+        static_cast<int>(getSwitch(Switch::LEFT_SWITCH)), 
+        static_cast<int>(getSwitch(Switch::RIGHT_SWITCH))
+    );
 }
 
 int16_t Remote::getMouseX() const { return remote.mouse.x; }
@@ -154,8 +169,6 @@ void Remote::switchToState(RemoteInfo *remote){
 
 }
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "readability-convert-member-functions-to-static"
 bool Remote::badData(const uint8_t rxBuffer[], RemoteInfo *remote){
 
     auto lSwitch = SwitchState(((rxBuffer[5] >> 4) & 0x000C) >> 2);
@@ -191,7 +204,6 @@ bool Remote::badData(const uint8_t rxBuffer[], RemoteInfo *remote){
 
     return false;
 }
-#pragma clang diagnostic pop
 
 void Remote::parseBuffer(){
     // values implemented by shifting bits across based on the dr16

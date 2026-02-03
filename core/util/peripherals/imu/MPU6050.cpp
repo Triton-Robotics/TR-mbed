@@ -696,7 +696,10 @@ void MPU6050::madgwickFilter(float deltaT)
     float   gx = gyroX * M_PI / 180.0f;                         // convert to rad/s
     float   gy = gyroY * M_PI / 180.0f;                         // convert to rad/s
     float   gz = gyroZ * M_PI / 180.0f;                         // convert to rad/s
-    float   gErrX, gErrY, gErrZ, gBiasX, gBiasY, gBiasZ;        // gyro bias errors
+    float   gErrX, gErrY, gErrZ;        // gyro bias errors
+    float gBiasX{0}; 
+    float gBiasY{0}; 
+    float gBiasZ{0};
 
     // Auxiliary variables to avoid repeated arithmetic
     float   halfq1 = 0.5f * q1;

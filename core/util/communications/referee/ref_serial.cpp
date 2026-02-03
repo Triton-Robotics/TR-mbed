@@ -1,119 +1,23 @@
 
 #include "ref_serial.h"
 
-#define REF_DEBUG 0
-
-// top part: I try to make this object-oriented, but then realized it would be quite complicated
-
-Referee::Referee(PinName pin_tx, PinName pin_rx) : ref(pin_tx, pin_rx, 115200) {
-    printf("constructor!");
-}
-
-void Referee::clearRxBuffer(){
-
-}
-
-void Referee::read(){
-    
-}
-
-bool Referee::readable(){
-    return ref.readable();
-}
-
 // -------------------------------------
 // From South China University of Technology 华南理工大学广州学院-野狼战队-步兵代码 ----------------------------------
 // https://github.com/wuzjun/2021RM_Infantry/blob/master/Devices/Devices.c/RM_JudgeSystem.c
 // 2021 section
 
-uint8_t JudgeSystem_rxBuff[JUDGESYSTEM_PACKSIZE]; //接收buff
-uint8_t Judge_Self_ID;        //当前机器人ID
-uint16_t Judge_SelfClient_ID; //发送者机器人对应的客户端ID
 
-
-int JudgeSystem_USART_Receive_DMA(BufferedSerial* b) // modified
+int Referee::JudgeSystem_USART_Receive_DMA() // modified
 {
     // b->enable_input(TRUE);
     // memset(JudgeSystem_rxBuff, 0, sizeof(JudgeSystem_rxBuff));
-    b->enable_output(true);
+    ref.enable_output(true);
     //memset (JudgeSystem_rxBuff,0,JUDGESYSTEM_PACKSIZE);
-    return b->read(JudgeSystem_rxBuff, JUDGESYSTEM_PACKSIZE);
+    return ref.read(JudgeSystem_rxBuff_priv, JUDGESYSTEM_PACKSIZE);
 }
 
-// ext_game_status_t ext_game_status; //
-game_status_t game_status;
-// ext_game_result_t ext_game_result; //
-game_result_t game_result;
-ext_game_robot_HP_t ext_game_robot_HP;
-ext_dart_status_t ext_dart_status;
-ext_ICRA_buff_debuff_zone_status_t ext_ICRA_buff_debuff_zone_status;
-ext_event_data_t ext_even_data;
-ext_supply_projectile_action_t ext_supply_projectile_action;
-// ext_referee_warning_t ext_referee_warning; //
-referee_warning_t referee_warning; 
-ext_dart_remaining_time_t ext_dart_remaining_time;
-// ext_game_robot_status_t ext_game_robot_state; //
-robot_status_t robot_status;
-// ext_power_heat_data_t ext_power_heat_data; //
-power_heat_data_t power_heat_data;
-// ext_game_robot_pos_t ext_game_robot_pos; //
-robot_pos_t robot_pos;
-ext_buff_t Buff; //
-buff_t buff;
-aerial_robot_energy_t aerial_robot_energy;
-// ext_robot_hurt_t ext_robot_hurt; //
-hurt_data_t hurt_data;
-// ext_shoot_data_t ext_shoot_data; //
-shoot_data_t shoot_data;
-// ext_bullet_remaining_t ext_bullet_remaining; //
-projectile_allowance_t projectile_allowance;
 
-ext_rfid_status_t ext_rfid_status;
-ext_dart_client_cmd_t ext_dart_client_cmd;
-
-// ext_CommunatianData_t CommuData; //队友通信信息
-// /*客户端定义*/
-// /*准心及指示灯*/
-// ext_SendClientData_t ShowData; //客户端信息
-// ext_ShowCrossHair_t Ex_ShowData;
-// ext_DeleteClientData_t DeleteClient; //删除客户端
-// /*射速等级*/
-// ext_ShootLevelData_t ShowshootLv;
-// ext_ShootLevelData_t ShootLvInit;
-// /*超级电容容量*/
-// ext_Cap_Energyvalue_t Cap_Energyvalue;
-// ext_Cap_Energy_t Cap_Energyshow;
-// /*工程抬升高度*/
-// ext_UpliftHeightData_t Uplift_Height;
-// ext_UpliftHeightData_t Uplift_HeightValue;
-// /*工程夹子角度*/
-// ext_ClipAngeleData_t Clip_Angle;
-// ext_ClipAngeleData_t Clip_AngleValue;
-// /*哨兵状态指示*/
-// ext_SentryStatusData_t SentryStatus_Data;
-// ext_SentryStatusData_t Sentry_Status;
-// ext_CommunatianData_t Sentry_CommuData;
-// /**飞镖状态指示**/
-// ext_DartStatusData_t DartStatus_Data;
-// ext_DartStatusData_t Dart_Status;
-// ext_CommunatianData_t Dart_CommuData;
-// /*车距框*/
-// ext_CarDistance_t Car_Distance;
-// /*机器人状态灯信息*/
-// ext_LedMeaning_t Led_Meaning;
-// ext_LedMeaning_t Led_Yellow;
-// ext_LedMeaning_t Led_Green;
-// ext_LedMeaning_t Led_Orange;
-// ext_LedMeaning_t Led_Purple;
-// ext_LedMeaning_t Led_Pink;
-// //test
-// ext_MapCommunate_t MapCommunate;
-// ext_robot_command_t Robot_Command;
-
-uint8_t Robot_Commute[26];
-
-
-void Judge_GetMessage(uint16_t Data_Length)
+void Referee::Judge_GetMessage(uint16_t Data_Length)
 {
     #if REF_DEBUG
     // for (int i = 0; i < Data_Length;i++)
@@ -530,26 +434,6 @@ void Judge_GetMessage(uint16_t Data_Length)
     //JudgeSystem.InfoUpdateFrame++;
 }
 
-/**
-  * @brief  判断自己红蓝方
-  * @param  void
-  * @retval RED   BLUE
-  * @attention  数据打包,打包完成后通过串口发送到裁判系统
-  */
-_Bool Color;
-_Bool is_red_or_blue(void)
-{
-    Judge_Self_ID = robot_status.robot_id; //读取当前机器人ID
-
-    if (robot_status.robot_id > 10)
-    {
-        return 0; //蓝方 (blue)
-    }
-    else
-    {
-        return 1; //红方 (red)
-    }
-}
 
 /**
   * @brief  判断自身ID，选择客户端ID
@@ -557,9 +441,9 @@ _Bool is_red_or_blue(void)
   * @retval RED   BLUE
   * @attention  数据打包,打包完成后通过串口发送到裁判系统
   */
-void determine_ID(void)
+void Referee::determine_ID()
 {
-    Color = is_red_or_blue();
+    bool Color = is_red_or_blue();
     if (Color == BLUE)
     {
         Judge_SelfClient_ID = 0x0100 + robot_status.robot_id; //计算客户端ID
@@ -576,42 +460,24 @@ void determine_ID(void)
   * @retval void
   * @attention  数据打包,打包完成后通过串口发送到裁判系统
   */
-#define send_max_len 300 //200
-unsigned char CliendTxBuffer[send_max_len];
 
 
 // MY PART -------------------------------------
 
-void init_referee_struct_data(void)
+void Referee::init_referee_struct_data()
 {
     memset(&robot_status, 0, sizeof(robot_status_t));
-}
-uint8_t get_robot_id(void)
-{
-    return robot_status.robot_id;
-}
-uint8_t get_remain_hp(void)
-{
-    return robot_status.current_HP;
 }
 
 
 // Code from CSDN
 // https://blog.csdn.net/zhang1079528541/article/details/115435696
-
-#define MAX_SIZE          128    //上传数据最大的长度
-#define frameheader_len  5       //帧头长度
-#define cmd_len          2       //命令码长度
-#define crc_len          2       //CRC16校验
-uint8_t seq=0;
-
-
-void referee_data_pack_handle(uint8_t sof,uint16_t cmd_id, uint8_t *p_data, uint16_t len, BufferedSerial* b)
+void Referee::referee_data_pack_handle(uint8_t sof,uint16_t cmd_id, uint8_t *p_data, uint16_t len)
 {
     
-	unsigned char i=i;
 	uint8_t tx_buff[MAX_SIZE];
 
+    mutex_write_.lock();
 	uint16_t frame_length = frameheader_len + cmd_len + len + crc_len;   //数据帧长度	
 
 	memset(tx_buff,0,frame_length);  //存储数据的数组清零
@@ -648,6 +514,7 @@ void referee_data_pack_handle(uint8_t sof,uint16_t cmd_id, uint8_t *p_data, uint
 		while(LL_USART_IsActiveFlag_TC(USART3) == RESET);
     }
     */
-   
-    b->write(tx_buff, frame_length);
+    mutex_write_.unlock();
+    
+    ref.write(tx_buff, frame_length);
 }

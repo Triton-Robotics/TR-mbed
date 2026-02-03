@@ -271,13 +271,13 @@ void SSD1308::writeProgressBar(uint8_t page, uint8_t col, int percentage) {
   
   _sendData(PRG_LEFT_EDGE);
 
-  for (uint8_t col = 0; col < scale_value; col++) {
+  for (uint8_t i = 0; i < scale_value; i++) {
       _sendData(PRG_ACTIVE);
   }
       
   _sendData(PRG_ACTIVE);
   
-  for (uint8_t col = (scale_value+1); col < PRG_MAX_SCALE; col++) {
+  for (uint8_t i = (scale_value+1); i < PRG_MAX_SCALE; i++) {
       _sendData(PRG_NOT_ACTIVE);
   }
 
@@ -355,13 +355,13 @@ void SSD1308::writeLevelBar(uint8_t page, uint8_t col, int percentage) {
  
   _sendData(PRG_LEFT_EDGE);   
 
-  for (uint8_t col = 0; col < scale_value; col++) {
+  for (uint8_t i = 0; i < scale_value; i++) {
      _sendData(PRG_NOT_ACTIVE);  // Write Data                       
   }
 
   _sendData(PRG_ACTIVE);  // Write Data at active meterlevel
 
-  for (uint8_t col = scale_value+1; col < PRG_MAX_SCALE; col++) {
+  for (uint8_t i = scale_value+1; i < PRG_MAX_SCALE; i++) {
       _sendData(PRG_NOT_ACTIVE);                
   }
          

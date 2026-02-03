@@ -1,14 +1,15 @@
 #ifndef TR_EMBEDDED_DJIMOTOR_H
 #define TR_EMBEDDED_DJIMOTOR_H
 
+#pragma once
 #include "mbed.h"
-#include "algorithms/PID.h"
-#include "communications/CANHandler.h"
+#include "util/algorithms/PID.h"
+#include "util/communications/CANHandler.h"
 #include <cmath>
 #include <string>
 
-constexpr double M3508_GEAR_RATIO = 3591.0 / 187.0;
-constexpr double M2006_GEAR_RATIO = 36.0;
+constexpr float M3508_GEAR_RATIO = 3591.0f / 187.0f;
+constexpr float M2006_GEAR_RATIO = 36.0f;
 
 constexpr int TICKS_REVOLUTION = 8192;
 constexpr int TIMEOUT_MS = 400;
@@ -17,9 +18,7 @@ constexpr int CAN_HANDLER_NUMBER = 2;
 constexpr int INT16_T_MAX = 32767;
 constexpr int INT15_T_MAX = 16383;
 
-static int s_sendIDs[3] = {0x200, 0x1FF, 0x2FF};           //IDs to send data
-static Thread s_motorFeedbackThread(osPriorityAboveNormal);     //threading for Motor::tick()
-static Thread s_motorSendThread(osPriorityNormal);              //threading for Motor::tick()
+constexpr int s_sendIDs[3] = {0x200, 0x1FF, 0x2FF};                //IDs to send data
 
 enum motorDataType {
     ANGLE,
@@ -39,52 +38,14 @@ enum motorDataType {
 enum motorType {
     NONE = 0,
     STANDARD = 1,       //identifier for all motors that use the standard can protocol, used by the C610 and C620
-
-    GIMBLY = 2,
     GM6020 = 2,
-
     M3508 = 3,
-
-    C610 = 4,
     M2006 = 4,
-
     M3508_FLYWHEEL = 5,
 };
 
 class DJIMotor {
-
-private:
-
-    struct PidSettings{
-        float p;
-        float i;
-        float d;
-        float outCap;
-        float integralCap;
-    };
-
-    struct MotorSettings{
-        PidSettings pos;
-        PidSettings speed;
-    };
-
-    // Default motor PID settings
-
-    MotorSettings gimbly = {
-        {10.88,1.2,18.9,8000,500},
-        {0.13, 8.8, 0, 25000, 1000}
-    };
-
-    MotorSettings m3508 = {
-        {.48, 0.0137, 4.2, 3000, 300},
-        {1.79, 0.27, 10.57, 15000, 500}
-    };
-
-    MotorSettings m3508Flywheel = {
-        {.48, 0.0137, 4.2, 3000, 300},
-        {2.013, 0.319, 20.084, 15000, 500}
-    };
-
+public:
     enum motorMoveMode{
         OFF,
         POS,
@@ -93,36 +54,16 @@ private:
         ERR
     };
 
-    static DJIMotor* s_allMotors  [CAN_HANDLER_NUMBER][3][4];
-    static bool s_motorsExist     [CAN_HANDLER_NUMBER][3][4];
+    struct config
+    {
+        short motorID;
+        CANHandler::CANBus canBus;
+        motorType type = STANDARD;
+        std::string name = "NO_NAME";
+        PID::config vel_cfg;
+        PID::config pos_cfg = PID::config{0,0,0, 0, 0};
+    };
 
-    static CANHandler* s_canHandlers[CAN_HANDLER_NUMBER];
-    CANHandler::CANBus canBus = CANHandler::NOBUS;
-
-    short canID_0;                                                  // canID - 1, because canID is 1-8, arrays are 0-7
-    short motorID_0;                                                // physical motorID - 1
-    motorMoveMode mode = OFF;                                       // mode of the motor
-
-    //  angle | velocity | torque | temperature
-    int16_t motorData[4] = {};
-    int value = 0;
-
-    int lastMotorAngle = 0;
-    int integratedAngle = 0;
-    long lastIntegrationTime = -1;
-
-    uint32_t timeOfLastFeedback = 0;
-    uint32_t timeOfLastPID = 0;
-
-    static void s_updateMultiTurnPosition();
-    static void s_sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool debug = false);
-//    static int s_calculateDeltaTicks(int target, int current);
-    void setOutput();
-
-public:
-
-    static int s_calculateDeltaPhase(int target, int current, int max = TICKS_REVOLUTION);
-    static float s_calculateDeltaPhaseF(float target, float current, float max);
 
     static int motorCount;
     static bool initializedWarning;
@@ -134,25 +75,35 @@ public:
 
     int multiTurn = 0;
     int outputCap = INT16_T_MAX;
-    bool useAbsEncoder = true;
+    bool useAbsEncoder = false; // false for everything except gm6020s
     bool printAngle = false;
 
     motorType type = NONE;
 
+
     explicit DJIMotor(bool isErroneousMotor = false);
     DJIMotor(short motorID, CANHandler::CANBus canBus, motorType type = STANDARD, const std::string& name = "NO_NAME");
+    DJIMotor(config cfg);
     ~DJIMotor();
 
-    static void s_setCANHandlers(CANHandler* bus_1, CANHandler* bus_2, bool threadSend = true, bool threadFeedback = true);
-    static void s_getFeedback(bool debug = false);
-    static void s_sendValues(bool debug = false);
-    static void s_feedbackThread();
-    static void s_sendThread();
+    static int calculateDeltaPhase(int target, int current, int max = TICKS_REVOLUTION);
+    static float calculateDeltaPhase(float target, float current, float max);
+
+    static void setCanHandlers(CANHandler * can_1, CANHandler * can_2);
+    static void getCan1Feedback(const CANMsg * msg);
+    static void getCan2Feedback(const CANMsg * msg);
+    static void sendValues(bool debug = false);
 
     int getData(motorDataType data);
-    void printAllMotorData();
 
-    inline void setPower(int power){
+    inline void setMotorOutput(int val, motorMoveMode mod)
+    {
+        value = val;
+        mode = mod;
+    }
+
+    inline void setPower(int power)
+    {
         value = power;
         mode = POW;
         powerOut = power;
@@ -175,13 +126,11 @@ public:
     __attribute__((unused)) inline bool isConnected() const {
         return us_ticker_read() / 1000 - timeOfLastFeedback <= TIMEOUT_MS;
     }
-    static bool s_theseConnected(DJIMotor* motors[], int size, bool debug = false);
-    static bool s_allConnected(bool debug = false);
-//    static int s_calculateDeltaPhase(int target, int current, int max = TICKS_REVOLUTION);
-
-
 
     inline int operator>>(motorDataType data)                                                       { return getData(data); }
+    DJIMotor(const DJIMotor&) = delete;
+    DJIMotor& operator=(const DJIMotor&) = delete;
+
 
     inline void setPositionPID(float kP, float kI, float kD)                                        { pidPosition.setPID(kP, kI, kD); }
     inline void setPositionIntegralCap(double cap)                                                  { pidPosition.setIntegralCap((float)cap); }
@@ -193,9 +142,34 @@ public:
     inline void setSpeedOutputCap(double cap)                                                       { pidSpeed.setOutputCap((float)cap); }
 
     inline int calculateSpeedPID(int desired, int current, double dt)                               { return pidSpeed.calculate(desired, current, dt); }
-    inline int calculatePositionPID(int desired, int current, double dt, int chassis_rpm = 0)       { return (pidPosition.calculate(desired, current, dt) - chassis_rpm); }
-    inline int calculatePeriodicPosition(float dE, double dt, int chassis_rpm = 0)                  { return (pidPosition.calculatePeriodic(dE, dt)       - chassis_rpm); }
+    inline int calculatePositionPID(int desired, int current, double dt)                            { return pidSpeed.calculate(pidPosition.calculate(desired, current, dt), getData(VELOCITY), dt); }
+    inline int calculatePeriodicPosition(float dE, double dt)                                       { return pidSpeed.calculate(pidPosition.calculatePeriodic(dE, dt), getData(VELOCITY), dt); }
 
+private:
+    static DJIMotor* s_allMotors  [CAN_HANDLER_NUMBER][3][4];
+    static bool s_motorsExist     [CAN_HANDLER_NUMBER][3][4];
+
+    static CANHandler* s_canHandlers[CAN_HANDLER_NUMBER];
+    CANHandler::CANBus canBus = CANHandler::NOBUS;
+
+    short canID_0;              // canID - 1, because canID is 1-8, arrays are 0-7
+    short motorID_0;            // physical motorID - 1
+    motorMoveMode mode = OFF;   // mode of the motor
+
+    //  angle | velocity | torque | temperature
+    int16_t motorData[4] = {};
+    int value = 0;
+
+    int lastMotorAngle = 0;
+    int integratedAngle = 0;
+    long lastIntegrationTime = -1;
+
+    uint32_t timeOfLastFeedback = 0;
+    uint32_t timeOfLastPID = 0;
+
+    static void updateOneMultiTurn(int canBus, int can_line, int motor_id);
+    static void sendOneID(CANHandler::CANBus canBus, short sendIDindex, bool debug = false);
+    void setOutput();
 };
 
 #endif //TR_EMBEDDED_DJIMOTOR_H

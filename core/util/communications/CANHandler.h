@@ -11,30 +11,48 @@
 
 #include "mbed.h"
 #include "CANMsg.h"
+#include <cstdint>
+#include <vector>
 
 
 #define CAN_BAUD 1000000
+
+// Exact ID callback
+struct ExactCallback {
+    uint32_t id;
+    std::function<void(const CANMsg*)> func;
+};
+
+// Range callback (inclusive)
+struct RangeCallback {
+    uint32_t start_id;
+    uint32_t end_id;
+    std::function<void(const CANMsg*)> func;
+};
 
 class CANHandler{
     private:
         CANMsg txMsg; //Message object reused to send messages to motors
         CANMsg rxMsg; //Message object reused to recieve messages from motors
         
-        
-    public:
+        public:
         CAN can;
-
+        
+        // callback lists
+        std::vector<ExactCallback> exact_;
+        std::vector<RangeCallback> range_;
+        
         enum CANBus {CANBUS_1, CANBUS_2, NOBUS};
 
         bool exists = false;
         // Declaring CanHandler, can1, and can2
         
         CANHandler():
-            can(PA_11,PA_12,CAN_BAUD)
+            can(PA_11,PA_12,CAN_BAUD), exact_(), range_()
             {exists = false;}
 
         CANHandler(PinName canRx, PinName canTx):
-            can(canRx,canTx,CAN_BAUD)
+            can(canRx,canTx,CAN_BAUD), exact_(), range_()
             {exists = true;}
 
         void attach	(Callback< void()> 	func, CAN::IrqType type = CAN::IrqType::RxIrq){
@@ -48,6 +66,57 @@ class CANHandler{
 
         CAN* getCAN(){
             return &can;
+        }
+
+        /**
+         * @brief Add a callback for a specific id
+         * 
+         * @param id CANMessage id
+         * @param func Callback function
+         */
+        void registerCallback(uint32_t id, std::function<void(const CANMsg*)> func) {
+            ExactCallback exact_id = {id, std::move(func)};
+            exact_.push_back(exact_id);
+        }
+
+        /**
+         * @brief Add a callback for multiple ids
+         * 
+         * @param stard_id first CANMessage id
+         * @param stard_id last CANMessage id
+         * @param func Callback function
+         */
+        void registerCallback(uint32_t start_id, uint32_t end_id, std::function<void(const CANMsg*)> func) {
+            RangeCallback range_ids = {start_id, end_id, std::move(func)};
+            range_.push_back(range_ids);
+        }
+
+        /**
+         * @brief Get feedback from all CAN devices, and send to relevant callbacks
+         */
+        void readAllCan() {
+            rxMsg.clear();
+            // Read through all CAN messages in this frame
+            while(can.read(rxMsg)) {
+                if (can.rderror()) {
+                    break;
+                }
+
+                // Look through all direct callbacks
+                for (auto callbacks : exact_) {
+                    if (rxMsg.id == callbacks.id) {
+                        callbacks.func(&rxMsg);
+                    }
+                }
+
+                // Look through all range callbacks
+                for (auto callbacks : range_) {
+                    if (rxMsg.id >= callbacks.start_id && rxMsg.id <= callbacks.end_id) {
+                        callbacks.func(&rxMsg);
+                    }
+                }
+                rxMsg.clear();
+            }
         }
 
         /**
@@ -88,7 +157,7 @@ class CANHandler{
                     return false;
                 }
                 *id = rxMsg.id;
-                for(int i = 0;  i < length; i ++){
+                for(int i = 0;  i < rxMsg.len; i ++){
                     rxMsg >> bytes[i]; //Extract information from rxMsg and store it into the bytes array
                 }
                 gotMsg = true;
@@ -118,12 +187,12 @@ class CANHandler{
          * @param bytes the bytes you're sending (8)
          * @param bus the bus you're sending the CAN messages to
          */
-        bool rawSend(int id, int8_t bytes[]){
+        bool rawSend(int id, int8_t bytes[], int length = 8){
             static int errorCount = 0;
             txMsg.clear(); // clear Tx message storage
             txMsg.id = id; 
 
-            for(int i = 0; i < 8; i++){
+            for(int i = 0; i < length; i++){
                 txMsg << int8_t(bytes[i]); //Take data from bytes array and one at a time store it into txMsg
             }
 

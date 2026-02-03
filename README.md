@@ -107,6 +107,37 @@ mbed-tools sterm -b 115200
 
 ---
 
+## Intellisense and Formatting  
+
+### Intellisense 
+we **HIGHLY** recommend using clangd instead of the microsoft C++ vscode extension
+
+1. Install the `clangd (LLVM)` vscode extension (you may be prompted to install clangd if you don't have it installed on your system)
+2. Copy `.vscode/settings.json.example` to `.vscode/settings.json` and adjust the relevant paths
+3. __Disable the C/C++ (Microsoft) vscode extension !!!__ 
+4. Enjoy a significantly better developer experience!
+
+if you randomly have unexpected issues with intellisense you can try running `cmake -S . -B cmake-build-debug -GNinja` to reconfigure the project,  generating compile_commands.json again which clangd relies on. 
+
+
+### Formatting 
+
+Add the following to your user settings.json (`ctrl + shift + p` and select `Preferences: Open User Settings (JSON)`)
+
+```json
+    "[cpp]": {
+        "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
+    },
+```
+
+optionally also add the following to save on format
+
+```json
+    "editor.formatOnSave": true,
+```
+
+
+
 ## Troubleshooting
 
 See the [Troubleshooting](.md/TROUBLESHOOTING.md) guide for common issues and solutions.

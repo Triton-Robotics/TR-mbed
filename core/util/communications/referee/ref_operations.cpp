@@ -1,53 +1,56 @@
-#include "ref_operations.h"
+#include "ThisThread.h"
+#include "ref_serial.h"
 
-void refereeThread(BufferedSerial* referee){
 
-    // int loop=0;
-    // while(1){
-    if(referee->readable()){
-        int rad = JudgeSystem_USART_Receive_DMA(referee);
+Referee::Referee(PinName pin_tx, PinName pin_rx) : ref(pin_tx, pin_rx, 115200) 
+{
+    memset(JudgeSystem_rxBuff, 0, JUDGESYSTEM_PACKSIZE);
+
+    this->readThread_.start(callback(this, &Referee::readThread));
+    this->writeThread_.start(callback(this, &Referee::writeThread));
+}
+
+
+bool Referee::readable()
+{
+    return ref.readable();
+}
+
+
+void Referee::read()
+{
+    if(ref.readable())
+    {
+        int rad = JudgeSystem_USART_Receive_DMA();
+        mutex_read_.lock();
+        memcpy(JudgeSystem_rxBuff, JudgeSystem_rxBuff_priv, JUDGESYSTEM_PACKSIZE);
+        mutex_read_.unlock();
         Judge_GetMessage(rad);
 
-        // if(loop % 10==0){ // print out only every 10 iterations
         if(enablePrintRefData){
-            // string id="robot id: " + to_string(get_robot_id()) + "  ";
             string output = "robot id: %s  ";
-            // string hp="robot hp: " + to_string(get_remain_hp() ) +"  ";
 
-            // cout << id;
             if(is_red_or_blue()){
-                // cout<<"RED  ";
                 output += "RED  ";
             }
             else{
-                // cout<<"BLUE  ";
                 output += "BLUE  ";
             }
-            // printf("robot hp: %d  ", ext_game_robot_state.data.remain_HP);
-            // printf("max hp: %d  ", ext_game_robot_state.data.max_HP);
-            // printf("angle: %d  \n", (int)ext_game_robot_pos.data.yaw);
-            // cout << "angle: "<< ext_game_robot_pos.data.yaw;
             output += "robot hp: %d  max hp: %d  angle: %d  power: %d  current: %d  volt: %d \n";
-
-            // printf("power: %d  ", ext_power_heat_data.data.chassis_power);
-            // printf("current: %d  ", ext_power_heat_data.data.chassis_current);
-            // printf("volt: %d \n", ext_power_heat_data.data.chassis_volt);
-
-            // printf(output.c_str(), get_robot_id(), ext_game_robot_state.data.remain_HP, ext_game_robot_state.data.max_HP, (int)ext_game_robot_pos.data.yaw,
-            // (int)ext_power_heat_data.data.chassis_power, ext_power_heat_data.data.chassis_current, ext_power_heat_data.data.chassis_volt);
-
-            // }
         }
     }
     else{
-        // if(loop % 10==0){ // print out only every 10 iterations
         if(enablePrintRefData){
             printf("REFEREE - Not readable!\n");
         }
-        // }
     }
+}
 
-    if(referee->writable()){
+
+// TODO FIGURE OUT HOW THIS WORKS
+void Referee::write()
+{
+    if(ref.writable()){
 
         // For graphing diagrams ----------------------------
         ext_student_interactive_header_data_graphic_t custom_graphic_draw;	//自定义图像
@@ -117,14 +120,14 @@ void refereeThread(BufferedSerial* referee){
             }
         }
 
-        ui_delete_layer(referee, 5);
-        referee_data_pack_handle(0xA5,0x0301,(uint8_t *)&custom_graphic_draw,sizeof(custom_graphic_draw),referee);
+        ui_delete_layer(5);
+        referee_data_pack_handle(0xA5,0x0301,(uint8_t *)&custom_graphic_draw,sizeof(custom_graphic_draw));
 
         // string powerStr = "power: " + to_string((int)power_heat_data.chassis_power);
-        // ui_graph_characters(referee, 1, powerStr, SCREEN_LENGTH/2 +100, SCREEN_WIDTH/2 +100, 99);
+        // ui_graph_characters(&ref, 1, powerStr, SCREEN_LENGTH/2 +100, SCREEN_WIDTH/2 +100, 99);
 
         // // string angleStr = "angle: " + to_string((int)ext_game_robot_pos.data.yaw);
-        // ui_graph_characters(referee, 1, angleStr, SCREEN_LENGTH/2 +100, SCREEN_WIDTH/2 +150, 10);
+        // ui_graph_characters(&ref, 1, angleStr, SCREEN_LENGTH/2 +100, SCREEN_WIDTH/2 +150, 10);
 
         /* Robot communication to be worked on in the future */
         /*
@@ -149,7 +152,7 @@ void refereeThread(BufferedSerial* referee){
                 memcpy(&custom_comm.data.data, toSend, sizeof(toSend));
             }
         }
-        referee_data_pack_handle(0xA5,0x0301,(uint8_t *)&custom_comm,sizeof(custom_comm),referee);
+        referee_data_pack_handle(0xA5,0x0301,(uint8_t *)&custom_comm,sizeof(custom_comm), &ref);
         */
     }
     else {
@@ -157,11 +160,91 @@ void refereeThread(BufferedSerial* referee){
             printf("Not writable!\n"); // usually it is never not writable
         }
     }
+}
 
 
-    // loop++;
-    // if(loop>100){loop=0;}
-    // While loop interval
-    //     ThisThread::sleep_for(50ms);
-    // }
+void Referee::readThread()
+{
+    while(1)
+    {
+        // Un-nested read since all it does is call another fn
+        // read();
+        if(ref.readable())
+        {
+            int rad = JudgeSystem_USART_Receive_DMA();
+            mutex_read_.lock();
+            memcpy(JudgeSystem_rxBuff, JudgeSystem_rxBuff_priv, JUDGESYSTEM_PACKSIZE);
+            mutex_read_.unlock();
+            Judge_GetMessage(rad);
+
+            if(enablePrintRefData){
+                string output = "robot id: %s  ";
+
+                if(is_red_or_blue()){
+                    output += "RED  ";
+                }
+                else{
+                    output += "BLUE  ";
+                }
+                output += "robot hp: %d  max hp: %d  angle: %d  power: %d  current: %d  volt: %d \n";
+            }
+        }
+        else{
+            if(enablePrintRefData){
+                printf("REFEREE - Not readable!\n");
+            }
+        }
+
+        ThisThread::yield();
+    }
+}
+
+
+void Referee::writeThread()
+{
+    while(1)
+    {
+        // TODO: figure out write then un-nest it
+        write();
+        ThisThread::yield();
+    }
+}
+
+
+uint8_t Referee::get_robot_id()
+{
+    return robot_status.robot_id;
+}
+
+
+uint8_t Referee::get_remain_hp()
+{
+    return robot_status.current_HP;
+}
+
+
+uint8_t Referee::get_game_progress()
+{
+    return game_status.game_progress;
+}
+
+
+/**
+  * @brief  判断自己红蓝方
+  * @param  void
+  * @retval RED   BLUE
+  * @attention  数据打包,打包完成后通过串口发送到裁判系统
+  */
+bool Referee::is_red_or_blue()
+{
+    Judge_Self_ID = robot_status.robot_id; //读取当前机器人ID
+
+    if (robot_status.robot_id > 10)
+    {
+        return 0; //蓝方 (blue)
+    }
+    else
+    {
+        return 1; //红方 (red)
+    }
 }

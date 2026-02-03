@@ -6,6 +6,7 @@ distros, but the package names may vary per distro.
 sudo apt install                  \
   build-essential                 \
   cmake                           \
+  clang-format                    \
   python3-dev                     \
   python3-pip                     \
   gcc-arm-none-eabi               \

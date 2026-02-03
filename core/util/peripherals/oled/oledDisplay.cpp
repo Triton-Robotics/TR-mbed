@@ -10,7 +10,6 @@ oledDisplay::oledDisplay() : i2c(PB_7, PB_8) , oled(i2c,PA_7){
 //display the total number of motor that actually exist
 int oledDisplay::motorCount(){
 
-    int count = DJIMotor::motorCount;
     oled.clearDisplay();
     oled.writeChar('c');
     //next goal be able to display inteher on t

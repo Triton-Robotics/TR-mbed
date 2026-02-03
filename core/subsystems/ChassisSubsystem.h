@@ -2,28 +2,21 @@
 #define TR_EMBEDDED_CHASSIS_SUBSYSTEM_H
 
 #include "mbed.h"
-#include "../util/peripherals/imu/BNO055.h"
+#include "util/peripherals/imu/BNO055.h"
 
-#include <motor/DJIMotor.h>
-#include <communications/CANHandler.h>
-#include <peripherals/imu/BNO055.h>
-#include <peripherals/oled/SSD1308.h>
+#include <util/motor/DJIMotor.h>
+#include <util/communications/CANHandler.h>
+#include <util/peripherals/oled/SSD1308.h>
 // #include <subsystems/ChassisKalman.h>
 // #include <algorithms/WheelKalman.h>
-#include <algorithms/Pose2D.h>
-#include <algorithms/PID.h>
+#include <util/algorithms/PID.h>
 // #include <algorithms/WheelSpeeds.h>
 // #include <algorithms/ChassisSpeeds.h>
-#include "algorithms/eigen-3.4.0/Eigen/QR"
 
 #define CAN_BUS_TYPE CANHandler::CANBUS_1
 #define MOTOR_TYPE M3508
 #define M3508_POST_MAX_RPM 469
 #define INPUT_THRESHOLD 0.01
-
-#define I2C_SDA PB_7
-#define I2C_SCL PB_8
-#define IMU_RESET PA_8
 
 #define PI 3.14159265
 #define SECONDS_PER_MINUTE 60
@@ -53,13 +46,6 @@ struct WheelSpeeds
         LB *= scalar;
         RB *= scalar;
     }
-
-    char *to_string()
-    {
-        char buffer[56];
-        sprintf(buffer, "LF: %4.2f RF: %4.2f LB: %4.2f RB: %4.2f\0", LF, RF, LB, RB);
-        return buffer;
-    }
 };
 
 struct ChassisSpeeds
@@ -84,6 +70,21 @@ struct OmniKinematicsLimits
 class ChassisSubsystem
 {
 public:
+    
+    struct Config {
+        int left_front_can_id;
+        int right_front_can_id;
+        int left_back_can_id;
+        int right_back_can_id;
+
+        const double radius;
+        const double speed_pid_ff_ks;
+
+        DJIMotor *yaw_motor;
+        int yaw_initial_offset_ticks;
+        BNO055 &imu;
+    };
+
     /**
      * The Chassis constructor. This constructor takes in the CAN IDs of the four motors on the chassis.
      * @param lfId Left front motor CAN ID
@@ -91,7 +92,7 @@ public:
      * @param lbId Left back motor CAN ID
      * @param rbId Right back motor CAN ID
      */
-    ChassisSubsystem(short lfId, short rfId, short lbId, short rbId, BNO055 &imu, double radius);
+    ChassisSubsystem(const Config &config);
 
     /**
      * The BrakeMode enum is used to set the brake mode of the chassis.
@@ -121,7 +122,8 @@ public:
     {
         YAW_ORIENTED,
         REVERSE_YAW_ORIENTED,
-        ROBOT_ORIENTED
+        ROBOT_ORIENTED,
+        ODOM_ORIENTED
     };
 
     float previousRPM[4] = {0, 0, 0, 0};
@@ -210,11 +212,6 @@ public:
      */
     void setSpeedFeedforward(MotorLocation location, double FF);
 
-    /**
-     * Sets the Friction Feedforward compensation for the SpeedPID
-     * @param Ks The arbitrary Friction Feedforward Gain in [-1, 1]
-     */
-    void setSpeedFF_Ks(double Ks);
 
     /**
      * A helper method to find the brake mode of the chassis.
@@ -238,7 +235,7 @@ public:
     /**
      * A method that should be run every main loop to update the Chassis's estimated position
      */
-    void periodic();
+    void periodic(IMU::EulerAngles *imuCurr = nullptr);
 
     /**
      * Helper method to convert an angle from degrees to radians
@@ -260,11 +257,6 @@ public:
      */
     int getHeadingDegrees() const;
 
-    /**
-     * Gets the chassis's current 2D position (TO BE DONE)
-     * @return The chassis's current 2D position
-     */
-    Pose2D getPose();
 
     /**
      * gets motor speed based on location and speed unit
@@ -288,15 +280,13 @@ public:
      */
     void readImu();
 
+
     /**
      * Yaw motor is a motor that controls the Turret
-     * yawPhase is an initial offset of your Yaw Motor Angle
+     * yawOdom is the world pose representation of our robot
      * (basically which direction you want your Heading to be w.r.t Yaw Motor)
-     * 
-     * @param motor your Yaw Motor reference as in `&{motor_name}`
-     * @param initial_offset_ticks initial offset of your Yaw Motor Angle in ticks (try pass it as double)
      */
-    void setYawReference(DJIMotor *motor, double initial_offset_ticks);
+    bool setOdomReference();
 
     ChassisSpeeds desiredChassisSpeeds;
     WheelSpeeds desiredWheelSpeeds;
@@ -304,7 +294,6 @@ public:
     OmniKinematicsLimits m_OmniKinematicsLimits;
     WheelSpeeds chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds);
     ChassisSpeeds wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds);
-    char *MatrixtoString(Eigen::MatrixXd mat);
 
     ChassisSpeeds m_chassisSpeeds;
     WheelSpeeds m_wheelSpeeds;
@@ -326,7 +315,8 @@ public:
     /**
      * yawPhase is an initial offset of your Yaw Motor Angle (basically which direction you want your Heading to be w.r.t Yaw Motor)
     */
-    double yawPhase;
+    double yawOdom;
+    double imuOdom;
     int testData[300][4];
     int testDataIndex = 0;
 
@@ -336,12 +326,12 @@ public:
 private:
     DJIMotor LF, RF, LB, RB;
     DJIMotor *yaw = 0;
-    // double yawPhase;
+    double yawPhase;
     BrakeMode brakeMode;
 
     // double beybladeSpeed;
     // bool beybladeIncreasing;
-    BNO055 imu;
+    BNO055 &imu;
     BNO055_ANGULAR_POSITION_typedef imuAngles;
 
     static double rpmToRadPerSecond(double RPM);
@@ -364,11 +354,6 @@ private:
     // ChassisKalman chassisKalman;
     double testAngle;
     int lastTimeMs;
-
-    short lfId;
-    short rfId;
-    short lbId;
-    short rbId;
 };
 
 #endif // TR_EMBEDDED_CHASSIS_SUBSYSTEM_H
