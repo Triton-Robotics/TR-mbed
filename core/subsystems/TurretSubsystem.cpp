@@ -125,6 +125,9 @@ void TurretSubsystem::periodic(float chassisRpm)
         }
 
         int dir_p = forward_ * (des_pitch < turret_state.pitch_angle ? -1 : 1);
+        // TODO feedforward equation should be passed in by the config because it needs to be robot specific not hard coded for all robots 
+        // Additionally we need to add a term to properly supply positive or negative power depending on which "side" of the turret naturally goes down when 0 power is applied
+        // maybe called something like gravity or natural down direction or smth
         pitch.pidSpeed.feedForward = (cos(pitch_current_radians) * -2600) + (1221 * dir_p + 97.4 * turret_state.pitch_velo);
 
         float des_pitch_power = pitch.calculatePositionPID(forward_ * des_pitch, forward_ * turret_state.pitch_angle, us_ticker_read() - turret_time);
