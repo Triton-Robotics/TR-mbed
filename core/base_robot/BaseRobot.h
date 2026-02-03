@@ -1,7 +1,7 @@
 #pragma once
 
-#include "mbed.h"
 #include "PinNames.h"
+#include "mbed.h"
 #include "util/communications/DJIRemote.h"
 #include "util/communications/referee/ref_serial.h"
 #include "util/motor/DJIMotor.h"
@@ -11,7 +11,7 @@ class BaseRobot {
   public:
     struct Config {
         PinName remote_pin = PA_10;
-        
+
         PinName referee_tx_pin = PC_10;
         PinName referee_rx_pin = PC_11;
 
@@ -64,18 +64,19 @@ class BaseRobot {
         unsigned long main_loop_dt_ms = this->main_loop_dt_ms();
 
         // Init all constants, subsystems, sensors, IO, etc.
-        // Each can message has an id and data, and djimotor ids start from 0x201(m3508 id 1) and end at 0x20D (gm6020 id 8), there is an overlap of 4 motors (M3508 id 5-8 and gm6020 id 1-4), so that is why we have 12 values only
+        // Each can message has an id and data, and djimotor ids start from 0x201(m3508 id 1) and
+        // end at 0x20D (gm6020 id 8), there is an overlap of 4 motors (M3508 id 5-8 and gm6020 id
+        // 1-4), so that is why we have 12 values only
         canHandler1_.registerCallback(0x201, 0x20D, DJIMotor::getCan1Feedback);
         canHandler2_.registerCallback(0x201, 0x20D, DJIMotor::getCan2Feedback);
         DJIMotor::setCanHandlers(&canHandler1_, &canHandler2_);
-        
+
         init();
-        
+
         while (true) {
             // TODO StmIO comms (Ref and Jetson)
-                        
-            loop_clock_us = us_ticker_read();
 
+            loop_clock_us = us_ticker_read();
 
             // 20 ms remote read
             if ((loop_clock_us - prev_remote_time_us) / 1000 >= 15) {
@@ -89,7 +90,7 @@ class BaseRobot {
 
                 periodic(loop_clock_us - prev_loop_time_us);
                 prev_loop_time_us = us_ticker_read();
-                
+
                 // Motor updates
                 DJIMotor::sendValues();
             }

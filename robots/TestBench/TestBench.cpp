@@ -16,12 +16,12 @@ PID::config test_motor_vel_PID = {1, 0, 0};
 PID::config test_motor_pos_PID = {1, 0, 0};
 
 class TestBench : public BaseRobot {
-public:
-
+  public:
     DJIMotor motor;
 
-    TestBench(Config &config) : 
-        BaseRobot(config),
+    TestBench(Config &config)
+        : BaseRobot(config),
+          // clang-format off
         motor(DJIMotor::config{
             1,
             CANHandler::CANBUS_1,
@@ -30,6 +30,7 @@ public:
             test_motor_vel_PID,
             test_motor_pos_PID
         })
+        // clang-format on        
     {}
 
     ~TestBench() {}
@@ -48,7 +49,6 @@ public:
     unsigned int main_loop_dt_ms() override { return 2; } // 500 Hz loop
 };
 
-DigitalOut led0 = PC_1;
 
 int main() {
     printf("HELLO\n");
