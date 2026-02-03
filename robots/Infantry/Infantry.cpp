@@ -132,8 +132,6 @@ public:
     }
     
     void periodic(unsigned long dt_us) override {
-
-
         // TODO this should be threaded inside imu instead
         IMU::EulerAngles imuAngles = imu_.read();
 
@@ -148,21 +146,31 @@ public:
         }
 
 
-        // TODO: fill out jetson comms
-        // stm_state.game_state = 4;
-        // stm_state.robot_hp = 60;
-        // jetson.write(stm_state);
-
-
-        
         // Chassis + Turret Logic
         // TODO migrate away from remote chassis/pitch/yaw specific code
         des_chassis_state.vX = remote_.getChassisX();
         des_chassis_state.vY = remote_.getChassisY();
 
+        // Turret from remote
+        float joystick_yaw = remote_.getChannel(Remote::Channel::RIGHT_HORIZONTAL);
+        yaw_desired_angle -= joystick_yaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
+        yaw_desired_angle = capAngle(yaw_desired_angle);
+        des_turret_state.yaw_angle = yaw_desired_angle;
+        
+        float joystick_pitch = remote_.getChannel(Remote::Channel::RIGHT_VERTICAL);
+        pitch_desired_angle += joystick_pitch * JOYSTICK_PITCH_SENSITIVITY_DPS * dt_us / 1000000;
+        pitch_desired_angle = std::clamp(pitch_desired_angle, PITCH_LOWER_BOUND, PITCH_UPPER_BOUND);
+        des_turret_state.pitch_angle = pitch_desired_angle;
+        
+        
+        jetson_state = jetson.read();
 
         if (remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP)
         {
+            // TODO: think about how we want to implement jetson aiming
+            // des_turret_state.pitch_angle = jetson_state.desired_pitch_rads;
+            // des_turret_state.yaw_angle = jetson_state.desired_yaw_rads;
+
             des_chassis_state.vOmega = 0;
             chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
@@ -178,17 +186,7 @@ public:
             chassis.setWheelPower({0, 0, 0, 0});
             des_turret_state.turret_mode = TurretState::SLEEP;
         }
-        
-        float joystick_yaw = remote_.getChannel(Remote::Channel::RIGHT_HORIZONTAL);
-        yaw_desired_angle -= joystick_yaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
-        yaw_desired_angle = capAngle(yaw_desired_angle);
-        des_turret_state.yaw_angle = yaw_desired_angle;
-        
-        float joystick_pitch = remote_.getChannel(Remote::Channel::RIGHT_VERTICAL);
-        pitch_desired_angle += joystick_pitch * JOYSTICK_PITCH_SENSITIVITY_DPS * dt_us / 1000000;
-        pitch_desired_angle = std::clamp(pitch_desired_angle, PITCH_LOWER_BOUND, PITCH_UPPER_BOUND);
-        des_turret_state.pitch_angle = pitch_desired_angle;
-        
+                
         // Shooter Logic
         if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP)
         {
@@ -212,6 +210,19 @@ public:
         chassis.periodic(&imuAngles);
         shooter.periodic(referee.power_heat_data.shooter_17mm_1_barrel_heat, referee.robot_status.shooter_barrel_heat_limit);
 
+        // jetson comms
+        stm_state.game_state = referee.get_game_progress();
+        stm_state.robot_hp = referee.get_remain_hp();
+
+        stm_state.chassis_x_velocity = chassis.getChassisSpeeds().vX;
+        stm_state.chassis_y_velocity = chassis.getChassisSpeeds().vY;
+        stm_state.chassis_rotation = chassis.getChassisSpeeds().vOmega;
+
+        stm_state.yaw_angle_rads = turret.getState().yaw_angle;
+        stm_state.yaw_velocity = turret.getState().yaw_velo;
+        stm_state.pitch_angle_rads = turret.getState().pitch_angle;
+        stm_state.pitch_velocity = turret.getState().pitch_angle;
+        jetson.write(stm_state);
 
 
 
