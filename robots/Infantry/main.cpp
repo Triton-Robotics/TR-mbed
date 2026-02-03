@@ -78,7 +78,7 @@ I2C i2c2(I2C_SDA2, I2C_SCL2);
 ISM330 imu2(i2c, 0x6B);
 
 
-BNO055 imu(i2c2, IMU_RESET, MODE_IMU);
+BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 
 int main(){
 

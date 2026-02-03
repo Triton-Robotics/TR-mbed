@@ -169,72 +169,104 @@ std::tuple<float, float, float, float, float, float> ISM330::readAG() noexcept//
 
 // Sensor Fusion Stuff; Stolen from https://sparxeng.com/blog/software/imu-signal-processing-with-kalman-filter
 
+
 // Variable Definitions
 
-    // Angular Velocities in x and y direction
+
+    // Angular Velocities in x y z
     float w_x;
     float w_y;
-    
+    float w_z;
+   
     // States predicted by model (regarding the Gyroscope measurements as inputs)
     float theta_m = 0;
     float phi_m = 0;
-    
+    float psi_m = 0;
+   
     // States measured by sensor (accelerometer)
-    float theta_s;  // Yaw
-    float phi_s;    // Pitch
-    
+    float theta_s;  // Pitch
+    float phi_s;    // roll
+    float psi_s;    // Yaw
+   
     // Kalman Filter parameters and initailization
     float theta_n; // a priori estimation of Theta
     float theta_p = 0; // a posteriori estimation on Theta (set to zero for the initial time step k=0)
     float phi_n; // a priori estimation of Phi
     float phi_p = 0; // a posteriori estimation on Phi (set to zero for the initial time step k=0)
-    
+
+
+    // Yaw
+    float psi_n; // a priori estimation of Psi
+    float psi_p = 0; // a posteriori estimation on Psi (set to zero for the initial time step k=0)
+   
     float P_theta_n; // a priori covariance of Theta
     float P_phi_n; // a priori covariance of Phi
     float P_theta_p = 0; // a posteriori covariance of Theta
     float P_phi_p = 0; // a posteriori covariance of Phi
-    
+    float P_psi_n; // a priori covariance of Psi
+    float P_psi_p = 0; // a posteriori covariance of Psi
+   
     float K_theta; // Observer gain or Kalman gain for Theta
     float K_phi; // Observer gain or Kalman gain for Phi
-    
+    float K_psi; // Observer gain or Kalman gain for Psi
+   
     float Q = 0.1; // Covariance of disturbance (unknown disturbance affecting w_x and w_y)
     float R = 4; // Covariance of noise (unknown noise affecting theta_s and phi_s)
 
-    float sampleRate = 0.001; // Assuming 1khz for now 
+
+    float sampleRate = 0.001; // Assuming 1khz for now
     float ds = sampleRate *0.001; // Time step, not exactly sure why its 1/1000 sample rate but hopefully its good?
 
-std::tuple<float, float> ISM330::imuKalmanUpdate(float accelX, float accelY, float accelZ, float gyroX, float gyroY) {
+
+std::tuple<float, float, float> ISM330::imuKalmanUpdate(float accelX, float accelY, float accelZ, float gyroX, float gyroY, float gyroZ) {
     // Updating inputs
     w_x = gyroX; // input
     w_y = gyroY; // input
+    w_z = gyroZ; // input
+
 
     // Updating models and the sensor measurements
     theta_m = theta_m - w_y*0.1;
     phi_m = phi_m + w_x*0.1;
+    psi_m = psi_m + w_z*0.1;
 
-    theta_s=atan2(accelX/9.8,accelZ/9.8)/2/3.141592654*360; 
-    phi_s=atan2(accelY/9.8,accelZ/9.8)/2/3.141592654*360;   
-    
-    // Prediction
+
+    theta_s=atan2(accelX/9.8,accelZ/9.8)/2/3.141592654*360;
+    phi_s=atan2(accelY/9.8,accelZ/9.8)/2/3.141592654*360;  
+    psi_s=atan2(accelX/9.8,accelY/9.8)/2/3.141592654*360;
+   
+    // Predicting Pitch (theta), Roll (phi), and Yaw (psi) using Kalman Filter equations
     P_theta_n = P_theta_p + Q;
     K_theta = P_theta_n/(P_theta_n + R);
     theta_n = theta_p - ds*w_y;
     theta_p = theta_n + K_theta*(theta_s - theta_n);
     P_theta_p = (1-K_theta)*P_theta_n;
-    
+   
     P_phi_n = P_phi_p + Q;
     K_phi = P_phi_n/(P_phi_n + R);
     phi_n = phi_p + ds*w_x;
     phi_p = phi_n + K_phi*(phi_s - phi_n);
     P_phi_p = (1-K_phi)*P_phi_n;
-    return std::make_tuple(theta_p, phi_p); // returns pitch (theta) and roll (phi)
+
+
+    P_psi_n = P_psi_p + Q;
+    K_psi = P_psi_n/(P_psi_n + R);
+    psi_n = psi_p + ds*w_z;
+    psi_p = psi_n + K_psi*(psi_s - psi_n);
+    P_psi_p = (1-K_psi)*P_psi_n;
+    
+
+    return std::make_tuple(theta_p, phi_p, psi_p);
 }
+
 
 void ISM330::getEulerAngles(ISM330_ANGULAR_POSITION_typedef& angles) {
     auto [ax, ay, az, gx, gy, gz] = readAG();
 
-    auto [pitch, roll] = imuKalmanUpdate(ax, ay, az, gx, gy);
 
+    auto [pitch, roll, yaw] = imuKalmanUpdate(ax, ay, az, gx, gy, gz);
     angles.pitch = pitch;
     angles.roll = roll;
+    angles.yaw = yaw;
 }
+
