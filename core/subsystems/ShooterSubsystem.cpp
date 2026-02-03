@@ -2,11 +2,6 @@
 #include "us_ticker_defines.h"
 #include "util/motor/DJIMotor.h"
 
-ShooterSubsystem::ShooterSubsystem()
-{
-    configured = false;
-}
-
 // TODO: add a way to invert which flywheel is -ve
 ShooterSubsystem::ShooterSubsystem(config cfg):
     flywheelL({
@@ -33,7 +28,6 @@ ShooterSubsystem::ShooterSubsystem(config cfg):
     })
 {
     // initialize all other vars
-    configured = true;
     shoot = OFF;
     shootReady = true;
 
@@ -45,10 +39,9 @@ ShooterSubsystem::ShooterSubsystem(config cfg):
 }
 
 
-void ShooterSubsystem::setState(ShootState shoot_state, int curr_heat)
+void ShooterSubsystem::setState(ShootState shoot_state)
 {
     shoot = shoot_state;
-    barrel_heat = curr_heat;
 }
 
 
@@ -58,8 +51,11 @@ ShootState ShooterSubsystem::getState()
     return shoot;
 }
 
-void ShooterSubsystem::execute_shooter() 
+void ShooterSubsystem::periodic(int curr_heat, int heat_limit) 
 {
+    barrel_heat = curr_heat;
+    barrel_heat_limit = heat_limit;
+
     if (shoot == OFF) 
     {
         flywheelL.setPower(0);
@@ -76,54 +72,46 @@ void ShooterSubsystem::execute_shooter()
         indexer.setSpeed(0);
         shootReady = true;
     }
-    else if (shoot == SHOOT)
+    else if (shoot == SHOOT && shooter_type == BURST)
     {
-        // TODO: make state shoot unnested (shoot_burst, shoot_hero, shoot_auto)
-        if (shooter_type == BURST)
+        flywheelL.setSpeed(-FLYWHEEL_VELO);
+        flywheelR.setSpeed(FLYWHEEL_VELO);
+
+        // Set target position
+        if (shootReady && (abs(flywheelR>>VELOCITY) > (FLYWHEEL_VELO - 500) && abs(flywheelL>>VELOCITY) > (FLYWHEEL_VELO - 500))) 
         {
-            flywheelL.setSpeed(-FLYWHEEL_VELO);
-            flywheelR.setSpeed(FLYWHEEL_VELO);
+            // heat limit
+            if(barrel_heat_limit < 10 || barrel_heat < barrel_heat_limit - 40) {
+                shootReady = false; // Cant shoot twice immediately
 
-            setTargetPos();
-
-            // TODO fix to 1 degree of error allowed (this is more than 1 degree)
-            if (abs((indexer >> MULTITURNANGLE) - shootTargetPosition) <= 819)
-            {
-                shoot = FLYWHEEL; // Move to neutral state after shooting
-            }
-            else
-            {
-                indexer.pidSpeed.feedForward = (indexer >> VELOCITY) / 4788 * 630;
-                indexer.setPosition(shootTargetPosition);
+                shootTargetPosition = (8192 * M2006_GEAR_RATIO / 9 * NUM_BALLS_SHOT) + (indexer>>MULTITURNANGLE);
             }
         }
-        else if (shooter_type == AUTO) 
+
+        // TODO fix to 1 degree of error allowed (this is more than 1 degree)
+        if (abs((indexer >> MULTITURNANGLE) - shootTargetPosition) <= 819)
         {
-            // TODO
+            shoot = FLYWHEEL; // Move to neutral state after shooting
         }
-        else if (shooter_type == HERO) 
+        else
         {
-            // TODO
+            indexer.pidSpeed.feedForward = (indexer >> VELOCITY) / 4788 * 630;
+            indexer.setPosition(shootTargetPosition);
         }
     }
-}
-
-void ShooterSubsystem::setTargetPos()
-{
-    if (shootReady && (abs(flywheelR>>VELOCITY) > (FLYWHEEL_VELO - 500) && abs(flywheelL>>VELOCITY) > (FLYWHEEL_VELO - 500))) 
+    else if (shoot == SHOOT && shooter_type == AUTO) 
     {
-        // heat limit
-        if(barrel_heat_limit < 10 || barrel_heat < barrel_heat_limit - 40) {
-            shootReady = false; // Cant shoot twice immediately
-
-            shootTargetPosition = (8192 * M2006_GEAR_RATIO / 9 * NUM_BALLS_SHOT) + (indexer>>MULTITURNANGLE);
+        if(barrel_heat_limit < 10 || barrel_heat < barrel_heat_limit - 30) {
+            indexer.setSpeed(-5 * 16 * M2006_GEAR_RATIO);
+        }
+        else {
+            indexer.setSpeed(0);
         }
     }
-}
-
-void ShooterSubsystem::periodic() 
-{
-    execute_shooter();
+    else if (shoot == SHOOT && shooter_type == HERO) 
+    {
+        // TODO
+    }
 
     shooter_time = us_ticker_read();
 }

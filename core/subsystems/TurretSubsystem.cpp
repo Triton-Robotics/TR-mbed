@@ -1,36 +1,36 @@
 #include "TurretSubsystem.h"
+#include "us_ticker_defines.h"
 
 
 TurretSubsystem::TurretSubsystem(config cfg):
-yaw({
-    cfg.yaw_id,
-        cfg.yawCanBus,
-        cfg.yaw_type,
-        "Yaw",
-        cfg.yaw_vel_PID,
-        cfg.yaw_pos_PID
-}), 
-pitch({
-    cfg.pitch_id,
-        cfg.pitchCanBus,
-        cfg.pitch_type,
-        "Pitch",
-        cfg.pitch_vel_PID,
-        cfg.pitch_pos_PID
-}),
-imu(cfg.imu),
-forward_(cfg.forward)
-
+    yaw({
+        cfg.yaw_id,
+            cfg.yawCanBus,
+            cfg.yaw_type,
+            "Yaw",
+            cfg.yaw_vel_PID,
+            cfg.yaw_pos_PID
+    }), 
+    pitch({
+        cfg.pitch_id,
+            cfg.pitchCanBus,
+            cfg.pitch_type,
+            "Pitch",
+            cfg.pitch_vel_PID,
+            cfg.pitch_pos_PID
+    }),
+    imu(cfg.imu),
+    forward_(cfg.forward)
 {
     pitch_offset_ticks = cfg.pitch_offset_ticks;
+    pitch.pidPosition.dBuffer.lastY = 5;
 
     imuAngles = imu.getImuAngles();
 
-    turretState = SLEEP;
-
+    turret_state.turret_mode = SLEEP;
     configured = true;
 
-    pitch.pidPosition.dBuffer.lastY = 5;
+    turret_time = us_ticker_read();
 }
 
 
@@ -39,10 +39,18 @@ TurretSubsystem::TurretInfo TurretSubsystem::getState()
     return turret_state;
 }
 
-void TurretSubsystem::setState (TurretState des_state)
+void TurretSubsystem::setState (TurretInfo des_state)
 {
-    turretState = des_state;
+    turret_state.turret_mode = des_state.turret_mode;
+    des_yaw = des_state.yaw_angle;
+    des_pitch = des_state.pitch_angle;
 }
+
+// void TurretSubsystem::set_desired_turret(float des_yaw_angle, float des_pitch_angle)
+// {
+//     des_yaw = des_yaw_angle;
+//     des_pitch = des_pitch_angle;
+// }
 
 int TurretSubsystem::getTicks()
 {
@@ -71,21 +79,23 @@ float TurretSubsystem::get_yaw_vel_rads_per_sec()
     return yaw.getData(VELOCITY);
 }
 
-void TurretSubsystem::set_desired_turret(float des_yaw_angle, float des_pitch_angle, float chassisRpm)
+void TurretSubsystem::periodic(float chassisRpm)
 {
-    des_yaw = des_yaw_angle;
-    des_pitch = des_pitch_angle;
+    // Update turret_state here!
     chassis_rpm = chassisRpm;
-}
+    imuAngles = imu.getImuAngles();
+    turret_state.yaw_angle = get_yaw_angle_degs();
+    turret_state.pitch_angle = get_pitch_angle_degs_zero_offsetted();
+    turret_state.yaw_velo = get_yaw_vel_rads_per_sec();
+    turret_state.pitch_velo = get_pitch_vel_rads_per_sec();
 
-void TurretSubsystem::execute_turret() 
-{
-    if (turretState == SLEEP)
+    // Set desired values for pitch and yaw
+    if (turret_state.turret_mode == SLEEP)
     {
         yaw.setPower(0);
         pitch.setPower(0);
     }
-    else if (turretState == AIM) 
+    else if (turret_state.turret_mode == AIM) 
     {
         // Yaw calc
         int dir = 0;
@@ -120,20 +130,6 @@ void TurretSubsystem::execute_turret()
         // printf("pp %.2f | %.2f\n", des_pitch_power, -turret_state.pitch_angle);
         pitch.setPower(des_pitch_power);
     }
-}
-
-void TurretSubsystem::periodic()
-{
-    // TODO do we recalculate our values here?
-    imuAngles = imu.getImuAngles();
-    
-    // Update turret_state here!
-    turret_state.yaw_angle = get_yaw_angle_degs();
-    turret_state.pitch_angle = get_pitch_angle_degs_zero_offsetted();
-    turret_state.yaw_velo = get_yaw_vel_rads_per_sec();
-    turret_state.pitch_velo = get_pitch_vel_rads_per_sec();
-   
-    execute_turret();
 
     turret_time = us_ticker_read();
 }

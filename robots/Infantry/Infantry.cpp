@@ -44,7 +44,7 @@ PID::config indexer_PID_pos = {0.1,0,0.001};
 
 // State variables
 ChassisSpeeds des_chassis_state;
-TurretState des_turret_state;
+TurretSubsystem::TurretInfo des_turret_state;
 ShootState des_shoot_state;
 
 int remoteTimer = 0;
@@ -148,39 +148,30 @@ public:
         {
             des_chassis_state.vOmega = 0;
             chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
-            des_turret_state = TurretState::AIM;
+            des_turret_state.turret_mode = TurretState::AIM;
         }
         else if (remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::DOWN)
         {
             des_chassis_state.vOmega = 4.8;
             chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
-            des_turret_state = TurretState::AIM;
+            des_turret_state.turret_mode = TurretState::AIM;
         }
         else
         {
             chassis.setWheelPower({0, 0, 0, 0});
-            des_turret_state = TurretState::SLEEP;
+            des_turret_state.turret_mode = TurretState::SLEEP;
         }
         
-        // Set turret state
-        turret.setState(des_turret_state);
-
         float joystick_yaw = remote_.getChannel(Remote::Channel::RIGHT_HORIZONTAL);
-
         yaw_desired_angle -= joystick_yaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
-        // normalize between [-180, 180)
-        // TODO yaw pid does not properly respect the discontinuity at 180, -180 it goes the long way around instead
         yaw_desired_angle = capAngle(yaw_desired_angle);
-
-
+        des_turret_state.yaw_angle = yaw_desired_angle;
+        
         float joystick_pitch = remote_.getChannel(Remote::Channel::RIGHT_VERTICAL);
-
-        // TODO need to limit this to between lower and upper bound of pitch
         pitch_desired_angle += joystick_pitch * JOYSTICK_PITCH_SENSITIVITY_DPS * dt_us / 1000000;
         pitch_desired_angle = std::clamp(pitch_desired_angle, PITCH_LOWER_BOUND, PITCH_UPPER_BOUND);
-
-        turret.set_desired_turret(yaw_desired_angle, pitch_desired_angle, chassis.getChassisSpeeds().vOmega * 60 / (2*PI));
-
+        des_turret_state.pitch_angle = pitch_desired_angle;
+        
         // Shooter Logic
         if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP)
         {
@@ -194,14 +185,15 @@ public:
         {
             des_shoot_state = ShootState::OFF;
         }
-
-        shooter.setState(des_shoot_state, referee.power_heat_data.shooter_17mm_1_barrel_heat);
         
         // printf("time %ld", us_ticker_read());
-
-        turret.periodic();
+        
+        turret.setState(des_turret_state);
+        shooter.setState(des_shoot_state);
+        
+        turret.periodic(chassis.getChassisSpeeds().vOmega * 60 / (2*PI));
         chassis.periodic(&imuAngles);
-        shooter.periodic();
+        shooter.periodic(referee.power_heat_data.shooter_17mm_1_barrel_heat, referee.robot_status.shooter_barrel_heat_limit);
 
 
         // printf("time %ld", us_ticker_read());

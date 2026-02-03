@@ -40,28 +40,17 @@ public:
         CANHandler::CANBus canBus;
     };
 
-    // TODO probably want explicate constructors?
-    ShooterSubsystem();
-
     ShooterSubsystem(config configuration);
 
     void init(config configuration);
 
     ShootState getState();
-
-    // TODO: make this nicer
-    inline void setHeatLimit(int heat_limit) {barrel_heat_limit = heat_limit;};
     
-    void setState(ShootState shoot_state, int curr_heat);
+    void setState(ShootState shoot_state);
 
-    void execute_shooter();
-
-    void periodic();
+    void periodic(int curr_heat, int heat_limit);
 
 private:
-    // TODO Decide necessary variables for state and control
-    bool configured;
-
     unsigned long shooter_time;
 
     DJIMotor flywheelL, flywheelR, indexer;
@@ -74,7 +63,4 @@ private:
     bool shootReady;
 
     int shootTargetPosition;
-
-    // If ready to shoot, set the desired position for indexer to move
-    void setTargetPos();
 };

@@ -52,28 +52,26 @@ public:
         float yaw_velo;
         float pitch_angle;
         float pitch_velo;
+        TurretState turret_mode = SLEEP;
     };
 
     TurretSubsystem(config cfg);
 
     TurretInfo getState();
 
-    void setState (TurretState state);
+    void setState(TurretInfo state);
 
-    void set_desired_turret(float des_yaw_angle, float des_pitch_angle, float chassisRpm);
+    // void set_desired_turret(float des_yaw_angle, float des_pitch_angle);
 
-    void execute_turret();
+    void periodic(float chasssisRpm);
 
-    void periodic();
-
-    int getTicks();
+    int getTicks(); // only thing chassis should have is this basically, or a pointer to turret
     
-    DJIMotor yaw; 
+    DJIMotor yaw; // TODO fix chassissubsystem and put this into private
 private:
 
     DJIMotor pitch;
 
-    TurretState turretState;
     TurretInfo turret_state;
 
     IMU &imu;
