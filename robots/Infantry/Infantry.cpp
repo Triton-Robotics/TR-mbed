@@ -118,7 +118,7 @@ public:
         0.22617,  // radius
         0.065,    // speed_pid_ff_ks
         &turret.yaw,  // yaw_motor
-        6500,     // yaw_initial_offset_ticks
+        356,     // yaw_initial_offset_ticks
         imu_     
     }
     )
@@ -145,11 +145,8 @@ public:
             imu_initialized = true;
         }
 
-
-        // Chassis + Turret Logic
-        // TODO migrate away from remote chassis/pitch/yaw specific code
-        des_chassis_state.vX = remote_.getChassisX();
-        des_chassis_state.vY = remote_.getChassisY();
+        des_chassis_state.vX = remote_.getChannel(Remote::Channel::LEFT_VERTICAL);
+        des_chassis_state.vY = -1 * remote_.getChannel(Remote::Channel::LEFT_HORIZONTAL);
 
         // Turret from remote
         float joystick_yaw = remote_.getChannel(Remote::Channel::RIGHT_HORIZONTAL);

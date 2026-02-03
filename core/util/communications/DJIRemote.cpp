@@ -92,42 +92,7 @@ int16_t Remote::getChannelInt(Channel ch) const{
 }
 
 
-float Remote::getChassisX()
-{
-    return ((remote.leftHorizontal / 660.0) + 
-            (keyPressed(Key::SHIFT) ? 0.5 : 1 * 
-                ((keyPressed(Key::W) ? 1 : 0) + 
-                 (keyPressed(Key::S) ? -1 : 0))
-            ));
-}
 
-float Remote::getChassisY()
-{
-    return ((remote.leftVertical / 660.0) + 
-            ((keyPressed(Key::SHIFT) ? 0.5 : 1) * 
-                ((keyPressed(Key::A) ? 1 : 0) + 
-                (keyPressed(Key::D) ? -1 : 0)
-                )
-            ));
-}
-
-
-float Remote::getYaw()
-{
-    // TODO: make this a helper fn
-    float normal_rh = remote.rightHorizontal / 660.0;
-    normal_rh = abs(normal_rh) > 0.05 ? normal_rh : 0;
-    return ((normal_rh) * JOYSTICK_SENSITIVITY_YAW_DPS + 
-        remote.mouse.y * MOUSE_SENSITIVITY_YAW_DPS);
-}
-
-float Remote::getPitch()
-{
-    float normal_rv = remote.rightVertical / 660.0;
-    normal_rv = abs(normal_rv) > 0.05 ? normal_rv : 0;
-    return ((normal_rv) * JOYSTICK_SENSITIVITY_PITCH_DPS + 
-            remote.mouse.y * MOUSE_SENSITIVITY_PITCH_DPS);
-}
 
 Remote::SwitchState Remote::getSwitch(Switch sw) const{
     switch (sw){

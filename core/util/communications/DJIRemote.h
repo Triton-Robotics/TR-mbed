@@ -107,27 +107,6 @@ public:
     void dumpInfo() const;
 
     /**
-     * @return The Chassis X velocity
-     */
-    float getChassisX();
-
-    /**
-     * @return The Chassis Y velocity
-     */
-    float getChassisY();
-
-    /**
-     * @return The Yaw velocity
-     */
-    float getYaw();
-
-    /**
-     * @return The Pitch velocity
-     */
-    float getPitch();
-
-
-    /**
      * @return The state of the given switch.
      */
     SwitchState getSwitch(Switch sw) const;
