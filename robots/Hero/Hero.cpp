@@ -150,8 +150,8 @@ public:
 
         // Chassis + Turret Logic
         // TODO migrate away from remote chassis/pitch/yaw specific code
-        des_chassis_state.vX = remote_.getChassisX();
-        des_chassis_state.vY = remote_.getChassisY();
+        des_chassis_state.vX = remote_.getChannel(Remote::Channel::LEFT_VERTICAL);
+        des_chassis_state.vY = -1 * remote_.getChannel(Remote::Channel::LEFT_HORIZONTAL);
 
         // Turret from remote
         float joystick_yaw = remote_.getChannel(Remote::Channel::RIGHT_HORIZONTAL);
