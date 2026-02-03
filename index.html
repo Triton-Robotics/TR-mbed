@@ -144,7 +144,7 @@ Flashing to JLink</h3>
 Flashing STM32 (Old Method)</h2>
 <ol type="1">
 <li><p class="startli">Locate the generated executable:</p>
-<p class="startli">eg. The built executable for TestBench will be present in <code>cmake-build-debug/robots/TestBench/TR-TestBench.elf</code></p>
+<p class="startli">eg. The built executable for <a class="el" href="classTestBench.html">TestBench</a> will be present in <code>cmake-build-debug/robots/TestBench/TR-TestBench.elf</code></p>
 </li>
 <li>Flash the executable to the target device:</li>
 </ol>
@@ -158,15 +158,35 @@ Flashing STM32 (Old Method)</h2>
 <div class="fragment"><div class="line">mbed-tools sterm -b 115200</div>
 </div><!-- fragment --><hr  />
 <h2><a class="anchor" id="autotoc_md13"></a>
+Intellisense and Formatting</h2>
+<h3><a class="anchor" id="autotoc_md14"></a>
+Intellisense</h3>
+<p>we <b>HIGHLY</b> recommend using clangd instead of the microsoft C++ vscode extension</p>
+<ol type="1">
+<li>Install the <code>clangd (LLVM)</code> vscode extension (you may be prompted to install clangd if you don't have it installed on your system)</li>
+<li>Copy <code>.vscode/settings.json.example</code> to <code>.vscode/settings.json</code> and adjust the relevant paths</li>
+<li><b>Disable the C/C++ (Microsoft) vscode extension !!!</b></li>
+<li>Enjoy a significantly better developer experience!</li>
+</ol>
+<p>if you randomly have unexpected issues with intellisense you can try running <code>cmake -S . -B cmake-build-debug -GNinja</code> to reconfigure the project, generating compile_commands.json again which clangd relies on.</p>
+<h3><a class="anchor" id="autotoc_md15"></a>
+Formatting</h3>
+<p>Add the following to your user settings.json (<code>ctrl + shift + p</code> and select <code>Preferences: Open User Settings (JSON)</code>)</p>
+<div class="fragment"><div class="line">&quot;[cpp]&quot;: {</div>
+<div class="line">    &quot;editor.defaultFormatter&quot;: &quot;llvm-vs-code-extensions.vscode-clangd&quot;</div>
+<div class="line">},</div>
+</div><!-- fragment --><p>optionally also add the following to save on format</p>
+<div class="fragment"><div class="line">&quot;editor.formatOnSave&quot;: true,</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md16"></a>
 Troubleshooting</h2>
 <p>See the Troubleshooting guide for common issues and solutions.</p>
 <hr  />
-<h2><a class="anchor" id="autotoc_md15"></a>
+<h2><a class="anchor" id="autotoc_md18"></a>
 Debugging</h2>
 <p>See the Debugging guide on how to run the debugger using STM32CubeIDE</p>
 <p>See the Ozone Debugger guide on how to run the debugger using the Ozone Debugger.</p>
 <hr  />
-<h2><a class="anchor" id="autotoc_md17"></a>
+<h2><a class="anchor" id="autotoc_md20"></a>
 Documentation</h2>
 <p>See our <a href="https://triton-robotics.github.io/TR-mbed/">generated doxygen</a>. </p>
 </div></div><!-- PageDoc -->

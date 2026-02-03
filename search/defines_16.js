@@ -1,8 +1,9 @@
 var searchData=
 [
-  ['wheel_5fdiameter_5finches_0',['wheel_diameter_inches',['../ChassisKalman_8h.html#a3084a93ecc85cbde5f2ae04db0930044',1,'WHEEL_DIAMETER_INCHES:&#160;ChassisKalman.h'],['../WheelKalman_8h.html#a3084a93ecc85cbde5f2ae04db0930044',1,'WHEEL_DIAMETER_INCHES:&#160;WheelKalman.h']]],
-  ['wheel_5fdiameter_5fmeters_1',['WHEEL_DIAMETER_METERS',['../ChassisSubsystem_8h.html#aa0e08583d6404834d4ae5d05bd9cc3e5',1,'ChassisSubsystem.h']]],
-  ['white_2',['WHITE',['../Adafruit__GFX_8h.html#a87b537f5fa5c109d3c05c13d6b18f382',1,'Adafruit_GFX.h']]],
-  ['who_5fam_5fi_5fmpu6050_3',['WHO_AM_I_MPU6050',['../MPU6050_8h.html#a39dd5be380647ef470a0940057791c5e',1,'MPU6050.h']]],
-  ['work_4',['work',['../SparseLU__gemm__kernel_8h.html#ac0f8112df7f88a3da625a17fbf9f0152',1,'WORK:&#160;SparseLU_gemm_kernel.h'],['../SparseLU__gemm__kernel_8h.html#ac0f8112df7f88a3da625a17fbf9f0152',1,'WORK:&#160;SparseLU_gemm_kernel.h']]]
+  ['y_5ffine_5fgain_0',['Y_FINE_GAIN',['../MPU6050_8h.html#ab332d8fef934cfcd0ef9941ea6755f18',1,'MPU6050.h']]],
+  ['ya_5foffset_5fh_1',['YA_OFFSET_H',['../MPU6050_8h.html#a539098400cb39fa2ba99fb17b407e4f1',1,'MPU6050.h']]],
+  ['ya_5foffset_5fl_5ftc_2',['YA_OFFSET_L_TC',['../MPU6050_8h.html#a8cd8dfd54a40c1d83848866759237fbf',1,'MPU6050.h']]],
+  ['yg_5foffs_5fusrh_3',['YG_OFFS_USRH',['../MPU6050_8h.html#af77b200540e2780a76af9d446e722ee7',1,'MPU6050.h']]],
+  ['yg_5foffs_5fusrl_4',['YG_OFFS_USRL',['../MPU6050_8h.html#a79bd3286cf36d15c6cea51d08a6a622c',1,'MPU6050.h']]],
+  ['ygoffs_5ftc_5',['YGOFFS_TC',['../MPU6050_8h.html#ac90f2f5d830307c0bbb230f5f5347f70',1,'MPU6050.h']]]
 ];

@@ -1,20 +1,9 @@
 var searchData=
 [
-  ['nestbyvalue_2ecpp_0',['nestbyvalue.cpp',['../nestbyvalue_8cpp.html',1,'']]],
-  ['nestbyvalue_2eh_1',['NestByValue.h',['../NestByValue_8h.html',1,'']]],
-  ['nesting_5fops_2ecpp_2',['nesting_ops.cpp',['../nesting__ops_8cpp.html',1,'']]],
-  ['newexpressiontype_2edox_3',['NewExpressionType.dox',['../NewExpressionType_8dox.html',1,'']]],
-  ['noalias_2eh_4',['NoAlias.h',['../NoAlias_8h.html',1,'']]],
-  ['nomalloc_2ecpp_5',['nomalloc.cpp',['../nomalloc_8cpp.html',1,'']]],
-  ['nonblockingthreadpool_2eh_6',['NonBlockingThreadPool.h',['../NonBlockingThreadPool_8h.html',1,'']]],
-  ['nonlinearoptimization_2ecpp_7',['NonLinearOptimization.cpp',['../NonLinearOptimization_8cpp.html',1,'']]],
-  ['nonmpl2_2eh_8',['NonMPL2.h',['../NonMPL2_8h.html',1,'']]],
-  ['nullary_2ecpp_9',['nullary.cpp',['../nullary_8cpp.html',1,'']]],
-  ['nullary_5findexing_2ecpp_10',['nullary_indexing.cpp',['../nullary__indexing_8cpp.html',1,'']]],
-  ['nullaryfunctors_2eh_11',['NullaryFunctors.h',['../NullaryFunctors_8h.html',1,'']]],
-  ['num_5fdimensions_2ecpp_12',['num_dimensions.cpp',['../num__dimensions_8cpp.html',1,'']]],
-  ['numericaldiff_2ecpp_13',['NumericalDiff.cpp',['../NumericalDiff_8cpp.html',1,'']]],
-  ['numericaldiff_2eh_14',['NumericalDiff.h',['../NumericalDiff_8h.html',1,'']]],
-  ['numext_2ecpp_15',['numext.cpp',['../numext_8cpp.html',1,'']]],
-  ['numtraits_2eh_16',['NumTraits.h',['../NumTraits_8h.html',1,'']]]
+  ['readme_2emd_0',['README.md',['../README_8md.html',1,'']]],
+  ['ref_5fconstants_2eh_1',['ref_constants.h',['../ref__constants_8h.html',1,'']]],
+  ['ref_5foperations_2ecpp_2',['ref_operations.cpp',['../ref__operations_8cpp.html',1,'']]],
+  ['ref_5fserial_2ecpp_3',['ref_serial.cpp',['../ref__serial_8cpp.html',1,'']]],
+  ['ref_5fserial_2eh_4',['ref_serial.h',['../ref__serial_8h.html',1,'']]],
+  ['ref_5fui_2ecpp_5',['ref_ui.cpp',['../ref__ui_8cpp.html',1,'']]]
 ];

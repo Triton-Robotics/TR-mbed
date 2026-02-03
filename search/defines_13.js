@@ -1,28 +1,7 @@
 var searchData=
 [
-  ['temp_5fout_5fh_0',['TEMP_OUT_H',['../MPU6050_8h.html#ae8c4c28fe604535a3a57d0536c6e8175',1,'MPU6050.h']]],
-  ['temp_5fout_5fl_1',['TEMP_OUT_L',['../MPU6050_8h.html#a7fe4a13198c0b3d8cf09802e7247fd2c',1,'MPU6050.h']]],
-  ['tensor_5fcontraction_5fasync_5fdispatch_2',['TENSOR_CONTRACTION_ASYNC_DISPATCH',['../TensorContraction_8h.html#af4016386d5d82c4f4a92832d8b256806',1,'TensorContraction.h']]],
-  ['tensor_5fcontraction_5fdispatch_3',['TENSOR_CONTRACTION_DISPATCH',['../TensorContraction_8h.html#a125263decff215ec122bf5c17c7abd67',1,'TensorContraction.h']]],
-  ['test_5fcheck_5fstatic_5fassertions_4',['test_check_static_assertions',['../ref_8cpp.html#aa4d1bbc41458cccde4e36ce19748ba5b',1,'TEST_CHECK_STATIC_ASSERTIONS:&#160;ref.cpp'],['../selfadjoint_8cpp.html#aa4d1bbc41458cccde4e36ce19748ba5b',1,'TEST_CHECK_STATIC_ASSERTIONS:&#160;selfadjoint.cpp']]],
-  ['test_5fchipping_5',['test_chipping',['../cxx11__tensor__executor_8cpp.html#af673cbb43d5416ebd5c86012f5ab8e55',1,'TEST_CHIPPING:&#160;cxx11_tensor_executor.cpp'],['../cxx11__tensor__executor_8cpp.html#af673cbb43d5416ebd5c86012f5ab8e55',1,'TEST_CHIPPING:&#160;cxx11_tensor_executor.cpp']]],
-  ['test_5fenable_5ftemporary_5ftracking_6',['test_enable_temporary_tracking',['../nesting__ops_8cpp.html#ac24fdf43f185c5458ef77fe87c90ccca',1,'TEST_ENABLE_TEMPORARY_TRACKING:&#160;nesting_ops.cpp'],['../vectorwiseop_8cpp.html#ac24fdf43f185c5458ef77fe87c90ccca',1,'TEST_ENABLE_TEMPORARY_TRACKING:&#160;vectorwiseop.cpp'],['../ref_8cpp.html#ac24fdf43f185c5458ef77fe87c90ccca',1,'TEST_ENABLE_TEMPORARY_TRACKING:&#160;ref.cpp'],['../redux_8cpp.html#ac24fdf43f185c5458ef77fe87c90ccca',1,'TEST_ENABLE_TEMPORARY_TRACKING:&#160;redux.cpp'],['../product__notemporary_8cpp.html#ac24fdf43f185c5458ef77fe87c90ccca',1,'TEST_ENABLE_TEMPORARY_TRACKING:&#160;product_notemporary.cpp'],['../permutationmatrices_8cpp.html#ac24fdf43f185c5458ef77fe87c90ccca',1,'TEST_ENABLE_TEMPORARY_TRACKING:&#160;permutationmatrices.cpp'],['../nestbyvalue_8cpp.html#ac24fdf43f185c5458ef77fe87c90ccca',1,'TEST_ENABLE_TEMPORARY_TRACKING:&#160;nestbyvalue.cpp'],['../constructor_8cpp.html#ac24fdf43f185c5458ef77fe87c90ccca',1,'TEST_ENABLE_TEMPORARY_TRACKING:&#160;constructor.cpp'],['../test_2cholesky_8cpp.html#ac24fdf43f185c5458ef77fe87c90ccca',1,'TEST_ENABLE_TEMPORARY_TRACKING:&#160;cholesky.cpp']]],
-  ['test_5ffftw_7',['test_FFTW',['../test_2FFT_8cpp.html#aeac89e813f6f2b0fbadd60f385a96998',1,'FFT.cpp']]],
-  ['test_5flayouts_8',['TEST_LAYOUTS',['../cxx11__tensor__block__access_8cpp.html#a192e259766c6d0de59133184b3873e13',1,'cxx11_tensor_block_access.cpp']]],
-  ['test_5flayouts_5fand_5fdims_9',['TEST_LAYOUTS_AND_DIMS',['../cxx11__tensor__block__access_8cpp.html#a7c85790b2b0ab2016eef7adde54f1681',1,'cxx11_tensor_block_access.cpp']]],
-  ['test_5flayouts_5fwith_5farg_10',['TEST_LAYOUTS_WITH_ARG',['../cxx11__tensor__block__access_8cpp.html#a6752484e076847d9ef9de9363f4aa7ab',1,'cxx11_tensor_block_access.cpp']]],
-  ['test_5fop_11',['TEST_OP',['../cxx11__tensor__sugar_8cpp.html#afa119da0d2074ff817fde5bed30175c9',1,'cxx11_tensor_sugar.cpp']]],
-  ['test_5fpartial_5fredux_5fbasic_12',['TEST_PARTIAL_REDUX_BASIC',['../vectorwiseop_8cpp.html#a5e404e27645b5f97524fc74fd9b9862b',1,'vectorwiseop.cpp']]],
-  ['test_5fset_5fbut_5funused_5fvariable_13',['TEST_SET_BUT_UNUSED_VARIABLE',['../core_2util_2algorithms_2eigen-3_84_80_2test_2main_8h.html#aeb5d00ddace0805b4bd61968adc9562b',1,'main.h']]],
-  ['test_5ftensor_5fequal_14',['TEST_TENSOR_EQUAL',['../cxx11__tensor__sugar_8cpp.html#a298aef54a1565620ef504f8b5d7fa187',1,'cxx11_tensor_sugar.cpp']]],
-  ['ticks_5fper_5frotation_15',['ticks_per_rotation',['../ChassisKalman_8h.html#af532bf6ece93ef5a2cb631a1dd2bbb84',1,'TICKS_PER_ROTATION:&#160;ChassisKalman.h'],['../ChassisSubsystem_8h.html#af532bf6ece93ef5a2cb631a1dd2bbb84',1,'TICKS_PER_ROTATION:&#160;ChassisSubsystem.h'],['../WheelKalman_8h.html#af532bf6ece93ef5a2cb631a1dd2bbb84',1,'TICKS_PER_ROTATION:&#160;WheelKalman.h']]],
-  ['time_16',['TIME',['../Sentry_2main_8cpp.html#a078b6c12f1ac6819cecef90ab5870276',1,'main.cpp']]],
-  ['tiny_5fmv_5fmax_5fsize_17',['TINY_MV_MAX_SIZE',['../bench__parameter_8hh.html#ae5488d5164f64787d0a118025c47d99b',1,'bench_parameter.hh']]],
-  ['tr_18',['TR',['../common_8h.html#a4eeaa4bfb30c2bd68ba33198fb2f135e',1,'common.h']]],
-  ['tr_5fembedded_5fpid_5fh_19',['TR_EMBEDDED_PID_H',['../PID_8h.html#acef43a1b55eefa012c83053edec53da6',1,'PID.h']]],
-  ['track_20',['TRACK',['../core_2util_2algorithms_2eigen-3_84_80_2test_2main_8h.html#a4dcbde603979a969160d849f8374a7ee',1,'main.h']]],
-  ['track_5fwidth_5finches_21',['track_width_inches',['../ChassisKalman_8h.html#a1c00a849b02c2dd96e4726fcd5a9ceec',1,'TRACK_WIDTH_INCHES:&#160;ChassisKalman.h'],['../WheelKalman_8h.html#a1c00a849b02c2dd96e4726fcd5a9ceec',1,'TRACK_WIDTH_INCHES:&#160;WheelKalman.h']]],
-  ['tries_22',['tries',['../bench__reverse_8cpp.html#a527eb3eaec4a1cb30a1a98470e16d5a5',1,'TRIES:&#160;bench_reverse.cpp'],['../benchCholesky_8cpp.html#a527eb3eaec4a1cb30a1a98470e16d5a5',1,'TRIES:&#160;benchCholesky.cpp'],['../benchEigenSolver_8cpp.html#a527eb3eaec4a1cb30a1a98470e16d5a5',1,'TRIES:&#160;benchEigenSolver.cpp']]],
-  ['true_23',['TRUE',['../ref__serial_8h.html#aa8cecfc5c5c054d2875c03e77b7be15d',1,'ref_serial.h']]],
-  ['type_24',['TYPE',['../benchFFT_8cpp.html#a5a392548f2df67370cb15d2a5d75cd7b',1,'benchFFT.cpp']]]
+  ['vcomh_5fdeselect_5f0_5f65_5fcode_0',['VCOMH_DESELECT_0_65_CODE',['../SSD1308_8h.html#a263effbe8e699bd78affbdbc74984323',1,'SSD1308.h']]],
+  ['vcomh_5fdeselect_5f0_5f77_5fcode_1',['VCOMH_DESELECT_0_77_CODE',['../SSD1308_8h.html#a6400efd8ee7bcaef5eca3f8c9ce141b0',1,'SSD1308.h']]],
+  ['vcomh_5fdeselect_5f0_5f83_5fcode_2',['VCOMH_DESELECT_0_83_CODE',['../SSD1308_8h.html#a3a852934e5aab78cca06e7297169ecae',1,'SSD1308.h']]],
+  ['vertical_5faddressing_5fmode_3',['VERTICAL_ADDRESSING_MODE',['../SSD1308_8h.html#a8c56c6f0b31ba4da25b493c4dd1b9d86',1,'SSD1308.h']]]
 ];

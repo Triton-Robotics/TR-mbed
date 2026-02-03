@@ -80,13 +80,13 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;mbed.h&quot;</code><br />
-<code>#include &quot;<a class="el" href="BNO055_8h_source.html">BNO055.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="BNO055_8h_source.html">util/peripherals/imu/BNO055.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:af0e9d191330cab6591f3ab5a44270db7" id="r_af0e9d191330cab6591f3ab5a44270db7"><td class="memItemLeft" align="right" valign="top">I2C&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="imuExampleAllData_8cpp.html#af0e9d191330cab6591f3ab5a44270db7">i2c</a> (PB_9, PB_8)</td></tr>
 <tr class="separator:af0e9d191330cab6591f3ab5a44270db7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae66f6b31b5ad750f1fe042a706a4e3d4" id="r_ae66f6b31b5ad750f1fe042a706a4e3d4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="imuExampleAllData_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main</a> ()</td></tr>
+<tr class="memitem:ae66f6b31b5ad750f1fe042a706a4e3d4" id="r_ae66f6b31b5ad750f1fe042a706a4e3d4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="imuExampleAllData_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main</a> ()</td></tr>
 <tr class="separator:ae66f6b31b5ad750f1fe042a706a4e3d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
@@ -95,8 +95,8 @@ Variables</h2></td></tr>
 <tr class="separator:a74abbde13f81ae74801b94e0aa0a87d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad567fe76e73137e70f5a3a728a297069" id="r_ad567fe76e73137e70f5a3a728a297069"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structBNO055__ID__INF__TypeDef.html">BNO055_ID_INF_TypeDef</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="imuExampleAllData_8cpp.html#ad567fe76e73137e70f5a3a728a297069">bno055_id_inf</a></td></tr>
 <tr class="separator:ad567fe76e73137e70f5a3a728a297069"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad4dd3636d8f0735f00e07fb2ff7ce5f9" id="r_ad4dd3636d8f0735f00e07fb2ff7ce5f9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structBNO055__ANGULAR__POSITION__typedef.html">BNO055_ANGULAR_POSITION_typedef</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="imuExampleAllData_8cpp.html#ad4dd3636d8f0735f00e07fb2ff7ce5f9">p</a></td></tr>
-<tr class="separator:ad4dd3636d8f0735f00e07fb2ff7ce5f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e393df6575846c7a8e15b76d63f2724" id="r_a9e393df6575846c7a8e15b76d63f2724"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structIMU_1_1EulerAngles.html">IMU::EulerAngles</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="imuExampleAllData_8cpp.html#a9e393df6575846c7a8e15b76d63f2724">p</a></td></tr>
+<tr class="separator:a9e393df6575846c7a8e15b76d63f2724"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd2c04b75392304205a57d8923addd8d" id="r_acd2c04b75392304205a57d8923addd8d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structBNO055__VECTOR__TypeDef.html">BNO055_VECTOR_TypeDef</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="imuExampleAllData_8cpp.html#acd2c04b75392304205a57d8923addd8d">angular_acc</a></td></tr>
 <tr class="separator:acd2c04b75392304205a57d8923addd8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3a594955bf0fcab8fd702c02d92e3ce3" id="r_a3a594955bf0fcab8fd702c02d92e3ce3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structBNO055__VECTOR__TypeDef.html">BNO055_VECTOR_TypeDef</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="imuExampleAllData_8cpp.html#a3a594955bf0fcab8fd702c02d92e3ce3">linear_acc</a></td></tr>
@@ -142,9 +142,8 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> main </td>
+          <td class="memname">int main </td>
           <td>(</td>
-          <td class="paramtype">void&#160;</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
@@ -258,14 +257,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="ad4dd3636d8f0735f00e07fb2ff7ce5f9" name="ad4dd3636d8f0735f00e07fb2ff7ce5f9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad4dd3636d8f0735f00e07fb2ff7ce5f9">&#9670;&#160;</a></span>p</h2>
+<a id="a9e393df6575846c7a8e15b76d63f2724" name="a9e393df6575846c7a8e15b76d63f2724"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e393df6575846c7a8e15b76d63f2724">&#9670;&#160;</a></span>p</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structBNO055__ANGULAR__POSITION__typedef.html">BNO055_ANGULAR_POSITION_typedef</a> p</td>
+          <td class="memname"><a class="el" href="structIMU_1_1EulerAngles.html">IMU::EulerAngles</a> p</td>
         </tr>
       </table>
 </div><div class="memdoc">

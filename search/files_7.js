@@ -1,24 +1,6 @@
 var searchData=
 [
-  ['half_2eh_0',['Half.h',['../Half_8h.html',1,'']]],
-  ['half_5ffloat_2ecpp_1',['half_float.cpp',['../half__float_8cpp.html',1,'']]],
-  ['hero_2eh_2',['Hero.h',['../Hero_8h.html',1,'']]],
-  ['hessenberg_2ecpp_3',['hessenberg.cpp',['../hessenberg_8cpp.html',1,'']]],
-  ['hessenbergdecomposition_2eh_4',['HessenbergDecomposition.h',['../HessenbergDecomposition_8h.html',1,'']]],
-  ['hessenbergdecomposition_5fcompute_2ecpp_5',['HessenbergDecomposition_compute.cpp',['../HessenbergDecomposition__compute_8cpp.html',1,'']]],
-  ['hessenbergdecomposition_5fmatrixh_2ecpp_6',['HessenbergDecomposition_matrixH.cpp',['../HessenbergDecomposition__matrixH_8cpp.html',1,'']]],
-  ['hessenbergdecomposition_5fpackedmatrix_2ecpp_7',['HessenbergDecomposition_packedMatrix.cpp',['../HessenbergDecomposition__packedMatrix_8cpp.html',1,'']]],
-  ['hiperformance_2edox_8',['HiPerformance.dox',['../HiPerformance_8dox.html',1,'']]],
-  ['hipvectorcompatibility_2eh_9',['HipVectorCompatibility.h',['../HipVectorCompatibility_8h.html',1,'']]],
-  ['homogeneous_2eh_10',['Homogeneous.h',['../Homogeneous_8h.html',1,'']]],
-  ['householder_2ecpp_11',['householder.cpp',['../householder_8cpp.html',1,'']]],
-  ['householder_2eh_12',['Householder.h',['../Householder_8h.html',1,'']]],
-  ['householderqr_2eh_13',['HouseholderQR.h',['../HouseholderQR_8h.html',1,'']]],
-  ['householderqr_5fhouseholderq_2ecpp_14',['HouseholderQR_householderQ.cpp',['../HouseholderQR__householderQ_8cpp.html',1,'']]],
-  ['householderqr_5flapacke_2eh_15',['HouseholderQR_LAPACKE.h',['../HouseholderQR__LAPACKE_8h.html',1,'']]],
-  ['householderqr_5fsolve_2ecpp_16',['HouseholderQR_solve.cpp',['../HouseholderQR__solve_8cpp.html',1,'']]],
-  ['householdersequence_2eh_17',['HouseholderSequence.h',['../HouseholderSequence_8h.html',1,'']]],
-  ['householdersequence_5fhouseholdersequence_2ecpp_18',['HouseholderSequence_HouseholderSequence.cpp',['../HouseholderSequence__HouseholderSequence_8cpp.html',1,'']]],
-  ['hybridnonlinearsolver_2eh_19',['HybridNonLinearSolver.h',['../HybridNonLinearSolver_8h.html',1,'']]],
-  ['hyperplane_2eh_20',['Hyperplane.h',['../Hyperplane_8h.html',1,'']]]
+  ['hero_2ecpp_0',['Hero.cpp',['../Hero_8cpp.html',1,'']]],
+  ['heroshootersubsystem_2ecpp_1',['HeroShooterSubsystem.cpp',['../HeroShooterSubsystem_8cpp.html',1,'']]],
+  ['heroshootersubsystem_2eh_2',['HeroShooterSubsystem.h',['../HeroShooterSubsystem_8h.html',1,'']]]
 ];

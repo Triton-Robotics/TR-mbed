@@ -74,159 +74,37 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#nested-classes">Classes</a>  </div>
   <div class="headertitle"><div class="title">Jetson.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;cstring&gt;</code><br />
-<code>#include &lt;stdint.h&gt;</code><br />
-<code>#include &quot;mbed.h&quot;</code><br />
+<div class="textblock"><code>#include &quot;mbed.h&quot;</code><br />
+<code>#include &lt;memory&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
 </div>
 <p><a href="Jetson_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structJetson__send__data.html">Jetson_send_data</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJetson.html">Jetson</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structJetson__send__data__buf.html">Jetson_send_data_buf</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structJetson_1_1WriteState.html">Jetson::WriteState</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structJetson__send__ref.html">Jetson_send_ref</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structJetson_1_1ReadState.html">Jetson::ReadState</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structJetson__send__ref__buf.html">Jetson_send_ref_buf</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classWritePacket.html">WritePacket</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structJetson__read__data.html">Jetson_read_data</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRefWritePacket.html">RefWritePacket</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structJetson__read__odom.html">Jetson_read_odom</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRobotStateWritePacket.html">RobotStateWritePacket</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:aa54536fef2c21f571a63f9ab8ee0be64" id="r_aa54536fef2c21f571a63f9ab8ee0be64"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Jetson_8h.html#aa54536fef2c21f571a63f9ab8ee0be64">jetson_send_feedback</a> (BufferedSerial &amp;bcJetson, const <a class="el" href="structJetson__send__ref.html">Jetson_send_ref</a> &amp;ref_data, const <a class="el" href="structJetson__send__data.html">Jetson_send_data</a> &amp;<a class="el" href="Map__placement__new_8cpp.html#abe49a82806b5db2e012bc33839af03e6">data</a>, <a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> msg_type=0)</td></tr>
-<tr class="separator:aa54536fef2c21f571a63f9ab8ee0be64"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a813fb80da7221026578972a4c83d2b65" id="r_a813fb80da7221026578972a4c83d2b65"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Jetson_8h.html#a813fb80da7221026578972a4c83d2b65">jetson_read_values</a> (BufferedSerial &amp;bcJetson, <a class="el" href="structJetson__read__data.html">Jetson_read_data</a> &amp;read_data, <a class="el" href="structJetson__read__odom.html">Jetson_read_odom</a> &amp;odom_data)</td></tr>
-<tr class="separator:a813fb80da7221026578972a4c83d2b65"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aad7a740d2e24b2c9dbe83c522607883c" id="r_aad7a740d2e24b2c9dbe83c522607883c"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Jetson_8h.html#aad7a740d2e24b2c9dbe83c522607883c">jetson_send_read_spi</a> (SPI &amp;spiJetson, const <a class="el" href="structJetson__send__data.html">Jetson_send_data</a> &amp;input, <a class="el" href="structJetson__read__data.html">Jetson_read_data</a> &amp;output)</td></tr>
-<tr class="separator:aad7a740d2e24b2c9dbe83c522607883c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classReadPacket.html">ReadPacket</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTurretPacket.html">TurretPacket</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisReadPacket.html">ChassisReadPacket</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
-<a id="a813fb80da7221026578972a4c83d2b65" name="a813fb80da7221026578972a4c83d2b65"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a813fb80da7221026578972a4c83d2b65">&#9670;&#160;</a></span>jetson_read_values()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">ssize_t jetson_read_values </td>
-          <td>(</td>
-          <td class="paramtype">BufferedSerial &amp;&#160;</td>
-          <td class="paramname"><em>bcJetson</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structJetson__read__data.html">Jetson_read_data</a> &amp;&#160;</td>
-          <td class="paramname"><em>read_data</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structJetson__read__odom.html">Jetson_read_odom</a> &amp;&#160;</td>
-          <td class="paramname"><em>odom_data</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Read desired pitch and yaw position data from Jetson</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">pitch_move</td><td>buffer to store desired pitch position </td></tr>
-    <tr><td class="paramname">yaw_move</td><td>buffer to store desired yaw position </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="aa54536fef2c21f571a63f9ab8ee0be64" name="aa54536fef2c21f571a63f9ab8ee0be64"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa54536fef2c21f571a63f9ab8ee0be64">&#9670;&#160;</a></span>jetson_send_feedback()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void jetson_send_feedback </td>
-          <td>(</td>
-          <td class="paramtype">BufferedSerial &amp;&#160;</td>
-          <td class="paramname"><em>bcJetson</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="structJetson__send__ref.html">Jetson_send_ref</a> &amp;&#160;</td>
-          <td class="paramname"><em>ref_data</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="structJetson__send__data.html">Jetson_send_data</a> &amp;&#160;</td>
-          <td class="paramname"><em>data</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td>
-          <td class="paramname"><em>msg_type</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Read motor values and send to CV </p>
-
-</div>
-</div>
-<a id="aad7a740d2e24b2c9dbe83c522607883c" name="aad7a740d2e24b2c9dbe83c522607883c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aad7a740d2e24b2c9dbe83c522607883c">&#9670;&#160;</a></span>jetson_send_read_spi()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">ssize_t jetson_send_read_spi </td>
-          <td>(</td>
-          <td class="paramtype">SPI &amp;&#160;</td>
-          <td class="paramname"><em>spiJetson</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="structJetson__send__data.html">Jetson_send_data</a> &amp;&#160;</td>
-          <td class="paramname"><em>input</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structJetson__read__data.html">Jetson_read_data</a> &amp;&#160;</td>
-          <td class="paramname"><em>output</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

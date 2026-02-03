@@ -92,168 +92,241 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &quot;mbed.h&quot;</span></div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &quot;<a class="code" href="CANMsg_8h.html">CANMsg.h</a>&quot;</span></div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="CANHandler_8h.html#a69dfbb25066d2af819d304ee84ed9935">   16</a></span><span class="preprocessor">#define CAN_BAUD 1000000</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &lt;cstdint&gt;</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span> </div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
-<div class="foldopen" id="foldopen00018" data-start="{" data-end="};">
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="classCANHandler.html">   18</a></span><span class="keyword">class </span><a class="code hl_class" href="classCANHandler.html">CANHandler</a>{</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>        <a class="code hl_class" href="classCANMsg.html">CANMsg</a> txMsg; <span class="comment">//Message object reused to send messages to motors</span></div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>        <a class="code hl_class" href="classCANMsg.html">CANMsg</a> rxMsg; <span class="comment">//Message object reused to recieve messages from motors</span></div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>        </div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>        </div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    <span class="keyword">public</span>:</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">   25</a></span>        CAN <a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>;</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span> </div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902a">   27</a></span>        <span class="keyword">enum</span> <a class="code hl_enumeration" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902a">CANBus</a> {<a class="code hl_enumvalue" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4">CANBUS_1</a>, <a class="code hl_enumvalue" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANBUS_2</a>, <a class="code hl_enumvalue" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aaf360888b91f7657f4c37db6101e69e09">NOBUS</a>};</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="classCANHandler.html#afa15cc41e80357375d4dd9fa5b22e495">   29</a></span>        <span class="keywordtype">bool</span> <a class="code hl_variable" href="classCANHandler.html#afa15cc41e80357375d4dd9fa5b22e495">exists</a> = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>        <span class="comment">// Declaring CanHandler, can1, and can2</span></div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>        </div>
-<div class="foldopen" id="foldopen00032" data-start="{" data-end="}">
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="classCANHandler.html#a9b8ed61c6dac73788e4091c12448c76e">   32</a></span>        <a class="code hl_function" href="classCANHandler.html#a9b8ed61c6dac73788e4091c12448c76e">CANHandler</a>():</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>            <a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>(PA_11,PA_12,<a class="code hl_define" href="CANHandler_8h.html#a69dfbb25066d2af819d304ee84ed9935">CAN_BAUD</a>)</div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>            {<a class="code hl_variable" href="classCANHandler.html#afa15cc41e80357375d4dd9fa5b22e495">exists</a> = <span class="keyword">false</span>;}</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="CANHandler_8h.html#a69dfbb25066d2af819d304ee84ed9935">   18</a></span><span class="preprocessor">#define CAN_BAUD 1000000</span></div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="comment">// Exact ID callback</span></div>
+<div class="foldopen" id="foldopen00021" data-start="{" data-end="};">
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="structExactCallback.html">   21</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structExactCallback.html">ExactCallback</a> {</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="structExactCallback.html#a0ea6e0ee390e79477d17759a963003dd">   22</a></span>    uint32_t <a class="code hl_variable" href="structExactCallback.html#a0ea6e0ee390e79477d17759a963003dd">id</a>;</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="structExactCallback.html#af8d991ca6fd55ff9428647888e460f1f">   23</a></span>    std::function&lt;void(<span class="keyword">const</span> <a class="code hl_class" href="classCANMsg.html">CANMsg</a>*)&gt; <a class="code hl_variable" href="structExactCallback.html#af8d991ca6fd55ff9428647888e460f1f">func</a>;</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>};</div>
 </div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span> </div>
-<div class="foldopen" id="foldopen00036" data-start="{" data-end="}">
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="classCANHandler.html#a7ae4877d6ba72b43694593b5de105d45">   36</a></span>        <a class="code hl_function" href="classCANHandler.html#a7ae4877d6ba72b43694593b5de105d45">CANHandler</a>(PinName canRx, PinName canTx):</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>            <a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>(canRx,canTx,<a class="code hl_define" href="CANHandler_8h.html#a69dfbb25066d2af819d304ee84ed9935">CAN_BAUD</a>)</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>            {<a class="code hl_variable" href="classCANHandler.html#afa15cc41e80357375d4dd9fa5b22e495">exists</a> = <span class="keyword">true</span>;}</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="comment">// Range callback (inclusive)</span></div>
+<div class="foldopen" id="foldopen00027" data-start="{" data-end="};">
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="structRangeCallback.html">   27</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structRangeCallback.html">RangeCallback</a> {</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="structRangeCallback.html#a2ae1eb84d13399fafb18ac8380941f7a">   28</a></span>    uint32_t <a class="code hl_variable" href="structRangeCallback.html#a2ae1eb84d13399fafb18ac8380941f7a">start_id</a>;</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="structRangeCallback.html#a304508f21fe0d4af56000a86abab8819">   29</a></span>    uint32_t <a class="code hl_variable" href="structRangeCallback.html#a304508f21fe0d4af56000a86abab8819">end_id</a>;</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="structRangeCallback.html#aaa3d5b03d62b56052624975e3b7ad0e1">   30</a></span>    std::function&lt;void(<span class="keyword">const</span> <a class="code hl_class" href="classCANMsg.html">CANMsg</a>*)&gt; <a class="code hl_variable" href="structRangeCallback.html#aaa3d5b03d62b56052624975e3b7ad0e1">func</a>;</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>};</div>
 </div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
-<div class="foldopen" id="foldopen00040" data-start="{" data-end="}">
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="classCANHandler.html#a415414f5289348a031d5436a13cb10f8">   40</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classCANHandler.html#a415414f5289348a031d5436a13cb10f8">attach</a> (Callback&lt; <span class="keywordtype">void</span>()&gt;  <a class="code hl_struct" href="structfunc.html">func</a>, CAN::IrqType type = CAN::IrqType::RxIrq){</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>            <a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>.attach(<a class="code hl_struct" href="structfunc.html">func</a>,type);</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>        }</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span> </div>
+<div class="foldopen" id="foldopen00033" data-start="{" data-end="};">
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="classCANHandler.html">   33</a></span><span class="keyword">class </span><a class="code hl_class" href="classCANHandler.html">CANHandler</a>{</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>        <a class="code hl_class" href="classCANMsg.html">CANMsg</a> txMsg; <span class="comment">//Message object reused to send messages to motors</span></div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>        <a class="code hl_class" href="classCANMsg.html">CANMsg</a> rxMsg; <span class="comment">//Message object reused to recieve messages from motors</span></div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>        </div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>        <span class="keyword">public</span>:</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">   39</a></span>        CAN <a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>;</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>        </div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>        <span class="comment">// callback lists</span></div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="classCANHandler.html#a77c3b9b1d740d9c99ebb1bc7ba1ac1d0">   42</a></span>        std::vector&lt;ExactCallback&gt; <a class="code hl_variable" href="classCANHandler.html#a77c3b9b1d740d9c99ebb1bc7ba1ac1d0">exact_</a>;</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="classCANHandler.html#a8ecdf1084db10bbda08fd8038c64a001">   43</a></span>        std::vector&lt;RangeCallback&gt; <a class="code hl_variable" href="classCANHandler.html#a8ecdf1084db10bbda08fd8038c64a001">range_</a>;</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>        </div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902a">   45</a></span>        <span class="keyword">enum</span> <a class="code hl_enumeration" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902a">CANBus</a> {<a class="code hl_enumvalue" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4">CANBUS_1</a>, <a class="code hl_enumvalue" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANBUS_2</a>, <a class="code hl_enumvalue" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aaf360888b91f7657f4c37db6101e69e09">NOBUS</a>};</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span> </div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="classCANHandler.html#afa15cc41e80357375d4dd9fa5b22e495">   47</a></span>        <span class="keywordtype">bool</span> <a class="code hl_variable" href="classCANHandler.html#afa15cc41e80357375d4dd9fa5b22e495">exists</a> = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>        <span class="comment">// Declaring CanHandler, can1, and can2</span></div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>        </div>
+<div class="foldopen" id="foldopen00050" data-start="{" data-end="}">
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="classCANHandler.html#a9b8ed61c6dac73788e4091c12448c76e">   50</a></span>        <a class="code hl_function" href="classCANHandler.html#a9b8ed61c6dac73788e4091c12448c76e">CANHandler</a>():</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>            <a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>(PA_11,PA_12,<a class="code hl_define" href="CANHandler_8h.html#a69dfbb25066d2af819d304ee84ed9935">CAN_BAUD</a>), <a class="code hl_variable" href="classCANHandler.html#a77c3b9b1d740d9c99ebb1bc7ba1ac1d0">exact_</a>(), <a class="code hl_variable" href="classCANHandler.html#a8ecdf1084db10bbda08fd8038c64a001">range_</a>()</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>            {<a class="code hl_variable" href="classCANHandler.html#afa15cc41e80357375d4dd9fa5b22e495">exists</a> = <span class="keyword">false</span>;}</div>
 </div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
-<div class="foldopen" id="foldopen00044" data-start="{" data-end="}">
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="classCANHandler.html#a423563c96d7a7da836a957c5b0c88745">   44</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classCANHandler.html#a423563c96d7a7da836a957c5b0c88745">updateCANs</a>(PinName canRx, PinName canTx){</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>            <span class="comment">//can = new CAN(canRx,canTx,1000000);</span></div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>            CAN <a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>(canRx,canTx,<a class="code hl_define" href="CANHandler_8h.html#a69dfbb25066d2af819d304ee84ed9935">CAN_BAUD</a>);</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>        }</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
+<div class="foldopen" id="foldopen00054" data-start="{" data-end="}">
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno"><a class="line" href="classCANHandler.html#a7ae4877d6ba72b43694593b5de105d45">   54</a></span>        <a class="code hl_function" href="classCANHandler.html#a7ae4877d6ba72b43694593b5de105d45">CANHandler</a>(PinName canRx, PinName canTx):</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>            <a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>(canRx,canTx,<a class="code hl_define" href="CANHandler_8h.html#a69dfbb25066d2af819d304ee84ed9935">CAN_BAUD</a>), <a class="code hl_variable" href="classCANHandler.html#a77c3b9b1d740d9c99ebb1bc7ba1ac1d0">exact_</a>(), <a class="code hl_variable" href="classCANHandler.html#a8ecdf1084db10bbda08fd8038c64a001">range_</a>()</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>            {<a class="code hl_variable" href="classCANHandler.html#afa15cc41e80357375d4dd9fa5b22e495">exists</a> = <span class="keyword">true</span>;}</div>
 </div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
-<div class="foldopen" id="foldopen00049" data-start="{" data-end="}">
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno"><a class="line" href="classCANHandler.html#ade28e76ceb57d6d708b76d71faf16403">   49</a></span>        CAN* <a class="code hl_function" href="classCANHandler.html#ade28e76ceb57d6d708b76d71faf16403">getCAN</a>(){</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>            <span class="keywordflow">return</span> &amp;<a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>;</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>        }</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span> </div>
+<div class="foldopen" id="foldopen00058" data-start="{" data-end="}">
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno"><a class="line" href="classCANHandler.html#a415414f5289348a031d5436a13cb10f8">   58</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classCANHandler.html#a415414f5289348a031d5436a13cb10f8">attach</a> (Callback&lt; <span class="keywordtype">void</span>()&gt;  func, CAN::IrqType type = CAN::IrqType::RxIrq){</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>            <a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>.attach(func,type);</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>        }</div>
 </div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
-<div class="foldopen" id="foldopen00057" data-start="{" data-end="}">
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno"><a class="line" href="classCANHandler.html#ac88d0c1dfff2021f2095d73fa8c6f6e3">   57</a></span>        <span class="keywordtype">bool</span> <a class="code hl_function" href="classCANHandler.html#ac88d0c1dfff2021f2095d73fa8c6f6e3">getFeedback</a>(<span class="keywordtype">int</span> *<span class="keywordtype">id</span>, uint8_t bytes[], <span class="keywordtype">int</span> canbus){</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>            <span class="keywordtype">bool</span> gotMsg = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>            rxMsg.<a class="code hl_function" href="classCANMsg.html#a969dcb0af8e68883ab104249c8559146">clear</a>();</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>            rxMsg.len = 8;</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>            <span class="keywordflow">if</span> (<a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>.read(rxMsg)) {</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>                <span class="keywordtype">int</span> err = <a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>.rderror();</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>                <span class="keywordflow">if</span> (err){</div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>                    printf(<span class="stringliteral">&quot;[%d CAN Read Errors] on CANBus_%d\n&quot;</span>, err, canbus + 1);</div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>                    <a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>.reset();</div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>                    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>                }</div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>                *<span class="keywordtype">id</span> = rxMsg.id;</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>                <span class="keywordflow">for</span>(<span class="keywordtype">int</span> <a class="code hl_variable" href="BiCGSTAB__step__by__step_8cpp.html#acb559820d9ca11295b4500f179ef6392">i</a> = 0;  <a class="code hl_variable" href="BiCGSTAB__step__by__step_8cpp.html#acb559820d9ca11295b4500f179ef6392">i</a> &lt; 8; <a class="code hl_variable" href="BiCGSTAB__step__by__step_8cpp.html#acb559820d9ca11295b4500f179ef6392">i</a> ++){</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>                    rxMsg &gt;&gt; bytes[<a class="code hl_variable" href="BiCGSTAB__step__by__step_8cpp.html#acb559820d9ca11295b4500f179ef6392">i</a>]; <span class="comment">//Extract information from rxMsg and store it into the bytes array</span></div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>                }</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>                gotMsg = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>                <span class="comment">//printf(&quot;Motor 0x%x:\tAngle (0,8191):%d\tSpeed  ( RPM ):%d\tTorque ( CUR ):%d\tTemperature(C):%d \n&quot;,rxMsg.id,feedback[motorID][0],feedback[motorID][1],feedback[motorID][2],feedback[motorID][3]);</span></div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>            }</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>            <span class="keywordflow">return</span> gotMsg;</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>            <span class="comment">//CAN Recieving from feedback IDs</span></div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>        }</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span> </div>
+<div class="foldopen" id="foldopen00062" data-start="{" data-end="}">
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno"><a class="line" href="classCANHandler.html#a423563c96d7a7da836a957c5b0c88745">   62</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classCANHandler.html#a423563c96d7a7da836a957c5b0c88745">updateCANs</a>(PinName canRx, PinName canTx){</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>            <span class="comment">//can = new CAN(canRx,canTx,1000000);</span></div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>            CAN <a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>(canRx,canTx,<a class="code hl_define" href="CANHandler_8h.html#a69dfbb25066d2af819d304ee84ed9935">CAN_BAUD</a>);</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>        }</div>
 </div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
-<div class="foldopen" id="foldopen00079" data-start="{" data-end="}">
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno"><a class="line" href="classCANHandler.html#ac4f0c4fe95f0ecbfeb4d65e76dd04c10">   79</a></span>        <span class="keywordtype">bool</span> <a class="code hl_function" href="classCANHandler.html#ac4f0c4fe95f0ecbfeb4d65e76dd04c10">rawRead</a>(<span class="keywordtype">int</span> *<span class="keywordtype">id</span>, uint8_t bytes[], <span class="keywordtype">int</span> length){</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>            <span class="keywordtype">bool</span> gotMsg = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>            rxMsg.<a class="code hl_function" href="classCANMsg.html#a969dcb0af8e68883ab104249c8559146">clear</a>();</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>            rxMsg.len = length;</div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>            <span class="keywordflow">if</span> (<a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>.read(rxMsg)) {</div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>                <span class="keywordtype">int</span> err = <a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>.rderror();</div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>                <span class="keywordflow">if</span> (err){</div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>                    printf(<span class="stringliteral">&quot;[%d CAN Read Errors]\n&quot;</span>, err);</div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>                    <a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>.reset();</div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>                    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>                }</div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>                *<span class="keywordtype">id</span> = rxMsg.id;</div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>                <span class="keywordflow">for</span>(<span class="keywordtype">int</span> <a class="code hl_variable" href="BiCGSTAB__step__by__step_8cpp.html#acb559820d9ca11295b4500f179ef6392">i</a> = 0;  <a class="code hl_variable" href="BiCGSTAB__step__by__step_8cpp.html#acb559820d9ca11295b4500f179ef6392">i</a> &lt; length; <a class="code hl_variable" href="BiCGSTAB__step__by__step_8cpp.html#acb559820d9ca11295b4500f179ef6392">i</a> ++){</div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>                    rxMsg &gt;&gt; bytes[<a class="code hl_variable" href="BiCGSTAB__step__by__step_8cpp.html#acb559820d9ca11295b4500f179ef6392">i</a>]; <span class="comment">//Extract information from rxMsg and store it into the bytes array</span></div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>                }</div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>                gotMsg = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>                <span class="comment">//printf(&quot;Motor 0x%x:\tAngle (0,8191):%d\tSpeed  ( RPM ):%d\tTorque ( CUR ):%d\tTemperature(C):%d \n&quot;,rxMsg.id,feedback[motorID][0],feedback[motorID][1],feedback[motorID][2],feedback[motorID][3]);</span></div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>            }</div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>            <span class="keywordflow">return</span> gotMsg;</div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>            <span class="comment">//CAN Recieving from feedback IDs</span></div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>        }</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span> </div>
+<div class="foldopen" id="foldopen00067" data-start="{" data-end="}">
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno"><a class="line" href="classCANHandler.html#ade28e76ceb57d6d708b76d71faf16403">   67</a></span>        CAN* <a class="code hl_function" href="classCANHandler.html#ade28e76ceb57d6d708b76d71faf16403">getCAN</a>(){</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>            <span class="keywordflow">return</span> &amp;<a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>;</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>        }</div>
 </div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span> </div>
-<div class="foldopen" id="foldopen00106" data-start="{" data-end="}">
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno"><a class="line" href="classCANHandler.html#a487ccd57fdcb83924bcfb22d28d913f9">  106</a></span>        <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classCANHandler.html#a487ccd57fdcb83924bcfb22d28d913f9">printMsg</a>(CANMessage&amp; msg)</div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>        {</div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>            printf(<span class="stringliteral">&quot; ID = 0x%.3x\t&quot;</span>, msg.id);</div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> <a class="code hl_variable" href="BiCGSTAB__step__by__step_8cpp.html#acb559820d9ca11295b4500f179ef6392">i</a> = 0; <a class="code hl_variable" href="BiCGSTAB__step__by__step_8cpp.html#acb559820d9ca11295b4500f179ef6392">i</a> &lt; msg.len; <a class="code hl_variable" href="BiCGSTAB__step__by__step_8cpp.html#acb559820d9ca11295b4500f179ef6392">i</a>++)</div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>                printf(<span class="stringliteral">&quot; 0x%.2X&quot;</span>, msg.data[<a class="code hl_variable" href="BiCGSTAB__step__by__step_8cpp.html#acb559820d9ca11295b4500f179ef6392">i</a>]);</div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>            printf(<span class="stringliteral">&quot;\n&quot;</span>);</div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>        }</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span> </div>
+<div class="foldopen" id="foldopen00077" data-start="{" data-end="}">
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno"><a class="line" href="classCANHandler.html#a8c7fe2d3a3c44c8772ee4654f70eac96">   77</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classCANHandler.html#a8c7fe2d3a3c44c8772ee4654f70eac96">registerCallback</a>(uint32_t <span class="keywordtype">id</span>, std::function&lt;<span class="keywordtype">void</span>(<span class="keyword">const</span> <a class="code hl_class" href="classCANMsg.html">CANMsg</a>*)&gt; func) {</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>            <a class="code hl_struct" href="structExactCallback.html">ExactCallback</a> exact_id = {id, std::move(func)};</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>            <a class="code hl_variable" href="classCANHandler.html#a77c3b9b1d740d9c99ebb1bc7ba1ac1d0">exact_</a>.push_back(exact_id);</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>        }</div>
 </div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span> </div>
-<div class="foldopen" id="foldopen00121" data-start="{" data-end="}">
-<div class="line"><a id="l00121" name="l00121"></a><span class="lineno"><a class="line" href="classCANHandler.html#a18ede89e5acf269b1be91543ee77d282">  121</a></span>        <span class="keywordtype">bool</span> <a class="code hl_function" href="classCANHandler.html#a18ede89e5acf269b1be91543ee77d282">rawSend</a>(<span class="keywordtype">int</span> <span class="keywordtype">id</span>, int8_t bytes[]){</div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>            <span class="keyword">static</span> <span class="keywordtype">int</span> errorCount = 0;</div>
-<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>            txMsg.<a class="code hl_function" href="classCANMsg.html#a969dcb0af8e68883ab104249c8559146">clear</a>(); <span class="comment">// clear Tx message storage</span></div>
-<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>            txMsg.id = id; </div>
-<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span> </div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>            <span class="keywordflow">for</span>(<span class="keywordtype">int</span> <a class="code hl_variable" href="BiCGSTAB__step__by__step_8cpp.html#acb559820d9ca11295b4500f179ef6392">i</a> = 0; <a class="code hl_variable" href="BiCGSTAB__step__by__step_8cpp.html#acb559820d9ca11295b4500f179ef6392">i</a> &lt; 8; <a class="code hl_variable" href="BiCGSTAB__step__by__step_8cpp.html#acb559820d9ca11295b4500f179ef6392">i</a>++){</div>
-<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>                txMsg &lt;&lt; int8_t(bytes[<a class="code hl_variable" href="BiCGSTAB__step__by__step_8cpp.html#acb559820d9ca11295b4500f179ef6392">i</a>]); <span class="comment">//Take data from bytes array and one at a time store it into txMsg</span></div>
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>            }</div>
-<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span> </div>
-<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>            <span class="comment">//printMsg(txMsg);</span></div>
-<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span> </div>
-<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>            <span class="keywordtype">bool</span> isWrite = <a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>.write(txMsg);</div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>            </div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>            <span class="keywordflow">if</span>(isWrite == 0) {</div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>                errorCount++;</div>
-<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>                <a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>.reset();</div>
-<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>            }</div>
-<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>            <span class="keywordflow">else</span>{</div>
-<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>                errorCount = 0;</div>
-<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>            }</div>
-<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span> </div>
-<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>            <span class="keywordflow">if</span> (errorCount &gt; 1000){</div>
-<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>                <span class="comment">//printf(&quot;[CAN Connection Issues SEND]\n&quot;);</span></div>
-<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>            }</div>
-<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>            <span class="comment">//printMsg(txMsg);</span></div>
-<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>            <span class="keywordflow">return</span> isWrite;</div>
-<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>        }</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span> </div>
+<div class="foldopen" id="foldopen00089" data-start="{" data-end="}">
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno"><a class="line" href="classCANHandler.html#ab2c92a032994ac129c2e50b73066764e">   89</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classCANHandler.html#ab2c92a032994ac129c2e50b73066764e">registerCallback</a>(uint32_t start_id, uint32_t end_id, std::function&lt;<span class="keywordtype">void</span>(<span class="keyword">const</span> <a class="code hl_class" href="classCANMsg.html">CANMsg</a>*)&gt; func) {</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>            <a class="code hl_struct" href="structRangeCallback.html">RangeCallback</a> range_ids = {start_id, end_id, std::move(func)};</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>            <a class="code hl_variable" href="classCANHandler.html#a8ecdf1084db10bbda08fd8038c64a001">range_</a>.push_back(range_ids);</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>        }</div>
 </div>
-<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>};</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span> </div>
+<div class="foldopen" id="foldopen00097" data-start="{" data-end="}">
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno"><a class="line" href="classCANHandler.html#a947513d25fc86f870aed1165add5d6ee">   97</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="classCANHandler.html#a947513d25fc86f870aed1165add5d6ee">readAllCan</a>() {</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>            rxMsg.<a class="code hl_function" href="classCANMsg.html#a969dcb0af8e68883ab104249c8559146">clear</a>();</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>            <span class="comment">// Read through all CAN messages in this frame</span></div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>            <span class="keywordflow">while</span>(<a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>.read(rxMsg)) {</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>                <span class="keywordflow">if</span> (<a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>.rderror()) {</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>                    <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>                }</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span> </div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>                <span class="comment">// Look through all direct callbacks</span></div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>                <span class="keywordflow">for</span> (<span class="keyword">auto</span> callbacks : <a class="code hl_variable" href="classCANHandler.html#a77c3b9b1d740d9c99ebb1bc7ba1ac1d0">exact_</a>) {</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>                    <span class="keywordflow">if</span> (rxMsg.id == callbacks.id) {</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>                        callbacks.func(&amp;rxMsg);</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>                    }</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>                }</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span> </div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>                <span class="comment">// Look through all range callbacks</span></div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>                <span class="keywordflow">for</span> (<span class="keyword">auto</span> callbacks : <a class="code hl_variable" href="classCANHandler.html#a8ecdf1084db10bbda08fd8038c64a001">range_</a>) {</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>                    <span class="keywordflow">if</span> (rxMsg.id &gt;= callbacks.start_id &amp;&amp; rxMsg.id &lt;= callbacks.end_id) {</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>                        callbacks.func(&amp;rxMsg);</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>                    }</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>                }</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>                rxMsg.<a class="code hl_function" href="classCANMsg.html#a969dcb0af8e68883ab104249c8559146">clear</a>();</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>            }</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>        }</div>
 </div>
-<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aBiCGSTAB__step__by__step_8cpp_html_acb559820d9ca11295b4500f179ef6392"><div class="ttname"><a href="BiCGSTAB__step__by__step_8cpp.html#acb559820d9ca11295b4500f179ef6392">i</a></div><div class="ttdeci">int i</div><div class="ttdef"><b>Definition</b> BiCGSTAB_step_by_step.cpp:9</div></div>
-<div class="ttc" id="aCANHandler_8h_html_a69dfbb25066d2af819d304ee84ed9935"><div class="ttname"><a href="CANHandler_8h.html#a69dfbb25066d2af819d304ee84ed9935">CAN_BAUD</a></div><div class="ttdeci">#define CAN_BAUD</div><div class="ttdoc">__/ _ / // (_-&lt;/ -_)\ \/ _ \/ _/ _ ‘/ _ \/ -_) __/ __/ / /__/ _ \/ ’ \/ -_|_-&lt;/ /_/ / _ \/ __/ -_)/ /...</div><div class="ttdef"><b>Definition</b> CANHandler.h:16</div></div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span> </div>
+<div class="foldopen" id="foldopen00126" data-start="{" data-end="}">
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno"><a class="line" href="classCANHandler.html#ac88d0c1dfff2021f2095d73fa8c6f6e3">  126</a></span>        <span class="keywordtype">bool</span> <a class="code hl_function" href="classCANHandler.html#ac88d0c1dfff2021f2095d73fa8c6f6e3">getFeedback</a>(<span class="keywordtype">int</span> *<span class="keywordtype">id</span>, uint8_t bytes[], <span class="keywordtype">int</span> canbus){</div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>            <span class="keywordtype">bool</span> gotMsg = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>            rxMsg.<a class="code hl_function" href="classCANMsg.html#a969dcb0af8e68883ab104249c8559146">clear</a>();</div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>            rxMsg.len = 8;</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>            <span class="keywordflow">if</span> (<a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>.read(rxMsg)) {</div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>                <span class="keywordtype">int</span> err = <a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>.rderror();</div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>                <span class="keywordflow">if</span> (err){</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>                    printf(<span class="stringliteral">&quot;[%d CAN Read Errors] on CANBus_%d\n&quot;</span>, err, canbus + 1);</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>                    <a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>.reset();</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>                    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>                }</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>                *<span class="keywordtype">id</span> = rxMsg.id;</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>                <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0;  i &lt; 8; i ++){</div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>                    rxMsg &gt;&gt; bytes[i]; <span class="comment">//Extract information from rxMsg and store it into the bytes array</span></div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>                }</div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>                gotMsg = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>                <span class="comment">//printf(&quot;Motor 0x%x:\tAngle (0,8191):%d\tSpeed  ( RPM ):%d\tTorque ( CUR ):%d\tTemperature(C):%d \n&quot;,rxMsg.id,feedback[motorID][0],feedback[motorID][1],feedback[motorID][2],feedback[motorID][3]);</span></div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>            }</div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>            <span class="keywordflow">return</span> gotMsg;</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>            <span class="comment">//CAN Recieving from feedback IDs</span></div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>        }</div>
+</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span> </div>
+<div class="foldopen" id="foldopen00148" data-start="{" data-end="}">
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno"><a class="line" href="classCANHandler.html#ac4f0c4fe95f0ecbfeb4d65e76dd04c10">  148</a></span>        <span class="keywordtype">bool</span> <a class="code hl_function" href="classCANHandler.html#ac4f0c4fe95f0ecbfeb4d65e76dd04c10">rawRead</a>(<span class="keywordtype">int</span> *<span class="keywordtype">id</span>, uint8_t bytes[], <span class="keywordtype">int</span> length){</div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>            <span class="keywordtype">bool</span> gotMsg = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>            rxMsg.<a class="code hl_function" href="classCANMsg.html#a969dcb0af8e68883ab104249c8559146">clear</a>();</div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>            rxMsg.len = length;</div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>            <span class="keywordflow">if</span> (<a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>.read(rxMsg)) {</div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>                <span class="keywordtype">int</span> err = <a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>.rderror();</div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>                <span class="keywordflow">if</span> (err){</div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>                    printf(<span class="stringliteral">&quot;[%d CAN Read Errors]\n&quot;</span>, err);</div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>                    <a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>.reset();</div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>                    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>                }</div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>                *<span class="keywordtype">id</span> = rxMsg.id;</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>                <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0;  i &lt; rxMsg.len; i ++){</div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>                    rxMsg &gt;&gt; bytes[i]; <span class="comment">//Extract information from rxMsg and store it into the bytes array</span></div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>                }</div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>                gotMsg = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>                <span class="comment">//printf(&quot;Motor 0x%x:\tAngle (0,8191):%d\tSpeed  ( RPM ):%d\tTorque ( CUR ):%d\tTemperature(C):%d \n&quot;,rxMsg.id,feedback[motorID][0],feedback[motorID][1],feedback[motorID][2],feedback[motorID][3]);</span></div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>            }</div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>            <span class="keywordflow">return</span> gotMsg;</div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>            <span class="comment">//CAN Recieving from feedback IDs</span></div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>        }</div>
+</div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span> </div>
+<div class="foldopen" id="foldopen00175" data-start="{" data-end="}">
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno"><a class="line" href="classCANHandler.html#a487ccd57fdcb83924bcfb22d28d913f9">  175</a></span>        <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classCANHandler.html#a487ccd57fdcb83924bcfb22d28d913f9">printMsg</a>(CANMessage&amp; msg)</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>        {</div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>            printf(<span class="stringliteral">&quot; ID = 0x%.3x\t&quot;</span>, msg.id);</div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; msg.len; i++)</div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>                printf(<span class="stringliteral">&quot; 0x%.2X&quot;</span>, msg.data[i]);</div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>            printf(<span class="stringliteral">&quot;\n&quot;</span>);</div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>        }</div>
+</div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span> </div>
+<div class="foldopen" id="foldopen00190" data-start="{" data-end="}">
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno"><a class="line" href="classCANHandler.html#ac80742e4a7ba46746af0ecebb8d199d3">  190</a></span>        <span class="keywordtype">bool</span> <a class="code hl_function" href="classCANHandler.html#ac80742e4a7ba46746af0ecebb8d199d3">rawSend</a>(<span class="keywordtype">int</span> <span class="keywordtype">id</span>, int8_t bytes[], <span class="keywordtype">int</span> length = 8){</div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>            <span class="keyword">static</span> <span class="keywordtype">int</span> errorCount = 0;</div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>            txMsg.<a class="code hl_function" href="classCANMsg.html#a969dcb0af8e68883ab104249c8559146">clear</a>(); <span class="comment">// clear Tx message storage</span></div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>            txMsg.id = id; </div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span> </div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>            <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; length; i++){</div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>                txMsg &lt;&lt; int8_t(bytes[i]); <span class="comment">//Take data from bytes array and one at a time store it into txMsg</span></div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>            }</div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span> </div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>            <span class="comment">//printMsg(txMsg);</span></div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span> </div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>            <span class="keywordtype">bool</span> isWrite = <a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>.write(txMsg);</div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>            </div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>            <span class="keywordflow">if</span>(isWrite == 0) {</div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>                errorCount++;</div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>                <a class="code hl_variable" href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">can</a>.reset();</div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>            }</div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>            <span class="keywordflow">else</span>{</div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>                errorCount = 0;</div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>            }</div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span> </div>
+<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>            <span class="keywordflow">if</span> (errorCount &gt; 1000){</div>
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>                <span class="comment">//printf(&quot;[CAN Connection Issues SEND]\n&quot;);</span></div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>            }</div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>            <span class="comment">//printMsg(txMsg);</span></div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>            <span class="keywordflow">return</span> isWrite;</div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>        }</div>
+</div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>};</div>
+</div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="aCANHandler_8h_html_a69dfbb25066d2af819d304ee84ed9935"><div class="ttname"><a href="CANHandler_8h.html#a69dfbb25066d2af819d304ee84ed9935">CAN_BAUD</a></div><div class="ttdeci">#define CAN_BAUD</div><div class="ttdoc">__/ _ / // (_-&lt;/ -_)\ \/ _ \/ _/ _ ‘/ _ \/ -_) __/ __/ / /__/ _ \/ ’ \/ -_|_-&lt;/ /_/ / _ \/ __/ -_)/ /...</div><div class="ttdef"><b>Definition</b> CANHandler.h:18</div></div>
 <div class="ttc" id="aCANMsg_8h_html"><div class="ttname"><a href="CANMsg_8h.html">CANMsg.h</a></div></div>
-<div class="ttc" id="aclassCANHandler_html"><div class="ttname"><a href="classCANHandler.html">CANHandler</a></div><div class="ttdef"><b>Definition</b> CANHandler.h:18</div></div>
-<div class="ttc" id="aclassCANHandler_html_a12423ab918aeb90842412d988d7c14b5"><div class="ttname"><a href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">CANHandler::can</a></div><div class="ttdeci">CAN can</div><div class="ttdef"><b>Definition</b> CANHandler.h:25</div></div>
-<div class="ttc" id="aclassCANHandler_html_a18ede89e5acf269b1be91543ee77d282"><div class="ttname"><a href="classCANHandler.html#a18ede89e5acf269b1be91543ee77d282">CANHandler::rawSend</a></div><div class="ttdeci">bool rawSend(int id, int8_t bytes[])</div><div class="ttdoc">Raw sending of CAN Messages.</div><div class="ttdef"><b>Definition</b> CANHandler.h:121</div></div>
-<div class="ttc" id="aclassCANHandler_html_a2567dbcbebbef530cd8f295406b3902a"><div class="ttname"><a href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902a">CANHandler::CANBus</a></div><div class="ttdeci">CANBus</div><div class="ttdef"><b>Definition</b> CANHandler.h:27</div></div>
-<div class="ttc" id="aclassCANHandler_html_a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14"><div class="ttname"><a href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a></div><div class="ttdeci">@ CANBUS_2</div><div class="ttdef"><b>Definition</b> CANHandler.h:27</div></div>
-<div class="ttc" id="aclassCANHandler_html_a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4"><div class="ttname"><a href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4">CANHandler::CANBUS_1</a></div><div class="ttdeci">@ CANBUS_1</div><div class="ttdef"><b>Definition</b> CANHandler.h:27</div></div>
-<div class="ttc" id="aclassCANHandler_html_a2567dbcbebbef530cd8f295406b3902aaf360888b91f7657f4c37db6101e69e09"><div class="ttname"><a href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aaf360888b91f7657f4c37db6101e69e09">CANHandler::NOBUS</a></div><div class="ttdeci">@ NOBUS</div><div class="ttdef"><b>Definition</b> CANHandler.h:27</div></div>
-<div class="ttc" id="aclassCANHandler_html_a415414f5289348a031d5436a13cb10f8"><div class="ttname"><a href="classCANHandler.html#a415414f5289348a031d5436a13cb10f8">CANHandler::attach</a></div><div class="ttdeci">void attach(Callback&lt; void()&gt; func, CAN::IrqType type=CAN::IrqType::RxIrq)</div><div class="ttdef"><b>Definition</b> CANHandler.h:40</div></div>
-<div class="ttc" id="aclassCANHandler_html_a423563c96d7a7da836a957c5b0c88745"><div class="ttname"><a href="classCANHandler.html#a423563c96d7a7da836a957c5b0c88745">CANHandler::updateCANs</a></div><div class="ttdeci">void updateCANs(PinName canRx, PinName canTx)</div><div class="ttdef"><b>Definition</b> CANHandler.h:44</div></div>
-<div class="ttc" id="aclassCANHandler_html_a487ccd57fdcb83924bcfb22d28d913f9"><div class="ttname"><a href="classCANHandler.html#a487ccd57fdcb83924bcfb22d28d913f9">CANHandler::printMsg</a></div><div class="ttdeci">static void printMsg(CANMessage &amp;msg)</div><div class="ttdoc">Prints a CANMessage nicely.</div><div class="ttdef"><b>Definition</b> CANHandler.h:106</div></div>
-<div class="ttc" id="aclassCANHandler_html_a7ae4877d6ba72b43694593b5de105d45"><div class="ttname"><a href="classCANHandler.html#a7ae4877d6ba72b43694593b5de105d45">CANHandler::CANHandler</a></div><div class="ttdeci">CANHandler(PinName canRx, PinName canTx)</div><div class="ttdef"><b>Definition</b> CANHandler.h:36</div></div>
-<div class="ttc" id="aclassCANHandler_html_a9b8ed61c6dac73788e4091c12448c76e"><div class="ttname"><a href="classCANHandler.html#a9b8ed61c6dac73788e4091c12448c76e">CANHandler::CANHandler</a></div><div class="ttdeci">CANHandler()</div><div class="ttdef"><b>Definition</b> CANHandler.h:32</div></div>
-<div class="ttc" id="aclassCANHandler_html_ac4f0c4fe95f0ecbfeb4d65e76dd04c10"><div class="ttname"><a href="classCANHandler.html#ac4f0c4fe95f0ecbfeb4d65e76dd04c10">CANHandler::rawRead</a></div><div class="ttdeci">bool rawRead(int *id, uint8_t bytes[], int length)</div><div class="ttdef"><b>Definition</b> CANHandler.h:79</div></div>
-<div class="ttc" id="aclassCANHandler_html_ac88d0c1dfff2021f2095d73fa8c6f6e3"><div class="ttname"><a href="classCANHandler.html#ac88d0c1dfff2021f2095d73fa8c6f6e3">CANHandler::getFeedback</a></div><div class="ttdeci">bool getFeedback(int *id, uint8_t bytes[], int canbus)</div><div class="ttdoc">Get feedback back from the motor.</div><div class="ttdef"><b>Definition</b> CANHandler.h:57</div></div>
-<div class="ttc" id="aclassCANHandler_html_ade28e76ceb57d6d708b76d71faf16403"><div class="ttname"><a href="classCANHandler.html#ade28e76ceb57d6d708b76d71faf16403">CANHandler::getCAN</a></div><div class="ttdeci">CAN * getCAN()</div><div class="ttdef"><b>Definition</b> CANHandler.h:49</div></div>
-<div class="ttc" id="aclassCANHandler_html_afa15cc41e80357375d4dd9fa5b22e495"><div class="ttname"><a href="classCANHandler.html#afa15cc41e80357375d4dd9fa5b22e495">CANHandler::exists</a></div><div class="ttdeci">bool exists</div><div class="ttdef"><b>Definition</b> CANHandler.h:29</div></div>
+<div class="ttc" id="aclassCANHandler_html"><div class="ttname"><a href="classCANHandler.html">CANHandler</a></div><div class="ttdef"><b>Definition</b> CANHandler.h:33</div></div>
+<div class="ttc" id="aclassCANHandler_html_a12423ab918aeb90842412d988d7c14b5"><div class="ttname"><a href="classCANHandler.html#a12423ab918aeb90842412d988d7c14b5">CANHandler::can</a></div><div class="ttdeci">CAN can</div><div class="ttdef"><b>Definition</b> CANHandler.h:39</div></div>
+<div class="ttc" id="aclassCANHandler_html_a2567dbcbebbef530cd8f295406b3902a"><div class="ttname"><a href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902a">CANHandler::CANBus</a></div><div class="ttdeci">CANBus</div><div class="ttdef"><b>Definition</b> CANHandler.h:45</div></div>
+<div class="ttc" id="aclassCANHandler_html_a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14"><div class="ttname"><a href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a></div><div class="ttdeci">@ CANBUS_2</div><div class="ttdef"><b>Definition</b> CANHandler.h:45</div></div>
+<div class="ttc" id="aclassCANHandler_html_a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4"><div class="ttname"><a href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4">CANHandler::CANBUS_1</a></div><div class="ttdeci">@ CANBUS_1</div><div class="ttdef"><b>Definition</b> CANHandler.h:45</div></div>
+<div class="ttc" id="aclassCANHandler_html_a2567dbcbebbef530cd8f295406b3902aaf360888b91f7657f4c37db6101e69e09"><div class="ttname"><a href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aaf360888b91f7657f4c37db6101e69e09">CANHandler::NOBUS</a></div><div class="ttdeci">@ NOBUS</div><div class="ttdef"><b>Definition</b> CANHandler.h:45</div></div>
+<div class="ttc" id="aclassCANHandler_html_a415414f5289348a031d5436a13cb10f8"><div class="ttname"><a href="classCANHandler.html#a415414f5289348a031d5436a13cb10f8">CANHandler::attach</a></div><div class="ttdeci">void attach(Callback&lt; void()&gt; func, CAN::IrqType type=CAN::IrqType::RxIrq)</div><div class="ttdef"><b>Definition</b> CANHandler.h:58</div></div>
+<div class="ttc" id="aclassCANHandler_html_a423563c96d7a7da836a957c5b0c88745"><div class="ttname"><a href="classCANHandler.html#a423563c96d7a7da836a957c5b0c88745">CANHandler::updateCANs</a></div><div class="ttdeci">void updateCANs(PinName canRx, PinName canTx)</div><div class="ttdef"><b>Definition</b> CANHandler.h:62</div></div>
+<div class="ttc" id="aclassCANHandler_html_a487ccd57fdcb83924bcfb22d28d913f9"><div class="ttname"><a href="classCANHandler.html#a487ccd57fdcb83924bcfb22d28d913f9">CANHandler::printMsg</a></div><div class="ttdeci">static void printMsg(CANMessage &amp;msg)</div><div class="ttdoc">Prints a CANMessage nicely.</div><div class="ttdef"><b>Definition</b> CANHandler.h:175</div></div>
+<div class="ttc" id="aclassCANHandler_html_a77c3b9b1d740d9c99ebb1bc7ba1ac1d0"><div class="ttname"><a href="classCANHandler.html#a77c3b9b1d740d9c99ebb1bc7ba1ac1d0">CANHandler::exact_</a></div><div class="ttdeci">std::vector&lt; ExactCallback &gt; exact_</div><div class="ttdef"><b>Definition</b> CANHandler.h:42</div></div>
+<div class="ttc" id="aclassCANHandler_html_a7ae4877d6ba72b43694593b5de105d45"><div class="ttname"><a href="classCANHandler.html#a7ae4877d6ba72b43694593b5de105d45">CANHandler::CANHandler</a></div><div class="ttdeci">CANHandler(PinName canRx, PinName canTx)</div><div class="ttdef"><b>Definition</b> CANHandler.h:54</div></div>
+<div class="ttc" id="aclassCANHandler_html_a8c7fe2d3a3c44c8772ee4654f70eac96"><div class="ttname"><a href="classCANHandler.html#a8c7fe2d3a3c44c8772ee4654f70eac96">CANHandler::registerCallback</a></div><div class="ttdeci">void registerCallback(uint32_t id, std::function&lt; void(const CANMsg *)&gt; func)</div><div class="ttdoc">Add a callback for a specific id.</div><div class="ttdef"><b>Definition</b> CANHandler.h:77</div></div>
+<div class="ttc" id="aclassCANHandler_html_a8ecdf1084db10bbda08fd8038c64a001"><div class="ttname"><a href="classCANHandler.html#a8ecdf1084db10bbda08fd8038c64a001">CANHandler::range_</a></div><div class="ttdeci">std::vector&lt; RangeCallback &gt; range_</div><div class="ttdef"><b>Definition</b> CANHandler.h:43</div></div>
+<div class="ttc" id="aclassCANHandler_html_a947513d25fc86f870aed1165add5d6ee"><div class="ttname"><a href="classCANHandler.html#a947513d25fc86f870aed1165add5d6ee">CANHandler::readAllCan</a></div><div class="ttdeci">void readAllCan()</div><div class="ttdoc">Get feedback from all CAN devices, and send to relevant callbacks.</div><div class="ttdef"><b>Definition</b> CANHandler.h:97</div></div>
+<div class="ttc" id="aclassCANHandler_html_a9b8ed61c6dac73788e4091c12448c76e"><div class="ttname"><a href="classCANHandler.html#a9b8ed61c6dac73788e4091c12448c76e">CANHandler::CANHandler</a></div><div class="ttdeci">CANHandler()</div><div class="ttdef"><b>Definition</b> CANHandler.h:50</div></div>
+<div class="ttc" id="aclassCANHandler_html_ab2c92a032994ac129c2e50b73066764e"><div class="ttname"><a href="classCANHandler.html#ab2c92a032994ac129c2e50b73066764e">CANHandler::registerCallback</a></div><div class="ttdeci">void registerCallback(uint32_t start_id, uint32_t end_id, std::function&lt; void(const CANMsg *)&gt; func)</div><div class="ttdoc">Add a callback for multiple ids.</div><div class="ttdef"><b>Definition</b> CANHandler.h:89</div></div>
+<div class="ttc" id="aclassCANHandler_html_ac4f0c4fe95f0ecbfeb4d65e76dd04c10"><div class="ttname"><a href="classCANHandler.html#ac4f0c4fe95f0ecbfeb4d65e76dd04c10">CANHandler::rawRead</a></div><div class="ttdeci">bool rawRead(int *id, uint8_t bytes[], int length)</div><div class="ttdef"><b>Definition</b> CANHandler.h:148</div></div>
+<div class="ttc" id="aclassCANHandler_html_ac80742e4a7ba46746af0ecebb8d199d3"><div class="ttname"><a href="classCANHandler.html#ac80742e4a7ba46746af0ecebb8d199d3">CANHandler::rawSend</a></div><div class="ttdeci">bool rawSend(int id, int8_t bytes[], int length=8)</div><div class="ttdoc">Raw sending of CAN Messages.</div><div class="ttdef"><b>Definition</b> CANHandler.h:190</div></div>
+<div class="ttc" id="aclassCANHandler_html_ac88d0c1dfff2021f2095d73fa8c6f6e3"><div class="ttname"><a href="classCANHandler.html#ac88d0c1dfff2021f2095d73fa8c6f6e3">CANHandler::getFeedback</a></div><div class="ttdeci">bool getFeedback(int *id, uint8_t bytes[], int canbus)</div><div class="ttdoc">Get feedback back from the motor.</div><div class="ttdef"><b>Definition</b> CANHandler.h:126</div></div>
+<div class="ttc" id="aclassCANHandler_html_ade28e76ceb57d6d708b76d71faf16403"><div class="ttname"><a href="classCANHandler.html#ade28e76ceb57d6d708b76d71faf16403">CANHandler::getCAN</a></div><div class="ttdeci">CAN * getCAN()</div><div class="ttdef"><b>Definition</b> CANHandler.h:67</div></div>
+<div class="ttc" id="aclassCANHandler_html_afa15cc41e80357375d4dd9fa5b22e495"><div class="ttname"><a href="classCANHandler.html#afa15cc41e80357375d4dd9fa5b22e495">CANHandler::exists</a></div><div class="ttdeci">bool exists</div><div class="ttdef"><b>Definition</b> CANHandler.h:47</div></div>
 <div class="ttc" id="aclassCANMsg_html"><div class="ttname"><a href="classCANMsg.html">CANMsg</a></div><div class="ttdef"><b>Definition</b> CANMsg.h:16</div></div>
 <div class="ttc" id="aclassCANMsg_html_a969dcb0af8e68883ab104249c8559146"><div class="ttname"><a href="classCANMsg.html#a969dcb0af8e68883ab104249c8559146">CANMsg::clear</a></div><div class="ttdeci">void clear(void)</div><div class="ttdef"><b>Definition</b> CANMsg.h:35</div></div>
-<div class="ttc" id="astructfunc_html"><div class="ttname"><a href="structfunc.html">func</a></div><div class="ttdef"><b>Definition</b> benchGeometry.cpp:23</div></div>
+<div class="ttc" id="astructExactCallback_html"><div class="ttname"><a href="structExactCallback.html">ExactCallback</a></div><div class="ttdef"><b>Definition</b> CANHandler.h:21</div></div>
+<div class="ttc" id="astructExactCallback_html_a0ea6e0ee390e79477d17759a963003dd"><div class="ttname"><a href="structExactCallback.html#a0ea6e0ee390e79477d17759a963003dd">ExactCallback::id</a></div><div class="ttdeci">uint32_t id</div><div class="ttdef"><b>Definition</b> CANHandler.h:22</div></div>
+<div class="ttc" id="astructExactCallback_html_af8d991ca6fd55ff9428647888e460f1f"><div class="ttname"><a href="structExactCallback.html#af8d991ca6fd55ff9428647888e460f1f">ExactCallback::func</a></div><div class="ttdeci">std::function&lt; void(const CANMsg *)&gt; func</div><div class="ttdef"><b>Definition</b> CANHandler.h:23</div></div>
+<div class="ttc" id="astructRangeCallback_html"><div class="ttname"><a href="structRangeCallback.html">RangeCallback</a></div><div class="ttdef"><b>Definition</b> CANHandler.h:27</div></div>
+<div class="ttc" id="astructRangeCallback_html_a2ae1eb84d13399fafb18ac8380941f7a"><div class="ttname"><a href="structRangeCallback.html#a2ae1eb84d13399fafb18ac8380941f7a">RangeCallback::start_id</a></div><div class="ttdeci">uint32_t start_id</div><div class="ttdef"><b>Definition</b> CANHandler.h:28</div></div>
+<div class="ttc" id="astructRangeCallback_html_a304508f21fe0d4af56000a86abab8819"><div class="ttname"><a href="structRangeCallback.html#a304508f21fe0d4af56000a86abab8819">RangeCallback::end_id</a></div><div class="ttdeci">uint32_t end_id</div><div class="ttdef"><b>Definition</b> CANHandler.h:29</div></div>
+<div class="ttc" id="astructRangeCallback_html_aaa3d5b03d62b56052624975e3b7ad0e1"><div class="ttname"><a href="structRangeCallback.html#aaa3d5b03d62b56052624975e3b7ad0e1">RangeCallback::func</a></div><div class="ttdeci">std::function&lt; void(const CANMsg *)&gt; func</div><div class="ttdef"><b>Definition</b> CANHandler.h:30</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

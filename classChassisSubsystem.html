@@ -70,6 +70,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
@@ -81,6 +82,11 @@ $(function() {
 
 <p><code>#include &lt;<a class="el" href="ChassisSubsystem_8h_source.html">ChassisSubsystem.h</a>&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structChassisSubsystem_1_1Config.html">Config</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
 <tr class="memitem:a27e1d49873290db6eb14db2c6bb87ebe" id="r_a27e1d49873290db6eb14db2c6bb87ebe"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a27e1d49873290db6eb14db2c6bb87ebe">BrakeMode</a> { <a class="el" href="classChassisSubsystem.html#a27e1d49873290db6eb14db2c6bb87ebeaf3cd680194fd4f1c924c396aa6a2ead2">BRAKE</a>
@@ -101,13 +107,14 @@ Public Types</h2></td></tr>
 <tr class="memitem:a16e8ea4a14a3a2ae416a52db8d31ca36" id="r_a16e8ea4a14a3a2ae416a52db8d31ca36"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a16e8ea4a14a3a2ae416a52db8d31ca36">DRIVE_MODE</a> { <a class="el" href="classChassisSubsystem.html#a16e8ea4a14a3a2ae416a52db8d31ca36afd5cac9fdc8103802794047469e00313">YAW_ORIENTED</a>
 , <a class="el" href="classChassisSubsystem.html#a16e8ea4a14a3a2ae416a52db8d31ca36a8748e9f0656c9d5c876cf81f9772d499">REVERSE_YAW_ORIENTED</a>
 , <a class="el" href="classChassisSubsystem.html#a16e8ea4a14a3a2ae416a52db8d31ca36ab78149079b4fe5928cf656b49265cb99">ROBOT_ORIENTED</a>
+, <a class="el" href="classChassisSubsystem.html#a16e8ea4a14a3a2ae416a52db8d31ca36a95df1e2c287d2fc7a150a5295df2c463">ODOM_ORIENTED</a>
  }</td></tr>
 <tr class="separator:a16e8ea4a14a3a2ae416a52db8d31ca36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ab53cd41b9f21527627baf427d5552a0a" id="r_ab53cd41b9f21527627baf427d5552a0a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#ab53cd41b9f21527627baf427d5552a0a">ChassisSubsystem</a> (short lfId, short rfId, short lbId, short rbId, <a class="el" href="classBNO055.html">BNO055</a> &amp;imu, double radius)</td></tr>
-<tr class="separator:ab53cd41b9f21527627baf427d5552a0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7d31076c9a7a28ee5019a0a7f537fbf" id="r_af7d31076c9a7a28ee5019a0a7f537fbf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#af7d31076c9a7a28ee5019a0a7f537fbf">ChassisSubsystem</a> (const <a class="el" href="structChassisSubsystem_1_1Config.html">Config</a> &amp;config)</td></tr>
+<tr class="separator:af7d31076c9a7a28ee5019a0a7f537fbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af2f3a0a20b5738cd06a0f54fbd2c2127" id="r_af2f3a0a20b5738cd06a0f54fbd2c2127"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structWheelSpeeds.html">WheelSpeeds</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#af2f3a0a20b5738cd06a0f54fbd2c2127">getWheelSpeeds</a> () const</td></tr>
 <tr class="separator:af2f3a0a20b5738cd06a0f54fbd2c2127"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3eb7e4fb09e787dbd23b3d9c0c65a80b" id="r_a3eb7e4fb09e787dbd23b3d9c0c65a80b"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a3eb7e4fb09e787dbd23b3d9c0c65a80b">setWheelSpeeds</a> (<a class="el" href="structWheelSpeeds.html">WheelSpeeds</a> wheelSpeeds)</td></tr>
@@ -130,42 +137,36 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a6768cfa1526c6169d05a2c1f3e237f1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a637d1afe74ebd804ea5845949ffdbf1a" id="r_a637d1afe74ebd804ea5845949ffdbf1a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a637d1afe74ebd804ea5845949ffdbf1a">setSpeedFeedforward</a> (<a class="el" href="classChassisSubsystem.html#a32583c046895b96d68bd1a5b6b3db4e2">MotorLocation</a> location, double FF)</td></tr>
 <tr class="separator:a637d1afe74ebd804ea5845949ffdbf1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aac50169c44ef53081c1422e5b936d68d" id="r_aac50169c44ef53081c1422e5b936d68d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#aac50169c44ef53081c1422e5b936d68d">setSpeedFF_Ks</a> (double Ks)</td></tr>
-<tr class="separator:aac50169c44ef53081c1422e5b936d68d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae66ee8319e14814e10e46e7f1429b337" id="r_ae66ee8319e14814e10e46e7f1429b337"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classChassisSubsystem.html#a27e1d49873290db6eb14db2c6bb87ebe">BrakeMode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#ae66ee8319e14814e10e46e7f1429b337">getBrakeMode</a> ()</td></tr>
 <tr class="separator:ae66ee8319e14814e10e46e7f1429b337"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1de97ef034da132eefda33aa108f0cd3" id="r_a1de97ef034da132eefda33aa108f0cd3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a1de97ef034da132eefda33aa108f0cd3">setBrakeMode</a> (<a class="el" href="classChassisSubsystem.html#a27e1d49873290db6eb14db2c6bb87ebe">BrakeMode</a> brakeMode)</td></tr>
 <tr class="separator:a1de97ef034da132eefda33aa108f0cd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8a6956deb7e9b27facf38e5890b0427f" id="r_a8a6956deb7e9b27facf38e5890b0427f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a8a6956deb7e9b27facf38e5890b0427f">initializeImu</a> ()</td></tr>
 <tr class="separator:a8a6956deb7e9b27facf38e5890b0427f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9237a4493970ef0ca32e63e5f068f6c0" id="r_a9237a4493970ef0ca32e63e5f068f6c0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a9237a4493970ef0ca32e63e5f068f6c0">periodic</a> ()</td></tr>
-<tr class="separator:a9237a4493970ef0ca32e63e5f068f6c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a87fe0e6e1be74926b326ce7767b03210" id="r_a87fe0e6e1be74926b326ce7767b03210"><td class="memItemLeft" align="right" valign="top"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a87fe0e6e1be74926b326ce7767b03210">getHeadingDegrees</a> () const</td></tr>
+<tr class="memitem:a01599be4aead4371b61989d401603847" id="r_a01599be4aead4371b61989d401603847"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a01599be4aead4371b61989d401603847">periodic</a> (<a class="el" href="structIMU_1_1EulerAngles.html">IMU::EulerAngles</a> *imuCurr=nullptr)</td></tr>
+<tr class="separator:a01599be4aead4371b61989d401603847"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87fe0e6e1be74926b326ce7767b03210" id="r_a87fe0e6e1be74926b326ce7767b03210"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a87fe0e6e1be74926b326ce7767b03210">getHeadingDegrees</a> () const</td></tr>
 <tr class="separator:a87fe0e6e1be74926b326ce7767b03210"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4cef67769e1a39c4095ca3db6b636631" id="r_a4cef67769e1a39c4095ca3db6b636631"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPose2D.html">Pose2D</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a4cef67769e1a39c4095ca3db6b636631">getPose</a> ()</td></tr>
-<tr class="separator:a4cef67769e1a39c4095ca3db6b636631"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a939fe5b5b9ca7d9e00732b191273e459" id="r_a939fe5b5b9ca7d9e00732b191273e459"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a939fe5b5b9ca7d9e00732b191273e459">getMotorSpeed</a> (<a class="el" href="classChassisSubsystem.html#a32583c046895b96d68bd1a5b6b3db4e2">MotorLocation</a> location, <a class="el" href="classChassisSubsystem.html#a86a23efcf850099cd72fe19e7e6d8ffd">SPEED_UNIT</a> unit)</td></tr>
 <tr class="separator:a939fe5b5b9ca7d9e00732b191273e459"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2543e70a33792ad9fd504410fdb47f2b" id="r_a2543e70a33792ad9fd504410fdb47f2b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a2543e70a33792ad9fd504410fdb47f2b">setOmniKinematicsLimits</a> (double max_Vel, double max_vOmega)</td></tr>
 <tr class="separator:a2543e70a33792ad9fd504410fdb47f2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab1dbbb1e705b822b7e975fa89f9267dc" id="r_ab1dbbb1e705b822b7e975fa89f9267dc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#ab1dbbb1e705b822b7e975fa89f9267dc">readImu</a> ()</td></tr>
 <tr class="separator:ab1dbbb1e705b822b7e975fa89f9267dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac4c62f2937a2342ef0a974d8db3bff43" id="r_ac4c62f2937a2342ef0a974d8db3bff43"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#ac4c62f2937a2342ef0a974d8db3bff43">setYawReference</a> (<a class="el" href="classDJIMotor.html">DJIMotor</a> *motor, double initial_offset_ticks)</td></tr>
-<tr class="separator:ac4c62f2937a2342ef0a974d8db3bff43"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa553bf69e2ead9bcebfed813b7232058" id="r_aa553bf69e2ead9bcebfed813b7232058"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#aa553bf69e2ead9bcebfed813b7232058">setOdomReference</a> ()</td></tr>
+<tr class="separator:aa553bf69e2ead9bcebfed813b7232058"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a33767ca30473849bea591e4f46c1c2ae" id="r_a33767ca30473849bea591e4f46c1c2ae"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structWheelSpeeds.html">WheelSpeeds</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a33767ca30473849bea591e4f46c1c2ae">chassisSpeedsToWheelSpeeds</a> (<a class="el" href="structChassisSpeeds.html">ChassisSpeeds</a> chassisSpeeds)</td></tr>
 <tr class="separator:a33767ca30473849bea591e4f46c1c2ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec467b856cdd60db1a888bfaba936ea2" id="r_aec467b856cdd60db1a888bfaba936ea2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structChassisSpeeds.html">ChassisSpeeds</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#aec467b856cdd60db1a888bfaba936ea2">wheelSpeedsToChassisSpeeds</a> (<a class="el" href="structWheelSpeeds.html">WheelSpeeds</a> wheelSpeeds)</td></tr>
 <tr class="separator:aec467b856cdd60db1a888bfaba936ea2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aea3bcf44effb2f67d24ee329c311e704" id="r_aea3bcf44effb2f67d24ee329c311e704"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#aea3bcf44effb2f67d24ee329c311e704">MatrixtoString</a> (Eigen::MatrixXd <a class="el" href="Tutorial__AdvancedInitialization__CommaTemporary_8cpp.html#a5d2ded7a4c8830608d7b218f5f27c0a0">mat</a>)</td></tr>
-<tr class="separator:aea3bcf44effb2f67d24ee329c311e704"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:aa607367605375c164166596604cdc653" id="r_aa607367605375c164166596604cdc653"><td class="memItemLeft" align="right" valign="top">static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#aa607367605375c164166596604cdc653">limitAcceleration</a> (float desiredRPM, float <a class="el" href="classChassisSubsystem.html#aa6c6b1d723f51aa7f833377f38ccd12a">previousRPM</a>, <a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> power)</td></tr>
+<tr class="memitem:aa607367605375c164166596604cdc653" id="r_aa607367605375c164166596604cdc653"><td class="memItemLeft" align="right" valign="top">static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#aa607367605375c164166596604cdc653">limitAcceleration</a> (float desiredRPM, float <a class="el" href="classChassisSubsystem.html#aa6c6b1d723f51aa7f833377f38ccd12a">previousRPM</a>, int power)</td></tr>
 <tr class="separator:aa607367605375c164166596604cdc653"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60179d59153175c0b8ee5e4760ec45c3" id="r_a60179d59153175c0b8ee5e4760ec45c3"><td class="memItemLeft" align="right" valign="top">static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a60179d59153175c0b8ee5e4760ec45c3">p_theory</a> (<a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> LeftFrontPower, <a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> RightFrontPower, <a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> LeftBackPower, <a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> RightBackPower, <a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> LeftFrontRpm, <a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> RightFrontRpm, <a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> LeftBackRpm, <a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> RightBackRpm)</td></tr>
+<tr class="memitem:a60179d59153175c0b8ee5e4760ec45c3" id="r_a60179d59153175c0b8ee5e4760ec45c3"><td class="memItemLeft" align="right" valign="top">static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a60179d59153175c0b8ee5e4760ec45c3">p_theory</a> (int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm)</td></tr>
 <tr class="separator:a60179d59153175c0b8ee5e4760ec45c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a128186a64a493450fccf61359bb7d0a7" id="r_a128186a64a493450fccf61359bb7d0a7"><td class="memItemLeft" align="right" valign="top">static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a128186a64a493450fccf61359bb7d0a7">Bisection</a> (<a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> LeftFrontPower, <a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> RightFrontPower, <a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> LeftBackPower, <a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> RightBackPower, <a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> LeftFrontRpm, <a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> RightFrontRpm, <a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> LeftBackRpm, <a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> RightBackRpm, float chassisPowerLimit)</td></tr>
+<tr class="memitem:a128186a64a493450fccf61359bb7d0a7" id="r_a128186a64a493450fccf61359bb7d0a7"><td class="memItemLeft" align="right" valign="top">static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a128186a64a493450fccf61359bb7d0a7">Bisection</a> (int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm, float chassisPowerLimit)</td></tr>
 <tr class="separator:a128186a64a493450fccf61359bb7d0a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab8da1935b93b1d3c1f274f7c3e676878" id="r_ab8da1935b93b1d3c1f274f7c3e676878"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#ab8da1935b93b1d3c1f274f7c3e676878">radiansToDegrees</a> (double radians)</td></tr>
 <tr class="separator:ab8da1935b93b1d3c1f274f7c3e676878"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -192,9 +193,9 @@ Public Attributes</h2></td></tr>
 <tr class="separator:ac3cab78fbbb74ee8c056a5d8536ffb75"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc4c356025b50957a1efd78020a31d89" id="r_adc4c356025b50957a1efd78020a31d89"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structWheelSpeeds.html">WheelSpeeds</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#adc4c356025b50957a1efd78020a31d89">m_wheelSpeeds</a></td></tr>
 <tr class="separator:adc4c356025b50957a1efd78020a31d89"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa76b86a6818fa3df385926a0b329bcc3" id="r_aa76b86a6818fa3df385926a0b329bcc3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#aa76b86a6818fa3df385926a0b329bcc3">PEAK_POWER_ALL</a></td></tr>
+<tr class="memitem:aa76b86a6818fa3df385926a0b329bcc3" id="r_aa76b86a6818fa3df385926a0b329bcc3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#aa76b86a6818fa3df385926a0b329bcc3">PEAK_POWER_ALL</a></td></tr>
 <tr class="separator:aa76b86a6818fa3df385926a0b329bcc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a548ff8ad8e7f2b55177e74d79fe70fd7" id="r_a548ff8ad8e7f2b55177e74d79fe70fd7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a548ff8ad8e7f2b55177e74d79fe70fd7">PEAK_POWER_SINGLE</a></td></tr>
+<tr class="memitem:a548ff8ad8e7f2b55177e74d79fe70fd7" id="r_a548ff8ad8e7f2b55177e74d79fe70fd7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a548ff8ad8e7f2b55177e74d79fe70fd7">PEAK_POWER_SINGLE</a></td></tr>
 <tr class="separator:a548ff8ad8e7f2b55177e74d79fe70fd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a606b3f1d553423082153aa3369a0d927" id="r_a606b3f1d553423082153aa3369a0d927"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPID.html">PID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a606b3f1d553423082153aa3369a0d927">pid_LF</a></td></tr>
 <tr class="separator:a606b3f1d553423082153aa3369a0d927"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -208,16 +209,18 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a1e7484d5468f36e24b0c4ef493e88f09"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ba63eb1bf8015fd0957ca367cf5d60e" id="r_a4ba63eb1bf8015fd0957ca367cf5d60e"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a4ba63eb1bf8015fd0957ca367cf5d60e">prevVel</a></td></tr>
 <tr class="separator:a4ba63eb1bf8015fd0957ca367cf5d60e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab608584bfbfe827aa736cffd0fa15662" id="r_ab608584bfbfe827aa736cffd0fa15662"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#ab608584bfbfe827aa736cffd0fa15662">yawPhase</a></td></tr>
-<tr class="separator:ab608584bfbfe827aa736cffd0fa15662"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae90abd7845187509b4baba34ffee2076" id="r_ae90abd7845187509b4baba34ffee2076"><td class="memItemLeft" align="right" valign="top"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#ae90abd7845187509b4baba34ffee2076">testData</a> [300][4]</td></tr>
+<tr class="memitem:a08f9805e5c54c217e7ff5bf7a76b3656" id="r_a08f9805e5c54c217e7ff5bf7a76b3656"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a08f9805e5c54c217e7ff5bf7a76b3656">yawOdom</a></td></tr>
+<tr class="separator:a08f9805e5c54c217e7ff5bf7a76b3656"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9e0ce77349fb0ca11124d90cb6f91d3" id="r_ae9e0ce77349fb0ca11124d90cb6f91d3"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#ae9e0ce77349fb0ca11124d90cb6f91d3">imuOdom</a></td></tr>
+<tr class="separator:ae9e0ce77349fb0ca11124d90cb6f91d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae90abd7845187509b4baba34ffee2076" id="r_ae90abd7845187509b4baba34ffee2076"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#ae90abd7845187509b4baba34ffee2076">testData</a> [300][4]</td></tr>
 <tr class="separator:ae90abd7845187509b4baba34ffee2076"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac42f69dcbdd558cdb33063e41a32c6b9" id="r_ac42f69dcbdd558cdb33063e41a32c6b9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#ac42f69dcbdd558cdb33063e41a32c6b9">testDataIndex</a> = 0</td></tr>
+<tr class="memitem:ac42f69dcbdd558cdb33063e41a32c6b9" id="r_ac42f69dcbdd558cdb33063e41a32c6b9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#ac42f69dcbdd558cdb33063e41a32c6b9">testDataIndex</a> = 0</td></tr>
 <tr class="separator:ac42f69dcbdd558cdb33063e41a32c6b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The <a class="el" href="classChassisSubsystem.html">ChassisSubsystem</a> class is a wrapper for the <a class="el" href="classDJIMotor.html">DJIMotor</a> class that allows for easy control of the chassis.</p>
-<p>The <a class="el" href="classChassisSubsystem.html">ChassisSubsystem</a> class also contains methods for controlling the chassis with the IMU. The IMU is used to control the chassis in a field-relative manner, and to control the chassis with an offset angle. </p>
+<p>The <a class="el" href="classChassisSubsystem.html">ChassisSubsystem</a> class also contains methods for controlling the chassis with the <a class="el" href="classIMU.html">IMU</a>. The <a class="el" href="classIMU.html">IMU</a> is used to control the chassis in a field-relative manner, and to control the chassis with an offset angle. </p>
 </div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="a27e1d49873290db6eb14db2c6bb87ebe" name="a27e1d49873290db6eb14db2c6bb87ebe"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a27e1d49873290db6eb14db2c6bb87ebe">&#9670;&#160;</a></span>BrakeMode</h2>
@@ -253,6 +256,7 @@ Public Attributes</h2></td></tr>
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a16e8ea4a14a3a2ae416a52db8d31ca36afd5cac9fdc8103802794047469e00313" name="a16e8ea4a14a3a2ae416a52db8d31ca36afd5cac9fdc8103802794047469e00313"></a>YAW_ORIENTED&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a16e8ea4a14a3a2ae416a52db8d31ca36a8748e9f0656c9d5c876cf81f9772d499" name="a16e8ea4a14a3a2ae416a52db8d31ca36a8748e9f0656c9d5c876cf81f9772d499"></a>REVERSE_YAW_ORIENTED&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a16e8ea4a14a3a2ae416a52db8d31ca36ab78149079b4fe5928cf656b49265cb99" name="a16e8ea4a14a3a2ae416a52db8d31ca36ab78149079b4fe5928cf656b49265cb99"></a>ROBOT_ORIENTED&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a16e8ea4a14a3a2ae416a52db8d31ca36a95df1e2c287d2fc7a150a5295df2c463" name="a16e8ea4a14a3a2ae416a52db8d31ca36a95df1e2c287d2fc7a150a5295df2c463"></a>ODOM_ORIENTED&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -297,8 +301,8 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="ab53cd41b9f21527627baf427d5552a0a" name="ab53cd41b9f21527627baf427d5552a0a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab53cd41b9f21527627baf427d5552a0a">&#9670;&#160;</a></span>ChassisSubsystem()</h2>
+<a id="af7d31076c9a7a28ee5019a0a7f537fbf" name="af7d31076c9a7a28ee5019a0a7f537fbf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af7d31076c9a7a28ee5019a0a7f537fbf">&#9670;&#160;</a></span>ChassisSubsystem()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -306,47 +310,13 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">ChassisSubsystem::ChassisSubsystem </td>
           <td>(</td>
-          <td class="paramtype">short&#160;</td>
-          <td class="paramname"><em>lfId</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramtype">const <a class="el" href="structChassisSubsystem_1_1Config.html">Config</a> &amp;&#160;</td>
+          <td class="paramname"><em>config</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">short&#160;</td>
-          <td class="paramname"><em>rfId</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">short&#160;</td>
-          <td class="paramname"><em>lbId</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">short&#160;</td>
-          <td class="paramname"><em>rbId</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classBNO055.html">BNO055</a> &amp;&#160;</td>
-          <td class="paramname"><em>imu</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>radius</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>The <a class="el" href="classChassis.html">Chassis</a> constructor. This constructor takes in the CAN IDs of the four motors on the chassis. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>The Chassis constructor. This constructor takes in the CAN IDs of the four motors on the chassis. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">lfId</td><td>Left front motor CAN ID </td></tr>
     <tr><td class="paramname">rfId</td><td>Right front motor CAN ID </td></tr>
@@ -372,49 +342,49 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">float ChassisSubsystem::Bisection </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td>
+          <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>LeftFrontPower</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td>
+          <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>RightFrontPower</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td>
+          <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>LeftBackPower</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td>
+          <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>RightBackPower</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td>
+          <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>LeftFrontRpm</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td>
+          <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>RightFrontRpm</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td>
+          <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>LeftBackRpm</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td>
+          <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>RightBackRpm</em>, </td>
         </tr>
         <tr>
@@ -533,14 +503,14 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> ChassisSubsystem::getHeadingDegrees </td>
+          <td class="memname">int ChassisSubsystem::getHeadingDegrees </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets the IMU's current angle reading in degrees </p><dl class="section return"><dt>Returns</dt><dd>The IMU's current angle reading in degrees </dd></dl>
+<p>Gets the <a class="el" href="classIMU.html">IMU</a>'s current angle reading in degrees </p><dl class="section return"><dt>Returns</dt><dd>The <a class="el" href="classIMU.html">IMU</a>'s current angle reading in degrees </dd></dl>
 
 </div>
 </div>
@@ -606,24 +576,6 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a4cef67769e1a39c4095ca3db6b636631" name="a4cef67769e1a39c4095ca3db6b636631"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4cef67769e1a39c4095ca3db6b636631">&#9670;&#160;</a></span>getPose()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classPose2D.html">Pose2D</a> ChassisSubsystem::getPose </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Gets the chassis's current 2D position (TO BE DONE) </p><dl class="section return"><dt>Returns</dt><dd>The chassis's current 2D position </dd></dl>
-
-</div>
-</div>
 <a id="af2f3a0a20b5738cd06a0f54fbd2c2127" name="af2f3a0a20b5738cd06a0f54fbd2c2127"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af2f3a0a20b5738cd06a0f54fbd2c2127">&#9670;&#160;</a></span>getWheelSpeeds()</h2>
 
@@ -656,7 +608,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>A helper method to initialize the IMU. </p>
+<p>A helper method to initialize the <a class="el" href="classIMU.html">IMU</a>. </p>
 
 </div>
 </div>
@@ -684,7 +636,7 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td>
+          <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>power</em>&#160;</td>
         </tr>
         <tr>
@@ -698,24 +650,6 @@ Public Attributes</h2></td></tr>
 <span class="mlabels"><span class="mlabel">static</span></span>  </td>
   </tr>
 </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aea3bcf44effb2f67d24ee329c311e704" name="aea3bcf44effb2f67d24ee329c311e704"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aea3bcf44effb2f67d24ee329c311e704">&#9670;&#160;</a></span>MatrixtoString()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">char * ChassisSubsystem::MatrixtoString </td>
-          <td>(</td>
-          <td class="paramtype">Eigen::MatrixXd&#160;</td>
-          <td class="paramname"><em>mat</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
 </div><div class="memdoc">
 
 </div>
@@ -756,49 +690,49 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">float ChassisSubsystem::p_theory </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td>
+          <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>LeftFrontPower</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td>
+          <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>RightFrontPower</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td>
+          <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>LeftBackPower</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td>
+          <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>RightBackPower</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td>
+          <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>LeftFrontRpm</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td>
+          <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>RightFrontRpm</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td>
+          <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>LeftBackRpm</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a>&#160;</td>
+          <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>RightBackRpm</em>&#160;</td>
         </tr>
         <tr>
@@ -816,8 +750,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a9237a4493970ef0ca32e63e5f068f6c0" name="a9237a4493970ef0ca32e63e5f068f6c0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9237a4493970ef0ca32e63e5f068f6c0">&#9670;&#160;</a></span>periodic()</h2>
+<a id="a01599be4aead4371b61989d401603847" name="a01599be4aead4371b61989d401603847"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a01599be4aead4371b61989d401603847">&#9670;&#160;</a></span>periodic()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -825,12 +759,13 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="memname">void ChassisSubsystem::periodic </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype"><a class="el" href="structIMU_1_1EulerAngles.html">IMU::EulerAngles</a> *&#160;</td>
+          <td class="paramname"><em>imuCurr</em> = <code>nullptr</code></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>A method that should be run every main loop to update the <a class="el" href="classChassis.html">Chassis</a>'s estimated position </p>
+<p>A method that should be run every main loop to update the Chassis's estimated position </p>
 
 </div>
 </div>
@@ -907,7 +842,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>A helper method to read/update the IMU. </p>
+<p>A helper method to read/update the <a class="el" href="classIMU.html">IMU</a>. </p>
 
 </div>
 </div>
@@ -1057,6 +992,24 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="aa553bf69e2ead9bcebfed813b7232058" name="aa553bf69e2ead9bcebfed813b7232058"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa553bf69e2ead9bcebfed813b7232058">&#9670;&#160;</a></span>setOdomReference()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ChassisSubsystem::setOdomReference </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Yaw motor is a motor that controls the Turret yawOdom is the world pose representation of our robot (basically which direction you want your Heading to be w.r.t Yaw Motor) </p>
+
+</div>
+</div>
 <a id="a2543e70a33792ad9fd504410fdb47f2b" name="a2543e70a33792ad9fd504410fdb47f2b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2543e70a33792ad9fd504410fdb47f2b">&#9670;&#160;</a></span>setOmniKinematicsLimits()</h2>
 
@@ -1122,30 +1075,6 @@ Public Attributes</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">location</td><td>The MotorLocation of the motor (LF, RF, LB, RB) </td></tr>
     <tr><td class="paramname">FF</td><td>The arbitrary Feedforward value ranges from [-1, 1] </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="aac50169c44ef53081c1422e5b936d68d" name="aac50169c44ef53081c1422e5b936d68d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aac50169c44ef53081c1422e5b936d68d">&#9670;&#160;</a></span>setSpeedFF_Ks()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ChassisSubsystem::setSpeedFF_Ks </td>
-          <td>(</td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>Ks</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Sets the Friction Feedforward compensation for the SpeedPID </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">Ks</td><td>The arbitrary Friction Feedforward Gain in [-1, 1] </td></tr>
   </table>
   </dd>
 </dl>
@@ -1235,42 +1164,6 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ac4c62f2937a2342ef0a974d8db3bff43" name="ac4c62f2937a2342ef0a974d8db3bff43"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac4c62f2937a2342ef0a974d8db3bff43">&#9670;&#160;</a></span>setYawReference()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ChassisSubsystem::setYawReference </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classDJIMotor.html">DJIMotor</a> *&#160;</td>
-          <td class="paramname"><em>motor</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>initial_offset_ticks</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Yaw motor is a motor that controls the Turret yawPhase is an initial offset of your Yaw Motor Angle (basically which direction you want your Heading to be w.r.t Yaw Motor)</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">motor</td><td>your Yaw Motor reference as in <code>&amp;{motor_name}</code> </td></tr>
-    <tr><td class="paramname">initial_offset_ticks</td><td>initial offset of your Yaw Motor Angle in ticks (try pass it as double) </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a id="a4108e8bc0138701d2db304702c37168e" name="a4108e8bc0138701d2db304702c37168e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4108e8bc0138701d2db304702c37168e">&#9670;&#160;</a></span>ticksToRadians()</h2>
 
@@ -1344,6 +1237,20 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="ae9e0ce77349fb0ca11124d90cb6f91d3" name="ae9e0ce77349fb0ca11124d90cb6f91d3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae9e0ce77349fb0ca11124d90cb6f91d3">&#9670;&#160;</a></span>imuOdom</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double ChassisSubsystem::imuOdom</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a1e7484d5468f36e24b0c4ef493e88f09" name="a1e7484d5468f36e24b0c4ef493e88f09"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1e7484d5468f36e24b0c4ef493e88f09">&#9670;&#160;</a></span>lastPIDTime</h2>
 
@@ -1407,7 +1314,7 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> ChassisSubsystem::PEAK_POWER_ALL</td>
+          <td class="memname">int ChassisSubsystem::PEAK_POWER_ALL</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1421,7 +1328,7 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> ChassisSubsystem::PEAK_POWER_SINGLE</td>
+          <td class="memname">int ChassisSubsystem::PEAK_POWER_SINGLE</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1533,7 +1440,7 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> ChassisSubsystem::testData[300][4]</td>
+          <td class="memname">int ChassisSubsystem::testData[300][4]</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1547,21 +1454,21 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="level1__cplx__impl_8h.html#a4e8e1c1bb9d4e05fc671fc133ec9dc9b">int</a> ChassisSubsystem::testDataIndex = 0</td>
+          <td class="memname">int ChassisSubsystem::testDataIndex = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="ab608584bfbfe827aa736cffd0fa15662" name="ab608584bfbfe827aa736cffd0fa15662"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab608584bfbfe827aa736cffd0fa15662">&#9670;&#160;</a></span>yawPhase</h2>
+<a id="a08f9805e5c54c217e7ff5bf7a76b3656" name="a08f9805e5c54c217e7ff5bf7a76b3656"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a08f9805e5c54c217e7ff5bf7a76b3656">&#9670;&#160;</a></span>yawOdom</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">double ChassisSubsystem::yawPhase</td>
+          <td class="memname">double ChassisSubsystem::yawOdom</td>
         </tr>
       </table>
 </div><div class="memdoc">

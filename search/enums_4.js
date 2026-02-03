@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['euleraxis_0',['EulerAxis',['../namespaceEigen.html#ae614aa7cdd687fb5c421a54f2ce5c361',1,'Eigen']]]
+  ['gyroscale_0',['GyroScale',['../MPU6050_8h.html#ae8f873b20f9242838464a183943556fa',1,'MPU6050.h']]]
 ];

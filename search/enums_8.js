@@ -1,6 +1,8 @@
 var searchData=
 [
-  ['key_0',['Key',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4f',1,'Remote']]],
-  ['kind_1',['Kind',['../classEigen_1_1internal_1_1StridedLinearBufferCopy.html#a9b33c9925cacf0deff3334bc2f2d389d',1,'Eigen::internal::StridedLinearBufferCopy']]],
-  ['knobsstatsindex_2',['KnobsStatsIndex',['../namespaceinternal_1_1Colamd.html#abe3a625fb18b6ff60ca02138382810c0',1,'internal::Colamd']]]
+  ['shootertype_0',['ShooterType',['../classShooterSubsystem.html#a87eddf897140bcd67267431a76ee1ee6',1,'ShooterSubsystem']]],
+  ['shootstate_1',['ShootState',['../ShooterSubsystem_8h.html#ac047e8409f3282e918dbe77d54770185',1,'ShooterSubsystem.h']]],
+  ['speed_5funit_2',['SPEED_UNIT',['../classChassisSubsystem.html#a86a23efcf850099cd72fe19e7e6d8ffd',1,'ChassisSubsystem']]],
+  ['switch_3',['Switch',['../classRemote.html#add727f68db8fff42e6f572b19008ec66',1,'Remote']]],
+  ['switchstate_4',['SwitchState',['../classRemote.html#affd0b019d5483d546bc29b07447649bb',1,'Remote']]]
 ];

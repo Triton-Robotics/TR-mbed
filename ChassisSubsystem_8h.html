@@ -80,13 +80,11 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;mbed.h&quot;</code><br />
-<code>#include &quot;<a class="el" href="BNO055_8h_source.html">../util/peripherals/imu/BNO055.h</a>&quot;</code><br />
-<code>#include &lt;<a class="el" href="DJIMotor_8h_source.html">motor/DJIMotor.h</a>&gt;</code><br />
-<code>#include &lt;<a class="el" href="CANHandler_8h_source.html">communications/CANHandler.h</a>&gt;</code><br />
-<code>#include &lt;<a class="el" href="SSD1308_8h_source.html">peripherals/oled/SSD1308.h</a>&gt;</code><br />
-<code>#include &lt;<a class="el" href="Pose2D_8h_source.html">algorithms/Pose2D.h</a>&gt;</code><br />
-<code>#include &lt;<a class="el" href="PID_8h_source.html">algorithms/PID.h</a>&gt;</code><br />
-<code>#include &quot;algorithms/eigen-3.4.0/Eigen/QR&quot;</code><br />
+<code>#include &quot;<a class="el" href="BNO055_8h_source.html">util/peripherals/imu/BNO055.h</a>&quot;</code><br />
+<code>#include &lt;<a class="el" href="DJIMotor_8h_source.html">util/motor/DJIMotor.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="CANHandler_8h_source.html">util/communications/CANHandler.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="SSD1308_8h_source.html">util/peripherals/oled/SSD1308.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="PID_8h_source.html">util/algorithms/PID.h</a>&gt;</code><br />
 </div>
 <p><a href="ChassisSubsystem_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -102,6 +100,8 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html">ChassisSubsystem</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structChassisSubsystem_1_1Config.html">ChassisSubsystem::Config</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
@@ -113,12 +113,6 @@ Macros</h2></td></tr>
 <tr class="separator:a24961f8df3e67a65f31735fa70e51004"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a67d2a3982b851b00892c9da982c1c5df" id="r_a67d2a3982b851b00892c9da982c1c5df"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ChassisSubsystem_8h.html#a67d2a3982b851b00892c9da982c1c5df">INPUT_THRESHOLD</a>&#160;&#160;&#160;0.01</td></tr>
 <tr class="separator:a67d2a3982b851b00892c9da982c1c5df"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a18aefd12ad84d4c33dc97923cb821e47" id="r_a18aefd12ad84d4c33dc97923cb821e47"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ChassisSubsystem_8h.html#a18aefd12ad84d4c33dc97923cb821e47">I2C_SDA</a>&#160;&#160;&#160;PB_7</td></tr>
-<tr class="separator:a18aefd12ad84d4c33dc97923cb821e47"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a212ca328a6409c98f8c3dfbbe1ba561d" id="r_a212ca328a6409c98f8c3dfbbe1ba561d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ChassisSubsystem_8h.html#a212ca328a6409c98f8c3dfbbe1ba561d">I2C_SCL</a>&#160;&#160;&#160;PB_8</td></tr>
-<tr class="separator:a212ca328a6409c98f8c3dfbbe1ba561d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afe5a31debea7f8fd3ee5e4c742c7500b" id="r_afe5a31debea7f8fd3ee5e4c742c7500b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ChassisSubsystem_8h.html#afe5a31debea7f8fd3ee5e4c742c7500b">IMU_RESET</a>&#160;&#160;&#160;PA_8</td></tr>
-<tr class="separator:afe5a31debea7f8fd3ee5e4c742c7500b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a598a3330b3c21701223ee0ca14316eca" id="r_a598a3330b3c21701223ee0ca14316eca"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ChassisSubsystem_8h.html#a598a3330b3c21701223ee0ca14316eca">PI</a>&#160;&#160;&#160;3.14159265</td></tr>
 <tr class="separator:a598a3330b3c21701223ee0ca14316eca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae5e089b553f791f79d02046ff63f3cdb" id="r_ae5e089b553f791f79d02046ff63f3cdb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ChassisSubsystem_8h.html#ae5e089b553f791f79d02046ff63f3cdb">SECONDS_PER_MINUTE</a>&#160;&#160;&#160;60</td></tr>
@@ -157,48 +151,6 @@ Macros</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">#define CAN_BUS_TYPE&#160;&#160;&#160;<a class="el" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4">CANHandler::CANBUS_1</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a212ca328a6409c98f8c3dfbbe1ba561d" name="a212ca328a6409c98f8c3dfbbe1ba561d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a212ca328a6409c98f8c3dfbbe1ba561d">&#9670;&#160;</a></span>I2C_SCL</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define I2C_SCL&#160;&#160;&#160;PB_8</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a18aefd12ad84d4c33dc97923cb821e47" name="a18aefd12ad84d4c33dc97923cb821e47"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a18aefd12ad84d4c33dc97923cb821e47">&#9670;&#160;</a></span>I2C_SDA</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define I2C_SDA&#160;&#160;&#160;PB_7</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="afe5a31debea7f8fd3ee5e4c742c7500b" name="afe5a31debea7f8fd3ee5e4c742c7500b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afe5a31debea7f8fd3ee5e4c742c7500b">&#9670;&#160;</a></span>IMU_RESET</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define IMU_RESET&#160;&#160;&#160;PA_8</td>
         </tr>
       </table>
 </div><div class="memdoc">
