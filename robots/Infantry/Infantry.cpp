@@ -24,21 +24,21 @@ constexpr float JOYSTICK_YAW_SENSITIVITY_DPS = 600;
 constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 300;
 
 
-PID::config yaw_vel_PID = {350, 0.5, 2.5, 32000, 2000};
-PID::config yaw_pos_PID = {0.5, 0, 0, 90, 2};
-PID::config pitch_vel_PID = {500,0.8,0, 32000, 2000};
-PID::config pitch_pos_PID = {1.5,0.0005,0.05, 30, 2};
+constexpr PID::config YAW_VEL_PID = {350, 0.5, 2.5, 32000, 2000};
+constexpr PID::config YAW_POS_PID = {0.5, 0, 0, 90, 2};
+constexpr PID::config PITCH_VEL_PID = {500,0.8,0, 32000, 2000};
+constexpr PID::config PITCH_POS_PID = {1.5,0.0005,0.05, 30, 2};
 
 
-PID::config fl_vel_config = {3, 0, 0};
-PID::config fr_vel_config = {3, 0, 0};
-PID::config bl_vel_config = {3, 0, 0};
-PID::config br_vel_config = {3, 0, 0};
+constexpr PID::config FL_VEL_CONFIG = {3, 0, 0};
+constexpr PID::config FR_VEL_CONFIG = {3, 0, 0};
+constexpr PID::config BL_VEL_CONFIG = {3, 0, 0};
+constexpr PID::config BR_VEL_CONFIG = {3, 0, 0};
 
-PID::config flywheelL_PID = {7.1849, 0.000042634, 0};
-PID::config flywheelR_PID = {7.1849, 0.000042634, 0};
-PID::config indexer_PID_vel = {2.7, 0.001, 0};
-PID::config indexer_PID_pos = {0.1,0,0.001};
+constexpr PID::config FLYWHEEL_L_PID = {7.1849, 0.000042634, 0};
+constexpr PID::config FLYWHEEL_R_PID = {7.1849, 0.000042634, 0};
+constexpr PID::config INDEXER_PID_VEL = {2.7, 0.001, 0};
+constexpr PID::config INDEXER_PID_POS = {0.1,0,0.001};
 
 // State variables
 ChassisSpeeds des_chassis_state;
@@ -83,10 +83,10 @@ public:
         7,
         GM6020,
         pitch_zero_offset_ticks,
-        yaw_vel_PID,
-        yaw_pos_PID,
-        pitch_vel_PID,
-        pitch_pos_PID,
+        YAW_VEL_PID,
+        YAW_POS_PID,
+        PITCH_VEL_PID,
+        PITCH_POS_PID,
         CANHandler::CANBUS_1,
         CANHandler::CANBUS_2,
         -1,
@@ -102,14 +102,15 @@ public:
         1,
         2,
         7,
-        flywheelL_PID,
-        flywheelR_PID,
-        indexer_PID_vel,
-        indexer_PID_pos,
+        FLYWHEEL_L_PID,
+        FLYWHEEL_R_PID,
+        INDEXER_PID_VEL,
+        INDEXER_PID_POS,
         CANHandler::CANBUS_2,
         false
     }),
 
+    // TODO add passing in individual PID objects for the motors
     chassis(ChassisSubsystem::Config{
         1,      // left_front_can_id
         2,      // right_front_can_id
