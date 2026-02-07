@@ -137,6 +137,11 @@ class Sentry : public BaseRobot {
             jetson_state.desired_pitch_rads * (180.0 / M_PI), turret.getState().pitch_angle,
             jetson_state.desired_yaw_rads * (180 / M_PI), turret.getState().yaw_angle );
 
+        // printf("jetson calibration: %d\n", jetson_state.localization_calibration);
+        if(jetson_state.localization_calibration == 1){
+            chassis.setOdomReference();
+        }
+
         if (remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP) {
             des_chassis_state.vOmega = 0;
             chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
@@ -144,10 +149,10 @@ class Sentry : public BaseRobot {
         } else if (remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::DOWN) {
             // Jetson odom
             // TODO ------------------ ADD THIS BACK FOR ODOM MOVEMENT --------------------------
-            // des_chassis_state.vX = jetson_state.desired_x_vel;
-            // des_chassis_state.vY = jetson_state.desired_y_vel;
-            // des_chassis_state.vOmega = jetson_state.desired_angular_vel;
-            chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
+            des_chassis_state.vX = jetson_state.desired_x_vel;
+            des_chassis_state.vY = jetson_state.desired_y_vel;
+            des_chassis_state.vOmega = jetson_state.desired_angular_vel;
+            chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::ODOM_ORIENTED);
 
             des_turret_state.turret_mode = TurretState::AIM;
             des_turret_state.yaw_angle = jetson_state.desired_yaw_rads * (180 / M_PI);
