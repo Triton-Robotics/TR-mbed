@@ -22,6 +22,9 @@ constexpr float PITCH_UPPER_BOUND{35.0};
 
 constexpr float JOYSTICK_YAW_SENSITIVITY_DPS = 600;
 constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 300;
+// Mouse sensitivity initialized
+constexpr float MOUSE_SENSITIVITY_YAW_DPS = 10.0;
+constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 10.0;
 
 constexpr PID::config YAW_VEL_PID = {350, 0.5, 2.5, 32000, 2000};
 constexpr PID::config YAW_POS_PID = {0.5, 0, 0, 90, 2};
@@ -67,6 +70,30 @@ class Infantry : public BaseRobot {
     TurretSubsystem turret;
     ShooterSubsystem shooter;
     ChassisSubsystem chassis;
+
+    // Remote control variables
+    float scalar = 1;
+    float jx = 0; // -1 to 1
+    float jy = 0; // -1 to 1
+    // Pitch, Yaw
+    float jpitch = 0; // -1 to 1
+    float jyaw = 0; // -1 to 1
+    float myaw = 0;
+    float mpitch = 0;
+    int pitchVelo = 0;
+    // joystick tolerance
+    float tolerance = 0.05;
+    // Keyboard Driving
+    float mult = 0.7;
+    float omega_speed = 0;
+    float max_linear_vel = 0;
+
+    // GENERAL VARIABLES
+    // drive and shooting mode
+    char drive = 'o'; //default o when using joystick
+    char shot = 'o'; //default o when using joystick
+    bool cv_enabled = false;
+
 
     bool imu_initialized{false};
 
@@ -145,23 +172,27 @@ class Infantry : public BaseRobot {
             imu_initialized = true;
         }
 
-        des_chassis_state.vX = remote_.getChannel(Remote::Channel::LEFT_VERTICAL);
-        des_chassis_state.vY = -1 * remote_.getChannel(Remote::Channel::LEFT_HORIZONTAL);
+        remoteRead();
+
+        // des_chassis_state.vX = remote_.getChannel(Remote::Channel::LEFT_VERTICAL);
+        // des_chassis_state.vY = -1 * remote_.getChannel(Remote::Channel::LEFT_HORIZONTAL);
+        des_chassis_state.vX = jy;
+        des_chassis_state.vY = -1 * jx;
 
         // Turret from remote
-        float joystick_yaw = remote_.getChannel(Remote::Channel::RIGHT_HORIZONTAL);
-        yaw_desired_angle -= joystick_yaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
+        // float joystick_yaw = remote_.getChannel(Remote::Channel::RIGHT_HORIZONTAL);
+        yaw_desired_angle -= jyaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
         yaw_desired_angle = capAngle(yaw_desired_angle);
         des_turret_state.yaw_angle = yaw_desired_angle;
 
-        float joystick_pitch = remote_.getChannel(Remote::Channel::RIGHT_VERTICAL);
-        pitch_desired_angle += joystick_pitch * JOYSTICK_PITCH_SENSITIVITY_DPS * dt_us / 1000000;
+        // float joystick_pitch = remote_.getChannel(Remote::Channel::RIGHT_VERTICAL);
+        pitch_desired_angle += jpitch * JOYSTICK_PITCH_SENSITIVITY_DPS * dt_us / 1000000;
         pitch_desired_angle = std::clamp(pitch_desired_angle, PITCH_LOWER_BOUND, PITCH_UPPER_BOUND);
         des_turret_state.pitch_angle = pitch_desired_angle;
 
         jetson_state = jetson.read();
 
-        if (remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP) {
+        if (drive == 'u' || (drive =='o' && remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP)) {
             // TODO: think about how we want to implement jetson aiming
             // des_turret_state.pitch_angle = jetson_state.desired_pitch_rads;
             // des_turret_state.yaw_angle = jetson_state.desired_yaw_rads;
@@ -169,8 +200,8 @@ class Infantry : public BaseRobot {
             des_chassis_state.vOmega = 0;
             chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
-        } else if (remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::DOWN) {
-            des_chassis_state.vOmega = 4.8;
+        } else if (drive == 'd' || (drive =='o' && remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::DOWN)) {
+            des_chassis_state.vOmega = omega_speed;
             chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
         } else {
@@ -227,6 +258,86 @@ class Infantry : public BaseRobot {
     void end_of_loop() override {}
 
     unsigned int main_loop_dt_ms() override { return 2; } // 500 Hz loop
+
+    void remoteRead()
+    {
+        //Keyboard-based drive and shoot mode
+        if(remote_.keyPressed(Remote::Key::R)){
+            drive = 'm';
+        }else if(remote_.keyPressed(Remote::Key::E)){
+            drive = 'u';
+        }else if(remote_.keyPressed(Remote::Key::Q)){
+            drive = 'd';        
+        }
+        if(remote_.keyPressed(Remote::Key::V)){
+            shot = 'm';
+        }else if(remote_.keyPressed(Remote::Key::C)){
+            shot = 'd';        
+        }
+        
+        if(remote_.getMouseR() || remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID){
+            cv_enabled = true;
+        }else if(!remote_.getMouseR() ){
+            cv_enabled = false;
+        }
+
+        //Driving input
+        scalar = 1;
+        jx = remote_.leftX() * scalar; // -1 to 1
+        jy = remote_.leftY() * scalar; // -1 to 1
+        //Pitch, Yaw
+        jpitch = remote_.rightY() * scalar; // -1 to 1
+        jyaw = remote_.rightX() * scalar; // -1 to 1
+
+        myaw = remote_.getMouseX();
+        mpitch = -remote_.getMouseY();
+
+        jx = (abs(jx) < tolerance) ? 0 : jx;
+        jy = (abs(jy) < tolerance) ? 0 : jy;
+        jpitch = (abs(jpitch) < tolerance) ? 0 : jpitch;
+        jyaw = (abs(jyaw) < tolerance) ? 0 : jyaw;
+        
+
+        // Shift to make robot go slower
+        if (remote_.keyPressed(Remote::Key::SHIFT)) {
+            mult = 0.5;
+        }
+        if(remote_.keyPressed(Remote::Key::CTRL)){
+            mult = 1;
+        }
+
+        jx += mult * ((remote_.keyPressed(Remote::Key::D) ? 1 : 0) + (remote_.keyPressed(Remote::Key::A) ? -1 : 0));
+        jy += mult * ((remote_.keyPressed(Remote::Key::W) ? 1 : 0) + (remote_.keyPressed(Remote::Key::S) ? -1 : 0));
+
+        float j_hypo = sqrt(jx * jx + jy * jy);
+        if(j_hypo > 1.0){
+            jx = jx / j_hypo;
+            jy = jy / j_hypo;
+        }
+        //Bounding the four j variables
+        jx = max(-1.0F, min(1.0F, jx));
+        jy = max(-1.0F, min(1.0F, jy));
+        jpitch = max(-1.0F, min(1.0F, jpitch));
+        jyaw = max(-1.0F, min(1.0F, jyaw));
+
+        max_linear_vel = -1.24 + 0.0513 * chassis.power_limit + -0.000216 * (chassis.power_limit * chassis.power_limit);
+        // float max_omega = 0.326 + 0.0857 * chassis_power_limit + -0.000183 * (chassis_power_limit * chassis_power_limit);
+        float max_omega = 4.8;
+
+        if(remote_.keyPressed(Remote::Key::CTRL)){
+            jx = 0.0;
+            jy = 0.0;
+            max_omega = 6.1;
+        }
+
+        float linear_hypo = sqrtf(jx * jx + jy * jy);
+        if(linear_hypo > 0.8){
+            linear_hypo = 0.8;
+        }
+
+        float available_beyblade = 1.0 - linear_hypo;
+        omega_speed = max_omega * available_beyblade;
+    }
 };
 
 int main() {

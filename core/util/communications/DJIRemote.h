@@ -5,12 +5,12 @@
 
 // I don't like constants being here but also they're robot independent (?)
 // DEGREES PER SECOND AT MAX
-constexpr float JOYSTICK_SENSITIVITY_YAW_DPS = 180.0;
-constexpr float JOYSTICK_SENSITIVITY_PITCH_DPS = 180.0;
+// constexpr float JOYSTICK_SENSITIVITY_YAW_DPS = 180.0;
+// constexpr float JOYSTICK_SENSITIVITY_PITCH_DPS = 180.0;
 
 // Mouse sensitivity initialized
-constexpr float MOUSE_SENSITIVITY_YAW_DPS = 10.0;
-constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 10.0;
+// constexpr float MOUSE_SENSITIVITY_YAW_DPS = 10.0;
+// constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 10.0;
 
 /**
  * A unique UART handler that uses timing in leu of DBUS communication (mbed does not
