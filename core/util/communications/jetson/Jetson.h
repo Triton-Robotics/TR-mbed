@@ -132,15 +132,15 @@ class RobotStateWritePacket : public WritePacket {
     void get_packed_payload(Jetson::WriteState &write_state,
                             char *buff) override {
 
-        std::memcpy(&buff[0], &write_state.chassis_x_velocity, sizeof(float));
-        std::memcpy(&buff[4], &write_state.chassis_y_velocity, sizeof(float));
-        std::memcpy(&buff[8], &write_state.chassis_rotation, sizeof(float));
+        std::memcpy(&buff[0], &write_state.yaw_angle_rads, sizeof(float));
+        std::memcpy(&buff[4], &write_state.pitch_angle_rads, sizeof(float));
 
-        std::memcpy(&buff[12], &write_state.pitch_angle_rads, sizeof(float));
-        std::memcpy(&buff[16], &write_state.yaw_angle_rads, sizeof(float));
-
-        std::memcpy(&buff[20], &write_state.pitch_velocity, sizeof(float));
-        std::memcpy(&buff[24], &write_state.yaw_velocity, sizeof(float));
+        std::memcpy(&buff[8], &write_state.yaw_velocity, sizeof(float));
+        std::memcpy(&buff[12], &write_state.pitch_velocity, sizeof(float));
+                              
+        std::memcpy(&buff[16], &write_state.chassis_x_velocity, sizeof(float));
+        std::memcpy(&buff[20], &write_state.chassis_y_velocity, sizeof(float));
+        std::memcpy(&buff[24], &write_state.chassis_rotation, sizeof(float));
     }
 };
 
@@ -195,8 +195,8 @@ class TurretPacket : public ReadPacket {
     void extract_payload(char *buff, Jetson::ReadState &read_state) override {
 
         // 4 byte pitch, 4 byte yaw, 1 byte shoot
-        std::memcpy(&read_state.desired_pitch_rads, &buff[0], sizeof(float));
-        std::memcpy(&read_state.desired_yaw_rads, &buff[4], sizeof(float));
+        std::memcpy(&read_state.desired_yaw_rads, &buff[0], sizeof(float));
+        std::memcpy(&read_state.desired_pitch_rads, &buff[4], sizeof(float));
         std::memcpy(&read_state.shoot_status, &buff[8], sizeof(char));
     }
 };

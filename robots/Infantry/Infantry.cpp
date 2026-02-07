@@ -51,6 +51,11 @@ int remoteTimer = 0;
 float pitch_desired_angle = 0.0;
 float yaw_desired_angle = 0.0;
 
+double degreesToRadians(double degrees) {
+    // M_PI is a common constant for Pi in cmath
+    return degrees * M_PI / 180.0;
+}
+
 // TODOS make example directory with simple examples of how to use motors /
 // subsystems as reference for testbench
 
@@ -227,17 +232,17 @@ class Infantry : public BaseRobot {
                          referee.robot_status.shooter_barrel_heat_limit);
 
         // jetson comms
-        stm_state.game_state = referee.get_game_progress();
-        stm_state.robot_hp = referee.get_remain_hp();
+        stm_state.game_state = 4;
+        stm_state.robot_hp = 200;
 
         stm_state.chassis_x_velocity = chassis.getChassisSpeeds().vX;
         stm_state.chassis_y_velocity = chassis.getChassisSpeeds().vY;
         stm_state.chassis_rotation = chassis.getChassisSpeeds().vOmega;
 
-        stm_state.yaw_angle_rads = turret.getState().yaw_angle;
-        stm_state.yaw_velocity = turret.getState().yaw_velo;
-        stm_state.pitch_angle_rads = turret.getState().pitch_angle;
-        stm_state.pitch_velocity = turret.getState().pitch_angle;
+        stm_state.yaw_angle_rads = degreesToRadians(turret.getState().yaw_angle);
+        stm_state.yaw_velocity = degreesToRadians(turret.getState().yaw_velo);
+        stm_state.pitch_angle_rads = degreesToRadians(turret.getState().pitch_angle);
+        stm_state.pitch_velocity = degreesToRadians(turret.getState().pitch_angle);
         jetson.write(stm_state);
 
         // printf("time %ld", us_ticker_read());
