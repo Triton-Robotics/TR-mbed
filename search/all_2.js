@@ -119,7 +119,7 @@ var searchData=
   ['bno055_5fv_5fchip_5faddr_116',['BNO055_V_CHIP_ADDR',['../BNO055_8h.html#a2bbea3ac1652750f93d5cc4c477ade2c',1,'BNO055.h']]],
   ['bno055_5fvector_5ftypedef_117',['BNO055_VECTOR_TypeDef',['../structBNO055__VECTOR__TypeDef.html',1,'']]],
   ['bootldr_5frev_5fid_118',['bootldr_rev_id',['../structBNO055__ID__INF__TypeDef.html#a6bb814e805dc107ccb3809668b614ea1',1,'BNO055_ID_INF_TypeDef']]],
-  ['br_5fvel_5fconfig_119',['br_vel_config',['../Infantry_8cpp.html#a3f201557a3030171140f37a8b7311ec1',1,'BR_VEL_CONFIG:&#160;Infantry.cpp'],['../Hero_8cpp.html#a20b36f6ee2d3fd9058b94da798e9c551',1,'br_vel_config:&#160;Hero.cpp'],['../Sentry_8cpp.html#a20b36f6ee2d3fd9058b94da798e9c551',1,'br_vel_config:&#160;Sentry.cpp'],['../structOmniWheelSubsystem_1_1config.html#a17918ca5882fc1381086759ec7ed2681',1,'OmniWheelSubsystem::config::br_vel_config']]],
+  ['br_5fvel_5fconfig_119',['br_vel_config',['../Hero_8cpp.html#a20b36f6ee2d3fd9058b94da798e9c551',1,'br_vel_config:&#160;Hero.cpp'],['../Sentry_8cpp.html#a20b36f6ee2d3fd9058b94da798e9c551',1,'br_vel_config:&#160;Sentry.cpp'],['../Infantry_8cpp.html#a3f201557a3030171140f37a8b7311ec1',1,'BR_VEL_CONFIG:&#160;Infantry.cpp'],['../structOmniWheelSubsystem_1_1config.html#a17918ca5882fc1381086759ec7ed2681',1,'OmniWheelSubsystem::config::br_vel_config']]],
   ['brake_120',['BRAKE',['../classChassisSubsystem.html#a27e1d49873290db6eb14db2c6bb87ebeaf3cd680194fd4f1c924c396aa6a2ead2',1,'ChassisSubsystem']]],
   ['brakemode_121',['BrakeMode',['../classChassisSubsystem.html#a27e1d49873290db6eb14db2c6bb87ebe',1,'ChassisSubsystem']]],
   ['brid_122',['brid',['../structOmniWheelSubsystem_1_1config.html#a65b01f0f17bfba54a845c3a7b56dcd10',1,'OmniWheelSubsystem::config']]],
