@@ -140,7 +140,7 @@ class Infantry : public BaseRobot {
             INDEXER_PID_VEL,
             INDEXER_PID_POS,
             CANHandler::CANBUS_2,
-            false
+            true
         }),
 
         // TODO add passing in individual PID objects for the motors
@@ -217,9 +217,9 @@ class Infantry : public BaseRobot {
         }
 
         // Shooter Logic
-        if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP) {
+        if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP || remote_.getMouseL()) {
             des_shoot_state = ShootState::SHOOT;
-        } else if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID) {
+        } else if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID || shot == 'd') {
             des_shoot_state = ShootState::FLYWHEEL;
         } else {
             des_shoot_state = ShootState::OFF;
