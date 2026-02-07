@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['w_0',['w',['../structIMU_1_1Quaternion.html#aeedb3eeb2090ae2cb9ea79c085ead04e',1,'IMU::Quaternion::w'],['../structBNO055__QUATERNION__TypeDef.html#ae197a4fdd344d5f8684b88ef3a6e7463',1,'BNO055_QUATERNION_TypeDef::w'],['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fa61e9c06ea9a85a5088a499df6458d276',1,'Remote::W']]],
+  ['w_0',['w',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fa61e9c06ea9a85a5088a499df6458d276',1,'Remote::W'],['../structIMU_1_1Quaternion.html#aeedb3eeb2090ae2cb9ea79c085ead04e',1,'IMU::Quaternion::w'],['../structBNO055__QUATERNION__TypeDef.html#ae197a4fdd344d5f8684b88ef3a6e7463',1,'BNO055_QUATERNION_TypeDef::w']]],
   ['warning_1',['WARNING',['../TRMutex_8h.html#af5f478ebdb1815432fb04589309d5492a984de77c680eaff141ec910e25568a81',1,'TRMutex.h']]],
   ['wcrc_5ftable_2',['wCRC_Table',['../crc_8cpp.html#a1f1756c7786010bcec22c6d4d8228732',1,'crc.cpp']]],
   ['we_20higly_20recommend_20ref_20home_20runner_20work_20tr_20mbed_20tr_20mbed_20md_20ide_20clion_20md_20clion_3',['At this point, you may choose to diverge from the CLI setup guide and set up an IDE instead. Check out the setup instructions for @ref &quot;/home/runner/work/TR-mbed/TR-mbed/.md/ide/clion.md&quot; &quot;CLion&quot; or @ref &quot;/home/runner/work/TR-mbed/TR-mbed/.md/ide/vscode.md&quot; &quot;VSCode&quot;. We higly recommend @ref &quot;/home/runner/work/TR-mbed/TR-mbed/.md/ide/clion.md&quot; &quot;CLion&quot;.',['../index.html#autotoc_md6',1,'']]],

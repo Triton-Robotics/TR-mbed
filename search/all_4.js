@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['d_0',['d',['../structPID_1_1config.html#a7d44e288f702d3de860d8cf559a6f130',1,'PID::config::d'],['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4faf623e75af30e62bbd73d6df5b50bb7b5',1,'Remote::D']]],
+  ['d_0',['d',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4faf623e75af30e62bbd73d6df5b50bb7b5',1,'Remote::D'],['../structPID_1_1config.html#a7d44e288f702d3de860d8cf559a6f130',1,'PID::config::d']]],
   ['dart_5fattack_5ftarget_1',['dart_attack_target',['../structext__dart__client__cmd__t.html#a14919418d881fdeb01e2de5058d3a1a3',1,'ext_dart_client_cmd_t']]],
   ['dart_5fbelong_2',['dart_belong',['../structext__dart__status__t.html#ae2b8d294de50883029357532262b639e',1,'ext_dart_status_t']]],
   ['dart_5flaunch_5fopening_5fstatus_3',['dart_launch_opening_status',['../structext__dart__client__cmd__t.html#a0ed58fe58c282f6519b1f497905f2a8e',1,'ext_dart_client_cmd_t']]],
@@ -13,7 +13,7 @@ var searchData=
   ['datalength_10',['DataLength',['../structxFrameHeader.html#ac15f58966ccc45104926122188a7f015',1,'xFrameHeader']]],
   ['dataready_11',['dataReady',['../classMPU6050.html#aafc3767ff1a351ed03b8aead396e1711',1,'MPU6050']]],
   ['dbuffer_12',['dBuffer',['../classPID.html#a220ea9c305c0f48b0b8443bcbe9cced5',1,'PID']]],
-  ['dc_13',['dc',['../classAdafruit__SSD1306__Spi.html#a0edbab47342673545a8acd03379bbfb6',1,'Adafruit_SSD1306_Spi::dc'],['../classPID.html#af825b006e765120ff387c4e15c6a7f8a',1,'PID::dC']]],
+  ['dc_13',['dc',['../classPID.html#af825b006e765120ff387c4e15c6a7f8a',1,'PID::dC'],['../classAdafruit__SSD1306__Spi.html#a0edbab47342673545a8acd03379bbfb6',1,'Adafruit_SSD1306_Spi::dc']]],
   ['debugging_14',['Debugging',['../index.html#autotoc_md18',1,'']]],
   ['default_15',['DEFAULT',['../TRMutex_8h.html#af5f478ebdb1815432fb04589309d5492a88ec7d5086d2469ba843c7fcceade8a6',1,'TRMutex.h']]],
   ['defence_5fbuff_16',['defence_buff',['../struct____packed.html#afac89ba518257f599cf83c1cd3afd5ad',1,'__packed']]],
@@ -46,6 +46,7 @@ var searchData=
   ['down_43',['DOWN',['../classRemote.html#affd0b019d5483d546bc29b07447649bbac4e0e4e3118472beeb2ae75827450f1f',1,'Remote']]],
   ['drawchar_44',['drawChar',['../classAdafruit__GFX.html#ab7f5a29b3a3dffe30c6a3f4c1f604a5a',1,'Adafruit_GFX']]],
   ['drawpixel_45',['drawpixel',['../classAdafruit__GFX.html#ab7fbf72885c873266f9c7eb53b5c8896',1,'Adafruit_GFX::drawPixel()'],['../classAdafruit__SSD1306.html#ae2851d927a047a770c569c7c9fde4807',1,'Adafruit_SSD1306::drawPixel()']]],
-  ['drive_5fmode_46',['DRIVE_MODE',['../classChassisSubsystem.html#a16e8ea4a14a3a2ae416a52db8d31ca36',1,'ChassisSubsystem']]],
-  ['dumpinfo_47',['dumpInfo',['../classRemote.html#ab3e55d985b57ba798e757b24b8ed76de',1,'Remote']]]
+  ['drive_46',['drive',['../classInfantry.html#a77a8d4125fef23666a6f4397dd356b8d',1,'Infantry']]],
+  ['drive_5fmode_47',['DRIVE_MODE',['../classChassisSubsystem.html#a16e8ea4a14a3a2ae416a52db8d31ca36',1,'ChassisSubsystem']]],
+  ['dumpinfo_48',['dumpInfo',['../classRemote.html#ab3e55d985b57ba798e757b24b8ed76de',1,'Remote']]]
 ];
