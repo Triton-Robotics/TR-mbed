@@ -186,11 +186,13 @@ class Infantry : public BaseRobot {
 
         // Turret from remote
         // float joystick_yaw = remote_.getChannel(Remote::Channel::RIGHT_HORIZONTAL);
+        yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * dt_us / 1000000;
         yaw_desired_angle -= jyaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
         yaw_desired_angle = capAngle(yaw_desired_angle);
         des_turret_state.yaw_angle = yaw_desired_angle;
 
         // float joystick_pitch = remote_.getChannel(Remote::Channel::RIGHT_VERTICAL);
+        pitch_desired_angle -= mpitch * MOUSE_SENSITIVITY_PITCH_DPS * dt_us / 1000000;
         pitch_desired_angle += jpitch * JOYSTICK_PITCH_SENSITIVITY_DPS * dt_us / 1000000;
         pitch_desired_angle = std::clamp(pitch_desired_angle, PITCH_LOWER_BOUND, PITCH_UPPER_BOUND);
         des_turret_state.pitch_angle = pitch_desired_angle;
