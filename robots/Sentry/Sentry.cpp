@@ -124,18 +124,18 @@ class Sentry : public BaseRobot {
         float joystick_yaw = remote_.getChannel(Remote::Channel::RIGHT_HORIZONTAL);
         yaw_desired_angle -= joystick_yaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
         yaw_desired_angle = capAngle(yaw_desired_angle);
-        des_turret_state.yaw_angle = yaw_desired_angle;
+        des_turret_state.yaw_angle_degs = yaw_desired_angle;
 
         float joystick_pitch = remote_.getChannel(Remote::Channel::RIGHT_VERTICAL);
         pitch_desired_angle += joystick_pitch * JOYSTICK_PITCH_SENSITIVITY_DPS * dt_us / 1000000;
         pitch_desired_angle = std::clamp(pitch_desired_angle, PITCH_LOWER_BOUND, PITCH_UPPER_BOUND);
-        des_turret_state.pitch_angle = pitch_desired_angle;
+        des_turret_state.pitch_angle_degs = pitch_desired_angle;
 
         jetson_state = jetson.read();
 
         printf("pitch: %.4f | %.4f \nyaw:   %.4f | %.4f\n", 
-            jetson_state.desired_pitch_rads * (180.0 / M_PI), turret.getState().pitch_angle,
-            jetson_state.desired_yaw_rads * (180 / M_PI), turret.getState().yaw_angle );
+            jetson_state.desired_pitch_rads * (180.0 / M_PI), turret.getState().pitch_angle_degs,
+            jetson_state.desired_yaw_rads * (180 / M_PI), turret.getState().yaw_angle_degs);
 
         // printf("jetson calibration: %d\n", jetson_state.localization_calibration);
         if(jetson_state.localization_calibration == 1){
@@ -155,8 +155,8 @@ class Sentry : public BaseRobot {
             chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::ODOM_ORIENTED);
 
             des_turret_state.turret_mode = TurretState::AIM;
-            des_turret_state.yaw_angle = jetson_state.desired_yaw_rads * (180 / M_PI);
-            des_turret_state.pitch_angle = jetson_state.desired_pitch_rads * (180 / M_PI);
+            des_turret_state.yaw_angle_degs = jetson_state.desired_yaw_rads * (180 / M_PI);
+            des_turret_state.pitch_angle_degs = jetson_state.desired_pitch_rads * (180 / M_PI);
         } else {
             chassis.setWheelPower({0, 0, 0, 0});
             des_turret_state.turret_mode = TurretState::SLEEP;
@@ -193,10 +193,10 @@ class Sentry : public BaseRobot {
         stm_state.chassis_y_velocity = chassis.getChassisSpeeds().vY;
         stm_state.chassis_rotation = chassis.getChassisSpeeds().vOmega;
 
-        stm_state.yaw_angle_rads = degreesToRadians(turret.getState().yaw_angle);
-        stm_state.yaw_velocity = degreesToRadians(turret.getState().yaw_velo);
-        stm_state.pitch_angle_rads = degreesToRadians(turret.getState().pitch_angle);
-        stm_state.pitch_velocity = degreesToRadians(turret.getState().pitch_angle);
+        stm_state.yaw_angle_rads = degreesToRadians(turret.getState().yaw_angle_degs);
+        stm_state.yaw_velocity = degreesToRadians(turret.getState().yaw_velo_rad_s);
+        stm_state.pitch_angle_rads = degreesToRadians(turret.getState().pitch_angle_degs);
+        stm_state.pitch_velocity = degreesToRadians(turret.getState().pitch_velo_rad_s);
         jetson.write(stm_state);
 
         // printf("time %ld", us_ticker_read());
