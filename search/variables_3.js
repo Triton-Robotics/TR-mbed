@@ -2,7 +2,7 @@ var searchData=
 [
   ['can_0',['can',['../classCANHandler.html#a12423ab918aeb90842412d988d7c14b5',1,'CANHandler']]],
   ['can_5fhandler_5fnumber_1',['CAN_HANDLER_NUMBER',['../DJIMotor_8h.html#aadf019a0a0b3dd6b468a015f891f8b3e',1,'DJIMotor.h']]],
-  ['canbus_2',['canbus',['../structHeroShooterSubsystem_1_1config.html#a3b48a2e037720e9628ea867fadd6dbca',1,'HeroShooterSubsystem::config::canBus'],['../structDJIMotor_1_1config.html#ad1bc81b798a3767b48742ab15e006ca6',1,'DJIMotor::config::canBus'],['../structShooterSubsystem_1_1config.html#aa2b991c43d3a7d8b0e659f517cac7af1',1,'ShooterSubsystem::config::canBus'],['../structOmniWheelSubsystem_1_1config.html#a858f42e862884292e58785b735564c43',1,'OmniWheelSubsystem::config::canBus']]],
+  ['canbus_2',['canbus',['../structHeroShooterSubsystem_1_1config.html#a3b48a2e037720e9628ea867fadd6dbca',1,'HeroShooterSubsystem::config::canBus'],['../structOmniWheelSubsystem_1_1config.html#a858f42e862884292e58785b735564c43',1,'OmniWheelSubsystem::config::canBus'],['../structShooterSubsystem_1_1config.html#aa2b991c43d3a7d8b0e659f517cac7af1',1,'ShooterSubsystem::config::canBus'],['../structDJIMotor_1_1config.html#ad1bc81b798a3767b48742ab15e006ca6',1,'DJIMotor::config::canBus']]],
   ['cantreaddatacount_3',['cantReadDataCount',['../classBNO055.html#a15dcaa732ae0e0aa55162efc50b5bdfd',1,'BNO055']]],
   ['chassis_4',['chassis',['../classHero.html#a80aad89e9276510c6325fd3d4dec0acd',1,'Hero::chassis'],['../classInfantry.html#a3926b3295b8817d97733efa672a7628e',1,'Infantry::chassis'],['../classSentry.html#a11f0072af5075967f97319dbebe306af',1,'Sentry::chassis']]],
   ['chassis_5fpower_5flimit_5',['chassis_power_limit',['../structext__game__robot__status__t.html#ab1e9f0763340abbbcc429a6af98e52ef',1,'ext_game_robot_status_t::chassis_power_limit'],['../struct____packed.html#ac84041830d3a379f52701e9966520f71',1,'__packed::chassis_power_limit']]],
@@ -21,6 +21,5 @@ var searchData=
   ['cs_18',['cs',['../classAdafruit__SSD1306__Spi.html#a703a271e9cda272e133500b358057ecd',1,'Adafruit_SSD1306_Spi']]],
   ['current_5fhp_19',['current_hp',['../structext__game__robot__status__t.html#a51f0d237215e3f7efc478d01ee07b7eb',1,'ext_game_robot_status_t::current_HP'],['../struct____packed.html#ad54dd150ebe1f43223303ea50060520a',1,'__packed::current_HP']]],
   ['cursor_5fx_20',['cursor_x',['../classAdafruit__GFX.html#a8f8983cea8d81a7c8e9d05eef36318e2',1,'Adafruit_GFX']]],
-  ['cursor_5fy_21',['cursor_y',['../classAdafruit__GFX.html#aebe0a38f6e6fd59cb81620c4696286c9',1,'Adafruit_GFX']]],
-  ['cv_5fenabled_22',['cv_enabled',['../classInfantry.html#ab0819fa4403c50b7f7033777f431e27e',1,'Infantry']]]
+  ['cursor_5fy_21',['cursor_y',['../classAdafruit__GFX.html#aebe0a38f6e6fd59cb81620c4696286c9',1,'Adafruit_GFX']]]
 ];

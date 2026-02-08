@@ -14,7 +14,7 @@ var searchData=
   ['can_5fbaud_11',['CAN_BAUD',['../CANHandler_8h.html#a69dfbb25066d2af819d304ee84ed9935',1,'CANHandler.h']]],
   ['can_5fbus_5ftype_12',['CAN_BUS_TYPE',['../ChassisSubsystem_8h.html#a19febbfa229a296c51870933d2422f01',1,'ChassisSubsystem.h']]],
   ['can_5fhandler_5fnumber_13',['CAN_HANDLER_NUMBER',['../DJIMotor_8h.html#aadf019a0a0b3dd6b468a015f891f8b3e',1,'DJIMotor.h']]],
-  ['canbus_14',['canbus',['../structShooterSubsystem_1_1config.html#aa2b991c43d3a7d8b0e659f517cac7af1',1,'ShooterSubsystem::config::canBus'],['../structHeroShooterSubsystem_1_1config.html#a3b48a2e037720e9628ea867fadd6dbca',1,'HeroShooterSubsystem::config::canBus'],['../structOmniWheelSubsystem_1_1config.html#a858f42e862884292e58785b735564c43',1,'OmniWheelSubsystem::config::canBus'],['../structDJIMotor_1_1config.html#ad1bc81b798a3767b48742ab15e006ca6',1,'DJIMotor::config::canBus'],['../classCANHandler.html#a2567dbcbebbef530cd8f295406b3902a',1,'CANHandler::CANBus']]],
+  ['canbus_14',['canbus',['../structOmniWheelSubsystem_1_1config.html#a858f42e862884292e58785b735564c43',1,'OmniWheelSubsystem::config::canBus'],['../classCANHandler.html#a2567dbcbebbef530cd8f295406b3902a',1,'CANHandler::CANBus'],['../structHeroShooterSubsystem_1_1config.html#a3b48a2e037720e9628ea867fadd6dbca',1,'HeroShooterSubsystem::config::canBus'],['../structShooterSubsystem_1_1config.html#aa2b991c43d3a7d8b0e659f517cac7af1',1,'ShooterSubsystem::config::canBus'],['../structDJIMotor_1_1config.html#ad1bc81b798a3767b48742ab15e006ca6',1,'DJIMotor::config::canBus']]],
   ['canbus_5f1_15',['CANBUS_1',['../classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4',1,'CANHandler']]],
   ['canbus_5f2_16',['CANBUS_2',['../classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14',1,'CANHandler']]],
   ['canhandler_17',['canhandler',['../classCANHandler.html#a9b8ed61c6dac73788e4091c12448c76e',1,'CANHandler::CANHandler()'],['../classCANHandler.html',1,'CANHandler'],['../classCANHandler.html#a7ae4877d6ba72b43694593b5de105d45',1,'CANHandler::CANHandler()']]],
@@ -34,7 +34,7 @@ var searchData=
   ['chassismode_31',['ChassisMode',['../classOmniWheelSubsystem.html#ac515d6ca6dd2cb83fc6baea95d14f917',1,'OmniWheelSubsystem']]],
   ['chassisreadpacket_32',['chassisreadpacket',['../classChassisReadPacket.html',1,'ChassisReadPacket'],['../classChassisReadPacket.html#a3fedf23ea65dcfdcc55aac2612b9dfc9',1,'ChassisReadPacket::ChassisReadPacket()']]],
   ['chassisspeed_33',['ChassisSpeed',['../structOmniWheelSubsystem_1_1ChassisSpeed.html',1,'OmniWheelSubsystem']]],
-  ['chassisspeeds_34',['chassisspeeds',['../structChassisSpeeds.html#a34737964ea81a6c28232bec779492406',1,'ChassisSpeeds::ChassisSpeeds()'],['../structChassisSpeeds.html',1,'ChassisSpeeds']]],
+  ['chassisspeeds_34',['chassisspeeds',['../structChassisSpeeds.html',1,'ChassisSpeeds'],['../structChassisSpeeds.html#a34737964ea81a6c28232bec779492406',1,'ChassisSpeeds::ChassisSpeeds()']]],
   ['chassisspeeds_2ecpp_35',['ChassisSpeeds.cpp',['../ChassisSpeeds_8cpp.html',1,'']]],
   ['chassisspeeds_2eh_36',['ChassisSpeeds.h',['../ChassisSpeeds_8h.html',1,'']]],
   ['chassisspeedstowheelspeeds_37',['chassisSpeedsToWheelSpeeds',['../classChassisSubsystem.html#a33767ca30473849bea591e4f46c1c2ae',1,'ChassisSubsystem']]],
@@ -66,7 +66,7 @@ var searchData=
   ['common_5fleftright_5fflip_63',['COMMON_LEFTRIGHT_FLIP',['../SSD1308_8h.html#a6802733a6803629accd686852dffc5b9',1,'SSD1308.h']]],
   ['common_5fleftright_5fnormal_64',['COMMON_LEFTRIGHT_NORMAL',['../SSD1308_8h.html#a74bb3e2613a445ada80e891444a1bba1',1,'SSD1308.h']]],
   ['common_5fsequential_65',['COMMON_SEQUENTIAL',['../SSD1308_8h.html#a5f2e78ced5e376c67cc549ed41f45b30',1,'SSD1308.h']]],
-  ['config_66',['config',['../structOmniWheelSubsystem_1_1config.html',1,'OmniWheelSubsystem::config'],['../structTurretSubsystem_1_1config.html',1,'TurretSubsystem::config'],['../structShooterSubsystem_1_1config.html',1,'ShooterSubsystem::config'],['../structPID_1_1config.html',1,'PID::config'],['../structChassisSubsystem_1_1Config.html',1,'ChassisSubsystem::Config'],['../structDJIMotor_1_1config.html',1,'DJIMotor::config'],['../structHeroShooterSubsystem_1_1config.html',1,'HeroShooterSubsystem::config'],['../MPU6050_8h.html#a76ea3cf49247a07c54b3db005a3c7f57',1,'CONFIG:&#160;MPU6050.h']]],
+  ['config_66',['config',['../MPU6050_8h.html#a76ea3cf49247a07c54b3db005a3c7f57',1,'CONFIG:&#160;MPU6050.h'],['../structHeroShooterSubsystem_1_1config.html',1,'HeroShooterSubsystem::config'],['../structDJIMotor_1_1config.html',1,'DJIMotor::config'],['../structChassisSubsystem_1_1Config.html',1,'ChassisSubsystem::Config'],['../structTurretSubsystem_1_1config.html',1,'TurretSubsystem::config'],['../structShooterSubsystem_1_1config.html',1,'ShooterSubsystem::config'],['../structPID_1_1config.html',1,'PID::config'],['../structOmniWheelSubsystem_1_1config.html',1,'OmniWheelSubsystem::config']]],
   ['configmode_67',['CONFIGMODE',['../BNO055_8h.html#aa2323157b7cc4347a81e41418014f314',1,'BNO055.h']]],
   ['cooling_5fbuff_68',['cooling_buff',['../struct____packed.html#abaf6749dab27f65a66797464379835a3',1,'__packed']]],
   ['count_69',['count',['../struct____packed.html#a30e873ca65e47154083c34fd01a34ece',1,'__packed']]],
@@ -81,8 +81,7 @@ var searchData=
   ['crc_5flen_78',['crc_len',['../ref__constants_8h.html#ad76fad7fa554070a84190f3d996d639f',1,'ref_constants.h']]],
   ['cs_79',['cs',['../classAdafruit__SSD1306__Spi.html#a703a271e9cda272e133500b358057ecd',1,'Adafruit_SSD1306_Spi']]],
   ['ctrl_80',['CTRL',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fa32f7eee2581c72a5561c21df3013a89a',1,'Remote']]],
-  ['current_5fhp_81',['current_hp',['../struct____packed.html#ad54dd150ebe1f43223303ea50060520a',1,'__packed::current_HP'],['../structext__game__robot__status__t.html#a51f0d237215e3f7efc478d01ee07b7eb',1,'ext_game_robot_status_t::current_HP']]],
+  ['current_5fhp_81',['current_hp',['../structext__game__robot__status__t.html#a51f0d237215e3f7efc478d01ee07b7eb',1,'ext_game_robot_status_t::current_HP'],['../struct____packed.html#ad54dd150ebe1f43223303ea50060520a',1,'__packed::current_HP']]],
   ['cursor_5fx_82',['cursor_x',['../classAdafruit__GFX.html#a8f8983cea8d81a7c8e9d05eef36318e2',1,'Adafruit_GFX']]],
-  ['cursor_5fy_83',['cursor_y',['../classAdafruit__GFX.html#aebe0a38f6e6fd59cb81620c4696286c9',1,'Adafruit_GFX']]],
-  ['cv_5fenabled_84',['cv_enabled',['../classInfantry.html#ab0819fa4403c50b7f7033777f431e27e',1,'Infantry']]]
+  ['cursor_5fy_83',['cursor_y',['../classAdafruit__GFX.html#aebe0a38f6e6fd59cb81620c4696286c9',1,'Adafruit_GFX']]]
 ];
