@@ -35,6 +35,37 @@ class BaseRobot {
     DigitalOut led1_;
     DigitalOut led2_;
 
+    // Remote control variables
+    float scalar = 1;
+    float jx = 0; // -1 to 1
+    float jy = 0; // -1 to 1
+    // Pitch, Yaw
+    float jpitch = 0; // -1 to 1
+    float jyaw = 0; // -1 to 1
+    float myaw = 0;
+    float mpitch = 0;
+    int pitchVelo = 0;
+    // joystick tolerance
+    float tolerance = 0.05;
+    // Keyboard Driving
+    float mult = 0.7;
+    float omega_speed = 0;
+    float max_linear_vel = 0;
+
+    // drive and shooting mode
+    // TODO rename these chars?????
+    // "o" - joystick
+    // "u" - drive
+    // "d" - beyblade
+    // "m" - off
+
+    // "o" - joystick
+    // "d" - flywheel
+    // "m" - flywheel off
+    char drive = 'o'; //default o when using joystick 
+    char shot = 'o'; //default o when using joystick
+    bool cv_enabled = false; // TODO add to inf main maybe? altho i think cv should always be on
+
     // clang-format off
     BaseRobot(const Config &config)
         : remote_(config.remote_pin),
@@ -81,6 +112,7 @@ class BaseRobot {
             // 20 ms remote read
             if ((loop_clock_us - prev_remote_time_us) / 1000 >= 15) {
                 remote_.read();
+                remoteRead();
                 prev_remote_time_us = us_ticker_read();
             }
 
@@ -100,5 +132,86 @@ class BaseRobot {
             canHandler1_.readAllCan();
             canHandler2_.readAllCan();
         }
+    }
+
+    void remoteRead()
+    {
+        //Keyboard-based drive and shoot mode
+        if(remote_.keyPressed(Remote::Key::R)){
+            drive = 'm';
+        }else if(remote_.keyPressed(Remote::Key::E)){
+            drive = 'u';
+        }else if(remote_.keyPressed(Remote::Key::Q)){
+            drive = 'd';        
+        }
+
+        if(remote_.keyPressed(Remote::Key::V)){
+            shot = 'm';
+        }else if(remote_.keyPressed(Remote::Key::C)){
+            shot = 'd';        
+        }
+        
+        if(remote_.getMouseR() || remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID){
+            cv_enabled = true;
+        }else if(!remote_.getMouseR() ){
+            cv_enabled = false;
+        }
+
+        //Driving input
+        scalar = 1;
+        jx = remote_.leftX() * scalar; // -1 to 1
+        jy = remote_.leftY() * scalar; // -1 to 1
+        //Pitch, Yaw
+        jpitch = remote_.rightY() * scalar; // -1 to 1
+        jyaw = remote_.rightX() * scalar; // -1 to 1
+
+        myaw = remote_.getMouseX();
+        mpitch = -remote_.getMouseY();
+
+        jx = (abs(jx) < tolerance) ? 0 : jx;
+        jy = (abs(jy) < tolerance) ? 0 : jy;
+        jpitch = (abs(jpitch) < tolerance) ? 0 : jpitch;
+        jyaw = (abs(jyaw) < tolerance) ? 0 : jyaw;
+        
+
+        // Shift to make robot go slower
+        if (remote_.keyPressed(Remote::Key::SHIFT)) {
+            mult = 0.5;
+        }
+        if(remote_.keyPressed(Remote::Key::CTRL)){
+            mult = 1;
+        }
+
+        jx += mult * ((remote_.keyPressed(Remote::Key::D) ? 1 : 0) + (remote_.keyPressed(Remote::Key::A) ? -1 : 0));
+        jy += mult * ((remote_.keyPressed(Remote::Key::W) ? 1 : 0) + (remote_.keyPressed(Remote::Key::S) ? -1 : 0));
+
+        float j_hypo = sqrt(jx * jx + jy * jy);
+        if(j_hypo > 1.0){
+            jx = jx / j_hypo;
+            jy = jy / j_hypo;
+        }
+        //Bounding the four j variables
+        jx = max(-1.0F, min(1.0F, jx));
+        jy = max(-1.0F, min(1.0F, jy));
+        jpitch = max(-1.0F, min(1.0F, jpitch));
+        jyaw = max(-1.0F, min(1.0F, jyaw));
+
+        // max_linear_vel = -1.24 + 0.0513 * chassis.power_limit + -0.000216 * (chassis.power_limit * chassis.power_limit);
+        // float max_omega = 0.326 + 0.0857 * chassis_power_limit + -0.000183 * (chassis_power_limit * chassis_power_limit);
+        float max_omega = 4.8;
+
+        if(remote_.keyPressed(Remote::Key::CTRL)){
+            jx = 0.0;
+            jy = 0.0;
+            max_omega = 6.1;
+        }
+
+        float linear_hypo = sqrtf(jx * jx + jy * jy);
+        if(linear_hypo > 0.8){
+            linear_hypo = 0.8;
+        }
+
+        float available_beyblade = 1.0 - linear_hypo;
+        omega_speed = max_omega * available_beyblade;
     }
 };

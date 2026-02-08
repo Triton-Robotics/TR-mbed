@@ -1,7 +1,6 @@
 #include "TurretSubsystem.h"
 #include "us_ticker_defines.h"
 
-
 TurretSubsystem::TurretSubsystem(config cfg):
     yaw({
         cfg.yaw_id,
@@ -44,8 +43,8 @@ TurretSubsystem::TurretInfo TurretSubsystem::getState()
 void TurretSubsystem::setState (TurretInfo des_state)
 {
     turret_state.turret_mode = des_state.turret_mode;
-    des_yaw = des_state.yaw_angle;
-    des_pitch = des_state.pitch_angle;
+    des_yaw = des_state.yaw_angle_degs;
+    des_pitch = des_state.pitch_angle_degs;
 }
 
 // void TurretSubsystem::set_desired_turret(float des_yaw_angle, float des_pitch_angle)
@@ -86,10 +85,10 @@ void TurretSubsystem::periodic(float chassisRpm)
     // Update turret_state here!
     chassis_rpm = chassisRpm;
     imuAngles = imu.getImuAngles();
-    turret_state.yaw_angle = get_yaw_angle_degs();
-    turret_state.pitch_angle = get_pitch_angle_degs_zero_offsetted();
-    turret_state.yaw_velo = get_yaw_vel_rads_per_sec();
-    turret_state.pitch_velo = get_pitch_vel_rads_per_sec();
+    turret_state.yaw_angle_degs = get_yaw_angle_degs();
+    turret_state.pitch_angle_degs = get_pitch_angle_degs_zero_offsetted();
+    turret_state.yaw_velo_rad_s = get_yaw_vel_rads_per_sec();
+    turret_state.pitch_velo_rad_s = get_pitch_vel_rads_per_sec();
 
     // Set desired values for pitch and yaw
     if (turret_state.turret_mode == SLEEP)
@@ -101,21 +100,21 @@ void TurretSubsystem::periodic(float chassisRpm)
     {
         // Yaw calc
         int dir = 0;
-        if(turret_state.yaw_velo > 1){
+        if(turret_state.yaw_velo_rad_s > 1){
             dir = 1;
-        }else if(turret_state.yaw_velo < -1){
+        }else if(turret_state.yaw_velo_rad_s < -1){
             dir = -1;
         }
-        yaw.pidSpeed.feedForward = 1221 * dir + 97.4 * turret_state.yaw_velo;
+        yaw.pidSpeed.feedForward = 1221 * dir + 97.4 * turret_state.yaw_velo_rad_s;
 
-        float deltaYaw = calculateDeltaYaw(turret_state.yaw_angle, des_yaw);
+        float deltaYaw = calculateDeltaYaw(turret_state.yaw_angle_degs, des_yaw);
         yaw.pidPosition.feedForward = -chassis_rpm;
         int des_yaw_power = yaw.calculatePeriodicPosition(deltaYaw, turret_time);
         yaw.setPower(des_yaw_power);
 
 
         // Pitch calc
-        float pitch_current_radians = forward_ * (turret_state.pitch_angle / 360) * 2 * M_PI;
+        float pitch_current_radians = forward_ * (turret_state.pitch_angle_degs / 360) * 2 * M_PI;
         
         if (des_pitch <= pitch_lowerbound) {
             des_pitch = pitch_lowerbound;
@@ -124,13 +123,13 @@ void TurretSubsystem::periodic(float chassisRpm)
             des_pitch = pitch_upperbound;
         }
 
-        int dir_p = forward_ * (des_pitch < turret_state.pitch_angle ? -1 : 1);
+        int dir_p = forward_ * (des_pitch < turret_state.pitch_angle_degs ? -1 : 1);
         // TODO feedforward equation should be passed in by the config because it needs to be robot specific not hard coded for all robots 
         // Additionally we need to add a term to properly supply positive or negative power depending on which "side" of the turret naturally goes down when 0 power is applied
         // maybe called something like gravity or natural down direction or smth
-        pitch.pidSpeed.feedForward = (cos(pitch_current_radians) * -2600) + (1221 * dir_p + 97.4 * turret_state.pitch_velo);
+        pitch.pidSpeed.feedForward = (cos(pitch_current_radians) * -2600) + (1221 * dir_p + 97.4 * turret_state.pitch_velo_rad_s);
 
-        float des_pitch_power = pitch.calculatePositionPID(forward_ * des_pitch, forward_ * turret_state.pitch_angle, us_ticker_read() - turret_time);
+        float des_pitch_power = pitch.calculatePositionPID(forward_ * des_pitch, forward_ * turret_state.pitch_angle_degs, us_ticker_read() - turret_time);
         
         // printf("pp %.2f | %.2f\n", des_pitch_power, -turret_state.pitch_angle);
         pitch.setPower(des_pitch_power);

@@ -5,6 +5,7 @@
 #include <util/communications/CANHandler.h>
 #include <util/motor/DJIMotor.h>
 #include "Subsystem.h"
+#include <cmath>
 
 
 // enums for state
@@ -47,10 +48,10 @@ public:
 
     struct TurretInfo
     {
-        float yaw_angle;
-        float yaw_velo;
-        float pitch_angle;
-        float pitch_velo;
+        float yaw_angle_degs;
+        float yaw_velo_rad_s;
+        float pitch_angle_degs;
+        float pitch_velo_rad_s;
         TurretState turret_mode = SLEEP;
     };
 
