@@ -104,7 +104,7 @@
 // BELOW: from SCUT code line 733-1102
 
 /* 自定义帧头 */
-typedef struct //__packed struct
+typedef struct
 {
     uint8_t  SOF;
     uint16_t DataLength;
@@ -118,7 +118,8 @@ typedef struct
 {
     union {
         uint8_t dataBuff[11];
-        struct __packed {
+        struct
+        {
             uint8_t game_type : 4;             //比赛类型
             uint8_t game_progress : 4;         //当前比赛阶段
             uint16_t stage_remain_time;        //当前阶段剩余时间  单位s
@@ -129,7 +130,7 @@ typedef struct
 }ext_map_command_t;
 
 /* ID: 0x0001    Byte: 11     比赛状态数据 */
-typedef struct __packed
+typedef struct
 {
  uint8_t game_type : 4;
  uint8_t game_progress : 4;
@@ -139,7 +140,7 @@ typedef struct __packed
 }game_status_t;
 
 /* ID: 0x0002    Byte: 1       比赛结果数据 */
-typedef struct __packed
+typedef struct
 {
  uint8_t winner;
  uint8_t InfoUpdataFlag;
@@ -151,7 +152,7 @@ typedef struct
     union
     {
         uint8_t dataBuff[32];
-        struct __packed
+        struct
         {
             uint16_t red_1_robot_HP;//红 1 英雄机器人血量，未上场以及罚下血量为 0
             uint16_t red_2_robot_HP;//红 2 工程机器人血量
@@ -224,7 +225,7 @@ typedef struct
     union
     {
         uint8_t dataBuff[4];
-        struct __packed
+        struct
         {
             uint32_t event_type;
         };
@@ -238,7 +239,7 @@ typedef struct
     union
     {
         uint8_t dataBuff[4];
-        struct __packed
+        struct  
         {
             uint8_t supply_projectile_id;  //补给站口 ID
             uint8_t supply_robot_id;       //补弹机器人 ID
@@ -250,7 +251,7 @@ typedef struct
 }ext_supply_projectile_action_t;
 
 /* ID: 0X0104          Byte: 2       裁判警告数据 */
-typedef struct __packed
+typedef struct  
 {
  uint8_t level;
  uint8_t offending_robot_id;
@@ -264,7 +265,7 @@ typedef struct
     union
     {
         uint8_t dataBuff[1];
-        struct __packed
+        struct  
         {
             uint8_t dart_remaining_time;//15s 倒计时
         };
@@ -278,7 +279,7 @@ typedef struct
     union
     {
         uint8_t dataBuff[27];
-        struct __packed
+        struct  
         {
             uint8_t robot_id;
 
@@ -295,7 +296,7 @@ typedef struct
 	uint8_t InfoUpdataFlag;
 }ext_game_robot_status_t;
 
-typedef struct __packed
+typedef struct  
 {
  uint8_t robot_id;
  uint8_t robot_level;
@@ -309,7 +310,7 @@ typedef struct __packed
 }robot_status_t;
 
 /* ID: 0X0202          Byte: 16      实时功率热量数据 */
-typedef struct __packed
+typedef struct  
 {
  uint16_t reserved1; //REMOVED chassis_voltage
  uint16_t reserved2; //REMOVED chassis_current
@@ -322,7 +323,7 @@ typedef struct __packed
 }power_heat_data_t;
 
 /* ID: 0X0203          Byte: 16      机器人位置数据  */
-typedef struct __packed
+typedef struct  
 {
  float x;
  float y;
@@ -347,7 +348,7 @@ typedef struct
     uint8_t InfoUpdataFlag;
 }ext_buff_t;
 
-typedef struct __packed
+typedef struct  
 {
  uint8_t recovery_buff;
  uint8_t cooling_buff;
@@ -371,7 +372,7 @@ typedef struct
 }aerial_robot_energy_t;
 
 /* ID: 0X0206          Byte: 1       伤害状态数据 */
-typedef struct __packed
+typedef struct  
 {
  uint8_t armor_id : 4;
  uint8_t HP_deduction_reason : 4;
@@ -379,7 +380,7 @@ typedef struct __packed
 }hurt_data_t;
 
 /* ID: 0X0207          Byte: 7       实时射击数据 */
-typedef struct __packed
+typedef struct  
 {
  uint8_t bullet_type;
  uint8_t shooter_number;
@@ -389,7 +390,7 @@ typedef struct __packed
 }shoot_data_t;
 
 /* ID: 0X0208          Byte: 6       子弹剩余发送数 */
-typedef struct __packed
+typedef struct  
 {
  uint16_t projectile_allowance_17mm;
  uint16_t projectile_allowance_42mm;
@@ -413,7 +414,7 @@ typedef struct
     union
     {
         uint8_t dataBuff[4];
-        struct __packed
+        struct  
         {
             uint32_t rfid_status;
         };
@@ -447,7 +448,7 @@ typedef struct
 // ----------------------- Line 1163
 
 /* ID: 0X0301          Byte: n       机器人间交互数据 */
-typedef  struct __packed
+typedef  struct  
 {
     uint16_t data_cmd_id;
     uint16_t sender_ID;
@@ -455,7 +456,7 @@ typedef  struct __packed
 }ext_student_interactive_header_data_t;
 
 /* data */
-typedef  struct __packed
+typedef  struct  
 {
     uint8_t data[20];//数据段n小于113
 }robot_interactive_data_t;
@@ -468,14 +469,14 @@ typedef  struct __packed
 */
 
 /* 客户端删除图形 机器人间通信：0x0301 */
-typedef  struct __packed
+typedef  struct  
 {
     uint8_t operate_tpye;
     uint8_t layer;
 }ext_client_custom_graphic_delete_t;
 
 // my copy
-typedef  struct __packed
+typedef  struct  
 {
     uint16_t data_cmd_id;
     uint16_t sender_ID;
@@ -484,7 +485,7 @@ typedef  struct __packed
 }ext_student_interactive_header_data_delete_t;
 
 /* 图形数据 */
-typedef  struct __packed
+typedef  struct  
 {
     uint8_t graphic_name[3];
     uint32_t operate_tpye:3;
@@ -501,7 +502,7 @@ typedef  struct __packed
     uint32_t end_y:11;
 }graphic_data_struct_t;
 
-typedef  struct __packed
+typedef  struct  
 {
     uint8_t graphic_name[3];
     uint32_t operate_tpye:3;
@@ -517,31 +518,31 @@ typedef  struct __packed
 }ClientData_struct_t;
 
 /* 客户端绘制一个图形 机器人间通信：0x0301 */
-typedef  struct __packed
+typedef  struct  
 {
     graphic_data_struct_t grapic_data_struct;
 }ext_client_custom_graphic_single_t;
 
 /* 客户端绘制二个图形 机器人间通信：0x0301 */
-typedef  struct __packed
+typedef  struct  
 {
     graphic_data_struct_t grapic_data_struct[2];
 }ext_client_custom_graphic_double_t;
 
 /* 客户端绘制五个图形 机器人间通信：0x0301 */
-typedef  struct __packed
+typedef  struct  
 {
     graphic_data_struct_t grapic_data_struct[5];
 }ext_client_custom_graphic_five_t;
 
 /* 客户端绘制七个图形 机器人间通信：0x0301 */
-typedef  struct __packed
+typedef  struct  
 {
     graphic_data_struct_t grapic_data_struct[7];
 }ext_client_custom_graphic_seven_t;
 
 /* 客户端绘制字符 机器人间通信：0x0301 */
-typedef  struct __packed
+typedef  struct  
 {
     graphic_data_struct_t grapic_data_struct;
     char data[30];
@@ -551,7 +552,7 @@ typedef  struct __packed
 // MY ADDED STRUCTS ------------------
 
 /* ID: 0X0301          Byte: n       机器人间交互数据 */
-typedef  struct __packed
+typedef  struct  
 {
     uint16_t data_cmd_id;
     uint16_t sender_ID;
@@ -560,7 +561,7 @@ typedef  struct __packed
 }ext_student_interactive_header_data_graphic_t;
 
 // my copy
-typedef  struct __packed
+typedef  struct  
 {
     uint16_t data_cmd_id;
     uint16_t sender_ID;
