@@ -5,5 +5,5 @@ var searchData=
   ['header_5f_2',['header_',['../classWritePacket.html#aa2edbc191247546108a6e3934a7097b2',1,'WritePacket::header_'],['../classReadPacket.html#a58db6222f1c7ad9f80315e2df2cf8f2e',1,'ReadPacket::header_']]],
   ['heat_5flimit_3',['heat_limit',['../structHeroShooterSubsystem_1_1config.html#a939a27fcb3444ae4de0109496629a12d',1,'HeroShooterSubsystem::config::heat_limit'],['../structShooterSubsystem_1_1config.html#ade4806442f34a23548c9e7c7dcf35c4b',1,'ShooterSubsystem::config::heat_limit']]],
   ['hero_5fflywheel_5fvelo_4',['HERO_FLYWHEEL_VELO',['../ShooterSubsystem_8h.html#a32a4d39d139705ebd3b0f5e3e548f9c9',1,'ShooterSubsystem.h']]],
-  ['hp_5fdeduction_5freason_5',['HP_deduction_reason',['../struct____packed.html#a93849b91ffdc4a15d817bc1c42441e61',1,'__packed']]]
+  ['hp_5fdeduction_5freason_5',['HP_deduction_reason',['../structhurt__data__t.html#a0e5a101eef7624502e5578237b82e3e4',1,'hurt_data_t']]]
 ];

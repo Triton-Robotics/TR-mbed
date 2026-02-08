@@ -30,7 +30,7 @@ var searchData=
   ['pos_5fcfg_27',['pos_cfg',['../structDJIMotor_1_1config.html#a47036062e1be4bd06bf519041c3fe4d9',1,'DJIMotor::config']]],
   ['power_5fheat_5fdata_28',['power_heat_data',['../classReferee.html#a86637743fdcd24a5c031494e86acea6e',1,'Referee']]],
   ['power_5flimit_29',['power_limit',['../structOmniWheelSubsystem_1_1config.html#a5425e9bb7bb860b8aaf77834328e29cd',1,'OmniWheelSubsystem::config::power_limit'],['../classChassisSubsystem.html#ab7075048bc161cb1c9950931ca74c0f9',1,'ChassisSubsystem::power_limit']]],
-  ['power_5fmanagement_5foutput_30',['power_management_output',['../struct____packed.html#a97ab81ef96be2785848cfe9020a59353',1,'__packed::power_management_output'],['../structext__game__robot__status__t.html#a353d5ae97c800269d44c7dba64f16a68',1,'ext_game_robot_status_t::power_management_output']]],
+  ['power_5fmanagement_5foutput_30',['power_management_output',['../structrobot__status__t.html#abd5b75ea2ab075708069607842d3f029',1,'robot_status_t::power_management_output'],['../structext__game__robot__status__t.html#a353d5ae97c800269d44c7dba64f16a68',1,'ext_game_robot_status_t::power_management_output']]],
   ['power_5frune_5fbuff_31',['power_rune_buff',['../structext__buff__t.html#a8e5375851654acb3742eece8a7b9ce7b',1,'ext_buff_t']]],
   ['powerout_32',['powerOut',['../classDJIMotor.html#a3de5c2429ae817d55ee56aa33ecfe44a',1,'DJIMotor']]],
   ['previousrpm_33',['previousRPM',['../classChassisSubsystem.html#aa6c6b1d723f51aa7f833377f38ccd12a',1,'ChassisSubsystem']]],
@@ -38,6 +38,6 @@ var searchData=
   ['print_5fcode_5fthread_35',['print_code_thread',['../classTRMutex.html#ad98b7f68b8cfc5b2fe920b43fee2013b',1,'TRMutex']]],
   ['printangle_36',['printAngle',['../classDJIMotor.html#a722b68762ff53f6102a6f64b5bc731cc',1,'DJIMotor']]],
   ['priorityindicator_37',['priorityIndicator',['../classTRMutex.html#a7634374f088cf7589d45df45b572af84',1,'TRMutex']]],
-  ['projectile_5fallowance_5f17mm_38',['projectile_allowance_17mm',['../struct____packed.html#aefec147321c7fc605a4180b7560d0819',1,'__packed']]],
-  ['projectile_5fallowance_5f42mm_39',['projectile_allowance_42mm',['../struct____packed.html#aca1f5b33397c86204ef8f331981da5f4',1,'__packed']]]
+  ['projectile_5fallowance_5f17mm_38',['projectile_allowance_17mm',['../structprojectile__allowance__t.html#a885798c220b56f66e2e92a82a39ffa1c',1,'projectile_allowance_t']]],
+  ['projectile_5fallowance_5f42mm_39',['projectile_allowance_42mm',['../structprojectile__allowance__t.html#a7ec121788ddd0902bd40dc289d9f6547',1,'projectile_allowance_t']]]
 ];

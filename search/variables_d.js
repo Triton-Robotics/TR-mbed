@@ -10,7 +10,7 @@ var searchData=
   ['max_5fbeyblade_7',['max_beyblade',['../structOmniWheelSubsystem_1_1config.html#a81b5d44889a3cac6b41ecf16bd8e8d36',1,'OmniWheelSubsystem::config']]],
   ['max_5fvel_8',['max_vel',['../structOmniWheelSubsystem_1_1config.html#a099ba6cc92ab4c84a96507e31c3e0362',1,'OmniWheelSubsystem::config::max_vel'],['../structOmniKinematicsLimits.html#a4dc96f20f0e9fc4fe8b236a7397bfa4a',1,'OmniKinematicsLimits::max_Vel']]],
   ['max_5fvomega_9',['max_vOmega',['../structOmniKinematicsLimits.html#a5a50975dfda35d56e712c71fb0d3afd9',1,'OmniKinematicsLimits']]],
-  ['maximum_5fhp_10',['maximum_hp',['../structext__game__robot__status__t.html#a414fdfdb6ac3f1809f50dd6a57eb2845',1,'ext_game_robot_status_t::maximum_HP'],['../struct____packed.html#a2104f9e43e3fc4444aa673aa666179bf',1,'__packed::maximum_HP']]],
+  ['maximum_5fhp_10',['maximum_hp',['../structext__game__robot__status__t.html#a414fdfdb6ac3f1809f50dd6a57eb2845',1,'ext_game_robot_status_t::maximum_HP'],['../structrobot__status__t.html#aba50b69eb8469a1aeee6d14d99046bc4',1,'robot_status_t::maximum_HP']]],
   ['mbed_5flogo_11',['mbed_logo',['../mbed__logo_8h.html#a18148959f88dd70e0c636c82c46a9550',1,'mbed_logo.h']]],
   ['mi2c_12',['mi2c',['../classAdafruit__SSD1306__I2c.html#abf004a7e21f2653ad8dcff8c8f812831',1,'Adafruit_SSD1306_I2c']]],
   ['mi2caddress_13',['mi2cAddress',['../classAdafruit__SSD1306__I2c.html#a3516332f68d7e4781a817c621b5e8c6a',1,'Adafruit_SSD1306_I2c']]],

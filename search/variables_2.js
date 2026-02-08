@@ -1,7 +1,7 @@
 var searchData=
 [
   ['baddatachainnumber_0',['badDataChainNumber',['../classRemote.html#a4da81903b311b6f779459f18a60b2538',1,'Remote']]],
-  ['bl_5fvel_5fconfig_1',['bl_vel_config',['../structOmniWheelSubsystem_1_1config.html#a643c7f6f76828089a7c4f611ecbb7116',1,'OmniWheelSubsystem::config::bl_vel_config'],['../Hero_8cpp.html#a0b0944514eb945e2c972bc4f68806a70',1,'bl_vel_config:&#160;Hero.cpp'],['../Sentry_8cpp.html#a0b0944514eb945e2c972bc4f68806a70',1,'bl_vel_config:&#160;Sentry.cpp'],['../Infantry_8cpp.html#ac1531c0208a008e02902f9f807fed136',1,'BL_VEL_CONFIG:&#160;Infantry.cpp']]],
+  ['bl_5fvel_5fconfig_1',['bl_vel_config',['../structOmniWheelSubsystem_1_1config.html#a643c7f6f76828089a7c4f611ecbb7116',1,'OmniWheelSubsystem::config::bl_vel_config'],['../Infantry_8cpp.html#ac1531c0208a008e02902f9f807fed136',1,'BL_VEL_CONFIG:&#160;Infantry.cpp'],['../Hero_8cpp.html#a0b0944514eb945e2c972bc4f68806a70',1,'bl_vel_config:&#160;Hero.cpp'],['../Sentry_8cpp.html#a0b0944514eb945e2c972bc4f68806a70',1,'bl_vel_config:&#160;Sentry.cpp']]],
   ['blid_2',['blid',['../structOmniWheelSubsystem_1_1config.html#af855e43c5398c6c130da8c91f320077d',1,'OmniWheelSubsystem::config']]],
   ['blue1_5fbullet_5fleft_3',['blue1_bullet_left',['../structext__ICRA__buff__debuff__zone__status__t.html#a5dcaa37daa319b6f547db36c588e1397',1,'ext_ICRA_buff_debuff_zone_status_t']]],
   ['blue2_5fbullet_5fleft_4',['blue2_bullet_left',['../structext__ICRA__buff__debuff__zone__status__t.html#a9b16854f6ad7335f03a357794d03adf8',1,'ext_ICRA_buff_debuff_zone_status_t']]],
@@ -15,9 +15,9 @@ var searchData=
   ['blue_5foutpost_5fhp_12',['blue_outpost_HP',['../structext__game__robot__HP__t.html#aa53b8b36feffbdd808eef6e2d7c26de6',1,'ext_game_robot_HP_t']]],
   ['bno055_5fid_5finf_13',['bno055_id_inf',['../imuExampleQuaternions_8cpp.html#ad567fe76e73137e70f5a3a728a297069',1,'bno055_id_inf:&#160;imuExampleQuaternions.cpp'],['../imuExampleAllData_8cpp.html#ad567fe76e73137e70f5a3a728a297069',1,'bno055_id_inf:&#160;imuExampleAllData.cpp']]],
   ['bootldr_5frev_5fid_14',['bootldr_rev_id',['../structBNO055__ID__INF__TypeDef.html#a6bb814e805dc107ccb3809668b614ea1',1,'BNO055_ID_INF_TypeDef']]],
-  ['br_5fvel_5fconfig_15',['br_vel_config',['../structOmniWheelSubsystem_1_1config.html#a17918ca5882fc1381086759ec7ed2681',1,'OmniWheelSubsystem::config::br_vel_config'],['../Hero_8cpp.html#a20b36f6ee2d3fd9058b94da798e9c551',1,'br_vel_config:&#160;Hero.cpp'],['../Sentry_8cpp.html#a20b36f6ee2d3fd9058b94da798e9c551',1,'br_vel_config:&#160;Sentry.cpp'],['../Infantry_8cpp.html#a3f201557a3030171140f37a8b7311ec1',1,'BR_VEL_CONFIG:&#160;Infantry.cpp']]],
+  ['br_5fvel_5fconfig_15',['br_vel_config',['../structOmniWheelSubsystem_1_1config.html#a17918ca5882fc1381086759ec7ed2681',1,'OmniWheelSubsystem::config::br_vel_config'],['../Infantry_8cpp.html#a3f201557a3030171140f37a8b7311ec1',1,'BR_VEL_CONFIG:&#160;Infantry.cpp'],['../Hero_8cpp.html#a20b36f6ee2d3fd9058b94da798e9c551',1,'br_vel_config:&#160;Hero.cpp'],['../Sentry_8cpp.html#a20b36f6ee2d3fd9058b94da798e9c551',1,'br_vel_config:&#160;Sentry.cpp']]],
   ['brid_16',['brid',['../structOmniWheelSubsystem_1_1config.html#a65b01f0f17bfba54a845c3a7b56dcd10',1,'OmniWheelSubsystem::config']]],
   ['buffer_17',['buffer',['../classAdafruit__SSD1306.html#aa46a1a2f6f2fd330ea5d806222699091',1,'Adafruit_SSD1306']]],
-  ['buffer_5fenergy_18',['buffer_energy',['../struct____packed.html#a7700b65255eb26c3c98e15af16e8d72c',1,'__packed']]],
-  ['bullet_5ftype_19',['bullet_type',['../struct____packed.html#a3ccb1addc49769e0998fec7733853cff',1,'__packed']]]
+  ['buffer_5fenergy_18',['buffer_energy',['../structpower__heat__data__t.html#a9c6208823f6b2d7f03643f71d7e72a03',1,'power_heat_data_t']]],
+  ['bullet_5ftype_19',['bullet_type',['../structshoot__data__t.html#a583471b74dc25cf438d27c37d4e5b63b',1,'shoot_data_t']]]
 ];

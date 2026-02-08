@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['mpu6050_0',['MPU6050',['../classMPU6050.html',1,'']]]
+  ['lastfew_0',['lastfew',['../structlastfew.html',1,'']]]
 ];

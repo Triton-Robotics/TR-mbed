@@ -2,7 +2,7 @@ var searchData=
 [
   ['odom_5foriented_0',['odom_oriented',['../classChassisSubsystem.html#a16e8ea4a14a3a2ae416a52db8d31ca36a95df1e2c287d2fc7a150a5295df2c463',1,'ChassisSubsystem::ODOM_ORIENTED'],['../classOmniWheelSubsystem.html#ac515d6ca6dd2cb83fc6baea95d14f917adb6cc5f9c304f2fecef7a27c6d0a4937',1,'OmniWheelSubsystem::ODOM_ORIENTED']]],
   ['off_1',['off',['../ShooterSubsystem_8h.html#ac047e8409f3282e918dbe77d54770185aac132f2982b98bcaa3445e535a03ff75',1,'OFF:&#160;ShooterSubsystem.h'],['../classOmniWheelSubsystem.html#ac515d6ca6dd2cb83fc6baea95d14f917a8bab9f791745c1a5b25c524ec223fce7',1,'OmniWheelSubsystem::OFF'],['../classDJIMotor.html#a7e6f4875c86af59d54804cec2d28965ca4d74f96210a30bef7ab2cf3e647eb33c',1,'DJIMotor::OFF']]],
-  ['offending_5frobot_5fid_2',['offending_robot_id',['../struct____packed.html#a873b48fd77fc1ba7735f0fc45e9d8006',1,'__packed']]],
+  ['offending_5frobot_5fid_2',['offending_robot_id',['../structreferee__warning__t.html#a82b3557a693942c2bcda26cf0da1d718',1,'referee_warning_t']]],
   ['old_20method_3',['Flashing STM32 (Old Method)',['../index.html#autotoc_md11',1,'']]],
   ['oled_4',['oled',['../classoledDisplay.html#aec3eb2d48a459fa0ea97ac82f930ce84',1,'oledDisplay']]],
   ['oleddisplay_5',['oleddisplay',['../classoledDisplay.html',1,'oledDisplay'],['../classoledDisplay.html#a7fdcf94fa372a4c7a513c90374febb52',1,'oledDisplay::oledDisplay()']]],
@@ -14,7 +14,7 @@ var searchData=
   ['omniwheelsubsystem_2ecpp_11',['OmniWheelSubsystem.cpp',['../OmniWheelSubsystem_8cpp.html',1,'']]],
   ['omniwheelsubsystem_2eh_12',['OmniWheelSubsystem.h',['../OmniWheelSubsystem_8h.html',1,'']]],
   ['operate_5flaunch_5fcmd_5ftime_13',['operate_launch_cmd_time',['../structext__dart__client__cmd__t.html#aa14b2f304bc0cd80fe0b4da78ac09053',1,'ext_dart_client_cmd_t']]],
-  ['operate_5ftpye_14',['operate_tpye',['../struct____packed.html#a3d076397e2cb978cf71c29e685e0decc',1,'__packed::operate_tpye'],['../struct____packed.html#a3d076397e2cb978cf71c29e685e0decc',1,'__packed::operate_tpye']]],
+  ['operate_5ftpye_14',['operate_tpye',['../structgraphic__data__struct__t.html#a6fca2e31fefc8a748cd55e5b142ed728',1,'graphic_data_struct_t::operate_tpye'],['../structClientData__struct__t.html#a63277f335c82945e77f4e19ae7ccde62',1,'ClientData_struct_t::operate_tpye'],['../structext__client__custom__graphic__delete__t.html#a256b60497e0c2ba6cc073855538f32be',1,'ext_client_custom_graphic_delete_t::operate_tpye']]],
   ['operating_20system_3a_20strong_15',['&lt;strong&gt;Please choose the appropriate setup guide for your operating system:&lt;/strong&gt;',['../index.html#autotoc_md3',1,'']]],
   ['operator_20int_16',['operator int',['../classDigitalOut2.html#acbb05586b86a67b5bb59a2e8e6b80b4f',1,'DigitalOut2']]],
   ['operator_2a_3d_17',['operator*=',['../structWheelSpeeds.html#a5c530e4b21f961c28137fd6683b57692',1,'WheelSpeeds']]],
