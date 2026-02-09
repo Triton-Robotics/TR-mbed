@@ -28,9 +28,9 @@ I2C i2c(PB_7, PB_6);
 unsigned const int I2C_FREQ = 400000;
 const int ina_addr = 0x80;
 const float current_limit = 1.0;
+ina226 ina(i2c, ina_addr, I2C_FREQ);
 
 int main() {
-  ina226 ina(i2c, ina_addr, I2C_FREQ);
   printf("INA226 TEST Program. (BUILD:[" __DATE__ "/" __TIME__ "])\n");
   int count = 1;
 
