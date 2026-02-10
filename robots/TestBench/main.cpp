@@ -20,15 +20,17 @@
  */
 
 #include "mbed.h"
+#include "main.h"
 #include "util/peripherals/INA226_new/ina226.hpp"
 
 // Serial pc(USBTX, USBRX);
 DigitalOut myled(LED1);
+DJIMotor feeder(5, CANHandler::CANBUS_2, C610);
 I2C i2c(PB_7, PB_6);
 unsigned const int I2C_FREQ = 400000;
 const int ina_addr = 0x80;
 const float current_limit = 1.0;
-ina226 ina(i2c, ina_addr, I2C_FREQ);
+ina226 ina(i2c, ina_addr, I2C_FREQ); 
 
 int main() {
   printf("INA226 TEST Program. (BUILD:[" __DATE__ "/" __TIME__ "])\n");
