@@ -80,6 +80,18 @@ ISM330 imu2(i2c, 0x6B);
 
 BNO055 imu(i2c, IMU_RESET, MODE_IMU);
 
+
+float YawChecker(float BNO055Yaw, float ISMYaw) {
+    float yawDiff = BNO055Yaw - ISMYaw;
+
+    // Normalize the difference to the range [-180, 180]
+    while (yawDiff > 180.0f) yawDiff -= 360.0f;
+    while (yawDiff < -180.0f) yawDiff += 360.0f;
+
+    return yawDiff;
+
+}
+
 int main(){
 
     imu2.begin();
@@ -93,7 +105,17 @@ int main(){
     // }
 
     // Kalman Filter time (Horror)
+    imu.get_angular_position_quat(&imuAngles); // Initial reading to set initial yaw
     
+    
+    imu2.getAGVectors(imuAccelISM, imuGyroISM);
+    imu2.getEulerAngles(imuAnglesISM);
+
+
+
+    float initialBNO055Yaw = imuAngles.yaw;
+    ThisThread::sleep_for(100ms);
+    float initialISM330Yaw = imuAnglesISM.yaw;
     while (true) {
         // auto [ax, ay, az] = imu.readAccel();
         // auto [gx, gy, gz] = imu.readGyro();
@@ -108,12 +130,19 @@ int main(){
 
         imu2.getAGVectors(imuAccelISM, imuGyroISM);
         imu2.getEulerAngles(imuAnglesISM);
+
+        float BNO_OffsetYaw = imuAngles.yaw - initialBNO055Yaw;
+        float ISM_OffsetYaw = imuAnglesISM.yaw - initialISM330Yaw;
+        float yawDiff = YawChecker(BNO_OffsetYaw, ISM_OffsetYaw);
+        
         //printf("Accel %.2f, %.2f, %.2f | Gyro %.2f, %.2f, %.2f | KF Pitch: %.2f | KF Yaw: %.2f\n", ax, ay, az, gx, gy, gz, kf_pitch, kf_yaw);
         
-        printf("ISM Accel: %.2f, %.2f, %.2f | ISM Gyro: %.2f, %.2f, %.2f | ISM Pitch: %.2f | ISM Roll: %.2f\n", imuAccelISM.x, imuAccelISM.y, imuAccelISM.z, imuGyroISM.x, imuGyroISM.y, imuGyroISM.z, imuAnglesISM.pitch, imuAnglesISM.roll);
+        //printf("ISM Accel: %.2f, %.2f, %.2f | ISM Gyro: %.2f, %.2f, %.2f | ISM Pitch: %.2f | ISM Roll: %.2f\n", imuAccelISM.x, imuAccelISM.y, imuAccelISM.z, imuGyroISM.x, imuGyroISM.y, imuGyroISM.z, imuAnglesISM.pitch, imuAnglesISM.roll);
 
-        //printf("BNO Yaw: %.2f | Pitch: %.2f | Roll: %.2f| ISM Pitch: %.2f | Roll: %.2f\n", imuAngles.yaw, imuAngles.pitch, imuAngles.roll, ism_pitch, ism_roll);
+        //printf("BNO Yaw: %.2f | Pitch: %.2f | Roll: %.2f| ISM Yaw: %.2f | Pitch: %.2f | Roll: %.2f | w_z: %.2f\n", imuAngles.yaw, imuAngles.pitch, imuAngles.roll, imuAnglesISM.yaw, imuAnglesISM.pitch, imuAnglesISM.roll, imuGyroISM.z);
         
+        printf("BNO Yaw delta: %.2f| ISM True yaw: %.2f| ISM Yaw delta: %.2f | Yaw Delta: %.2f\n", BNO_OffsetYaw, imuAnglesISM.yaw, ISM_OffsetYaw, yawDiff);
+
         ThisThread::sleep_for(1ms);
 
     }

@@ -10,8 +10,8 @@ const int readAddr = 0b11010101;
 const int writeAddr = 0b11010100;
 
 const char SWRST[] = {0x12,0x01}; // Software Reset command
-const char xEnable[] = {0x10, 0x4A}; // Enable accelerometer at 104Hz, +/-4g
-const char gEnable[] = {0x11, 0x4C}; // Enable gyroscope at 104Hz, 2000dps
+const char xEnable[] = {0x10, 0x7A}; // Enable accelerometer at 833Hz, +/-4g
+const char gEnable[] = {0x11, 0x7C}; // Enable gyroscope at 833Hz, 2000dps
 
 // Accelerometer and gyro register definitions
 static constexpr uint8_t CTRL1_XL = 0x10;
@@ -83,6 +83,7 @@ static constexpr float gyroRangeScale  = 70.0f;   // mdps/LSB @ ±2000 dps
 
 static constexpr float g = 9.80665f; 
 static constexpr float dpsToRad = 3.14159265358979323846f / 180.0f;
+static constexpr float radToDeg = 180.0f / 3.14159265358979323846f;
 
 static constexpr float accelConversion = accelRangeScale * g / 1000.0f; // The actual conversion factor from raw to m/s^2
 static constexpr float gyroConversion = gyroRangeScale * dpsToRad / 1000.0f;   // The conversion factor from raw to rad/s
@@ -177,16 +178,16 @@ std::tuple<float, float, float, float, float, float> ISM330::readAG() noexcept//
     float w_x;
     float w_y;
     float w_z;
+
    
     // States predicted by model (regarding the Gyroscope measurements as inputs)
     float theta_m = 0;
     float phi_m = 0;
-    float psi_m = 0;
    
     // States measured by sensor (accelerometer)
     float theta_s;  // Pitch
     float phi_s;    // roll
-    float psi_s;    // Yaw
+    float psi_s = 0;    // Yaw, we don't use kalman, we just integrate w_z
    
     // Kalman Filter parameters and initailization
     float theta_n; // a priori estimation of Theta
@@ -194,46 +195,46 @@ std::tuple<float, float, float, float, float, float> ISM330::readAG() noexcept//
     float phi_n; // a priori estimation of Phi
     float phi_p = 0; // a posteriori estimation on Phi (set to zero for the initial time step k=0)
 
-
-    // Yaw
-    float psi_n; // a priori estimation of Psi
-    float psi_p = 0; // a posteriori estimation on Psi (set to zero for the initial time step k=0)
    
     float P_theta_n; // a priori covariance of Theta
     float P_phi_n; // a priori covariance of Phi
     float P_theta_p = 0; // a posteriori covariance of Theta
     float P_phi_p = 0; // a posteriori covariance of Phi
-    float P_psi_n; // a priori covariance of Psi
-    float P_psi_p = 0; // a posteriori covariance of Psi
    
     float K_theta; // Observer gain or Kalman gain for Theta
     float K_phi; // Observer gain or Kalman gain for Phi
-    float K_psi; // Observer gain or Kalman gain for Psi
    
     float Q = 0.1; // Covariance of disturbance (unknown disturbance affecting w_x and w_y)
     float R = 4; // Covariance of noise (unknown noise affecting theta_s and phi_s)
 
 
-    float sampleRate = 0.001; // Assuming 1khz for now
+    float sampleRate = 1/833.0;   //0.001 // Assuming 1khz for now
     float ds = sampleRate *0.001; // Time step, not exactly sure why its 1/1000 sample rate but hopefully its good?
 
-
+    //Timer stuff for integration
+    static Timer timer;
+    static bool timerStarted = false;
+    
+    
 std::tuple<float, float, float> ISM330::imuKalmanUpdate(float accelX, float accelY, float accelZ, float gyroX, float gyroY, float gyroZ) {
     // Updating inputs
     w_x = gyroX; // input
     w_y = gyroY; // input
     w_z = gyroZ; // input
 
+    //Timer for yaw 
+    if (!timerStarted) {
+        timer.start();
+        timerStarted = true;
+    }
 
     // Updating models and the sensor measurements
     theta_m = theta_m - w_y*0.1;
     phi_m = phi_m + w_x*0.1;
-    psi_m = psi_m + w_z*0.1;
 
 
     theta_s=atan2(accelX/9.8,accelZ/9.8)/2/3.141592654*360;
     phi_s=atan2(accelY/9.8,accelZ/9.8)/2/3.141592654*360;  
-    psi_s=atan2(accelX/9.8,accelY/9.8)/2/3.141592654*360;
    
     // Predicting Pitch (theta), Roll (phi), and Yaw (psi) using Kalman Filter equations
     P_theta_n = P_theta_p + Q;
@@ -248,15 +249,11 @@ std::tuple<float, float, float> ISM330::imuKalmanUpdate(float accelX, float acce
     phi_p = phi_n + K_phi*(phi_s - phi_n);
     P_phi_p = (1-K_phi)*P_phi_n;
 
-
-    P_psi_n = P_psi_p + Q;
-    K_psi = P_psi_n/(P_psi_n + R);
-    psi_n = psi_p + ds*w_z;
-    psi_p = psi_n + K_psi*(psi_s - psi_n);
-    P_psi_p = (1-K_psi)*P_psi_n;
+    float dt = timer.elapsed_time().count() * 0.000001;
+    timer.reset();
+    psi_s = psi_s + w_z*dt; // Just integrate the gyro for yaw, no Kalman filter for that
     
-
-    return std::make_tuple(theta_p, phi_p, psi_p);
+    return std::make_tuple(theta_p, phi_p, psi_s);
 }
 
 
@@ -267,6 +264,5 @@ void ISM330::getEulerAngles(ISM330_ANGULAR_POSITION_typedef& angles) {
     auto [pitch, roll, yaw] = imuKalmanUpdate(ax, ay, az, gx, gy, gz);
     angles.pitch = pitch;
     angles.roll = roll;
-    angles.yaw = yaw;
+    angles.yaw = yaw * radToDeg;
 }
-
