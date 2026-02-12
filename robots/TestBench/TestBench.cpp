@@ -15,6 +15,9 @@
 PID::config test_motor_vel_PID = {1, 0, 0};
 PID::config test_motor_pos_PID = {1, 0, 0};
 
+// declare pin number (buffer, serial)
+
+
 class TestBench : public BaseRobot {
   public:
     DJIMotor motor;
@@ -54,6 +57,8 @@ int main() {
     printf("HELLO\n");
     BaseRobot::Config config = BaseRobot::Config{}; 
     TestBench TestBench(config);
+	//do everything here (including the code for packets and all that)
+	
 
     TestBench.main_loop();
     // blocking
