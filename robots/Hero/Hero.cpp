@@ -223,7 +223,7 @@ public:
         stm_state.yaw_angle_rads = turret.getState().yaw_angle_degs;
         stm_state.yaw_velocity = turret.getState().yaw_velo_rad_s;
         stm_state.pitch_angle_rads = turret.getState().pitch_angle_degs;
-        stm_state.pitch_velocity = turret.getState().pitch_angle_degs;
+        stm_state.pitch_velocity = turret.getState().pitch_velo_rad_s;
         jetson.write(stm_state);
 
 
@@ -248,6 +248,7 @@ public:
 };
 
 DigitalOut led0 = PC_1;
+PwmIn pwm_input(PA_7); 
 
 int main() {
     printf("HELLO\n");
