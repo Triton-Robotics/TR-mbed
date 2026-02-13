@@ -12,6 +12,7 @@ ChassisSubsystem::ChassisSubsystem(const Config &config)
       LB(config.left_back_can_id, CAN_BUS_TYPE, MOTOR_TYPE),
       RB(config.right_back_can_id, CAN_BUS_TYPE, MOTOR_TYPE),
       yaw(config.yaw_motor),
+      encoder(config.encoder),
       yawPhase{360.0 * (1.0 - ( (float) config.yaw_initial_offset_ticks / TICKS_REVOLUTION))}, // change Yaw to CCW +, and ranges from 0 to 360
       imu(config.imu),
       chassis_radius(config.radius),
@@ -342,16 +343,23 @@ ChassisSpeeds ChassisSubsystem::getChassisSpeeds() const
 
 float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode)
 {
+    double yawCurrent = 0;
     if (mode == REVERSE_YAW_ORIENTED)
     {
         // printf("%f\n", double(yaw->getData(ANGLE)));
-        double yawCurrent = (1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
+        yawCurrent = getEncoderYawPosition();
+        if (yawCurrent == -1.0) {
+            yawCurrent = (1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
+        }
         desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yawCurrent);
     }
     else if (mode == YAW_ORIENTED)
     {
         // printf("%f\n", double(yaw->getData(ANGLE)));
-        double yawCurrent = -(1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
+        yawCurrent = getEncoderYawPosition();
+        if (yawCurrent == -1.0) {
+            yawCurrent = (1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
+        }
         desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yawCurrent);
     }
     else if (mode == ROBOT_ORIENTED)
@@ -360,7 +368,10 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
     }
     else if (mode == ODOM_ORIENTED) 
     {
-        double yawCurrent = -(1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0;
+        yawCurrent = getEncoderYawPosition();
+        if (yawCurrent == -1.0) {
+            yawCurrent = (1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
+        }
         double yawDelta = yawOdom - yawCurrent;
         double imuDelta = imuOdom - imuAngles.yaw;
         double delta = imuDelta - yawDelta;
@@ -637,6 +648,26 @@ bool ChassisSubsystem::setOdomReference() {
     yawOdom = -(1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0;
     imuOdom = imuAngles.yaw;
     return true;
+}
+
+double ChassisSubsystem::getEncoderYawPosition() {
+    if (encoder == nullptr) {
+        return -1.0f;  // Encoder not available
+    }
+    
+    float duty_raw = encoder->dutycycle();
+    float duty_min = 0.02943f;   // 2.943%
+    float duty_max = 0.97058f;   // 97.058%
+    double yaw_position = (double)(abs(((duty_raw - duty_min) / (duty_max - duty_min)) * 360.0f));
+    
+    return yaw_position;
+}
+
+void ChassisSubsystem::updateYawPhaseFromEncoder() {
+    float encoder_reading = getEncoderYawPosition();
+    if (encoder_reading >= 0) {
+        yawPhase = encoder_reading;
+    }
 }
 
 double ChassisSubsystem::radiansToTicks(double radians)

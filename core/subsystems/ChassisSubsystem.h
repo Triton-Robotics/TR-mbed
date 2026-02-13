@@ -3,6 +3,7 @@
 
 #include "mbed.h"
 #include "util/peripherals/imu/BNO055.h"
+#include "util/communications/PwmIn.h"
 
 #include <util/motor/DJIMotor.h>
 #include <util/communications/CANHandler.h>
@@ -83,6 +84,7 @@ public:
         DJIMotor *yaw_motor;
         int yaw_initial_offset_ticks;
         BNO055 &imu;
+        PwmIn *encoder;  // External encoder for yaw position
     };
 
     /**
@@ -171,7 +173,7 @@ public:
      *
      * @param desiredChassisSpeeds The robot-relative speeds (vX, vY, and vOmega) in m/s
      */
-    float setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, float encoder, DRIVE_MODE mode = ROBOT_ORIENTED);
+    float setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode = ROBOT_ORIENTED);
 
     /**
      * The rotateChassisSpeed method
@@ -322,10 +324,23 @@ public:
 
     static double radiansToTicks(double radians);
     static double ticksToRadians(double ticks);
+    
+    /**
+     * Gets the yaw position from encoder (PWM) input in degrees (0-360)
+     * @return yaw position in degrees, or -1 if encoder not available
+     */
+    double getEncoderYawPosition();
+    
+    /**
+     * Updates yawPhase from the encoder reading
+     * Call this to calibrate yawPhase using the encoder
+     */
+    void updateYawPhaseFromEncoder();
 
 private:
     DJIMotor LF, RF, LB, RB;
     DJIMotor *yaw = 0;
+    PwmIn *encoder = nullptr;
     double yawPhase;
     BrakeMode brakeMode;
 

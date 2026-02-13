@@ -58,6 +58,7 @@ public:
 
     I2C i2c_;
     BNO055 imu_;
+    PwmIn encoder_;  // Absolute encoder for yaw position
 
     // TODO: put the BufferedSerial inside Jetson (idk if we wanna do that tho for SPI)
     BufferedSerial jetson_raw_serial;
@@ -76,6 +77,7 @@ public:
         BaseRobot(config),     
     i2c_(IMU_I2C_SDA, IMU_I2C_SCL),
     imu_(i2c_, IMU_RESET, MODE_IMU),
+    encoder_(PA_7),
     jetson_raw_serial(PC_12, PD_2, 115200), // TODO: check higher baud to see if still works
     jetson(jetson_raw_serial),
     turret(TurretSubsystem::config{
@@ -120,8 +122,9 @@ public:
         0.22617,  // radius
         0.065,    // speed_pid_ff_ks
         &turret.yaw,  // yaw_motor
-        6500,     // yaw_initial_offset_ticks
-        imu_     
+        6500,     // yaw_initial_offset_ticks out of 8192
+        imu_,
+        &encoder_  // external encoder
     }
     )
     {}
@@ -248,7 +251,6 @@ public:
 };
 
 DigitalOut led0 = PC_1;
-PwmIn pwm_input(PA_7); 
 
 int main() {
     printf("HELLO\n");
