@@ -658,7 +658,7 @@ double ChassisSubsystem::getEncoderYawPosition() {
     float duty_raw = encoder->dutycycle();
     float duty_min = 0.02943f;   // 2.943%
     float duty_max = 0.97058f;   // 97.058%
-    double yaw_position = (double)(abs(((duty_raw - duty_min) / (duty_max - duty_min)) * 360.0f));
+    double yaw_position = (double)(abs(((duty_raw - duty_min) / (duty_max - duty_min)) * 360.0));
     
     return yaw_position;
 }
