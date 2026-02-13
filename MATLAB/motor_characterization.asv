@@ -1,0 +1,200 @@
+% We want A, B, C, D to be in the workspace from the prev file/ function,
+% then we run root_locus.m AND input these values into pid_autotune.slx
+
+syms s
+
+
+%% Load data from .txt
+filename = 'response_readings/inf_yaw_ramp.txt';
+% response_raw = readtable(filename);
+% response_raw = table2array(response_raw);
+response_raw = readmatrix(filename);
+% [rows, columns] = size(response_raw);
+    
+
+% Parameters
+step_amp = 8191;  % imaginary power number, we should switch this with a real value
+dt_ms = 0.001; % sampling time
+Ts = dt_ms;
+F = 1 / Ts;
+
+
+%% Step Response
+input = response_raw(:,1);
+idx = input == step_amp;
+input = response_raw(idx,1);
+response = response_raw(idx,2);
+
+plot(response)
+
+% creating iddata obj so we can process it in the file
+data = iddata(response, input, Ts);
+
+
+%% Other Response Types (Ramp, Sinusoidal, White noise + Amp)
+input = response_raw(:,1);
+response = response_raw(:,2);
+omega = response_raw(1,3);
+
+% creating iddata obj so we can process it in the file
+data = iddata(response, input, dt_ms);
+
+
+%% Find State Space response then Convert to Transfer Fn
+
+% Best method for consistently good model + PID values
+
+sys_ss = n4sid(data, 2); % second order discrete ss
+ss_est = ss(sys_ss);
+
+A = ss_est.A;
+B = ss_est.B;
+C = ss_est.C;
+D = ss_est.D;
+
+% State Space to Transfer Function
+
+[b, a] = ss2tf(A, B, C, D);
+
+final_tf = tf(b, a, dt_ms);
+
+% plot rlocus
+figure (1)
+rlocus(final_tf)
+
+%plot bode
+figure(2)
+bode(final_tf)
+
+
+%% PID Tuning OR PUT IT INTO PID_AUTOTUNE.SLX
+
+opts = pidtuneOptions('DesignFocus', 'reference-tracking');
+crossover = F /  10; % target crossover freq is 1/10 the hz
+[C_PID, info] = pidtune(final_tf, "PID", crossover);
+
+Kp = C_PID.Kp;
+Kd = C_PID.Kd;
+Ki = C_PID.Ki;
+
+%info about the tuning
+info
+
+
+%% Lead Lag
+
+margins = allmargin(final_tf);
+
+mdl = 'leadlag';
+blk = 'vel_leadlag';
+
+load_system(mdl);
+ST0 = slTuner(mdl, blk);
+addPoint(ST0, {'r','y'});
+
+
+[ST, fSoft, gHard] = looptune(ST0, 'r', 'y', crossover);
+
+% Extract tuned controller
+C_LL = getBlockValue(ST, blk);
+disp('Tuned Lead-Lag Controller:');
+tf(C_LL)
+
+writeBlockValue(ST)
+
+figure(3)
+bode(getIOTransfer(ST0, 'r', 'y'))
+figure(4)
+rlocus(getIOTransfer(ST0, 'r', 'y'))
+
+allmargin(getIOTransfer(ST0, 'r', 'y'));
+
+
+
+%% b
+alpha = 0.1;
+w_c = 4;
+tau = 1/(sqrt(alpha)*w_c);
+K = 1;     % initial guess
+
+lead = K * (tau*s + 1)/(alpha*tau*s + 1);
+
+beta = 10;
+tau_l = 1;  % pick lag corner lower than crossover
+lag = (beta*tau_l*s + 1)/(tau_l*s + 1);
+
+C_leadlag = lead * lag;
+
+
+%% Systune using our SLX file
+
+mdl = "leadlag";
+open_system(mdl)
+
+st = slTuner(mdl,"vel_leadlag");
+
+% use SYSTUNE ITS SO GOOD
+
+addPoint(st, "vel_out");
+addPoint(st, "vel_in");
+addPoint(st, "out");
+
+% figure out tuninggoals
+req3 = TuningGoal.Margins('vel_out',margins.GainMargin,60);
+req4 = TuningGoal.Overshoot('vel_in','vel_out',20);
+
+rng(0);
+TunedST = systune(st,[req3,req4]);
+
+showTunable(TunedST)
+C = getBlockValue(TunedST, 'vel_leadlag');
+tf(C)
+refresh(st)
+
+
+%% Visualize PID tune results
+
+% Simulate closed-loop step response
+Tcl = feedback(C_PID*final_tf, step_amp);      % unity-feedback
+t = 0:dt_ms:10;                   % choose simulation window
+figure(3)
+step(Tcl, t);
+grid on;
+title('Closed-loop step response with pidtune result');
+
+[Gm,Pm,Wcg] = margin(C_PID*final_tf);   % loop margins
+disp([Gm, Pm, Wcg]);
+
+
+%% Plot Root Locus and Bode Plot for Tuned System
+
+% Open-loop transfer function (Controller * Plant)
+L = C_PID * final_tf;
+
+% Closed-loop transfer function
+T = feedback(L, 1);
+
+% Root Locus of tuned open-loop system
+figure(4);
+rlocus(L);
+title('Root Locus of Tuned Open-Loop System');
+
+% Bode plot of tuned open-loop system
+figure(5);
+bode(L);
+grid on;
+title('Bode Plot of Tuned Open-Loop System');
+
+% Root Locus of tuned closed-loop system
+figure(6);
+rlocus(T);
+title('Root Locus of Tuned Open-Loop System');
+
+% Bode plot of closed-loop system
+figure(7);
+bode(T);
+grid on;
+title('Bode Plot of Closed-Loop System');
+
+
+%% END
