@@ -13,7 +13,7 @@ var searchData=
   ['datalength_10',['DataLength',['../structxFrameHeader.html#ac15f58966ccc45104926122188a7f015',1,'xFrameHeader']]],
   ['dataready_11',['dataReady',['../classMPU6050.html#aafc3767ff1a351ed03b8aead396e1711',1,'MPU6050']]],
   ['dbuffer_12',['dBuffer',['../classPID.html#a220ea9c305c0f48b0b8443bcbe9cced5',1,'PID']]],
-  ['dc_13',['dc',['../classAdafruit__SSD1306__Spi.html#a0edbab47342673545a8acd03379bbfb6',1,'Adafruit_SSD1306_Spi::dc'],['../classPID.html#af825b006e765120ff387c4e15c6a7f8a',1,'PID::dC']]],
+  ['dc_13',['dc',['../classPID.html#af825b006e765120ff387c4e15c6a7f8a',1,'PID::dC'],['../classAdafruit__SSD1306__Spi.html#a0edbab47342673545a8acd03379bbfb6',1,'Adafruit_SSD1306_Spi::dc']]],
   ['debugging_14',['Debugging',['../index.html#autotoc_md18',1,'']]],
   ['default_15',['DEFAULT',['../TRMutex_8h.html#af5f478ebdb1815432fb04589309d5492a88ec7d5086d2469ba843c7fcceade8a6',1,'TRMutex.h']]],
   ['defence_5fbuff_16',['defence_buff',['../structbuff__t.html#a91c22d83e4bb3394dee2643fb6bff29c',1,'buff_t']]],

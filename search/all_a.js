@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['jetson_0',['jetson',['../classJetson.html#a7c2991556e900909a79cd85922ff454e',1,'Jetson::Jetson(BufferedSerial &amp;UARTJetson)'],['../classJetson.html#a47382bff6857b827186dd6e93d10ac8b',1,'Jetson::Jetson(SPISlave &amp;SPIJetson)'],['../classHero.html#ac89998aba6db5eaf84cc6ebfa9d7b69b',1,'Hero::jetson'],['../classInfantry.html#a82674d28754c08fa2c55620794d168cc',1,'Infantry::jetson'],['../classSentry.html#ad586655df04a340c6a7c4bd028881398',1,'Sentry::jetson'],['../classJetson.html',1,'Jetson']]],
+  ['jetson_0',['jetson',['../classHero.html#ac89998aba6db5eaf84cc6ebfa9d7b69b',1,'Hero::jetson'],['../classInfantry.html#a82674d28754c08fa2c55620794d168cc',1,'Infantry::jetson'],['../classSentry.html#ad586655df04a340c6a7c4bd028881398',1,'Sentry::jetson'],['../classJetson.html#a7c2991556e900909a79cd85922ff454e',1,'Jetson::Jetson(BufferedSerial &amp;UARTJetson)'],['../classJetson.html#a47382bff6857b827186dd6e93d10ac8b',1,'Jetson::Jetson(SPISlave &amp;SPIJetson)'],['../classJetson.html',1,'Jetson']]],
   ['jetson_2ecpp_1',['Jetson.cpp',['../Jetson_8cpp.html',1,'']]],
   ['jetson_2eh_2',['Jetson.h',['../Jetson_8h.html',1,'']]],
   ['jetson_5fraw_5fserial_3',['jetson_raw_serial',['../classHero.html#a554e2248203fe552c0ce4e9bd241da40',1,'Hero::jetson_raw_serial'],['../classInfantry.html#a6b14d11da4ae8a4617da3e387102eba9',1,'Infantry::jetson_raw_serial'],['../classSentry.html#a4cf1a288f54ebf6d9e3cad2ad39139a1',1,'Sentry::jetson_raw_serial']]],
