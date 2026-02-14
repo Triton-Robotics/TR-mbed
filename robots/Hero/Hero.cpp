@@ -167,9 +167,14 @@ public:
         pitch_desired_angle = std::clamp(pitch_desired_angle, PITCH_LOWER_BOUND, PITCH_UPPER_BOUND);
         des_turret_state.pitch_angle_degs = pitch_desired_angle;
         
-        
-        jetson_state = jetson.read();
+        ///
 
+
+
+        jetson_state = jetson.read();
+        chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
+        double movavg = chassis.encoderMovingAverage();
+        printf("%.2f\n",movavg);
         if (remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP)
         {
             // TODO: think about how we want to implement jetson aiming
