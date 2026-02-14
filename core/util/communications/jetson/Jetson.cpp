@@ -1,4 +1,5 @@
 #include "util/communications/jetson/Jetson.h"
+#include <us_ticker_api.h>
 
 Jetson::Jetson(BufferedSerial &UARTJetson)
     : bcJetson(&UARTJetson), spiJetson(nullptr) {
@@ -81,6 +82,7 @@ void Jetson::readThread() {
                     mutex_read_.lock();
                     // clang-format off
                     bytes_consumed = packet->parse_buff(&buff[buff_head], buff_tail - buff_head, read_state_);
+                    read_state_.stamp_us = us_ticker_read();
                     // clang-format on
                     mutex_read_.unlock();
 

@@ -11,6 +11,7 @@
 #include "util/peripherals/imu/BNO055.h"
 
 #include <algorithm>
+#include <us_ticker_api.h>
 
 constexpr auto IMU_I2C_SDA = PB_7;
 constexpr auto IMU_I2C_SCL = PB_8;
@@ -149,14 +150,25 @@ class Sentry : public BaseRobot {
         } else if (remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::DOWN) {
             // Jetson odom
             // TODO ------------------ ADD THIS BACK FOR ODOM MOVEMENT --------------------------
-            des_chassis_state.vX = jetson_state.desired_x_vel;
-            des_chassis_state.vY = jetson_state.desired_y_vel;
-            des_chassis_state.vOmega = jetson_state.desired_angular_vel;
-            chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::ODOM_ORIENTED);
+            if( (us_ticker_read() - jetson_state.stamp_us ) / 1000 > 500 ) {
+                des_chassis_state.vX = 0;
+                des_chassis_state.vY = 0;
+                des_chassis_state.vOmega = 0;
 
-            des_turret_state.turret_mode = TurretState::AIM;
-            des_turret_state.yaw_angle_degs = jetson_state.desired_yaw_rads * (180 / M_PI);
-            des_turret_state.pitch_angle_degs = jetson_state.desired_pitch_rads * (180 / M_PI);
+                des_turret_state.turret_mode = TurretState::AIM;
+                des_turret_state.yaw_angle_degs = turret.getState().yaw_angle_degs;
+                des_turret_state.pitch_angle_degs = turret.getState().pitch_angle_degs;
+            } else {
+                des_chassis_state.vX = jetson_state.desired_x_vel;
+                des_chassis_state.vY = jetson_state.desired_y_vel;
+                des_chassis_state.vOmega = jetson_state.desired_angular_vel;
+
+                des_turret_state.turret_mode = TurretState::AIM;
+                des_turret_state.yaw_angle_degs = jetson_state.desired_yaw_rads * (180 / M_PI);
+                des_turret_state.pitch_angle_degs = jetson_state.desired_pitch_rads * (180 / M_PI);
+            }
+
+            chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::ODOM_ORIENTED);
         } else {
             chassis.setWheelPower({0, 0, 0, 0});
             des_turret_state.turret_mode = TurretState::SLEEP;

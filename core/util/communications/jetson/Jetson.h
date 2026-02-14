@@ -23,6 +23,7 @@ class Jetson {
     };
 
     struct ReadState {
+        unsigned long long stamp_us;
         float desired_pitch_rads;
         float desired_yaw_rads;
         char shoot_status;
