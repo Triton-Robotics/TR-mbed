@@ -659,10 +659,45 @@ double ChassisSubsystem::getEncoderYawPosition() {
     float duty_min = 0.02943f;   // 2.943%
     float duty_max = 0.97058f;   // 97.058%
     double yaw_position = (double)(abs(((duty_raw - duty_min) / (duty_max - duty_min)) * 360.0));
-    printf("%.2f\n",yaw_position);
+    // printf("%.2f\n",yaw_position);
     return yaw_position;
 }
 
+double ChassisSubsystem::encoderMovingAverage() {
+    const int windowSize = 20;
+    static double readings[windowSize] = {0};
+    static int index = 0;
+    static bool filled = false;
+
+    double newReading = getEncoderYawPosition();
+    if (newReading < 0) {
+        return -1.0f; // Encoder not available
+    }
+
+    readings[index] = newReading;
+    index = (index + 1) % windowSize;
+    if (index == 0) {
+        filled = true;
+    }
+
+    double sum = 0.0;
+    double result = 0.0;
+
+    if (filled) {
+        for (int i = 0; i < windowSize; i++) {
+            sum += readings[i];
+        }
+        result = sum / windowSize;
+    } else {
+        for (int i = 0; i < index; i++) {
+            sum += readings[i];
+        }
+        result = sum / index;
+    }
+    // printf("%.2f\n",result);
+    return result;
+
+}
 void ChassisSubsystem::updateYawPhaseFromEncoder() {
     float encoder_reading = getEncoderYawPosition();
     if (encoder_reading >= 0) {

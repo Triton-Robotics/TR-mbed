@@ -330,6 +330,12 @@ public:
      * @return yaw position in degrees, or -1 if encoder not available
      */
     double getEncoderYawPosition();
+
+    /**
+     * A helper method to calculate the moving average of the encoder readings for yaw position
+     * @return the moving average of the encoder readings for yaw position
+     */
+    double encoderMovingAverage();
     
     /**
      * Updates yawPhase from the encoder reading
