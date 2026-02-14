@@ -88,6 +88,16 @@ static constexpr float radToDeg = 180.0f / 3.14159265358979323846f;
 static constexpr float accelConversion = accelRangeScale * g / 1000.0f; // The actual conversion factor from raw to m/s^2
 static constexpr float gyroConversion = gyroRangeScale * dpsToRad / 1000.0f;   // The conversion factor from raw to rad/s
 
+static constexpr float axBias = -0.22277; // Calculated bias values for xyz accel and gyro using Ozone
+static constexpr float ayBias = -0.30137;
+static constexpr float azBias = 9.8804 - 9.81;
+
+static constexpr float wxBias = 0.0054391;
+static constexpr float wyBias = -0.0097426;
+static constexpr float wzBias = -0.0061490;
+
+
+
 //Raw values to Acceleration (m/s^2)
 std::tuple<float, float, float> ISM330::readingToAccel(const uint8_t *readings) {
     int16_t rawX = (int16_t)((readings[1] << 8) | readings[0]);
@@ -95,9 +105,9 @@ std::tuple<float, float, float> ISM330::readingToAccel(const uint8_t *readings) 
     int16_t rawZ = (int16_t)((readings[5] << 8) | readings[4]);
 
 
-    float x = rawX * accelConversion;
-    float y = rawY * accelConversion;
-    float z = rawZ * accelConversion;
+    float x = (rawX * accelConversion) -axBias;
+    float y = (rawY * accelConversion) -ayBias;
+    float z = (rawZ * accelConversion) -azBias;
 
 
     return std::make_tuple(x, y, z);
@@ -110,9 +120,9 @@ std::tuple<float, float, float> ISM330::readingToGyro(const uint8_t *readings) {
     int16_t rawY = (int16_t)((readings[3] << 8) | readings[2]);
     int16_t rawZ = (int16_t)((readings[5] << 8) | readings[4]);
 
-    float x = rawX * gyroConversion;
-    float y = rawY * gyroConversion;
-    float z = rawZ * gyroConversion;
+    float x = (rawX * gyroConversion) - wxBias; 
+    float y = (rawY * gyroConversion) - wyBias;
+    float z = (rawZ * gyroConversion) - wzBias;
 
     return std::make_tuple(x, y, z);
 }
@@ -187,82 +197,91 @@ std::tuple<float, float, float, float, float, float> ISM330::readAG() noexcept//
     // States measured by sensor (accelerometer)
     float theta_s;  // Pitch
     float phi_s;    // roll
-    float psi_s = 0;    // Yaw, we don't use kalman, we just integrate w_z
+    float psi_s;    // Yaw, we don't use kalman, we just integrate w_z
    
     // Kalman Filter parameters and initailization
     float theta_n; // a priori estimation of Theta
     float theta_p = 0; // a posteriori estimation on Theta (set to zero for the initial time step k=0)
     float phi_n; // a priori estimation of Phi
     float phi_p = 0; // a posteriori estimation on Phi (set to zero for the initial time step k=0)
+    float psi_n; // a priori estimation of Psi, not really used since we aren't doing Kalman for yaw
+    float psi_p = 0; // a posteriori estimation of Psi, not really used
 
    
     float P_theta_n; // a priori covariance of Theta
     float P_phi_n; // a priori covariance of Phi
     float P_theta_p = 0; // a posteriori covariance of Theta
     float P_phi_p = 0; // a posteriori covariance of Phi
+    float P_psi_n; // a priori covariance of Psi, not really used
+    float P_psi_p = 0; // a posteriori covariance of Psi, not
    
     float K_theta; // Observer gain or Kalman gain for Theta
     float K_phi; // Observer gain or Kalman gain for Phi
+    float K_psi; // Observer gain or Kalman gain for Psi
    
-    float Q = 0.1; // Covariance of disturbance (unknown disturbance affecting w_x and w_y)
+    float Q = 0.1; // ORIGINALLY 0.1 Covariance of disturbance (unknown disturbance affecting w_x and w_y)
     float R = 4; // Covariance of noise (unknown noise affecting theta_s and phi_s)
 
+    float axVariance = 0.00040560;
+    float ayVariance = 0.00036644;
+    float azVariance = 0.0029198;
 
-    float sampleRate = 1/833.0;   //0.001 // Assuming 1khz for now
-    float ds = sampleRate *0.001; // Time step, not exactly sure why its 1/1000 sample rate but hopefully its good?
+    float sampleRate = 1/833.0;   // Since ODR is 833hz
+    float ds = sampleRate *0.001; // converting to ms
 
-    //Timer stuff for integration
-    static Timer timer;
-    static bool timerStarted = false;
+    // //Timer stuff for integration
+    // static Timer timer;
+    // static bool timerStarted = false;
     
     
-std::tuple<float, float, float> ISM330::imuKalmanUpdate(float accelX, float accelY, float accelZ, float gyroX, float gyroY, float gyroZ) {
+std::tuple<float, float, float> ISM330::imuKalmanUpdate(float dt) {
     // Updating inputs
-    w_x = gyroX; // input
-    w_y = gyroY; // input
-    w_z = gyroZ; // input
+    auto [ax, ay, az, w_x, w_y, w_z] = readAG();
+    // w_x = gyroX; // input
+    // w_y = gyroY; // input
+    // w_z = gyroZ; // input
 
-    //Timer for yaw 
-    if (!timerStarted) {
-        timer.start();
-        timerStarted = true;
-    }
+    // //Timer for yaw 
+    // if (!timerStarted) {
+    //     timer.start();
+    //     timerStarted = true;
+    // }
 
     // Updating models and the sensor measurements
     theta_m = theta_m - w_y*0.1;
     phi_m = phi_m + w_x*0.1;
 
 
-    theta_s=atan2(accelX/9.8,accelZ/9.8)/2/3.141592654*360;
-    phi_s=atan2(accelY/9.8,accelZ/9.8)/2/3.141592654*360;  
-   
+    theta_s=atan2(ax/9.8,az/9.8)/2/3.141592654*360;
+    phi_s=atan2(ay/9.8,az/9.8)/2/3.141592654*360;  
+
     // Predicting Pitch (theta), Roll (phi), and Yaw (psi) using Kalman Filter equations
     P_theta_n = P_theta_p + Q;
-    K_theta = P_theta_n/(P_theta_n + R);
+    K_theta = P_theta_n/(P_theta_n + R); //Formally used +R
     theta_n = theta_p - ds*w_y;
-    theta_p = theta_n + K_theta*(theta_s - theta_n);
+    theta_p = theta_n + K_theta*(theta_s - theta_n); 
     P_theta_p = (1-K_theta)*P_theta_n;
-   
+
     P_phi_n = P_phi_p + Q;
-    K_phi = P_phi_n/(P_phi_n + R);
+    K_phi = P_phi_n/(P_phi_n + R); //Formally used +R
     phi_n = phi_p + ds*w_x;
     phi_p = phi_n + K_phi*(phi_s - phi_n);
     P_phi_p = (1-K_phi)*P_phi_n;
 
-    float dt = timer.elapsed_time().count() * 0.000001;
-    timer.reset();
+
+
+    
+    // float dt = timer.elapsed_time().count() * 0.000001;
+    // timer.reset();
     psi_s = psi_s + w_z*dt; // Just integrate the gyro for yaw, no Kalman filter for that
     
     return std::make_tuple(theta_p, phi_p, psi_s);
 }
 
 
-void ISM330::getEulerAngles(ISM330_ANGULAR_POSITION_typedef& angles) {
-    auto [ax, ay, az, gx, gy, gz] = readAG();
-
-
-    auto [pitch, roll, yaw] = imuKalmanUpdate(ax, ay, az, gx, gy, gz);
-    angles.pitch = pitch;
+void ISM330::getEulerAngles(ISM330_ANGULAR_POSITION_typedef& angles, float dt) {
+    auto [pitch, roll, yaw] = imuKalmanUpdate(dt);
+    angles.pitch = pitch; // TODO: make this a constant with GyroConversion
     angles.roll = roll;
-    angles.yaw = yaw * radToDeg;
+    angles.yaw = yaw * radToDeg / 1000;
 }

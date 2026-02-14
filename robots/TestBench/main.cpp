@@ -73,6 +73,6 @@ int main(){
             //     printff("pitch: %.2f\n", pitch_x);
             // }
         }
-        ThisThread::sleep_for(1ms);
+        ThisThread::sleep_for(10ms);
     }
 }
