@@ -23,7 +23,7 @@ ChassisSubsystem::ChassisSubsystem(const Config &config)
     LB.outputCap = 16000;
     RB.outputCap = 16000;
 
-    setOmniKinematics(config.radius);
+    setOmniKinematics(config.radius, MECANUM);
     m_OmniKinematicsLimits.max_Vel = MAX_VEL; // m/s
     m_OmniKinematicsLimits.max_vOmega = 8; // rad/s
 
@@ -532,20 +532,36 @@ void ChassisSubsystem::setOmniKinematicsLimits(double max_Vel, double max_vOmega
 //     m_OmniKinematics.r4y = -sqrt(radius);
 // }
 
-void ChassisSubsystem::setOmniKinematics(double radius)
+void ChassisSubsystem::setOmniKinematics(double radius, HOLONOMIC_MODE mode)
 {
-    float SQRT_2 = sqrt(2);
-    m_OmniKinematics.r1x = radius/SQRT_2;
-    m_OmniKinematics.r1y = radius/SQRT_2;
+    if (mode == OMNI) {
+        float SQRT_2 = sqrt(2);
+        m_OmniKinematics.r1x = radius/SQRT_2;
+        m_OmniKinematics.r1y = radius/SQRT_2;
 
-    m_OmniKinematics.r2x = radius/SQRT_2;
-    m_OmniKinematics.r2y = radius/SQRT_2;
+        m_OmniKinematics.r2x = radius/SQRT_2;
+        m_OmniKinematics.r2y = radius/SQRT_2;
 
-    m_OmniKinematics.r3x = radius/SQRT_2;
-    m_OmniKinematics.r3y = radius/SQRT_2;
+        m_OmniKinematics.r3x = radius/SQRT_2;
+        m_OmniKinematics.r3y = radius/SQRT_2;
 
-    m_OmniKinematics.r4x = radius/SQRT_2;
-    m_OmniKinematics.r4y = radius/SQRT_2;
+        m_OmniKinematics.r4x = radius/SQRT_2;
+        m_OmniKinematics.r4y = radius/SQRT_2;
+    } 
+
+    else if (mode == MECANUM) {
+        m_OmniKinematics.r1x = WHEEL_TO_CHASSIS_CENTER_LY;
+        m_OmniKinematics.r1y = WHEEL_TO_CHASSIS_CENTER_LX;
+
+        m_OmniKinematics.r2x = WHEEL_TO_CHASSIS_CENTER_LY;
+        m_OmniKinematics.r2y = WHEEL_TO_CHASSIS_CENTER_LX;
+
+        m_OmniKinematics.r3x = WHEEL_TO_CHASSIS_CENTER_LY;
+        m_OmniKinematics.r3y = WHEEL_TO_CHASSIS_CENTER_LX;
+
+        m_OmniKinematics.r4x = WHEEL_TO_CHASSIS_CENTER_LY;
+        m_OmniKinematics.r4y = WHEEL_TO_CHASSIS_CENTER_LX;
+    }
 }
 
 // WheelSpeeds ChassisSubsystem::chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds)
@@ -559,10 +575,15 @@ void ChassisSubsystem::setOmniKinematics(double radius)
 //inputs chassis speeds in m/s, outputs wheel speeds in m/s
 WheelSpeeds ChassisSubsystem::chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds)
 {
-    return {(chassisSpeeds.vX + chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r1x) + (m_OmniKinematics.r1y))),
-            (chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y))),
-            (-chassisSpeeds.vX + chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y))),
-            (-chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r4x) + (m_OmniKinematics.r4y)))};
+    // return {(chassisSpeeds.vX + chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r1x) + (m_OmniKinematics.r1y))),
+    //         (chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y))),
+    //         (-chassisSpeeds.vX + chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y))),
+    //         (-chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r4x) + (m_OmniKinematics.r4y)))};
+
+    return {(chassisSpeeds.vY + chassisSpeeds.vX - chassisSpeeds.vOmega * ((m_OmniKinematics.r1x) + (m_OmniKinematics.r1y))),
+            (chassisSpeeds.vY - chassisSpeeds.vX - chassisSpeeds.vOmega * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y))),
+            (-chassisSpeeds.vY + chassisSpeeds.vX - chassisSpeeds.vOmega * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y))),
+            (-chassisSpeeds.vY - chassisSpeeds.vX - chassisSpeeds.vOmega * ((m_OmniKinematics.r4x) + (m_OmniKinematics.r4y)))};
 }
 
 // ChassisSpeeds ChassisSubsystem::wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds)

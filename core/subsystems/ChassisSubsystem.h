@@ -23,6 +23,8 @@
 #define SECONDS_PER_MINUTE 60
 #define TICKS_PER_ROTATION 8192.0
 #define WHEEL_DIAMETER_METERS 0.146
+#define WHEEL_TO_CHASSIS_CENTER_LX 0.21
+#define WHEEL_TO_CHASSIS_CENTER_LY 0.14
 
 #define MAX_BEYBLADE_SPEED 1800
 #define BEYBLADE_ACCELERATION 0.05
@@ -126,6 +128,12 @@ public:
         REVERSE_YAW_ORIENTED,
         ROBOT_ORIENTED,
         ODOM_ORIENTED
+    };
+
+    enum HOLONOMIC_MODE
+    {
+        OMNI,
+        MECANUM
     };
 
     float previousRPM[4] = {0, 0, 0, 0};
@@ -354,7 +362,7 @@ private:
 
     OmniKinematics m_OmniKinematics;
     float chassis_radius;
-    void setOmniKinematics(double radius);
+    void setOmniKinematics(double radius, HOLONOMIC_MODE mode = OMNI);
     // Eigen::MatrixXd wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds);
 
     double FF_Ks;

@@ -77,7 +77,7 @@ public:
         BaseRobot(config),     
     i2c_(IMU_I2C_SDA, IMU_I2C_SCL),
     imu_(i2c_, IMU_RESET, MODE_IMU),
-    encoder_(PA_7),
+    encoder_(PB_4),
     jetson_raw_serial(PC_12, PD_2, 115200), // TODO: check higher baud to see if still works
     jetson(jetson_raw_serial),
     turret(TurretSubsystem::config{
@@ -154,7 +154,7 @@ public:
         // Chassis + Turret Logic
         // TODO migrate away from remote chassis/pitch/yaw specific code
         des_chassis_state.vX = remote_.getChannel(Remote::Channel::LEFT_VERTICAL);
-        des_chassis_state.vY = -1 * remote_.getChannel(Remote::Channel::LEFT_HORIZONTAL);
+        des_chassis_state.vY = remote_.getChannel(Remote::Channel::LEFT_HORIZONTAL);
 
         // Turret from remote
         float joystick_yaw = remote_.getChannel(Remote::Channel::RIGHT_HORIZONTAL);
@@ -169,7 +169,6 @@ public:
         
         
         jetson_state = jetson.read();
-
         if (remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP)
         {
             // TODO: think about how we want to implement jetson aiming
@@ -177,7 +176,7 @@ public:
             // des_turret_state.yaw_angle = jetson_state.desired_yaw_rads;
 
             des_chassis_state.vOmega = 0;
-            chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
+            chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::ROBOT_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
         }
         else if (remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::DOWN)
