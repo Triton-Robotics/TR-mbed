@@ -27,7 +27,7 @@ class BaseRobot {
     };
 
     Remote remote_;
-    Referee referee;
+    Referee referee_;
 
     CANHandler canHandler1_;
     CANHandler canHandler2_;
@@ -69,7 +69,7 @@ class BaseRobot {
     // clang-format off
     BaseRobot(const Config &config)
         : remote_(config.remote_pin),
-          referee(config.referee_tx_pin, config.referee_rx_pin), 
+          referee_(config.referee_tx_pin, config.referee_rx_pin), 
           canHandler1_(config.can1_rx_pin, config.can1_tx_pin),
           canHandler2_(config.can2_rx_pin, config.can2_tx_pin),
           led0_(config.led0_pin),

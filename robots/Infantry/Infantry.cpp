@@ -204,8 +204,8 @@ class Infantry : public BaseRobot {
 
         turret.periodic(chassis.getChassisSpeeds().vOmega * 60 / (2 * PI));
         chassis.periodic(&imuAngles);
-        shooter.periodic(referee.power_heat_data.shooter_17mm_1_barrel_heat,
-                         referee.robot_status.shooter_barrel_heat_limit);
+        shooter.periodic(referee_.power_heat_data.shooter_17mm_1_barrel_heat,
+                         referee_.robot_status.shooter_barrel_heat_limit);
 
         // jetson comms
         set_jetson_state();

@@ -210,11 +210,11 @@ public:
         
         turret.periodic(chassis.getChassisSpeeds().vOmega * 60 / (2*PI));
         chassis.periodic(&imuAngles);
-        shooter.periodic(referee.power_heat_data.shooter_17mm_1_barrel_heat, referee.robot_status.shooter_barrel_heat_limit);
+        shooter.periodic(referee_.power_heat_data.shooter_17mm_1_barrel_heat, referee_.robot_status.shooter_barrel_heat_limit);
 
         // jetson comms
-        stm_state.game_state = referee.get_game_progress();
-        stm_state.robot_hp = referee.get_remain_hp();
+        stm_state.game_state = referee_.get_game_progress();
+        stm_state.robot_hp = referee_.get_remain_hp();
 
         stm_state.chassis_x_velocity = chassis.getChassisSpeeds().vX;
         stm_state.chassis_y_velocity = chassis.getChassisSpeeds().vY;
