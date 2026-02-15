@@ -157,12 +157,12 @@ public:
         float joystick_yaw = remote_.getChannel(Remote::Channel::RIGHT_HORIZONTAL);
         yaw_desired_angle -= joystick_yaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
         yaw_desired_angle = capAngle(yaw_desired_angle);
-        des_turret_state.yaw_angle = yaw_desired_angle;
+        des_turret_state.yaw_angle_degs = yaw_desired_angle;
         
         float joystick_pitch = remote_.getChannel(Remote::Channel::RIGHT_VERTICAL);
         pitch_desired_angle += joystick_pitch * JOYSTICK_PITCH_SENSITIVITY_DPS * dt_us / 1000000;
         pitch_desired_angle = std::clamp(pitch_desired_angle, PITCH_LOWER_BOUND, PITCH_UPPER_BOUND);
-        des_turret_state.pitch_angle = pitch_desired_angle;
+        des_turret_state.pitch_angle_degs = pitch_desired_angle;
         
         
         jetson_state = jetson.read();
@@ -220,10 +220,10 @@ public:
         stm_state.chassis_y_velocity = chassis.getChassisSpeeds().vY;
         stm_state.chassis_rotation = chassis.getChassisSpeeds().vOmega;
 
-        stm_state.yaw_angle_rads = turret.getState().yaw_angle;
-        stm_state.yaw_velocity = turret.getState().yaw_velo;
-        stm_state.pitch_angle_rads = turret.getState().pitch_angle;
-        stm_state.pitch_velocity = turret.getState().pitch_angle;
+        stm_state.yaw_angle_rads = turret.getState().yaw_angle_degs;
+        stm_state.yaw_velocity = turret.getState().yaw_velo_rad_s;
+        stm_state.pitch_angle_rads = turret.getState().pitch_angle_degs;
+        stm_state.pitch_velocity = turret.getState().pitch_angle_degs;
         jetson.write(stm_state);
 
 
