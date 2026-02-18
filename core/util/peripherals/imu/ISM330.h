@@ -94,10 +94,10 @@ public:
 
 
     // IMU Sensor Fusion
-    std::tuple<float, float, float> imuKalmanUpdate(float dt);
+    std::tuple<float, float, float> imuKalmanUpdate(float dt, float psi_s);
 
 
-    void getEulerAngles(ISM330_ANGULAR_POSITION_typedef& angles, float dt);
+    void getEulerAngles(ISM330_ANGULAR_POSITION_typedef& angles, float dt, float psi_s);
 
 
 

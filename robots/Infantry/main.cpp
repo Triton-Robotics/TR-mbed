@@ -64,7 +64,8 @@ constexpr int FLYWHEEL_VELO = 5500;
 BNO055_ANGULAR_POSITION_typedef imuAngles;
 #endif
 
-//BNO055_VECTOR_TypeDef magField;
+BNO055_VECTOR_TypeDef magField;
+BNO055_ANGULAR_POSITION_typedef magYaw;
 
 ISM330::ISM330_VECTOR_TypeDef imuAccelISM;
 ISM330::ISM330_VECTOR_TypeDef imuGyroISM;
@@ -80,23 +81,18 @@ I2C i2c2(I2C_SDA2, I2C_SCL2);
 ISM330 imu2(i2c, 0x6B);
 
 
-BNO055 imu(i2c, IMU_RESET, MODE_IMU);
+float getPsi(float pitch, float roll, float mX, float mY, float mZ) {
+    float pitchRad = pitch * M_PI / 180.0f;
+    float rollRad = roll * M_PI / 180.0f;
 
 
-float YawChecker(float BNO055Yaw, float ISMYaw) {
-    float yawDiff = BNO055Yaw - ISMYaw;
-
-    // Normalize the difference to the range [-180, 180]
-    while (yawDiff > 180.0f) yawDiff -= 360.0f;
-    while (yawDiff < -180.0f) yawDiff += 360.0f;
-
-    return yawDiff;
-
+    float Xh = mX * cos(pitchRad) - mZ * sin(pitchRad);
+    float Yh = mX * sin(rollRad) * sin(pitchRad) + mY * cos(rollRad) + mZ * sin(rollRad) * cos(pitchRad);
+return atan2(Yh, Xh)*180/M_PI;
 }
+  
 
-
-
-
+BNO055 imu(i2c, IMU_RESET, MODE_NDOF);
 
 int main(){
 
@@ -110,44 +106,31 @@ int main(){
     // printf("Accel %.2f, %.2f, %.2f | Gyro %.2f, %.2f, %.2f\n", ax, ay, az, gx, gy, gz);
     // }
 
-    // Kalman Filter time (Horror)
-    imu.get_angular_position_quat(&imuAngles); // Initial reading to set initial yaw
-    //imu.get_mag(&magField);
-    
-    
-    imu2.getAGVectors(imuAccelISM, imuGyroISM);
-    imu2.getEulerAngles(imuAnglesISM, 0.001f);
 
 
-
-    float initialBNO055Yaw = imuAngles.yaw;
-    ThisThread::sleep_for(100ms);
-    float initialISM330Yaw = imuAnglesISM.yaw;
     int timer = us_ticker_read();
     int prev_time = us_ticker_read();
     while (true) {
         timer = us_ticker_read();
-        // auto [ax, ay, az] = imu.readAccel();
-        // auto [gx, gy, gz] = imu.readGyro();
-
-        // auto [ax, ay, az, gx, gy, gz] = imu2.readAG();
-        // auto [ism_pitch, ism_roll] = imu2.imuKalmanUpdate(ax, ay, az, gx, gy);
 
         #ifdef USE_IMU
         imu.get_angular_position_quat(&imuAngles);     
         #endif   
+        
+        imu.get_mag(&magField);
 
+        magYaw.yaw= atan2(magField.y,magField.x)/2/M_PI*360;
+
+        float psi_s = getPsi(imuAngles.pitch, imuAngles.roll, magField.x, magField.y, magField.z);
 
         imu2.getAGVectors(imuAccelISM, imuGyroISM);
-        imu2.getEulerAngles(imuAnglesISM, (timer-prev_time) / 1000);
+        imu2.getEulerAngles(imuAnglesISM, (timer-prev_time) / 1000, psi_s);
 
-        float BNO_OffsetYaw = imuAngles.yaw - initialBNO055Yaw;
-        float ISM_OffsetYaw = imuAnglesISM.yaw - initialISM330Yaw;
-        float yawDiff = YawChecker(BNO_OffsetYaw, ISM_OffsetYaw);
-        
+        printf("BNO Yaw: %.2f| ISM Yaw: %.2f | Mag Yaw: %.2f | Psi_s: %.2f\n", imuAngles.yaw, imuAnglesISM.yaw, magYaw.yaw, psi_s);
+
         //printf("Accel %.2f, %.2f, %.2f | Gyro %.2f, %.2f, %.2f | KF Pitch: %.2f | KF Yaw: %.2f\n", ax, ay, az, gx, gy, gz, kf_pitch, kf_yaw);
         
-        printf("ISM Accel: %.2f, %.2f, %.2f | ISM Gyro: %.2f, %.2f, %.2f | ISM Pitch: %.2f | ISM Roll: %.2f\n", imuAccelISM.x, imuAccelISM.y, imuAccelISM.z, imuGyroISM.x, imuGyroISM.y, imuGyroISM.z, imuAnglesISM.pitch, imuAnglesISM.roll);
+        //printf("ISM Accel: %.2f, %.2f, %.2f | ISM Gyro: %.2f, %.2f, %.2f | ISM Pitch: %.2f | ISM Roll: %.2f\n", imuAccelISM.x, imuAccelISM.y, imuAccelISM.z, imuGyroISM.x, imuGyroISM.y, imuGyroISM.z, imuAnglesISM.pitch, imuAnglesISM.roll);
 
         //printf("BNO Yaw: %.2f | Pitch: %.2f | Roll: %.2f| ISM Yaw: %.2f | Pitch: %.2f | Roll: %.2f | w_z: %.2f\n", imuAngles.yaw, imuAngles.pitch, imuAngles.roll, imuAnglesISM.yaw, imuAnglesISM.pitch, imuAnglesISM.roll, imuGyroISM.z);
         
