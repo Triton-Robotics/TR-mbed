@@ -15,8 +15,14 @@
 PID::config test_motor_vel_PID = {1, 0, 0};
 PID::config test_motor_pos_PID = {1, 0, 0};
 
-// declare pin number (buffer, serial)
+// declare pin number (bufferedserial)
+BufferedSerial pc(PA_2, PA_3, 115200);  // TX, RX, baud
 
+int main() {
+    const char msg[] = "hello\r\n";
+    pc.write(msg, sizeof(msg) - 1);
+    while (true) { ThisThread::sleep_for(500ms); }
+}
 
 class TestBench : public BaseRobot {
   public:
