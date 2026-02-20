@@ -128,7 +128,7 @@ class Infantry : public BaseRobot {
             0.22617,  // radius
             0.065,    // speed_pid_ff_ks
             &turret.yaw,  // yaw_motor
-            356,     // yaw_initial_offset_ticks
+            1700,     // yaw_initial_offset_ticks
             imu_     
         }
         )
@@ -156,7 +156,7 @@ class Infantry : public BaseRobot {
         // TODO: use this in code correctly to drive faster
         max_linear_vel = 1.24 + 0.0513 * chassis.power_limit + 0.000216 * (chassis.power_limit * chassis.power_limit);
         des_chassis_state.vX = jy * max_linear_vel;
-        des_chassis_state.vY = -1 * jx * max_linear_vel;
+        des_chassis_state.vY = jx * max_linear_vel;
 
         // Turret from remote
         yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * dt_us / 1000000;

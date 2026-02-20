@@ -119,7 +119,7 @@ class Sentry : public BaseRobot {
         // Chassis + Turret Logic
         // TODO migrate away from remote chassis/pitch/yaw specific code
         des_chassis_state.vX = remote_.getChannel(Remote::Channel::LEFT_VERTICAL);
-        des_chassis_state.vY = -1 * remote_.getChannel(Remote::Channel::LEFT_HORIZONTAL);
+        des_chassis_state.vY = remote_.getChannel(Remote::Channel::LEFT_HORIZONTAL);
 
         // Turret from remote
         float joystick_yaw = remote_.getChannel(Remote::Channel::RIGHT_HORIZONTAL);
@@ -149,7 +149,6 @@ class Sentry : public BaseRobot {
             des_turret_state.turret_mode = TurretState::AIM;
         } else if (remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::DOWN) {
             // Jetson odom
-            // TODO ------------------ ADD THIS BACK FOR ODOM MOVEMENT --------------------------
             if( (us_ticker_read() - jetson_state.stamp_us ) / 1000 > 500 ) {
                 des_chassis_state.vX = 0;
                 des_chassis_state.vY = 0;
