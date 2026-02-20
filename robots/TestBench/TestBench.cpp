@@ -32,8 +32,7 @@ struct VTMinput {
 
 class TestBench : public BaseRobot {
   public:
-    DJIMotor motor;
-	uint8_t rxBuffer[256]; 
+	uint8_t rxBuffer[32]; 
 
 	// declare pin number (bufferedserial)
 	BufferedSerial pc;  // TX, RX, baud
@@ -41,14 +40,6 @@ class TestBench : public BaseRobot {
     TestBench(Config &config)
         : BaseRobot(config),
           // clang-format off
-        motor(DJIMotor::config{
-            1,
-            CANHandler::CANBUS_1,
-            M3508,
-            "Test motor",
-            test_motor_vel_PID,
-            test_motor_pos_PID
-        }),
 		pc(PA_2, PA_3, 921600)
         // clang-format on        
     {}
@@ -62,10 +53,10 @@ class TestBench : public BaseRobot {
     
     void periodic(unsigned long dt_us) override {
 		// logic goes here
-        motor.setPower(0);
 		pc.read(rxBuffer, sizeof(rxBuffer));
-		printf("Received data: %s\n", rxBuffer);
-		for(int i = 0; i < sizeof(rxBuffer); i++) {
+		// printf("Received data: %s\n", rxBuffer);
+        printf("Hello\n");
+		for(unsigned int i = 0; i < sizeof(rxBuffer); i++) {
 			if(rxBuffer[i] == 0xA9) {
 				printf("Found header at index %d\n", i);
 				// Process the frame starting from this index

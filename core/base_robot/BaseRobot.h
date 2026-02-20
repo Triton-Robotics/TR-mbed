@@ -12,8 +12,8 @@ class BaseRobot {
     struct Config {
     //PinName remote_pin = PA_10;
 
-         PinName referee_tx_pin = PA_2;
-         PinName referee_rx_pin = PA_3;
+         PinName referee_tx_pin = PC_10;
+        PinName referee_rx_pin = PC_11;
 
         PinName can1_rx_pin = PA_11;
         PinName can1_tx_pin = PA_12;
