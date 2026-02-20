@@ -32,7 +32,7 @@ struct VTMinput {
 
 class TestBench : public BaseRobot {
   public:
-	uint8_t rxBuffer[32]; 
+	uint8_t rxBuffer[50]; 
 
 	// declare pin number (bufferedserial)
 	BufferedSerial pc;  // TX, RX, baud
@@ -40,7 +40,7 @@ class TestBench : public BaseRobot {
     TestBench(Config &config)
         : BaseRobot(config),
           // clang-format off
-		pc(PA_2, PA_3, 921600)
+		pc(PC_10, PC_11, 921600)
         // clang-format on        
     {}
 
@@ -53,10 +53,12 @@ class TestBench : public BaseRobot {
     
     void periodic(unsigned long dt_us) override {
 		// logic goes here
-		pc.read(rxBuffer, sizeof(rxBuffer));
-		// printf("Received data: %s\n", rxBuffer);
+		if (pc.readable()){
+			pc.read(rxBuffer, sizeof(rxBuffer));
+			printf("Received data: %s\n", rxBuffer);
+		}
         printf("Hello\n");
-		for(unsigned int i = 0; i < sizeof(rxBuffer); i++) {
+		for(unsigned int i = 0; i <= sizeof(rxBuffer); i++) {
 			if(rxBuffer[i] == 0xA9) {
 				printf("Found header at index %d\n", i);
 				// Process the frame starting from this index
@@ -68,12 +70,12 @@ class TestBench : public BaseRobot {
 
     void end_of_loop() override {}
 
-    unsigned int main_loop_dt_ms() override { return 2; } // 500 Hz loop
+    unsigned int main_loop_dt_ms() override { return 15; } // 500 Hz loop
 };
 
 
 int main() {
-    printf("HELLO\n");
+    //printf("HELLO\n");
     BaseRobot::Config config = BaseRobot::Config{}; 
     TestBench TestBench(config);
 	

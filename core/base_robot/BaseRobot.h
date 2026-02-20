@@ -34,8 +34,8 @@ class BaseRobot {
     //Remote remote_;
     //Referee referee;
 
-    CANHandler canHandler1_;
-    CANHandler canHandler2_;
+    // CANHandler canHandler1_;
+    // CANHandler canHandler2_;
     DigitalOut led0_;
     DigitalOut led1_;
     DigitalOut led2_;
@@ -74,8 +74,8 @@ class BaseRobot {
     // clang-format off
     BaseRobot(const Config &config)
         : //referee(config.referee_tx_pin, config.referee_rx_pin), 
-          canHandler1_(config.can1_rx_pin, config.can1_tx_pin),
-          canHandler2_(config.can2_rx_pin, config.can2_tx_pin),
+        //   canHandler1_(config.can1_rx_pin, config.can1_tx_pin),
+        //   canHandler2_(config.can2_rx_pin, config.can2_tx_pin),
           led0_(config.led0_pin),
           led1_(config.led1_pin),
           led2_(config.led2_pin)
@@ -102,9 +102,9 @@ class BaseRobot {
         // Each can message has an id and data, and djimotor ids start from 0x201(m3508 id 1) and
         // end at 0x20D (gm6020 id 8), there is an overlap of 4 motors (M3508 id 5-8 and gm6020 id
         // 1-4), so that is why we have 12 values only
-        canHandler1_.registerCallback(0x201, 0x20D, DJIMotor::getCan1Feedback);
-        canHandler2_.registerCallback(0x201, 0x20D, DJIMotor::getCan2Feedback);
-        DJIMotor::setCanHandlers(&canHandler1_, &canHandler2_);
+        // canHandler1_.registerCallback(0x201, 0x20D, DJIMotor::getCan1Feedback);
+        // canHandler2_.registerCallback(0x201, 0x20D, DJIMotor::getCan2Feedback);
+        // DJIMotor::setCanHandlers(&canHandler1_, &canHandler2_);
 
         init();
 
@@ -128,13 +128,13 @@ class BaseRobot {
                 prev_loop_time_us = us_ticker_read();
 
                 // Motor updates
-                DJIMotor::sendValues();
+                // DJIMotor::sendValues();
             }
             // Add sensors updates in your end of loop
             end_of_loop();
 
-            canHandler1_.readAllCan();
-            canHandler2_.readAllCan();
+            // canHandler1_.readAllCan();
+            // canHandler2_.readAllCan();
         }
     }
 
