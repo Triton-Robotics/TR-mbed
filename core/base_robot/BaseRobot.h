@@ -10,21 +10,26 @@
 class BaseRobot {
   public:
     struct Config {
-        PinName remote_pin = PA_10;
+    //     PinName remote_pin = PA_10;
 
-        PinName referee_tx_pin = PC_10;
-        PinName referee_rx_pin = PC_11;
+         PinName referee_tx_pin = PA_2;
+         PinName referee_rx_pin = PA_3;
 
-        PinName can1_rx_pin = PA_11;
-        PinName can1_tx_pin = PA_12;
+    //     PinName can1_rx_pin = PA_11;
+    //     PinName can1_tx_pin = PA_12;
 
-        PinName can2_rx_pin = PB_12;
-        PinName can2_tx_pin = PB_13;
+    //     PinName can2_rx_pin = PB_12;
+    //     PinName can2_tx_pin = PB_13;
 
-        PinName led0_pin = PB_0;
-        PinName led1_pin = PC_1;
-        PinName led2_pin = PC_0;
+    //     PinName led0_pin = PB_0;
+    //     PinName led1_pin = PC_1;
+    //     PinName led2_pin = PC_0;
     };
+
+	// struct ConfigNew {
+	// 	PinName remote_rx = PA_3;
+	// 	PinName remote_tx = PA_2;
+	// };
 
     Remote remote_;
     Referee referee;

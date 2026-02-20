@@ -12,17 +12,18 @@
 
 #include <algorithm>
 
+#include "main.h"
+#include <string.h>
+
+UART_HandleTypeDef huart2;
+uint8_t rxBuffer[256]; 
+uint8_t tempByte;
+
 PID::config test_motor_vel_PID = {1, 0, 0};
 PID::config test_motor_pos_PID = {1, 0, 0};
 
 // declare pin number (bufferedserial)
 BufferedSerial pc(PA_2, PA_3, 115200);  // TX, RX, baud
-
-int main() {
-    const char msg[] = "hello\r\n";
-    pc.write(msg, sizeof(msg) - 1);
-    while (true) { ThisThread::sleep_for(500ms); }
-}
 
 class TestBench : public BaseRobot {
   public:
@@ -58,6 +59,23 @@ class TestBench : public BaseRobot {
     unsigned int main_loop_dt_ms() override { return 2; } // 500 Hz loop
 };
 
+struct VTMinput {
+	uint16_t ch0, ch1, ch2, ch3; // 11-bit
+	uint8_t  mode;               // 2 bits
+	uint8_t  pause, btnL, btnR;  // 1 bit
+	uint16_t dial;               // 11-bit
+	uint8_t  trigger;            // 1 bit
+	int16_t  mouseX, mouseY, mouseZ; // 16-bit 
+	uint8_t  mouseL, mouseR, mouseM; // 2-bit 
+	uint16_t keyboard;           // 16-bit
+};
+
+static framereading(){
+	//find header 1 and header 2
+	while(0xA9) {
+		
+	}
+}
 
 int main() {
     printf("HELLO\n");
