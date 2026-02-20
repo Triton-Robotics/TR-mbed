@@ -11,8 +11,6 @@
 #include "util/peripherals/imu/BNO055.h"
 
 #include <algorithm>
-
-#include "main.h"
 #include <string.h>
 
 
@@ -67,7 +65,7 @@ class TestBench : public BaseRobot {
         motor.setPower(0);
 		pc.read(rxBuffer, sizeof(rxBuffer));
 		printf("Received data: %s\n", rxBuffer);
-		for(uint8_t i = 0; i < sizeof(rxBuffer); i++) {
+		for(int i = 0; i < sizeof(rxBuffer); i++) {
 			if(rxBuffer[i] == 0xA9) {
 				printf("Found header at index %d\n", i);
 				// Process the frame starting from this index
@@ -82,13 +80,6 @@ class TestBench : public BaseRobot {
     unsigned int main_loop_dt_ms() override { return 2; } // 500 Hz loop
 };
 
-
-static framereading(){
-	//find header 1 and header 2
-	while(0xA9) {
-
-	}
-}
 
 int main() {
     printf("HELLO\n");
