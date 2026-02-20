@@ -37,7 +37,7 @@ var searchData=
   ['filldisplay_34',['fillDisplay',['../classSSD1308.html#a37cc717a9520a7a010b5394675384264',1,'SSD1308']]],
   ['finding_20the_20makefile_35',['Finding the Makefile',['../index.html#autotoc_md9',1,'']]],
   ['first_5fdart_5fspeed_36',['first_dart_speed',['../structext__dart__client__cmd__t.html#ac9a028de0a934e6373eca5eb79729fcb',1,'ext_dart_client_cmd_t']]],
-  ['fl_5fvel_5fconfig_37',['fl_vel_config',['../Infantry_8cpp.html#a61f0523e4315c971440588b43a75bdb6',1,'FL_VEL_CONFIG:&#160;Infantry.cpp'],['../Hero_8cpp.html#a88bc1aa986d3e2d0b8f2acaac2f41628',1,'fl_vel_config:&#160;Hero.cpp'],['../structOmniWheelSubsystem_1_1config.html#a32a2d63a07bdeddfbef701c2077ee083',1,'OmniWheelSubsystem::config::fl_vel_config'],['../Sentry_8cpp.html#a88bc1aa986d3e2d0b8f2acaac2f41628',1,'fl_vel_config:&#160;Sentry.cpp']]],
+  ['fl_5fvel_5fconfig_37',['fl_vel_config',['../Sentry_8cpp.html#a88bc1aa986d3e2d0b8f2acaac2f41628',1,'fl_vel_config:&#160;Sentry.cpp'],['../Infantry_8cpp.html#a61f0523e4315c971440588b43a75bdb6',1,'FL_VEL_CONFIG:&#160;Infantry.cpp'],['../structOmniWheelSubsystem_1_1config.html#a32a2d63a07bdeddfbef701c2077ee083',1,'OmniWheelSubsystem::config::fl_vel_config'],['../Hero_8cpp.html#a88bc1aa986d3e2d0b8f2acaac2f41628',1,'fl_vel_config:&#160;Hero.cpp']]],
   ['flashing_20and_20building_20code_38',['Flashing and building code',['../index.html#autotoc_md8',1,'']]],
   ['flashing_20stm32_20old_20method_39',['Flashing STM32 (Old Method)',['../index.html#autotoc_md11',1,'']]],
   ['flashing_20to_20jlink_40',['Flashing to JLink',['../index.html#autotoc_md10',1,'']]],

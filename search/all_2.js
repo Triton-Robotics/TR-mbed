@@ -6,7 +6,7 @@ var searchData=
   ['beyblade_3',['BEYBLADE',['../classOmniWheelSubsystem.html#ac515d6ca6dd2cb83fc6baea95d14f917ab255e0ce2445ee4510092a3535245a3a',1,'OmniWheelSubsystem']]],
   ['beyblade_5facceleration_4',['BEYBLADE_ACCELERATION',['../ChassisSubsystem_8h.html#a671b7b1546d2fb81d6ab9076e297dfa3',1,'ChassisSubsystem.h']]],
   ['bisection_5',['Bisection',['../classChassisSubsystem.html#a128186a64a493450fccf61359bb7d0a7',1,'ChassisSubsystem']]],
-  ['bl_5fvel_5fconfig_6',['bl_vel_config',['../Infantry_8cpp.html#ac1531c0208a008e02902f9f807fed136',1,'BL_VEL_CONFIG:&#160;Infantry.cpp'],['../Hero_8cpp.html#a0b0944514eb945e2c972bc4f68806a70',1,'bl_vel_config:&#160;Hero.cpp'],['../Sentry_8cpp.html#a0b0944514eb945e2c972bc4f68806a70',1,'bl_vel_config:&#160;Sentry.cpp'],['../structOmniWheelSubsystem_1_1config.html#a643c7f6f76828089a7c4f611ecbb7116',1,'OmniWheelSubsystem::config::bl_vel_config']]],
+  ['bl_5fvel_5fconfig_6',['bl_vel_config',['../Hero_8cpp.html#a0b0944514eb945e2c972bc4f68806a70',1,'bl_vel_config:&#160;Hero.cpp'],['../Sentry_8cpp.html#a0b0944514eb945e2c972bc4f68806a70',1,'bl_vel_config:&#160;Sentry.cpp'],['../Infantry_8cpp.html#ac1531c0208a008e02902f9f807fed136',1,'BL_VEL_CONFIG:&#160;Infantry.cpp'],['../structOmniWheelSubsystem_1_1config.html#a643c7f6f76828089a7c4f611ecbb7116',1,'OmniWheelSubsystem::config::bl_vel_config']]],
   ['black_7',['BLACK',['../Adafruit__GFX_8h.html#a7b3b25cba33b07c303f3060fe41887f6',1,'Adafruit_GFX.h']]],
   ['blid_8',['blid',['../structOmniWheelSubsystem_1_1config.html#af855e43c5398c6c130da8c91f320077d',1,'OmniWheelSubsystem::config']]],
   ['blink_5fenable_9',['BLINK_ENABLE',['../SSD1308_8h.html#a1808dc41d92dee646c8e87ef528b0e6a',1,'SSD1308.h']]],

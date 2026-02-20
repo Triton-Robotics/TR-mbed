@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['z_0',['z',['../structBNO055__QUATERNION__TypeDef.html#af1fea9525c1cdf4b5d10b28382199d7a',1,'BNO055_QUATERNION_TypeDef::z'],['../structBNO055__VECTOR__TypeDef.html#a2915bc86a1f0100f459e7458079dfdfe',1,'BNO055_VECTOR_TypeDef::z'],['../structIMU_1_1Quaternion.html#a8ce2a68f7515cae4aafa6d762998eaf8',1,'IMU::Quaternion::z'],['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fa21c2e59531c8710156d34a3c30ac81d5',1,'Remote::Z']]],
+  ['z_0',['z',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fa21c2e59531c8710156d34a3c30ac81d5',1,'Remote::Z'],['../structBNO055__QUATERNION__TypeDef.html#af1fea9525c1cdf4b5d10b28382199d7a',1,'BNO055_QUATERNION_TypeDef::z'],['../structBNO055__VECTOR__TypeDef.html#a2915bc86a1f0100f459e7458079dfdfe',1,'BNO055_VECTOR_TypeDef::z'],['../structIMU_1_1Quaternion.html#a8ce2a68f7515cae4aafa6d762998eaf8',1,'IMU::Quaternion::z']]],
   ['z_5ffine_5fgain_1',['Z_FINE_GAIN',['../MPU6050_8h.html#a3a7ba0accd4030b06d353933b16f8996',1,'MPU6050.h']]],
   ['za_5foffset_5fh_2',['ZA_OFFSET_H',['../MPU6050_8h.html#a3beaaac6dcdf69ac6d4971944650c92e',1,'MPU6050.h']]],
   ['za_5foffset_5fl_5ftc_3',['ZA_OFFSET_L_TC',['../MPU6050_8h.html#ad2c767fc7821a921a286b1442cc5ae9a',1,'MPU6050.h']]],
