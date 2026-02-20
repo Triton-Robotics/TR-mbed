@@ -59,7 +59,7 @@ class TestBench : public BaseRobot {
 		}
         printf("Hello\n");
 		for(unsigned int i = 0; i <= sizeof(rxBuffer); i++) {
-			if(rxBuffer[i] == 0xA9) {
+			if((rxBuffer[i] == 0xA9) || (rxBuffer[i] == 0x53)) {
 				printf("Found header at index %d\n", i);
 				// Process the frame starting from this index
 				// For example, if the frame is 10 bytes long:
