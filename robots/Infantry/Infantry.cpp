@@ -6,6 +6,7 @@
 #include "subsystems/TurretSubsystem.h"
 
 #include "util/communications/CANHandler.h"
+#include "util/communications/PwmIn.h"
 #include "util/communications/jetson/Jetson.h"
 #include "util/motor/DJIMotor.h"
 #include "util/peripherals/imu/BNO055.h"
@@ -19,6 +20,7 @@ constexpr auto IMU_RESET = PA_8;
 constexpr int pitch_zero_offset_ticks = 1500;
 constexpr float PITCH_LOWER_BOUND{-32.0};
 constexpr float PITCH_UPPER_BOUND{35.0};
+double movavg = 0.0;
 
 constexpr float JOYSTICK_YAW_SENSITIVITY_DPS = 600;
 constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 300;
@@ -63,7 +65,7 @@ class Infantry : public BaseRobot {
   public:
     I2C i2c_;
     BNO055 imu_;
-
+    PwmIn encoder_;  // Absolute encoder for yaw position
     // TODO: put the BufferedSerial inside Jetson (idk if we wanna do that tho
     // for SPI)
     BufferedSerial jetson_raw_serial;
@@ -83,6 +85,7 @@ class Infantry : public BaseRobot {
           // clang-format off
         i2c_(IMU_I2C_SDA, IMU_I2C_SCL), 
         imu_(i2c_, IMU_RESET, MODE_IMU),
+        encoder_(PA_7),
         jetson_raw_serial(PC_12, PD_2,115200), // TODO: check higher baud to see if still works
         jetson(jetson_raw_serial),
 
@@ -129,7 +132,8 @@ class Infantry : public BaseRobot {
             0.065,    // speed_pid_ff_ks
             &turret.yaw,  // yaw_motor
             356,     // yaw_initial_offset_ticks
-            imu_     
+            imu_,
+            &encoder_   
         }
         )
     // clang-format on
@@ -171,6 +175,10 @@ class Infantry : public BaseRobot {
 
         // Read jetson
         jetson_state = jetson.read();
+
+        chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
+        movavg = chassis.encoderMovingAverage();
+        printf("%.2f\n",movavg);
 
         // Chassis logic
         if (drive == 'u' || (drive =='o' && remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP)) {
