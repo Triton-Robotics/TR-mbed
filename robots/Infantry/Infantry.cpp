@@ -6,6 +6,7 @@
 #include "subsystems/TurretSubsystem.h"
 
 #include "util/communications/CANHandler.h"
+#include "util/communications/PwmIn.h"
 #include "util/communications/jetson/Jetson.h"
 #include "util/motor/DJIMotor.h"
 #include "util/peripherals/imu/BNO055.h"
@@ -17,8 +18,8 @@ constexpr auto IMU_I2C_SCL = PB_8;
 constexpr auto IMU_RESET = PA_8;
 
 constexpr int pitch_zero_offset_ticks = 1500;
-constexpr float PITCH_LOWER_BOUND{-22.0};
-constexpr float PITCH_UPPER_BOUND{20.0};
+constexpr float PITCH_LOWER_BOUND{-32.0};
+constexpr float PITCH_UPPER_BOUND{35.0};
 
 constexpr float JOYSTICK_YAW_SENSITIVITY_DPS = 600;
 constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 300;
@@ -117,7 +118,7 @@ class Infantry : public BaseRobot {
   public:
     I2C i2c_;
     BNO055 imu_;
-
+    PwmIn encoder_;  // Absolute encoder for yaw position
     // TODO: put the BufferedSerial inside Jetson (idk if we wanna do that tho
     // for SPI)
     // BufferedSerial jetson_raw_serial;
@@ -137,18 +138,27 @@ class Infantry : public BaseRobot {
           // clang-format off
         i2c_(IMU_I2C_SDA, IMU_I2C_SCL), 
         imu_(i2c_, IMU_RESET, MODE_IMU),
-        // jetson_raw_serial(PC_12, PD_2,115200), // TODO: check higher baud to see if still works
-        // jetson(jetson_raw_serial),
+        jetson_raw_serial(PC_12, PD_2,115200), // TODO: check higher baud to see if still works
+        jetson(jetson_raw_serial),
 
         turret_(turret_config, imu_)
 
         // shooter_(shooter_config),
 
         // TODO add passing in individual PID objects for the motors
-        // chassis_(chassis_config,
-        // encoder,
-        // imu
-        // )
+        chassis(ChassisSubsystem::Config{
+            1,      // left_front_can_id
+            2,      // right_front_can_id
+            3,      // left_back_can_id
+            4,      // right_back_can_id
+            0.22617,  // radius
+            0.065,    // speed_pid_ff_ks
+            &turret.yaw,  // yaw_motor
+            356,     // yaw_initial_offset_ticks
+            imu_,
+            &encoder_   
+        }
+        )
     // clang-format on
     {}
 
@@ -189,7 +199,7 @@ class Infantry : public BaseRobot {
         des_turret_state.pitch_angle_degs = pitch_desired_angle;
 
         // Read jetson
-        // jetson_state = jetson.read();
+        jetson_state = jetson.read();
 
         // Chassis logic
         if (drive == 'u' || (drive == 'o' && remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) ==
