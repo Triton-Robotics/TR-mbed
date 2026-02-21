@@ -19,6 +19,7 @@ constexpr auto IMU_RESET = PA_8;
 constexpr int pitch_zero_offset_ticks = 1500;
 constexpr float PITCH_LOWER_BOUND{-32.0};
 constexpr float PITCH_UPPER_BOUND{35.0};
+double movavg = 0.0;
 
 constexpr float JOYSTICK_YAW_SENSITIVITY_DPS = 600;
 constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 300;
@@ -173,7 +174,7 @@ public:
 
         jetson_state = jetson.read();
         chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
-        double movavg = chassis.encoderMovingAverage();
+        movavg = chassis.encoderMovingAverage();
         printf("%.2f\n",movavg);
         if (remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP)
         {
