@@ -1,65 +1,28 @@
 #include "main.h"
 #include "subsystems/ChassisSubsystem.h"
 #include "mbed.h"
-#include "util/peripherals/INA226_new/ina226.hpp"
 
-I2C i2c(PB_7, PB_6);
-DigitalOut led(L27);
-DigitalOut led2(L26);
-DigitalOut led3(L25);
+//Hardware definitions
 DigitalOut ledbuiltin(LED1);
+mbed::AnalogIn ain(PA_7);
 
-AnalogIn ain(PA_7);
-DigitalOut dout(LED1);
+//ACS712-5A Constants
+const float VCC = 3.3f;       // Your board's analog reference voltage
+const float ACS712_SENSITIVITY = 0.185f;
+const float ACS712_VOLTAGE_AT_ZERO_A = VCC / 2.0f;
 
-// Serial pc(USBTX, USBRX);
-DigitalOut myled(LED1);
+//Motor constants for torque calculation
+const float Kt = 0.18f; // Torque constant (Nm/A)
+const float GEAR_RATIO = 36.0f; // Gear ratio of the motor
 
-unsigned const int I2C_FREQ = 400000;
-const int ina_addr = 0x80;
-const float current_limit = 1.0;
-ina226 ina(i2c, ina_addr, I2C_FREQ); 
-
-
-// ACS712-30A Current Sensor Configuration
-// Constants for ACS712-30A (66mV/A sensitivity, VCC/2 at 0A)
-const float ACS712_SENSITIVITY = 0.066f;    // 66 mV per Ampere for 30A model
-const float ACS712_VOLTAGE_AT_ZERO_A = 3.3f / 2.0f;  // Assuming 3.3V VCC
-const float VCC = 3.3f;                     // Your board's analog reference voltage
-
-const float Kt = 0.18f;
-const float GEAR_RATIO = 36.0f;
-
-
-// ChassisSubsystem Chassis(1, 2, 3, 4, imu, 0.22617); // radius is 9 in - DISABLED FOR RAW TESTING
+//Initialize feeder motor for current sensing
 DJIMotor feeder(5, CANHandler::CANBUS_2, M2006);
-DJIMotor RFLYWHEEL(6, CANHandler::CANBUS_1, M3508,"RightFly");
-DJIMotor LFLYWHEEL(7, CANHandler::CANBUS_1, M3508,"LeftFly");
 
-// RAW MOTOR CONTROL - NO PID, NO CHASSIS SUBSYSTEMAb
-DJIMotor motor1(1, CANHandler::CANBUS_1, M3508, "Motor1");
-DJIMotor motor2(2, CANHandler::CANBUS_1, M3508, "Motor2");
-DJIMotor motor3(3, CANHandler::CANBUS_1, M3508, "Motor3");
-DJIMotor motor4(4, CANHandler::CANBUS_1, M3508, "Motor4");
-
-#define IMPULSE_DT 100
-#define IMPULSE_STRENGTH 16383
-
-bool send_power = false;
-
-float TorqueFromCurrent(int torque_raw) {
-
-    float current_A = (torque_raw / 16384.0f) * 20.0f;
-    float motor_torque = Kt * current_A;
-    float output_torque = motor_torque * GEAR_RATIO;
-
-    return output_torque;
-}
 
 float readCurrentACS712() {
     // Read raw analog value (0.0 to 1.0)
     float analog_value = ain.read();   // output voltage
-    
+
     // Convert to voltage (0.0 to VCC)
     float sensor_voltage = analog_value * VCC;
     
@@ -70,16 +33,24 @@ float readCurrentACS712() {
 }
 
 float calculateTorqueFromACS712(float current_A) {
-    float motor_torque = Kt * current_A;          // Motor shaft torque
-    float output_torque = motor_torque * GEAR_RATIO; // Output torque
-    
+   return current_A * Kt * GEAR_RATIO;
+}
+
+float TorqueFromCurrent(int torque_raw) {
+
+    float current_A = (torque_raw / 16384.0f) * 20.0f;
+    float motor_torque = Kt * current_A;
+    float output_torque = motor_torque * GEAR_RATIO;
+
     return output_torque;
 }
 
 
 int main(){    
 
+    //Motor communication setup
     DJIMotor::s_setCANHandlers(&canHandler1, &canHandler2, false, false);
+    
     DJIMotor::s_sendValues();
     DJIMotor::s_getFeedback(); 
 
@@ -95,12 +66,6 @@ int main(){
     feeder.setSpeedIntegralCap(8000);
     feeder.setSpeedOutputCap(16000);
 
-    LFLYWHEEL.setSpeedPID(7.1849, 0.000042634, 0);
-    RFLYWHEEL.setSpeedPID(7.1849, 0.000042634, 0);
-
-    //INA stuff
-    printf("INA226 TEST Program. (BUILD:[" __DATE__ "/" __TIME__ "])\n");
-    int count = 1;
 
     // Device configuration. See header file for details.
     printf("INA226 Config return: %d\n", ina.setConfig());  // default configuration
@@ -274,20 +239,6 @@ int main(){
             // printff("Difference: %7.3f Nm (%5.1f%%)\n", difference, percent_diff);
         }
 
-        //INA stuff
-        printf("\n%d:\n", count);
-        printf("Device %xh: ManID %d, DieID %d, Cal %d, ShuntV %+2.6fV, %+2.6fV, %+2.6fA, %+2.6fW\n",
-        ina_addr,
-        ina.readManufacturerID(),
-        ina.readDieID(),
-        ina.readCalibration(),
-        ina.readShuntVoltage(),
-        ina.readBusVoltage(),
-        ina.readCurrent(),
-        ina.readPower());
-        if (ina.isAlert()) {
-        printf("Overcurrent detected\n");
-        }
 
         // printf("Motor Data: ");
         // feeder.printAllMotorData();
