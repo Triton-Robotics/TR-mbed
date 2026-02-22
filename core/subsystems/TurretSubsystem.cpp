@@ -61,13 +61,21 @@ int TurretSubsystem::getTicks()
 float TurretSubsystem::get_pitch_angle_degs_zero_offsetted()
 {
     // return (pitch_offset_ticks - (pitch>>ANGLE)) / TICKS_REVOLUTION * 360;
-    return forward_ * ((float)((pitch>>ANGLE) - pitch_offset_ticks) / TICKS_REVOLUTION) * 360;
+    // return forward_ * ((float)((pitch>>ANGLE) - pitch_offset_ticks) / TICKS_REVOLUTION) * 360;
+    float pitch_angle = get_pitch_angle_degs();
+    return forward_ * pitch_angle;
 }
 
 // Unsure if this is the best way to expose yaw, but we could do a similar thing for pitch once pitch imu
 float TurretSubsystem::get_yaw_angle_degs()
 {
     return imuAngles.yaw;
+}
+
+// Unsure if this is the best way to expose pitch
+float TurretSubsystem::get_pitch_angle_degs()
+{
+    return imuAngles.pitch;
 }
 
 float TurretSubsystem::get_pitch_vel_rads_per_sec()

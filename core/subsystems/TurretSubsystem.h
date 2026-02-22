@@ -92,6 +92,8 @@ private:
 
     float get_yaw_angle_degs();
 
+    float get_pitch_angle_degs();
+
     float get_pitch_vel_rads_per_sec();
 
     float get_yaw_vel_rads_per_sec();
