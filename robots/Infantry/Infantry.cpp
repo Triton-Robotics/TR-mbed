@@ -26,12 +26,13 @@ constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 300;
 constexpr float MOUSE_SENSITIVITY_YAW_DPS = 10.0;
 constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 10.0;
 
-constexpr PID::config YAW_VEL_PID = {15, 0, 0, 32000, 2000};
-constexpr PID::config YAW_POS_PID = {0, 0, 0, 90, 2};
-constexpr PID::config PITCH_VEL_PID = {25, 0.001, 5, 16000, 1000};
-constexpr PID::config PITCH_POS_PID = {1, 0, 0, 30, 2};
+constexpr PID::config YAW_VEL_PID = {17.5, 0, 0.5, 32000, 2000};
+constexpr PID::config YAW_POS_PID = {1, 0, 0, 90, 2};
 const float yaw_static_friction       = 0;       // We multiply it by dir
 const float yaw_kinetic_friction      = 0;       // We multiply this by yawvelo
+
+constexpr PID::config PITCH_VEL_PID = {0, 0.00, 0, 16000, 1000}; //{25, 0.001, 5, 16000, 1000};
+constexpr PID::config PITCH_POS_PID = {0, 0, 0,30,2}; //{1, 0, 0, 30, 2};
 const float pitch_gravity_feedforward = -500;    // We multiply this by cos(angle)
 const float pitch_static_friction     = 0;       // We multiply it by dir
 const float pitch_kinetic_friction    = 5.5;     // We multiply this by pitchvelo
@@ -180,10 +181,10 @@ class Infantry : public BaseRobot {
         // des_chassis_state.vY = jx * max_linear_vel;
 
         // Turret from remote
-        // yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * dt_us / 1000000;
-        // yaw_desired_angle -= jyaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
-        // yaw_desired_angle = capAngle(yaw_desired_angle);
-        yaw_desired_angle = jyaw * 5 * 3 * M3508_GEAR_RATIO;
+        yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * dt_us / 1000000;
+        yaw_desired_angle -= jyaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
+        yaw_desired_angle = capAngle(yaw_desired_angle);
+        // yaw_desired_angle = jyaw * 5 * 3 * M3508_GEAR_RATIO;
         des_turret_state.yaw_angle_degs = yaw_desired_angle;
 
         pitch_desired_angle -= mpitch * MOUSE_SENSITIVITY_PITCH_DPS * dt_us / 1000000;

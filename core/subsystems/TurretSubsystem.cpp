@@ -129,9 +129,8 @@ void TurretSubsystem::periodic(float chassisRpm)
 
         float deltaYaw = calculateDeltaYaw(turret_state.yaw_angle_degs, des_yaw);
         yaw.pidPosition.feedForward = -chassis_rpm; // TODO: MAKE THIS RAD/S AND USE THE KINETIC FRICTION COEFF HERE!!!!
-        // int des_yaw_power = yaw.calculatePeriodicPosition(deltaYaw, turret_time);
-        // yaw.setPower(des_yaw_power);
-        yaw.setSpeed(des_yaw);
+        int des_yaw_power = yaw.calculatePeriodicPosition(deltaYaw, turret_time);
+        yaw.setPower(des_yaw_power);
 
 
         // Pitch calc
