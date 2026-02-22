@@ -18,7 +18,7 @@ ShooterSubsystem::ShooterSubsystem(config cfg):
     indexer({
         cfg.indexer_id,
         cfg.canBus,
-        M3508,
+        M2006, // TODO REMOVE PREDEFINTION, MAKE IT A CONFIG!
         "Indexer",
         cfg.indexer_PID_vel,
         cfg.indexer_PID_pos

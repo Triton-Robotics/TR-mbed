@@ -28,7 +28,7 @@ public:
         short pitch_id;
         motorType pitch_type = motorType::GM6020;
         
-        int pitch_offset_ticks;
+        int pitch_offset_ticks; // TODO: Change this (to deg) when IMU on pitch! (also post 25' inf)
 
         PID::config yaw_vel_PID;
         PID::config yaw_pos_PID;
@@ -36,6 +36,13 @@ public:
         PID::config pitch_vel_PID;
         PID::config pitch_pos_PID;
 
+        const float yaw_static_friction = 1221; // We multiply it by dir
+        const float yaw_kinetic_friction = 97.4; // We multiply this by yawvelo
+        
+        const float pitch_gravity_feedforward = -2600; // We multiply this by cos(angle)
+        const float pitch_static_friction = 1221; // We multiply it by dir
+        const float pitch_kinetic_friction = 97.4; // We multiply this by pitchvelo
+        
         CANHandler::CANBus yawCanBus;
         CANHandler::CANBus pitchCanBus;
         int forward;
@@ -80,6 +87,12 @@ private:
     bool configured;
     const int forward_;
     const float pitch_lowerbound, pitch_upperbound;
+
+    const float yaw_static_friction;
+    const float yaw_kinetic_friction;
+    const float pitch_static_friction;
+    const float pitch_kinetic_friction;
+    const float pitch_gravity_feedforward;
 
     int pitch_offset_ticks;
 
