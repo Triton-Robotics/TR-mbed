@@ -60,32 +60,13 @@ class TestBench : public BaseRobot {
 		// logic goes here
 		if (pc.readable()){
 			pc.read(rxBuffer, sizeof(rxBuffer));
-			// printf("Received data: %s\n", rxBuffer);
 		}
-        // printf("Hello\n");
+		
 		for(unsigned int i = 0; i < sizeof(rxBuffer); i++) {
 			if((rxBuffer[i] == 0xA9) && (rxBuffer[i+1] == 0x53)) {
 				headerFound = 1;
 				//printf("%x %x %x %x %x %x %x\n",rxBuffer[i],rxBuffer[i+1],rxBuffer[i+2],rxBuffer[i+3],rxBuffer[i+4],rxBuffer[i+5],rxBuffer[i+6]);
 
-				// printf("Found header at index %d\n", i);
-				// find the next 20 bytes and print them out 
-				// if the header is 0xA9, the next 20 bytes are the data
-				// if the header is 0x53, the next 20 bytes are the data
-				// print out the data in hex format
-				// for example, if the header is 0xA9, print "Data: " followed by the 20 bytes in hex format
-				// if the header is 0x53, print "Data: " followed by the 20 bytes in hex format
-				// if the header is not found, print "Header not found" after the loop
-				// if (i + 20 < sizeof(rxBuffer)) {
-                // 	printf("Data: ");
-                // 	for (size_t j = 1; j <= 30; j++) {
-                //    		printf("%02X ", rxBuffer[i + j]);
-                // 	}
-                // 	printf("\n");
-            	// } 
-				// else {
-                // printf("Not enough bytes after header to read 20 bytes\n");
-            	// }
 				ch0 = ((uint16_t)(rxBuffer[i+2])) | ((uint16_t)(rxBuffer[i+3] & 0x07) << 8);
 				ch1 = ((((uint16_t)rxBuffer[i+3]) >> 3) & 0x1F) | ((((uint16_t)rxBuffer[i+4]) & 0x3F) << 5);
 				ch2 = (((uint16_t)rxBuffer[i+4] >> 6) & 0x03) | (((uint16_t)rxBuffer[i+5]) << 2) | ((((uint16_t)rxBuffer[i+6]) & 0x01) << 10);
