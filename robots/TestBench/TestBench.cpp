@@ -32,7 +32,8 @@ struct VTMinput {
 
 class TestBench : public BaseRobot {
   public:
-	uint8_t rxBuffer[50]; 
+	uint8_t rxBuffer[21]; 
+	uint16_t ch0 = 0; 
 	// initialize a variable to keep track of whether the header has been found
 	int headerFound = 0;
 	// declare pin number (bufferedserial)
@@ -56,13 +57,14 @@ class TestBench : public BaseRobot {
 		// logic goes here
 		if (pc.readable()){
 			pc.read(rxBuffer, sizeof(rxBuffer));
-			printf("Received data: %s\n", rxBuffer);
+			// printf("Received data: %s\n", rxBuffer);
 		}
-        printf("Hello\n");
-		for(unsigned int i = 0; i <= sizeof(rxBuffer); i++) {
-			if((rxBuffer[i] == 0xA9) || (rxBuffer[i] == 0x53)) {
+        // printf("Hello\n");
+		for(unsigned int i = 0; i < sizeof(rxBuffer); i++) {
+			if((rxBuffer[i] == 0xA9) && (rxBuffer[i+1] == 0x53)) {
 				headerFound = 1;
-				printf("Found header at index %d\n", i);
+				printf("%x %x\n",rxBuffer[i],rxBuffer[i+1]);
+				// printf("Found header at index %d\n", i);
 				// find the next 20 bytes and print them out 
 				// if the header is 0xA9, the next 20 bytes are the data
 				// if the header is 0x53, the next 20 bytes are the data
@@ -70,23 +72,24 @@ class TestBench : public BaseRobot {
 				// for example, if the header is 0xA9, print "Data: " followed by the 20 bytes in hex format
 				// if the header is 0x53, print "Data: " followed by the 20 bytes in hex format
 				// if the header is not found, print "Header not found" after the loop
-				if (i + 20 < sizeof(rxBuffer)) {
-                	printf("Data: ");
-                	for (size_t j = 1; j <= 20; j++) {
-                   		printf("%02X ", rxBuffer[i + j]);
-                	}
-                	printf("\n");
-            	} 
-				else {
-                printf("Not enough bytes after header to read 20 bytes\n");
-            	}
-
+				// if (i + 20 < sizeof(rxBuffer)) {
+                // 	printf("Data: ");
+                // 	for (size_t j = 1; j <= 30; j++) {
+                //    		printf("%02X ", rxBuffer[i + j]);
+                // 	}
+                // 	printf("\n");
+            	// } 
+				// else {
+                // printf("Not enough bytes after header to read 20 bytes\n");
+            	// }
+				ch0 = ((int16_t)rxBuffer[i+2]) <<3 | ((int16_t)rxBuffer[i+3]>>5);
+				// printf("ch0 11 bits = %u\n", ch0);
 				break; // Exit the loop after finding the header
 			}
-			else {
-				headerFound = 0;
-				printf("No header found!\n");
-			}
+			// else {
+			// 	headerFound = 0;
+			// 	printf("No header found!\n");
+			// }
 				
 		}
     }
