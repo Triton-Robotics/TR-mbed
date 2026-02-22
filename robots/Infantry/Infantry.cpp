@@ -17,8 +17,8 @@ constexpr auto IMU_I2C_SCL = PB_8;
 constexpr auto IMU_RESET = PA_8;
 
 constexpr int pitch_zero_offset_ticks = 1500;
-constexpr float PITCH_LOWER_BOUND{-32.0};
-constexpr float PITCH_UPPER_BOUND{35.0};
+constexpr float PITCH_LOWER_BOUND{-22.0};
+constexpr float PITCH_UPPER_BOUND{20.0};
 
 constexpr float JOYSTICK_YAW_SENSITIVITY_DPS = 600;
 constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 300;
@@ -26,10 +26,15 @@ constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 300;
 constexpr float MOUSE_SENSITIVITY_YAW_DPS = 10.0;
 constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 10.0;
 
-constexpr PID::config YAW_VEL_PID = {350, 0.5, 2.5, 32000, 2000};
-constexpr PID::config YAW_POS_PID = {0.5, 0, 0, 90, 2};
-constexpr PID::config PITCH_VEL_PID = {500, 0.8, 0, 32000, 2000};
-constexpr PID::config PITCH_POS_PID = {1.5, 0.0005, 0.05, 30, 2};
+constexpr PID::config YAW_VEL_PID = {15, 0, 0, 32000, 2000};
+constexpr PID::config YAW_POS_PID = {0, 0, 0, 90, 2};
+constexpr PID::config PITCH_VEL_PID = {25, 0.001, 5, 16000, 1000};
+constexpr PID::config PITCH_POS_PID = {1, 0, 0, 30, 2};
+const float yaw_static_friction       = 0;       // We multiply it by dir
+const float yaw_kinetic_friction      = 0;       // We multiply this by yawvelo
+const float pitch_gravity_feedforward = -500;    // We multiply this by cos(angle)
+const float pitch_static_friction     = 0;       // We multiply it by dir
+const float pitch_kinetic_friction    = 5.5;     // We multiply this by pitchvelo
 
 constexpr PID::config FL_VEL_CONFIG = {3, 0, 0};
 constexpr PID::config FR_VEL_CONFIG = {3, 0, 0};
@@ -59,6 +64,7 @@ double degreesToRadians(double degrees) {
 // TODOS make example directory with simple examples of how to use motors /
 // subsystems as reference for testbench
 
+IMU::EulerAngles imuAngles;
 class Infantry : public BaseRobot {
   public:
     I2C i2c_;
@@ -66,15 +72,15 @@ class Infantry : public BaseRobot {
 
     // TODO: put the BufferedSerial inside Jetson (idk if we wanna do that tho
     // for SPI)
-    BufferedSerial jetson_raw_serial;
-    Jetson jetson;
+    // BufferedSerial jetson_raw_serial;
+    // Jetson jetson;
 
     Jetson::WriteState stm_state;
     Jetson::ReadState jetson_state;
 
     TurretSubsystem turret;
     ShooterSubsystem shooter;
-    ChassisSubsystem chassis;
+    // ChassisSubsystem chassis;
 
     bool imu_initialized{false};
 
@@ -83,26 +89,40 @@ class Infantry : public BaseRobot {
           // clang-format off
         i2c_(IMU_I2C_SDA, IMU_I2C_SCL), 
         imu_(i2c_, IMU_RESET, MODE_IMU),
-        jetson_raw_serial(PC_12, PD_2,115200), // TODO: check higher baud to see if still works
-        jetson(jetson_raw_serial),
+        // jetson_raw_serial(PC_12, PD_2,115200), // TODO: check higher baud to see if still works
+        // jetson(jetson_raw_serial),
 
         turret(TurretSubsystem::config{
-            4,
-            GM6020,
             7,
-            GM6020,
+            M3508,
+            8,
+            M3508,
+
             pitch_zero_offset_ticks,
+
             YAW_VEL_PID,
             YAW_POS_PID,
+
             PITCH_VEL_PID,
             PITCH_POS_PID,
+
+            yaw_static_friction,
+            yaw_kinetic_friction,
+
+            pitch_gravity_feedforward,
+            pitch_static_friction,
+            pitch_kinetic_friction,
+
             CANHandler::CANBUS_1,
             CANHandler::CANBUS_2,
+
             -1,
+
             imu_,
+            
             PITCH_LOWER_BOUND,
             PITCH_UPPER_BOUND
-        }    
+        } 
         ),
 
         shooter(ShooterSubsystem::config{
@@ -110,28 +130,28 @@ class Infantry : public BaseRobot {
             0,
             1,
             2,
-            7,
+            6,
             FLYWHEEL_L_PID,
             FLYWHEEL_R_PID,
             INDEXER_PID_VEL,
             INDEXER_PID_POS,
             CANHandler::CANBUS_2,
             true
-        }),
+        })
 
         // TODO add passing in individual PID objects for the motors
-        chassis(ChassisSubsystem::Config{
-            1,      // left_front_can_id
-            2,      // right_front_can_id
-            3,      // left_back_can_id
-            4,      // right_back_can_id
-            0.22617,  // radius
-            0.065,    // speed_pid_ff_ks
-            &turret.yaw,  // yaw_motor
-            356 + 6144,     // yaw_initial_offset_ticks
-            imu_     
-        }
-        )
+        // chassis(ChassisSubsystem::Config{
+        //     1,      // left_front_can_id
+        //     2,      // right_front_can_id
+        //     3,      // left_back_can_id
+        //     4,      // right_back_can_id
+        //     0.22617,  // radius
+        //     0.065,    // speed_pid_ff_ks
+        //     &turret.yaw,  // yaw_motor
+        //     1700,     // yaw_initial_offset_ticks
+        //     imu_     
+        // }
+        // )
     // clang-format on
     {}
 
@@ -141,7 +161,7 @@ class Infantry : public BaseRobot {
 
     void periodic(unsigned long dt_us) override {
         // TODO this should be threaded inside imu instead
-        IMU::EulerAngles imuAngles = imu_.read();
+        imuAngles = imu_.read();
 
         if (!imu_initialized) {
             IMU::EulerAngles angles = imu_.getImuAngles();
@@ -154,14 +174,16 @@ class Infantry : public BaseRobot {
         }
 
         // TODO: use this in code correctly to drive faster
-        max_linear_vel = 1.24 + 0.0513 * chassis.power_limit + 0.000216 * (chassis.power_limit * chassis.power_limit);
-        des_chassis_state.vX = jy * max_linear_vel;
-        des_chassis_state.vY = -jx * max_linear_vel;
+        // max_linear_vel = 1.24 + 0.0513 * chassis.power_limit +
+        //                  0.000216 * (chassis.power_limit * chassis.power_limit);
+        // des_chassis_state.vX = jy * max_linear_vel;
+        // des_chassis_state.vY = jx * max_linear_vel;
 
         // Turret from remote
-        yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * dt_us / 1000000;
-        yaw_desired_angle -= jyaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
-        yaw_desired_angle = capAngle(yaw_desired_angle);
+        // yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * dt_us / 1000000;
+        // yaw_desired_angle -= jyaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
+        // yaw_desired_angle = capAngle(yaw_desired_angle);
+        yaw_desired_angle = jyaw * 5 * 3 * M3508_GEAR_RATIO;
         des_turret_state.yaw_angle_degs = yaw_desired_angle;
 
         pitch_desired_angle -= mpitch * MOUSE_SENSITIVITY_PITCH_DPS * dt_us / 1000000;
@@ -170,30 +192,35 @@ class Infantry : public BaseRobot {
         des_turret_state.pitch_angle_degs = pitch_desired_angle;
 
         // Read jetson
-        jetson_state = jetson.read();
+        // jetson_state = jetson.read();
 
         // Chassis logic
-        if (drive == 'u' || (drive =='o' && remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP)) {
+        if (drive == 'u' || (drive == 'o' && remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) ==
+                                                 Remote::SwitchState::UP)) {
             // TODO: think about how we want to implement jetson aiming
             // des_turret_state.pitch_angle = jetson_state.desired_pitch_rads;
             // des_turret_state.yaw_angle = jetson_state.desired_yaw_rads;
 
             des_chassis_state.vOmega = 0;
-            chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
+            // chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
-        } else if (drive == 'd' || (drive =='o' && remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::DOWN)) {
+        } else if (drive == 'd' ||
+                   (drive == 'o' &&
+                    remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::DOWN)) {
             des_chassis_state.vOmega = omega_speed;
-            chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
+            // chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
         } else {
-            chassis.setWheelPower({0, 0, 0, 0});
+            // chassis.setWheelPower({0, 0, 0, 0});
             des_turret_state.turret_mode = TurretState::SLEEP;
         }
 
         // Shooter Logic
-        if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP || remote_.getMouseL()) {
+        if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP ||
+            remote_.getMouseL()) {
             des_shoot_state = ShootState::SHOOT;
-        } else if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID || shot == 'd') {
+        } else if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID ||
+                   shot == 'd') {
             des_shoot_state = ShootState::FLYWHEEL;
         } else {
             des_shoot_state = ShootState::OFF;
@@ -202,14 +229,14 @@ class Infantry : public BaseRobot {
         turret.setState(des_turret_state);
         shooter.setState(des_shoot_state);
 
-        turret.periodic(chassis.getChassisSpeeds().vOmega * 60 / (2 * PI));
-        chassis.periodic(&imuAngles);
-        shooter.periodic(referee_.power_heat_data.shooter_17mm_1_barrel_heat,
-                         referee_.robot_status.shooter_barrel_heat_limit);
+        turret.periodic(0);// chassis.getChassisSpeeds().vOmega * 60 / (2 * PI));
+        // chassis.periodic(&imuAngles);
+        shooter.periodic(0, 60); // referee_.power_heat_data.shooter_17mm_1_barrel_heat,
+                         // referee_.robot_status.shooter_barrel_heat_limit);
 
         // jetson comms
-        set_jetson_state();
-        jetson.write(stm_state);
+        // set_jetson_state();
+        // jetson.write(stm_state);
 
         // printf("time %ld", us_ticker_read());
 
@@ -230,20 +257,20 @@ class Infantry : public BaseRobot {
 
     unsigned int main_loop_dt_ms() override { return 2; } // 500 Hz loop
 
-    void set_jetson_state() {
-        stm_state.game_state = 4;
-        stm_state.robot_hp = 200;
+    // void set_jetson_state() {
+    //     stm_state.game_state = 4;
+    //     stm_state.robot_hp = 200;
 
-        stm_state.chassis_x_velocity = chassis.getChassisSpeeds().vX;
-        stm_state.chassis_y_velocity = chassis.getChassisSpeeds().vY;
-        stm_state.chassis_rotation = chassis.getChassisSpeeds().vOmega;
+    //     stm_state.chassis_x_velocity = chassis.getChassisSpeeds().vX;
+    //     stm_state.chassis_y_velocity = chassis.getChassisSpeeds().vY;
+    //     stm_state.chassis_rotation = chassis.getChassisSpeeds().vOmega;
 
-        // TODO angle_degrees and angle_radians
-        stm_state.yaw_angle_rads = degreesToRadians(turret.getState().yaw_angle_degs);
-        stm_state.yaw_velocity = turret.getState().yaw_velo_rad_s;
-        stm_state.pitch_angle_rads = degreesToRadians(turret.getState().pitch_angle_degs);
-        stm_state.pitch_velocity = turret.getState().pitch_velo_rad_s;
-    }
+    //     // TODO angle_degrees and angle_radians
+    //     stm_state.yaw_angle_rads = degreesToRadians(turret.getState().yaw_angle_degs);
+    //     stm_state.yaw_velocity = degreesToRadians(turret.getState().yaw_velo_rad_s);
+    //     stm_state.pitch_angle_rads = degreesToRadians(turret.getState().pitch_angle_degs);
+    //     stm_state.pitch_velocity = degreesToRadians(turret.getState().pitch_velo_rad_s);
+    // }
 };
 
 int main() {
