@@ -88,9 +88,9 @@ class TestBench : public BaseRobot {
             	// }
 				ch0 = ((uint16_t)(rxBuffer[i+2])) | ((uint16_t)(rxBuffer[i+3] & 0x07) << 8);
 				ch1 = ((((uint16_t)rxBuffer[i+3]) >> 3) & 0x1F) | ((((uint16_t)rxBuffer[i+4]) & 0x3F) << 5);
-				ch2 = (((uint16_t)rxBuffer[i+4] >> 6) & 0x03) | (((uint16_t)rxBuffer[i+5]) << 2) | ((((uint16_t)rxBuffer[i+6]) & 0x1F) << 10);
+				ch2 = (((uint16_t)rxBuffer[i+4] >> 6) & 0x03) | (((uint16_t)rxBuffer[i+5]) << 2) | ((((uint16_t)rxBuffer[i+6]) & 0x01) << 10);
 				ch3 = ((((uint16_t)rxBuffer[i+6]) >> 1) & 0x7F) | ((((uint16_t)rxBuffer[i+7]) & 0x0F) << 7);
-				printf("ch0=3 11 bits = %u\n", ch3);
+				printf("ch0 = %u, ch1 = %u, ch2 = %u, ch3 = %u\n", ch0, ch1,ch2,ch3);
 				break; // Exit the loop after finding the header
 			}
 			// else {
