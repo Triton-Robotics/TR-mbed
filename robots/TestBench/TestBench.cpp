@@ -36,6 +36,7 @@ class TestBench : public BaseRobot {
 	uint16_t ch0 = 0; 
 	uint16_t ch1 = 0; 
 	uint16_t ch2 = 0; 
+	uint16_t ch3 = 0; 
 	// initialize a variable to keep track of whether the header has been found
 	int headerFound = 0;
 	// declare pin number (bufferedserial)
@@ -65,7 +66,7 @@ class TestBench : public BaseRobot {
 		for(unsigned int i = 0; i < sizeof(rxBuffer); i++) {
 			if((rxBuffer[i] == 0xA9) && (rxBuffer[i+1] == 0x53)) {
 				headerFound = 1;
-				// printf("%x %x %x %x %x %x\n",rxBuffer[i],rxBuffer[i+1],rxBuffer[i+2],rxBuffer[i+3],rxBuffer[i+4],rxBuffer[i+5]);
+				//printf("%x %x %x %x %x %x %x\n",rxBuffer[i],rxBuffer[i+1],rxBuffer[i+2],rxBuffer[i+3],rxBuffer[i+4],rxBuffer[i+5],rxBuffer[i+6]);
 
 				// printf("Found header at index %d\n", i);
 				// find the next 20 bytes and print them out 
@@ -85,10 +86,11 @@ class TestBench : public BaseRobot {
 				// else {
                 // printf("Not enough bytes after header to read 20 bytes\n");
             	// }
-				ch0 = ((uint16_t)rxBuffer[i+2]) | (uint16_t)(rxBuffer[i+3] & 0x07) << 8;
-				ch1 = ((uint16_t)rxBuffer[i+3] & 0xF8) | (uint16_t)(rxBuffer[i+4] & 0x3F)<<5;
-				ch2 = ((uint16_t)rxBuffer[i+4] & 0b11000000) | (uint16_t)(rxBuffer[i+5]) << 6 | (uint16_t)(rxBuffer[i+6] & 0x01) <<7;
-				printf("ch0 11 bits = %u\n", ch1);
+				ch0 = ((uint16_t)(rxBuffer[i+2])) | ((uint16_t)(rxBuffer[i+3] & 0x07) << 8);
+				ch1 = ((((uint16_t)rxBuffer[i+3]) >> 3) & 0x1F) | ((((uint16_t)rxBuffer[i+4]) & 0x3F) << 5);
+				ch2 = (((uint16_t)rxBuffer[i+4] >> 6) & 0x03) | (((uint16_t)rxBuffer[i+5]) << 2) | ((((uint16_t)rxBuffer[i+6]) & 0x1F) << 10);
+				ch3 = ((((uint16_t)rxBuffer[i+6]) >> 1) & 0x7F) | ((((uint16_t)rxBuffer[i+7]) & 0x0F) << 7);
+				printf("ch0=3 11 bits = %u\n", ch3);
 				break; // Exit the loop after finding the header
 			}
 			// else {
