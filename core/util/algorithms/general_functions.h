@@ -1,5 +1,5 @@
 #include "mbed.h"
 
-int calculateDeltaYaw(int curr_yaw, int des_yaw);
+float calculateDeltaYaw(float curr_yaw, float des_yaw);
 
 float capAngle(float curr_angle);

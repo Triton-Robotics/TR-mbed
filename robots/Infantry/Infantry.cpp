@@ -26,13 +26,13 @@ constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 300;
 constexpr float MOUSE_SENSITIVITY_YAW_DPS = 10.0;
 constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 10.0;
 
-constexpr PID::config YAW_VEL_PID = {17.5, 0, 0.5, 32000, 2000};
-constexpr PID::config YAW_POS_PID = {1, 0, 0, 90, 2};
-const float yaw_static_friction       = 0;       // We multiply it by dir
+constexpr PID::config YAW_VEL_PID     = {181, 3.655 * 10e-6, 4510 * 2.25, 32000, 1000};
+constexpr PID::config YAW_POS_PID     = {1, 0, 0, 90, 2};
+const float yaw_static_friction       = -150;       // We multiply it by dir
 const float yaw_kinetic_friction      = 0;       // We multiply this by yawvelo
 
-constexpr PID::config PITCH_VEL_PID = {0, 0.00, 0, 16000, 1000}; //{25, 0.001, 5, 16000, 1000};
-constexpr PID::config PITCH_POS_PID = {0, 0, 0,30,2}; //{1, 0, 0, 30, 2};
+constexpr PID::config PITCH_VEL_PID   = {0, 0.00, 0, 16000, 1000}; //{25, 0.001, 5, 16000, 1000};
+constexpr PID::config PITCH_POS_PID   = {0, 0, 0,30,2}; //{1, 0, 0, 30, 2};
 const float pitch_gravity_feedforward = -500;    // We multiply this by cos(angle)
 const float pitch_static_friction     = 0;       // We multiply it by dir
 const float pitch_kinetic_friction    = 5.5;     // We multiply this by pitchvelo
@@ -80,7 +80,7 @@ class Infantry : public BaseRobot {
     Jetson::ReadState jetson_state;
 
     TurretSubsystem turret;
-    ShooterSubsystem shooter;
+    // ShooterSubsystem shooter;
     // ChassisSubsystem chassis;
 
     bool imu_initialized{false};
@@ -94,7 +94,7 @@ class Infantry : public BaseRobot {
         // jetson(jetson_raw_serial),
 
         turret(TurretSubsystem::config{
-            7,
+            4,
             M3508,
             8,
             M3508,
@@ -124,21 +124,21 @@ class Infantry : public BaseRobot {
             PITCH_LOWER_BOUND,
             PITCH_UPPER_BOUND
         } 
-        ),
+        )
 
-        shooter(ShooterSubsystem::config{
-            ShooterSubsystem::BURST,
-            0,
-            1,
-            2,
-            6,
-            FLYWHEEL_L_PID,
-            FLYWHEEL_R_PID,
-            INDEXER_PID_VEL,
-            INDEXER_PID_POS,
-            CANHandler::CANBUS_2,
-            true
-        })
+        // shooter(ShooterSubsystem::config{
+        //     ShooterSubsystem::BURST,
+        //     0,
+        //     1,
+        //     2,
+        //     6,
+        //     FLYWHEEL_L_PID,
+        //     FLYWHEEL_R_PID,
+        //     INDEXER_PID_VEL,
+        //     INDEXER_PID_POS,
+        //     CANHandler::CANBUS_2,
+        //     true
+        // }),
 
         // TODO add passing in individual PID objects for the motors
         // chassis(ChassisSubsystem::Config{
@@ -228,11 +228,11 @@ class Infantry : public BaseRobot {
         }
 
         turret.setState(des_turret_state);
-        shooter.setState(des_shoot_state);
+        // shooter.setState(des_shoot_state);
 
         turret.periodic(0);// chassis.getChassisSpeeds().vOmega * 60 / (2 * PI));
         // chassis.periodic(&imuAngles);
-        shooter.periodic(0, 60); // referee_.power_heat_data.shooter_17mm_1_barrel_heat,
+        // shooter.periodic(0, 60); // referee_.power_heat_data.shooter_17mm_1_barrel_heat,
                          // referee_.robot_status.shooter_barrel_heat_limit);
 
         // jetson comms

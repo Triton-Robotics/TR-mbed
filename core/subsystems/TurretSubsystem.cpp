@@ -119,17 +119,19 @@ void TurretSubsystem::periodic(float chassisRpm)
     else if (turret_state.turret_mode == AIM) 
     {
         // Yaw calc
-        int dir = 0;
-        if(turret_state.yaw_velo_rad_s > 1){
-            dir = 1;
-        }else if(turret_state.yaw_velo_rad_s < -1){
-            dir = -1;
-        }
-        yaw.pidSpeed.feedForward = yaw_static_friction * dir + yaw_kinetic_friction * turret_state.yaw_velo_rad_s;
-
         float deltaYaw = calculateDeltaYaw(turret_state.yaw_angle_degs, des_yaw);
+        int dir = 0;
+        if(deltaYaw < 10 && deltaYaw > 0.001){
+            dir = log(deltaYaw);
+        }else if(deltaYaw > -10 && deltaYaw < -0.001){
+            dir = log(-1 * deltaYaw);
+        }
+        
         yaw.pidPosition.feedForward = -chassis_rpm; // TODO: MAKE THIS RAD/S AND USE THE KINETIC FRICTION COEFF HERE!!!!
-        int des_yaw_power = yaw.calculatePeriodicPosition(deltaYaw, turret_time);
+        float des_yaw_velo = yaw.pidPosition.calculatePeriodic(deltaYaw, us_ticker_read() - turret_time);
+        yaw.pidSpeed.feedForward = yaw_static_friction * dir + yaw_kinetic_friction * des_yaw_velo;
+        float des_yaw_power = yaw.pidSpeed.calculate(des_yaw_velo, turret_state.yaw_velo_rad_s, us_ticker_read() - turret_time);
+        // printf("yp %.2f | %.2f\n", des_yaw_power, deltaYaw);
         yaw.setPower(des_yaw_power);
 
 
@@ -145,8 +147,8 @@ void TurretSubsystem::periodic(float chassisRpm)
 
         int dir_p = forward_ * (des_pitch < turret_state.pitch_angle_degs ? -1 : 1);
         pitch.pidSpeed.feedForward = (cos(pitch_current_radians) * pitch_gravity_feedforward) + (pitch_static_friction * dir_p + pitch_kinetic_friction * turret_state.pitch_velo_rad_s);
-        float des_pitch_power = pitch.calculatePositionPID(forward_ * des_pitch, forward_ * turret_state.pitch_angle_degs, us_ticker_read() - turret_time);
-        
+        float des_pitch_velo = pitch.pidPosition.calculate(forward_ * des_pitch, forward_ * turret_state.pitch_angle_degs, us_ticker_read() - turret_time);
+        float des_pitch_power = pitch.pidSpeed.calculate(des_pitch_velo, turret_state.pitch_velo_rad_s, us_ticker_read() - turret_time);
         // printf("pp %.2f | %.2f\n", des_pitch_power, -turret_state.pitch_angle);
         pitch.setPower(des_pitch_power);
     }
