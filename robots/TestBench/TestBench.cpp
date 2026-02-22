@@ -86,8 +86,8 @@ class TestBench : public BaseRobot {
                 // printf("Not enough bytes after header to read 20 bytes\n");
             	// }
 				ch0 = ((uint16_t)rxBuffer[i+2]) | (uint16_t)(rxBuffer[i+3] & 0x07) << 8;
-				ch1 = ((uint16_t)rxBuffer[i+3] & 0xF8) | (uint16_t)(rxBuffer[i+4] & 0x07) << 8;
-				ch2 = ((uint16_t)rxBuffer[i+4]) | (uint16_t)(rxBuffer[i+5] & 0x07) << 8;
+				ch1 = ((uint16_t)rxBuffer[i+3] & 0xF8) | (uint16_t)(rxBuffer[i+4] & 0x3F)<<5;
+				ch2 = ((uint16_t)rxBuffer[i+4] & 0b11000000) | (uint16_t)(rxBuffer[i+5]) << 6 | (uint16_t)(rxBuffer[i+6] & 0x01) <<7;
 				printf("ch0 11 bits = %u\n", ch1);
 				break; // Exit the loop after finding the header
 			}
