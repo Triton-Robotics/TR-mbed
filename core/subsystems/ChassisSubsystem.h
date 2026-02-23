@@ -133,14 +133,14 @@ public:
     float previousRPM[4] = {0, 0, 0, 0};
 
     /*
-    * Calculates the maximum acceleration of an omnidrive wheel before experiencing slippage.
+    * @brief Calculates the maximum acceleration of an omnidrive wheel before experiencing slippage.
     *
     * @param desiredRPM the current target speed
     * @param previousRPM the target speed from the previous loop
     * @param deltaTime the change in time between this loop and the previous loop
-    * @param angle the direction, in radians, that the robot is trying to drive in
+    * @param theta the direction, in radians, that the robot is trying to drive in
     */
-    static float limitAcceleration(float desiredRPM, float previousRPM, int power);
+    static float limitAcceleration(float desiredRPM, float previousRPM, uint32_t deltaTime, float theta);
 
     static float p_theory(int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm);
 

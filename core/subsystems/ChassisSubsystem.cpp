@@ -54,7 +54,7 @@ WheelSpeeds ChassisSubsystem::getWheelSpeeds() const
     return m_wheelSpeeds;
 }
 
-float ChassisSubsystem::limitAcceleration(float desiredRPM, float previousRPM, int power)
+static float ChassisSubsystem::limitAcceleration(float desiredRPM, float previousRPM, uint32_t deltaTime, float theta)
 {
     float maxAccel = 100;
     float diff = desiredRPM - previousRPM;
@@ -68,17 +68,17 @@ float ChassisSubsystem::limitAcceleration(float desiredRPM, float previousRPM, i
     if (diff > maxAccel){   // if the difference is greater than the max acceleration
 
 
-        if(power == 0) {
-            return desiredRPM; // let robot do its thing b/c it wont take power
-        }
+        // if(power == 0) {
+        //     return desiredRPM; // let robot do its thing b/c it wont take power
+        // }
 
         return previousRPM + maxAccel;
 
     }
     else if (diff < -maxAccel) {
-        if(power == 0) {
-            return desiredRPM; // let robot do its thing b/c it wont take power
-        }
+        // if(power == 0) {
+        //     return desiredRPM; // let robot do its thing b/c it wont take power
+        // }
 
         return previousRPM - maxAccel;
     }
@@ -226,18 +226,32 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     desiredWheelSpeeds = wheelSpeeds; // WheelSpeeds in RPM
     int powers[4] = {0,0,0,0};
     uint32_t time = us_ticker_read();
+    uint32_t deltaTime = time - lastPIDTime;
 
 
-    powers[0] = motorPIDtoPower(LEFT_FRONT,wheelSpeeds.LF, (time - lastPIDTime));
-    powers[1] = motorPIDtoPower(RIGHT_FRONT,wheelSpeeds.RF, (time - lastPIDTime));
-    powers[2] = motorPIDtoPower(LEFT_BACK,wheelSpeeds.LB, (time - lastPIDTime));
-    powers[3] = motorPIDtoPower(RIGHT_BACK,wheelSpeeds.RB, (time - lastPIDTime));
+    powers[0] = motorPIDtoPower(LEFT_FRONT,wheelSpeeds.LF, deltaTime);
+    powers[1] = motorPIDtoPower(RIGHT_FRONT,wheelSpeeds.RF, deltaTime);
+    powers[2] = motorPIDtoPower(LEFT_BACK,wheelSpeeds.LB, deltaTime);
+    powers[3] = motorPIDtoPower(RIGHT_BACK,wheelSpeeds.RB, deltaTime);
+
+    // Calculate angle for the direction of the robot's acceleration vector
+    float diffLF = wheelSpeeds.LF - previousRPM[0];
+    float diffRF = wheelSpeeds.RF - previousRPM[1];
+    float diffLB = wheelSpeeds.LB - previousRPM[2];
+    float diffRB = wheelSpeeds.RB - previousRPM[3];
+
+    // These are in arbitrary units because we only need to find the direction
+    float accelY = diffLF + diffRF + diffLB + diffRB;
+    float accelX = diffLF - diffRF - diffLB + diffRB;
+    float theta = atan2(accelY, accelX);
+    printf("Angle (degrees): %f\n", theta * 180 / M_PI);
+    
     
 
-    float LFrpm = limitAcceleration(wheelSpeeds.LF, previousRPM[0], powers[0]);
-    float RFrpm = limitAcceleration(wheelSpeeds.RF, previousRPM[1], powers[1]);
-    float LBrpm = limitAcceleration(wheelSpeeds.LB, previousRPM[2], powers[2]);
-    float RBrpm = limitAcceleration(wheelSpeeds.RB, previousRPM[3], powers[3]);
+    float LFrpm = limitAcceleration(wheelSpeeds.LF, previousRPM[0], deltaTime, theta);
+    float RFrpm = limitAcceleration(wheelSpeeds.RF, previousRPM[1], deltaTime, theta);
+    float LBrpm = limitAcceleration(wheelSpeeds.LB, previousRPM[2], deltaTime, theta);
+    float RBrpm = limitAcceleration(wheelSpeeds.RB, previousRPM[3], deltaTime, theta);
 
     // float LFrpm = wheelSpeeds.LF;
     // float RFrpm = wheelSpeeds.RF;
