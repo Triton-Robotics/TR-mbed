@@ -27,6 +27,10 @@
 #define BEYBLADE_ACCELERATION 0.05
 #define MAX_VEL 2.92
 
+// Constants used for acceleration limiting
+constexpr float STATIC_FRICTION_CONSTANT = 0.0f;
+constexpr float GRAVITY = 9.80665f;
+
 struct OmniKinematics
 {
     double r1x, r1y, r2x, r2y, r3x, r3y, r4x, r4y;
@@ -128,6 +132,14 @@ public:
 
     float previousRPM[4] = {0, 0, 0, 0};
 
+    /*
+    * Calculates the maximum acceleration of an omnidrive wheel before experiencing slippage.
+    *
+    * @param desiredRPM the current target speed
+    * @param previousRPM the target speed from the previous loop
+    * @param deltaTime the change in time between this loop and the previous loop
+    * @param angle the direction, in radians, that the robot is trying to drive in
+    */
     static float limitAcceleration(float desiredRPM, float previousRPM, int power);
 
     static float p_theory(int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm);
