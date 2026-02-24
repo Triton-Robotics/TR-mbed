@@ -7,28 +7,28 @@
 
 
 // Writing data stuff
-#define MAX_SIZE          128    //上传数据最大的长度
-#define frameheader_len  5       //帧头长度
-#define cmd_len          2       //命令码长度
-#define crc_len          2       //CRC16校验
+#define MAX_SIZE          128    //Maximum length of uploaded data
+#define frameheader_len  5       //Frame header Length
+#define cmd_len          2       //Command Code Length
+#define crc_len          2       //CRC16 checksum (that's the literal translation idfk)
 
 #define send_max_len 300 //200
 
 
 // -------------------------------------
-// From South China University of Technology 华南理工大学广州学院-野狼战队-步兵代码 ----------------------------------
+// From South China University of Technology  ----------------------------------
 // https://github.com/wuzjun/2021RM_Infantry/blob/master/Devices/Devices.h/RM_JudgeSystem.h
 // 2021 section
 
 
-//对应通信协议格式   frame_header(5-byte)+cmd_id(2-byte)+data(n-byte)+frame_tail(2-byte,CRC16,整包校验)
+//Corresponding Communication Protocol Format   frame_header(5-byte)+cmd_id(2-byte)+data(n-byte)+frame_tail(2-byte,CRC16,整包校验)
 #define       LEN_HEADER        5/*frame_header*/
 #define       LEN_CMDID         2/*cmd_id*/
 #define       LEN_TAIL          2/*frame_tail*/
 
 //起始字节，协议固定为0xA5
 #define      JUDGE_FRAME_HEADER            0xA5
-#define      JUDGESYSTEM_PACKSIZE 		    389u		//裁判系统包大小(354+35)
+#define      JUDGESYSTEM_PACKSIZE 		    389u		//Referee System Package Size(354+35)
 
 //红蓝方
 #define BLUE 0
@@ -43,11 +43,8 @@
 #define       Judge_Game_StatusData              0x0001 //11
 #define       Judge_Game_ResultData              0x0002 //1
 #define       Judge_Robot_HP                     0x0003 //32
-#define       Judge_Dart_Launch                  0x0004 //UNUSED
-#define       Judge_AI_ChallengeBuff             0x0005 //UNUSED
 #define       Judge_Event_Data                   0x0101 //4
 #define       Judge_Supply_Station               0x0102 //3
-//#define       Judge_Request_Recharge             0x0103(对抗赛未开放)
 #define       Judge_Referee_Warning              0x0104 //3
 #define       Judge_Dart_Countdown               0x0105 //3
 #define       Judge_Robot_State                  0x0201 //13
@@ -74,11 +71,8 @@
 #define       JudgeLength_Game_StatusData        20
 #define       JudgeLength_Game_ResultData        10
 #define       JudgeLength_Robot_HP               41
-#define       JudgeLength_Dart_Launch            12 //UNUSED
-#define       JudgeLength_AI_ChallengeBuff       20 //UNUSED
 #define       JudgeLength_Event_Data             13
 #define       JudgeLength_Supply_Station         12
-//#define       JudgeLength_Request_Recharge       11(对抗赛未开放)
 #define       JudgeLength_Referee_Warning        12
 #define       JudgeLength_Dart_Countdown         12
 #define       JudgeLength_Robot_State            22
@@ -113,23 +107,23 @@ typedef struct
 
 }xFrameHeader;
 
-/* ID: 0x0001    Byte: 11     比赛状态数据 */
+/* ID: 0x0001    Byte: 11     Match Status Data */
 typedef struct
 {
     union {
         uint8_t dataBuff[11];
         struct
         {
-            uint8_t game_type : 4;             //比赛类型
-            uint8_t game_progress : 4;         //当前比赛阶段
-            uint16_t stage_remain_time;        //当前阶段剩余时间  单位s
+            uint8_t game_type : 4;             //Competition Type
+            uint8_t game_progress : 4;         //Current stage of the competition
+            uint16_t stage_remain_time;        //Time remaining in current phase in seconds
         };
     }data;
     uint8_t infoUpdateFlag;
 
 }ext_map_command_t;
 
-/* ID: 0x0001    Byte: 11     比赛状态数据 */
+/* ID: 0x0001    Byte: 11     Match Status Data */
 typedef struct
 {
  uint8_t game_type : 4;
@@ -139,14 +133,14 @@ typedef struct
  uint8_t infoUpdateFlag;
 }game_status_t;
 
-/* ID: 0x0002    Byte: 1       比赛结果数据 */
+/* ID: 0x0002    Byte: 1       Match Results Data */
 typedef struct
 {
  uint8_t winner;
  uint8_t InfoUpdataFlag;
 }game_result_t;
 
-/* ID: 0x0003     Byte: 32     比赛机器人血量数据 */
+/* ID: 0x0003     Byte: 32     Competition Robot Health Data */
 typedef struct
 {
     union
@@ -154,14 +148,14 @@ typedef struct
         uint8_t dataBuff[32];
         struct
         {
-            uint16_t red_1_robot_HP;//红 1 英雄机器人血量，未上场以及罚下血量为 0
-            uint16_t red_2_robot_HP;//红 2 工程机器人血量
-            uint16_t red_3_robot_HP;//红 3 步兵机器人血量
-            uint16_t red_4_robot_HP;//红 4 步兵机器人血量
-            uint16_t red_5_robot_HP;//红 5 步兵机器人血量
-            uint16_t red_7_robot_HP;//红 7 步兵机器人血量
-            uint16_t red_outpost_HP;//红方前哨战血量
-            uint16_t red_base_HP;//红方基地血量
+            uint16_t red_1_robot_HP;//Red 1 Hero Robot HP: 0 for off-field and penalized units
+            uint16_t red_2_robot_HP;//Red 2 Engineering Robot Health Points
+            uint16_t red_3_robot_HP;//Red 3 Infantry Robot Health Points
+            uint16_t red_4_robot_HP;//Red 4 ^
+            uint16_t red_5_robot_HP;//Red 5 ^
+            uint16_t red_7_robot_HP;//Red 7 ^
+            uint16_t red_outpost_HP;//Red Outpost HP
+            uint16_t red_base_HP;//Red Base HP
             uint16_t blue_1_robot_HP;
             uint16_t blue_2_robot_HP;
             uint16_t blue_3_robot_HP;
@@ -175,22 +169,7 @@ typedef struct
     uint8_t InfoUpdataFlag;
 }ext_game_robot_HP_t;
 
-/* ID: 0x0004      Byte: 3    飞镖发射状态 */
-typedef struct
-{
-    union
-    {
-        uint8_t dataBuff[3];
-        struct __packed
-        {
-            uint8_t dart_belong;//发射飞镖的队伍：1：红方飞镖2：蓝方飞镖
-            uint16_t stage_remaining_time;//发射时的剩余比赛时间，单位 s
-        };
-    }data;
-    uint8_t InfoUpdataFlag;
-}ext_dart_status_t;
-
-/* ID: 0x0005      Byte: 11      人工智能挑战赛加成与惩罚 */
+/* ID: 0x0005      Byte: 11      AI Challenge Bonuses and Penalties */
 typedef struct
 {
     union
@@ -219,7 +198,7 @@ typedef struct
     uint8_t InfoUpdataFlag;
 }ext_ICRA_buff_debuff_zone_status_t;
 
-/* ID: 0x0101     Byte: 4       场地事件数据 */
+/* ID: 0x0101     Byte: 4       Venue Event Data */
 typedef struct
 {
     union
@@ -233,7 +212,7 @@ typedef struct
     uint8_t InfoUpdataFlag;
 }ext_event_data_t;
 
-/* ID: 0x0102     Byte: 4       场地补给站动作标识数据 */
+/* ID: 0x0102     Byte: 4       Field Supply Station Action Indicator Data; Maybe check documents */
 typedef struct
 {
     union
@@ -241,16 +220,16 @@ typedef struct
         uint8_t dataBuff[4];
         struct  
         {
-            uint8_t supply_projectile_id;  //补给站口 ID
-            uint8_t supply_robot_id;       //补弹机器人 ID
-            uint8_t supply_projectile_step;//出弹口开闭状态
-            uint8_t supply_projectile_num; //补弹数量
+            uint8_t supply_projectile_id;  //Supply Station Entrance ID
+            uint8_t supply_robot_id;       //Reloading Robot ID
+            uint8_t supply_projectile_step;//Ejection port open/closed status
+            uint8_t supply_projectile_num; //Number of Reloads
         };
     }data;
     uint8_t InfoUpdataFlag;
 }ext_supply_projectile_action_t;
 
-/* ID: 0X0104          Byte: 2       裁判警告数据 */
+/* ID: 0X0104          Byte: 2       Referee Warning Data */
 typedef struct  
 {
  uint8_t level;
@@ -259,21 +238,8 @@ typedef struct
  uint8_t InfoUpdataFlag;
 }referee_warning_t;
 
-/* ID: 0x0105          Byte: 1       飞镖发射口倒计时  */
-typedef struct
-    {
-    union
-    {
-        uint8_t dataBuff[1];
-        struct  
-        {
-            uint8_t dart_remaining_time;//15s 倒计时
-        };
-    }data;
-    uint8_t InfoUpdataFlag;
-}ext_dart_remaining_time_t;
 
-/* ID: 0X0201          Byte: 27      机器人状态数据 */
+/* ID: 0X0201          Byte: 27      Robot Status Data */
 typedef struct
 {
     union
@@ -284,11 +250,11 @@ typedef struct
             uint8_t robot_id;
 
 			uint8_t robot_level;
-			uint16_t current_HP;//机器人剩余血量
-			uint16_t maximum_HP;//机器人上限血量
-			uint16_t shooter_barrel_cooling_value; //机器人 1 号 17mm 枪口每秒冷却值
-			uint16_t shooter_barrel_heat_limit;//机器人 1 号 17mm 枪口热量上限
-			uint16_t chassis_power_limit;  //机器人 1 号 17mm 枪口上限速度 单位 m/s
+			uint16_t current_HP; // duh
+			uint16_t maximum_HP;// 
+			uint16_t shooter_barrel_cooling_value; //Robot's 17mm cooling rate per second
+			uint16_t shooter_barrel_heat_limit;// Robot's heat limit
+			uint16_t chassis_power_limit;  //Robot 1 17mm Muzzle Velocity Cap Unit: m/s
 			uint8_t power_management_output;
 
 		};
@@ -309,7 +275,7 @@ typedef struct
  uint8_t InfoUpdataFlag;
 }robot_status_t;
 
-/* ID: 0X0202          Byte: 16      实时功率热量数据 */
+/* ID: 0X0202          Byte: 16      Real-time power and heat data */
 typedef struct  
 {
  uint16_t reserved1; //REMOVED chassis_voltage
@@ -322,7 +288,7 @@ typedef struct
  uint8_t InfoUpdataFlag;
 }power_heat_data_t;
 
-/* ID: 0X0203          Byte: 16      机器人位置数据  */
+/* ID: 0X0203          Byte: 16      Robot Position Data  */
 typedef struct  
 {
  float x;
@@ -331,7 +297,7 @@ typedef struct
  uint8_t InfoUpdataFlag;
 }robot_pos_t;
 
-/* ID: 0X0204          Byte: 1       机器人增益数据 */
+/* ID: 0X0204          Byte: 1       Robot Gain Data */
 typedef struct
 {
     union
