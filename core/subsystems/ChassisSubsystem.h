@@ -30,6 +30,7 @@
 // Constants used for acceleration limiting
 constexpr float STATIC_FRICTION_CONSTANT = 0.0f;
 constexpr float GRAVITY = 9.80665f;
+constexpr int ACCEL_DENOM_CONSTANT = 2;
 
 struct OmniKinematics
 {

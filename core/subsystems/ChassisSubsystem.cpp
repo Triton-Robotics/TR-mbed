@@ -1,6 +1,7 @@
 #include "ChassisSubsystem.h"
 #include <cmath>
 #include <stdexcept>
+#include <algorithm>
 
 /**
  * @param radius radius in meters
@@ -56,108 +57,41 @@ WheelSpeeds ChassisSubsystem::getWheelSpeeds() const
 
 float ChassisSubsystem::limitAcceleration(float desiredRPM, float previousRPM, uint32_t deltaTime, float theta)
 {
-    float maxAccel = 100;
     float diff = desiredRPM - previousRPM;
-    return desiredRPM;
+
+    // Calculate theoretical max acceleration
+    // Messy asf but see linked doc for the equation
+    float trigDenom = 2 * std::max(std::abs(std::sin(theta + M_PI/4)), std::abs(std::sin(theta - M_PI/4)));
+    float maxAccel = (STATIC_FRICTION_CONSTANT * GRAVITY) / (ACCEL_DENOM_CONSTANT * trigDenom);
+    printf("%f.2\n", maxAccel);
+
+    // TODO: Convert calculated max acceleration from m/s^2 to RPM/s
+    float maxChangeRPM = 0;
+
+    return desiredRPM; // TODO: remove this
 
     
     if ((desiredRPM > 0 && previousRPM < 0) || (desiredRPM < 0 && previousRPM > 0)) { // if robot trying to sudden change direction
         return 0;
     }
     
-    
-    if (diff > maxAccel){   // if the difference is greater than the max acceleration
-
-
+    if (diff > maxAccel) {
         // if(power == 0) {
         //     return desiredRPM; // let robot do its thing b/c it wont take power
         // }
 
         return previousRPM + maxAccel;
-
-    }
-    else if (diff < -maxAccel) {
+    } 
+    else if (diff < -maxAccel) { // Also check deceleration
         // if(power == 0) {
         //     return desiredRPM; // let robot do its thing b/c it wont take power
         // }
 
         return previousRPM - maxAccel;
+    } 
+    else { // Under acceleration limit
+        return desiredRPM;
     }
-
-    else {
-        return desiredRPM; // under acceleration cap
-    }
-
-
-
-
-    // if (diff > maxAccel){   // if the difference is greater than the max acceleration
-
-    //     if(power > 0) { // power: + rpm: + (acceleraiton)
-    //         return previousRPM + maxAccel;
-    //     }
-
-    //     else if(power < 0 && desiredRPM > 0) { // power: - rpm: + (deceleration)
-    //         return previousRPM + maxAccel; // ignore diff, just decelerate 
-    //     }
-
-    //     else if(power == 0) {
-    //         return desiredRPM; // let robot do its thing b/c it wont take power
-    //     }
-
-    // }
-    // else if (diff < -maxAccel) {
-        
-    //     if(power < 0 && desiredRPM < 0) { // power: - rpm: - (acceleration)
-    //         return previousRPM - maxAccel; 
-    //     }
-
-    //     else if(power > 0 && desiredRPM < 0) { // power: + rpm: - (deceleration)
-    //         return previousRPM - maxAccel; // ignore diff, just decelerate
-    //     }
-
-    //     else if(power == 0) {
-    //         return desiredRPM; // let robot do its thing b/c it wont take power
-    //     }
-
-    // }
-    // else {
-    //     return desiredRPM; // under acceleration
-    // }
-
-
-
-
-
-
-
-
-
-    // if(previousRPM > 0){
-    //     float maxRPMthisFrame = previousRPM + maxAccel;
-    //     if(desiredRPM > 0){
-    //         if(desiredRPM > maxRPMthisFrame){
-    //             return maxRPMthisFrame;
-    //         }else {
-    //             return desiredRPM;
-    //         }
-    //     }else {
-    //         return 0;
-    //     }
-    // }else if(previousRPM < 0){
-    //     float minRPMthisFrame = previousRPM - maxAccel;
-    //     if(desiredRPM < 0){
-    //         if(desiredRPM < minRPMthisFrame){
-    //             return minRPMthisFrame;
-    //         }else {
-    //             return desiredRPM;
-    //         }
-    //     }else{
-    //         return 0;
-    //     }
-    // }else{
-    //     return 0;
-    // }
 }
 
 float ChassisSubsystem::p_theory(int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm){
