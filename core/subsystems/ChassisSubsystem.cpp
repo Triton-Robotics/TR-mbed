@@ -54,10 +54,11 @@ WheelSpeeds ChassisSubsystem::getWheelSpeeds() const
     return m_wheelSpeeds;
 }
 
-static float ChassisSubsystem::limitAcceleration(float desiredRPM, float previousRPM, uint32_t deltaTime, float theta)
+float ChassisSubsystem::limitAcceleration(float desiredRPM, float previousRPM, uint32_t deltaTime, float theta)
 {
     float maxAccel = 100;
     float diff = desiredRPM - previousRPM;
+    return desiredRPM;
 
     
     if ((desiredRPM > 0 && previousRPM < 0) || (desiredRPM < 0 && previousRPM > 0)) { // if robot trying to sudden change direction
@@ -241,12 +242,9 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     float diffRB = wheelSpeeds.RB - previousRPM[3];
 
     // These are in arbitrary units because we only need to find the direction
-    float accelY = diffLF + diffRF + diffLB + diffRB;
-    float accelX = diffLF - diffRF - diffLB + diffRB;
-    float theta = atan2(accelY, accelX);
-    printf("Angle (degrees): %f\n", theta * 180 / M_PI);
-    
-    
+    float accelX = diffLF + diffRF - diffLB - diffRB;
+    float accelY = diffLF - diffRF + diffLB - diffRB;
+    float theta = atan2(accelY, accelX) + M_PI/2;
 
     float LFrpm = limitAcceleration(wheelSpeeds.LF, previousRPM[0], deltaTime, theta);
     float RFrpm = limitAcceleration(wheelSpeeds.RF, previousRPM[1], deltaTime, theta);
