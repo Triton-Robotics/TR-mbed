@@ -130,10 +130,12 @@ void TurretSubsystem::periodic(float chassisRpm)
             static_cast<float>(us_ticker_read() - turret_time) / 1000
         );
         yaw.pidSpeed.feedForward = yaw_static_friction * dir + yaw_kinetic_friction * des_yaw_velo;
-        yaw.setSpeed(des_yaw_velo);
-        // float des_yaw_power = yaw.pidSpeed.calculate(des_yaw_velo, turret_state.yaw_velo_rad_s, us_ticker_read() - turret_time);
+        float des_yaw_power = yaw.pidSpeed.calculate(
+            des_yaw_velo, 
+            turret_state.yaw_velo_rad_s, 
+            static_cast<float>(us_ticker_read() - turret_time) / 1000);
         // printf("yp %.2f | %.2f\n", des_yaw_power, deltaYaw);
-        // yaw.setPower(des_yaw_power);
+        yaw.setPower(des_yaw_power);
 
 
         // Pitch calc
