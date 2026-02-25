@@ -24,3 +24,8 @@ float capAngle(float curr_angle)
     }
     return curr_angle;
 }
+
+float degreesToRadians(float degrees) {
+    // M_PI is a common constant for Pi in cmath
+    return degrees * M_PI / 180.0;
+}

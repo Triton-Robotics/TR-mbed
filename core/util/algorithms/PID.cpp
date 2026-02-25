@@ -48,13 +48,13 @@ void PID::resetErrorIntegral()
     errorIntegral = 0;
 }
 
-int PID::calculate(int desired, int current, double dt)
+int PID::calculate(int desired, int current, float dt)
 {
     float error = static_cast<float>(desired - current);
     return calculatePeriodic(error, dt);
 }
 
-int PID::calculatePeriodic(float error, double dt)
+int PID::calculatePeriodic(float error, float dt)
 {
 
     dt /= 1000;
@@ -63,7 +63,7 @@ int PID::calculatePeriodic(float error, double dt)
 
     iC = errorIntegral;
 
-    double PIDCalc = (kP * error) + (errorIntegral) + feedForward;
+    float PIDCalc = (kP * error) + (errorIntegral) + feedForward;
     pC = kP * error;
 
     if (dt > 0)
@@ -90,7 +90,7 @@ void PID::limitErrorIntegral()
     }
 }
 
-void PID::limitOutput(double &PIDCalc) const
+void PID::limitOutput(float &PIDCalc) const
 {
 
     if (outputCap != 0)
@@ -172,28 +172,27 @@ void PID::resetErrorIntegral()
     errorIntegral = 0;
 }
 
-int PID::calculate(int desired, int current, double dt)
+float PID::calculate(float desired, float current, float dt_ms)
 {
     float error = static_cast<float>(desired - current);
-    return calculatePeriodic(error, dt);
+    return calculatePeriodic(error, dt_ms);
 }
 
-int PID::calculatePeriodic(float error, double dt)
+float PID::calculatePeriodic(float error, float dt_ms)
 {
-
-    dt /= 1000;
-    errorIntegral += kI * dt * (error + lastError) / 2;
+    dt_ms /= 1000; // Convert to seconds
+    errorIntegral += kI * dt_ms * (error + lastError) / 2;
     limitErrorIntegral();
 
     iC = errorIntegral;
 
-    double PIDCalc = (kP * error) + (errorIntegral) + feedForward;
+    float PIDCalc = (kP * error) + (errorIntegral) + feedForward;
     pC = kP * error;
 
-    double dTerm = 0;
-    if (dt > 0)
+    float dTerm = 0;
+    if (dt_ms > 0)
     {
-        dTerm = (kD * (error - lastError) / dt);
+        dTerm = (kD * (error - lastError) / dt_ms);
         dBuffer.add(dTerm);
         dTerm = dBuffer.time();
         PIDCalc += dTerm;
@@ -218,7 +217,7 @@ void PID::limitErrorIntegral()
     }
 }
 
-void PID::limitOutput(double &PIDCalc) const
+void PID::limitOutput(float &PIDCalc) const
 {
 
     if (outputCap != 0)

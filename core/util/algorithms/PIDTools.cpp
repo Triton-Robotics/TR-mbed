@@ -55,7 +55,7 @@ void PIDTools::test_position()
         if (calc_settling_time)
         {
             motor->setPosition(des_val);
-            PIDTools:calculateSettlingTimeVelocity();
+            calculateSettlingTimeVelocity();
         }
         if (print_settling_time && print_overshoot)
         {

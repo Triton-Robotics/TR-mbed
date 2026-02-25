@@ -4,6 +4,7 @@
 #pragma once
 #include "mbed.h"
 #include "util/algorithms/PID.h"
+#include "util/algorithms/general_functions.h"
 #include "util/communications/CANHandler.h"
 #include <cmath>
 #include <string>
@@ -94,7 +95,7 @@ public:
     static void getCan2Feedback(const CANMsg * msg);
     static void sendValues(bool debug = false);
 
-    int getData(motorDataType data);
+    float getData(motorDataType data);
 
     inline void setMotorOutput(int val, motorMoveMode mod)
     {
@@ -104,17 +105,17 @@ public:
 
     inline void setPower(int power)
     {
-        value = power;
+        value = (float)power;
         mode = POW;
         powerOut = power;
     }
 
-    inline void setSpeed(int speed){
+    inline void setSpeed(float speed){
         value = speed;
         mode = SPD;
     }
 
-    inline void setPosition(int position){
+    inline void setPosition(float position){
         value = position;
         mode = POS;
     }
@@ -141,9 +142,9 @@ public:
     inline void setSpeedDerivativeCap(double cap)                                                   { pidSpeed.setDerivativeCap((float)cap); }
     inline void setSpeedOutputCap(double cap)                                                       { pidSpeed.setOutputCap((float)cap); }
 
-    inline int calculateSpeedPID(int desired, int current, double dt)                               { return pidSpeed.calculate(desired, current, dt); }
-    inline int calculatePositionPID(int desired, int current, double dt)                            { return pidSpeed.calculate(pidPosition.calculate(desired, current, dt), getData(VELOCITY), dt); }
-    inline int calculatePeriodicPosition(float dE, double dt)                                       { return pidSpeed.calculate(pidPosition.calculatePeriodic(dE, dt), getData(VELOCITY), dt); }
+    inline float calculateSpeedPID(float desired, float current, double dt)                               { return pidSpeed.calculate(desired, current, dt); }
+    inline float calculatePositionPID(float desired, float current, double dt)                            { return pidSpeed.calculate(pidPosition.calculate(desired, current, dt), getData(VELOCITY), dt); }
+    inline float calculatePeriodicPosition(float dE, double dt)                                       { return pidSpeed.calculate(pidPosition.calculatePeriodic(dE, dt), getData(VELOCITY), dt); }
 
 private:
     static DJIMotor* s_allMotors  [CAN_HANDLER_NUMBER][3][4];
@@ -158,7 +159,7 @@ private:
 
     //  angle | velocity | torque | temperature
     int16_t motorData[4] = {};
-    int value = 0;
+    float value = 0;
 
     int lastMotorAngle = 0;
     int integratedAngle = 0;
