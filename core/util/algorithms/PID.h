@@ -22,11 +22,11 @@ private:
     float kI = 0;
     float kD = 0;
 
-    double integralCap = 0;
+    float integralCap = 0;
     float outputCap = 0;
 
     float lastError = 0;
-    double errorIntegral = 0;
+    float errorIntegral = 0;
 
 public:
     float feedForward = 0;
@@ -69,11 +69,11 @@ public:
      * @param dt The time that has passed since the last calculation, in milliseconds
      * @return The output control power
      */
-    int calculate(int desired, int current, double dt);
+    int calculate(int desired, int current, float dt);
 
-    int calculatePeriodic(float error, double dt);
+    int calculatePeriodic(float error, float dt);
 
-    void limitOutput(double &PIDCalc) const;
+    void limitOutput(float &PIDCalc) const;
 
     void limitErrorIntegral();
 
@@ -141,12 +141,12 @@ private:
     float kI = 0;
     float kD = 0;
 
-    double integralCap = 0;
-    double derivativeCap = 0;
+    float integralCap = 0;
+    float derivativeCap = 0;
     float outputCap = 0;
 
     float lastError = 0;
-    double errorIntegral = 0;
+    float errorIntegral = 0;
 
 public:
 
@@ -204,13 +204,13 @@ public:
      * @param dt The time that has passed since the last calculation, in milliseconds
      * @return The output control power
      */
-    int calculate(int desired, int current, double dt);
+    float calculate(float desired, float current, float dt_ms);
 
-    int calculatePeriodic(float error, double dt);
+    float calculatePeriodic(float error, float dt_ms);
 
-    void limitOutput(double &PIDCalc) const;
+    void limitOutput(float &PIDCalc) const;
 
-    double limitErrorDerivative(double dTerm);
+    float limitErrorDerivative(float dTerm);
 
     void limitErrorIntegral();
 

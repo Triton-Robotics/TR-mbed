@@ -318,18 +318,22 @@ void DJIMotor::updateOneMultiTurn(int canBus, int can_line, int motor_id) {
     }
 }
 
-int DJIMotor::getData(motorDataType data) {
-    if (data <= 3)
-        return motorData[data];
+float DJIMotor::getData(motorDataType data) {
+    if (data <= 3) {
+        if (data == VELOCITY && type == M3508) {
+            return ((float)(motorData[data]) / M3508_GEAR_RATIO) * 2 * PI / 60;
+        }
+        return (float)(motorData[data]) * 2 * PI / 60;
+    }
 
     else if (data == MULTITURNANGLE)
-        return multiTurn;
+        return (float)multiTurn;
 
     else if (data == POWEROUT)
-        return powerOut;
+        return (float)powerOut;
 
     else if (data == VALUE)
-        return value;
+        return (float)value;
 
     return 0;
 }

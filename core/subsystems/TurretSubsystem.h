@@ -47,7 +47,7 @@ public:
         CANHandler::CANBus pitchCanBus;
         int forward;
 
-        IMU &imu;
+        float gear_ratio = 1;
 
         const float pitch_lower_bound;
         const float pitch_upper_bound;
@@ -62,7 +62,7 @@ public:
         TurretState turret_mode = SLEEP;
     };
 
-    TurretSubsystem(config cfg);
+    TurretSubsystem(config cfg, IMU &imu);
 
     TurretInfo getState();
 
@@ -81,12 +81,13 @@ private:
 
     TurretInfo turret_state;
 
-    IMU &imu;
+    IMU &imu_;
     IMU::EulerAngles imuAngles;
 
     bool configured;
     const int forward_;
     const float pitch_lowerbound, pitch_upperbound;
+    const float gear_ratio;
 
     const float yaw_static_friction;
     const float yaw_kinetic_friction;
