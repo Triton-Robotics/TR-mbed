@@ -240,9 +240,9 @@ class Infantry : public BaseRobot {
 
         // TODO angle_degrees and angle_radians
         stm_state.yaw_angle_rads = degreesToRadians(turret.getState().yaw_angle_degs);
-        stm_state.yaw_velocity = degreesToRadians(turret.getState().yaw_velo_rad_s);
+        stm_state.yaw_velocity = turret.getState().yaw_velo_rad_s;
         stm_state.pitch_angle_rads = degreesToRadians(turret.getState().pitch_angle_degs);
-        stm_state.pitch_velocity = degreesToRadians(turret.getState().pitch_velo_rad_s);
+        stm_state.pitch_velocity = turret.getState().pitch_velo_rad_s;
     }
 };
 
