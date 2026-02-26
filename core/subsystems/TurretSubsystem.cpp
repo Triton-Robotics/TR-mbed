@@ -115,7 +115,7 @@ void TurretSubsystem::periodic(float chassisRpm)
     {
         // Yaw calc
         float deltaYaw = calculateDeltaYaw(turret_state.yaw_angle_degs, des_yaw);
-        int dir = 0;
+        int dir = 0; // TODO FIX THIS
         if(deltaYaw < 10 && deltaYaw > 0.001){
             dir = log(deltaYaw);
         }else if(deltaYaw > -10 && deltaYaw < -0.001){

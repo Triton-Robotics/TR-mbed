@@ -31,11 +31,11 @@ constexpr PID::config YAW_POS_PID     = {1, 0, 0, 90, 2};
 const float yaw_static_friction       = -150;       // We multiply it by dir
 const float yaw_kinetic_friction      = 0;       // We multiply this by yawvelo
 
-constexpr PID::config PITCH_VEL_PID   = {0, 0.00, 0, 16000, 1000}; //{25, 0.001, 5, 16000, 1000};
-constexpr PID::config PITCH_POS_PID   = {0, 0, 0,30,2}; //{1, 0, 0, 30, 2};
+constexpr PID::config PITCH_VEL_PID   = {173.8994, 4.898 * 10e-9, 12.474 * 10, 16000, 1000}; //{25, 0.001, 5, 16000, 1000};
+constexpr PID::config PITCH_POS_PID   = {1, 0, 0,30,2}; //{1, 0, 0, 30, 2};
 const float pitch_gravity_feedforward = -500;    // We multiply this by cos(angle)
-const float pitch_static_friction     = 0;       // We multiply it by dir
-const float pitch_kinetic_friction    = 5.5;     // We multiply this by pitchvelo
+const float pitch_static_friction     = 635.0 / 5;       // We multiply it by dir
+const float pitch_kinetic_friction    = 0; //5.5;     // We multiply this by pitchvelo
 
 constexpr PID::config FL_VEL_CONFIG = {3, 0, 0};
 constexpr PID::config FR_VEL_CONFIG = {3, 0, 0};
@@ -66,7 +66,7 @@ TurretSubsystem::config turret_config = {
     pitch_kinetic_friction,
     CANHandler::CANBUS_1,
     CANHandler::CANBUS_2,
-    -1,
+    1,
     (1.0 / 3.0),
     PITCH_LOWER_BOUND,
     PITCH_UPPER_BOUND
