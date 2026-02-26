@@ -4,13 +4,14 @@
 
 #include "util/communications/CANHandler.h"
 #include "util/motor/DJIMotor.h"
+#include <cstdint>
 
-#define IMPULSE_STRENGTH 8191
+#define IMPULSE_STRENGTH 1000
 
 // Testing Parameters (change these to set the relevant motor)
 // (CHECK THE CONFIG FOR NEW ROBOTS!!!!)
 bool infantry = true, hero = false;
-bool pitch = false, yaw = true;
+bool pitch = true, yaw = false;
 bool ind = false;
 bool flywheel = false;
 bool chassis = false;
@@ -55,14 +56,15 @@ class TestBench : public BaseRobot {
     int ry = 0, desiredVelocity = 0;
     int stepAmplitude = IMPULSE_STRENGTH;
     int16_t powerBuffer = 0;
-    int16_t velocityBuffer = 0, angleBuffer = 0, torqueBuffer = 0;
+    float velocityBuffer = 0;
+    int16_t angleBuffer = 0, torqueBuffer = 0;
     bool impulse = true, measureStart = false;
 
     TestBench(Config &config)
         : BaseRobot(config),
           // clang-format off
         infPitch(DJIMotor::config{
-            7,
+            8,
             CANHandler::CANBUS_2,
             M3508,
             "inf pitch",
@@ -70,7 +72,7 @@ class TestBench : public BaseRobot {
             test_motor_pos_PID
         }),
         infYaw(DJIMotor::config{
-            4,
+            5,
             CANHandler::CANBUS_1,
             M3508,
             "inf yaw",
@@ -94,7 +96,7 @@ class TestBench : public BaseRobot {
             test_motor_pos_PID
         }),
         heroYaw(DJIMotor::config{
-            1,
+            6,
             CANHandler::CANBUS_1,
             M3508,
             "hero yaw",
@@ -199,14 +201,14 @@ class TestBench : public BaseRobot {
         testMot3 ? testMot3->setPower(powerBuffer) : (void)0; // for chassis motor
         testMot4 ? testMot4->setPower(powerBuffer) : (void)0; // for chassis motor
         angleBuffer = (*testMot)>>ANGLE;
-        velocityBuffer = (*testMot)>>VELOCITY;
+        velocityBuffer = testMot->getData(VELOCITY);
         torqueBuffer = (*testMot)>>TORQUE;
 
         if (switL || switR || switLDown || switRDown) { // print only when test is active
             if (position) {
                 printf("%d\t%d\n", powerBuffer, angleBuffer);
             } else if (velocity) {
-                printf("%d\t%d\n", powerBuffer, velocityBuffer);
+                printf("%d\t%.2f\n", powerBuffer, velocityBuffer);
             }
         }
     }

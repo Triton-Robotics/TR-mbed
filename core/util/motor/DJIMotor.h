@@ -94,7 +94,7 @@ public:
     static void getCan2Feedback(const CANMsg * msg);
     static void sendValues(bool debug = false);
 
-    int getData(motorDataType data);
+    float getData(motorDataType data);
 
     inline void setMotorOutput(int val, motorMoveMode mod)
     {
