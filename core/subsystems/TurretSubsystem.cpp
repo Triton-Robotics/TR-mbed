@@ -72,7 +72,7 @@ float TurretSubsystem::get_yaw_angle_degs()
 
 float TurretSubsystem::get_pitch_vel_rads_per_sec()
 {
-    return pitch.getData(VELOCITY);
+    return forward_ * pitch.getData(VELOCITY);
 }
 
 float TurretSubsystem::get_yaw_vel_rads_per_sec()
