@@ -186,7 +186,7 @@ public:
         else if (remote_.keyPressed(Remote::Key::G))
         {
             // set to Chassis Alignment mode
-            chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::CHASSIS_ALIGN);
+            chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::CHASSIS_ALIGN); // add argument: double yawVelo = 0.0?
         }
         else
         {

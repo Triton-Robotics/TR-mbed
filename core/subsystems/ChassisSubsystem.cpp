@@ -340,7 +340,7 @@ ChassisSpeeds ChassisSubsystem::getChassisSpeeds() const
     return m_chassisSpeeds;
 }
 
-float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode)
+float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode, double yawVelo)
 {
     if (mode == REVERSE_YAW_ORIENTED)
     {
