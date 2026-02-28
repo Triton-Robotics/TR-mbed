@@ -2,73 +2,75 @@
 #define VTM_RECEIVER_H
 
 #include "mbed.h"
-#include <cstdint>
-#include <cstddef>
+#include <stdint.h>
 
-struct VTMInput {
-    uint16_t ch0 = 0;
-    uint16_t ch1 = 0;
-    uint16_t ch2 = 0;
-    uint16_t ch3 = 0;
+struct VTMInput
+{
+    uint16_t ch0;
+    uint16_t ch1;
+    uint16_t ch2;
+    uint16_t ch3;
 
-    uint8_t mode = 0;
-    uint8_t pause = 0;
-    uint8_t btnL = 0;
-    uint8_t btnR = 0;
+    uint8_t mode;
+    uint8_t pause;
+    uint8_t btnL;
+    uint8_t btnR;
 
-    uint16_t dial = 0;
-    uint8_t trigger = 0;
+    uint16_t dial;
+    uint8_t trigger;
 
-    int16_t mouseX = 0;
-    int16_t mouseY = 0;
-    int16_t mouseZ = 0;
+    int16_t mouseX;
+    int16_t mouseY;
+    int16_t mouseZ;
 
-    uint8_t mouseL = 0;
-    uint8_t mouseR = 0;
-    uint8_t mouseM = 0;
+    uint8_t mouseL;
+    uint8_t mouseR;
+    uint8_t mouseM;
 
-    uint16_t keyboard = 0;
-    uint16_t CRC_in = 0;
+    uint16_t keyboard;
+    uint16_t CRC_in;
 };
 
-class DJIRemote2 {
+class DJIRemote2
+{
 public:
-    static constexpr uint8_t HEADER_BYTE_0 = 0xA9;
-    static constexpr uint8_t HEADER_BYTE_1 = 0x53;
-    static constexpr size_t FRAME_SIZE = 21;
-    static constexpr size_t STREAM_BUFFER_SIZE = 64;
+    enum
+    {
+        FRAME_SIZE = 21,
+        STREAM_BUFFER_SIZE = 64,
+        READ_CHUNK_SIZE = 32
+    };
 
     DJIRemote2(PinName tx, PinName rx, int baud = 921600);
 
-    bool update();          // returns true if a full frame was decoded
+    bool update();
+    VTMInput getData() const;
+    bool hasFrame() const;
+
+    uint64_t getFramePeriodUs() const;
+    float getFrameRateHz() const;
+
     void clear();
 
-    const VTMInput& getData() const;
-    bool hasValidFrame() const;
-
-    uint64_t getLastFrameTimeUs() const;
-    uint64_t getFramePeriodUs() const;
-    double getFrameRateHz() const;
-
 private:
-    BufferedSerial serial_;
+    BufferedSerial serial;
 
-    uint8_t streamBuffer_[STREAM_BUFFER_SIZE];
-    size_t streamCount_;
+    uint8_t streamBuffer[STREAM_BUFFER_SIZE];
+    int streamCount;
 
-    VTMInput data_;
-    bool validFrame_;
+    VTMInput data;
+    bool validFrame;
 
-    uint64_t lastFrameTimeUs_;
-    uint64_t currentFrameTimeUs_;
-    uint64_t framePeriodUs_;
+    uint64_t lastFrameTimeUs;
+    uint64_t currentFrameTimeUs;
+    uint64_t framePeriodUs;
 
-    void readIncomingBytes();
-    bool tryParseFrame();
-    int findHeader() const;
-    void decodeFrame(const uint8_t* frame);
-    void shiftLeft(size_t count);
     void resetData();
+    void readIncomingBytes();
+    bool parseOneFrame();
+    int findHeader() const;
+    void decodeFrame(const uint8_t *frame);
+    void shiftLeft(int count);
 };
 
 #endif

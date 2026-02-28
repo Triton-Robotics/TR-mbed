@@ -161,19 +161,7 @@
 //     // blocking
 // }
 
-#include "base_robot/BaseRobot.h"
-#include "util/algorithms/general_functions.h"
-
-#include "subsystems/ChassisSubsystem.h"
-#include "subsystems/ShooterSubsystem.h"
-#include "subsystems/TurretSubsystem.h"
-
-#include "util/communications/CANHandler.h"
-#include "util/communications/jetson/Jetson.h"
-#include "util/motor/DJIMotor.h"
-#include "util/peripherals/imu/BNO055.h"
-
-#include "util/communications/DJIRemote2.h"
+#include "DJIRemote2.h"
 
 class TestBench : public BaseRobot {
 public:
@@ -192,11 +180,12 @@ public:
 
     void periodic(unsigned long dt_us) override
     {
-        if (vtm.update()) {
-            const VTMInput& in = vtm.getData();
+        if (vtm.update())
+        {
+            VTMInput in = vtm.getData();
 
             printf("Frame dt = %llu us (%.2f Hz)\n",
-                   vtm.getFramePeriodUs(),
+                   (unsigned long long)vtm.getFramePeriodUs(),
                    vtm.getFrameRateHz());
 
             printf("ch0=%u ch1=%u ch2=%u ch3=%u mode=%u pause=%u btnL=%u btnR=%u dial=%u trigger=%u "
@@ -214,9 +203,3 @@ public:
 
     unsigned int main_loop_dt_ms() override { return 15; }
 };
-
-int main() {
-    BaseRobot::Config config = BaseRobot::Config{};
-    TestBench testBench(config);
-    testBench.main_loop();
-}
