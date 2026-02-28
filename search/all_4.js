@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['d_0',['d',['../structPID_1_1config.html#a7d44e288f702d3de860d8cf559a6f130',1,'PID::config::d'],['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4faf623e75af30e62bbd73d6df5b50bb7b5',1,'Remote::D']]],
+  ['d_0',['d',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4faf623e75af30e62bbd73d6df5b50bb7b5',1,'Remote::D'],['../structPID_1_1config.html#a7d44e288f702d3de860d8cf559a6f130',1,'PID::config::d']]],
   ['dart_5fattack_5ftarget_1',['dart_attack_target',['../structext__dart__client__cmd__t.html#a14919418d881fdeb01e2de5058d3a1a3',1,'ext_dart_client_cmd_t']]],
   ['dart_5fbelong_2',['dart_belong',['../structext__dart__status__t.html#ae2b8d294de50883029357532262b639e',1,'ext_dart_status_t']]],
   ['dart_5flaunch_5fopening_5fstatus_3',['dart_launch_opening_status',['../structext__dart__client__cmd__t.html#a0ed58fe58c282f6519b1f497905f2a8e',1,'ext_dart_client_cmd_t']]],

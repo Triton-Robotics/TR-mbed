@@ -1,7 +1,7 @@
 var searchData=
 [
   ['p_0',['p',['../structBNO055__EULER__TypeDef.html#acf440a186707033203462fc8f316ab1a',1,'BNO055_EULER_TypeDef::p'],['../structPID_1_1config.html#a255d34243338f5fb651244a5dcc12d44',1,'PID::config::p'],['../imuExampleAllData_8cpp.html#a9e393df6575846c7a8e15b76d63f2724',1,'p:&#160;imuExampleAllData.cpp'],['../imuExampleQuaternions_8cpp.html#a9e393df6575846c7a8e15b76d63f2724',1,'p:&#160;imuExampleQuaternions.cpp']]],
-  ['payload_5fsize_1',['payload_size',['../classChassisReadPacket.html#a5c05dbcbf13e589c4b91a7544cfb8736',1,'ChassisReadPacket::PAYLOAD_SIZE'],['../classTurretPacket.html#ad8244f1830e98ff04645a5359246d37f',1,'TurretPacket::PAYLOAD_SIZE'],['../classRefWritePacket.html#a73b1ca498fe068cfde614b1bc156997f',1,'RefWritePacket::PAYLOAD_SIZE'],['../classRobotStateWritePacket.html#a53c14ac7c7397cbe56a6416a02ed278b',1,'RobotStateWritePacket::PAYLOAD_SIZE']]],
+  ['payload_5fsize_1',['payload_size',['../classTurretPacket.html#ad8244f1830e98ff04645a5359246d37f',1,'TurretPacket::PAYLOAD_SIZE'],['../classChassisReadPacket.html#a5c05dbcbf13e589c4b91a7544cfb8736',1,'ChassisReadPacket::PAYLOAD_SIZE'],['../classEmbeddedUserInputWritePacket.html#a6bc45b21f57ce9fd5c71b9521ac05a48',1,'EmbeddedUserInputWritePacket::PAYLOAD_SIZE'],['../classRefWritePacket.html#a73b1ca498fe068cfde614b1bc156997f',1,'RefWritePacket::PAYLOAD_SIZE'],['../classRobotStateWritePacket.html#a53c14ac7c7397cbe56a6416a02ed278b',1,'RobotStateWritePacket::PAYLOAD_SIZE']]],
   ['payload_5fsize_5f_2',['payload_size_',['../classWritePacket.html#a878d4495659c77a5ab6fc8670da945ee',1,'WritePacket::payload_size_'],['../classReadPacket.html#aeb8c33f149f399add4db412dcc41827e',1,'ReadPacket::payload_size_']]],
   ['pc_3',['pC',['../classPID.html#a52638a3331e1f731e8075cea5bb47b25',1,'PID']]],
   ['peak_5fpower_5fall_4',['PEAK_POWER_ALL',['../classChassisSubsystem.html#aa76b86a6818fa3df385926a0b329bcc3',1,'ChassisSubsystem']]],
@@ -12,7 +12,7 @@ var searchData=
   ['pid_5frf_9',['pid_RF',['../classChassisSubsystem.html#a0eed71afb4aa14dafa9075a70f70a7ca',1,'ChassisSubsystem']]],
   ['pidposition_10',['pidPosition',['../classDJIMotor.html#a3c65dfbd935be4734c15fe7580d2cc53',1,'DJIMotor']]],
   ['pidspeed_11',['pidSpeed',['../classDJIMotor.html#a8cc310c5708fb1eb837c2064cdd0cbc8',1,'DJIMotor']]],
-  ['pitch_12',['pitch',['../structIMU_1_1EulerAngles.html#a34faebdeef04be590266abd8f0e3f020',1,'IMU::EulerAngles::pitch'],['../structBNO055__ANGULAR__POSITION__typedef.html#a69fe567af50605d9fbb33949124916af',1,'BNO055_ANGULAR_POSITION_typedef::pitch']]],
+  ['pitch_12',['pitch',['../structBNO055__ANGULAR__POSITION__typedef.html#a69fe567af50605d9fbb33949124916af',1,'BNO055_ANGULAR_POSITION_typedef::pitch'],['../structIMU_1_1EulerAngles.html#a34faebdeef04be590266abd8f0e3f020',1,'IMU::EulerAngles::pitch']]],
   ['pitch_5fangle_5fdegs_13',['pitch_angle_degs',['../structTurretSubsystem_1_1TurretInfo.html#a9ed8e569a5309aa0adba4a3eeb6f154c',1,'TurretSubsystem::TurretInfo']]],
   ['pitch_5fangle_5frads_14',['pitch_angle_rads',['../structJetson_1_1WriteState.html#a118ff69a6db9c2e79309fb33ca0e4738',1,'Jetson::WriteState']]],
   ['pitch_5fdesired_5fangle_15',['pitch_desired_angle',['../Hero_8cpp.html#ab71473beb60dbf36e0fd1b792a540501',1,'pitch_desired_angle:&#160;Hero.cpp'],['../Sentry_8cpp.html#ab71473beb60dbf36e0fd1b792a540501',1,'pitch_desired_angle:&#160;Sentry.cpp'],['../Infantry_8cpp.html#ab71473beb60dbf36e0fd1b792a540501',1,'pitch_desired_angle:&#160;Infantry.cpp']]],
