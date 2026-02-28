@@ -12,6 +12,7 @@
 
 #include <algorithm>
 #include <string.h>
+#include <us_ticker_api.h>
 
 // testing (not used anymore)
 // uint8_t tempByte;
@@ -28,11 +29,15 @@ struct VTMinput {
 	int16_t  mouseX, mouseY, mouseZ; // 16-bit 
 	uint8_t  mouseL, mouseR, mouseM; // 2-bit 
 	uint16_t keyboard;           // 16-bit
-	uint16_t CRC;				// 16-bit
+	uint16_t CRC_in;				// 16-bit
 };
 
 class TestBench : public BaseRobot {
   public:
+
+	uint64_t lastFrameTime_us = 0;
+	uint64_t currentFrameTime_us = 0;
+
 	uint8_t rxBuffer[21]; 
 	uint16_t ch0 = 0; 
 	uint16_t ch1 = 0; 
@@ -52,7 +57,7 @@ class TestBench : public BaseRobot {
 	uint8_t mouseM = 0;
 	uint16_t keyboard = 0;
 	
-	uint16_t CRC = 0;
+	uint16_t CRC_in = 0;
 	// initialize a variable to keep track of whether the header has been found
 	int headerFound = 0;
 	// declare pin number (bufferedserial)
@@ -81,6 +86,17 @@ class TestBench : public BaseRobot {
 		for(unsigned int i = 0; i < sizeof(rxBuffer); i++) {
 			if((rxBuffer[i] == 0xA9) && (rxBuffer[i+1] == 0x53)) {
 				headerFound = 1;
+				// currentFrameTime_us = Kernel::Clock::now().time_since_epoch().count();
+				currentFrameTime_us = us_ticker_read();
+
+				if(lastFrameTime_us != 0) {
+					auto framePeriod = currentFrameTime_us - lastFrameTime_us;
+					printf("Frame dt = %llu us (%.2f Hz)\n",
+						framePeriod,
+						1e6 / (double)framePeriod);
+				}
+
+				lastFrameTime_us = currentFrameTime_us;
 				//debug purposes only
 				//printf("%x %x %x %x %x %x %x\n",rxBuffer[i],rxBuffer[i+1],rxBuffer[i+2],rxBuffer[i+3],rxBuffer[i+4],rxBuffer[i+5],rxBuffer[i+6]);
 
@@ -110,13 +126,13 @@ class TestBench : public BaseRobot {
 
 				keyboard = ((((uint16_t)rxBuffer[i+16]) >> 3) & 0x1F) | (((uint16_t)rxBuffer[i+17]) << 5) | ((((uint16_t)rxBuffer[i+18]) & 0x07) << 13); // 16 bits for keyboard
 				
-				CRC = ((((uint16_t)rxBuffer[i+18]) >> 3) & 0x1F) | (((uint16_t)rxBuffer[i+19]) << 5) | ((((uint16_t)rxBuffer[i+20]) & 0x07) << 13); // 16 bits for CRC
+				CRC_in = ((((uint16_t)rxBuffer[i+18]) >> 3) & 0x1F) | (((uint16_t)rxBuffer[i+19]) << 5) | ((((uint16_t)rxBuffer[i+20]) & 0x07) << 13); // 16 bits for CRC
 				
 				// Print everything now!
-				printf("ch0 = %u, ch1 = %u, ch2 = %u, ch3 = %u, mode = %u, pause = %u, btnL = %u, btnR = %u, dial = %u, trigger = %u, mouseX = %d, mouseY = %d, mouseZ = %d, mouseL = %u, mouseR = %u, mouseM = %u, keyboard = %u\n", 
-					   ch0, ch1, ch2, ch3, mode, pause, btnL, btnR, dial, trigger, mouseX, mouseY, mouseZ, mouseL, mouseR, mouseM, keyboard);
+				//printf("ch0 = %u, ch1 = %u, ch2 = %u, ch3 = %u, mode = %u, pause = %u, btnL = %u, btnR = %u, dial = %u, trigger = %u, mouseX = %d, mouseY = %d, mouseZ = %d, mouseL = %u, mouseR = %u, mouseM = %u, keyboard = %u\n", 
+					//   ch0, ch1, ch2, ch3, mode, pause, btnL, btnR, dial, trigger, mouseX, mouseY, mouseZ, mouseL, mouseR, mouseM, keyboard);
 
-				printf("CRC: %u\n", CRC);
+				//printf("CRC: %d\n", CRC_in);
 
 				break; // Exit the loop after 
 			}
