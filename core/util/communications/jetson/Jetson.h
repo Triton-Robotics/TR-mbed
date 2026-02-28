@@ -1,6 +1,7 @@
 #pragma once
 #include "mbed.h"
 
+#include <cstdint>
 #include <memory>
 #include <vector>
 
@@ -20,6 +21,10 @@ class Jetson {
 
         int8_t game_state;
         int16_t robot_hp;
+
+        // user input
+        uint8_t calibration;
+        uint8_t activate_CV;
     };
 
     struct ReadState {
@@ -144,6 +149,24 @@ class RobotStateWritePacket : public WritePacket {
         std::memcpy(&buff[24], &write_state.chassis_rotation, sizeof(float));
     }
 };
+
+class EmbeddedUserInputWritePacket : public WritePacket {
+  public:
+    static int constexpr HEADER = 0xEE;
+    static int constexpr PAYLOAD_SIZE = 2;
+
+    EmbeddedUserInputWritePacket() : WritePacket(HEADER, PAYLOAD_SIZE) {};
+
+  private:
+    void get_packed_payload(Jetson::WriteState &write_state,
+                            char *buff) override {
+
+        std::memcpy(&buff[0], &write_state.calibration, sizeof(uint8_t));
+        std::memcpy(&buff[1], &write_state.activate_CV, sizeof(uint8_t));
+    }
+};
+
+
 
 // --------------
 //  READ PACKETS

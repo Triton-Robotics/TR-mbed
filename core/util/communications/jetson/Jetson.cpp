@@ -5,6 +5,7 @@ Jetson::Jetson(BufferedSerial &UARTJetson)
     : bcJetson(&UARTJetson), spiJetson(nullptr) {
     write_packets_.push_back(std::make_unique<RefWritePacket>());
     write_packets_.push_back(std::make_unique<RobotStateWritePacket>());
+    write_packets_.push_back(std::make_unique<EmbeddedUserInputWritePacket>());
 
     read_packets_.push_back(std::make_unique<TurretPacket>());
     read_packets_.push_back(std::make_unique<ChassisReadPacket>());

@@ -134,9 +134,9 @@ class Sentry : public BaseRobot {
 
         jetson_state = jetson.read();
 
-        printf("pitch: %.4f | %.4f \nyaw:   %.4f | %.4f\n", 
-            jetson_state.desired_pitch_rads * (180.0 / M_PI), turret.getState().pitch_angle_degs,
-            jetson_state.desired_yaw_rads * (180 / M_PI), turret.getState().yaw_angle_degs);
+        // printf("pitch: %.4f | %.4f \nyaw:   %.4f | %.4f\n", 
+        //     jetson_state.desired_pitch_rads * (180.0 / M_PI), turret.getState().pitch_angle_degs,
+        //     jetson_state.desired_yaw_rads * (180 / M_PI), turret.getState().yaw_angle_degs);
 
         // printf("jetson calibration: %d\n", jetson_state.localization_calibration);
         if(jetson_state.localization_calibration == 1){
@@ -208,6 +208,18 @@ class Sentry : public BaseRobot {
         stm_state.yaw_velocity = degreesToRadians(turret.getState().yaw_velo_rad_s);
         stm_state.pitch_angle_rads = degreesToRadians(turret.getState().pitch_angle_degs);
         stm_state.pitch_velocity = degreesToRadians(turret.getState().pitch_velo_rad_s);
+        
+        stm_state.calibration = 0;
+        stm_state.activate_CV = 0;
+
+        if(remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID){
+            stm_state.calibration = 1;
+        }
+
+        if(remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::DOWN){
+            stm_state.activate_CV = 1;
+        }
+
         jetson.write(stm_state);
 
         // printf("time %ld", us_ticker_read());
