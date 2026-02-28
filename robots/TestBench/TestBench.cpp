@@ -173,11 +173,11 @@
 #include "util/motor/DJIMotor.h"
 #include "util/peripherals/imu/BNO055.h"
 
-#include "VTMReceiver.h"
+#include "util/communications/DJIRemote2.h"
 
 class TestBench : public BaseRobot {
 public:
-    VTMReceiver vtm;
+    DJIRemote2 vtm;
 
     TestBench(Config &config)
         : BaseRobot(config),
