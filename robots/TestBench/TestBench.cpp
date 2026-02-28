@@ -175,12 +175,6 @@
 
 #include "VTMReceiver.h"
 
-#include <algorithm>
-#include <cstring>
-
-PID::config test_motor_vel_PID = {1, 0, 0};
-PID::config test_motor_pos_PID = {1, 0, 0};
-
 class TestBench : public BaseRobot {
 public:
     VTMReceiver vtm;

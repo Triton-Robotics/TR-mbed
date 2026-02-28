@@ -40,7 +40,7 @@ public:
 
     DJIRemote2(PinName tx, PinName rx, int baud = 921600);
 
-    bool update();                      // returns true when a full new frame is decoded
+    bool update();          // returns true if a full frame was decoded
     void clear();
 
     const VTMInput& getData() const;
@@ -68,6 +68,7 @@ private:
     int findHeader() const;
     void decodeFrame(const uint8_t* frame);
     void shiftLeft(size_t count);
+    void resetData();
 };
 
 #endif
