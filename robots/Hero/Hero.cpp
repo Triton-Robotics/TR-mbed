@@ -183,6 +183,11 @@ public:
             chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
         }
+        else if (remote_.keyPressed(Remote::Key::G))
+        {
+            // set to Chassis Alignment mode
+            chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::ROBOT_ORIENTED);
+        }
         else
         {
             chassis.setWheelPower({0, 0, 0, 0});
@@ -225,6 +230,11 @@ public:
         stm_state.pitch_angle_rads = turret.getState().pitch_angle_degs;
         stm_state.pitch_velocity = turret.getState().pitch_angle_degs;
         jetson.write(stm_state);
+        
+        // set to Chassis Alignment mode test
+        // if(remote_.keyPressed(Remote::Key::G)){
+        //     chassis.setChassisSpeeds(chassis.getChassisSpeeds().vX, des_chassis_state.vY, YAW_ALIGN);
+        // }
 
 
 
