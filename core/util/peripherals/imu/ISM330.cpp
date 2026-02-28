@@ -1,6 +1,7 @@
 #include "mbed.h"
 #include "ISM330.h"
 #include <cstdint>
+#include <tuple>
 
 static constexpr uint8_t ISM330_CHIP_ID = 0x6B;   // Expected WHO_AM_I
 const char WhoAmIReg[] = {0x0F};

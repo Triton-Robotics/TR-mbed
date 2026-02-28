@@ -12,6 +12,7 @@
 #ifndef ISM330_H_
 #define ISM330_H_
 #include "mbed.h"
+#include <cstdint>
 #include <tuple>
 
 
