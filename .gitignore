@@ -24,6 +24,7 @@ Makefile
 
 .vscode/c_cpp_properties.json
 .vscode/settings.json
+.vscode/browse.vc.db
 
 # For clangd
 .cache/
