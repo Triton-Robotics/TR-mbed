@@ -1,183 +1,130 @@
 #include "DJIRemote2.h"
+
+#include <cstring>
+#include <algorithm>
 #include <us_ticker_api.h>
 
 DJIRemote2::DJIRemote2(PinName tx, PinName rx, int baud)
-    : serial(tx, rx, baud)
+    : serial_(tx, rx, baud),
+      streamCount_(0),
+      validFrame_(false),
+      lastFrameTimeUs_(0),
+      currentFrameTimeUs_(0),
+      framePeriodUs_(0)
 {
-    int i;
-
-    streamCount = 0;
-    validFrame = false;
-
-    lastFrameTimeUs = 0;
-    currentFrameTimeUs = 0;
-    framePeriodUs = 0;
-
-    for (i = 0; i < STREAM_BUFFER_SIZE; i++)
-    {
-        streamBuffer[i] = 0;
-    }
-
-    resetData();
-}
-
-void DJIRemote2::resetData()
-{
-    data.ch0 = 0;
-    data.ch1 = 0;
-    data.ch2 = 0;
-    data.ch3 = 0;
-
-    data.mode = 0;
-    data.pause = 0;
-    data.btnL = 0;
-    data.btnR = 0;
-
-    data.dial = 0;
-    data.trigger = 0;
-
-    data.mouseX = 0;
-    data.mouseY = 0;
-    data.mouseZ = 0;
-
-    data.mouseL = 0;
-    data.mouseR = 0;
-    data.mouseM = 0;
-
-    data.keyboard = 0;
-    data.CRC_in = 0;
-}
-
-void DJIRemote2::clear()
-{
-    int i;
-
-    streamCount = 0;
-    validFrame = false;
-
-    lastFrameTimeUs = 0;
-    currentFrameTimeUs = 0;
-    framePeriodUs = 0;
-
-    for (i = 0; i < STREAM_BUFFER_SIZE; i++)
-    {
-        streamBuffer[i] = 0;
-    }
-
-    resetData();
+    serial_.set_blocking(false);
+    std::memset(streamBuffer_, 0, sizeof(streamBuffer_));
 }
 
 bool DJIRemote2::update()
 {
     readIncomingBytes();
-    return parseOneFrame();
+    return tryParseFrame();
 }
 
-VTMInput DJIRemote2::getData() const
+void DJIRemote2::clear()
 {
-    return data;
+    streamCount_ = 0;
+    validFrame_ = false;
+    framePeriodUs_ = 0;
+    lastFrameTimeUs_ = 0;
+    currentFrameTimeUs_ = 0;
+    std::memset(streamBuffer_, 0, sizeof(streamBuffer_));
+    data_ = VTMInput{};
 }
 
-bool DJIRemote2::hasFrame() const
+const VTMInput& DJIRemote2::getData() const
 {
-    return validFrame;
+    return data_;
+}
+
+bool DJIRemote2::hasValidFrame() const
+{
+    return validFrame_;
+}
+
+uint64_t DJIRemote2::getLastFrameTimeUs() const
+{
+    return currentFrameTimeUs_;
 }
 
 uint64_t DJIRemote2::getFramePeriodUs() const
 {
-    return framePeriodUs;
+    return framePeriodUs_;
 }
 
-float DJIRemote2::getFrameRateHz() const
+double DJIRemote2::getFrameRateHz() const
 {
-    if (framePeriodUs == 0)
-    {
-        return 0.0f;
+    if (framePeriodUs_ == 0) {
+        return 0.0;
     }
-
-    return 1000000.0f / (float)framePeriodUs;
+    return 1000000.0 / static_cast<double>(framePeriodUs_);
 }
 
 void DJIRemote2::readIncomingBytes()
 {
-    char temp[READ_CHUNK_SIZE];
+    uint8_t temp[32];
 
-    while (serial.readable())
-    {
-        int bytesRead = (int)serial.read(temp, READ_CHUNK_SIZE);
-
-        if (bytesRead <= 0)
-        {
+    while (serial_.readable()) {
+        ssize_t bytesRead = serial_.read(temp, sizeof(temp));
+        if (bytesRead <= 0) {
             break;
         }
 
-        if (bytesRead >= STREAM_BUFFER_SIZE)
-        {
-            int startIndex = bytesRead - STREAM_BUFFER_SIZE;
-            int i;
+        size_t n = static_cast<size_t>(bytesRead);
 
-            for (i = 0; i < STREAM_BUFFER_SIZE; i++)
-            {
-                streamBuffer[i] = (uint8_t)temp[startIndex + i];
-            }
-
-            streamCount = STREAM_BUFFER_SIZE;
+        // If incoming data is larger than buffer, keep only the newest bytes
+        if (n >= STREAM_BUFFER_SIZE) {
+            std::memcpy(streamBuffer_, temp + (n - STREAM_BUFFER_SIZE), STREAM_BUFFER_SIZE);
+            streamCount_ = STREAM_BUFFER_SIZE;
             continue;
         }
 
-        if (streamCount + bytesRead > STREAM_BUFFER_SIZE)
-        {
-            int overflow = (streamCount + bytesRead) - STREAM_BUFFER_SIZE;
+        // Make room if needed by dropping the oldest bytes
+        if (streamCount_ + n > STREAM_BUFFER_SIZE) {
+            size_t overflow = (streamCount_ + n) - STREAM_BUFFER_SIZE;
             shiftLeft(overflow);
         }
 
-        for (int i = 0; i < bytesRead; i++)
-        {
-            streamBuffer[streamCount + i] = (uint8_t)temp[i];
-        }
-
-        streamCount += bytesRead;
+        std::memcpy(streamBuffer_ + streamCount_, temp, n);
+        streamCount_ += n;
     }
 }
 
-bool DJIRemote2::parseOneFrame()
+bool DJIRemote2::tryParseFrame()
 {
-    while (streamCount >= 2)
-    {
+    while (streamCount_ >= 2) {
         int headerIndex = findHeader();
 
-        if (headerIndex < 0)
-        {
-            if (streamCount > 1)
-            {
-                streamBuffer[0] = streamBuffer[streamCount - 1];
-                streamCount = 1;
+        // No header found, keep only last byte in case next byte completes header
+        if (headerIndex < 0) {
+            if (streamCount_ > 1) {
+                streamBuffer_[0] = streamBuffer_[streamCount_ - 1];
+                streamCount_ = 1;
             }
             return false;
         }
 
-        if (headerIndex > 0)
-        {
-            shiftLeft(headerIndex);
+        // Drop junk before header
+        if (headerIndex > 0) {
+            shiftLeft(static_cast<size_t>(headerIndex));
         }
 
-        if (streamCount < FRAME_SIZE)
-        {
+        // Need a full frame
+        if (streamCount_ < FRAME_SIZE) {
             return false;
         }
 
-        decodeFrame(streamBuffer);
+        decodeFrame(streamBuffer_);
 
-        currentFrameTimeUs = (uint64_t)us_ticker_read();
-
-        if (lastFrameTimeUs != 0)
-        {
-            framePeriodUs = currentFrameTimeUs - lastFrameTimeUs;
+        currentFrameTimeUs_ = static_cast<uint64_t>(us_ticker_read());
+        if (lastFrameTimeUs_ != 0) {
+            framePeriodUs_ = currentFrameTimeUs_ - lastFrameTimeUs_;
         }
+        lastFrameTimeUs_ = currentFrameTimeUs_;
+        validFrame_ = true;
 
-        lastFrameTimeUs = currentFrameTimeUs;
-        validFrame = true;
-
+        // Remove parsed frame
         shiftLeft(FRAME_SIZE);
         return true;
     }
@@ -187,97 +134,80 @@ bool DJIRemote2::parseOneFrame()
 
 int DJIRemote2::findHeader() const
 {
-    int i;
-
-    for (i = 0; i < streamCount - 1; i++)
-    {
-        if (streamBuffer[i] == 0xA9 && streamBuffer[i + 1] == 0x53)
-        {
-            return i;
+    for (size_t i = 0; i + 1 < streamCount_; i++) {
+        if (streamBuffer_[i] == HEADER_BYTE_0 && streamBuffer_[i + 1] == HEADER_BYTE_1) {
+            return static_cast<int>(i);
         }
     }
-
     return -1;
 }
 
-void DJIRemote2::decodeFrame(const uint8_t *frame)
+void DJIRemote2::decodeFrame(const uint8_t* frame)
 {
-    data.ch0 = ((uint16_t)frame[2]) | (((uint16_t)(frame[3] & 0x07)) << 8);
+    data_.ch0 = static_cast<uint16_t>(frame[2])
+              | (static_cast<uint16_t>(frame[3] & 0x07) << 8);
 
-    data.ch1 = ((((uint16_t)frame[3]) >> 3) & 0x1F)
-             | ((((uint16_t)frame[4]) & 0x3F) << 5);
+    data_.ch1 = ((static_cast<uint16_t>(frame[3]) >> 3) & 0x1F)
+              | ((static_cast<uint16_t>(frame[4]) & 0x3F) << 5);
 
-    data.ch2 = ((((uint16_t)frame[4]) >> 6) & 0x03)
-             | (((uint16_t)frame[5]) << 2)
-             | ((((uint16_t)frame[6]) & 0x01) << 10);
+    data_.ch2 = ((static_cast<uint16_t>(frame[4]) >> 6) & 0x03)
+              | (static_cast<uint16_t>(frame[5]) << 2)
+              | ((static_cast<uint16_t>(frame[6]) & 0x01) << 10);
 
-    data.ch3 = ((((uint16_t)frame[6]) >> 1) & 0x7F)
-             | ((((uint16_t)frame[7]) & 0x0F) << 7);
+    data_.ch3 = ((static_cast<uint16_t>(frame[6]) >> 1) & 0x7F)
+              | ((static_cast<uint16_t>(frame[7]) & 0x0F) << 7);
 
-    data.mode  = (frame[7] >> 4) & 0x03;
-    data.pause = (frame[7] >> 6) & 0x01;
-    data.btnL  = (frame[7] >> 7) & 0x01;
-    data.btnR  = frame[8] & 0x01;
+    data_.mode  = (frame[7] >> 4) & 0x03;
+    data_.pause = (frame[7] >> 6) & 0x01;
+    data_.btnL  = (frame[7] >> 7) & 0x01;
+    data_.btnR  = frame[8] & 0x01;
 
-    data.dial = ((((uint16_t)frame[8]) >> 1) & 0x7F)
-              | ((((uint16_t)frame[9]) & 0x0F) << 7);
+    data_.dial = ((static_cast<uint16_t>(frame[8]) >> 1) & 0x7F)
+               | ((static_cast<uint16_t>(frame[9]) & 0x0F) << 7);
 
-    data.trigger = (frame[9] >> 4) & 0x01;
+    data_.trigger = (frame[9] >> 4) & 0x01;
 
-    data.mouseX = (int16_t)(
-          ((((uint16_t)frame[9])  >> 5) & 0x07)
-        | (((uint16_t)frame[10]) << 3)
-        | ((((uint16_t)frame[11]) & 0x1F) << 11)
+    data_.mouseX = static_cast<int16_t>(
+          ((static_cast<uint16_t>(frame[9])  >> 5) & 0x07)
+        | ( static_cast<uint16_t>(frame[10])       << 3)
+        | ((static_cast<uint16_t>(frame[11]) & 0x1F) << 11)
     );
 
-    data.mouseY = (int16_t)(
-          ((((uint16_t)frame[11]) >> 5) & 0x07)
-        | (((uint16_t)frame[12]) << 3)
-        | ((((uint16_t)frame[13]) & 0x1F) << 11)
+    data_.mouseY = static_cast<int16_t>(
+          ((static_cast<uint16_t>(frame[11]) >> 5) & 0x07)
+        | ( static_cast<uint16_t>(frame[12])       << 3)
+        | ((static_cast<uint16_t>(frame[13]) & 0x1F) << 11)
     );
 
-    data.mouseZ = (int16_t)(
-          ((((uint16_t)frame[13]) >> 5) & 0x07)
-        | (((uint16_t)frame[14]) << 3)
-        | ((((uint16_t)frame[15]) & 0x1F) << 11)
+    data_.mouseZ = static_cast<int16_t>(
+          ((static_cast<uint16_t>(frame[13]) >> 5) & 0x07)
+        | ( static_cast<uint16_t>(frame[14])       << 3)
+        | ((static_cast<uint16_t>(frame[15]) & 0x1F) << 11)
     );
 
-    data.mouseL = (frame[15] >> 5) & 0x03;
+    data_.mouseL = (frame[15] >> 5) & 0x03;
 
-    data.mouseR = ((((uint16_t)frame[15]) >> 7) & 0x01)
-                | ((((uint16_t)frame[16]) & 0x01) << 1);
+    data_.mouseR = ((static_cast<uint16_t>(frame[15]) >> 7) & 0x01)
+                 | ((static_cast<uint16_t>(frame[16]) & 0x01) << 1);
 
-    data.mouseM = (frame[16] >> 1) & 0x03;
+    data_.mouseM = (frame[16] >> 1) & 0x03;
 
-    data.keyboard = ((((uint16_t)frame[16]) >> 3) & 0x1F)
-                  | (((uint16_t)frame[17]) << 5)
-                  | ((((uint16_t)frame[18]) & 0x07) << 13);
+    data_.keyboard = ((static_cast<uint16_t>(frame[16]) >> 3) & 0x1F)
+                   | ( static_cast<uint16_t>(frame[17])       << 5)
+                   | ((static_cast<uint16_t>(frame[18]) & 0x07) << 13);
 
-    data.CRC_in = ((((uint16_t)frame[18]) >> 3) & 0x1F)
-                | (((uint16_t)frame[19]) << 5)
-                | ((((uint16_t)frame[20]) & 0x07) << 13);
+    data_.CRC_in = ((static_cast<uint16_t>(frame[18]) >> 3) & 0x1F)
+                 | ( static_cast<uint16_t>(frame[19])       << 5)
+                 | ((static_cast<uint16_t>(frame[20]) & 0x07) << 13);
 }
 
-void DJIRemote2::shiftLeft(int count)
+void DJIRemote2::shiftLeft(size_t count)
 {
-    if (count >= streamCount)
-    {
-        streamCount = 0;
+    if (count >= streamCount_) {
+        streamCount_ = 0;
         return;
     }
 
-    int newCount = streamCount - count;
-    int i;
-
-    for (i = 0; i < newCount; i++)
-    {
-        streamBuffer[i] = streamBuffer[i + count];
-    }
-
-    for (i = newCount; i < streamCount; i++)
-    {
-        streamBuffer[i] = 0;
-    }
-
-    streamCount = newCount;
+    std::memmove(streamBuffer_, streamBuffer_ + count, streamCount_ - count);
+    streamCount_ -= count;
 }
