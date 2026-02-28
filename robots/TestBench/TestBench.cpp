@@ -13,8 +13,8 @@
 #include <algorithm>
 #include <string.h>
 
-
-uint8_t tempByte;
+// testing (not used anymore)
+// uint8_t tempByte;
 
 PID::config test_motor_vel_PID = {1, 0, 0};
 PID::config test_motor_pos_PID = {1, 0, 0};
