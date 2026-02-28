@@ -369,6 +369,45 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
         while (del < 0) del += 360;
         desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yawOdom + delta);
     }
+    else if (mode == CHASSIS_ALIGN)
+    {
+        // double yawCurrent = -(1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
+        int yawCurrentDeg = yaw->getData(ANGLE);
+        desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yawCurrentDeg);
+
+        // Compute yaw error(how much the yaw needs to recorrect)
+        float yawError = 360.0 * ((yawCurrentDeg - yawAlign) % 8192) / 8192;
+        while (yawError > 180) yawError -= 360;
+        while (yawError < -180) yawError += 360;
+        
+        if (abs(yawError) < 5) yawError = 0;
+
+        if ((yawError >= 45 && yawError < 135)) {
+            yawError -= 90;
+        }
+        if ((yawError >= 135)) {
+            yawError -= 180;
+        }
+        if (yawError < -135) {
+            yawError += 180;
+        }
+        if ((yawError >= -135 && yawError < -45)) {
+            yawError += 90;
+        }
+
+        float gain_align = 2; //tune these two for optimal performance
+        float gain_yaw = 3;
+        float deg2rad = PI/180; // convert to rad and just run at 2x that rad/s
+        float omegaCmd = (gain_align * yawError + gain_yaw * yawVelo) * deg2rad;
+
+        if (abs(omegaCmd) < 0.1) omegaCmd = 0;
+
+        ChassisSpeeds xAlignSpeeds = {desiredChassisSpeeds_.vX, desiredChassisSpeeds_.vY, omegaCmd};
+
+        double yawCurrent = -(1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
+        desiredChassisSpeeds = rotateChassisSpeed(xAlignSpeeds, yawCurrent);
+
+    }
     WheelSpeeds wheelSpeeds = chassisSpeedsToWheelSpeeds(desiredChassisSpeeds); // in m/s (for now)
     wheelSpeeds = normalizeWheelSpeeds(wheelSpeeds);
     wheelSpeeds *= (1 / (WHEEL_DIAMETER_METERS / 2) / (2 * PI / 60) * M3508_GEAR_RATIO);

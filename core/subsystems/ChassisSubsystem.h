@@ -125,7 +125,8 @@ public:
         YAW_ORIENTED,
         REVERSE_YAW_ORIENTED,
         ROBOT_ORIENTED,
-        ODOM_ORIENTED
+        ODOM_ORIENTED,
+        CHASSIS_ALIGN
     };
 
     enum HOLONOMIC_MODE
