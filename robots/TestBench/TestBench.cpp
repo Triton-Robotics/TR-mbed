@@ -190,25 +190,49 @@ public:
     {
     }
 
-    void periodic(unsigned long dt_us) override
-    {
-        if (vtm.update()) {
-            const VTMInput& in = vtm.getData();
+    // void periodic(unsigned long dt_us) override
+    // {
+    //     if (vtm.update()) {
+    //         const VTMInput& in = vtm.getData();
 
-            printf("Frame dt = %llu us (%.2f Hz)\n",
-                   vtm.getFramePeriodUs(),
-                   vtm.getFrameRateHz());
+    //         printf("Frame dt = %llu us (%.2f Hz)\n",
+    //                vtm.getFramePeriodUs(),
+    //                vtm.getFrameRateHz());
 
-            printf("ch0=%u ch1=%u ch2=%u ch3=%u mode=%u pause=%u btnL=%u btnR=%u dial=%u trigger=%u "
-                   "mouseX=%d mouseY=%d mouseZ=%d mouseL=%u mouseR=%u mouseM=%u keyboard=%u CRC=%u\n",
-                   in.ch0, in.ch1, in.ch2, in.ch3,
-                   in.mode, in.pause, in.btnL, in.btnR,
-                   in.dial, in.trigger,
-                   in.mouseX, in.mouseY, in.mouseZ,
-                   in.mouseL, in.mouseR, in.mouseM,
-                   in.keyboard, in.CRC_in);
-        }
-    }
+    //         printf("ch0=%u ch1=%u ch2=%u ch3=%u mode=%u pause=%u btnL=%u btnR=%u dial=%u trigger=%u "
+    //                "mouseX=%d mouseY=%d mouseZ=%d mouseL=%u mouseR=%u mouseM=%u keyboard=%u CRC=%u\n",
+    //                in.ch0, in.ch1, in.ch2, in.ch3,
+    //                in.mode, in.pause, in.btnL, in.btnR,
+    //                in.dial, in.trigger,
+    //                in.mouseX, in.mouseY, in.mouseZ,
+    //                in.mouseL, in.mouseR, in.mouseM,
+    //                in.keyboard, in.CRC_in);
+    //     }
+    // }
+
+	void periodic(unsigned long dt_us) override
+{
+    if (vtm.update()) {
+        const VTMInput& in = vtm.getData();
+
+        printf("Frame dt = %llu us (%.2f Hz)\n",
+               vtm.getFramePeriodUs(),
+               vtm.getFrameRateHz());
+
+        printf("ch0=%u ch1=%u ch2=%u ch3=%u mode=%u pause=%u btnL=%u btnR=%u dial=%u trigger=%u "
+               "mouseX=%d mouseY=%d mouseZ=%d mouseL=%u mouseR=%u mouseM=%u keyboard=%u "
+               "CRC_rx=%u CRC_calc=%u CRC_ok=%u\n",
+               in.ch0, in.ch1, in.ch2, in.ch3,
+               in.mode, in.pause, in.btnL, in.btnR,
+               in.dial, in.trigger,
+               in.mouseX, in.mouseY, in.mouseZ,
+               in.mouseL, in.mouseR, in.mouseM,
+               in.keyboard,
+               vtm.getReceivedCRC(),
+               vtm.getComputedCRC(),
+               vtm.isCRCValid());
+    	}
+	}
 
     void end_of_loop() override {}
 
