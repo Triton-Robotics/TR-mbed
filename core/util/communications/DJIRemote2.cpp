@@ -349,17 +349,7 @@ bool DJIRemote2::tryParseFrame()
             return false;
         }
 
-        // Verify CRC BEFORE decoding
-        if (!verifyCRC(streamBuffer_)) {
-            validFrame_ = false;
-
-            // Important:
-            // do not drop the whole 21-byte frame on CRC failure.
-            // shift by 1 byte so we can re-sync in case this header was false
-            // or another valid header starts inside the bad frame.
-            shiftLeft(1);
-            continue;
-        }
+        verifyCRC(streamBuffer_);   // compute it, but do NOT block the frame yet
 
         decodeFrame(streamBuffer_);
 
