@@ -73,19 +73,19 @@ TurretSubsystem::config turret_config = {
     PITCH_LOWER_BOUND,
     PITCH_UPPER_BOUND
 };
-// ShooterSubsystem::config shooter_config = {
-//     ShooterSubsystem::BURST,
-//     0,
-//     1,
-//     2,
-//     6,
-//     FLYWHEEL_L_PID,
-//     FLYWHEEL_R_PID,
-//     INDEXER_PID_VEL,
-//     INDEXER_PID_POS,
-//     CANHandler::CANBUS_2,
-//     true
-// };
+ShooterSubsystem::config shooter_config = {
+    ShooterSubsystem::BURST,
+    0,
+    1,
+    2,
+    6,
+    FLYWHEEL_L_PID,
+    FLYWHEEL_R_PID,
+    INDEXER_PID_VEL,
+    INDEXER_PID_POS,
+    CANHandler::CANBUS_2,
+    true
+};
 // ChassisSubsystem::Config chassis_config = {
 //     1,      // left_front_can_id
 //     2,      // right_front_can_id
@@ -122,15 +122,15 @@ class Infantry : public BaseRobot {
     MA4 encoder_;  // Absolute encoder for yaw position
     // TODO: put the BufferedSerial inside Jetson (idk if we wanna do that tho
     // for SPI)
-    // BufferedSerial jetson_raw_serial;
-    // Jetson jetson;
+    BufferedSerial jetson_raw_serial;
+    Jetson jetson;
 
     Jetson::WriteState stm_state;
     Jetson::ReadState jetson_state;
 
     TurretSubsystem turret_;
-    // ShooterSubsystem shooter_;
-    // ChassisSubsystem chassis_;
+    ShooterSubsystem shooter_;
+    ChassisSubsystem chassis_;
 
     bool imu_initialized{false};
 
@@ -139,22 +139,21 @@ class Infantry : public BaseRobot {
           // clang-format off
         i2c_(IMU_I2C_SDA, IMU_I2C_SCL), 
         imu_(i2c_, IMU_RESET, MODE_IMU),
+        encoder_(PA_7),
         jetson_raw_serial(PC_12, PD_2,115200), // TODO: check higher baud to see if still works
         jetson(jetson_raw_serial),
-
-        turret_(turret_config, imu_)
-
-        // shooter_(shooter_config),
+        turret_(turret_config, imu_),
+        shooter_(shooter_config),
 
         // TODO add passing in individual PID objects for the motors
-        chassis(ChassisSubsystem::Config{
+        chassis_(ChassisSubsystem::Config{
             1,      // left_front_can_id
             2,      // right_front_can_id
             3,      // left_back_can_id
             4,      // right_back_can_id
             0.22617,  // radius
             0.065,    // speed_pid_ff_ks
-            &turret.yaw,  // yaw_motor
+            &turret_.yaw,  // yaw_motor
             356,     // yaw_initial_offset_ticks
             imu_,
             &encoder_   
