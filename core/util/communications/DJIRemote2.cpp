@@ -349,7 +349,8 @@ bool DJIRemote2::tryParseFrame()
             return false;
         }
 
-        verifyCRC(streamBuffer_);   // compute it, but do NOT block the frame yet
+        // Verify, but do not reject yet while testing
+        verifyCRC(streamBuffer_);
 
         decodeFrame(streamBuffer_);
 
@@ -385,35 +386,36 @@ uint16_t DJIRemote2::extractBitsLSB(const uint8_t* bytes, size_t startBit, size_
     for (size_t i = 0; i < bitCount; i++) {
         size_t bitPos = startBit + i;
         uint8_t bit = (bytes[bitPos / 8] >> (bitPos % 8)) & 0x01;
-        value |= (static_cast<uint16_t>(bit) << i);
+        value |= static_cast<uint16_t>(bit) << i;
     }
 
     return value;
 }
 
-uint16_t DJIRemote2::computeCRC16LSB(const uint8_t* bytes, size_t startBit, size_t bitCount) const
+uint16_t DJIRemote2::computeCRC16CCITTFALSE(const uint8_t* bytes, size_t startBit, size_t bitCount) const
 {
-    uint16_t crc = CRC_INIT;
+    uint16_t crc = 0xFFFF;
 
     for (size_t i = 0; i < bitCount; i++) {
         size_t bitPos = startBit + i;
+
         uint8_t dataBit = (bytes[bitPos / 8] >> (bitPos % 8)) & 0x01;
 
-        uint8_t mix = (crc ^ dataBit) & 0x01;
-        crc >>= 1;
+        uint8_t crcMsb = (crc >> 15) & 0x01;
+        crc = static_cast<uint16_t>(crc << 1);
 
-        if (mix) {
-            crc ^= CRC_POLY;
+        if (crcMsb ^ dataBit) {
+            crc ^= 0x1021;
         }
     }
 
-    return static_cast<uint16_t>(crc ^ CRC_XOR_OUT);
+    return crc; // no XOR-out for CCITT-FALSE
 }
 
 bool DJIRemote2::verifyCRC(const uint8_t* frame)
 {
     receivedCRC_ = extractBitsLSB(frame, CRC_FIELD_START_BIT, CRC_FIELD_BIT_COUNT);
-    computedCRC_ = computeCRC16LSB(frame, CRC_DATA_START_BIT, CRC_DATA_BIT_COUNT);
+    computedCRC_ = computeCRC16CCITTFALSE(frame, CRC_DATA_START_BIT, CRC_DATA_BIT_COUNT);
     crcValid_ = (receivedCRC_ == computedCRC_);
     return crcValid_;
 }
