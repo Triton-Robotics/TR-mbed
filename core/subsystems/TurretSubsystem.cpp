@@ -122,7 +122,7 @@ void TurretSubsystem::periodic(float chassisRpm)
             dir = log(-1 * deltaYaw);
         }
         
-        yaw.pidPosition.feedForward = -chassis_rpm; // TODO: MAKE THIS RAD/S AND USE THE KINETIC FRICTION COEFF HERE!!!!
+        yaw.pidPosition.feedForward = -chassis_rpm * 2 * PI / 60;
 
         // We calculate des velo instead of immediately calculating power to add to the feedforward of the speed PID
         float des_yaw_velo = yaw.pidPosition.calculatePeriodic(

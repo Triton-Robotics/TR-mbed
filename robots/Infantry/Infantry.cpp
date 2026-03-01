@@ -19,8 +19,8 @@ constexpr auto IMU_I2C_SCL = PB_8;
 constexpr auto IMU_RESET = PA_8;
 
 constexpr int pitch_zero_offset_ticks = 1500;
-constexpr float PITCH_LOWER_BOUND{-32.0};
-constexpr float PITCH_UPPER_BOUND{35.0};
+constexpr float PITCH_LOWER_BOUND{-22.0};
+constexpr float PITCH_UPPER_BOUND{20.0};
 
 constexpr float JOYSTICK_YAW_SENSITIVITY_DPS = 600;
 constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 300;
@@ -148,13 +148,13 @@ class Infantry : public BaseRobot {
         // TODO add passing in individual PID objects for the motors
         chassis_(ChassisSubsystem::Config{
             1,      // left_front_can_id
-            2,      // right_front_can_id
-            3,      // left_back_can_id
-            4,      // right_back_can_id
+            3,      // right_front_can_id
+            6,      // left_back_can_id
+            2,      // right_back_can_id
             0.22617,  // radius
             0.065,    // speed_pid_ff_ks
             &turret_.yaw,  // yaw_motor
-            356,     // yaw_initial_offset_ticks
+            266,     // yaw_initial_offset_ticks
             imu_,
             &encoder_   
         }
@@ -181,10 +181,10 @@ class Infantry : public BaseRobot {
         }
 
         // TODO: use this in code correctly to drive faster
-        // max_linear_vel = 1.24 + 0.0513 * chassis.power_limit +
-        //                  0.000216 * (chassis.power_limit * chassis.power_limit);
-        // des_chassis_state.vX = jy * max_linear_vel;
-        // des_chassis_state.vY = jx * max_linear_vel;
+        max_linear_vel = 1.24 + 0.0513 * chassis_.power_limit +
+                         0.000216 * (chassis_.power_limit * chassis_.power_limit);
+        des_chassis_state.vX = jy * max_linear_vel;
+        des_chassis_state.vY = jx * max_linear_vel;
 
         // Turret from remote
         yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * dt_us / 1000000;
@@ -209,16 +209,16 @@ class Infantry : public BaseRobot {
             // des_turret_state.yaw_angle = jetson_state.desired_yaw_rads;
 
             des_chassis_state.vOmega = 0;
-            // chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
+            chassis_.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
         } else if (drive == 'd' ||
                    (drive == 'o' &&
                     remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::DOWN)) {
             des_chassis_state.vOmega = omega_speed;
-            // chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
+            chassis_.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
         } else {
-            // chassis.setWheelPower({0, 0, 0, 0});
+            chassis_.setWheelPower({0, 0, 0, 0});
             des_turret_state.turret_mode = TurretState::SLEEP;
         }
 
@@ -234,16 +234,16 @@ class Infantry : public BaseRobot {
         }
 
         turret_.setState(des_turret_state);
-        // shooter.setState(des_shoot_state);
+        shooter_.setState(des_shoot_state);
 
-        turret_.periodic(0);// chassis.getChassisSpeeds().vOmega * 60 / (2 * PI));
-        // chassis.periodic(&imuAngles);
-        // shooter.periodic(0, 60); // referee_.power_heat_data.shooter_17mm_1_barrel_heat,
-                         // referee_.robot_status.shooter_barrel_heat_limit);
+        turret_.periodic(chassis_.getChassisSpeeds().vOmega * 60 / (2 * PI));
+        chassis_.periodic(&imuAngles);
+        shooter_.periodic(referee_.power_heat_data.shooter_17mm_1_barrel_heat,
+                         referee_.robot_status.shooter_barrel_heat_limit);
 
         // jetson comms
-        // set_jetson_state();
-        // jetson.write(stm_state);
+        set_jetson_state();
+        jetson.write(stm_state);
 
         // printf("time %ld", us_ticker_read());
 
@@ -258,26 +258,27 @@ class Infantry : public BaseRobot {
         // %.2f\n", remote_.getChassisX()); printf("switch: %d\n",
         // remote_.getSwitch(Remote::Switch::RIGHT_SWITCH)); printf("imu:
         // %.2f\n", imu.getImuAngles().yaw);
+        printf("%.2f\n", encoder_.encoderMovingAverage());
     }
 
     void end_of_loop() override {}
 
     unsigned int main_loop_dt_ms() override { return 2; } // 500 Hz loop
 
-    // void set_jetson_state() {
-    //     stm_state.game_state = 4;
-    //     stm_state.robot_hp = 200;
+    void set_jetson_state() {
+        stm_state.game_state = 4;
+        stm_state.robot_hp = 200;
 
-    //     stm_state.chassis_x_velocity = chassis.getChassisSpeeds().vX;
-    //     stm_state.chassis_y_velocity = chassis.getChassisSpeeds().vY;
-    //     stm_state.chassis_rotation = chassis.getChassisSpeeds().vOmega;
+        stm_state.chassis_x_velocity = chassis_.getChassisSpeeds().vX;
+        stm_state.chassis_y_velocity = chassis_.getChassisSpeeds().vY;
+        stm_state.chassis_rotation = chassis_.getChassisSpeeds().vOmega;
 
-    //     // TODO angle_degrees and angle_radians
-    //     stm_state.yaw_angle_rads = degreesToRadians(turret.getState().yaw_angle_degs);
-    //     stm_state.yaw_velocity = degreesToRadians(turret.getState().yaw_velo_rad_s);
-    //     stm_state.pitch_angle_rads = degreesToRadians(turret.getState().pitch_angle_degs);
-    //     stm_state.pitch_velocity = degreesToRadians(turret.getState().pitch_velo_rad_s);
-    // }
+        // TODO angle_degrees and angle_radians
+        stm_state.yaw_angle_rads = degreesToRadians(turret_.getState().yaw_angle_degs);
+        stm_state.yaw_velocity = degreesToRadians(turret_.getState().yaw_velo_rad_s);
+        stm_state.pitch_angle_rads = degreesToRadians(turret_.getState().pitch_angle_degs);
+        stm_state.pitch_velocity = degreesToRadians(turret_.getState().pitch_velo_rad_s);
+    }
 };
 
 int main() {

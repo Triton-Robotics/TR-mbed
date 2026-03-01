@@ -1,4 +1,5 @@
 #include "ChassisSubsystem.h"
+#include "util/motor/DJIMotor.h"
 #include <cmath>
 #include <stdexcept>
 
@@ -281,10 +282,14 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     int p4 = abs(powers[3]);
 
     
-    int r1 = abs(LF.getData(VELOCITY));
-    int r2 = abs(RF.getData(VELOCITY));
-    int r3 = abs(LB.getData(VELOCITY));
-    int r4 = abs(RB.getData(VELOCITY));
+    // int r1 = abs(LF.getData(VELOCITY));
+    // int r2 = abs(RF.getData(VELOCITY));
+    // int r3 = abs(LB.getData(VELOCITY));
+    // int r4 = abs(RB.getData(VELOCITY));
+    int r1 = abs(getMotorSpeed(MotorLocation::LEFT_FRONT, RPM));
+    int r2 = abs(getMotorSpeed(MotorLocation::RIGHT_FRONT, RPM));
+    int r3 = abs(getMotorSpeed(MotorLocation::LEFT_BACK, RPM));
+    int r4 = abs(getMotorSpeed(MotorLocation::RIGHT_BACK, RPM));
 
     float scale = Bisection(p1, p2, p3, p4, r1, r2, r3, r4, power_limit);
 
@@ -347,7 +352,13 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
     if (mode == REVERSE_YAW_ORIENTED)
     {
         // printf("%f\n", double(yaw->getData(ANGLE)));
-        yawCurrent = encoder->encoderMovingAverage();
+        yawCurrent = (360 - (encoder->encoderMovingAverage() + 109.4));
+        if (yawCurrent < 0.0) {
+            yawCurrent += 360.0;
+        }
+        else if (yawCurrent > 360.0) {
+            yawCurrent -= 360.0;
+        }
         if (yawCurrent == -1.0) {
             yawCurrent = (1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
         }
@@ -356,7 +367,13 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
     else if (mode == YAW_ORIENTED)
     {
         // printf("%f\n", double(yaw->getData(ANGLE)));
-        yawCurrent = encoder->encoderMovingAverage();
+        yawCurrent = (360 - (encoder->encoderMovingAverage() + 109.4));
+        if (yawCurrent < 0.0) {
+            yawCurrent += 360.0;
+        }
+        else if (yawCurrent > 360.0) {
+            yawCurrent -= 360.0;
+        }
         if (yawCurrent == -1.0) {
             yawCurrent = (1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
         }
@@ -368,7 +385,13 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
     }
     else if (mode == ODOM_ORIENTED) 
     {
-        yawCurrent = encoder->encoderMovingAverage();
+        yawCurrent = (360 - (encoder->encoderMovingAverage() + 109.4));
+        if (yawCurrent < 0.0) {
+            yawCurrent += 360.0;
+        }
+        else if (yawCurrent > 360.0) {
+            yawCurrent -= 360.0;
+        }
         if (yawCurrent == -1.0) {
             yawCurrent = (1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
         }
@@ -465,12 +488,11 @@ double ChassisSubsystem::getMotorSpeed(MotorLocation location, SPEED_UNIT unit =
     switch (unit)
     {
     case RPM:
-        return speed;
+        return (speed * M3508_GEAR_RATIO) / (2 * PI / 60);
     case METER_PER_SECOND:
-        return (speed / M3508_GEAR_RATIO) * (2 * PI / 60) * (WHEEL_DIAMETER_METERS / 2);
+        return speed * (WHEEL_DIAMETER_METERS / 2);
     case RAD_PER_SECOND:
-        // TODO this should be handled properly
-        return 0;
+        return speed;
     }
 
     assert(false && "Invalid motor speed unit");
@@ -639,7 +661,7 @@ int ChassisSubsystem::motorPIDtoPower(MotorLocation location, double speed, uint
     int power = 0;
     PID pids[4] = {pid_LF,pid_RF,pid_LB,pid_RB};
     
-    power = pids[location].calculate(speed, getMotor(location).getData(VELOCITY), dt);
+    power = pids[location].calculate(speed, getMotorSpeed(location, RPM), dt);
     // printf("[%d]",power);
 
     if(speed == 0) {
@@ -714,7 +736,13 @@ bool ChassisSubsystem::setOdomReference() {
 // }
 
 void ChassisSubsystem::updateYawPhaseFromEncoder() {
-    float encoder_reading = encoder->encoderMovingAverage();
+    float encoder_reading = (360 - (encoder->encoderMovingAverage() + 109.4));
+        if (encoder_reading < 0.0) {
+            encoder_reading += 360.0;
+        }
+        else if (encoder_reading > 360.0) {
+            encoder_reading -= 360.0;
+        }
     if (encoder_reading >= 0) {
         yawPhase = encoder_reading;
     }
