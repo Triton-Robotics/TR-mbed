@@ -40,7 +40,7 @@ bool LIS3MDL::begin() noexcept
     i2c.write(writeAddr, SWRST, 2, false); 
     ThisThread::sleep_for(100ms);
 
-    i2c.write(writeAddr, )
+    i2c.write(writeAddr, fourGauss, 2, false); // Set Range to 4 Gauss
 
     i2c.write(writeAddr, lowPowerEnable, 2, false);
 

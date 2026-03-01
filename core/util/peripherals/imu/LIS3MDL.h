@@ -16,7 +16,6 @@ public:
     void reset() noexcept;
 
     //Structs
-
     typedef struct {
         float x;
         float y;
@@ -24,8 +23,6 @@ public:
     } LIS3MDL_VECTOR_TypeDef;
 
     //Magnetometer Reading functions
-    
-    // TODO: Raw to Tesla conversions
     std::tuple<float, float, float> readMagnetometer() noexcept;
 
     void getMagVector(LIS3MDL_VECTOR_TypeDef& magVector);
@@ -37,4 +34,4 @@ private:
     uint8_t _address;
 };
 
-}
+#endif
