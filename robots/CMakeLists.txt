@@ -12,6 +12,7 @@ set_source_files_properties(
 # --- INFANTRY -- 
 add_executable(TR-Infantry)
 mbed_configure_app_target(TR-Infantry)
+target_include_directories(TR-Infantry PRIVATE ${CMAKE_SOURCE_DIR}/core)
 target_sources(TR-Infantry
     PRIVATE 
     Infantry/Infantry.cpp
@@ -27,6 +28,7 @@ mbed_set_post_build(TR-Infantry)
 # --- SENTRY ---
 add_executable(TR-Sentry)
 mbed_configure_app_target(TR-Sentry)
+target_include_directories(TR-Sentry PRIVATE ${CMAKE_SOURCE_DIR}/core)
 target_sources(TR-Sentry
     PRIVATE
     Sentry/Sentry.cpp
@@ -41,6 +43,7 @@ mbed_set_post_build(TR-Sentry)
 # --- HERO ---
 add_executable(TR-Hero)
 mbed_configure_app_target(TR-Hero)
+target_include_directories(TR-Hero PRIVATE ${CMAKE_SOURCE_DIR}/core)
 target_sources(TR-Hero
     PRIVATE
     Hero/Hero.cpp
@@ -55,6 +58,7 @@ mbed_set_post_build(TR-Hero)
 # --- TestBench ---
 add_executable(TR-TestBench)
 mbed_configure_app_target(TR-TestBench)
+target_include_directories(TR-TestBench PRIVATE ${CMAKE_SOURCE_DIR}/core)
 target_sources(TR-TestBench
     PRIVATE
     TestBench/TestBench.cpp

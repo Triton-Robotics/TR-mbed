@@ -10,6 +10,7 @@
 #include "util/communications/jetson/Jetson.h"
 #include "util/motor/DJIMotor.h"
 #include "util/peripherals/imu/BNO055.h"
+#include "util/peripherals/encoder/MA4.h"
 
 #include <algorithm>
 
@@ -118,7 +119,7 @@ class Infantry : public BaseRobot {
   public:
     I2C i2c_;
     BNO055 imu_;
-    PwmIn encoder_;  // Absolute encoder for yaw position
+    MA4 encoder_;  // Absolute encoder for yaw position
     // TODO: put the BufferedSerial inside Jetson (idk if we wanna do that tho
     // for SPI)
     // BufferedSerial jetson_raw_serial;

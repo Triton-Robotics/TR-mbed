@@ -4,6 +4,7 @@
 #include "mbed.h"
 #include "util/peripherals/imu/BNO055.h"
 #include "util/communications/PwmIn.h"
+#include "util/peripherals/encoder/MA4.h"
 
 #include <util/motor/DJIMotor.h>
 #include <util/communications/CANHandler.h>
@@ -86,7 +87,7 @@ public:
         DJIMotor *yaw_motor;
         int yaw_initial_offset_ticks;
         BNO055 &imu;
-        PwmIn *encoder;  // External encoder for yaw position
+        MA4 *encoder;  // External encoder for yaw position
     };
 
     /**
@@ -333,17 +334,17 @@ public:
     static double radiansToTicks(double radians);
     static double ticksToRadians(double ticks);
     
-    /**
-     * Gets the yaw position from encoder (PWM) input in degrees (0-360)
-     * @return yaw position in degrees, or -1 if encoder not available
-     */
-    double getEncoderYawPosition();
+    // /**
+    //  * Gets the yaw position from encoder (PWM) input in degrees (0-360)
+    //  * @return yaw position in degrees, or -1 if encoder not available
+    //  */
+    // double getEncoderYawPosition();
 
-    /**
-     * A helper method to calculate the moving average of the encoder readings for yaw position
-     * @return the moving average of the encoder readings for yaw position
-     */
-    double encoderMovingAverage();
+    // /**
+    //  * A helper method to calculate the moving average of the encoder readings for yaw position
+    //  * @return the moving average of the encoder readings for yaw position
+    //  */
+    // double encoderMovingAverage();
     
     /**
      * Updates yawPhase from the encoder reading
@@ -354,7 +355,7 @@ public:
 private:
     DJIMotor LF, RF, LB, RB;
     DJIMotor *yaw = 0;
-    PwmIn *encoder = nullptr;
+    MA4 *encoder = nullptr;
     double yawPhase;
     BrakeMode brakeMode;
 
