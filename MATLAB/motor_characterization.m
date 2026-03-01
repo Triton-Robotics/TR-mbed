@@ -1,11 +1,11 @@
 % We want A, B, C, D to be in the workspace from the prev file/ function,
 % then we run root_locus.m AND input these values into pid_autotune.slx
-
+clear; clc;
 syms s
 
 
 %% Load data from .txt
-filename = 'response_readings/inf_yaw_ramp.txt';
+filename = 'readings/inf_pitch_new.txt';
 % response_raw = readtable(filename);
 % response_raw = table2array(response_raw);
 response_raw = readmatrix(filename);
@@ -14,7 +14,7 @@ response_raw = readmatrix(filename);
 
 % Parameters
 step_amp = 8191;  % imaginary power number, we should switch this with a real value
-dt_ms = 0.001; % sampling time
+dt_ms = 0.002; % sampling time
 Ts = dt_ms;
 F = 1 / Ts;
 
@@ -25,7 +25,7 @@ idx = input == step_amp;
 input = response_raw(idx,1);
 response = response_raw(idx,2);
 
-plot(response)
+plot(input, response)
 
 % creating iddata obj so we can process it in the file
 data = iddata(response, input, Ts);
@@ -33,16 +33,48 @@ data = iddata(response, input, Ts);
 
 %% Other Response Types (Ramp, Sinusoidal, White noise + Amp)
 input = response_raw(:,1);
-response = response_raw(:,2)*2*pi/60; % rpm to rad/s
-omega = response_raw(1,3);
+response = response_raw(:,2);
+% omega = response_raw(1,3);
 
 % creating iddata obj so we can process it in the file
 data = iddata(response, input, dt_ms);
+plot(response)
+
+%% Plot response
+figure(8)
+plot(input, response);
+title("RESPONSE");
+grid on
+
+
+%% DFT for function
+
+U = fft(input);
+Ym = fft(response);
+pluh = "hi";
+
+H_est = Ym ./ U;
+
+tf_est = idfrd(H_est, omega, Ts);
+
+%bode(tf_est);
+
+sys_tf = tfest(tf_est, 2, 1);
+[b, a] = tfdata(sys_tf, 'v');
+
+
+%% Direct transfer function estimation
+
+sys_tf  = tfest(data, 2, 1); % 2 poles 1 zero
+
+[b, a] = tfdata(sys_tf,'v'); 
+
+% Change numerator and denominator to "b" and "a" to test this
 
 
 %% Find State Space response then Convert to Transfer Fn
 
-% Best method for consistently good model + PID values
+% tbh direct tf is better
 
 sys_ss = n4sid(data, 2); % second order discrete ss
 ss_est = ss(sys_ss);
@@ -56,55 +88,56 @@ D = ss_est.D;
 
 [b, a] = ss2tf(A, B, C, D);
 
-final_tf = tf(b, a, dt_ms);
 
-% plot rlocus
-figure (1)
-rlocus(final_tf)
-
-%plot bode
-figure(2)
-bode(final_tf)
-
-
-%% Generating the Hessian
-
-function [F, G] = buildPrediction(Ad,Bd,Cd,Dd,N)
-    nx = size(Ad,1);
-    nu = size(Bd,2);
-    ny = size(Cd,1);
-
-    % preallocate
-    F = zeros(ny*N, nx);
-    G = zeros(ny*N, nu*N);
-
-    Ad_pow = eye(nx);
-    for i = 1:N
-        Ad_pow = Ad_pow * Ad;               % Ad^i
-        F(((i-1)*ny+1):(i*ny), :) = Cd * Ad_pow;
-        for j = 1:i
-            % contribution of u_{j-1} to y_i
-            G_block = Cd * (Ad^(i-j)) * Bd;
-            if ~isempty(Dd) && j==i
-                G_block = G_block + Dd;    % direct feedthrough for same-step input
-            end
-            G(((i-1)*ny+1):(i*ny), ((j-1)*nu+1):(j*nu)) = G_block;
-        end
-    end
+%% Convert b and a into numerator and denominator respectively
+numerator = 0;
+for i = 1:(length(b))
+    numerator = numerator + b(i) * s^(length(b)-i);
 end
 
-N = 1;
+denominator = 0;
+for i = 1:(length(a))
+    denominator = denominator + a(i) * s^(length(a)-i);
+end
 
-[F_h, G] = buildPrediction(A, B, C, D, N);
 
+%% Root locus of transfer function
 
+function [G] = root_locus(num, denom)
+    sym_tf = (num/denom);
+
+    % Simplify to a single rational expression
+    [num_sym, den_sym] = numden(sym_tf);
+     
+    % Convert symbolic polynomials to numeric coefficient vectors
+    num_coeffs = sym2poly(num_sym);
+    den_coeffs = sym2poly(den_sym);
+     
+    % Create the transfer function G using the numeric coefficient vectors
+    G = tf(num_coeffs, den_coeffs);
+    
+    % plot rlocus
+    figure (1)
+    rlocus(G)
+    
+    %plot bode
+    figure(2)
+    bode(G)
+end
+
+root_locus(numerator, denominator)
 
 
 %% PID Tuning OR PUT IT INTO PID_AUTOTUNE.SLX
 
-opts = pidtuneOptions('DesignFocus', 'reference-tracking', 'NumUnstablePoles', 2);
-crossover = F / 10; % target crossover freq is 1/10 the hz
-[C_PID, info] = pidtune(final_tf, "PID", crossover, opts);
+% I can use pidtune to tune the pid here itself!!! (i wanna use
+% pidautotune tho)
+
+final_tf = tf(b, a, dt_ms);
+
+opts = pidtuneOptions('PhaseMargin', 60, 'DesignFocus','reference-tracking');
+crossover = 50; % target crossover freq is 1/10 the hz
+[C_PID, info] = pidtune(final_tf, "PID", crossover);
 
 Kp = C_PID.Kp;
 Kd = C_PID.Kd;
@@ -114,51 +147,37 @@ Ki = C_PID.Ki;
 info
 
 
-%% Lead Lag
+%% Systune using our SLX file
 
-lead_num = [3.819, 1];
-lead_den = [1, 1];
+mdl = "pid_autotune";
+open_system(mdl)
 
-mdl = 'turret_system';
-blk = 'vel_leadlag';
+st = slTuner(mdl,"vel_PID");
 
-load_system(mdl);
-ST0 = slTuner(mdl, blk);
-addPoint(ST0, {'r','y'});
+% use SYSTUNE ITS SO GOOD
 
-opt = looptuneOptions( ...
-    'RandomStart', 5, ...            % try multiple initial guesses
-    'MaxIter', 200);
+addPoint(st, "vel_out");
+addPoint(st, "vel_in");
 
-[ST, fSoft, gHard] = looptune(ST0, 'r', 'y', crossover, opt);
+% figure out tuninggoals
+req3 = TuningGoal.Margins('vel_out',5,75);
+req4 = TuningGoal.Overshoot('vel_in','out',10);
 
-% Extract tuned controller
-C_LL = getBlockValue(ST, blk);
-disp('Tuned Lead-Lag Controller:');
-LL_tf = tf(C_LL)
+opt = systuneOptions('RandomStart',3);
+rng(0);
+[st,fSoft,~,info] = systune(st,[req3,req4],opt);
 
-[lead_num, lead_den] = tfdata(LL_tf, 'v');
+showTunable(st)
 
-writeBlockValue(ST)
+% refresh(st)
 
-figure(3)
-bode(getIOTransfer(ST0, 'r', 'y'))
-figure(4)
-rlocus(getIOTransfer(ST0, 'r', 'y'))
-
-allmargin(getIOTransfer(ST0, 'r', 'y'));
-
-
-%% Control sys tuner
-
-controlSystemTuner(mdl);
 
 %% Visualize PID tune results
 
 % Simulate closed-loop step response
 Tcl = feedback(C_PID*final_tf, step_amp);      % unity-feedback
 t = 0:dt_ms:10;                   % choose simulation window
-figure(7)
+figure(3)
 step(Tcl, t);
 grid on;
 title('Closed-loop step response with pidtune result');
@@ -171,15 +190,28 @@ disp([Gm, Pm, Wcg]);
 
 % Open-loop transfer function (Controller * Plant)
 L = C_PID * final_tf;
+
+% Closed-loop transfer function
 T = feedback(L, 1);
 
-% Root Locus of tuned closed-loop system
+% Root Locus of tuned open-loop system
+figure(4);
+rlocus(L);
+title('Root Locus of Tuned Open-Loop System');
+
+% Bode plot of tuned open-loop system
 figure(5);
+bode(L);
+grid on;
+title('Bode Plot of Tuned Open-Loop System');
+
+% Root Locus of tuned closed-loop system
+figure(6);
 rlocus(T);
 title('Root Locus of Tuned Open-Loop System');
 
 % Bode plot of closed-loop system
-figure(6);
+figure(7);
 bode(T);
 grid on;
 title('Bode Plot of Closed-Loop System');
