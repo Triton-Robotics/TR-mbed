@@ -39,10 +39,15 @@ ChassisSubsystem::ChassisSubsystem(const Config &config)
     // LB.setSpeedPID(3, 0, 0);
     // RB.setSpeedPID(3 , 0, 0);
 
-    pid_LF.setPID(3, 0, 0);
-    pid_RF.setPID(3, 0, 0);
-    pid_LB.setPID(3, 0, 0);
-    pid_RB.setPID(3, 0, 0);
+    // pid_LF.setPID(3, 0, 0);
+    // pid_RF.setPID(3, 0, 0);
+    // pid_LB.setPID(3, 0, 0);
+    // pid_RB.setPID(3, 0, 0);
+    pid_LF.setPID(config.lf_vel_pid.p, config.lf_vel_pid.i, config.lf_vel_pid.d);
+    pid_RF.setPID(config.rf_vel_pid.p, config.rf_vel_pid.i, config.rf_vel_pid.d);
+    pid_LB.setPID(config.lb_vel_pid.p, config.lb_vel_pid.i, config.lb_vel_pid.d);
+    pid_RB.setPID(config.rb_vel_pid.p, config.rb_vel_pid.i, config.rb_vel_pid.d);
+
 
     brakeMode = COAST;
 

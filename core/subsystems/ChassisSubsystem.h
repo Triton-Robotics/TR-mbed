@@ -85,6 +85,11 @@ public:
         DJIMotor *yaw_motor;
         int yaw_initial_offset_ticks;
         BNO055 &imu;
+        // NEW:
+        PID::config lf_vel_pid;
+        PID::config rf_vel_pid;
+        PID::config lb_vel_pid;
+        PID::config rb_vel_pid;
     };
 
     /**

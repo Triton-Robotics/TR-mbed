@@ -121,7 +121,14 @@ public:
         0.065,    // speed_pid_ff_ks
         &turret.yaw,  // yaw_motor
         6500,     // yaw_initial_offset_ticks
-        imu_     
+        imu_,
+
+        // ADD THESE (matching the existing fl/fr/bl/br configs already defined at the top):
+        fl_vel_config,
+        fr_vel_config,
+        bl_vel_config,
+        br_vel_config
+
     }
     )
     {}
