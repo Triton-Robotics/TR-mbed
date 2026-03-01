@@ -128,10 +128,6 @@ public:
     uint16_t getReceivedCRC() const;
     uint16_t getComputedCRC() const;
 
-	bool isCRCValid() const;
-	uint16_t getReceivedCRC() const;
-	uint16_t getComputedCRC() const;
-
 private:
     BufferedSerial serial_;
 
@@ -178,20 +174,6 @@ private:
     bool verifyCRC(const uint8_t* frame);
     uint16_t extractBitsLSB(const uint8_t* bytes, size_t startBit, size_t bitCount) const;
     uint16_t computeCRC16LSB(const uint8_t* bytes, size_t startBit, size_t bitCount) const;
-
-	bool crcValid_;
-	uint16_t receivedCRC_;
-	uint16_t computedCRC_;
-
-	static constexpr size_t CRC_FIELD_START_BIT = 147;
-	static constexpr size_t CRC_FIELD_BIT_COUNT = 16;
-
-	static constexpr size_t CRC_DATA_START_BIT = 0;
-	static constexpr size_t CRC_DATA_BIT_COUNT = CRC_FIELD_START_BIT - CRC_DATA_START_BIT;
-
-	uint16_t extractBitsLSB(const uint8_t* bytes, size_t startBit, size_t bitCount) const;
-	uint16_t computeCRC16CCITTFALSE(const uint8_t* bytes, size_t startBit, size_t bitCount) const;
-	bool verifyCRC(const uint8_t* frame);
 };
 
 #endif

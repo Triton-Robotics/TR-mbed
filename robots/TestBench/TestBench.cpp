@@ -211,11 +211,14 @@ public:
     // }
 
 	void periodic(unsigned long dt_us) override
-	{
+{
     if (vtm.update()) {
         const VTMInput& in = vtm.getData();
 
-        printf("FRAME\n");
+        printf("Frame dt = %llu us (%.2f Hz)\n",
+               vtm.getFramePeriodUs(),
+               vtm.getFrameRateHz());
+
         printf("ch0=%u ch1=%u ch2=%u ch3=%u mode=%u pause=%u btnL=%u btnR=%u dial=%u trigger=%u "
                "mouseX=%d mouseY=%d mouseZ=%d mouseL=%u mouseR=%u mouseM=%u keyboard=%u "
                "CRC_rx=%u CRC_calc=%u CRC_ok=%u\n",
