@@ -31,7 +31,7 @@ class TestBench : public BaseRobot {
 //Varibales for current sensing
 float current_amps = 0.0;
 float torque_nm = 0.0; 
-float offset_voltage = 1.65; // Initial guess for offset voltage, will be calibrated in init() 
+float calibrated_offset = 1.65; // Initial guess for offset voltage, will be calibrated in init() 
 
     TestBench(Config &config)
         : BaseRobot(config),
@@ -66,9 +66,9 @@ float offset_voltage = 1.65; // Initial guess for offset voltage, will be calibr
             ThisThread::sleep_for(10ms);
     }
     
-    float offset_voltage = sum / samples;
-    printf("Offset voltage: %.2f V\n", offset_voltage);
-    
+    calibrated_offset = sum / samples;
+    printf("Offset voltage: %.2f V\n", calibrated_offset);
+
     }
     
     void periodic(unsigned long dt_us) override {
@@ -77,7 +77,7 @@ float offset_voltage = 1.65; // Initial guess for offset voltage, will be calibr
         float voltage = ain.read() * V_REF;
 
         //Calculate Current from Voltage and Sensitivity
-        current_amps = (voltage - offset_voltage) / SENSITIVITY; // Subtract offset voltage (1.65V for 0A)
+        current_amps = (voltage - calibrated_offset) / SENSITIVITY; // Subtract offset voltage (1.65V for 0A)
 
         //Calculate Torque from Current
         torque_nm = calculateTorque(current_amps);
