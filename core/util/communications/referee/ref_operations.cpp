@@ -48,25 +48,41 @@ void Referee::read()
 
 
 // TODO FIGURE OUT HOW THIS WORKS
+
+/* Figured out how it works, All praise https://terra-1-g.djicdn.com/b2a076471c6c4b72b574a977334d3e05/RM2025/RoboMaster%20Referee%20System%20Serial%20Port%20Protocol%20V1.9.0%EF%BC%8820250704%EF%BC%89.pdf
+Page 28
+
+The write function is basically just a fool-proof way of sending a data packet to the ref system, with certain bits in the bytes corresponding to the data
+It's a lot to write out, just go to the above link if you want the details, but in a nut shell we're sending
+Graphic name (some 3 bit name for it)
+Graphic function (0 add, 1 add, 2: modify, 3: delete)
+Graphic type : 0 for straight line, 1: Rectangle, 2: Circle, 3: Ellipse, 4: Arc, 5: floating number, 6: integer, 7: character
+Number of Layers (0-9 is valid)
+Color (0: Team Color (Red/Blue), 1: Yellow, 2: Green, 3: Orange 4: Purplish Red, 5: Pink, 6: Cyan, 7: Black, 8: white)
+
+There's more data depending on the type of graphic, just go to the sheet for that*/
+
 void Referee::write()
 {
     if(ref.writable()){
-
+        
         // For graphing diagrams ----------------------------
-        ext_student_interactive_header_data_graphic_t custom_graphic_draw;	//自定义图像
+        ext_student_interactive_header_data_graphic_t custom_graphic_draw;	//自定义图像 // Custom image
         {
-            custom_graphic_draw.data_cmd_id=0x0104;//绘制七个图形（内容ID，查询裁判系统手册）//0104 for 7 diagrams, 0110 for drawing text
-            custom_graphic_draw.sender_ID=get_robot_id();//发送者ID，机器人对应ID
-            custom_graphic_draw.receiver_ID=get_robot_id()+0x0100;//接收者ID，操作手客户端ID
+            custom_graphic_draw.data_cmd_id=0x0104;//Draw seven figures (Content ID, refer to the Referee System Manual) //0104 for 7 diagrams, 0110 for drawing text
+            custom_graphic_draw.sender_ID=get_robot_id();//Sender ID,  Bot ID
+            custom_graphic_draw.receiver_ID=get_robot_id()+0x0100;//Recipient ID, Operator Client ID
             {
                 custom_graphic_draw.graphic_custom.grapic_data_struct[0].graphic_name[0] = 7;
                 custom_graphic_draw.graphic_custom.grapic_data_struct[0].graphic_name[1] = 8;
-                custom_graphic_draw.graphic_custom.grapic_data_struct[0].graphic_name[2] = 9;//图形名
-                //上面三个字节代表的是图形名，用于图形索引，可自行定义
-                custom_graphic_draw.graphic_custom.grapic_data_struct[0].operate_tpye=1;//图形操作，0：空操作；1：增加；2：修改；3：删除；
-                custom_graphic_draw.graphic_custom.grapic_data_struct[0].graphic_tpye=0;//图形类型，0为直线，其他的查看用户手册
-                custom_graphic_draw.graphic_custom.grapic_data_struct[0].layer=9;//图层数
-                custom_graphic_draw.graphic_custom.grapic_data_struct[0].color=1;//颜色
+                custom_graphic_draw.graphic_custom.grapic_data_struct[0].graphic_name[2] = 9;//Graphic Name (No I don't know what they mean by that (图形名))
+                //The top three bytes represent the graphic name, used for graphic indexing, and can be defined by the user.
+                
+                //Graphical operations: 0: No operation; 1: Add; 2: Modify; 3: Delete;
+                custom_graphic_draw.graphic_custom.grapic_data_struct[0].operate_tpye=1; // This typo is intentional, tbf you'd probably make typos if you programmed in chinese 
+                custom_graphic_draw.graphic_custom.grapic_data_struct[0].graphic_tpye=0; //Graphic type
+                custom_graphic_draw.graphic_custom.grapic_data_struct[0].layer=9;//Number of Layers
+                custom_graphic_draw.graphic_custom.grapic_data_struct[0].color=1;//Color (颜色) 
                 // custom_graphic_draw.graphic_custom.grapic_data_struct[0].start_angle=0;
                 // custom_graphic_draw.graphic_custom.grapic_data_struct[0].end_angle=0;
                 custom_graphic_draw.graphic_custom.grapic_data_struct[0].width=2;
@@ -78,10 +94,10 @@ void Referee::write()
             }
             {
                 custom_graphic_draw.graphic_custom.grapic_data_struct[1].graphic_name[0] = 1;
-                custom_graphic_draw.graphic_custom.grapic_data_struct[1].operate_tpye=1;//图形操作，0：空操作；1：增加；2：修改；3：删除；
-                custom_graphic_draw.graphic_custom.grapic_data_struct[1].graphic_tpye=1;//图形类型，0为直线，其他的查看用户手册
-                custom_graphic_draw.graphic_custom.grapic_data_struct[1].layer=9;//图层数
-                custom_graphic_draw.graphic_custom.grapic_data_struct[1].color=1;//颜色
+                custom_graphic_draw.graphic_custom.grapic_data_struct[1].operate_tpye=1;
+                custom_graphic_draw.graphic_custom.grapic_data_struct[1].graphic_tpye=1;
+                custom_graphic_draw.graphic_custom.grapic_data_struct[1].layer=9;//
+                custom_graphic_draw.graphic_custom.grapic_data_struct[1].color=1;//
                 custom_graphic_draw.graphic_custom.grapic_data_struct[1].start_angle=0;
                 custom_graphic_draw.graphic_custom.grapic_data_struct[1].end_angle=0;
                 custom_graphic_draw.graphic_custom.grapic_data_struct[1].width=2;
@@ -230,16 +246,16 @@ uint8_t Referee::get_game_progress()
 
 
 /**
-  * @brief  判断自己红蓝方
+  * @brief  Determine whether you are on the red or blue team
   * @param  void
   * @retval RED   BLUE
-  * @attention  数据打包,打包完成后通过串口发送到裁判系统
+  * @attention  Data packaging, then transmission to the judging system via serial port upon completion.
   */
 bool Referee::is_red_or_blue()
 {
-    Judge_Self_ID = robot_status.robot_id; //读取当前机器人ID
+    Judge_Self_ID = robot_status.robot_id; //Read the current robot ID
 
-    if (robot_status.robot_id > 10)
+    if (robot_status.robot_id > 10) //Remember from the constants doc, 1-10 are red, 11-20 are blue
     {
         return 0; //蓝方 (blue)
     }

@@ -97,7 +97,7 @@
 // -------------------------------------
 // BELOW: from SCUT code line 733-1102
 
-/* 自定义帧头 */
+/* Custom Frame Header */
 typedef struct
 {
     uint8_t  SOF;
@@ -305,10 +305,10 @@ typedef struct
         uint8_t dataBuff[1];
         struct __packed
         {
-            uint8_t power_rune_buff;/*bit 0：机器人血量补血状态
-                                bit 1：枪口热量冷却加速
-                                bit 2：机器人防御加成
-                                bit 3：机器人攻击加成*/
+            uint8_t power_rune_buff;/*bit 0：Health Regeneration Status
+                                bit 1：Muzzle Heat Dissipation Status (literal translation was dissipation acceleration)
+                                bit 2：Robot Defense Bonus
+                                bit 3：Robot Attack Bonus*/
         };
     }data;
     uint8_t InfoUpdataFlag;
@@ -323,21 +323,7 @@ typedef struct
  uint16_t attack_buff;
 }buff_t;
 
-/* ID: 0X0205          Byte: 2       空中机器人能量状态数据 */
-typedef struct
-{
-    union
-    {
-        uint8_t dataBuff[2];
-        struct __packed
-        {
-            uint8_t attack_time;//可攻击时间 单位 s。30s 递减至 0
-        };
-    }data;
-    uint8_t InfoUpdataFlag;
-}aerial_robot_energy_t;
-
-/* ID: 0X0206          Byte: 1       伤害状态数据 */
+/* ID: 0X0206          Byte: 1       Damage Status Data */
 typedef struct  
 {
  uint8_t armor_id : 4;
@@ -345,7 +331,7 @@ typedef struct
  uint8_t InfoUpdataFlag;
 }hurt_data_t;
 
-/* ID: 0X0207          Byte: 7       实时射击数据 */
+/* ID: 0X0207          Byte: 7       Real-time Shooting Data */
 typedef struct  
 {
  uint8_t bullet_type;
@@ -355,7 +341,7 @@ typedef struct
  uint8_t InfoUpdataFlag;
 }shoot_data_t;
 
-/* ID: 0X0208          Byte: 6       子弹剩余发送数 */
+/* ID: 0X0208          Byte: 6       Remaining Bullets to fire */
 typedef struct  
 {
  uint16_t projectile_allowance_17mm;
@@ -364,17 +350,17 @@ typedef struct
  uint8_t InfoUpdataFlag;
 }projectile_allowance_t;
 
-/* ID: 0X0209          Byte: 4       机器人RFID状态 */
-/*bit 0：基地增益点 RFID 状态；
-bit 1：高地增益点 RFID 状态；
-bit 2：能量机关激活点 RFID 状态；
-bit 3：飞坡增益点 RFID 状态；
-bit 4：前哨岗增益点 RFID 状态；
-bit 5：资源岛增益点 RFID 状态；
-bit 6：补血点增益点 RFID 状态；
-bit 7：工程机器人补血卡 RFID 状态；
-RFID 状态不完全代表对应的增益或处罚状态，例如敌方已占领的高地增益点，不能
-获取对应的增益效果。*/
+/* ID: 0X0209          Byte: 4       Robot RFID Status */
+/*bit 0：Base Gain Point RFID Status；
+bit 1：High-Ground Gain Point RFID Status；
+bit 2：Energy Mechanism Activation Point RFID Status；
+bit 3：Flying ramp gain point RFID Status (the translator was a lil confused about the first part 飞坡增益点 RFID 状态)；
+bit 4：Outpost Gain Point RFID Status；
+bit 5：Resource Island Bonus Points RFID Status；
+bit 6：Health Point Bonus Point RFID Status；
+bit 7：Engineering Robot Blood Refill Card RFID Status；
+The RFID status does not fully represent the corresponding bonus or penalty state. 
+For example, enemy-controlled high ground bonus points cannot grant the corresponding bonus effects.*/
 typedef struct
 {
     union
@@ -388,32 +374,11 @@ typedef struct
     uint8_t InfoUpdataFlag;
 }ext_rfid_status_t;
 
-/* ID: 0x020A          Byte: 12      飞镖机器人客户端指令书 */
-typedef struct
-{
-    union
-    {
-        uint8_t dataBuff[12];
-        struct __packed
-        {
-            uint8_t dart_launch_opening_status;//当前飞镖发射口的状态
-            uint8_t dart_attack_target;//飞镖的打击目标，默认为前哨站
-            uint16_t target_change_time;//切换打击目标时的比赛剩余时间，单位秒，从未切换默认为 0。
-            uint8_t first_dart_speed; //检测到的第一枚飞镖速度，单位 0.1m/s/LSB, 未检测是为 0
-            uint8_t second_dart_speed;//检测到的第二枚飞镖速度，单位 0.1m/s/LSB, 未检测是为 0
-            uint8_t third_dart_speed; //检测到的第三枚飞镖速度，单位 0.1m/s/LSB, 未检测是为 0
-            uint8_t fourth_dart_speed;//检测到的第四枚飞镖速度，单位 0.1m/s/LSB, 未检测是为 0
-            uint16_t last_dart_launch_time;//最近一次的发射飞镖的比赛剩余时间，单位秒，初始值为 0。
-            uint16_t operate_launch_cmd_time;	//最近一次操作手确定发射指令时的比赛剩余时间，单位秒, 初始值为 0。
-        };
-    }data;
-    uint8_t InfoUpdataFlag;
-}ext_dart_client_cmd_t;
 
 
 // ----------------------- Line 1163
 
-/* ID: 0X0301          Byte: n       机器人间交互数据 */
+/* ID: 0X0301          Byte: n       Interaction Data Between Robots */
 typedef  struct  
 {
     uint16_t data_cmd_id;
@@ -424,17 +389,17 @@ typedef  struct
 /* data */
 typedef  struct  
 {
-    uint8_t data[20];//数据段n小于113
+    uint8_t data[20];//Data segment n is less than 113
 }robot_interactive_data_t;
 
 /* 
-	客户端 客户端自定义数据：cmd_id:0x0301。内容 ID:0x0100   0x0101  0x0102  0x0103  0x0110  0x0104
-	发送频率：上限 10Hz
-
+	Client
+Client Custom Data: cmd_id:0x0301. Content ID:0x0100 0x0101 0x0102 0x0103 0x0110 0x0104
+Transmission Frequency: Upper limit 10Hz
 
 */
 
-/* 客户端删除图形 机器人间通信：0x0301 */
+/* Client Deletes Graphics Communication Between Bots：0x0301 */
 typedef  struct  
 {
     uint8_t operate_tpye;
@@ -450,7 +415,7 @@ typedef  struct
     ext_client_custom_graphic_delete_t graphic_custom; // ADDED
 }ext_student_interactive_header_data_delete_t;
 
-/* 图形数据 */
+/* Graphical Data */
 typedef  struct  
 {
     uint8_t graphic_name[3];
@@ -483,31 +448,31 @@ typedef  struct
     int32_t data;
 }ClientData_struct_t;
 
-/* 客户端绘制一个图形 机器人间通信：0x0301 */
+/* Client-side graphics rendering Robot-to-robot communication：0x0301 */
 typedef  struct  
 {
     graphic_data_struct_t grapic_data_struct;
 }ext_client_custom_graphic_single_t;
 
-/* 客户端绘制二个图形 机器人间通信：0x0301 */
+/* Client-side rendering of two graphics Robot-to-robot communication：0x0301 */
 typedef  struct  
 {
     graphic_data_struct_t grapic_data_struct[2];
 }ext_client_custom_graphic_double_t;
 
-/* 客户端绘制五个图形 机器人间通信：0x0301 */
+/* Client draws five shapes Robot-to-robot communication：0x0301 */
 typedef  struct  
 {
     graphic_data_struct_t grapic_data_struct[5];
 }ext_client_custom_graphic_five_t;
 
-/* 客户端绘制七个图形 机器人间通信：0x0301 */
+/* Client draws seven shapes Robot-to-robot communication：0x0301 */
 typedef  struct  
 {
     graphic_data_struct_t grapic_data_struct[7];
 }ext_client_custom_graphic_seven_t;
 
-/* 客户端绘制字符 机器人间通信：0x0301 */
+/* Client-side character rendering Robot-to-robot communication：0x0301 */
 typedef  struct  
 {
     graphic_data_struct_t grapic_data_struct;
@@ -546,36 +511,36 @@ typedef  struct __packed
 
 // ------------------- Line 1330
 
-// /*机器人交互信息：0x0301*/
+// /*Robot Interaction Information：0x0301*/
 // typedef __packed struct
 // {
-// 	xFrameHeader   							txFrameHeader;//帧头
-// 	uint16_t								CmdID;//命令码
-// 	ext_student_interactive_header_data_t   dataFrameHeader;//数据段头结构
-// 	robot_interactive_data_t  	 			interactData;//数据段
-// 	uint16_t		 						FrameTail;//帧尾
+// 	xFrameHeader   							txFrameHeader;//Frame Header
+// 	uint16_t								CmdID;//Command code
+// 	ext_student_interactive_header_data_t   dataFrameHeader;//Data Segment Header Structure
+// 	robot_interactive_data_t  	 			interactData;//Data Segment
+// 	uint16_t		 						FrameTail;//Frame Tail
 // }ext_CommunatianData_t;
 
-// //帧头  命令码   数据段头结构  数据段   帧尾
+// //Frame Header  Command Code   Data Segment Header Structure   Data Segment   帧尾
 
 // /*客户端结构体*/
 // //上传客户端
 // typedef __packed struct
 // {
-// 	xFrameHeader   							txFrameHeader;//帧头
-// 	uint16_t		 						CmdID;//命令码
-// 	ext_student_interactive_header_data_t   dataFrameHeader;//数据段头结构
-// 	graphic_data_struct_t cilentData[7];//数据段
-// 	uint16_t		 						FrameTail;//帧尾
+// 	xFrameHeader   							txFrameHeader;//Frame header
+// 	uint16_t		 						CmdID;//Command code
+// 	ext_student_interactive_header_data_t   dataFrameHeader;//Data Segment Header Structure
+// 	graphic_data_struct_t cilentData[7];//Data Segment
+// 	uint16_t		 						FrameTail;//Frame Tal
 // }ext_SendClientData_t;
 
 // typedef __packed struct
 // {
 // 	xFrameHeader   							txFrameHeader;//帧头
 // 	uint16_t		 						CmdID;//命令码
-// 	ext_student_interactive_header_data_t   dataFrameHeader;//数据段头结构
-// 	graphic_data_struct_t cilentData[5];//数据段
-// 	uint16_t		 						FrameTail;//帧尾
+// 	ext_student_interactive_header_data_t   dataFrameHeader;//Data Segment Header Structure
+// 	graphic_data_struct_t cilentData[5];//Data Segment
+// 	uint16_t		 						FrameTail;//Frame Tail
 // }ext_ShowCrossHair_t;
 
 #pragma GCC diagnostic pop

@@ -34,7 +34,7 @@ void Referee::Judge_GetMessage(uint16_t Data_Length)
         {
             switch (JudgeSystem_rxBuff[n + 5] | JudgeSystem_rxBuff[n + 6] << 8)
             {
-            case Judge_Game_StatusData: //比赛状态数据
+            case Judge_Game_StatusData: //Match Status Data
                 // printf("ST[%d]\n", n);
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Game_StatusData))
                 {
@@ -52,7 +52,7 @@ void Referee::Judge_GetMessage(uint16_t Data_Length)
                     n++;
                 }
                 break;
-            case Judge_Game_ResultData: //比赛结果
+            case Judge_Game_ResultData: // Match Results
                 // printf("GR[%d]\n", n);
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Game_ResultData))
                 {
@@ -70,7 +70,7 @@ void Referee::Judge_GetMessage(uint16_t Data_Length)
                     n++;
                 }
                 break;
-            case Judge_Robot_HP: //机器人血量数据
+            case Judge_Robot_HP: //机器人血量数据/ Robot HP Data
                 // printf("HP[%d]\n", n);
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Robot_HP))
                 {
@@ -84,41 +84,6 @@ void Referee::Judge_GetMessage(uint16_t Data_Length)
                 else{
                     #if REF_DEBUG
                     printf("HP_NO[%d]\n", n);
-                    #endif
-                    n++;
-                }
-                break;
-            case Judge_Dart_Launch: //飞镖发射状态
-
-                if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Dart_Launch))
-                {
-                    #if REF_DEBUG
-                    printf("DL[%d]\n", n);
-                    #endif
-                    memcpy(&ext_dart_status.data.dataBuff, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_Dart_Launch - JUDGE_EXTRA]));
-                    n += JudgeLength_Dart_Launch;
-                    ext_dart_status.InfoUpdataFlag = 1;
-                }
-                else{
-                    #if REF_DEBUG
-                    printf("DL_NO[%d]\n", n);
-                    #endif
-                    n++;
-                }
-                break;
-            case Judge_AI_ChallengeBuff: //AI加成与惩罚
-                if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_AI_ChallengeBuff))
-                {
-                    #if REF_DEBUG
-                    printf("AI[%d]\n", n);
-                    #endif
-                    memcpy(&ext_ICRA_buff_debuff_zone_status.data.dataBuff, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[11]));
-                    n += JudgeLength_AI_ChallengeBuff;
-                    ext_ICRA_buff_debuff_zone_status.InfoUpdataFlag = 1;
-                }
-                else{
-                    #if REF_DEBUG
-                    printf("AI_NO[%d]\n", n);
                     #endif
                     n++;
                 }
@@ -191,7 +156,7 @@ void Referee::Judge_GetMessage(uint16_t Data_Length)
                     n++;
                 }
                 break;
-            case Judge_Robot_State: //比赛机器人状态
+            case Judge_Robot_State: //Competition Robot Status
                 // for(int i = 0; i < JudgeLength_Robot_State; i ++){
                 //     printf("|%2x", (uint8_t)*(JudgeSystem_rxBuff+n+i));
                 // }
@@ -237,7 +202,7 @@ void Referee::Judge_GetMessage(uint16_t Data_Length)
                     n++;
                 }
                 break;
-            case Judge_Power_Heat: //实时功率热量
+            case Judge_Power_Heat: //Real time Power and Heat data
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Power_Heat))
                 {
                     #if REF_DEBUG
@@ -290,7 +255,7 @@ void Referee::Judge_GetMessage(uint16_t Data_Length)
                     n++;
                 }
                 break;
-            case Judge_Robot_Buff: //机器人增益
+            case Judge_Robot_Buff: //Robot Buffs
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Robot_Buff))
                 {
                     #if REF_DEBUG
@@ -307,23 +272,7 @@ void Referee::Judge_GetMessage(uint16_t Data_Length)
                     n++;
                 }
                 break;
-            case Judge_Aerial_Energy: //空中机器人能量状态
-                if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Aerial_Energy))
-                {
-                    #if REF_DEBUG
-                    printf("AE[%d]\n", n);
-                    #endif
-                    memcpy(&aerial_robot_energy.data.dataBuff, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_Aerial_Energy - JUDGE_EXTRA]));
-                    n += JudgeLength_Aerial_Energy;
-                    aerial_robot_energy.InfoUpdataFlag = 1;
-                }
-                else{
-                    #if REF_DEBUG
-                    printf("AE_NO[%d]\n", n);
-                    #endif
-                    n++;
-                }
-                break;
+
             case Judge_Injury_State: //伤害状态
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Injury_State))
                 {
@@ -341,7 +290,7 @@ void Referee::Judge_GetMessage(uint16_t Data_Length)
                     n++;
                 }
                 break;
-            case Judge_RealTime_Shoot: //实时射击数据
+            case Judge_RealTime_Shoot: //Real-time shooting data
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_RealTime_Shoot))
                 {
                     #if REF_DEBUG
@@ -392,23 +341,6 @@ void Referee::Judge_GetMessage(uint16_t Data_Length)
                     n++;
                 }
                 break;
-            case Judge_Dart_Client: //飞镖机器人客户端指令数据
-                if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Dart_Client))
-                {
-                    #if REF_DEBUG
-                    printf("RC[%d]\n", n);
-                    #endif
-                    memcpy(&ext_dart_client_cmd.data.dataBuff, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[12]));
-                    n += JudgeLength_Dart_Client;
-                    ext_dart_client_cmd.InfoUpdataFlag = 1;
-                }
-                else{
-                    #if REF_DEBUG
-                    printf("DC_NO[%d]\n", n);
-                    #endif
-                    n++;
-                } //26
-                break;
             case Judge_Robot_Communicate: //机器人信息交互(还有一种写法就是直接case内容ID 不case命令码)
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Robot_Commute))
                 {
@@ -436,17 +368,17 @@ void Referee::Judge_GetMessage(uint16_t Data_Length)
 
 
 /**
-  * @brief  判断自身ID，选择客户端ID
+  * @brief  Determine your own ID and select the client ID.
   * @param  void
   * @retval RED   BLUE
-  * @attention  数据打包,打包完成后通过串口发送到裁判系统
+  * @attention  Data packaging, then transmission to the judging system via serial port upon completion.
   */
 void Referee::determine_ID()
 {
     bool Color = is_red_or_blue();
     if (Color == BLUE)
     {
-        Judge_SelfClient_ID = 0x0100 + robot_status.robot_id; //计算客户端ID
+        Judge_SelfClient_ID = 0x0100 + robot_status.robot_id; //Calculate Client ID
     }
     else if (Color == RED)
     {
