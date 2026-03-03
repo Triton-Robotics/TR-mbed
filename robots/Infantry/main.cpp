@@ -2,6 +2,7 @@
 #include "subsystems/ChassisSubsystem.h"
 #include "util/peripherals/imu/ISM330.h"
 #include "util/peripherals/imu/BNO055.h"
+#include "util/peripherals/imu/LIS3MDL.h"
 
 DigitalOut led(L25);
 DigitalOut led2(L26);
@@ -71,6 +72,8 @@ ISM330::ISM330_VECTOR_TypeDef imuAccelISM;
 ISM330::ISM330_VECTOR_TypeDef imuGyroISM;
 ISM330::ISM330_ANGULAR_POSITION_typedef imuAnglesISM;
 
+LIS3MDL::LIS3MDL_VECTOR_TypeDef liMagField;
+
 
 I2C i2c(I2C_SDA, I2C_SCL);
 
@@ -79,6 +82,8 @@ I2C i2c2(I2C_SDA2, I2C_SCL2);
 
 
 ISM330 imu2(i2c, 0x6B);
+
+LIS3MDL mag(i2c, 0x3D);
 
 
 float getPsi(float pitch, float roll, float mX, float mY, float mZ) {
@@ -123,8 +128,12 @@ int main(){
 
         float psi_s = getPsi(imuAngles.pitch, imuAngles.roll, magField.x, magField.y, magField.z);
 
+        mag.getMagVector(liMagField);
+
+        float psi_li = getPsi(imuAnglesISM.pitch, imuAnglesISM.roll, liMagField.x, liMagField.y, liMagField.z);
+
         imu2.getAGVectors(imuAccelISM, imuGyroISM);
-        imu2.getEulerAngles(imuAnglesISM, (timer-prev_time) / 1000, psi_s);
+        imu2.getEulerAngles(imuAnglesISM, (timer-prev_time) / 1000, psi_li);
 
         printf("BNO Yaw: %.2f| ISM Yaw: %.2f | Mag Yaw: %.2f | Psi_s: %.2f\n", imuAngles.yaw, imuAnglesISM.yaw, magYaw.yaw, psi_s);
 

@@ -31,8 +31,8 @@ LIS3MDL::LIS3MDL(I2C &i2c, uint8_t address)  //Put in an i2c object, and the dev
     }
 
 
-// Begin function
 
+// Begin function
 bool LIS3MDL::begin() noexcept
 {
     i2c.frequency(100000);
@@ -52,7 +52,7 @@ bool LIS3MDL::begin() noexcept
     return true;
 }
 
-float magConversionFactor = 1/6842.0; // For 4 Gauss its 6842 LSB/Gauss, 8 is 3421, 12 is 2281, 16 is 1711, so we inverse it 
+static constexpr float magConversionFactor = 1/6842.0; // For 4 Gauss its 6842 LSB/Gauss, 8 is 3421, 12 is 2281, 16 is 1711, so we inverse it 
 
 std::tuple<float, float, float> LIS3MDL::readMagnetometer() noexcept
 {
