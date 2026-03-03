@@ -14,8 +14,8 @@ void Referee::ui_graph_characters(int operation_type, string str, int x, int y, 
             for(int i=str.length(); i<30; i++){ // have to fill in the rest of the char array
                 custom_character_draw.graphic_custom.data[i]=' ';
             }
-
-            custom_character_draw.graphic_custom.grapic_data_struct.graphic_name[0] = name;//图形名
+            //Appears to have the same set up as the referee::write function
+            custom_character_draw.graphic_custom.grapic_data_struct.graphic_name[0] = name;//
             custom_character_draw.graphic_custom.grapic_data_struct.operate_tpye=operation_type;//图形操作，0：空操作；1：增加；2：修改；3：删除；
             custom_character_draw.graphic_custom.grapic_data_struct.graphic_tpye=7;//图形类型，0为直线，其他的查看用户手册
             custom_character_draw.graphic_custom.grapic_data_struct.layer=5;//图层数

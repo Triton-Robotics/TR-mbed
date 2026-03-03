@@ -52,9 +52,9 @@ private:
     bool enablePrintRefData = 0;
 
     uint8_t JudgeSystem_rxBuff_priv[JUDGESYSTEM_PACKSIZE];
-    uint8_t JudgeSystem_rxBuff[JUDGESYSTEM_PACKSIZE]; //接收buff
-    uint8_t Judge_Self_ID;        //当前机器人ID
-    uint16_t Judge_SelfClient_ID; //发送者机器人对应的客户端ID
+    uint8_t JudgeSystem_rxBuff[JUDGESYSTEM_PACKSIZE]; //RX Buffer
+    uint8_t Judge_Self_ID;        //Current robot ID
+    uint16_t Judge_SelfClient_ID; //Client ID associated with the sender bot
 
 
     /** 

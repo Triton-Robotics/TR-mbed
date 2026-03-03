@@ -139,23 +139,6 @@ void Referee::Judge_GetMessage(uint16_t Data_Length)
                     n++;
                 }
                 break;
-            case Judge_Dart_Countdown: //飞镖发射口倒计时
-                if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Dart_Countdown))
-                {
-                    #if REF_DEBUG
-                    printf("DT[%d]\n", n);
-                    #endif
-                    memcpy(&ext_dart_remaining_time.data.dataBuff, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_Dart_Countdown - JUDGE_EXTRA]));
-                    n += JudgeLength_Dart_Countdown;
-                    ext_dart_remaining_time.InfoUpdataFlag = 1;
-                }
-                else{
-                    #if REF_DEBUG
-                    printf("DT_NO[%d]\n", n);
-                    #endif
-                    n++;
-                }
-                break;
             case Judge_Robot_State: //Competition Robot Status
                 // for(int i = 0; i < JudgeLength_Robot_State; i ++){
                 //     printf("|%2x", (uint8_t)*(JudgeSystem_rxBuff+n+i));
@@ -238,7 +221,7 @@ void Referee::Judge_GetMessage(uint16_t Data_Length)
                     n++;
                 }
                 break;
-            case Judge_Robot_Position: //机器人位置
+            case Judge_Robot_Position: //Robot Position
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Robot_Position))
                 {
                     #if REF_DEBUG
@@ -273,7 +256,7 @@ void Referee::Judge_GetMessage(uint16_t Data_Length)
                 }
                 break;
 
-            case Judge_Injury_State: //伤害状态
+            case Judge_Injury_State: //Damage Status
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Injury_State))
                 {
                     #if REF_DEBUG
@@ -307,7 +290,7 @@ void Referee::Judge_GetMessage(uint16_t Data_Length)
                     n++;
                 }
                 break;
-            case Judge_Remaining_Rounds: //子弹剩余数
+            case Judge_Remaining_Rounds: //Remaining rounds
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Remaining_Rounds))
                 {
                     #if REF_DEBUG
@@ -324,7 +307,7 @@ void Referee::Judge_GetMessage(uint16_t Data_Length)
                     n++;
                 }
                 break;
-            case Judge_Robot_RFID: //机器人RFID状态
+            case Judge_Robot_RFID: //Robot RFID Status
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Robot_RFID))
                 {
                     #if REF_DEBUG
@@ -341,7 +324,7 @@ void Referee::Judge_GetMessage(uint16_t Data_Length)
                     n++;
                 }
                 break;
-            case Judge_Robot_Communicate: //机器人信息交互(还有一种写法就是直接case内容ID 不case命令码)
+            case Judge_Robot_Communicate: //Robot Information Exchange (Another approach involves directly referencing the content ID instead of the command code)
                 if (Verify_CRC16_Check_Sum(JudgeSystem_rxBuff + n, JudgeLength_Robot_Commute))
                 {
                     memcpy(&Robot_Commute, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[26]));
@@ -373,6 +356,8 @@ void Referee::Judge_GetMessage(uint16_t Data_Length)
   * @retval RED   BLUE
   * @attention  Data packaging, then transmission to the judging system via serial port upon completion.
   */
+
+//TODO Figure out why this is a conditional when the outcome is the same 
 void Referee::determine_ID()
 {
     bool Color = is_red_or_blue();
@@ -382,7 +367,7 @@ void Referee::determine_ID()
     }
     else if (Color == RED)
     {
-        Judge_SelfClient_ID = 0x0100 + robot_status.robot_id; //计算客户端ID
+        Judge_SelfClient_ID = 0x0100 + robot_status.robot_id; //Calculate Client ID
     }
 }
 
@@ -390,7 +375,7 @@ void Referee::determine_ID()
   * @brief  Upload custom data
   * @param  void
   * @retval void
-  * @attention  数据打包,打包完成后通过串口发送到裁判系统
+  * @attention  Data packaging, then transmission to the judging system via serial port upon completion.
   */
 
 
@@ -410,28 +395,28 @@ void Referee::referee_data_pack_handle(uint8_t sof,uint16_t cmd_id, uint8_t *p_d
 	uint8_t tx_buff[MAX_SIZE];
 
     mutex_write_.lock();
-	uint16_t frame_length = frameheader_len + cmd_len + len + crc_len;   //数据帧长度	
+	uint16_t frame_length = frameheader_len + cmd_len + len + crc_len;   //Data frame Length	
 
-	memset(tx_buff,0,frame_length);  //存储数据的数组清零
+	memset(tx_buff,0,frame_length);  //Clear the array storing the data 
 	
-	/*****帧头打包*****/
-	tx_buff[0] = sof;//数据帧起始字节
-	memcpy(&tx_buff[1],(uint8_t*)&len, sizeof(len));//数据帧中data的长度
+	/*****Frame Header Packaging*****/
+	tx_buff[0] = sof;//Data frame start byte
+	memcpy(&tx_buff[1],(uint8_t*)&len, sizeof(len));//The length of the data field in the data frame
 	tx_buff[3] = seq;//包序号
-	Append_CRC8_Check_Sum(tx_buff,frameheader_len);  //帧头校验CRC8
+	Append_CRC8_Check_Sum(tx_buff,frameheader_len);  //Frame Header Check CRC8
 
-	/*****命令码打包*****/
+	/*****Command Code Packaging*****/
 	memcpy(&tx_buff[frameheader_len],(uint8_t*)&cmd_id, cmd_len);
 	
-	/*****数据打包*****/
+	/*****Data Packaging*****/
 	memcpy(&tx_buff[frameheader_len+cmd_len], p_data, len);
-	Append_CRC16_Check_Sum(tx_buff,frame_length);  //一帧数据校验CRC16
+	Append_CRC16_Check_Sum(tx_buff,frame_length);  //CRC16 Frame Data Verification
 
     if (seq == 0xff) seq=0;
     else
      seq++;
 	
-	/*****数据上传*****/
+	/*****Data Upload*****/
 	// USART_ClearFlag(UART4,USART_FLAG_TC);
     LL_USART_ClearFlag_TC(USART3);
 

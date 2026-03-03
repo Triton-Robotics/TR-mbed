@@ -482,7 +482,7 @@ typedef  struct
 
 // MY ADDED STRUCTS ------------------
 
-/* ID: 0X0301          Byte: n       机器人间交互数据 */
+/* ID: 0X0301          Byte: n       Interaction Data Between Robots */
 typedef  struct  
 {
     uint16_t data_cmd_id;
