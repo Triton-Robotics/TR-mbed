@@ -387,7 +387,7 @@ void Referee::determine_ID()
 }
 
 /**
-  * @brief  上传自定义数据
+  * @brief  Upload custom data
   * @param  void
   * @retval void
   * @attention  数据打包,打包完成后通过串口发送到裁判系统
