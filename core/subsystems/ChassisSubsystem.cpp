@@ -556,10 +556,10 @@ void ChassisSubsystem::setOmniKinematics(double radius, HOLONOMIC_MODE mode)
 //inputs chassis speeds in m/s, outputs wheel speeds in m/s
 WheelSpeeds ChassisSubsystem::chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds)
 {
-    return {(chassisSpeeds.vY + chassisSpeeds.vX - chassisSpeeds.vOmega * ((m_OmniKinematics.r1x) + (m_OmniKinematics.r1y))),
-            (chassisSpeeds.vY - chassisSpeeds.vX - chassisSpeeds.vOmega * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y))),
-            (-chassisSpeeds.vY + chassisSpeeds.vX - chassisSpeeds.vOmega * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y))),
-            (-chassisSpeeds.vY - chassisSpeeds.vX - chassisSpeeds.vOmega * ((m_OmniKinematics.r4x) + (m_OmniKinematics.r4y)))};
+    return {(-chassisSpeeds.vY + chassisSpeeds.vX - chassisSpeeds.vOmega * ((m_OmniKinematics.r1x) + (m_OmniKinematics.r1y))),
+            (-chassisSpeeds.vY - chassisSpeeds.vX - chassisSpeeds.vOmega * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y))),
+            (+chassisSpeeds.vY + chassisSpeeds.vX - chassisSpeeds.vOmega * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y))),
+            (+chassisSpeeds.vY - chassisSpeeds.vX - chassisSpeeds.vOmega * ((m_OmniKinematics.r4x) + (m_OmniKinematics.r4y)))};
 }
 
 // ChassisSpeeds ChassisSubsystem::wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds)
