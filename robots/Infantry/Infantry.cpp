@@ -128,7 +128,7 @@ class Infantry : public BaseRobot {
             0.22617,  // radius
             0.065,    // speed_pid_ff_ks
             &turret.yaw,  // yaw_motor
-            1700,     // yaw_initial_offset_ticks
+            356 + 6144,     // yaw_initial_offset_ticks
             imu_     
         }
         )
