@@ -3,6 +3,6 @@
     "clangd.arguments": [
         // NEED TO CHANGE THIS
         // on linux you can find this by running "which arm-none-eabi-g++"
-        "--query-driver=/path/to/arm-none-eabi-g++",
+        "--query-driver=/Applications/ArmGNUToolchain/14.3.rel1/arm-none-eabi/bin/arm-none-eabi-g++",
     ],
 }

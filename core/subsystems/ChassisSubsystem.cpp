@@ -57,16 +57,16 @@ WheelSpeeds ChassisSubsystem::getWheelSpeeds() const
 
 float ChassisSubsystem::limitAcceleration(float desiredRPM, float previousRPM, uint32_t deltaTime, float theta)
 {
+    // Calculate rad
     float diff = desiredRPM - previousRPM;
 
     // Calculate theoretical max acceleration
-    // Messy asf but see linked doc for the equation
-    float trigDenom = 2 * std::max(std::abs(std::sin(theta + M_PI/4)), std::abs(std::sin(theta - M_PI/4)));
-    float maxAccel = (STATIC_FRICTION_CONSTANT * GRAVITY) / (ACCEL_DENOM_CONSTANT * trigDenom);
-    printf("%f.2\n", maxAccel);
+    float trigDenom = 2 * max(abs(sin(theta + M_PI/4)), abs(sin(theta + M_PI/4)));
+    float maxLinearAccel = (STATIC_FRICTION_CONSTANT * GRAVITY) / (ACCEL_DENOM_CONSTANT * trigDenom);
 
-    // TODO: Convert calculated max acceleration from m/s^2 to RPM/s
-    float maxChangeRPM = 0;
+    // Maximum change in velocity over this time period, then change that to RPM
+    float maxChange = maxLinearAccel * (deltaTime / 1000000.0);
+    float maxChangeRPM = maxChange * ((1 / (WHEEL_DIAMETER_METERS / 2) / (2 * PI / 60) * M3508_GEAR_RATIO));
 
     return desiredRPM; // TODO: remove this
 
@@ -75,19 +75,19 @@ float ChassisSubsystem::limitAcceleration(float desiredRPM, float previousRPM, u
         return 0;
     }
     
-    if (diff > maxAccel) {
+    if (diff > maxChangeRPM) {
         // if(power == 0) {
         //     return desiredRPM; // let robot do its thing b/c it wont take power
         // }
 
-        return previousRPM + maxAccel;
+        return previousRPM + maxChangeRPM;
     } 
-    else if (diff < -maxAccel) { // Also check deceleration
+    else if (diff < -maxChangeRPM) { // Also check deceleration
         // if(power == 0) {
         //     return desiredRPM; // let robot do its thing b/c it wont take power
         // }
 
-        return previousRPM - maxAccel;
+        return previousRPM - maxChangeRPM;
     } 
     else { // Under acceleration limit
         return desiredRPM;
