@@ -25,7 +25,13 @@ public:
     //Magnetometer Reading functions
     std::tuple<float, float, float> readMagnetometer() noexcept;
 
+    void calibratedMagXY(LIS3MDL_VECTOR_TypeDef& magVector);
+
     void getMagVector(LIS3MDL_VECTOR_TypeDef& magVector);
+
+    void getRawMagVector(LIS3MDL_VECTOR_TypeDef& magVector);
+
+
 
 
 

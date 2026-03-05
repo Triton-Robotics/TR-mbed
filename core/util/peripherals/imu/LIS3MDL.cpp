@@ -19,6 +19,9 @@ const char mediumPerformanceEnable[] = {0x20, 0x32}; // 560hz
 const char highPerformanceEnable[] = {0x20, 0x52}; // 300hz
 const char ultraHighPerformanceEnable[] = {0x20, 0x72}; // Most Accurate but only 155HZ
 
+// Setting Operating Mode 
+const char continuousConversion[] = {0x22, 0x00}; 
+
 // Magnetometer Reading Registers
 const char magReg[] = {0x28,0x29,0x2A,0x2B,0x2C,0x2D}; //Magnetometer Register values
 // X_L, X_H, Y_L, Y_H, Z_L, Z_H
@@ -42,13 +45,33 @@ bool LIS3MDL::begin() noexcept
 
     i2c.write(writeAddr, fourGauss, 2, false); // Set Range to 4 Gauss
 
-    i2c.write(writeAddr, lowPowerEnable, 2, false);
+    i2c.write(writeAddr, highPerformanceEnable, 2, false); //Setting performance mode
+
+    i2c.write(writeAddr, continuousConversion, 2, false); //Setting continuous conversion mode
 
     i2c.write(writeAddr, WhoAmIReg, 1, false);
     char whoAmIReading;
     i2c.read(readAddr, reinterpret_cast<char*>(&whoAmIReading), 1, true);
 
     printf("WHO_AM_I: 0x%02X\r\n", whoAmIReading);
+
+    char performanceRegReading;
+
+    i2c.write(writeAddr, lowPowerEnable, 1, false);
+    i2c.read(readAddr, &performanceRegReading, 1, true);
+    printf("Performance Reg: 0x%02X\r\n", performanceRegReading);
+
+    char rangeRegReading;
+
+    i2c.write(writeAddr, fourGauss, 1, false);
+    i2c.read(readAddr, &rangeRegReading, 1, true);
+    printf("Range Reg: 0x%02X\r\n", rangeRegReading);
+
+    char modeRegReading;
+    i2c.write(writeAddr, continuousConversion, 1, false);
+    i2c.read(readAddr, &modeRegReading, 1, true);
+    printf("Mode Reg: 0x%02X\r\n", modeRegReading);
+
     return true;
 }
 
@@ -71,10 +94,45 @@ std::tuple<float, float, float> LIS3MDL::readMagnetometer() noexcept
     return std::make_tuple(x, y, z);
 }
 
+static constexpr float hardMagX = -0.1068;
+static constexpr float hardMagY = 0.1760;
+
+static constexpr float softMagXX = 0.003240252022;
+static constexpr float softMagXY = 1.122128464;
+static constexpr float softMagYX = -0.9999947504;
+static constexpr float softMagYY = 0.003635998113;
+
+
+void LIS3MDL::calibratedMagXY(LIS3MDL_VECTOR_TypeDef& magVector)  {
+    auto [mx, my, mz] = readMagnetometer(); 
+
+    float calibratedMX = (mx*softMagXX) + (my*softMagXY) + hardMagX;
+    float calibratedMY = (mx*softMagYX) + (my*softMagYY) + hardMagY;
+
+    magVector.x = calibratedMX;
+    magVector.y = calibratedMY;
+    magVector.z = mz; // No Z calibration because I am very tired
+}
+
+
 void LIS3MDL::getMagVector(LIS3MDL_VECTOR_TypeDef& magVector) {
     auto [mx, my, mz] = readMagnetometer();
         magVector.x = mx;
         magVector.y = my;
         magVector.z = mz;
+}
+
+void LIS3MDL::getRawMagVector(LIS3MDL_VECTOR_TypeDef& magVector) {
+    uint8_t magbuffer[6]; 
+    i2c.write(writeAddr, magReg, 1, false);
+    i2c.read(readAddr, reinterpret_cast<char*>(magbuffer), 6, true);
+
+    int16_t rawX = (int16_t)((magbuffer[1] << 8) | magbuffer[0]);
+    int16_t rawY = (int16_t)((magbuffer[3] << 8) | magbuffer[2]);
+    int16_t rawZ = (int16_t)((magbuffer[5] << 8) | magbuffer[4]);
+
+    magVector.x = rawX;
+    magVector.y = rawY;
+    magVector.z = rawZ;
 }
 

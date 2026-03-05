@@ -71,8 +71,12 @@ BNO055_ANGULAR_POSITION_typedef magYaw;
 ISM330::ISM330_VECTOR_TypeDef imuAccelISM;
 ISM330::ISM330_VECTOR_TypeDef imuGyroISM;
 ISM330::ISM330_ANGULAR_POSITION_typedef imuAnglesISM;
+ISM330::ISM330_ANGULAR_POSITION_typedef liMagYaw;
 
 LIS3MDL::LIS3MDL_VECTOR_TypeDef liMagField;
+LIS3MDL::LIS3MDL_VECTOR_TypeDef liMagFieldRaw;
+
+
 
 
 I2C i2c(I2C_SDA, I2C_SCL);
@@ -103,13 +107,8 @@ int main(){
 
     imu2.begin();
     
-    // // Basic IMU Readings Check
-    // while (true) {
-    // auto [ax, ay, az] = imu.readAccel();
-    // auto [gx, gy, gz] = imu.readGyro();
-    
-    // printf("Accel %.2f, %.2f, %.2f | Gyro %.2f, %.2f, %.2f\n", ax, ay, az, gx, gy, gz);
-    // }
+
+    mag.begin();
 
 
 
@@ -122,20 +121,27 @@ int main(){
         imu.get_angular_position_quat(&imuAngles);     
         #endif   
         
-        imu.get_mag(&magField);
+        //imu.get_mag(&magField);
 
         magYaw.yaw= atan2(magField.y,magField.x)/2/M_PI*360;
 
-        float psi_s = getPsi(imuAngles.pitch, imuAngles.roll, magField.x, magField.y, magField.z);
+        float psi_s_BNO = getPsi(imuAngles.pitch, imuAngles.roll, magField.x, magField.y, magField.z);
 
-        mag.getMagVector(liMagField);
+        mag.getRawMagVector(liMagFieldRaw);
+
+        mag.calibratedMagXY(liMagField);
+
 
         float psi_li = getPsi(imuAnglesISM.pitch, imuAnglesISM.roll, liMagField.x, liMagField.y, liMagField.z);
+
+        liMagYaw.yaw = psi_li;
 
         imu2.getAGVectors(imuAccelISM, imuGyroISM);
         imu2.getEulerAngles(imuAnglesISM, (timer-prev_time) / 1000, psi_li);
 
-        printf("BNO Yaw: %.2f| ISM Yaw: %.2f | Mag Yaw: %.2f | Psi_s: %.2f\n", imuAngles.yaw, imuAnglesISM.yaw, magYaw.yaw, psi_s);
+        printf("BNO Angle: %.2f: X Mag: %f, Y Mag: %f, Z Mag: %f,\n", imuAngles.yaw, liMagField.x, liMagField.y, liMagField.z);
+        
+        //printf("BNO Yaw: %.2f| ISM Yaw: %.2f | Mag Yaw: %.2f | Psi_s: %.2f\n", imuAngles.yaw, imuAnglesISM.yaw, magYaw.yaw, psi_s);
 
         //printf("Accel %.2f, %.2f, %.2f | Gyro %.2f, %.2f, %.2f | KF Pitch: %.2f | KF Yaw: %.2f\n", ax, ay, az, gx, gy, gz, kf_pitch, kf_yaw);
         
