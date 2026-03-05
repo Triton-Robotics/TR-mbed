@@ -75,7 +75,7 @@ ISM330::ISM330_ANGULAR_POSITION_typedef liMagYaw;
 
 LIS3MDL::LIS3MDL_VECTOR_TypeDef liMagField;
 LIS3MDL::LIS3MDL_VECTOR_TypeDef liMagFieldRaw;
-
+LIS3MDL::LIS3MDL_VECTOR_TypeDef liMagFieldCalibrated;
 
 
 
@@ -127,19 +127,24 @@ int main(){
 
         float psi_s_BNO = getPsi(imuAngles.pitch, imuAngles.roll, magField.x, magField.y, magField.z);
 
+        
         mag.getRawMagVector(liMagFieldRaw);
+
+        //mag.getMagVector(liMagField);
 
         mag.calibratedMagXY(liMagField);
 
-
         float psi_li = getPsi(imuAnglesISM.pitch, imuAnglesISM.roll, liMagField.x, liMagField.y, liMagField.z);
 
-        liMagYaw.yaw = psi_li;
+        liMagYaw.yaw = psi_li +11.0; // Adding declination angle to get true North referenced yaw
+
 
         imu2.getAGVectors(imuAccelISM, imuGyroISM);
         imu2.getEulerAngles(imuAnglesISM, (timer-prev_time) / 1000, psi_li);
 
-        printf("BNO Angle: %.2f: X Mag: %f, Y Mag: %f, Z Mag: %f,\n", imuAngles.yaw, liMagField.x, liMagField.y, liMagField.z);
+        printf("%0.6f,%0.6f,%0.6f\r\n", liMagField.x, liMagField.y, liMagField.z);
+
+        //printf("BNO Angle: %.2f: X Mag: %f, Y Mag: %f, Z Mag: %f,\n", imuAngles.yaw, liMagField.x, liMagField.y, liMagField.z);
         
         //printf("BNO Yaw: %.2f| ISM Yaw: %.2f | Mag Yaw: %.2f | Psi_s: %.2f\n", imuAngles.yaw, imuAnglesISM.yaw, magYaw.yaw, psi_s);
 

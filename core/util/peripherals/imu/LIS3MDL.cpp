@@ -94,24 +94,30 @@ std::tuple<float, float, float> LIS3MDL::readMagnetometer() noexcept
     return std::make_tuple(x, y, z);
 }
 
-static constexpr float hardMagX = -0.1068;
-static constexpr float hardMagY = 0.1760;
+static constexpr float declinationAngle = 10.54; //According to https://www.magnetic-declination.com/
 
-static constexpr float softMagXX = 0.003240252022;
-static constexpr float softMagXY = 1.122128464;
-static constexpr float softMagYX = -0.9999947504;
-static constexpr float softMagYY = 0.003635998113;
+//offset values (-0.035661999999999985,-0.348071,-1.693949) got this from https://github.com/italocjs/magnetometer_calibration/blob/main/python_scripts/calibration_plotter.py
+//scale values (0.884884562265963,0.7896518068044655,1.6569235504690991)
+//2nd pass scale 2.330403,2.657667,0.455660
 
+static constexpr float hardMagX = -0.035661999999999985;
+static constexpr float hardMagY = -0.348071;
+static constexpr float hardMagZ = -1.693949;
+
+static constexpr float softMagX = 0.884884562265963* 2.330403;
+static constexpr float softMagY = 0.7896518068044655* 2.657667;
+static constexpr float softMagZ = 1.6569235504690991* 0.455660;
 
 void LIS3MDL::calibratedMagXY(LIS3MDL_VECTOR_TypeDef& magVector)  {
     auto [mx, my, mz] = readMagnetometer(); 
 
-    float calibratedMX = (mx*softMagXX) + (my*softMagXY) + hardMagX;
-    float calibratedMY = (mx*softMagYX) + (my*softMagYY) + hardMagY;
+    float calibratedMX = (mx-hardMagX)*softMagX;
+    float calibratedMY = (my-hardMagY)*softMagY;
+    float calibratedMZ = (mz-hardMagZ)*softMagZ;
 
     magVector.x = calibratedMX;
     magVector.y = calibratedMY;
-    magVector.z = mz; // No Z calibration because I am very tired
+    magVector.z = calibratedMZ; // No Z calibration because I am very tired
 }
 
 
