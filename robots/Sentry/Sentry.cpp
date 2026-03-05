@@ -167,7 +167,7 @@ class Sentry : public BaseRobot {
                 des_turret_state.pitch_angle_degs = jetson_state.desired_pitch_rads * (180 / M_PI);
             }
 
-            chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::ODOM_ORIENTED);
+            chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
         } else {
             chassis.setWheelPower({0, 0, 0, 0});
             des_turret_state.turret_mode = TurretState::SLEEP;
