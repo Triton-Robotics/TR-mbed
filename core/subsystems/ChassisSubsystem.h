@@ -28,7 +28,8 @@
 #define MAX_VEL 2.92
 
 // Constants used for acceleration limiting
-constexpr float STATIC_FRICTION_CONSTANT = 0.0f;
+constexpr float STATIC_FRICTION_CONSTANT = 0.233924f;
+constexpr float STATIC_FRICTION_CONSTANT_ALT = 0.8f;
 constexpr float GRAVITY = 9.80665f;
 constexpr int ACCEL_DENOM_CONSTANT = 2;
 
