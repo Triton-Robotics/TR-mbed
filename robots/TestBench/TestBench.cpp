@@ -73,7 +73,14 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
     }
     
     void periodic(unsigned long dt_us) override {
-        
+
+        if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP) {
+            motor.setPower(500);
+        } else {
+           motor.setPower(0);
+        }
+    
+
         //Calculate Voltage from AnalogIn reading
         float voltage = ain.read() * V_REF;
 
