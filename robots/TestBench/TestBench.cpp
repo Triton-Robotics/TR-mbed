@@ -97,7 +97,7 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
      if (count++ % 100 == 0) { // Print every 50 iterations, adjust as needed
         printf("Voltage: %.3f V , Current: %.2f A, Torque: %.4f Nm\n", voltage, display_current, torque_nm);
         }
-            motor.setPower(0); // Set motor to a constant power level for testing
+            motor.setPower(300); // Set motor to a constant power level for testing
         }
 
     void end_of_loop() override {}
@@ -106,7 +106,9 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
 
 
 int main() {
-    printf("HELLO\n");
+    ThisThread::sleep_for(2s); // Wait for everything to initialize
+    
+    printf("HELLO - TestBench Starting...\n");
     BaseRobot::Config config = BaseRobot::Config{}; 
     TestBench robot(config);
 
