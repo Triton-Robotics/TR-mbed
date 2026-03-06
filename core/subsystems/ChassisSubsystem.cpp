@@ -14,7 +14,7 @@ ChassisSubsystem::ChassisSubsystem(const Config &config)
       RB(config.right_back_can_id, CAN_BUS_TYPE, MOTOR_TYPE),
       yaw(config.yaw_motor),
       encoder(config.encoder),
-      yawPhase{360.0 * (1.0 - ( (float) config.yaw_initial_offset_ticks / TICKS_REVOLUTION))}, // change Yaw to CCW +, and ranges from 0 to 360
+      yawPhase{config.yaw_initial_offset_ticks}, // change Yaw to CCW +, and ranges from 0 to 360
       imu(config.imu),
       chassis_radius(config.radius),
       FF_Ks(config.speed_pid_ff_ks)
@@ -352,7 +352,7 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
     if (mode == REVERSE_YAW_ORIENTED)
     {
         // printf("%f\n", double(yaw->getData(ANGLE)));
-        yawCurrent = (360 - (encoder->encoderMovingAverage() + 109.4));
+        yawCurrent = encoder->encoderMovingAverage();
         if (yawCurrent < 0.0) {
             yawCurrent += 360.0;
         }
@@ -367,7 +367,7 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
     else if (mode == YAW_ORIENTED)
     {
         // printf("%f\n", double(yaw->getData(ANGLE)));
-        yawCurrent = (360 - (encoder->encoderMovingAverage() + 109.4));
+        yawCurrent = encoder->encoderMovingAverage();
         if (yawCurrent < 0.0) {
             yawCurrent += 360.0;
         }
@@ -385,7 +385,7 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
     }
     else if (mode == ODOM_ORIENTED) 
     {
-        yawCurrent = (360 - (encoder->encoderMovingAverage() + 109.4));
+        yawCurrent = encoder->encoderMovingAverage();
         if (yawCurrent < 0.0) {
             yawCurrent += 360.0;
         }
@@ -736,7 +736,7 @@ bool ChassisSubsystem::setOdomReference() {
 // }
 
 void ChassisSubsystem::updateYawPhaseFromEncoder() {
-    float encoder_reading = (360 - (encoder->encoderMovingAverage() + 109.4));
+    float encoder_reading = encoder->encoderMovingAverage();
         if (encoder_reading < 0.0) {
             encoder_reading += 360.0;
         }

@@ -1,17 +1,18 @@
 #include "ShooterSubsystem.h"
+#include "util/motor/DJIMotor.h"
 
 ShooterSubsystem::ShooterSubsystem(config cfg):
     flywheelL({
         cfg.flywheelL_id,
         cfg.canBus,
-        M3508,
+        M3508_FLYWHEEL,
         "Left Flywheel",
         cfg.flywheelL_PID
     }),
     flywheelR({
         cfg.flywheelR_id,
         cfg.canBus,
-        M3508,
+        M3508_FLYWHEEL,
         "Right Flywheel",
         cfg.flywheelR_PID
     }),
@@ -48,8 +49,8 @@ void ShooterSubsystem::periodic(int curr_heat, int heat_limit)
 
     if (shoot == OFF) 
     {
-        flywheelL.setPower(0);
-        flywheelR.setPower(0);
+        flywheelL.setSpeed(0);
+        flywheelR.setSpeed(0);
         indexer.setPower(0);
         shootReady = true;
     }

@@ -154,7 +154,7 @@ class Infantry : public BaseRobot {
             0.22617,  // radius
             0.065,    // speed_pid_ff_ks
             &turret_.yaw,  // yaw_motor
-            266,     // yaw_initial_offset_ticks
+            168.3 + 90,     // yaw_initial_offset_ticks
             imu_,
             &encoder_   
         }
@@ -183,18 +183,19 @@ class Infantry : public BaseRobot {
         // TODO: use this in code correctly to drive faster
         max_linear_vel = 1.24 + 0.0513 * chassis_.power_limit +
                          0.000216 * (chassis_.power_limit * chassis_.power_limit);
-        des_chassis_state.vX = jy * max_linear_vel;
-        des_chassis_state.vY = jx * max_linear_vel;
+        des_chassis_state.vX = remote_.getChannel(Remote::Channel::LEFT_VERTICAL) * max_linear_vel;
+        des_chassis_state.vX += remote_.getMouseX() * max_linear_vel;
+        des_chassis_state.vY = -1 * remote_.getChannel(Remote::Channel::LEFT_HORIZONTAL) * max_linear_vel;
+        des_chassis_state.vY += -1 * remote_.getMouseY() * max_linear_vel;
 
         // Turret from remote
-        yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * dt_us / 1000000;
-        yaw_desired_angle -= jyaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
+        float joystick_yaw = remote_.getChannel(Remote::Channel::RIGHT_HORIZONTAL);
+        yaw_desired_angle -= joystick_yaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
         yaw_desired_angle = capAngle(yaw_desired_angle);
-        // yaw_desired_angle = jyaw * 5 * 3 * M3508_GEAR_RATIO;
         des_turret_state.yaw_angle_degs = yaw_desired_angle;
 
-        pitch_desired_angle -= mpitch * MOUSE_SENSITIVITY_PITCH_DPS * dt_us / 1000000;
-        pitch_desired_angle += jpitch * JOYSTICK_PITCH_SENSITIVITY_DPS * dt_us / 1000000;
+        float joystick_pitch = remote_.getChannel(Remote::Channel::RIGHT_VERTICAL);
+        pitch_desired_angle += joystick_pitch * JOYSTICK_PITCH_SENSITIVITY_DPS * dt_us / 1000000;
         pitch_desired_angle = std::clamp(pitch_desired_angle, PITCH_LOWER_BOUND, PITCH_UPPER_BOUND);
         des_turret_state.pitch_angle_degs = pitch_desired_angle;
 

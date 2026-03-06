@@ -85,7 +85,7 @@ public:
         const double speed_pid_ff_ks;
 
         DJIMotor *yaw_motor;
-        int yaw_initial_offset_ticks;
+        float yaw_initial_offset_ticks;
         BNO055 &imu;
         MA4 *encoder;  // External encoder for yaw position
     };
