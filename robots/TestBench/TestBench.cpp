@@ -18,20 +18,22 @@ PID::config test_motor_vel_PID = {1, 0, 0};
 PID::config test_motor_pos_PID = {1, 0, 0};
 
 //Constants for ACS712 and M2006 motor
-const float SENSITIVITY = 0.185; //185mV/A for 5A model
-const float V_REF = 3.3;
-const float KT_M2006 = 0.18; // Torque constant for M2006 motor, in Nm/A
+const float V_REF = 3.3f; // Reference voltage for AnalogIn
+const float SENSOR_VCC = 5.0f; // Voltage supply for ACS712 sensor
+const float SENSITIVITY = 0.185f; //185mV/A for 5A model
+const float KT_M2006 = 0.18f; // Torque constant for M2006 motor, in Nm/A
 
 class TestBench : public BaseRobot {
   public:
     DJIMotor motor;
     //Declare AnalogIn for current sensing
-    AnalogIn ain;
+    mbed::AnalogIn ain;
 
 //Varibales for current sensing
 float current_amps = 0.0;
 float torque_nm = 0.0; 
-float calibrated_offset = 1.65; // Initial guess for offset voltage, will be calibrated in init() 
+float filtered_current = 0.0;
+float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be calibrated in init()
 
     TestBench(Config &config)
         : BaseRobot(config),
@@ -43,8 +45,7 @@ float calibrated_offset = 1.65; // Initial guess for offset voltage, will be cal
             "Test motor",
             test_motor_vel_PID,
             test_motor_pos_PID
-        }),
-        ain(PA_7)
+        }), ain(PA_7)
         // clang-format on        
     {}
 
@@ -57,12 +58,12 @@ float calibrated_offset = 1.65; // Initial guess for offset voltage, will be cal
 
     void init() override 
     {
-        printf("Calibrating ACS712...don't draw curent.\n");
+        printf("Calibrating ACS712...keep motor stationary.\n");
         // Calibrate the ACS712 by taking multiple readings and averaging them to find the offset voltage
         float sum = 0;
-        int samples = 100;
+        int samples = 200;
         for (int i = 0; i < samples; i++) {
-            sum += ain.read() * V_REF;
+            sum += (ain.read() * V_REF); // Convert reading to voltage
             ThisThread::sleep_for(10ms);
     }
     
@@ -79,18 +80,27 @@ float calibrated_offset = 1.65; // Initial guess for offset voltage, will be cal
         //Calculate Current from Voltage and Sensitivity
         current_amps = (voltage - calibrated_offset) / SENSITIVITY; // Subtract offset voltage (1.65V for 0A)
 
-        //Calculate Torque from Current
-        torque_nm = calculateTorque(current_amps);
+        //Low Pass Filter to smooth out current readings
+        float alpha = 0.1f; // Smoothing factor, adjust as needed
+        filtered_current = alpha * current_amps + (1.0f - alpha) * filtered_current;
 
-        // Print current and torque values
-        printf("Current: %.2f A, Torque: %.4f Nm\n", current_amps, torque_nm);
+    
+     //Deadzone 
+     float display_current = filtered_current;
+     if(abs(display_current) < 0.12f) { // Threshold for deadzone, adjust as needed
+            display_current = 0.0f;
+     }
+     torque_nm = calculateTorque(display_current);
 
-        //
-        motor.setPower(0);
-    }
+     //Throttled Printing
+     static int count = 0;
+     if (count++ % 100 == 0) { // Print every 50 iterations, adjust as needed
+        printf("Voltage: %.3f V , Current: %.2f A, Torque: %.4f Nm\n", voltage, display_current, torque_nm);
+        }
+            motor.setPower(0); // Set motor to a constant power level for testing
+        }
 
     void end_of_loop() override {}
-
     unsigned int main_loop_dt_ms() override { return 2; } // 500 Hz loop
 };
 
@@ -98,8 +108,8 @@ float calibrated_offset = 1.65; // Initial guess for offset voltage, will be cal
 int main() {
     printf("HELLO\n");
     BaseRobot::Config config = BaseRobot::Config{}; 
-    TestBench TestBench(config);
+    TestBench robot(config);
 
-    TestBench.main_loop();
+    robot.main_loop();
     // blocking
 }
