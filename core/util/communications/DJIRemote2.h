@@ -155,7 +155,7 @@ private:
     // Assumption:
     // CRC is computed over all bits before the CRC field, including the 2-byte header.
     // If your sender excludes the header, change CRC_DATA_START_BIT to 16.
-    static constexpr size_t CRC_DATA_START_BIT = 0;
+    static constexpr size_t CRC_DATA_START_BIT = 16;
     static constexpr size_t CRC_DATA_BIT_COUNT = CRC_FIELD_START_BIT - CRC_DATA_START_BIT;
 
     // Default CRC flavor used here:
