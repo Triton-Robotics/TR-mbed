@@ -153,7 +153,6 @@ class Infantry : public BaseRobot {
             2,      // right_back_can_id
             0.22617,  // radius
             0.065,    // speed_pid_ff_ks
-            &turret_.yaw,  // yaw_motor
             168.3 + 90,     // yaw_initial_offset_ticks
             imu_,
             &encoder_   
@@ -221,7 +220,8 @@ class Infantry : public BaseRobot {
         } else {
             chassis_.setWheelPower({0, 0, 0, 0});
             des_turret_state.turret_mode = TurretState::SLEEP;
-            des_turret_state.yaw_angle_degs = imuAngles.yaw;
+            des_turret_state.yaw_angle_degs = turret_.getState().yaw_angle_degs;
+            yaw_desired_angle = turret_.getState().yaw_angle_degs;
             des_turret_state.pitch_angle_degs = 0;
         }
 

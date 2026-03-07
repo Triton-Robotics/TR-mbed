@@ -12,7 +12,6 @@ ChassisSubsystem::ChassisSubsystem(const Config &config)
       RF(config.right_front_can_id, CAN_BUS_TYPE, MOTOR_TYPE),
       LB(config.left_back_can_id, CAN_BUS_TYPE, MOTOR_TYPE),
       RB(config.right_back_can_id, CAN_BUS_TYPE, MOTOR_TYPE),
-      yaw(config.yaw_motor),
       encoder(config.encoder),
       yawPhase{config.yaw_initial_offset_ticks}, // change Yaw to CCW +, and ranges from 0 to 360
       imu(config.imu),

@@ -127,8 +127,8 @@ class Sentry : public BaseRobot {
     Jetson::WriteState stm_state;
     Jetson::ReadState jetson_state;
 
-    TurretSubsystem turret_;
-    ShooterSubsystem shooter_;
+    // TurretSubsystem turret_;
+    // ShooterSubsystem shooter_;
     ChassisSubsystem chassis_;
 
     bool imu_initialized{false};
@@ -141,8 +141,8 @@ class Sentry : public BaseRobot {
         encoder_(PA_7),
         jetson_raw_serial(PC_12, PD_2,115200), // TODO: check higher baud to see if still works
         jetson(jetson_raw_serial),
-        turret_(turret_config, imu_),
-        shooter_(shooter_config),
+        // turret_(turret_config, imu_),
+        // shooter_(shooter_config),
 
         // TODO add passing in individual PID objects for the motors
         chassis_(ChassisSubsystem::Config{
@@ -152,7 +152,6 @@ class Sentry : public BaseRobot {
             2,      // right_back_can_id
             0.22617,  // radius
             0.065,    // speed_pid_ff_ks
-            &turret_.yaw,  // yaw_motor
             163.8 + 90,     // yaw_initial_offset_ticks
             imu_,
             &encoder_   
@@ -216,8 +215,8 @@ class Sentry : public BaseRobot {
                 des_chassis_state.vOmega = 0;
 
                 des_turret_state.turret_mode = TurretState::AIM;
-                des_turret_state.yaw_angle_degs = turret_.getState().yaw_angle_degs;
-                des_turret_state.pitch_angle_degs = turret_.getState().pitch_angle_degs;
+                // des_turret_state.yaw_angle_degs = turret_.getState().yaw_angle_degs;
+                // des_turret_state.pitch_angle_degs = turret_.getState().pitch_angle_degs;
             } else {
                 des_chassis_state.vX = jetson_state.desired_x_vel;
                 des_chassis_state.vY = jetson_state.desired_y_vel;
@@ -232,7 +231,8 @@ class Sentry : public BaseRobot {
         } else {
             chassis_.setWheelPower({0, 0, 0, 0});
             des_turret_state.turret_mode = TurretState::SLEEP;
-            des_turret_state.yaw_angle_degs = imuAngles.yaw;
+            // des_turret_state.yaw_angle_degs = turret_.getState().yaw_angle_degs;
+            // yaw_desired_angle = turret_.getState().yaw_angle_degs;
             des_turret_state.pitch_angle_degs = 0;
         }
 
@@ -247,13 +247,13 @@ class Sentry : public BaseRobot {
             des_shoot_state = ShootState::OFF;
         }
 
-        turret_.setState(des_turret_state);
-        shooter_.setState(des_shoot_state);
+        // turret_.setState(des_turret_state);
+        // shooter_.setState(des_shoot_state);
 
-        turret_.periodic(chassis_.getChassisSpeeds().vOmega * 60 / (2 * PI));
+        // turret_.periodic(chassis_.getChassisSpeeds().vOmega * 60 / (2 * PI));
         chassis_.periodic(&imuAngles);
-        shooter_.periodic(referee_.power_heat_data.shooter_17mm_1_barrel_heat,
-                         referee_.robot_status.shooter_barrel_heat_limit);
+        // shooter_.periodic(referee_.power_heat_data.shooter_17mm_1_barrel_heat,
+        //                  referee_.robot_status.shooter_barrel_heat_limit);
 
         // jetson comms
         set_jetson_state();
@@ -288,10 +288,10 @@ class Sentry : public BaseRobot {
         stm_state.chassis_rotation = chassis_.getChassisSpeeds().vOmega;
 
         // TODO angle_degrees and angle_radians
-        stm_state.yaw_angle_rads = degreesToRadians(turret_.getState().yaw_angle_degs);
-        stm_state.yaw_velocity = degreesToRadians(turret_.getState().yaw_velo_rad_s);
-        stm_state.pitch_angle_rads = degreesToRadians(turret_.getState().pitch_angle_degs);
-        stm_state.pitch_velocity = degreesToRadians(turret_.getState().pitch_velo_rad_s);
+        // stm_state.yaw_angle_rads = degreesToRadians(turret_.getState().yaw_angle_degs);
+        // stm_state.yaw_velocity = degreesToRadians(turret_.getState().yaw_velo_rad_s);
+        // stm_state.pitch_angle_rads = degreesToRadians(turret_.getState().pitch_angle_degs);
+        // stm_state.pitch_velocity = degreesToRadians(turret_.getState().pitch_velo_rad_s);
     }
 };
 

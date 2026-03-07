@@ -47,18 +47,12 @@ TurretSubsystem::TurretInfo TurretSubsystem::getState()
     return turret_state;
 }
 
-void TurretSubsystem::setState (TurretInfo des_state)
+void TurretSubsystem::setState(TurretInfo des_state)
 {
     turret_state.turret_mode = des_state.turret_mode;
     des_yaw = des_state.yaw_angle_degs;
     des_pitch = des_state.pitch_angle_degs;
 }
-
-// void TurretSubsystem::set_desired_turret(float des_yaw_angle, float des_pitch_angle)
-// {
-//     des_yaw = des_yaw_angle;
-//     des_pitch = des_pitch_angle;
-// }
 
 int TurretSubsystem::getTicks()
 {
@@ -67,19 +61,15 @@ int TurretSubsystem::getTicks()
 
 float TurretSubsystem::get_pitch_angle_degs_zero_offsetted()
 {
-    // return (pitch_offset_ticks - (pitch>>ANGLE)) / TICKS_REVOLUTION * 360;
-    // return forward_ * ((float)((pitch>>ANGLE) - pitch_offset_ticks) / TICKS_REVOLUTION) * 360;
     float pitch_angle = get_pitch_angle_degs();
     return forward_ * pitch_angle;
 }
 
-// Unsure if this is the best way to expose yaw, but we could do a similar thing for pitch once pitch imu
 float TurretSubsystem::get_yaw_angle_degs()
 {
     return imuAngles.yaw;
 }
 
-// Unsure if this is the best way to expose pitch
 float TurretSubsystem::get_pitch_angle_degs()
 {
     return imuAngles.pitch;
