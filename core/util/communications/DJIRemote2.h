@@ -161,9 +161,9 @@ private:
     // Default CRC flavor used here:
     // reflected CRC-16/CCITT style
     // If every frame fails, these 3 constants are the first thing to try changing.
-    static constexpr uint16_t CRC_POLY = 0x1021;   // reflected 0x1021
-    static constexpr uint16_t CRC_INIT = 0xFFFF;
-    static constexpr uint16_t CRC_XOR_OUT = 0xFFFF;
+    static constexpr uint16_t CRC_POLY = 0x8408;   // reflected form of 0x1021
+	static constexpr uint16_t CRC_INIT = 0xFFFF;
+	static constexpr uint16_t CRC_XOR_OUT = 0xFFFF;
 
     void readIncomingBytes();
     bool tryParseFrame();
