@@ -161,7 +161,7 @@ private:
     // Default CRC flavor used here:
     // reflected CRC-16/CCITT style
     // If every frame fails, these 3 constants are the first thing to try changing.
-    static constexpr uint16_t CRC_POLY = 0x8408;   // reflected 0x1021
+    static constexpr uint16_t CRC_POLY = 0x1021;   // reflected 0x1021
     static constexpr uint16_t CRC_INIT = 0xFFFF;
     static constexpr uint16_t CRC_XOR_OUT = 0xFFFF;
 
@@ -173,7 +173,7 @@ private:
 
     bool verifyCRC(const uint8_t* frame);
     uint16_t extractBitsLSB(const uint8_t* bytes, size_t startBit, size_t bitCount) const;
-    uint16_t computeCRC16LSB(const uint8_t* bytes, size_t startBit, size_t bitCount) const;
+    uint16_t computeCRC16(const uint8_t* bytes, size_t startBit, size_t bitCount) const;
 };
 
 #endif

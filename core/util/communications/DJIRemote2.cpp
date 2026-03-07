@@ -378,43 +378,78 @@ int DJIRemote2::findHeader() const
     return -1;
 }
 
-uint16_t DJIRemote2::extractBitsLSB(const uint8_t* bytes, size_t startBit, size_t bitCount) const
+uint16_t DJIRemote2::computeCRC16(const uint8_t* bytes, size_t startBit, size_t bitCount) const
 {
-    uint16_t value = 0;
+    // Standard CCITT-FALSE starts with 0xFFFF
+    uint16_t crc = 0xFFFF; 
+    uint16_t poly = 0x1021; // The "16, 12, 5, 1" polynomial
 
-    for (size_t i = 0; i < bitCount; i++) {
+    for (size_t i = 0; i < bitCount; i++) 
+    {
         size_t bitPos = startBit + i;
-        uint8_t bit = (bytes[bitPos / 8] >> (bitPos % 8)) & 0x01;
-        value |= (static_cast<uint16_t>(bit) << i);
-    }
-
-    return value;
-}
-
-uint16_t DJIRemote2::computeCRC16LSB(const uint8_t* bytes, size_t startBit, size_t bitCount) const
-{
-    uint16_t crc = CRC_INIT;
-
-    for (size_t i = 0; i < bitCount; i++) {
-        size_t bitPos = startBit + i;
+        // Extract the current bit from the byte array
         uint8_t dataBit = (bytes[bitPos / 8] >> (bitPos % 8)) & 0x01;
 
-        uint8_t mix = (crc ^ dataBit) & 0x01;
-        crc >>= 1;
+        // Check the MSB of the current CRC
+        uint8_t crcMsb = (crc >> 15) & 0x01;
 
-        if (mix) {
-            crc ^= CRC_POLY;
+        // Shift the CRC left by 1
+        crc <<= 1;
+
+        // If the bit shifted out (MSB) is different from the incoming data bit,
+        // we XOR with the polynomial.
+        if (crcMsb ^ dataBit) 
+        {
+            crc ^= poly;
         }
     }
 
-    return static_cast<uint16_t>(crc ^ CRC_XOR_OUT);
+    return crc;
 }
+
+
+uint16_t DJIRemote2::extractBitsLSB(const uint8_t* bytes, size_t startBit, size_t bitCount) const
+{
+    uint32_t value = 0;
+
+    for (size_t i = 0; i < bitCount; i++) 
+    {
+        size_t bitPos = startBit + i;
+        uint8_t bit = (bytes[bitPos / 8] >> (bitPos % 8)) & 0x01;
+        
+        // Build the 16-bit value bit-by-bit
+        value |= (static_cast<uint32_t>(bit) << i);
+    }
+
+    return static_cast<uint16_t>(value);
+}
+
 
 bool DJIRemote2::verifyCRC(const uint8_t* frame)
 {
-    receivedCRC_ = extractBitsLSB(frame, CRC_FIELD_START_BIT, CRC_FIELD_BIT_COUNT);
-    computedCRC_ = computeCRC16LSB(frame, CRC_DATA_START_BIT, CRC_DATA_BIT_COUNT);
-    crcValid_ = (receivedCRC_ == computedCRC_);
+    if (frame == nullptr) 
+    {
+        crcValid_ = false;
+    }
+    else 
+    {
+        // Get the CRC that the remote actually sent
+        receivedCRC_ = extractBitsLSB(frame, CRC_FIELD_START_BIT, CRC_FIELD_BIT_COUNT);
+
+        // Calculate what the CRC should be based on the data bits
+        computedCRC_ = computeCRC16(frame, CRC_DATA_START_BIT, CRC_DATA_BIT_COUNT);
+
+        // Compare them
+        if (receivedCRC_ == computedCRC_) 
+        {
+            crcValid_ = true;
+        }
+        else 
+        {
+            crcValid_ = false;
+        }
+    }
+
     return crcValid_;
 }
 
