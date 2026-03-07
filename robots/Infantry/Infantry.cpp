@@ -11,6 +11,7 @@
 #include "util/peripherals/imu/BNO055.h"
 
 #include <algorithm>
+#include <cmath>
 
 constexpr auto IMU_I2C_SDA = PB_7;
 constexpr auto IMU_I2C_SCL = PB_8;
@@ -171,6 +172,12 @@ class Infantry : public BaseRobot {
 
         // Read jetson
         jetson_state = jetson.read();
+        
+        // todo add up state here also
+        if((remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID) || remote_.getMouseR()){
+            des_turret_state.pitch_angle_degs = jetson_state.desired_pitch_rads * (180.0 / M_PI); 
+            des_turret_state.yaw_angle_degs = jetson_state.desired_yaw_rads * (180.0 / M_PI);
+        }
 
         // Chassis logic
         if (drive == 'u' || (drive =='o' && remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP)) {
