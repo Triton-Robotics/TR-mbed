@@ -77,7 +77,7 @@ var searchData=
   ['rightswitch_74',['rightSwitch',['../classRemote.html#a73231fbf862b1e1fca4fad1707b7c520',1,'Remote']]],
   ['rightx_75',['rightX',['../classRemote.html#a01e063379fb4e1d8065b93062f812203',1,'Remote']]],
   ['righty_76',['rightY',['../classRemote.html#ab8174b12219992a5137b335f08fb839e',1,'Remote']]],
-  ['rise_77',['rise',['../classMPU6050.html#a0d1bf8e14c5f5b1877ffda3cd7a928fc',1,'MPU6050::rise(T *tptr, void(T::*mptr)(void))'],['../classMPU6050.html#ad3fac98f2f942cf38f5a572bed2d4190',1,'MPU6050::rise(Callback&lt; void(void)&gt; func)']]],
+  ['rise_77',['rise',['../classMPU6050.html#a0d1bf8e14c5f5b1877ffda3cd7a928fc',1,'MPU6050::rise()'],['../classPwmIn.html#ab44bd19c1ef2b94f366821fb730de835',1,'PwmIn::rise()'],['../classMPU6050.html#ad3fac98f2f942cf38f5a572bed2d4190',1,'MPU6050::rise()']]],
   ['robot_5fhp_78',['robot_hp',['../structJetson_1_1WriteState.html#aa024d865a2f3b610c8da4f335f7714db',1,'Jetson::WriteState']]],
   ['robot_5fid_79',['robot_id',['../structext__game__robot__status__t.html#a55117053320cdec3e6f4ce22933d9bb0',1,'ext_game_robot_status_t::robot_id'],['../structrobot__status__t.html#a4846caece08bfc2bcb0ef4e70cc40970',1,'robot_status_t::robot_id']]],
   ['robot_5finteractive_5fdata_5ft_80',['robot_interactive_data_t',['../structrobot__interactive__data__t.html',1,'']]],
@@ -93,5 +93,6 @@ var searchData=
   ['rows_90',['ROWS',['../SSD1308_8h.html#a3cfd3aa62338d12609f6d65bce97e9cd',1,'SSD1308.h']]],
   ['rpm_91',['RPM',['../classChassisSubsystem.html#a86a23efcf850099cd72fe19e7e6d8ffda36650eacce6a2f4e82c8bebcca24df45',1,'ChassisSubsystem']]],
   ['rst_92',['rst',['../classAdafruit__SSD1306.html#a69c75931a90d869846816eefb19cd593',1,'Adafruit_SSD1306']]],
-  ['runner_20work_20tr_20mbed_20tr_20mbed_20md_20ide_20clion_20md_20clion_20or_20ref_20home_20runner_20work_20tr_20mbed_20tr_20mbed_20md_20ide_20vscode_20md_20vscode_20we_20higly_20recommend_20ref_20home_20runner_20work_20tr_20mbed_20tr_20mbed_20md_20ide_20clion_20md_20clion_93',['At this point, you may choose to diverge from the CLI setup guide and set up an IDE instead. Check out the setup instructions for @ref &quot;/home/runner/work/TR-mbed/TR-mbed/.md/ide/clion.md&quot; &quot;CLion&quot; or @ref &quot;/home/runner/work/TR-mbed/TR-mbed/.md/ide/vscode.md&quot; &quot;VSCode&quot;. We higly recommend @ref &quot;/home/runner/work/TR-mbed/TR-mbed/.md/ide/clion.md&quot; &quot;CLion&quot;.',['../index.html#autotoc_md6',1,'']]]
+  ['run_93',['run',['../classPIDTools.html#afd2037caf4103298e3be47d957bb126e',1,'PIDTools']]],
+  ['runner_20work_20tr_20mbed_20tr_20mbed_20md_20ide_20clion_20md_20clion_20or_20ref_20home_20runner_20work_20tr_20mbed_20tr_20mbed_20md_20ide_20vscode_20md_20vscode_20we_20higly_20recommend_20ref_20home_20runner_20work_20tr_20mbed_20tr_20mbed_20md_20ide_20clion_20md_20clion_94',['At this point, you may choose to diverge from the CLI setup guide and set up an IDE instead. Check out the setup instructions for @ref &quot;/home/runner/work/TR-mbed/TR-mbed/.md/ide/clion.md&quot; &quot;CLion&quot; or @ref &quot;/home/runner/work/TR-mbed/TR-mbed/.md/ide/vscode.md&quot; &quot;VSCode&quot;. We higly recommend @ref &quot;/home/runner/work/TR-mbed/TR-mbed/.md/ide/clion.md&quot; &quot;CLion&quot;.',['../index.html#autotoc_md6',1,'']]]
 ];

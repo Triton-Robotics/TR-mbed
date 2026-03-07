@@ -25,8 +25,9 @@ var searchData=
   ['rightswitch_22',['rightSwitch',['../classRemote.html#a73231fbf862b1e1fca4fad1707b7c520',1,'Remote']]],
   ['rightx_23',['rightX',['../classRemote.html#a01e063379fb4e1d8065b93062f812203',1,'Remote']]],
   ['righty_24',['rightY',['../classRemote.html#ab8174b12219992a5137b335f08fb839e',1,'Remote']]],
-  ['rise_25',['rise',['../classMPU6050.html#ad3fac98f2f942cf38f5a572bed2d4190',1,'MPU6050::rise(Callback&lt; void(void)&gt; func)'],['../classMPU6050.html#a0d1bf8e14c5f5b1877ffda3cd7a928fc',1,'MPU6050::rise(T *tptr, void(T::*mptr)(void))']]],
+  ['rise_25',['rise',['../classPwmIn.html#ab44bd19c1ef2b94f366821fb730de835',1,'PwmIn::rise()'],['../classMPU6050.html#ad3fac98f2f942cf38f5a572bed2d4190',1,'MPU6050::rise(Callback&lt; void(void)&gt; func)'],['../classMPU6050.html#a0d1bf8e14c5f5b1877ffda3cd7a928fc',1,'MPU6050::rise(T *tptr, void(T::*mptr)(void))']]],
   ['robotstatewritepacket_26',['RobotStateWritePacket',['../classRobotStateWritePacket.html#a583085925eaf8ca4c75c00e90c5be3ae',1,'RobotStateWritePacket']]],
   ['roll_27',['roll',['../classMPU6050.html#ab4d101b9e95febf00a1e7e1946386739',1,'MPU6050']]],
-  ['rotatechassisspeed_28',['rotateChassisSpeed',['../classChassisSubsystem.html#a3711f058eea299db8daafce0d89d6e41',1,'ChassisSubsystem']]]
+  ['rotatechassisspeed_28',['rotateChassisSpeed',['../classChassisSubsystem.html#a3711f058eea299db8daafce0d89d6e41',1,'ChassisSubsystem']]],
+  ['run_29',['run',['../classPIDTools.html#afd2037caf4103298e3be47d957bb126e',1,'PIDTools']]]
 ];

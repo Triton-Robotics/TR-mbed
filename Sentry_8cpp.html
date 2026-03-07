@@ -89,8 +89,8 @@ $(function() {
 <code>#include &quot;<a class="el" href="Jetson_8h_source.html">util/communications/jetson/Jetson.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="DJIMotor_8h_source.html">util/motor/DJIMotor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="BNO055_8h_source.html">util/peripherals/imu/BNO055.h</a>&quot;</code><br />
+<code>#include &quot;util/peripherals/encoder/MA4.h&quot;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
-<code>#include &lt;us_ticker_api.h&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -99,8 +99,6 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a8824538eb07749fa64fd2ef98e557be9" id="r_a8824538eb07749fa64fd2ef98e557be9"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a8824538eb07749fa64fd2ef98e557be9">degreesToRadians</a> (double degrees)</td></tr>
-<tr class="separator:a8824538eb07749fa64fd2ef98e557be9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae66f6b31b5ad750f1fe042a706a4e3d4" id="r_ae66f6b31b5ad750f1fe042a706a4e3d4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main</a> ()</td></tr>
 <tr class="separator:ae66f6b31b5ad750f1fe042a706a4e3d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -114,38 +112,56 @@ Variables</h2></td></tr>
 <tr class="separator:afaa8a815e64aa506866e8a42fefbda60"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8ad1aa6e9f3b5c79e797a9ac735e37da" id="r_a8ad1aa6e9f3b5c79e797a9ac735e37da"><td class="memItemLeft" align="right" valign="top">constexpr int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a8ad1aa6e9f3b5c79e797a9ac735e37da">pitch_zero_offset_ticks</a> = 1500</td></tr>
 <tr class="separator:a8ad1aa6e9f3b5c79e797a9ac735e37da"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad2140529015bdef1173e030ebef1e7ae" id="r_ad2140529015bdef1173e030ebef1e7ae"><td class="memItemLeft" align="right" valign="top">constexpr float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#ad2140529015bdef1173e030ebef1e7ae">PITCH_LOWER_BOUND</a> {-32.0}</td></tr>
+<tr class="memitem:ad2140529015bdef1173e030ebef1e7ae" id="r_ad2140529015bdef1173e030ebef1e7ae"><td class="memItemLeft" align="right" valign="top">constexpr float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#ad2140529015bdef1173e030ebef1e7ae">PITCH_LOWER_BOUND</a> {-22.0}</td></tr>
 <tr class="separator:ad2140529015bdef1173e030ebef1e7ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acc7f892b25436a7b155a82b0cdf86d94" id="r_acc7f892b25436a7b155a82b0cdf86d94"><td class="memItemLeft" align="right" valign="top">constexpr float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#acc7f892b25436a7b155a82b0cdf86d94">PITCH_UPPER_BOUND</a> {35.0}</td></tr>
+<tr class="memitem:acc7f892b25436a7b155a82b0cdf86d94" id="r_acc7f892b25436a7b155a82b0cdf86d94"><td class="memItemLeft" align="right" valign="top">constexpr float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#acc7f892b25436a7b155a82b0cdf86d94">PITCH_UPPER_BOUND</a> {20.0}</td></tr>
 <tr class="separator:acc7f892b25436a7b155a82b0cdf86d94"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb2a943255ed007cbac8f827b9877171" id="r_adb2a943255ed007cbac8f827b9877171"><td class="memItemLeft" align="right" valign="top">constexpr float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#adb2a943255ed007cbac8f827b9877171">JOYSTICK_YAW_SENSITIVITY_DPS</a> = 600</td></tr>
 <tr class="separator:adb2a943255ed007cbac8f827b9877171"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab84cb1918fa80bfb0b706bb125f3a2a6" id="r_ab84cb1918fa80bfb0b706bb125f3a2a6"><td class="memItemLeft" align="right" valign="top">constexpr float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#ab84cb1918fa80bfb0b706bb125f3a2a6">JOYSTICK_PITCH_SENSITIVITY_DPS</a> = 300</td></tr>
 <tr class="separator:ab84cb1918fa80bfb0b706bb125f3a2a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a45f67d7304a26dff90fc13e6bb028f3a" id="r_a45f67d7304a26dff90fc13e6bb028f3a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a45f67d7304a26dff90fc13e6bb028f3a">yaw_vel_PID</a> = {350, 0.5, 2.5, 32000, 2000}</td></tr>
-<tr class="separator:a45f67d7304a26dff90fc13e6bb028f3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0972c2b3d8b0b33e3e252b079cecde9b" id="r_a0972c2b3d8b0b33e3e252b079cecde9b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a0972c2b3d8b0b33e3e252b079cecde9b">yaw_pos_PID</a> = {0.5, 0, 0, 90, 2}</td></tr>
-<tr class="separator:a0972c2b3d8b0b33e3e252b079cecde9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a39a5e1e2a92d8a3afe433ddccfb45ac5" id="r_a39a5e1e2a92d8a3afe433ddccfb45ac5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a39a5e1e2a92d8a3afe433ddccfb45ac5">pitch_vel_PID</a> = {500, 0.8, 0, 32000, 2000}</td></tr>
-<tr class="separator:a39a5e1e2a92d8a3afe433ddccfb45ac5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0cb9de2978c81a433d881f1956186eee" id="r_a0cb9de2978c81a433d881f1956186eee"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a0cb9de2978c81a433d881f1956186eee">pitch_pos_PID</a> = {1.5, 0.0005, 0.05, 30, 2}</td></tr>
-<tr class="separator:a0cb9de2978c81a433d881f1956186eee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a88bc1aa986d3e2d0b8f2acaac2f41628" id="r_a88bc1aa986d3e2d0b8f2acaac2f41628"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a88bc1aa986d3e2d0b8f2acaac2f41628">fl_vel_config</a> = {3, 0, 0}</td></tr>
-<tr class="separator:a88bc1aa986d3e2d0b8f2acaac2f41628"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a10d5091fd86f560fabf975f4c512e805" id="r_a10d5091fd86f560fabf975f4c512e805"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a10d5091fd86f560fabf975f4c512e805">fr_vel_config</a> = {3, 0, 0}</td></tr>
-<tr class="separator:a10d5091fd86f560fabf975f4c512e805"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0b0944514eb945e2c972bc4f68806a70" id="r_a0b0944514eb945e2c972bc4f68806a70"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a0b0944514eb945e2c972bc4f68806a70">bl_vel_config</a> = {3, 0, 0}</td></tr>
-<tr class="separator:a0b0944514eb945e2c972bc4f68806a70"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a20b36f6ee2d3fd9058b94da798e9c551" id="r_a20b36f6ee2d3fd9058b94da798e9c551"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a20b36f6ee2d3fd9058b94da798e9c551">br_vel_config</a> = {3, 0, 0}</td></tr>
-<tr class="separator:a20b36f6ee2d3fd9058b94da798e9c551"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab8b90417bef5ebe41e0bb1a94143c203" id="r_ab8b90417bef5ebe41e0bb1a94143c203"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#ab8b90417bef5ebe41e0bb1a94143c203">flywheelL_PID</a> = {7.1849, 0.000042634, 0}</td></tr>
-<tr class="separator:ab8b90417bef5ebe41e0bb1a94143c203"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6bc9c01a07d10361962c1a3ecb0fa21e" id="r_a6bc9c01a07d10361962c1a3ecb0fa21e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a6bc9c01a07d10361962c1a3ecb0fa21e">flywheelR_PID</a> = {7.1849, 0.000042634, 0}</td></tr>
-<tr class="separator:a6bc9c01a07d10361962c1a3ecb0fa21e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a36323fb3a9340cca941e21f583fb8d42" id="r_a36323fb3a9340cca941e21f583fb8d42"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a36323fb3a9340cca941e21f583fb8d42">indexer_PID_vel</a> = {2.7, 0.001, 0}</td></tr>
-<tr class="separator:a36323fb3a9340cca941e21f583fb8d42"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afcbaa3f0bec49a08e61a05565a3a24bf" id="r_afcbaa3f0bec49a08e61a05565a3a24bf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#afcbaa3f0bec49a08e61a05565a3a24bf">indexer_PID_pos</a> = {0.1, 0, 0.001}</td></tr>
-<tr class="separator:afcbaa3f0bec49a08e61a05565a3a24bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9951e306582674e150e70105fe176de8" id="r_a9951e306582674e150e70105fe176de8"><td class="memItemLeft" align="right" valign="top">constexpr float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a9951e306582674e150e70105fe176de8">MOUSE_SENSITIVITY_YAW_DPS</a> = 10.0</td></tr>
+<tr class="separator:a9951e306582674e150e70105fe176de8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad35d729e5d44b9e47fcf8f3a05775544" id="r_ad35d729e5d44b9e47fcf8f3a05775544"><td class="memItemLeft" align="right" valign="top">constexpr float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#ad35d729e5d44b9e47fcf8f3a05775544">MOUSE_SENSITIVITY_PITCH_DPS</a> = 10.0</td></tr>
+<tr class="separator:ad35d729e5d44b9e47fcf8f3a05775544"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad77739da33f21c8882d24e2fecff8143" id="r_ad77739da33f21c8882d24e2fecff8143"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#ad77739da33f21c8882d24e2fecff8143">YAW_VEL_PID</a> = {181, 3.655 * 10e-3, 4.51 * 2.25, 32000, 1000}</td></tr>
+<tr class="separator:ad77739da33f21c8882d24e2fecff8143"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac934aa5d311e980958d6ddc464858fab" id="r_ac934aa5d311e980958d6ddc464858fab"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#ac934aa5d311e980958d6ddc464858fab">YAW_POS_PID</a> = {1, 0, 0, 90, 2}</td></tr>
+<tr class="separator:ac934aa5d311e980958d6ddc464858fab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a914be9179942bf8439ce9abc372f8bc7" id="r_a914be9179942bf8439ce9abc372f8bc7"><td class="memItemLeft" align="right" valign="top">const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a914be9179942bf8439ce9abc372f8bc7">yaw_static_friction</a> = -150</td></tr>
+<tr class="separator:a914be9179942bf8439ce9abc372f8bc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33f6c1c8bd9077a3224435cd22891326" id="r_a33f6c1c8bd9077a3224435cd22891326"><td class="memItemLeft" align="right" valign="top">const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a33f6c1c8bd9077a3224435cd22891326">yaw_kinetic_friction</a> = 0</td></tr>
+<tr class="separator:a33f6c1c8bd9077a3224435cd22891326"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc376771b0d17187ccf30ac66435de82" id="r_abc376771b0d17187ccf30ac66435de82"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#abc376771b0d17187ccf30ac66435de82">PITCH_VEL_PID</a> = {173.8994, 4.898 * 10e-9, 12.474 * 10, 16000, 1000}</td></tr>
+<tr class="separator:abc376771b0d17187ccf30ac66435de82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0aeccefb25e92d2195c914bef8c78c0" id="r_ab0aeccefb25e92d2195c914bef8c78c0"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#ab0aeccefb25e92d2195c914bef8c78c0">PITCH_POS_PID</a> = {1, 0, 0,30,2}</td></tr>
+<tr class="separator:ab0aeccefb25e92d2195c914bef8c78c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30673a77f83408ab6681311170220a8a" id="r_a30673a77f83408ab6681311170220a8a"><td class="memItemLeft" align="right" valign="top">const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a30673a77f83408ab6681311170220a8a">pitch_gravity_feedforward</a> = -500</td></tr>
+<tr class="separator:a30673a77f83408ab6681311170220a8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b00de443582840b527f8610e94316a3" id="r_a7b00de443582840b527f8610e94316a3"><td class="memItemLeft" align="right" valign="top">const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a7b00de443582840b527f8610e94316a3">pitch_static_friction</a> = 635.0 / 5</td></tr>
+<tr class="separator:a7b00de443582840b527f8610e94316a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a187deff0a2be11d3a0632017532431ce" id="r_a187deff0a2be11d3a0632017532431ce"><td class="memItemLeft" align="right" valign="top">const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a187deff0a2be11d3a0632017532431ce">pitch_kinetic_friction</a> = 0</td></tr>
+<tr class="separator:a187deff0a2be11d3a0632017532431ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a61f0523e4315c971440588b43a75bdb6" id="r_a61f0523e4315c971440588b43a75bdb6"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a61f0523e4315c971440588b43a75bdb6">FL_VEL_CONFIG</a> = {3, 0, 0}</td></tr>
+<tr class="separator:a61f0523e4315c971440588b43a75bdb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6440df0862261c8399ec63d158944606" id="r_a6440df0862261c8399ec63d158944606"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a6440df0862261c8399ec63d158944606">FR_VEL_CONFIG</a> = {3, 0, 0}</td></tr>
+<tr class="separator:a6440df0862261c8399ec63d158944606"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac1531c0208a008e02902f9f807fed136" id="r_ac1531c0208a008e02902f9f807fed136"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#ac1531c0208a008e02902f9f807fed136">BL_VEL_CONFIG</a> = {3, 0, 0}</td></tr>
+<tr class="separator:ac1531c0208a008e02902f9f807fed136"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f201557a3030171140f37a8b7311ec1" id="r_a3f201557a3030171140f37a8b7311ec1"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a3f201557a3030171140f37a8b7311ec1">BR_VEL_CONFIG</a> = {3, 0, 0}</td></tr>
+<tr class="separator:a3f201557a3030171140f37a8b7311ec1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4d24743ce03ec73c3a2296c69b32490" id="r_ac4d24743ce03ec73c3a2296c69b32490"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#ac4d24743ce03ec73c3a2296c69b32490">FLYWHEEL_L_PID</a> = {7.1849, 0.000042634, 0}</td></tr>
+<tr class="separator:ac4d24743ce03ec73c3a2296c69b32490"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a72a2008cea726c6159fd4c4fcbe42906" id="r_a72a2008cea726c6159fd4c4fcbe42906"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a72a2008cea726c6159fd4c4fcbe42906">FLYWHEEL_R_PID</a> = {7.1849, 0.000042634, 0}</td></tr>
+<tr class="separator:a72a2008cea726c6159fd4c4fcbe42906"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ea04a52763bf7f2606c421fe4e7e1b1" id="r_a1ea04a52763bf7f2606c421fe4e7e1b1"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a1ea04a52763bf7f2606c421fe4e7e1b1">INDEXER_PID_VEL</a> = {2.7, 0.001, 0}</td></tr>
+<tr class="separator:a1ea04a52763bf7f2606c421fe4e7e1b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a481bad22389d7769991f1c7931a9961e" id="r_a481bad22389d7769991f1c7931a9961e"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a481bad22389d7769991f1c7931a9961e">INDEXER_PID_POS</a> = {0.1, 0, 0.001}</td></tr>
+<tr class="separator:a481bad22389d7769991f1c7931a9961e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39c7b036219664cecd90b69fed15fadf" id="r_a39c7b036219664cecd90b69fed15fadf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structTurretSubsystem_1_1config.html">TurretSubsystem::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a39c7b036219664cecd90b69fed15fadf">turret_config</a></td></tr>
+<tr class="separator:a39c7b036219664cecd90b69fed15fadf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fda842c05c9716a3f42274567ee8788" id="r_a5fda842c05c9716a3f42274567ee8788"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structShooterSubsystem_1_1config.html">ShooterSubsystem::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a5fda842c05c9716a3f42274567ee8788">shooter_config</a></td></tr>
+<tr class="separator:a5fda842c05c9716a3f42274567ee8788"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ad0e6112f128a8ea96b6f5a613a2411" id="r_a0ad0e6112f128a8ea96b6f5a613a2411"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structChassisSpeeds.html">ChassisSpeeds</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a0ad0e6112f128a8ea96b6f5a613a2411">des_chassis_state</a></td></tr>
 <tr class="separator:a0ad0e6112f128a8ea96b6f5a613a2411"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a10579f92bb236a0ee08a6ce003a9aef6" id="r_a10579f92bb236a0ee08a6ce003a9aef6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structTurretSubsystem_1_1TurretInfo.html">TurretSubsystem::TurretInfo</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a10579f92bb236a0ee08a6ce003a9aef6">des_turret_state</a></td></tr>
@@ -158,28 +174,10 @@ Variables</h2></td></tr>
 <tr class="separator:ab71473beb60dbf36e0fd1b792a540501"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad8801eb97c2d91be4b45c86f6566c000" id="r_ad8801eb97c2d91be4b45c86f6566c000"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#ad8801eb97c2d91be4b45c86f6566c000">yaw_desired_angle</a> = 0.0</td></tr>
 <tr class="separator:ad8801eb97c2d91be4b45c86f6566c000"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a67003f06d5a5c30d207fe96a1cf4c09f" id="r_a67003f06d5a5c30d207fe96a1cf4c09f"><td class="memItemLeft" align="right" valign="top">DigitalOut&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a67003f06d5a5c30d207fe96a1cf4c09f">led0</a> = PC_1</td></tr>
-<tr class="separator:a67003f06d5a5c30d207fe96a1cf4c09f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe4f140163b3f2d0e5e12b8326967de1" id="r_afe4f140163b3f2d0e5e12b8326967de1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structIMU_1_1EulerAngles.html">IMU::EulerAngles</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#afe4f140163b3f2d0e5e12b8326967de1">imuAngles</a></td></tr>
+<tr class="separator:afe4f140163b3f2d0e5e12b8326967de1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a8824538eb07749fa64fd2ef98e557be9" name="a8824538eb07749fa64fd2ef98e557be9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8824538eb07749fa64fd2ef98e557be9">&#9670;&#160;</a></span>degreesToRadians()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">double degreesToRadians </td>
-          <td>(</td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>degrees</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="ae66f6b31b5ad750f1fe042a706a4e3d4" name="ae66f6b31b5ad750f1fe042a706a4e3d4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae66f6b31b5ad750f1fe042a706a4e3d4">&#9670;&#160;</a></span>main()</h2>
 
@@ -198,30 +196,46 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="a0b0944514eb945e2c972bc4f68806a70" name="a0b0944514eb945e2c972bc4f68806a70"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0b0944514eb945e2c972bc4f68806a70">&#9670;&#160;</a></span>bl_vel_config</h2>
+<a id="ac1531c0208a008e02902f9f807fed136" name="ac1531c0208a008e02902f9f807fed136"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac1531c0208a008e02902f9f807fed136">&#9670;&#160;</a></span>BL_VEL_CONFIG</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structPID_1_1config.html">PID::config</a> bl_vel_config = {3, 0, 0}</td>
+          <td class="memname">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a> BL_VEL_CONFIG = {3, 0, 0}</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a20b36f6ee2d3fd9058b94da798e9c551" name="a20b36f6ee2d3fd9058b94da798e9c551"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a20b36f6ee2d3fd9058b94da798e9c551">&#9670;&#160;</a></span>br_vel_config</h2>
+<a id="a3f201557a3030171140f37a8b7311ec1" name="a3f201557a3030171140f37a8b7311ec1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f201557a3030171140f37a8b7311ec1">&#9670;&#160;</a></span>BR_VEL_CONFIG</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structPID_1_1config.html">PID::config</a> br_vel_config = {3, 0, 0}</td>
+          <td class="memname">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a> BR_VEL_CONFIG = {3, 0, 0}</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
@@ -268,58 +282,90 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a88bc1aa986d3e2d0b8f2acaac2f41628" name="a88bc1aa986d3e2d0b8f2acaac2f41628"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a88bc1aa986d3e2d0b8f2acaac2f41628">&#9670;&#160;</a></span>fl_vel_config</h2>
+<a id="a61f0523e4315c971440588b43a75bdb6" name="a61f0523e4315c971440588b43a75bdb6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a61f0523e4315c971440588b43a75bdb6">&#9670;&#160;</a></span>FL_VEL_CONFIG</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structPID_1_1config.html">PID::config</a> fl_vel_config = {3, 0, 0}</td>
+          <td class="memname">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a> FL_VEL_CONFIG = {3, 0, 0}</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="ab8b90417bef5ebe41e0bb1a94143c203" name="ab8b90417bef5ebe41e0bb1a94143c203"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab8b90417bef5ebe41e0bb1a94143c203">&#9670;&#160;</a></span>flywheelL_PID</h2>
+<a id="ac4d24743ce03ec73c3a2296c69b32490" name="ac4d24743ce03ec73c3a2296c69b32490"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac4d24743ce03ec73c3a2296c69b32490">&#9670;&#160;</a></span>FLYWHEEL_L_PID</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structPID_1_1config.html">PID::config</a> flywheelL_PID = {7.1849, 0.000042634, 0}</td>
+          <td class="memname">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a> FLYWHEEL_L_PID = {7.1849, 0.000042634, 0}</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a6bc9c01a07d10361962c1a3ecb0fa21e" name="a6bc9c01a07d10361962c1a3ecb0fa21e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6bc9c01a07d10361962c1a3ecb0fa21e">&#9670;&#160;</a></span>flywheelR_PID</h2>
+<a id="a72a2008cea726c6159fd4c4fcbe42906" name="a72a2008cea726c6159fd4c4fcbe42906"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a72a2008cea726c6159fd4c4fcbe42906">&#9670;&#160;</a></span>FLYWHEEL_R_PID</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structPID_1_1config.html">PID::config</a> flywheelR_PID = {7.1849, 0.000042634, 0}</td>
+          <td class="memname">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a> FLYWHEEL_R_PID = {7.1849, 0.000042634, 0}</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a10d5091fd86f560fabf975f4c512e805" name="a10d5091fd86f560fabf975f4c512e805"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a10d5091fd86f560fabf975f4c512e805">&#9670;&#160;</a></span>fr_vel_config</h2>
+<a id="a6440df0862261c8399ec63d158944606" name="a6440df0862261c8399ec63d158944606"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6440df0862261c8399ec63d158944606">&#9670;&#160;</a></span>FR_VEL_CONFIG</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structPID_1_1config.html">PID::config</a> fr_vel_config = {3, 0, 0}</td>
+          <td class="memname">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a> FR_VEL_CONFIG = {3, 0, 0}</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
@@ -390,30 +436,60 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="afcbaa3f0bec49a08e61a05565a3a24bf" name="afcbaa3f0bec49a08e61a05565a3a24bf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afcbaa3f0bec49a08e61a05565a3a24bf">&#9670;&#160;</a></span>indexer_PID_pos</h2>
+<a id="afe4f140163b3f2d0e5e12b8326967de1" name="afe4f140163b3f2d0e5e12b8326967de1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afe4f140163b3f2d0e5e12b8326967de1">&#9670;&#160;</a></span>imuAngles</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structPID_1_1config.html">PID::config</a> indexer_PID_pos = {0.1, 0, 0.001}</td>
+          <td class="memname"><a class="el" href="structIMU_1_1EulerAngles.html">IMU::EulerAngles</a> imuAngles</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a36323fb3a9340cca941e21f583fb8d42" name="a36323fb3a9340cca941e21f583fb8d42"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a36323fb3a9340cca941e21f583fb8d42">&#9670;&#160;</a></span>indexer_PID_vel</h2>
+<a id="a481bad22389d7769991f1c7931a9961e" name="a481bad22389d7769991f1c7931a9961e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a481bad22389d7769991f1c7931a9961e">&#9670;&#160;</a></span>INDEXER_PID_POS</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structPID_1_1config.html">PID::config</a> indexer_PID_vel = {2.7, 0.001, 0}</td>
+          <td class="memname">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a> INDEXER_PID_POS = {0.1, 0, 0.001}</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1ea04a52763bf7f2606c421fe4e7e1b1" name="a1ea04a52763bf7f2606c421fe4e7e1b1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1ea04a52763bf7f2606c421fe4e7e1b1">&#9670;&#160;</a></span>INDEXER_PID_VEL</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a> INDEXER_PID_VEL = {2.7, 0.001, 0}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
@@ -462,16 +538,46 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a67003f06d5a5c30d207fe96a1cf4c09f" name="a67003f06d5a5c30d207fe96a1cf4c09f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a67003f06d5a5c30d207fe96a1cf4c09f">&#9670;&#160;</a></span>led0</h2>
+<a id="ad35d729e5d44b9e47fcf8f3a05775544" name="ad35d729e5d44b9e47fcf8f3a05775544"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad35d729e5d44b9e47fcf8f3a05775544">&#9670;&#160;</a></span>MOUSE_SENSITIVITY_PITCH_DPS</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">DigitalOut led0 = PC_1</td>
+          <td class="memname">constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 10.0</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9951e306582674e150e70105fe176de8" name="a9951e306582674e150e70105fe176de8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9951e306582674e150e70105fe176de8">&#9670;&#160;</a></span>MOUSE_SENSITIVITY_YAW_DPS</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr float MOUSE_SENSITIVITY_YAW_DPS = 10.0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
@@ -490,6 +596,34 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="a30673a77f83408ab6681311170220a8a" name="a30673a77f83408ab6681311170220a8a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a30673a77f83408ab6681311170220a8a">&#9670;&#160;</a></span>pitch_gravity_feedforward</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float pitch_gravity_feedforward = -500</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a187deff0a2be11d3a0632017532431ce" name="a187deff0a2be11d3a0632017532431ce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a187deff0a2be11d3a0632017532431ce">&#9670;&#160;</a></span>pitch_kinetic_friction</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float pitch_kinetic_friction = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ad2140529015bdef1173e030ebef1e7ae" name="ad2140529015bdef1173e030ebef1e7ae"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad2140529015bdef1173e030ebef1e7ae">&#9670;&#160;</a></span>PITCH_LOWER_BOUND</h2>
 
@@ -500,7 +634,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr float PITCH_LOWER_BOUND {-32.0}</td>
+          <td class="memname">constexpr float PITCH_LOWER_BOUND {-22.0}</td>
         </tr>
       </table>
   </td>
@@ -512,14 +646,36 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a0cb9de2978c81a433d881f1956186eee" name="a0cb9de2978c81a433d881f1956186eee"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0cb9de2978c81a433d881f1956186eee">&#9670;&#160;</a></span>pitch_pos_PID</h2>
+<a id="ab0aeccefb25e92d2195c914bef8c78c0" name="ab0aeccefb25e92d2195c914bef8c78c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab0aeccefb25e92d2195c914bef8c78c0">&#9670;&#160;</a></span>PITCH_POS_PID</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a> PITCH_POS_PID = {1, 0, 0,30,2}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7b00de443582840b527f8610e94316a3" name="a7b00de443582840b527f8610e94316a3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7b00de443582840b527f8610e94316a3">&#9670;&#160;</a></span>pitch_static_friction</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structPID_1_1config.html">PID::config</a> pitch_pos_PID = {1.5, 0.0005, 0.05, 30, 2}</td>
+          <td class="memname">const float pitch_static_friction = 635.0 / 5</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -536,7 +692,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr float PITCH_UPPER_BOUND {35.0}</td>
+          <td class="memname">constexpr float PITCH_UPPER_BOUND {20.0}</td>
         </tr>
       </table>
   </td>
@@ -548,16 +704,24 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a39a5e1e2a92d8a3afe433ddccfb45ac5" name="a39a5e1e2a92d8a3afe433ddccfb45ac5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a39a5e1e2a92d8a3afe433ddccfb45ac5">&#9670;&#160;</a></span>pitch_vel_PID</h2>
+<a id="abc376771b0d17187ccf30ac66435de82" name="abc376771b0d17187ccf30ac66435de82"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc376771b0d17187ccf30ac66435de82">&#9670;&#160;</a></span>PITCH_VEL_PID</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structPID_1_1config.html">PID::config</a> pitch_vel_PID = {500, 0.8, 0, 32000, 2000}</td>
+          <td class="memname">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a> PITCH_VEL_PID = {173.8994, 4.898 * 10e-9, 12.474 * 10, 16000, 1000}</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
@@ -598,6 +762,89 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="a5fda842c05c9716a3f42274567ee8788" name="a5fda842c05c9716a3f42274567ee8788"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5fda842c05c9716a3f42274567ee8788">&#9670;&#160;</a></span>shooter_config</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structShooterSubsystem_1_1config.html">ShooterSubsystem::config</a> shooter_config</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {</div>
+<div class="line">    <a class="code hl_enumvalue" href="classShooterSubsystem.html#a87eddf897140bcd67267431a76ee1ee6a1cb70508234417d1eb3c9683dd42bb77">ShooterSubsystem::BURST</a>,</div>
+<div class="line">    0,</div>
+<div class="line">    1,</div>
+<div class="line">    2,</div>
+<div class="line">    6,</div>
+<div class="line">    <a class="code hl_variable" href="Sentry_8cpp.html#ac4d24743ce03ec73c3a2296c69b32490">FLYWHEEL_L_PID</a>,</div>
+<div class="line">    <a class="code hl_variable" href="Sentry_8cpp.html#a72a2008cea726c6159fd4c4fcbe42906">FLYWHEEL_R_PID</a>,</div>
+<div class="line">    <a class="code hl_variable" href="Sentry_8cpp.html#a1ea04a52763bf7f2606c421fe4e7e1b1">INDEXER_PID_VEL</a>,</div>
+<div class="line">    <a class="code hl_variable" href="Sentry_8cpp.html#a481bad22389d7769991f1c7931a9961e">INDEXER_PID_POS</a>,</div>
+<div class="line">    <a class="code hl_enumvalue" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a>,</div>
+<div class="line">    <span class="keyword">true</span></div>
+<div class="line">}</div>
+<div class="ttc" id="aSentry_8cpp_html_a1ea04a52763bf7f2606c421fe4e7e1b1"><div class="ttname"><a href="Sentry_8cpp.html#a1ea04a52763bf7f2606c421fe4e7e1b1">INDEXER_PID_VEL</a></div><div class="ttdeci">constexpr PID::config INDEXER_PID_VEL</div><div class="ttdef"><b>Definition</b> Sentry.cpp:48</div></div>
+<div class="ttc" id="aSentry_8cpp_html_a481bad22389d7769991f1c7931a9961e"><div class="ttname"><a href="Sentry_8cpp.html#a481bad22389d7769991f1c7931a9961e">INDEXER_PID_POS</a></div><div class="ttdeci">constexpr PID::config INDEXER_PID_POS</div><div class="ttdef"><b>Definition</b> Sentry.cpp:49</div></div>
+<div class="ttc" id="aSentry_8cpp_html_a72a2008cea726c6159fd4c4fcbe42906"><div class="ttname"><a href="Sentry_8cpp.html#a72a2008cea726c6159fd4c4fcbe42906">FLYWHEEL_R_PID</a></div><div class="ttdeci">constexpr PID::config FLYWHEEL_R_PID</div><div class="ttdef"><b>Definition</b> Sentry.cpp:47</div></div>
+<div class="ttc" id="aSentry_8cpp_html_ac4d24743ce03ec73c3a2296c69b32490"><div class="ttname"><a href="Sentry_8cpp.html#ac4d24743ce03ec73c3a2296c69b32490">FLYWHEEL_L_PID</a></div><div class="ttdeci">constexpr PID::config FLYWHEEL_L_PID</div><div class="ttdef"><b>Definition</b> Sentry.cpp:46</div></div>
+<div class="ttc" id="aclassCANHandler_html_a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14"><div class="ttname"><a href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a></div><div class="ttdeci">@ CANBUS_2</div><div class="ttdef"><b>Definition</b> CANHandler.h:45</div></div>
+<div class="ttc" id="aclassShooterSubsystem_html_a87eddf897140bcd67267431a76ee1ee6a1cb70508234417d1eb3c9683dd42bb77"><div class="ttname"><a href="classShooterSubsystem.html#a87eddf897140bcd67267431a76ee1ee6a1cb70508234417d1eb3c9683dd42bb77">ShooterSubsystem::BURST</a></div><div class="ttdeci">@ BURST</div><div class="ttdef"><b>Definition</b> ShooterSubsystem.h:22</div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a39c7b036219664cecd90b69fed15fadf" name="a39c7b036219664cecd90b69fed15fadf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a39c7b036219664cecd90b69fed15fadf">&#9670;&#160;</a></span>turret_config</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structTurretSubsystem_1_1config.html">TurretSubsystem::config</a> turret_config</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {</div>
+<div class="line">    4,</div>
+<div class="line">    <a class="code hl_enumvalue" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a28474eec9dbe74a0107e8bfb33d0751f">M3508</a>,</div>
+<div class="line">    8,</div>
+<div class="line">    <a class="code hl_enumvalue" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a28474eec9dbe74a0107e8bfb33d0751f">M3508</a>,</div>
+<div class="line">    <a class="code hl_variable" href="Sentry_8cpp.html#a8ad1aa6e9f3b5c79e797a9ac735e37da">pitch_zero_offset_ticks</a>,</div>
+<div class="line">    <a class="code hl_variable" href="Sentry_8cpp.html#ad77739da33f21c8882d24e2fecff8143">YAW_VEL_PID</a>,</div>
+<div class="line">    <a class="code hl_variable" href="Sentry_8cpp.html#ac934aa5d311e980958d6ddc464858fab">YAW_POS_PID</a>,</div>
+<div class="line">    <a class="code hl_variable" href="Sentry_8cpp.html#abc376771b0d17187ccf30ac66435de82">PITCH_VEL_PID</a>,</div>
+<div class="line">    <a class="code hl_variable" href="Sentry_8cpp.html#ab0aeccefb25e92d2195c914bef8c78c0">PITCH_POS_PID</a>,</div>
+<div class="line">    <a class="code hl_variable" href="Sentry_8cpp.html#a914be9179942bf8439ce9abc372f8bc7">yaw_static_friction</a>,</div>
+<div class="line">    <a class="code hl_variable" href="Sentry_8cpp.html#a33f6c1c8bd9077a3224435cd22891326">yaw_kinetic_friction</a>,</div>
+<div class="line">    <a class="code hl_variable" href="Sentry_8cpp.html#a30673a77f83408ab6681311170220a8a">pitch_gravity_feedforward</a>,</div>
+<div class="line">    <a class="code hl_variable" href="Sentry_8cpp.html#a7b00de443582840b527f8610e94316a3">pitch_static_friction</a>,</div>
+<div class="line">    <a class="code hl_variable" href="Sentry_8cpp.html#a187deff0a2be11d3a0632017532431ce">pitch_kinetic_friction</a>,</div>
+<div class="line">    <a class="code hl_enumvalue" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4">CANHandler::CANBUS_1</a>,</div>
+<div class="line">    <a class="code hl_enumvalue" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a>,</div>
+<div class="line">    1,</div>
+<div class="line">    (1.0 / 3.0),</div>
+<div class="line">    <a class="code hl_variable" href="Sentry_8cpp.html#ad2140529015bdef1173e030ebef1e7ae">PITCH_LOWER_BOUND</a>,</div>
+<div class="line">    <a class="code hl_variable" href="Sentry_8cpp.html#acc7f892b25436a7b155a82b0cdf86d94">PITCH_UPPER_BOUND</a></div>
+<div class="line">}</div>
+<div class="ttc" id="aDJIMotor_8h_html_aa0b95df57b6ae3d5b5ac026d56968a54a28474eec9dbe74a0107e8bfb33d0751f"><div class="ttname"><a href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a28474eec9dbe74a0107e8bfb33d0751f">M3508</a></div><div class="ttdeci">@ M3508</div><div class="ttdef"><b>Definition</b> DJIMotor.h:43</div></div>
+<div class="ttc" id="aSentry_8cpp_html_a187deff0a2be11d3a0632017532431ce"><div class="ttname"><a href="Sentry_8cpp.html#a187deff0a2be11d3a0632017532431ce">pitch_kinetic_friction</a></div><div class="ttdeci">const float pitch_kinetic_friction</div><div class="ttdef"><b>Definition</b> Sentry.cpp:39</div></div>
+<div class="ttc" id="aSentry_8cpp_html_a30673a77f83408ab6681311170220a8a"><div class="ttname"><a href="Sentry_8cpp.html#a30673a77f83408ab6681311170220a8a">pitch_gravity_feedforward</a></div><div class="ttdeci">const float pitch_gravity_feedforward</div><div class="ttdef"><b>Definition</b> Sentry.cpp:37</div></div>
+<div class="ttc" id="aSentry_8cpp_html_a33f6c1c8bd9077a3224435cd22891326"><div class="ttname"><a href="Sentry_8cpp.html#a33f6c1c8bd9077a3224435cd22891326">yaw_kinetic_friction</a></div><div class="ttdeci">const float yaw_kinetic_friction</div><div class="ttdef"><b>Definition</b> Sentry.cpp:33</div></div>
+<div class="ttc" id="aSentry_8cpp_html_a7b00de443582840b527f8610e94316a3"><div class="ttname"><a href="Sentry_8cpp.html#a7b00de443582840b527f8610e94316a3">pitch_static_friction</a></div><div class="ttdeci">const float pitch_static_friction</div><div class="ttdef"><b>Definition</b> Sentry.cpp:38</div></div>
+<div class="ttc" id="aSentry_8cpp_html_a8ad1aa6e9f3b5c79e797a9ac735e37da"><div class="ttname"><a href="Sentry_8cpp.html#a8ad1aa6e9f3b5c79e797a9ac735e37da">pitch_zero_offset_ticks</a></div><div class="ttdeci">constexpr int pitch_zero_offset_ticks</div><div class="ttdef"><b>Definition</b> Sentry.cpp:20</div></div>
+<div class="ttc" id="aSentry_8cpp_html_a914be9179942bf8439ce9abc372f8bc7"><div class="ttname"><a href="Sentry_8cpp.html#a914be9179942bf8439ce9abc372f8bc7">yaw_static_friction</a></div><div class="ttdeci">const float yaw_static_friction</div><div class="ttdef"><b>Definition</b> Sentry.cpp:32</div></div>
+<div class="ttc" id="aSentry_8cpp_html_ab0aeccefb25e92d2195c914bef8c78c0"><div class="ttname"><a href="Sentry_8cpp.html#ab0aeccefb25e92d2195c914bef8c78c0">PITCH_POS_PID</a></div><div class="ttdeci">constexpr PID::config PITCH_POS_PID</div><div class="ttdef"><b>Definition</b> Sentry.cpp:36</div></div>
+<div class="ttc" id="aSentry_8cpp_html_abc376771b0d17187ccf30ac66435de82"><div class="ttname"><a href="Sentry_8cpp.html#abc376771b0d17187ccf30ac66435de82">PITCH_VEL_PID</a></div><div class="ttdeci">constexpr PID::config PITCH_VEL_PID</div><div class="ttdef"><b>Definition</b> Sentry.cpp:35</div></div>
+<div class="ttc" id="aSentry_8cpp_html_ac934aa5d311e980958d6ddc464858fab"><div class="ttname"><a href="Sentry_8cpp.html#ac934aa5d311e980958d6ddc464858fab">YAW_POS_PID</a></div><div class="ttdeci">constexpr PID::config YAW_POS_PID</div><div class="ttdef"><b>Definition</b> Sentry.cpp:31</div></div>
+<div class="ttc" id="aSentry_8cpp_html_acc7f892b25436a7b155a82b0cdf86d94"><div class="ttname"><a href="Sentry_8cpp.html#acc7f892b25436a7b155a82b0cdf86d94">PITCH_UPPER_BOUND</a></div><div class="ttdeci">constexpr float PITCH_UPPER_BOUND</div><div class="ttdef"><b>Definition</b> Sentry.cpp:22</div></div>
+<div class="ttc" id="aSentry_8cpp_html_ad2140529015bdef1173e030ebef1e7ae"><div class="ttname"><a href="Sentry_8cpp.html#ad2140529015bdef1173e030ebef1e7ae">PITCH_LOWER_BOUND</a></div><div class="ttdeci">constexpr float PITCH_LOWER_BOUND</div><div class="ttdef"><b>Definition</b> Sentry.cpp:21</div></div>
+<div class="ttc" id="aSentry_8cpp_html_ad77739da33f21c8882d24e2fecff8143"><div class="ttname"><a href="Sentry_8cpp.html#ad77739da33f21c8882d24e2fecff8143">YAW_VEL_PID</a></div><div class="ttdeci">constexpr PID::config YAW_VEL_PID</div><div class="ttdef"><b>Definition</b> Sentry.cpp:30</div></div>
+<div class="ttc" id="aclassCANHandler_html_a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4"><div class="ttname"><a href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4">CANHandler::CANBUS_1</a></div><div class="ttdeci">@ CANBUS_1</div><div class="ttdef"><b>Definition</b> CANHandler.h:45</div></div>
+</div><!-- fragment -->
+</div>
+</div>
 <a id="ad8801eb97c2d91be4b45c86f6566c000" name="ad8801eb97c2d91be4b45c86f6566c000"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad8801eb97c2d91be4b45c86f6566c000">&#9670;&#160;</a></span>yaw_desired_angle</h2>
 
@@ -612,30 +859,74 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a0972c2b3d8b0b33e3e252b079cecde9b" name="a0972c2b3d8b0b33e3e252b079cecde9b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0972c2b3d8b0b33e3e252b079cecde9b">&#9670;&#160;</a></span>yaw_pos_PID</h2>
+<a id="a33f6c1c8bd9077a3224435cd22891326" name="a33f6c1c8bd9077a3224435cd22891326"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a33f6c1c8bd9077a3224435cd22891326">&#9670;&#160;</a></span>yaw_kinetic_friction</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structPID_1_1config.html">PID::config</a> yaw_pos_PID = {0.5, 0, 0, 90, 2}</td>
+          <td class="memname">const float yaw_kinetic_friction = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a45f67d7304a26dff90fc13e6bb028f3a" name="a45f67d7304a26dff90fc13e6bb028f3a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a45f67d7304a26dff90fc13e6bb028f3a">&#9670;&#160;</a></span>yaw_vel_PID</h2>
+<a id="ac934aa5d311e980958d6ddc464858fab" name="ac934aa5d311e980958d6ddc464858fab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac934aa5d311e980958d6ddc464858fab">&#9670;&#160;</a></span>YAW_POS_PID</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a> YAW_POS_PID = {1, 0, 0, 90, 2}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a914be9179942bf8439ce9abc372f8bc7" name="a914be9179942bf8439ce9abc372f8bc7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a914be9179942bf8439ce9abc372f8bc7">&#9670;&#160;</a></span>yaw_static_friction</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structPID_1_1config.html">PID::config</a> yaw_vel_PID = {350, 0.5, 2.5, 32000, 2000}</td>
+          <td class="memname">const float yaw_static_friction = -150</td>
         </tr>
       </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad77739da33f21c8882d24e2fecff8143" name="ad77739da33f21c8882d24e2fecff8143"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad77739da33f21c8882d24e2fecff8143">&#9670;&#160;</a></span>YAW_VEL_PID</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a> YAW_VEL_PID = {181, 3.655 * 10e-3, 4.51 * 2.25, 32000, 1000}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>

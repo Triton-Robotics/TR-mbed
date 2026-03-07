@@ -86,9 +86,11 @@ $(function() {
 <code>#include &quot;<a class="el" href="ShooterSubsystem_8h_source.html">subsystems/ShooterSubsystem.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="TurretSubsystem_8h_source.html">subsystems/TurretSubsystem.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="CANHandler_8h_source.html">util/communications/CANHandler.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="PwmIn_8h_source.html">util/communications/PwmIn.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Jetson_8h_source.html">util/communications/jetson/Jetson.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="DJIMotor_8h_source.html">util/motor/DJIMotor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="BNO055_8h_source.html">util/peripherals/imu/BNO055.h</a>&quot;</code><br />
+<code>#include &quot;util/peripherals/encoder/MA4.h&quot;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
@@ -98,8 +100,6 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a8824538eb07749fa64fd2ef98e557be9" id="r_a8824538eb07749fa64fd2ef98e557be9"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#a8824538eb07749fa64fd2ef98e557be9">degreesToRadians</a> (double degrees)</td></tr>
-<tr class="separator:a8824538eb07749fa64fd2ef98e557be9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae66f6b31b5ad750f1fe042a706a4e3d4" id="r_ae66f6b31b5ad750f1fe042a706a4e3d4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main</a> ()</td></tr>
 <tr class="separator:ae66f6b31b5ad750f1fe042a706a4e3d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -113,9 +113,9 @@ Variables</h2></td></tr>
 <tr class="separator:afaa8a815e64aa506866e8a42fefbda60"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8ad1aa6e9f3b5c79e797a9ac735e37da" id="r_a8ad1aa6e9f3b5c79e797a9ac735e37da"><td class="memItemLeft" align="right" valign="top">constexpr int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#a8ad1aa6e9f3b5c79e797a9ac735e37da">pitch_zero_offset_ticks</a> = 1500</td></tr>
 <tr class="separator:a8ad1aa6e9f3b5c79e797a9ac735e37da"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad2140529015bdef1173e030ebef1e7ae" id="r_ad2140529015bdef1173e030ebef1e7ae"><td class="memItemLeft" align="right" valign="top">constexpr float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#ad2140529015bdef1173e030ebef1e7ae">PITCH_LOWER_BOUND</a> {-32.0}</td></tr>
+<tr class="memitem:ad2140529015bdef1173e030ebef1e7ae" id="r_ad2140529015bdef1173e030ebef1e7ae"><td class="memItemLeft" align="right" valign="top">constexpr float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#ad2140529015bdef1173e030ebef1e7ae">PITCH_LOWER_BOUND</a> {-22.0}</td></tr>
 <tr class="separator:ad2140529015bdef1173e030ebef1e7ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acc7f892b25436a7b155a82b0cdf86d94" id="r_acc7f892b25436a7b155a82b0cdf86d94"><td class="memItemLeft" align="right" valign="top">constexpr float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#acc7f892b25436a7b155a82b0cdf86d94">PITCH_UPPER_BOUND</a> {35.0}</td></tr>
+<tr class="memitem:acc7f892b25436a7b155a82b0cdf86d94" id="r_acc7f892b25436a7b155a82b0cdf86d94"><td class="memItemLeft" align="right" valign="top">constexpr float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#acc7f892b25436a7b155a82b0cdf86d94">PITCH_UPPER_BOUND</a> {20.0}</td></tr>
 <tr class="separator:acc7f892b25436a7b155a82b0cdf86d94"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb2a943255ed007cbac8f827b9877171" id="r_adb2a943255ed007cbac8f827b9877171"><td class="memItemLeft" align="right" valign="top">constexpr float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#adb2a943255ed007cbac8f827b9877171">JOYSTICK_YAW_SENSITIVITY_DPS</a> = 600</td></tr>
 <tr class="separator:adb2a943255ed007cbac8f827b9877171"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -125,14 +125,24 @@ Variables</h2></td></tr>
 <tr class="separator:a9951e306582674e150e70105fe176de8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad35d729e5d44b9e47fcf8f3a05775544" id="r_ad35d729e5d44b9e47fcf8f3a05775544"><td class="memItemLeft" align="right" valign="top">constexpr float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#ad35d729e5d44b9e47fcf8f3a05775544">MOUSE_SENSITIVITY_PITCH_DPS</a> = 10.0</td></tr>
 <tr class="separator:ad35d729e5d44b9e47fcf8f3a05775544"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad77739da33f21c8882d24e2fecff8143" id="r_ad77739da33f21c8882d24e2fecff8143"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#ad77739da33f21c8882d24e2fecff8143">YAW_VEL_PID</a> = {350, 0.5, 2.5, 32000, 2000}</td></tr>
+<tr class="memitem:ad77739da33f21c8882d24e2fecff8143" id="r_ad77739da33f21c8882d24e2fecff8143"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#ad77739da33f21c8882d24e2fecff8143">YAW_VEL_PID</a> = {181, 3.655 * 10e-3, 4.51 * 2.25, 32000, 1000}</td></tr>
 <tr class="separator:ad77739da33f21c8882d24e2fecff8143"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac934aa5d311e980958d6ddc464858fab" id="r_ac934aa5d311e980958d6ddc464858fab"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#ac934aa5d311e980958d6ddc464858fab">YAW_POS_PID</a> = {0.5, 0, 0, 90, 2}</td></tr>
+<tr class="memitem:ac934aa5d311e980958d6ddc464858fab" id="r_ac934aa5d311e980958d6ddc464858fab"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#ac934aa5d311e980958d6ddc464858fab">YAW_POS_PID</a> = {1, 0, 0, 90, 2}</td></tr>
 <tr class="separator:ac934aa5d311e980958d6ddc464858fab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abc376771b0d17187ccf30ac66435de82" id="r_abc376771b0d17187ccf30ac66435de82"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#abc376771b0d17187ccf30ac66435de82">PITCH_VEL_PID</a> = {500, 0.8, 0, 32000, 2000}</td></tr>
+<tr class="memitem:a914be9179942bf8439ce9abc372f8bc7" id="r_a914be9179942bf8439ce9abc372f8bc7"><td class="memItemLeft" align="right" valign="top">const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#a914be9179942bf8439ce9abc372f8bc7">yaw_static_friction</a> = -150</td></tr>
+<tr class="separator:a914be9179942bf8439ce9abc372f8bc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33f6c1c8bd9077a3224435cd22891326" id="r_a33f6c1c8bd9077a3224435cd22891326"><td class="memItemLeft" align="right" valign="top">const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#a33f6c1c8bd9077a3224435cd22891326">yaw_kinetic_friction</a> = 0</td></tr>
+<tr class="separator:a33f6c1c8bd9077a3224435cd22891326"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc376771b0d17187ccf30ac66435de82" id="r_abc376771b0d17187ccf30ac66435de82"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#abc376771b0d17187ccf30ac66435de82">PITCH_VEL_PID</a> = {173.8994, 4.898 * 10e-9, 12.474 * 10, 16000, 1000}</td></tr>
 <tr class="separator:abc376771b0d17187ccf30ac66435de82"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab0aeccefb25e92d2195c914bef8c78c0" id="r_ab0aeccefb25e92d2195c914bef8c78c0"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#ab0aeccefb25e92d2195c914bef8c78c0">PITCH_POS_PID</a> = {1.5, 0.0005, 0.05, 30, 2}</td></tr>
+<tr class="memitem:ab0aeccefb25e92d2195c914bef8c78c0" id="r_ab0aeccefb25e92d2195c914bef8c78c0"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#ab0aeccefb25e92d2195c914bef8c78c0">PITCH_POS_PID</a> = {1, 0, 0,30,2}</td></tr>
 <tr class="separator:ab0aeccefb25e92d2195c914bef8c78c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30673a77f83408ab6681311170220a8a" id="r_a30673a77f83408ab6681311170220a8a"><td class="memItemLeft" align="right" valign="top">const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#a30673a77f83408ab6681311170220a8a">pitch_gravity_feedforward</a> = -500</td></tr>
+<tr class="separator:a30673a77f83408ab6681311170220a8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b00de443582840b527f8610e94316a3" id="r_a7b00de443582840b527f8610e94316a3"><td class="memItemLeft" align="right" valign="top">const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#a7b00de443582840b527f8610e94316a3">pitch_static_friction</a> = 635.0 / 5</td></tr>
+<tr class="separator:a7b00de443582840b527f8610e94316a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a187deff0a2be11d3a0632017532431ce" id="r_a187deff0a2be11d3a0632017532431ce"><td class="memItemLeft" align="right" valign="top">const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#a187deff0a2be11d3a0632017532431ce">pitch_kinetic_friction</a> = 0</td></tr>
+<tr class="separator:a187deff0a2be11d3a0632017532431ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a61f0523e4315c971440588b43a75bdb6" id="r_a61f0523e4315c971440588b43a75bdb6"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#a61f0523e4315c971440588b43a75bdb6">FL_VEL_CONFIG</a> = {3, 0, 0}</td></tr>
 <tr class="separator:a61f0523e4315c971440588b43a75bdb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6440df0862261c8399ec63d158944606" id="r_a6440df0862261c8399ec63d158944606"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#a6440df0862261c8399ec63d158944606">FR_VEL_CONFIG</a> = {3, 0, 0}</td></tr>
@@ -149,6 +159,10 @@ Variables</h2></td></tr>
 <tr class="separator:a1ea04a52763bf7f2606c421fe4e7e1b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a481bad22389d7769991f1c7931a9961e" id="r_a481bad22389d7769991f1c7931a9961e"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#a481bad22389d7769991f1c7931a9961e">INDEXER_PID_POS</a> = {0.1, 0, 0.001}</td></tr>
 <tr class="separator:a481bad22389d7769991f1c7931a9961e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39c7b036219664cecd90b69fed15fadf" id="r_a39c7b036219664cecd90b69fed15fadf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structTurretSubsystem_1_1config.html">TurretSubsystem::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#a39c7b036219664cecd90b69fed15fadf">turret_config</a></td></tr>
+<tr class="separator:a39c7b036219664cecd90b69fed15fadf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fda842c05c9716a3f42274567ee8788" id="r_a5fda842c05c9716a3f42274567ee8788"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structShooterSubsystem_1_1config.html">ShooterSubsystem::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#a5fda842c05c9716a3f42274567ee8788">shooter_config</a></td></tr>
+<tr class="separator:a5fda842c05c9716a3f42274567ee8788"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ad0e6112f128a8ea96b6f5a613a2411" id="r_a0ad0e6112f128a8ea96b6f5a613a2411"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structChassisSpeeds.html">ChassisSpeeds</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#a0ad0e6112f128a8ea96b6f5a613a2411">des_chassis_state</a></td></tr>
 <tr class="separator:a0ad0e6112f128a8ea96b6f5a613a2411"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a10579f92bb236a0ee08a6ce003a9aef6" id="r_a10579f92bb236a0ee08a6ce003a9aef6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structTurretSubsystem_1_1TurretInfo.html">TurretSubsystem::TurretInfo</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#a10579f92bb236a0ee08a6ce003a9aef6">des_turret_state</a></td></tr>
@@ -161,26 +175,10 @@ Variables</h2></td></tr>
 <tr class="separator:ab71473beb60dbf36e0fd1b792a540501"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad8801eb97c2d91be4b45c86f6566c000" id="r_ad8801eb97c2d91be4b45c86f6566c000"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#ad8801eb97c2d91be4b45c86f6566c000">yaw_desired_angle</a> = 0.0</td></tr>
 <tr class="separator:ad8801eb97c2d91be4b45c86f6566c000"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe4f140163b3f2d0e5e12b8326967de1" id="r_afe4f140163b3f2d0e5e12b8326967de1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structIMU_1_1EulerAngles.html">IMU::EulerAngles</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Infantry_8cpp.html#afe4f140163b3f2d0e5e12b8326967de1">imuAngles</a></td></tr>
+<tr class="separator:afe4f140163b3f2d0e5e12b8326967de1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a8824538eb07749fa64fd2ef98e557be9" name="a8824538eb07749fa64fd2ef98e557be9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8824538eb07749fa64fd2ef98e557be9">&#9670;&#160;</a></span>degreesToRadians()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">double degreesToRadians </td>
-          <td>(</td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>degrees</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="ae66f6b31b5ad750f1fe042a706a4e3d4" name="ae66f6b31b5ad750f1fe042a706a4e3d4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae66f6b31b5ad750f1fe042a706a4e3d4">&#9670;&#160;</a></span>main()</h2>
 
@@ -439,6 +437,20 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="afe4f140163b3f2d0e5e12b8326967de1" name="afe4f140163b3f2d0e5e12b8326967de1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afe4f140163b3f2d0e5e12b8326967de1">&#9670;&#160;</a></span>imuAngles</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structIMU_1_1EulerAngles.html">IMU::EulerAngles</a> imuAngles</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a481bad22389d7769991f1c7931a9961e" name="a481bad22389d7769991f1c7931a9961e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a481bad22389d7769991f1c7931a9961e">&#9670;&#160;</a></span>INDEXER_PID_POS</h2>
 
@@ -585,6 +597,34 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="a30673a77f83408ab6681311170220a8a" name="a30673a77f83408ab6681311170220a8a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a30673a77f83408ab6681311170220a8a">&#9670;&#160;</a></span>pitch_gravity_feedforward</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float pitch_gravity_feedforward = -500</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a187deff0a2be11d3a0632017532431ce" name="a187deff0a2be11d3a0632017532431ce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a187deff0a2be11d3a0632017532431ce">&#9670;&#160;</a></span>pitch_kinetic_friction</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float pitch_kinetic_friction = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ad2140529015bdef1173e030ebef1e7ae" name="ad2140529015bdef1173e030ebef1e7ae"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad2140529015bdef1173e030ebef1e7ae">&#9670;&#160;</a></span>PITCH_LOWER_BOUND</h2>
 
@@ -595,7 +635,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr float PITCH_LOWER_BOUND {-32.0}</td>
+          <td class="memname">constexpr float PITCH_LOWER_BOUND {-22.0}</td>
         </tr>
       </table>
   </td>
@@ -617,7 +657,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a> PITCH_POS_PID = {1.5, 0.0005, 0.05, 30, 2}</td>
+          <td class="memname">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a> PITCH_POS_PID = {1, 0, 0,30,2}</td>
         </tr>
       </table>
   </td>
@@ -625,6 +665,20 @@ Variables</h2></td></tr>
 <span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
   </tr>
 </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7b00de443582840b527f8610e94316a3" name="a7b00de443582840b527f8610e94316a3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7b00de443582840b527f8610e94316a3">&#9670;&#160;</a></span>pitch_static_friction</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float pitch_static_friction = 635.0 / 5</td>
+        </tr>
+      </table>
 </div><div class="memdoc">
 
 </div>
@@ -639,7 +693,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr float PITCH_UPPER_BOUND {35.0}</td>
+          <td class="memname">constexpr float PITCH_UPPER_BOUND {20.0}</td>
         </tr>
       </table>
   </td>
@@ -661,7 +715,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a> PITCH_VEL_PID = {500, 0.8, 0, 32000, 2000}</td>
+          <td class="memname">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a> PITCH_VEL_PID = {173.8994, 4.898 * 10e-9, 12.474 * 10, 16000, 1000}</td>
         </tr>
       </table>
   </td>
@@ -709,6 +763,89 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="a5fda842c05c9716a3f42274567ee8788" name="a5fda842c05c9716a3f42274567ee8788"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5fda842c05c9716a3f42274567ee8788">&#9670;&#160;</a></span>shooter_config</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structShooterSubsystem_1_1config.html">ShooterSubsystem::config</a> shooter_config</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {</div>
+<div class="line">    <a class="code hl_enumvalue" href="classShooterSubsystem.html#a87eddf897140bcd67267431a76ee1ee6a1cb70508234417d1eb3c9683dd42bb77">ShooterSubsystem::BURST</a>,</div>
+<div class="line">    0,</div>
+<div class="line">    1,</div>
+<div class="line">    2,</div>
+<div class="line">    6,</div>
+<div class="line">    <a class="code hl_variable" href="Infantry_8cpp.html#ac4d24743ce03ec73c3a2296c69b32490">FLYWHEEL_L_PID</a>,</div>
+<div class="line">    <a class="code hl_variable" href="Infantry_8cpp.html#a72a2008cea726c6159fd4c4fcbe42906">FLYWHEEL_R_PID</a>,</div>
+<div class="line">    <a class="code hl_variable" href="Infantry_8cpp.html#a1ea04a52763bf7f2606c421fe4e7e1b1">INDEXER_PID_VEL</a>,</div>
+<div class="line">    <a class="code hl_variable" href="Infantry_8cpp.html#a481bad22389d7769991f1c7931a9961e">INDEXER_PID_POS</a>,</div>
+<div class="line">    <a class="code hl_enumvalue" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a>,</div>
+<div class="line">    <span class="keyword">true</span></div>
+<div class="line">}</div>
+<div class="ttc" id="aInfantry_8cpp_html_a1ea04a52763bf7f2606c421fe4e7e1b1"><div class="ttname"><a href="Infantry_8cpp.html#a1ea04a52763bf7f2606c421fe4e7e1b1">INDEXER_PID_VEL</a></div><div class="ttdeci">constexpr PID::config INDEXER_PID_VEL</div><div class="ttdef"><b>Definition</b> Infantry.cpp:49</div></div>
+<div class="ttc" id="aInfantry_8cpp_html_a481bad22389d7769991f1c7931a9961e"><div class="ttname"><a href="Infantry_8cpp.html#a481bad22389d7769991f1c7931a9961e">INDEXER_PID_POS</a></div><div class="ttdeci">constexpr PID::config INDEXER_PID_POS</div><div class="ttdef"><b>Definition</b> Infantry.cpp:50</div></div>
+<div class="ttc" id="aInfantry_8cpp_html_a72a2008cea726c6159fd4c4fcbe42906"><div class="ttname"><a href="Infantry_8cpp.html#a72a2008cea726c6159fd4c4fcbe42906">FLYWHEEL_R_PID</a></div><div class="ttdeci">constexpr PID::config FLYWHEEL_R_PID</div><div class="ttdef"><b>Definition</b> Infantry.cpp:48</div></div>
+<div class="ttc" id="aInfantry_8cpp_html_ac4d24743ce03ec73c3a2296c69b32490"><div class="ttname"><a href="Infantry_8cpp.html#ac4d24743ce03ec73c3a2296c69b32490">FLYWHEEL_L_PID</a></div><div class="ttdeci">constexpr PID::config FLYWHEEL_L_PID</div><div class="ttdef"><b>Definition</b> Infantry.cpp:47</div></div>
+<div class="ttc" id="aclassCANHandler_html_a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14"><div class="ttname"><a href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a></div><div class="ttdeci">@ CANBUS_2</div><div class="ttdef"><b>Definition</b> CANHandler.h:45</div></div>
+<div class="ttc" id="aclassShooterSubsystem_html_a87eddf897140bcd67267431a76ee1ee6a1cb70508234417d1eb3c9683dd42bb77"><div class="ttname"><a href="classShooterSubsystem.html#a87eddf897140bcd67267431a76ee1ee6a1cb70508234417d1eb3c9683dd42bb77">ShooterSubsystem::BURST</a></div><div class="ttdeci">@ BURST</div><div class="ttdef"><b>Definition</b> ShooterSubsystem.h:22</div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a39c7b036219664cecd90b69fed15fadf" name="a39c7b036219664cecd90b69fed15fadf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a39c7b036219664cecd90b69fed15fadf">&#9670;&#160;</a></span>turret_config</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structTurretSubsystem_1_1config.html">TurretSubsystem::config</a> turret_config</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {</div>
+<div class="line">    4,</div>
+<div class="line">    <a class="code hl_enumvalue" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a28474eec9dbe74a0107e8bfb33d0751f">M3508</a>,</div>
+<div class="line">    8,</div>
+<div class="line">    <a class="code hl_enumvalue" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a28474eec9dbe74a0107e8bfb33d0751f">M3508</a>,</div>
+<div class="line">    <a class="code hl_variable" href="Infantry_8cpp.html#a8ad1aa6e9f3b5c79e797a9ac735e37da">pitch_zero_offset_ticks</a>,</div>
+<div class="line">    <a class="code hl_variable" href="Infantry_8cpp.html#ad77739da33f21c8882d24e2fecff8143">YAW_VEL_PID</a>,</div>
+<div class="line">    <a class="code hl_variable" href="Infantry_8cpp.html#ac934aa5d311e980958d6ddc464858fab">YAW_POS_PID</a>,</div>
+<div class="line">    <a class="code hl_variable" href="Infantry_8cpp.html#abc376771b0d17187ccf30ac66435de82">PITCH_VEL_PID</a>,</div>
+<div class="line">    <a class="code hl_variable" href="Infantry_8cpp.html#ab0aeccefb25e92d2195c914bef8c78c0">PITCH_POS_PID</a>,</div>
+<div class="line">    <a class="code hl_variable" href="Infantry_8cpp.html#a914be9179942bf8439ce9abc372f8bc7">yaw_static_friction</a>,</div>
+<div class="line">    <a class="code hl_variable" href="Infantry_8cpp.html#a33f6c1c8bd9077a3224435cd22891326">yaw_kinetic_friction</a>,</div>
+<div class="line">    <a class="code hl_variable" href="Infantry_8cpp.html#a30673a77f83408ab6681311170220a8a">pitch_gravity_feedforward</a>,</div>
+<div class="line">    <a class="code hl_variable" href="Infantry_8cpp.html#a7b00de443582840b527f8610e94316a3">pitch_static_friction</a>,</div>
+<div class="line">    <a class="code hl_variable" href="Infantry_8cpp.html#a187deff0a2be11d3a0632017532431ce">pitch_kinetic_friction</a>,</div>
+<div class="line">    <a class="code hl_enumvalue" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4">CANHandler::CANBUS_1</a>,</div>
+<div class="line">    <a class="code hl_enumvalue" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a>,</div>
+<div class="line">    1,</div>
+<div class="line">    (1.0 / 3.0),</div>
+<div class="line">    <a class="code hl_variable" href="Infantry_8cpp.html#ad2140529015bdef1173e030ebef1e7ae">PITCH_LOWER_BOUND</a>,</div>
+<div class="line">    <a class="code hl_variable" href="Infantry_8cpp.html#acc7f892b25436a7b155a82b0cdf86d94">PITCH_UPPER_BOUND</a></div>
+<div class="line">}</div>
+<div class="ttc" id="aDJIMotor_8h_html_aa0b95df57b6ae3d5b5ac026d56968a54a28474eec9dbe74a0107e8bfb33d0751f"><div class="ttname"><a href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a28474eec9dbe74a0107e8bfb33d0751f">M3508</a></div><div class="ttdeci">@ M3508</div><div class="ttdef"><b>Definition</b> DJIMotor.h:43</div></div>
+<div class="ttc" id="aInfantry_8cpp_html_a187deff0a2be11d3a0632017532431ce"><div class="ttname"><a href="Infantry_8cpp.html#a187deff0a2be11d3a0632017532431ce">pitch_kinetic_friction</a></div><div class="ttdeci">const float pitch_kinetic_friction</div><div class="ttdef"><b>Definition</b> Infantry.cpp:40</div></div>
+<div class="ttc" id="aInfantry_8cpp_html_a30673a77f83408ab6681311170220a8a"><div class="ttname"><a href="Infantry_8cpp.html#a30673a77f83408ab6681311170220a8a">pitch_gravity_feedforward</a></div><div class="ttdeci">const float pitch_gravity_feedforward</div><div class="ttdef"><b>Definition</b> Infantry.cpp:38</div></div>
+<div class="ttc" id="aInfantry_8cpp_html_a33f6c1c8bd9077a3224435cd22891326"><div class="ttname"><a href="Infantry_8cpp.html#a33f6c1c8bd9077a3224435cd22891326">yaw_kinetic_friction</a></div><div class="ttdeci">const float yaw_kinetic_friction</div><div class="ttdef"><b>Definition</b> Infantry.cpp:34</div></div>
+<div class="ttc" id="aInfantry_8cpp_html_a7b00de443582840b527f8610e94316a3"><div class="ttname"><a href="Infantry_8cpp.html#a7b00de443582840b527f8610e94316a3">pitch_static_friction</a></div><div class="ttdeci">const float pitch_static_friction</div><div class="ttdef"><b>Definition</b> Infantry.cpp:39</div></div>
+<div class="ttc" id="aInfantry_8cpp_html_a8ad1aa6e9f3b5c79e797a9ac735e37da"><div class="ttname"><a href="Infantry_8cpp.html#a8ad1aa6e9f3b5c79e797a9ac735e37da">pitch_zero_offset_ticks</a></div><div class="ttdeci">constexpr int pitch_zero_offset_ticks</div><div class="ttdef"><b>Definition</b> Infantry.cpp:21</div></div>
+<div class="ttc" id="aInfantry_8cpp_html_a914be9179942bf8439ce9abc372f8bc7"><div class="ttname"><a href="Infantry_8cpp.html#a914be9179942bf8439ce9abc372f8bc7">yaw_static_friction</a></div><div class="ttdeci">const float yaw_static_friction</div><div class="ttdef"><b>Definition</b> Infantry.cpp:33</div></div>
+<div class="ttc" id="aInfantry_8cpp_html_ab0aeccefb25e92d2195c914bef8c78c0"><div class="ttname"><a href="Infantry_8cpp.html#ab0aeccefb25e92d2195c914bef8c78c0">PITCH_POS_PID</a></div><div class="ttdeci">constexpr PID::config PITCH_POS_PID</div><div class="ttdef"><b>Definition</b> Infantry.cpp:37</div></div>
+<div class="ttc" id="aInfantry_8cpp_html_abc376771b0d17187ccf30ac66435de82"><div class="ttname"><a href="Infantry_8cpp.html#abc376771b0d17187ccf30ac66435de82">PITCH_VEL_PID</a></div><div class="ttdeci">constexpr PID::config PITCH_VEL_PID</div><div class="ttdef"><b>Definition</b> Infantry.cpp:36</div></div>
+<div class="ttc" id="aInfantry_8cpp_html_ac934aa5d311e980958d6ddc464858fab"><div class="ttname"><a href="Infantry_8cpp.html#ac934aa5d311e980958d6ddc464858fab">YAW_POS_PID</a></div><div class="ttdeci">constexpr PID::config YAW_POS_PID</div><div class="ttdef"><b>Definition</b> Infantry.cpp:32</div></div>
+<div class="ttc" id="aInfantry_8cpp_html_acc7f892b25436a7b155a82b0cdf86d94"><div class="ttname"><a href="Infantry_8cpp.html#acc7f892b25436a7b155a82b0cdf86d94">PITCH_UPPER_BOUND</a></div><div class="ttdeci">constexpr float PITCH_UPPER_BOUND</div><div class="ttdef"><b>Definition</b> Infantry.cpp:23</div></div>
+<div class="ttc" id="aInfantry_8cpp_html_ad2140529015bdef1173e030ebef1e7ae"><div class="ttname"><a href="Infantry_8cpp.html#ad2140529015bdef1173e030ebef1e7ae">PITCH_LOWER_BOUND</a></div><div class="ttdeci">constexpr float PITCH_LOWER_BOUND</div><div class="ttdef"><b>Definition</b> Infantry.cpp:22</div></div>
+<div class="ttc" id="aInfantry_8cpp_html_ad77739da33f21c8882d24e2fecff8143"><div class="ttname"><a href="Infantry_8cpp.html#ad77739da33f21c8882d24e2fecff8143">YAW_VEL_PID</a></div><div class="ttdeci">constexpr PID::config YAW_VEL_PID</div><div class="ttdef"><b>Definition</b> Infantry.cpp:31</div></div>
+<div class="ttc" id="aclassCANHandler_html_a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4"><div class="ttname"><a href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4">CANHandler::CANBUS_1</a></div><div class="ttdeci">@ CANBUS_1</div><div class="ttdef"><b>Definition</b> CANHandler.h:45</div></div>
+</div><!-- fragment -->
+</div>
+</div>
 <a id="ad8801eb97c2d91be4b45c86f6566c000" name="ad8801eb97c2d91be4b45c86f6566c000"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad8801eb97c2d91be4b45c86f6566c000">&#9670;&#160;</a></span>yaw_desired_angle</h2>
 
@@ -717,6 +854,20 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">float yaw_desired_angle = 0.0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a33f6c1c8bd9077a3224435cd22891326" name="a33f6c1c8bd9077a3224435cd22891326"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a33f6c1c8bd9077a3224435cd22891326">&#9670;&#160;</a></span>yaw_kinetic_friction</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float yaw_kinetic_friction = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -733,7 +884,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a> YAW_POS_PID = {0.5, 0, 0, 90, 2}</td>
+          <td class="memname">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a> YAW_POS_PID = {1, 0, 0, 90, 2}</td>
         </tr>
       </table>
   </td>
@@ -741,6 +892,20 @@ Variables</h2></td></tr>
 <span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
   </tr>
 </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a914be9179942bf8439ce9abc372f8bc7" name="a914be9179942bf8439ce9abc372f8bc7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a914be9179942bf8439ce9abc372f8bc7">&#9670;&#160;</a></span>yaw_static_friction</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float yaw_static_friction = -150</td>
+        </tr>
+      </table>
 </div><div class="memdoc">
 
 </div>
@@ -755,7 +920,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a> YAW_VEL_PID = {350, 0.5, 2.5, 32000, 2000}</td>
+          <td class="memname">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a> YAW_VEL_PID = {181, 3.655 * 10e-3, 4.51 * 2.25, 32000, 1000}</td>
         </tr>
       </table>
   </td>

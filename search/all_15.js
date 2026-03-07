@@ -18,10 +18,11 @@ var searchData=
   ['update_15',['update',['../classSerialCommunication.html#a2655518d96d0f9b59bdc3398ac34bf21',1,'SerialCommunication']]],
   ['updatecans_16',['updateCANs',['../classCANHandler.html#a423563c96d7a7da836a957c5b0c88745',1,'CANHandler']]],
   ['updatepriority_17',['updatePriority',['../classTRMutex.html#a38565f6d25cef7576e7ad4d5d96c3ccb',1,'TRMutex']]],
-  ['use_5fcelsius_18',['use_celsius',['../classBNO055.html#a8b5648e70366a3eeb94f4529a550a4f3',1,'BNO055']]],
-  ['use_5fdegrees_19',['use_degrees',['../classBNO055.html#a7e9abb10d31dec78f0d6aae84a2d3dfb',1,'BNO055']]],
-  ['use_5fdps_20',['use_dps',['../classBNO055.html#a06468e20ab6978b8c4d13363958b2428',1,'BNO055']]],
-  ['use_5fmss_21',['use_mss',['../classBNO055.html#a8c4a62acd9d260dac947752212e40028',1,'BNO055']]],
-  ['useabsencoder_22',['useAbsEncoder',['../classDJIMotor.html#aa9af1d0a5135cc17bb97a777ecf81137',1,'DJIMotor']]],
-  ['user_5fctrl_23',['USER_CTRL',['../MPU6050_8h.html#abd9eebb35aad7616fe0414952e2d477d',1,'MPU6050.h']]]
+  ['updateyawphasefromencoder_18',['updateYawPhaseFromEncoder',['../classChassisSubsystem.html#aa17ae6e8494d118d8f761d0e66679fc1',1,'ChassisSubsystem']]],
+  ['use_5fcelsius_19',['use_celsius',['../classBNO055.html#a8b5648e70366a3eeb94f4529a550a4f3',1,'BNO055']]],
+  ['use_5fdegrees_20',['use_degrees',['../classBNO055.html#a7e9abb10d31dec78f0d6aae84a2d3dfb',1,'BNO055']]],
+  ['use_5fdps_21',['use_dps',['../classBNO055.html#a06468e20ab6978b8c4d13363958b2428',1,'BNO055']]],
+  ['use_5fmss_22',['use_mss',['../classBNO055.html#a8c4a62acd9d260dac947752212e40028',1,'BNO055']]],
+  ['useabsencoder_23',['useAbsEncoder',['../classDJIMotor.html#aa9af1d0a5135cc17bb97a777ecf81137',1,'DJIMotor']]],
+  ['user_5fctrl_24',['USER_CTRL',['../MPU6050_8h.html#abd9eebb35aad7616fe0414952e2d477d',1,'MPU6050.h']]]
 ];

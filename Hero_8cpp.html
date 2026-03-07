@@ -89,6 +89,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="Jetson_8h_source.html">util/communications/jetson/Jetson.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="DJIMotor_8h_source.html">util/motor/DJIMotor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="BNO055_8h_source.html">util/peripherals/imu/BNO055.h</a>&quot;</code><br />
+<code>#include &quot;util/peripherals/encoder/MA4.h&quot;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
@@ -115,6 +116,8 @@ Variables</h2></td></tr>
 <tr class="separator:ad2140529015bdef1173e030ebef1e7ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc7f892b25436a7b155a82b0cdf86d94" id="r_acc7f892b25436a7b155a82b0cdf86d94"><td class="memItemLeft" align="right" valign="top">constexpr float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_8cpp.html#acc7f892b25436a7b155a82b0cdf86d94">PITCH_UPPER_BOUND</a> {35.0}</td></tr>
 <tr class="separator:acc7f892b25436a7b155a82b0cdf86d94"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adce4743b0f343bb1c72925474a4dbb2f" id="r_adce4743b0f343bb1c72925474a4dbb2f"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_8cpp.html#adce4743b0f343bb1c72925474a4dbb2f">movavg</a> = 0.0</td></tr>
+<tr class="separator:adce4743b0f343bb1c72925474a4dbb2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb2a943255ed007cbac8f827b9877171" id="r_adb2a943255ed007cbac8f827b9877171"><td class="memItemLeft" align="right" valign="top">constexpr float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_8cpp.html#adb2a943255ed007cbac8f827b9877171">JOYSTICK_YAW_SENSITIVITY_DPS</a> = 600</td></tr>
 <tr class="separator:adb2a943255ed007cbac8f827b9877171"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab84cb1918fa80bfb0b706bb125f3a2a6" id="r_ab84cb1918fa80bfb0b706bb125f3a2a6"><td class="memItemLeft" align="right" valign="top">constexpr float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_8cpp.html#ab84cb1918fa80bfb0b706bb125f3a2a6">JOYSTICK_PITCH_SENSITIVITY_DPS</a> = 300</td></tr>
@@ -465,6 +468,20 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">DigitalOut led0 = PC_1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="adce4743b0f343bb1c72925474a4dbb2f" name="adce4743b0f343bb1c72925474a4dbb2f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adce4743b0f343bb1c72925474a4dbb2f">&#9670;&#160;</a></span>movavg</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double movavg = 0.0</td>
         </tr>
       </table>
 </div><div class="memdoc">

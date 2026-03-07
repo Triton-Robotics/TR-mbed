@@ -15,11 +15,11 @@ var searchData=
   ['mi2c_12',['mi2c',['../classAdafruit__SSD1306__I2c.html#abf004a7e21f2653ad8dcff8c8f812831',1,'Adafruit_SSD1306_I2c']]],
   ['mi2caddress_13',['mi2cAddress',['../classAdafruit__SSD1306__I2c.html#a3516332f68d7e4781a817c621b5e8c6a',1,'Adafruit_SSD1306_I2c']]],
   ['mode_14',['mode',['../structOmniWheelSubsystem_1_1ChassisState.html#ab4c658cb76556851297c7bf385e2f12d',1,'OmniWheelSubsystem::ChassisState']]],
-  ['motor_15',['motor',['../classTestBench.html#ac4eb309ea11abb664c2b12611346d205',1,'TestBench']]],
-  ['motorcount_16',['motorCount',['../classDJIMotor.html#abddb0762058a57a363b7e3c3a304bd69',1,'DJIMotor']]],
-  ['motorid_17',['motorID',['../structDJIMotor_1_1config.html#affe28b5515a3037dd3a2936aea18b8b6',1,'DJIMotor::config']]],
-  ['mouse_5fsensitivity_5fpitch_5fdps_18',['MOUSE_SENSITIVITY_PITCH_DPS',['../Infantry_8cpp.html#ad35d729e5d44b9e47fcf8f3a05775544',1,'Infantry.cpp']]],
-  ['mouse_5fsensitivity_5fyaw_5fdps_19',['MOUSE_SENSITIVITY_YAW_DPS',['../Infantry_8cpp.html#a9951e306582674e150e70105fe176de8',1,'Infantry.cpp']]],
+  ['motorcount_15',['motorCount',['../classDJIMotor.html#abddb0762058a57a363b7e3c3a304bd69',1,'DJIMotor']]],
+  ['motorid_16',['motorID',['../structDJIMotor_1_1config.html#affe28b5515a3037dd3a2936aea18b8b6',1,'DJIMotor::config']]],
+  ['mouse_5fsensitivity_5fpitch_5fdps_17',['mouse_sensitivity_pitch_dps',['../Infantry_8cpp.html#ad35d729e5d44b9e47fcf8f3a05775544',1,'MOUSE_SENSITIVITY_PITCH_DPS:&#160;Infantry.cpp'],['../Sentry_8cpp.html#ad35d729e5d44b9e47fcf8f3a05775544',1,'MOUSE_SENSITIVITY_PITCH_DPS:&#160;Sentry.cpp']]],
+  ['mouse_5fsensitivity_5fyaw_5fdps_18',['mouse_sensitivity_yaw_dps',['../Infantry_8cpp.html#a9951e306582674e150e70105fe176de8',1,'MOUSE_SENSITIVITY_YAW_DPS:&#160;Infantry.cpp'],['../Sentry_8cpp.html#a9951e306582674e150e70105fe176de8',1,'MOUSE_SENSITIVITY_YAW_DPS:&#160;Sentry.cpp']]],
+  ['movavg_19',['movavg',['../Hero_8cpp.html#adce4743b0f343bb1c72925474a4dbb2f',1,'movavg:&#160;Hero.cpp'],['../TestBench_8cpp.html#adce4743b0f343bb1c72925474a4dbb2f',1,'movavg:&#160;TestBench.cpp']]],
   ['mspi_20',['mspi',['../classAdafruit__SSD1306__Spi.html#a578d37e6ad2f57e66ceebe003abc7b58',1,'Adafruit_SSD1306_Spi']]],
   ['multiturn_21',['multiTurn',['../classDJIMotor.html#a6c02fbe9de17133a2f5d0004676a247f',1,'DJIMotor']]]
 ];
