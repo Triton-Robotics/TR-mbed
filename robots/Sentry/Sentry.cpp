@@ -232,6 +232,8 @@ class Sentry : public BaseRobot {
         } else {
             chassis_.setWheelPower({0, 0, 0, 0});
             des_turret_state.turret_mode = TurretState::SLEEP;
+            des_turret_state.yaw_angle_degs = imuAngles.yaw;
+            des_turret_state.pitch_angle_degs = 0;
         }
 
         // Shooter Logic
