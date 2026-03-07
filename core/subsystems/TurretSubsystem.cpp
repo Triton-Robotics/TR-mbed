@@ -105,12 +105,19 @@ void TurretSubsystem::periodic(float chassisRpm)
     {
         // Yaw calc
         float deltaYaw = calculateDeltaYaw(turret_state.yaw_angle_degs, des_yaw);
-        int dir = 0; // TODO FIX THIS
-        if(deltaYaw < 10 && deltaYaw > 0.001){
-            dir = log(deltaYaw);
-        }else if(deltaYaw > -10 && deltaYaw < -0.001){
-            dir = log(-1 * deltaYaw);
+        
+        if (std::isnan(deltaYaw) || std::isnan(turret_state.pitch_angle_degs)) { // On conn break
+            turret_time = us_ticker_read();
+            yaw.setSpeed(0);
+            pitch.setSpeed(0);
+            yaw.pidSpeed.resetErrorIntegral();
+            pitch.pidSpeed.resetErrorIntegral();
+            return;
         }
+
+        int dir = 0;
+        if      (deltaYaw >  0.0f) dir = 1;
+        else if (deltaYaw <  0.0f) dir = -1;
         
         yaw.pidPosition.feedForward = -chassis_rpm * 2 * PI / 60;
 
@@ -124,7 +131,7 @@ void TurretSubsystem::periodic(float chassisRpm)
             des_yaw_velo, 
             turret_state.yaw_velo_rad_s, 
             static_cast<float>(us_ticker_read() - turret_time) / 1000);
-        // printf("yp %.2f | %.2f\n", des_yaw_power, deltaYaw);
+        printf("yp %.2f | %.2f\n", des_yaw_power, deltaYaw);
         yaw.setPower(des_yaw_power);
 
 
@@ -146,8 +153,8 @@ void TurretSubsystem::periodic(float chassisRpm)
             static_cast<float>(us_ticker_read() - turret_time) / 1000
         );
         pitch.setSpeed(des_pitch_velo);
-        // float des_pitch_power = pitch.pidSpeed.calculate(des_pitch_velo, turret_state.pitch_velo_rad_s, us_ticker_read() - turret_time);
-        // printf("pp %.2f | %.2f\n", des_pitch_power, -turret_state.pitch_angle);
+        float des_pitch_power = pitch.pidSpeed.calculate(des_pitch_velo, turret_state.pitch_velo_rad_s, static_cast<float>(us_ticker_read() - turret_time) / 1000);
+        printf("pp %.2f | %.2f\n", des_pitch_power, -turret_state.pitch_angle_degs);
         // pitch.setPower(des_pitch_power);
     }
 

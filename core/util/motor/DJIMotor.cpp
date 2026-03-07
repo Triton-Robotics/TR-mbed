@@ -323,7 +323,10 @@ float DJIMotor::getData(motorDataType data) {
         if (data == VELOCITY && type == M3508) {
             return ((float)(motorData[data]) / M3508_GEAR_RATIO) * 2 * PI / 60;
         }
-        return (float)(motorData[data]) * 2 * PI / 60;
+        else if (data == VELOCITY) {
+            return (float)(motorData[data]) * 2 * PI / 60;
+        }
+        return (float)(motorData[data]);
     }
 
     else if (data == MULTITURNANGLE)

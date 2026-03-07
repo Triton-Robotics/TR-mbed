@@ -7,7 +7,7 @@
  * @param radius radius in meters
  */
 ChassisSubsystem::ChassisSubsystem(const Config &config)
-    : power_limit(50.0F),
+    : power_limit(60),
       LF(config.left_front_can_id, CAN_BUS_TYPE, MOTOR_TYPE),
       RF(config.right_front_can_id, CAN_BUS_TYPE, MOTOR_TYPE),
       LB(config.left_back_can_id, CAN_BUS_TYPE, MOTOR_TYPE),
@@ -160,38 +160,38 @@ float ChassisSubsystem::limitAcceleration(float desiredRPM, float previousRPM, i
     // }
 }
 
-float ChassisSubsystem::p_theory(int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm){
-    float krpm2 = 0.000000000616869908524917;
-    float kpwr2 = 2.8873053310419543e-26;
-    float kboth = 0.00000000679867734389254;
-    float a = 0.019247609510979;
+double ChassisSubsystem::p_theory(int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm){
+    double krpm2 = 0.000000000616869908524917;
+    double kpwr2 = 2.8873053310419543e-26;
+    double kboth = 0.00000000679867734389254;
+    double a = 0.019247609510979;
 
 
-    float p1 =  (kboth * LeftFrontPower * LeftFrontRpm) +  (krpm2 * LeftFrontRpm * LeftFrontRpm) +  (kpwr2 * LeftFrontPower * LeftFrontPower) + a;
-    float p2 =  (kboth * RightFrontPower * RightFrontRpm) +  (krpm2 * RightFrontRpm * RightFrontRpm) +  (kpwr2 * RightFrontPower * RightFrontPower) + a;
-    float p3 =  (kboth * LeftBackPower * LeftBackRpm) +  (krpm2 * LeftBackRpm * LeftBackRpm) +  (kpwr2 * LeftBackPower * LeftBackPower) + a;
-    float p4 =  (kboth * RightBackPower * RightBackRpm) +  (krpm2 * RightBackRpm * RightBackRpm) +  (kpwr2 * RightBackPower * RightBackPower) + a;
+    double p1 =  (kboth * LeftFrontPower * LeftFrontRpm) +  (krpm2 * LeftFrontRpm * LeftFrontRpm) +  (kpwr2 * LeftFrontPower * LeftFrontPower) + a;
+    double p2 =  (kboth * RightFrontPower * RightFrontRpm) +  (krpm2 * RightFrontRpm * RightFrontRpm) +  (kpwr2 * RightFrontPower * RightFrontPower) + a;
+    double p3 =  (kboth * LeftBackPower * LeftBackRpm) +  (krpm2 * LeftBackRpm * LeftBackRpm) +  (kpwr2 * LeftBackPower * LeftBackPower) + a;
+    double p4 =  (kboth * RightBackPower * RightBackRpm) +  (krpm2 * RightBackRpm * RightBackRpm) +  (kpwr2 * RightBackPower * RightBackPower) + a;
     
-    float p_tot = p1 + p2 + p3 + p4; 
+    double p_tot = p1 + p2 + p3 + p4; 
 
-    float A = 224.9;
-    float B = 215.8;
-    float C = 0.7955;
+    double A = 224.9;
+    double B = 215.8;
+    double C = 0.7955;
 
-    float p_tot_c = (A * p_tot * p_tot) + (B * p_tot) + C;
+    double p_tot_c = (A * p_tot * p_tot) + (B * p_tot) + C;
 
     return p_tot_c;
 }
 
-float ChassisSubsystem::Bisection(int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm, float chassisPowerLimit) {
-    float scale = 0.5; // initial scale
-    float precision = 0.25; // initial precision
-    float powerInit = p_theory(LeftFrontPower, RightFrontPower, LeftBackPower, RightBackPower, LeftFrontRpm, RightFrontRpm, LeftBackRpm, RightBackRpm);
+double ChassisSubsystem::Bisection(int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm, float chassisPowerLimit) {
+    double scale = 0.5; // initial scale
+    double precision = 0.25; // initial precision
+    double powerInit = p_theory(LeftFrontPower, RightFrontPower, LeftBackPower, RightBackPower, LeftFrontRpm, RightFrontRpm, LeftBackRpm, RightBackRpm);
 
 
     if (powerInit > chassisPowerLimit) {
 
-        float powerScaled = p_theory(LeftFrontPower*scale, RightFrontPower*scale, LeftBackPower*scale, RightBackPower*scale, LeftFrontRpm, RightFrontRpm, LeftBackRpm, RightBackRpm);
+        double powerScaled = p_theory(LeftFrontPower*scale, RightFrontPower*scale, LeftBackPower*scale, RightBackPower*scale, LeftFrontRpm, RightFrontRpm, LeftBackRpm, RightBackRpm);
         
         for (int i = 0; i < 6; i++) {
             
@@ -290,7 +290,7 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     int r3 = abs(getMotorSpeed(MotorLocation::LEFT_BACK, RPM));
     int r4 = abs(getMotorSpeed(MotorLocation::RIGHT_BACK, RPM));
 
-    float scale = Bisection(p1, p2, p3, p4, r1, r2, r3, r4, power_limit);
+    double scale = Bisection(p1, p2, p3, p4, r1, r2, r3, r4, power_limit);
 
 
 
@@ -358,9 +358,9 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
         else if (yawCurrent > 360.0) {
             yawCurrent -= 360.0;
         }
-        if (yawCurrent == -1.0) {
-            yawCurrent = (1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
-        }
+        // if (yawCurrent == -1.0) {
+        //     yawCurrent = (1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
+        // }
         desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yawCurrent);
     }
     else if (mode == YAW_ORIENTED)
@@ -373,9 +373,9 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
         else if (yawCurrent > 360.0) {
             yawCurrent -= 360.0;
         }
-        if (yawCurrent == -1.0) {
-            yawCurrent = (1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
-        }
+        // if (yawCurrent == -1.0) {
+        //     yawCurrent = (1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
+        // }
         desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yawCurrent);
     }
     else if (mode == ROBOT_ORIENTED)
@@ -391,9 +391,9 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
         else if (yawCurrent > 360.0) {
             yawCurrent -= 360.0;
         }
-        if (yawCurrent == -1.0) {
-            yawCurrent = (1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
-        }
+        // if (yawCurrent == -1.0) {
+        //     yawCurrent = (1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
+        // }
         double yawDelta = yawOdom - yawCurrent;
         double imuDelta = imuOdom - imuAngles.yaw;
         double delta = imuDelta - yawDelta;
@@ -658,9 +658,9 @@ int ChassisSubsystem::motorPIDtoPower(MotorLocation location, double speed, uint
     }
     
     int power = 0;
-    PID pids[4] = {pid_LF,pid_RF,pid_LB,pid_RB};
+    PID* pids[4] = {&pid_LF, &pid_RF, &pid_LB, &pid_RB};
     
-    power = pids[location].calculate(speed, getMotorSpeed(location, RPM), dt);
+    power = pids[location]->calculate(speed, getMotorSpeed(location, RPM), dt);
     // printf("[%d]",power);
 
     if(speed == 0) {
@@ -674,7 +674,7 @@ int ChassisSubsystem::motorPIDtoPower(MotorLocation location, double speed, uint
 
 
 bool ChassisSubsystem::setOdomReference() {
-    yawOdom = -(1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0;
+    // yawOdom = -(1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0;
     imuOdom = imuAngles.yaw;
     return true;
 }

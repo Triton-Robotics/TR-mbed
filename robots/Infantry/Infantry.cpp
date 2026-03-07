@@ -52,7 +52,7 @@ constexpr PID::config INDEXER_PID_POS = {0.1, 0, 0.001};
 
 // Config variables
 TurretSubsystem::config turret_config = {
-    4,
+    7,
     M3508,
     8,
     M3508,
@@ -149,7 +149,7 @@ class Infantry : public BaseRobot {
         chassis_(ChassisSubsystem::Config{
             1,      // left_front_can_id
             3,      // right_front_can_id
-            6,      // left_back_can_id
+            4,      // left_back_can_id
             2,      // right_back_can_id
             0.22617,  // radius
             0.065,    // speed_pid_ff_ks
@@ -168,6 +168,8 @@ class Infantry : public BaseRobot {
     void periodic(unsigned long dt_us) override {
         // TODO this should be threaded inside imu instead
         imuAngles = imu_.read();
+
+        chassis_.power_limit = referee_.robot_status.chassis_power_limit;
 
         if (!imu_initialized) {
             IMU::EulerAngles angles = imu_.getImuAngles();
@@ -261,7 +263,7 @@ class Infantry : public BaseRobot {
         // %.2f\n", remote_.getChassisX()); printf("switch: %d\n",
         // remote_.getSwitch(Remote::Switch::RIGHT_SWITCH)); printf("imu:
         // %.2f\n", imu.getImuAngles().yaw);
-        printf("%.2f\n", encoder_.encoderMovingAverage());
+        // printf("%.2f\n", encoder_.encoderMovingAverage());
     }
 
     void end_of_loop() override {}

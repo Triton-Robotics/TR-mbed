@@ -202,11 +202,13 @@ class CANHandler{
             
             if(isWrite == 0) {
                 errorCount++;
-                can.reset();
+                if (errorCount > 10) {
+                    can.reset();
+                }
             }
-            else{
-                errorCount = 0;
-            }
+            // else{
+            //     errorCount = 0;
+            // }
 
             if (errorCount > 1000){
                 //printf("[CAN Connection Issues SEND]\n");

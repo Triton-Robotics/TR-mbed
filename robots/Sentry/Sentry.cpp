@@ -199,9 +199,9 @@ class Sentry : public BaseRobot {
         jetson_state = jetson.read();
 
         // Chassis logic
-        if(jetson_state.localization_calibration == 1){
-            chassis_.setOdomReference();
-        }
+        // if(jetson_state.localization_calibration == 1){
+        //     chassis_.setOdomReference();
+        // }
 
         if (remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP) {
             des_chassis_state.vOmega = 0;
