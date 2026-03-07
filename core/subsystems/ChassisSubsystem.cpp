@@ -25,6 +25,7 @@ ChassisSubsystem::ChassisSubsystem(const Config &config)
     setOmniKinematics(config.radius);
     m_OmniKinematicsLimits.max_Vel = MAX_VEL; // m/s
     m_OmniKinematicsLimits.max_vOmega = 8; // rad/s
+    yawAlign = config.yaw_initial_offset_ticks;
 
     PEAK_POWER_ALL = 10000;
     PEAK_POWER_SINGLE = 8000;

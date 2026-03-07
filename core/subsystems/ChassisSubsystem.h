@@ -368,6 +368,8 @@ private:
     // ChassisKalman chassisKalman;
     double testAngle;
     int lastTimeMs;
+    // Chassis Align
+    int yawAlign;
 };
 
 #endif // TR_EMBEDDED_CHASSIS_SUBSYSTEM_H
