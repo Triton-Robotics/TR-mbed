@@ -93,6 +93,7 @@ void BNO055::get_quaternion(BNO055_QUATERNION_TypeDef *result)
 //    printf("IMU Write result: %i\n", writeResult);
     if (!writeResult)  {
         if (cantReadDataCount > 0) {
+            printf("RESET IMU\n");
             reset();
             cantReadDataCount = 0;
         }
