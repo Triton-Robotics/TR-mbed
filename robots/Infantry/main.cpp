@@ -71,6 +71,7 @@ BNO055_ANGULAR_POSITION_typedef magYaw;
 ISM330::ISM330_VECTOR_TypeDef imuAccelISM;
 ISM330::ISM330_VECTOR_TypeDef imuGyroISM;
 ISM330::ISM330_ANGULAR_POSITION_typedef imuAnglesISM;
+ISM330::ISM330_ANGULAR_POSITION_typedef imuAnglesISM_Mah;
 ISM330::ISM330_ANGULAR_POSITION_typedef liMagYaw;
 
 LIS3MDL::LIS3MDL_VECTOR_TypeDef liMagField;
@@ -123,12 +124,10 @@ int main(){
         
         //imu.get_mag(&magField);
 
-        magYaw.yaw= atan2(magField.y,magField.x)/2/M_PI*360;
-
-        float psi_s_BNO = getPsi(imuAngles.pitch, imuAngles.roll, magField.x, magField.y, magField.z);
+        //float psi_s_BNO = getPsi(imuAngles.pitch, imuAngles.roll, magField.x, magField.y, magField.z);
 
         
-        mag.getRawMagVector(liMagFieldRaw);
+        //mag.getRawMagVector(liMagFieldRaw);
 
         //mag.getMagVector(liMagField);
 
@@ -140,21 +139,22 @@ int main(){
 
 
         imu2.getAGVectors(imuAccelISM, imuGyroISM);
-        imu2.getEulerAngles(imuAnglesISM, (timer-prev_time) / 1000, psi_li);
-
-        printf("%0.6f,%0.6f,%0.6f\r\n", liMagField.x, liMagField.y, liMagField.z);
-
-        //printf("BNO Angle: %.2f: X Mag: %f, Y Mag: %f, Z Mag: %f,\n", imuAngles.yaw, liMagField.x, liMagField.y, liMagField.z);
+        float mag = sqrtf(imuAccelISM.x*imuAccelISM.x + imuAccelISM.y*imuAccelISM.y + imuAccelISM.z*imuAccelISM.z);
         
-        //printf("BNO Yaw: %.2f| ISM Yaw: %.2f | Mag Yaw: %.2f | Psi_s: %.2f\n", imuAngles.yaw, imuAnglesISM.yaw, magYaw.yaw, psi_s);
+        //imu2.getEulerAngles(imuAnglesISM, (timer-prev_time) / 1000, psi_li);
 
-        //printf("Accel %.2f, %.2f, %.2f | Gyro %.2f, %.2f, %.2f | KF Pitch: %.2f | KF Yaw: %.2f\n", ax, ay, az, gx, gy, gz, kf_pitch, kf_yaw);
+        float dt = (timer-prev_time) / 1000000.0f;
+        //imu2.madgwickUpdate(liMagField.x, liMagField.y, liMagField.z, dt);
         
-        //printf("ISM Accel: %.2f, %.2f, %.2f | ISM Gyro: %.2f, %.2f, %.2f | ISM Pitch: %.2f | ISM Roll: %.2f\n", imuAccelISM.x, imuAccelISM.y, imuAccelISM.z, imuGyroISM.x, imuGyroISM.y, imuGyroISM.z, imuAnglesISM.pitch, imuAnglesISM.roll);
+        imu2.madgwickUpdateIMU(dt);
+        
+        imu2.computeAngles(imuAnglesISM);
+        imu2.mahonyUpdate(liMagField.x, liMagField.y, liMagField.z, dt);
+        //imu2.mahonyUpdateIMU((timer-prev_time) / 1000);
 
-        //printf("BNO Yaw: %.2f | Pitch: %.2f | Roll: %.2f| ISM Yaw: %.2f | Pitch: %.2f | Roll: %.2f | w_z: %.2f\n", imuAngles.yaw, imuAngles.pitch, imuAngles.roll, imuAnglesISM.yaw, imuAnglesISM.pitch, imuAnglesISM.roll, imuGyroISM.z);
-        
-        //printf("BNO Yaw delta: %.2f| ISM True yaw: %.2f| ISM Yaw delta: %.2f | Yaw Delta: %.2f\n", BNO_OffsetYaw, imuAnglesISM.yaw, ISM_OffsetYaw, yawDiff);
+        imu2.computeAnglesMah(imuAnglesISM_Mah);
+
+        //printf("%0.6f,%0.6f,%0.6f\r\n", liMagField.x, liMagField.y, liMagField.z);
 
         prev_time = timer;
         ThisThread::sleep_for(1ms);

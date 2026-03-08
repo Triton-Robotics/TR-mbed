@@ -38,7 +38,7 @@ LIS3MDL::LIS3MDL(I2C &i2c, uint8_t address)  //Put in an i2c object, and the dev
 // Begin function
 bool LIS3MDL::begin() noexcept
 {
-    i2c.frequency(100000);
+    i2c.frequency(400000);
 
     i2c.write(writeAddr, SWRST, 2, false); 
     ThisThread::sleep_for(100ms);
@@ -96,17 +96,18 @@ std::tuple<float, float, float> LIS3MDL::readMagnetometer() noexcept
 
 static constexpr float declinationAngle = 10.54; //According to https://www.magnetic-declination.com/
 
-//offset values (-0.035661999999999985,-0.348071,-1.693949) got this from https://github.com/italocjs/magnetometer_calibration/blob/main/python_scripts/calibration_plotter.py
-//scale values (0.884884562265963,0.7896518068044655,1.6569235504690991)
-//2nd pass scale 2.330403,2.657667,0.455660
+//got this from https://github.com/italocjs/magnetometer_calibration/blob/main/python_scripts/calibration_plotter.py
 
-static constexpr float hardMagX = -0.035661999999999985;
-static constexpr float hardMagY = -0.348071;
-static constexpr float hardMagZ = -1.693949;
+// offset values (0.28632,0.3289975,-1.111517)
+// scale values (3.3335538229566826,0.8444705358913188,0.6596976624439091)
 
-static constexpr float softMagX = 0.884884562265963* 2.330403;
-static constexpr float softMagY = 0.7896518068044655* 2.657667;
-static constexpr float softMagZ = 1.6569235504690991* 0.455660;
+static constexpr float hardMagX = 0.28632;
+static constexpr float hardMagY = 0.3289975;
+static constexpr float hardMagZ = -1.111517;
+
+static constexpr float softMagX = 3.3335538229566826;
+static constexpr float softMagY = 0.8444705358913188;
+static constexpr float softMagZ = 0.6596976624439091;
 
 void LIS3MDL::calibratedMagXY(LIS3MDL_VECTOR_TypeDef& magVector)  {
     auto [mx, my, mz] = readMagnetometer(); 
@@ -140,5 +141,20 @@ void LIS3MDL::getRawMagVector(LIS3MDL_VECTOR_TypeDef& magVector) {
     magVector.x = rawX;
     magVector.y = rawY;
     magVector.z = rawZ;
+}
+
+const char statusReg = 0x27;
+
+bool LIS3MDL::dataReady() noexcept {
+    // i2c.write(writeAddr, &statusReg, 1, false);
+    // char status; //Reading buffer
+    // i2c.read(readAddr, &status, 1, true);
+    // if (status & 0x08) {
+    //     return true;
+    // }
+    // else {
+    //     return false;
+    // }
+    return true;
 }
 

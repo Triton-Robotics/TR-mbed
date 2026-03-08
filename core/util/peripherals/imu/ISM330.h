@@ -57,6 +57,17 @@ public:
     */
     void reset() noexcept;
 
+    void calibrate() noexcept; 
+
+    // Raw offsets for accel and gyro
+    float axBias;
+    float ayBias;
+    float azBias;
+    float wxBias;
+    float wyBias;
+    float wzBias;
+
+
 
     //Accel and Gyro Reading functions
 
@@ -87,6 +98,8 @@ public:
 
 
     //Reads Accel and Gyro sequentially, reduces I2C transactions
+    std::tuple<float, float, float, float, float, float> readAGraw() noexcept; //used during calibration
+
     std::tuple<float, float, float, float, float, float> readAG() noexcept;
 
 
@@ -100,24 +113,81 @@ public:
 
     void getEulerAngles(ISM330_ANGULAR_POSITION_typedef& angles, float dt, float psi_s);
 
+    void getXLVector(ISM330_VECTOR_TypeDef& accelVector);
 
+    void getGyroVector(ISM330_VECTOR_TypeDef& gyroVector);
 
+    // Madgwick Sensor Fusion
 
+    void madgwickStart(float gain);
+    
+    void madgwickUpdate(float mx, float my, float mz, float dt);
+    
+    
+    void madgwickUpdateIMU(float dt);
+    
+    
+    void computeAngles(ISM330_ANGULAR_POSITION_typedef& angles); //Madgwick Compute Euler Anglse
+
+    void computeAnglesMah(ISM330_ANGULAR_POSITION_typedef& angles); //Mahony Compute Euler Angles
+    
+    // Mahony Sensor Fusion
+    //Adafruit_Mahony(float prop_gain, float int_gain);
+    void mahonyStart(float prop_gain, float int_gain);
+    
+    void mahonyUpdate(float mx, float my, float mz, float dt);
+    
+    void mahonyUpdateIMU(float dt);
+    
+    float getKp() { return twoKp / 2.0f; }
+    
+    void setKp(float Kp) { twoKp = 2.0f * Kp; }
+    
+    float getKi() { return twoKi / 2.0f; }
+    
+    void setKi(float Ki) { twoKi = 2.0f * Ki; }
+    
+    
+    
+    
+    
     private:
     I2C &i2c;
     uint8_t _address;
     uint8_t whoAmIReading;
-
-
-   
+    
+    
+    
     //Raw I2C readings to actual measurements
     std::tuple<float, float, float> readingToAccel(const uint8_t *readings);
     std::tuple<float, float, float> readingToGyro(const uint8_t *readings);
-
-
+    
+    
     //Reading Accel one at a time
     std::tuple<float, float, float> readAccel() noexcept;
     std::tuple<float, float, float> readGyro() noexcept;
+    
+    float invSqrt(float x); //Inverse square root, used for normalizing vectors
+    float beta; // algorithm gain
+    float q0;
+    float q1;
+    float q2;
+    float q3; // quaternion of sensor frame relative to auxiliary frame
+    float invSampleFreq;
+    float grav[3]; // gravity vector 
+
+    //Mahony Quaternions
+    float mahq0;
+    float mahq1;
+    float mahq2;
+    float mahq3;
+
+    float twoKp; // 2 * proportional gain (Kp)
+  float twoKi; // 2 * integral gain (Ki)
+  float integralFBx, integralFBy,
+      integralFBz; // integral error terms scaled by Ki
+
+bool anglesComputed = false; // Flag for whether or not angles have been computed
 };
 
 

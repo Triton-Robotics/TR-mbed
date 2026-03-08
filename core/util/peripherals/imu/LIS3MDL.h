@@ -31,6 +31,7 @@ public:
 
     void getRawMagVector(LIS3MDL_VECTOR_TypeDef& magVector);
 
+    bool dataReady() noexcept;
 
 
 
