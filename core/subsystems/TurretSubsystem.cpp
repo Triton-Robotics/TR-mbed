@@ -131,7 +131,7 @@ void TurretSubsystem::periodic(float chassisRpm)
             des_yaw_velo, 
             turret_state.yaw_velo_rad_s, 
             static_cast<float>(us_ticker_read() - turret_time) / 1000);
-        // printf("yp %.2f | %.2f\n", des_yaw_power, deltaYaw);
+        printf("yp %.2f | %.2f\n", des_yaw_power, deltaYaw);
         yaw.setPower(des_yaw_power);
 
 
@@ -153,8 +153,8 @@ void TurretSubsystem::periodic(float chassisRpm)
             static_cast<float>(us_ticker_read() - turret_time) / 1000
         );
         pitch.setSpeed(des_pitch_velo);
-        // float des_pitch_power = pitch.pidSpeed.calculate(des_pitch_velo, turret_state.pitch_velo_rad_s, static_cast<float>(us_ticker_read() - turret_time) / 1000);
-        // printf("pp %.2f | %.2f\n", des_pitch_power, -turret_state.pitch_angle_degs);
+        float des_pitch_power = pitch.pidSpeed.calculate(des_pitch_velo, turret_state.pitch_velo_rad_s, static_cast<float>(us_ticker_read() - turret_time) / 1000);
+        printf("pp %.2f | %.2f\n", des_pitch_power, des_pitch-turret_state.pitch_angle_degs);
         // pitch.setPower(des_pitch_power);
     }
 

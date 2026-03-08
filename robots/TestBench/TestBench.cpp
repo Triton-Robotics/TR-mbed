@@ -12,6 +12,7 @@
 #include "util/motor/DJIMotor.h"
 #include "util/peripherals/imu/BNO055.h"
 #include "util/peripherals/encoder/MA4.h"
+#include "util/peripherals/imu/ISM330.h"
 
 #include <algorithm>
 #include <pinmap.h>
@@ -123,7 +124,8 @@ IMU::EulerAngles imuAngles;
 class Infantry : public BaseRobot {
   public:
     I2C i2c_;
-    BNO055 imu_;
+    // BNO055 imu_;
+    ISM330 imu_;
     MA4 encoder_;  // Absolute encoder for yaw position
     // TODO: put the BufferedSerial inside Jetson (idk if we wanna do that tho
     // for SPI)
@@ -143,7 +145,7 @@ class Infantry : public BaseRobot {
         : BaseRobot(config),
           // clang-format off
         i2c_(IMU_I2C_SDA, IMU_I2C_SCL), 
-        imu_(i2c_, IMU_RESET, MODE_NDOF),
+        imu_(i2c_, 0x6B),
         encoder_(PA_7),
         jetson_raw_serial(PC_12, PD_2,115200), // TODO: check higher baud to see if still works
         jetson(jetson_raw_serial),
@@ -173,12 +175,19 @@ class Infantry : public BaseRobot {
 
     void init() override {
         timer = us_ticker_read();
+        imu_.begin();
     }
 
     void periodic(unsigned long dt_us) override {
         // TODO this should be threaded inside imu instead
-        imuAngles = imu_.read();
+        // imuAngles = imu_.read();
+        //imu2.madgwickUpdate(liMagField.x, liMagField.y, liMagField.z, dt);
+        ISM330::ISM330_VECTOR_TypeDef imuAccelISM;
+        ISM330::ISM330_VECTOR_TypeDef imuGyroISM;
+        imu_.getAGVectors(imuAccelISM, imuGyroISM);
+        imu_.madgwickUpdateIMU(dt_us / 1000000.0);
 
+        imuAngles = imu_.getImuAngles();
         // if (!imu_initialized) {
         //     IMU::EulerAngles angles = imu_.getImuAngles();
         //     if (angles.pitch == 0.0 && angles.yaw == 0.0 && angles.roll == 0.0) {
@@ -229,6 +238,9 @@ class Infantry : public BaseRobot {
         } else {
             chassis_.setWheelPower({0, 0, 0, 0});
             des_turret_state.turret_mode = TurretState::SLEEP;
+            des_turret_state.yaw_angle_degs = turret_.getState().yaw_angle_degs;
+            yaw_desired_angle = turret_.getState().yaw_angle_degs;
+            des_turret_state.pitch_angle_degs = 0;
         }
 
         // Shooter Logic
@@ -272,7 +284,7 @@ class Infantry : public BaseRobot {
         dt_global = (us_ticker_read() - timer) / 1000;
         timer = us_ticker_read();
 
-        // printf("%.2f %.2f %.2f\n", imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
+        printf("%.2f %.2f %.2f\n", imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
     }
 
     void end_of_loop() override {}

@@ -478,7 +478,8 @@ void ChassisSubsystem::setBrakeMode(BrakeMode brakeMode)
 
 void ChassisSubsystem::initializeImu()
 {
-    imu.set_mounting_position(MT_P1);
+    return;
+    // imu.set_mounting_position(MT_P1);
 }
 
 double ChassisSubsystem::getMotorSpeed(MotorLocation location, SPEED_UNIT unit = RPM)

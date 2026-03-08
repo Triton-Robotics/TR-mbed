@@ -85,7 +85,7 @@ public:
         const double speed_pid_ff_ks;
 
         float yaw_initial_offset_ticks;
-        BNO055 &imu;
+        IMU &imu;
         MA4 *encoder;  // External encoder for yaw position
     };
 
@@ -360,8 +360,8 @@ private:
 
     // double beybladeSpeed;
     // bool beybladeIncreasing;
-    BNO055 &imu;
-    BNO055_ANGULAR_POSITION_typedef imuAngles;
+    IMU &imu;
+    IMU::EulerAngles imuAngles;
 
     static double rpmToRadPerSecond(double RPM);
     static double radPerSecondToRPM(double radPerSecond);
