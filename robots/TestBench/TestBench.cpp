@@ -22,6 +22,7 @@ const float V_REF = 3.3f; // Reference voltage for AnalogIn
 const float SENSOR_VCC = 5.0f; // Voltage supply for ACS712 sensor
 const float SENSITIVITY = 0.185f; //185mV/A for 5A model
 const float KT_M2006 = 0.18f; // Torque constant for M2006 motor, in Nm/A
+const float KT_M3508 = 0.30f; // Torque constant for M3508 motor, in Nm/A
 
 class TestBench : public BaseRobot {
   public:
@@ -39,9 +40,9 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
         : BaseRobot(config),
           // clang-format off
         motor(DJIMotor::config{
-            6,
-            CANHandler::CANBUS_1,
-            M2006, 
+            4,
+            CANHandler::CANBUS_2,
+            M3508, 
             "Test motor",
             test_motor_vel_PID,
             test_motor_pos_PID
@@ -51,7 +52,7 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
 
     //Torque Calculation From ACS712 Current Sensor
     float calculateTorque(float amps) {
-        return amps * KT_M2006;
+        return amps * KT_M3508;
     }
 
     ~TestBench() {}
@@ -75,8 +76,11 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
     void periodic(unsigned long dt_us) override {
 
         if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP) {
-            motor.setPower(1000);
-            printf("motor on\n");
+            motor.setPower(500);
+            // printf("motor on\n");
+        // } else if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID){
+        //    motor.setPower(200);
+        //    printf("remote mid\n");
         } else {
            motor.setPower(0);
         }
