@@ -39,7 +39,7 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
         : BaseRobot(config),
           // clang-format off
         motor(DJIMotor::config{
-            1,
+            6,
             CANHandler::CANBUS_1,
             M2006, 
             "Test motor",
@@ -75,7 +75,8 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
     void periodic(unsigned long dt_us) override {
 
         if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP) {
-            motor.setPower(500);
+            motor.setPower(1000);
+            printf("motor on\n");
         } else {
            motor.setPower(0);
         }
