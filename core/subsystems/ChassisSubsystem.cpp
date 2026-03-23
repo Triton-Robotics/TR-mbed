@@ -351,7 +351,7 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
     if (mode == REVERSE_YAW_ORIENTED)
     {
         // printf("%f\n", double(yaw->getData(ANGLE)));
-        yawCurrent = encoder->encoderMovingAverage();
+        yawCurrent = 360 - encoder->encoderMovingAverage();
         if (yawCurrent < 0.0) {
             yawCurrent += 360.0;
         }
@@ -366,7 +366,7 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
     else if (mode == YAW_ORIENTED)
     {
         // printf("%f\n", double(yaw->getData(ANGLE)));
-        yawCurrent = encoder->encoderMovingAverage();
+        yawCurrent = 360 - encoder->encoderMovingAverage();
         if (yawCurrent < 0.0) {
             yawCurrent += 360.0;
         }
@@ -384,7 +384,7 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
     }
     else if (mode == ODOM_ORIENTED) 
     {
-        yawCurrent = encoder->encoderMovingAverage();
+        yawCurrent = 360 - encoder->encoderMovingAverage();
         if (yawCurrent < 0.0) {
             yawCurrent += 360.0;
         }
@@ -688,7 +688,7 @@ bool ChassisSubsystem::setOdomReference() {
 //     static float filtered_yaw = 0.0f;
 //     float filter_alpha = 0.2f;  // 0.0-1.0: lower = more smoothing, higher = more responsive
 
-//     float duty_raw = encoder->dutycycle();
+//     float duty_raw = 360 - encoder->dutycycle();
 //     float duty_min = 0.02943f;   // 2.943%
 //     float duty_max = 0.97058f;   // 97.058%
 
@@ -736,7 +736,7 @@ bool ChassisSubsystem::setOdomReference() {
 // }
 
 void ChassisSubsystem::updateYawPhaseFromEncoder() {
-    float encoder_reading = encoder->encoderMovingAverage();
+    float encoder_reading = 360 - encoder->encoderMovingAverage();
         if (encoder_reading < 0.0) {
             encoder_reading += 360.0;
         }

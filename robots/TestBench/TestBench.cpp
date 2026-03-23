@@ -160,7 +160,7 @@ class Infantry : public BaseRobot {
             3,      // right_back_can_id
             0.22617,  // radius
             0.065,    // speed_pid_ff_ks
-            266,     // yaw_initial_offset_ticks
+            86,     // yaw_initial_offset_ticks
             imu_,
             &encoder_   
         }
