@@ -182,10 +182,9 @@ class Infantry : public BaseRobot {
         // TODO this should be threaded inside imu instead
         // imuAngles = imu_.read();
         //imu2.madgwickUpdate(liMagField.x, liMagField.y, liMagField.z, dt);
-        ISM330::ISM330_VECTOR_TypeDef imuAccelISM;
-        ISM330::ISM330_VECTOR_TypeDef imuGyroISM;
-        imu_.getAGVectors(imuAccelISM, imuGyroISM);
-        imu_.madgwickUpdateIMU(dt_us / 1000000.0);
+        // ISM330::ISM330_VECTOR_TypeDef imuAccelISM;
+        // ISM330::ISM330_VECTOR_TypeDef imuGyroISM;
+        // imu_.getAGVectors(imuAccelISM, imuGyroISM);
 
         imuAngles = imu_.getImuAngles();
         // if (!imu_initialized) {
