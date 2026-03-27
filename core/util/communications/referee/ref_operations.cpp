@@ -1,5 +1,7 @@
 #include "ThisThread.h"
 #include "ref_serial.h"
+#include "../ui/ui_interface.h"
+#include "../ui/ui_g.h"
 
 
 Referee::Referee(PinName pin_tx, PinName pin_rx) : ref(pin_tx, pin_rx, 115200) 
@@ -202,10 +204,16 @@ void Referee::readThread()
 
 void Referee::writeThread()
 {
+    // Some variables required to properrly send
+    ui_self_id = robot_status.robot_id;
+    send_packet_func = [this](uint8_t *packet, uint16_t len) {referee_data_pack_handle(packet, len);};
+
+    ui_init_g();
     while(1)
     {
         // TODO: figure out write then un-nest it
         write();
+        ui_update_g();
         ThisThread::yield();
     }
 }
