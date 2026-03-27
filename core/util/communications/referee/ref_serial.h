@@ -107,6 +107,7 @@ private:
         @param len Length
     */
     void referee_data_pack_handle(uint8_t sof,uint16_t cmd_id, uint8_t *p_data, uint16_t len);
+    void referee_data_pack_handle(uint8_t *packet, uint16_t len);
 
     void determine_ID();
 
