@@ -5,10 +5,13 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <functional>
 #include "ui_interface.h"
+#include "../referee/ref_serial.h"
 
-uint8_t seq = 0; // Potential point of failure, though considering its only 8-bits and unsigned, they probably already thought of overflow 
-int ui_self_id = 1; // TODO!!! Modify this based on the robot
+uint8_t seq = 0;
+int ui_self_id = 1; // ENSURE THAT THIS IS SET TO THE PROPER VARIABLE BEFORE SENDING ANY DATA!!!
+std::function<void(uint8_t*, uint16_t )> send_packet_func = NULL; // Function that sends the data to the server
 
 ui_string_frame_t _ui_string_frame;
 ui_1_frame_t _ui_1_frame;
@@ -16,11 +19,29 @@ ui_2_frame_t _ui_2_frame;
 ui_5_frame_t _ui_5_frame;
 ui_7_frame_t _ui_7_frame;
 
+/** 
+ * @brief prints message to serial monitor
+ * @param message pointer to the packets
+ * @param length length of message
+*/
 void print_message(const uint8_t *message, const int length) {
     for (int i = 0; i < length; i++) {
         printf("%02x ", message[i]);
     }
     printf("\n\n");
+}
+
+/**
+ * @brief sends the message to the server (make sure the variable, send_packet_func,
+ *      is set to the function that sends data before calling this function)
+ * @param message pointer to the packets
+ * @param length length of message
+ */
+void send_message(uint8_t* message, uint16_t length) {
+    print_message(message, length);
+    if(send_packet_func != NULL) {
+        send_packet_func(message, length);
+    }
 }
 
 const unsigned char CRC8_TAB[256] = {
@@ -42,6 +63,9 @@ const unsigned char CRC8_TAB[256] = {
     0x74, 0x2a, 0xc8, 0x96, 0x15, 0x4b, 0xa9, 0xf7, 0xb6, 0xe8, 0x0a, 0x54, 0xd7, 0x89, 0x6b, 0x35,
 };
 
+/**
+ * @brief calculates and returns the proper crc8 for a given message
+ */
 unsigned char calc_crc8(unsigned char *pchMessage, unsigned int dwLength) {
     unsigned char ucCRC8 = 0xff;
     unsigned char ucIndex;
@@ -87,6 +111,9 @@ const uint16_t wCRC_Table[256] = {
     0x7bc7, 0x6a4e, 0x58d5, 0x495c, 0x3de3, 0x2c6a, 0x1ef1, 0x0f78
 };
 
+/**
+ * @brief calculates and returns the proper crc16 for a given message
+ */
 uint16_t calc_crc16(uint8_t *pchMessage, uint32_t dwLength)
 {
     uint16_t wCRC = 0xffff;
@@ -103,24 +130,80 @@ uint16_t calc_crc16(uint8_t *pchMessage, uint32_t dwLength)
     return wCRC;
 }
 
-#define DEFINE_FRAME_PROC(num, id)                          \
-void ui_proc_ ## num##_frame(ui_ ## num##_frame_t *msg) {   \
-    msg->header.SOF = 0xA5;                                 \
-    msg->header.length = 6 + 15 * num;                      \
-    msg->header.seq = seq++;                                \
-    msg->header.crc8 = calc_crc8((uint8_t*)msg, 4);        \
-    msg->header.cmd_id = 0x0301;                            \
-    msg->header.sub_id = id;                                \
-    msg->header.send_id = ui_self_id;                       \
-    msg->header.recv_id = ui_self_id + 256;                 \
-    msg->crc16 = calc_crc16((uint8_t*)msg, 13 + 15 * num); \
-} // TODO, change crc_method to the one in the other class
+/**
+ * @brief sets up the entire packet for a message of 1 figure
+ */
+void ui_proc_1_frame(ui_1_frame_t *msg) {
+    uint16_t num = 1;
+    uint16_t id = 0x0101;
 
-DEFINE_FRAME_PROC(1, 0x0101)
-DEFINE_FRAME_PROC(2, 0x0102)
-DEFINE_FRAME_PROC(5, 0x0103)
-DEFINE_FRAME_PROC(7, 0x0104)
+    msg->header.SOF = 0xA5;                                 
+    msg->header.length = 6 + 15 * num;                      
+    msg->header.seq = seq++;                                
+    msg->header.crc8 = calc_crc8((uint8_t*)msg, 4);        
+    msg->header.cmd_id = 0x0301;                            
+    msg->header.sub_id = id;                                
+    msg->header.send_id = ui_self_id;                       
+    msg->header.recv_id = ui_self_id + 256;                 
+    msg->crc16 = calc_crc16((uint8_t*)msg, 13 + 15 * num); 
+}
 
+/**
+ * @brief sets up the entire packet for a message of 2 figures
+ */
+void ui_proc_2_frame(ui_2_frame_t *msg) {
+    uint16_t num = 2;
+    uint16_t id = 0x0102;
+    
+    msg->header.SOF = 0xA5;                                 
+    msg->header.length = 6 + 15 * num;                      
+    msg->header.seq = seq++;                                
+    msg->header.crc8 = calc_crc8((uint8_t*)msg, 4);        
+    msg->header.cmd_id = 0x0301;                            
+    msg->header.sub_id = id;                                
+    msg->header.send_id = ui_self_id;                       
+    msg->header.recv_id = ui_self_id + 256;                 
+    msg->crc16 = calc_crc16((uint8_t*)msg, 13 + 15 * num); 
+}
+
+/**
+ * @brief sets up the entire packet for a message of 5 figures
+ */
+void ui_proc_5_frame(ui_5_frame_t *msg) {
+    uint16_t num = 5;
+    uint16_t id = 0x0103;
+    msg->header.SOF = 0xA5;                                 
+    msg->header.length = 6 + 15 * num;                      
+    msg->header.seq = seq++;                                
+    msg->header.crc8 = calc_crc8((uint8_t*)msg, 4);        
+    msg->header.cmd_id = 0x0301;                            
+    msg->header.sub_id = id;                                
+    msg->header.send_id = ui_self_id;                       
+    msg->header.recv_id = ui_self_id + 256;                 
+    msg->crc16 = calc_crc16((uint8_t*)msg, 13 + 15 * num); 
+}
+
+/**
+ * @brief sets up the entire packet for a message of 7 figures
+ */
+void ui_proc_7_frame(ui_7_frame_t *msg) {
+    uint16_t num = 7;
+    uint16_t id = 0x0104;
+
+    msg->header.SOF = 0xA5;                                 
+    msg->header.length = 6 + 15 * num;                      
+    msg->header.seq = seq++;                                
+    msg->header.crc8 = calc_crc8((uint8_t*)msg, 4);        
+    msg->header.cmd_id = 0x0301;                            
+    msg->header.sub_id = id;                                
+    msg->header.send_id = ui_self_id;                       
+    msg->header.recv_id = ui_self_id + 256;                 
+    msg->crc16 = calc_crc16((uint8_t*)msg, 13 + 15 * num); 
+}
+
+/**
+ * @brief sets up the entire packet for a message containing a string
+ */
 void ui_proc_string_frame(ui_string_frame_t *msg) {
     msg->header.SOF = 0xA5;
     msg->header.length = 51;
@@ -132,8 +215,11 @@ void ui_proc_string_frame(ui_string_frame_t *msg) {
     msg->header.recv_id = ui_self_id + 256;
     msg->option.str_length = strlen(msg->option.string);
     msg->crc16 = calc_crc16((uint8_t *) msg, 58);
-} // TODO, change crc_method to the one in the other class
+}
 
+/**
+ * @brief sets up the entire packet for deleting an etnrie frame
+ */
 void ui_proc_delete_frame(ui_delete_frame_t *msg) {
     msg->header.SOF = 0xA5;
     msg->header.length = 8;
@@ -144,30 +230,35 @@ void ui_proc_delete_frame(ui_delete_frame_t *msg) {
     msg->header.send_id = ui_self_id;
     msg->header.recv_id = ui_self_id + 256;
     msg->crc16 = calc_crc16((uint8_t *) msg, 15);
-} // TODO, change crc_method to the one in the other class
+}
 
 ui_delete_frame_t ui_delete_frame;
 
+/**
+ * @brief sets up the entire packet for deleting an entire layer
+ */
 void ui_delete_layer(const uint8_t delete_type, const uint8_t layer) {
     ui_delete_frame.delete_type = delete_type;
     ui_delete_frame.layer = layer;
     ui_proc_delete_frame(&ui_delete_frame);
-    SEND_MESSAGE((uint8_t *) &ui_delete_frame, sizeof(ui_delete_frame));
-}  // TODO, change SEND_MESSAGE to the one in the other class
+    send_message((uint8_t *) &ui_delete_frame, sizeof(ui_delete_frame));
+}
 
-/* 
-    Packs UI figures and strings into appropriately sized packets and then sends
-    to server
-    ui_now_figures: list figures to be proccessed and sent
-    ui_dirty_figure: list whose indexes correspond to ui_now_figures, any 
-        indexes greater than 0 will be proccessed and sent
-    ui_now_strings: list strings to be proccessed and sent
-    ui_dirty_string: list whose indexes correspond to ui_now_strings, any 
-        indexes greater than 0 will be proccessed and sent
-    total_figures: maximum amount of figures that might be sent (usually the same
-        size as ui_now_figures)
-    total_strings: maximum amount of strings that might be sent (usually the same
-        size as ui_now_strings)
+/**
+    @brief Packs figures and strings into appropriately sized packets and then 
+        sends to server
+    @param ui_now_figures: list of figures to be proccessed and sent
+    @param ui_dirty_figure: list whose indexes correspond to ui_now_figures, any 
+        indexes greater than 0 indicates that the figure needs to be proccessed 
+        and sent
+    @param ui_now_strings: list strings to be proccessed and sent
+    @param ui_dirty_string: list whose indexes correspond to ui_now_strings, any 
+        indexes greater than 0 indicates that the string needs to be proccessed 
+        and sent
+    @param total_figures: maximum amount of figures that might be sent (usually the
+        size of ui_now_figures)
+    @param total_strings: maximum amount of strings that might be sent (usually the
+        size of ui_now_strings)
      
 */
 void ui_scan_and_send(const ui_interface_figure_t *ui_now_figures, uint8_t *ui_dirty_figure,
@@ -234,16 +325,16 @@ void ui_scan_and_send(const ui_interface_figure_t *ui_now_figures, uint8_t *ui_d
                     // Send message because we're complete with our packet
                     if (pack_size == 7) {
                         ui_proc_7_frame(&_ui_7_frame);
-                        SEND_MESSAGE((uint8_t *) &_ui_7_frame, sizeof(_ui_7_frame));
+                        send_message((uint8_t *) &_ui_7_frame, sizeof(_ui_7_frame));
                     } else if (pack_size == 5) {
                         ui_proc_5_frame(&_ui_5_frame);
-                        SEND_MESSAGE((uint8_t *) &_ui_5_frame, sizeof(_ui_5_frame));
+                        send_message((uint8_t *) &_ui_5_frame, sizeof(_ui_5_frame));
                     } else if (pack_size == 2) {
                         ui_proc_2_frame(&_ui_2_frame);
-                        SEND_MESSAGE((uint8_t *) &_ui_2_frame, sizeof(_ui_2_frame));
+                        send_message((uint8_t *) &_ui_2_frame, sizeof(_ui_2_frame));
                     } else {
                         ui_proc_1_frame(&_ui_1_frame);
-                        SEND_MESSAGE((uint8_t *) &_ui_1_frame, sizeof(_ui_1_frame));
+                        send_message((uint8_t *) &_ui_1_frame, sizeof(_ui_1_frame));
                     }
                 }
 
@@ -262,9 +353,9 @@ void ui_scan_and_send(const ui_interface_figure_t *ui_now_figures, uint8_t *ui_d
             if (ui_dirty_string[i] > 0) {
                 _ui_string_frame.option = ui_now_strings[i];
                 ui_proc_string_frame(&_ui_string_frame);
-                SEND_MESSAGE((uint8_t *) &_ui_string_frame, sizeof(_ui_string_frame));
+                send_message((uint8_t *) &_ui_string_frame, sizeof(_ui_string_frame));
                 ui_dirty_string[i]--;
             }
         }
     }
-}   // TODO, change SEND_MESSAGE to the one in the other class
+}

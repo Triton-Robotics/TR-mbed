@@ -7,19 +7,17 @@
 #define UI_INTERFACE_H
 
 #include "ui_types.h"
+#include <functional>
 
 extern int ui_self_id;
+extern std::function<void(uint8_t*, uint16_t )> send_packet_func;
 
 void print_message(const uint8_t* message, int length);
 
 // User Code Begin
-#define SEND_MESSAGE(message, length) print_message(message, length)
+// #define SEND_MESSAGE(message, length) print_message(message, length)
+void send_message(uint8_t* message, uint16_t);
 // User Code End
-
-#define ui_set(obj, field, value) { \
-    obj->field = value; \
-    obj##_dirty = obj##_max_send_count; \
-}
 
 void ui_proc_1_frame(ui_1_frame_t *msg);
 void ui_proc_2_frame(ui_2_frame_t *msg);

@@ -44,7 +44,9 @@ ui_interface_string_t ui_g_last_strings[TOTAL_STRING];
 // Macro for sending data (Currently only just prints)
 #define SCAN_AND_SEND() ui_scan_and_send(ui_g_now_figures, ui_g_dirty_figure, ui_g_now_strings, ui_g_dirty_string, TOTAL_FIGURE, TOTAL_STRING)
 
-// Setup up all shapes
+/** 
+ * @brief Setup up all figures & strings
+*/
 void ui_init_g() {
     ui_g_Shapes_GreenRect->figure_type = 1;
     ui_g_Shapes_GreenRect->operate_type = 1;
@@ -168,8 +170,8 @@ void ui_init_g() {
     }
 }
 
-/* 
-    Checks what figures/strings has been updated and only sends those that have changes
+/**
+    @brief Checks what figures/strings has been updated and only sends those that have changes
         to the server
 */
 void ui_update_g() {
