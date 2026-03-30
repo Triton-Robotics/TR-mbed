@@ -1,5 +1,6 @@
 #include "base_robot/BaseRobot.h"
 #include "util/algorithms/general_functions.h"
+#include "ResetReason.h"
 
 #include "subsystems/ChassisSubsystem.h"
 #include "subsystems/ShooterSubsystem.h"
@@ -11,8 +12,12 @@
 #include "util/motor/DJIMotor.h"
 #include "util/peripherals/imu/BNO055.h"
 #include "util/peripherals/encoder/MA4.h"
+#include "util/peripherals/imu/ISM330.h"
 
 #include <algorithm>
+#include <pinmap.h>
+#include <us_ticker_api.h>
+#include <us_ticker_defines.h>
 
 constexpr auto IMU_I2C_SDA = PB_7;
 constexpr auto IMU_I2C_SCL = PB_8;
@@ -109,7 +114,8 @@ int remoteTimer = 0;
 
 float pitch_desired_angle = 0.0;
 float yaw_desired_angle = 0.0;
-
+float dt_global = 0.0;
+unsigned long timer = 0;
 
 // TODOS make example directory with simple examples of how to use motors /
 // subsystems as reference for testbench
@@ -118,7 +124,8 @@ IMU::EulerAngles imuAngles;
 class Infantry : public BaseRobot {
   public:
     I2C i2c_;
-    BNO055 imu_;
+    // BNO055 imu_;
+    ISM330 imu_;
     MA4 encoder_;  // Absolute encoder for yaw position
     // TODO: put the BufferedSerial inside Jetson (idk if we wanna do that tho
     // for SPI)
@@ -138,7 +145,7 @@ class Infantry : public BaseRobot {
         : BaseRobot(config),
           // clang-format off
         i2c_(IMU_I2C_SDA, IMU_I2C_SCL), 
-        imu_(i2c_, IMU_RESET, MODE_IMU),
+        imu_(i2c_, 0x6B),
         encoder_(PA_7),
         jetson_raw_serial(PC_12, PD_2,115200), // TODO: check higher baud to see if still works
         jetson(jetson_raw_serial),
@@ -148,9 +155,9 @@ class Infantry : public BaseRobot {
         // TODO add passing in individual PID objects for the motors
         chassis_(ChassisSubsystem::Config{
             1,      // left_front_can_id
-            3,      // right_front_can_id
+            2,      // right_front_can_id
             4,      // left_back_can_id
-            2,      // right_back_can_id
+            3,      // right_back_can_id
             0.22617,  // radius
             0.065,    // speed_pid_ff_ks
             86,     // yaw_initial_offset_ticks
@@ -159,44 +166,37 @@ class Infantry : public BaseRobot {
         }
         )
     // clang-format on
-    {}
+    {
+        pin_mode(IMU_I2C_SCL, PinMode::OpenDrainPullUp);
+        pin_mode(IMU_I2C_SDA, PinMode::OpenDrainPullUp);
+    }
 
     ~Infantry() {}
 
-    void init() override {}
+    void init() override {
+        timer = us_ticker_read();
+        imu_.begin(0.1, 0.0);
+    }
 
     void periodic(unsigned long dt_us) override {
         // TODO this should be threaded inside imu instead
-        imuAngles = imu_.read();
-
-        chassis_.power_limit = referee_.robot_status.chassis_power_limit;
-
-        if (!imu_initialized) {
-            IMU::EulerAngles angles = imu_.getImuAngles();
-            if (angles.pitch == 0.0 && angles.yaw == 0.0 && angles.roll == 0.0) {
-                return;
-            }
-
-            yaw_desired_angle = angles.yaw;
-            imu_initialized = true;
-        }
+        imu_.mahonyUpdateIMU(dt_us / 1000000.0);
+        imuAngles = imu_.getImuAngles();
 
         // TODO: use this in code correctly to drive faster
         max_linear_vel = 1.24 + 0.0513 * chassis_.power_limit +
                          0.000216 * (chassis_.power_limit * chassis_.power_limit);
-        des_chassis_state.vX = remote_.getChannel(Remote::Channel::LEFT_VERTICAL) * max_linear_vel;
-        des_chassis_state.vX += remote_.getMouseX() * max_linear_vel;
-        des_chassis_state.vY = -1 * remote_.getChannel(Remote::Channel::LEFT_HORIZONTAL) * max_linear_vel;
-        des_chassis_state.vY += -1 * remote_.getMouseY() * max_linear_vel;
+        des_chassis_state.vX = jy * max_linear_vel;
+        des_chassis_state.vY = jx * max_linear_vel;
 
         // Turret from remote
-        float joystick_yaw = remote_.getChannel(Remote::Channel::RIGHT_HORIZONTAL);
-        yaw_desired_angle -= joystick_yaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
+        yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * dt_us / 1000000;
+        yaw_desired_angle -= jyaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
         yaw_desired_angle = capAngle(yaw_desired_angle);
         des_turret_state.yaw_angle_degs = yaw_desired_angle;
 
-        float joystick_pitch = remote_.getChannel(Remote::Channel::RIGHT_VERTICAL);
-        pitch_desired_angle += joystick_pitch * JOYSTICK_PITCH_SENSITIVITY_DPS * dt_us / 1000000;
+        pitch_desired_angle -= mpitch * MOUSE_SENSITIVITY_PITCH_DPS * dt_us / 1000000;
+        pitch_desired_angle += jpitch * JOYSTICK_PITCH_SENSITIVITY_DPS * dt_us / 1000000;
         pitch_desired_angle = std::clamp(pitch_desired_angle, PITCH_LOWER_BOUND, PITCH_UPPER_BOUND);
         des_turret_state.pitch_angle_degs = pitch_desired_angle;
 
