@@ -175,17 +175,12 @@ class Infantry : public BaseRobot {
 
     void init() override {
         timer = us_ticker_read();
-        imu_.begin();
+        imu_.begin(0.1, 0.0);
     }
 
     void periodic(unsigned long dt_us) override {
         // TODO this should be threaded inside imu instead
-        // imuAngles = imu_.read();
-        //imu2.madgwickUpdate(liMagField.x, liMagField.y, liMagField.z, dt);
-        // ISM330::ISM330_VECTOR_TypeDef imuAccelISM;
-        // ISM330::ISM330_VECTOR_TypeDef imuGyroISM;
-        // imu_.getAGVectors(imuAccelISM, imuGyroISM);
-
+        imu_.mahonyUpdateIMU(dt_us / 1000000.0);
         imuAngles = imu_.getImuAngles();
         // if (!imu_initialized) {
         //     IMU::EulerAngles angles = imu_.getImuAngles();
@@ -283,7 +278,7 @@ class Infantry : public BaseRobot {
         dt_global = (us_ticker_read() - timer) / 1000;
         timer = us_ticker_read();
 
-        printf("%.2f %.2f %.2f\n", imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
+        // printf("%.2f %.2f %.2f\n", imuAngles.yaw, imuAngles.pitch, imuAngles.roll);
     }
 
     void end_of_loop() override {}

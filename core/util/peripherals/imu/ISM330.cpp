@@ -44,7 +44,6 @@ const char blockUpdate[] = {CTRL3_C, 0x44}; // Block update for reading consiste
 ISM330::ISM330(I2C &i2c, uint8_t address) noexcept  //Put in an i2c object, and the device address (in this case 0x6B)
     : i2c(i2c), _address(address) 
 {
-    begin();
 }
 
 
@@ -63,14 +62,21 @@ bool ISM330::begin(float prop_gain, float int_gain) noexcept
     i2c.read(readAddr, reinterpret_cast<char*>(&whoAmIReading), 1, true);
     printf("WHO_AM_I: 0x%02X\r\n", whoAmIReading);
 
-    mahonyStart(2*prop_gain,2*int_gain);
+    mahonyStart(prop_gain, int_gain);
     calibrate();
+    mahonyStart(prop_gain, int_gain);
 
     return true;
 }
 
 void ISM330::calibrate() noexcept
 {
+    // Throw out first few readings
+    for (int i = 0; i < 200; i++) {
+        readAGraw();
+        ThisThread::sleep_for(1ms);
+    }
+
     // Simple calibration routine, just takes 1000 readings and averages them to find bias values for accel and gyro
     axBias = 0;
     ayBias = 0;
@@ -87,7 +93,7 @@ void ISM330::calibrate() noexcept
         wxBias += raw_data.gx;
         wyBias += raw_data.gy;
         wzBias += raw_data.gz;
-        ThisThread::sleep_for(2ms);
+        ThisThread::sleep_for(1ms);
     }
 
     axBias /= 1000.0f;
@@ -132,9 +138,9 @@ ISM330::ISM330_VECTOR_TypeDef ISM330::readingToAccel(const uint8_t *readings)
     float rawYfloat = static_cast<float>(rawY);
     float rawZfloat = static_cast<float>(rawZ);
 
-    float x = ((rawXfloat-axBias) * accelConversion);
-    float y = ((rawYfloat-ayBias) * accelConversion);
-    float z = ((rawZfloat-azBias) * accelConversion);
+    float x = ((rawXfloat) * accelConversion);
+    float y = ((rawYfloat) * accelConversion);
+    float z = ((rawZfloat) * accelConversion); // removing bias for gravity vector
 
 
     return {x, y, z};
@@ -206,8 +212,8 @@ ISM330::ISM330_DATA_TypeDef ISM330::readAG() noexcept
     auto [gx,gy,gz] = readingToGyro(&agReadings[0]);
     auto [ax,ay,az] = readingToAccel(&agReadings[6]);
 
-    ISM330_VECTOR_TypeDef accelVector = {ax, ay, az};
-    ISM330_VECTOR_TypeDef gyroVector = {gx, gy, gz};
+    // ISM330_VECTOR_TypeDef accelVector = {ax, ay, az};
+    // ISM330_VECTOR_TypeDef gyroVector = {gx, gy, gz};
 
     return ISM330_DATA_TypeDef{ax, ay, az, gx, gy, gz};
 }
@@ -250,18 +256,72 @@ IMU::EulerAngles ISM330::getImuAngles() {
 }
 
 // Mahony Sensor fusion
+// void ISM330::mahonyStart(float prop_gain, float int_gain) {
+//     twoKp = 2 * prop_gain; // 2 * proportional gain (Kp)
+//     twoKi = 2 * int_gain;  // 2 * integral gain (Ki)
+//     mahq0 = 1.0f;
+//     mahq1 = 0.0f;
+//     mahq2 = 0.0f;
+//     mahq3 = 0.0f;
+//     integralFBx = 0.0f;
+//     integralFBy = 0.0f;
+//     integralFBz = 0.0f;
+//     anglesComputed = false;
+//     //invSampleFreq = 1.0f / DEFAULT_SAMPLE_FREQ;
+// }
+
 void ISM330::mahonyStart(float prop_gain, float int_gain) {
-    twoKp = 2 * prop_gain; // 2 * proportional gain (Kp)
-    twoKi = 2 * int_gain;  // 2 * integral gain (Ki)
-    mahq0 = 1.0f;
-    mahq1 = 0.0f;
-    mahq2 = 0.0f;
-    mahq3 = 0.0f;
+    twoKp = 2.0f * prop_gain;
+    twoKi = 2.0f * int_gain;
+
+    // Initialize from accelerometer instead of identity
+    initQuaternionFromAccel();
+
     integralFBx = 0.0f;
     integralFBy = 0.0f;
     integralFBz = 0.0f;
     anglesComputed = false;
-    //invSampleFreq = 1.0f / DEFAULT_SAMPLE_FREQ;
+}
+
+void ISM330::initQuaternionFromAccel() {
+    float axSum = 0, aySum = 0, azSum = 0;
+    const int samples = 50;
+
+    for (int i = 0; i < samples; i++) {
+        ISM330_RAW_DATA_TypeDef raw = readAGraw();
+        // Convert to m/s² but DO NOT subtract biases
+        axSum += raw.ax * accelConversion;
+        aySum += raw.ay * accelConversion;
+        azSum += raw.az * accelConversion;
+        ThisThread::sleep_for(1ms);
+    }
+
+    float ax = axSum / samples;
+    float ay = aySum / samples;
+    float az = azSum / samples;
+
+    float norm = sqrtf(ax*ax + ay*ay + az*az);
+    if (norm < 0.001f) {
+        mahq0 = 1.0f; mahq1 = 0.0f; mahq2 = 0.0f; mahq3 = 0.0f;
+        return;
+    }
+    ax /= norm; ay /= norm; az /= norm;
+
+    float pitch = asinf(-ax);
+    float roll  = atan2f(ay, az);
+    float yaw   = 0.0f;
+
+    float cp = cosf(pitch * 0.5f);
+    float sp = sinf(pitch * 0.5f);
+    float cr = cosf(roll  * 0.5f);
+    float sr = sinf(roll  * 0.5f);
+    float cy = cosf(yaw   * 0.5f);
+    float sy = sinf(yaw   * 0.5f);
+
+    mahq0 = cr*cp*cy + sr*sp*sy;
+    mahq1 = sr*cp*cy - cr*sp*sy;
+    mahq2 = cr*sp*cy + sr*cp*sy;
+    mahq3 = cr*cp*sy - sr*sp*cy;
 }
 
 
@@ -383,20 +443,21 @@ void ISM330::mahonyUpdate(float mx, float my, float mz, float dt) {
 void ISM330::mahonyUpdateIMU(float dt) {
     auto [ax, ay, az, gx, gy, gz] = readAG();
     
-    //Converting to g/s instead of m/s^2
     ax /= g;
     ay /= g;
     az /= g;
 
     float recipNorm;
     float halfvx, halfvy, halfvz;
-    float halfex, halfey, halfez;
+    float halfex = 0.0f, halfey = 0.0f, halfez = 0.0f;
     float qa, qb, qc;
 
-    // Compute feedback only if accelerometer measurement valid
-    // (avoids NaN in accelerometer normalisation)
-    if (!((ax == 0.0f) && (ay == 0.0f) && (az == 0.0f))) {
+    // Only trust accel when it's reading close to 1g
+    // If we're accelerating, magnitude deviates from 1.0 — skip correction
+    float accelMag = sqrtf(ax*ax + ay*ay + az*az);
+    bool accelValid = (accelMag > 0.85f) && (accelMag < 1.15f);
 
+    if (accelValid && !((ax == 0.0f) && (ay == 0.0f) && (az == 0.0f))) {
         // Normalise accelerometer measurement
         recipNorm = invSqrt(ax * ax + ay * ay + az * az);
         ax *= recipNorm;
@@ -416,27 +477,25 @@ void ISM330::mahonyUpdateIMU(float dt) {
 
         // Compute and apply integral feedback if enabled
         if (twoKi > 0.0f) {
-            // integral error scaled by Ki
             integralFBx += twoKi * halfex * dt;
             integralFBy += twoKi * halfey * dt;
             integralFBz += twoKi * halfez * dt;
-            gx += integralFBx; // apply integral feedback
+            gx += integralFBx;
             gy += integralFBy;
             gz += integralFBz;
         } else {
-            integralFBx = 0.0f; // prevent integral windup
+            integralFBx = 0.0f;
             integralFBy = 0.0f;
             integralFBz = 0.0f;
         }
 
-        // Apply proportional feedback
         gx += twoKp * halfex;
         gy += twoKp * halfey;
         gz += twoKp * halfez;
     }
 
     // Integrate rate of change of quaternion
-    gx *= (0.5f * dt); // pre-multiply common factors
+    gx *= (0.5f * dt);
     gy *= (0.5f * dt);
     gz *= (0.5f * dt);
     qa = mahq0;

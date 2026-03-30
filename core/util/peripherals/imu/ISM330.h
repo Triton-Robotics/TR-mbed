@@ -101,6 +101,8 @@ public:
     // Mahony Sensor Fusion
     //Adafruit_Mahony(float prop_gain, float int_gain);
     void mahonyStart(float prop_gain, float int_gain);
+
+    void initQuaternionFromAccel();
     
     void mahonyUpdate(float mx, float my, float mz, float dt);
     
