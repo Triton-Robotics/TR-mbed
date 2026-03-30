@@ -6,7 +6,7 @@
  * @param radius radius in meters
  */
 ChassisSubsystem::ChassisSubsystem(const Config &config)
-    : power_limit(50.0F),
+    : power_limit(30.0F),
       LF(config.left_front_can_id, CAN_BUS_TYPE, MOTOR_TYPE),
       RF(config.right_front_can_id, CAN_BUS_TYPE, MOTOR_TYPE),
       LB(config.left_back_can_id, CAN_BUS_TYPE, MOTOR_TYPE),

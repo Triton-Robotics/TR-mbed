@@ -155,7 +155,8 @@ class Infantry : public BaseRobot {
         }
 
         // TODO: use this in code correctly to drive faster
-        max_linear_vel = 1.24 + 0.0513 * chassis.power_limit + 0.000216 * (chassis.power_limit * chassis.power_limit);
+        // max_linear_vel = 1.24 + 0.0513 * chassis.power_limit + 0.000216 * (chassis.power_limit * chassis.power_limit);
+        max_linear_vel = 1;
         des_chassis_state.vX = jy * max_linear_vel;
         des_chassis_state.vY = -jx * max_linear_vel;
 
@@ -173,11 +174,11 @@ class Infantry : public BaseRobot {
         // Read jetson
         jetson_state = jetson.read();
         
-        // todo add up state here also
-        if((remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID) || remote_.getMouseR()){
-            des_turret_state.pitch_angle_degs = jetson_state.desired_pitch_rads * (180.0 / M_PI); 
-            des_turret_state.yaw_angle_degs = jetson_state.desired_yaw_rads * (180.0 / M_PI);
-        }
+        // // todo add up state here also
+        // if((remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID) || remote_.getMouseR()){
+        //     des_turret_state.pitch_angle_degs = jetson_state.desired_pitch_rads * (180.0 / M_PI); 
+        //     des_turret_state.yaw_angle_degs = jetson_state.desired_yaw_rads * (180.0 / M_PI);
+        // }
 
         // Chassis logic
         if (drive == 'u' || (drive =='o' && remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP)) {

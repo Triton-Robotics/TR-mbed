@@ -198,7 +198,7 @@ class BaseRobot {
 
         // max_linear_vel = -1.24 + 0.0513 * chassis.power_limit + -0.000216 * (chassis.power_limit * chassis.power_limit);
         // float max_omega = 0.326 + 0.0857 * chassis_power_limit + -0.000183 * (chassis_power_limit * chassis_power_limit);
-        float max_omega = 4.8;
+        float max_omega = 1.6;
 
         if(remote_.keyPressed(Remote::Key::CTRL)){
             jx = 0.0;

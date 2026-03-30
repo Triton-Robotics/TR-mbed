@@ -27,7 +27,7 @@
 
 #define MAX_BEYBLADE_SPEED 1800
 #define BEYBLADE_ACCELERATION 0.05
-#define MAX_VEL 2.92
+#define MAX_VEL 1
 
 struct OmniKinematics
 {
