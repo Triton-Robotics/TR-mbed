@@ -23,6 +23,7 @@ const float SENSOR_VCC = 5.0f; // Voltage supply for ACS712 sensor
 const float SENSITIVITY = 0.185f; //185mV/A for 5A model
 const float KT_M2006 = 0.18f; // Torque constant for M2006 motor, in Nm/A
 const float KT_M3508 = 0.30f; // Torque constant for M3508 motor, in Nm/A
+bool safety_tripped = false;
 
 class TestBench : public BaseRobot {
   public:
@@ -71,45 +72,61 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
     calibrated_offset = sum / samples;
     printf("Offset voltage: %.2f V\n", calibrated_offset);
 
+    // Print headers for the spreadsheet
+    printf("\nVoltage\tCurrent\tTorque\n");
+
     }
     
     void periodic(unsigned long dt_us) override {
-
+    // 1. Check Safety Latch First
+    if (safety_tripped) {
+        motor.setPower(0); 
+        // We don't return here yet because we still want to see the 
+        // Current/Voltage readings even if the motor is killed.
+    } 
+    else {
+        // Remote Control Logic
         if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP) {
+            motor.setPower(800);
+        } 
+        else if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID) {
             motor.setPower(500);
-            // printf("motor on\n");
-        // } else if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID){
-        //    motor.setPower(200);
-        //    printf("remote mid\n");
-        } else {
-           motor.setPower(0);
+        } 
+        else {
+            motor.setPower(0);
         }
+    }
+
+    // 3. Sensor Calculations
+    float voltage = ain.read() * V_REF;
+    current_amps = (voltage - calibrated_offset) / SENSITIVITY;
+
+    // 4. Low Pass Filter (The "Phase Lag" implementation!)
+    float alpha = 0.1f; 
+    filtered_current = alpha * current_amps + (1.0f - alpha) * filtered_current;
     
+    float display_current = filtered_current;
 
-        //Calculate Voltage from AnalogIn reading
-        float voltage = ain.read() * V_REF;
+    // 5. Update Safety Latch
+    if (abs(display_current) > 4.8f) { 
+        safety_tripped = true;
+        motor.setPower(0);
+        printf("!!! SAFETY TRIGGERED: %.2f A !!!\n", display_current);
+        return; // Exit this loop immediately
+    }
 
-        //Calculate Current from Voltage and Sensitivity
-        current_amps = (voltage - calibrated_offset) / SENSITIVITY; // Subtract offset voltage (1.65V for 0A)
+    // 6. Deadzone & Torque
+    if(abs(display_current) < 0.12f) { 
+        display_current = 0.0f;
+    }
+    torque_nm = calculateTorque(display_current);
 
-        //Low Pass Filter to smooth out current readings
-        float alpha = 0.1f; // Smoothing factor, adjust as needed
-        filtered_current = alpha * current_amps + (1.0f - alpha) * filtered_current;
-
-    
-     //Deadzone 
-     float display_current = filtered_current;
-     if(abs(display_current) < 0.12f) { // Threshold for deadzone, adjust as needed
-            display_current = 0.0f;
-     }
-     torque_nm = calculateTorque(display_current);
-
-     //Throttled Printing
-     static int count = 0;
-     if (count++ % 100 == 0) { // Print every 50 iterations, adjust as needed
-        printf("Voltage: %.3f V , Current: %.2f A, Torque: %.4f Nm\n", voltage, display_current, torque_nm);
-        }
-        }
+    // 7. Spreadsheet-Ready Printing
+    static int count = 0;
+    if (count++ % 100 == 0) { 
+        printf("%.3f\t%.2f\t%.4f\n", voltage, display_current, torque_nm);
+    }
+}
 
     void end_of_loop() override {}
     unsigned int main_loop_dt_ms() override { return 2; } // 500 Hz loop
