@@ -10,7 +10,9 @@
 #include "util/motor/DJIMotor.h"
 #include "util/peripherals/imu/BNO055.h"
 
+#include <Timer.h>
 #include <algorithm>
+#include <us_ticker_defines.h>
 
 #include "mbed.h"
 
@@ -25,6 +27,14 @@ const float KT_M2006 = 0.18f; // Torque constant for M2006 motor, in Nm/A
 const float KT_M3508 = 0.30f; // Torque constant for M3508 motor, in Nm/A
 bool safety_tripped = false;
 
+
+float voltage = 0.0f;
+float display_current = 0.0f;
+float torque_nm = 0.0f;
+int output_power = 0;
+unsigned long curr_time = 0;
+int current_counter = 0;
+
 class TestBench : public BaseRobot {
   public:
     DJIMotor motor;
@@ -33,7 +43,7 @@ class TestBench : public BaseRobot {
 
 //Varibales for current sensing
 float current_amps = 0.0;
-float torque_nm = 0.0; 
+//float torque_nm = 0.0; 
 float filtered_current = 0.0;
 float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be calibrated in init()
 
@@ -75,6 +85,7 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
     // Print headers for the spreadsheet
     printf("\nVoltage\tCurrent\tTorque\n");
 
+    curr_time = us_ticker_read(); // Initialize current time for remote control logic
     }
     
     void periodic(unsigned long dt_us) override {
@@ -87,7 +98,19 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
     else {
         // Remote Control Logic
         if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP) {
-            motor.setPower(800);
+            // if (curr_time - us_ticker_read() > 10000000) { // Every 1 second
+            //     curr_time = us_ticker_read();
+            //     if (output_power < 8000) {
+            //         output_power = output_power + 100;
+            //     }
+            // }
+            motor.setPower(output_power);
+            current_counter++;
+            if (current_counter > 10 && output_power <8001){
+                output_power++;
+                current_counter = 0;
+            }
+
         } 
         else if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID) {
             motor.setPower(500);
@@ -98,14 +121,14 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
     }
 
     // 3. Sensor Calculations
-    float voltage = ain.read() * V_REF;
+    voltage = ain.read() * V_REF;
     current_amps = (voltage - calibrated_offset) / SENSITIVITY;
 
     // 4. Low Pass Filter (The "Phase Lag" implementation!)
     float alpha = 0.1f; 
     filtered_current = alpha * current_amps + (1.0f - alpha) * filtered_current;
     
-    float display_current = filtered_current;
+    display_current = filtered_current;
 
     // 5. Update Safety Latch
     if (abs(display_current) > 4.8f) { 
