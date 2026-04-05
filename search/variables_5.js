@@ -1,7 +1,7 @@
 var searchData=
 [
   ['encoder_0',['encoder',['../structChassisSubsystem_1_1Config.html#aa17af167b3625306b5419b32e60a0250',1,'ChassisSubsystem::Config']]],
-  ['encoder_5f_1',['encoder_',['../classHero.html#a25539e4a4e0902dbe3bdd2055e1ee3d9',1,'Hero::encoder_'],['../classInfantry.html#af54778bf95dd656bb3bb750eae1bc892',1,'Infantry::encoder_'],['../classSentry.html#a29f5a24ed92c088df3c18ca100f4c48a',1,'Sentry::encoder_'],['../TestBench_8cpp.html#aef38061e16613754402649f346222df1',1,'encoder_:&#160;TestBench.cpp']]],
+  ['encoder_5f_1',['encoder_',['../classHero.html#a25539e4a4e0902dbe3bdd2055e1ee3d9',1,'Hero::encoder_'],['../classInfantry.html#af54778bf95dd656bb3bb750eae1bc892',1,'Infantry::encoder_'],['../classSentry.html#a29f5a24ed92c088df3c18ca100f4c48a',1,'Sentry::encoder_']]],
   ['end_5fangle_2',['end_angle',['../structgraphic__data__struct__t.html#aef58934c7f7c99728631114bd5195796',1,'graphic_data_struct_t::end_angle'],['../structClientData__struct__t.html#adad6eb714e6eaec7af29c6a965c6ec22',1,'ClientData_struct_t::end_angle']]],
   ['end_5fid_3',['end_id',['../structRangeCallback.html#a304508f21fe0d4af56000a86abab8819',1,'RangeCallback']]],
   ['end_5fx_4',['end_x',['../structgraphic__data__struct__t.html#a55bfbea4ec49b278b39886123ac1b658',1,'graphic_data_struct_t']]],

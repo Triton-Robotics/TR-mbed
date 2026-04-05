@@ -6,6 +6,8 @@ var searchData=
   ['initialize_3',['initialize',['../classRemote.html#a1a975e03f2c6bb770932ba18457822da',1,'Remote::initialize()'],['../classBNO055.html#ae53a2560b4018c8644155bae5132df64',1,'BNO055::initialize()'],['../classSSD1308.html#a347c91f5f6f25e11c45b5cd2f8f85acc',1,'SSD1308::initialize()']]],
   ['initialize_5freset_5fpin_4',['initialize_reset_pin',['../classBNO055.html#a46474d1d8e1fadd520a33480b4a7c8a2',1,'BNO055']]],
   ['initializeimu_5',['initializeImu',['../classChassisSubsystem.html#a8a6956deb7e9b27facf38e5890b0427f',1,'ChassisSubsystem']]],
-  ['invertdisplay_6',['invertdisplay',['../classAdafruit__GFX.html#a05c19e8fe1a1e49aba4c4d93709ef155',1,'Adafruit_GFX::invertDisplay()'],['../classAdafruit__SSD1306.html#a3e9436a654c826a55942606a2261b5ee',1,'Adafruit_SSD1306::invertDisplay()']]],
-  ['is_5fred_5for_5fblue_7',['is_red_or_blue',['../classReferee.html#a84f9a43848b85fbb0ac37ea0b853a55f',1,'Referee']]]
+  ['initquaternionfromaccel_6',['initQuaternionFromAccel',['../classISM330.html#a353563f6f9f96f8b42885a127d6692f3',1,'ISM330']]],
+  ['invertdisplay_7',['invertdisplay',['../classAdafruit__GFX.html#a05c19e8fe1a1e49aba4c4d93709ef155',1,'Adafruit_GFX::invertDisplay()'],['../classAdafruit__SSD1306.html#a3e9436a654c826a55942606a2261b5ee',1,'Adafruit_SSD1306::invertDisplay()']]],
+  ['is_5fred_5for_5fblue_8',['is_red_or_blue',['../classReferee.html#a84f9a43848b85fbb0ac37ea0b853a55f',1,'Referee']]],
+  ['ism330_9',['ISM330',['../classISM330.html#a936f6b5b23f13e3d6fee9fff6b6d6482',1,'ISM330']]]
 ];

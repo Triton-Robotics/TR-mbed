@@ -5,7 +5,7 @@ var searchData=
   ['acc_5fid_2',['acc_id',['../structBNO055__ID__INF__TypeDef.html#a334542bf248c838bf5c88cda47303405',1,'BNO055_ID_INF_TypeDef']]],
   ['accel_3',['accel',['../classMPU6050.html#aa9b1bc4b9a59ea9f95cfea046d34ae37',1,'MPU6050']]],
   ['accel_5fany_5fmotion_5fthres_4',['ACCEL_ANY_MOTION_THRES',['../BNO055_8h.html#a69d32bd24f5ad46ece084394fbcd94b1',1,'BNO055.h']]],
-  ['accel_5fconfig_5',['accel_config',['../MPU6050_8h.html#ab7336e26f8947086e41a375f1e1e74d4',1,'ACCEL_CONFIG:&#160;MPU6050.h'],['../BNO055_8h.html#ab7336e26f8947086e41a375f1e1e74d4',1,'ACCEL_CONFIG:&#160;BNO055.h']]],
+  ['accel_5fconfig_5',['accel_config',['../BNO055_8h.html#ab7336e26f8947086e41a375f1e1e74d4',1,'ACCEL_CONFIG:&#160;BNO055.h'],['../MPU6050_8h.html#ab7336e26f8947086e41a375f1e1e74d4',1,'ACCEL_CONFIG:&#160;MPU6050.h']]],
   ['accel_5fhigh_5fg_5fdurn_6',['ACCEL_HIGH_G_DURN',['../BNO055_8h.html#ac7f8674b9978703d1d8789e91abf83c9',1,'BNO055.h']]],
   ['accel_5fhigh_5fg_5fthres_7',['ACCEL_HIGH_G_THRES',['../BNO055_8h.html#aaf0110de34501512c69d52d9ae23a1af',1,'BNO055.h']]],
   ['accel_5fintr_5fsettings_8',['ACCEL_INTR_SETTINGS',['../BNO055_8h.html#a9bd7459a6874ae74ac4ff0cda6503062',1,'BNO055.h']]],
@@ -54,8 +54,8 @@ var searchData=
   ['and_20set_20up_20an_20ide_20instead_20check_20out_20the_20setup_20instructions_20for_20ref_20home_20runner_20work_20tr_20mbed_20tr_20mbed_20md_20ide_20clion_20md_20clion_20or_20ref_20home_20runner_20work_20tr_20mbed_20tr_20mbed_20md_20ide_20vscode_20md_20vscode_20we_20higly_20recommend_20ref_20home_20runner_20work_20tr_20mbed_20tr_20mbed_20md_20ide_20clion_20md_20clion_51',['At this point, you may choose to diverge from the CLI setup guide and set up an IDE instead. Check out the setup instructions for @ref &quot;/home/runner/work/TR-mbed/TR-mbed/.md/ide/clion.md&quot; &quot;CLion&quot; or @ref &quot;/home/runner/work/TR-mbed/TR-mbed/.md/ide/vscode.md&quot; &quot;VSCode&quot;. We higly recommend @ref &quot;/home/runner/work/TR-mbed/TR-mbed/.md/ide/clion.md&quot; &quot;CLion&quot;.',['../index.html#autotoc_md6',1,'']]],
   ['angle_52',['angle',['../structrobot__pos__t.html#ad061e05d7751157bb63aa07be9522964',1,'robot_pos_t::angle'],['../DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4a0361b31f1fea060374e017af17d84435',1,'ANGLE:&#160;DJIMotor.h']]],
   ['angular_5facc_53',['angular_acc',['../imuExampleAllData_8cpp.html#acd2c04b75392304205a57d8923addd8d',1,'imuExampleAllData.cpp']]],
-  ['append_5fcrc16_5fcheck_5fsum_54',['append_crc16_check_sum',['../crc_8cpp.html#ab64afc0e5dec0d04dee81fb98c274894',1,'Append_CRC16_Check_Sum(uint8_t *pchMessage, uint32_t dwLength):&#160;crc.cpp'],['../crc_8h.html#ab64afc0e5dec0d04dee81fb98c274894',1,'Append_CRC16_Check_Sum(uint8_t *pchMessage, uint32_t dwLength):&#160;crc.cpp']]],
-  ['append_5fcrc8_5fcheck_5fsum_55',['append_crc8_check_sum',['../crc_8cpp.html#a6597501f13b4c73b399ef72ad9db8b24',1,'Append_CRC8_Check_Sum(unsigned char *pchMessage, unsigned int dwLength):&#160;crc.cpp'],['../crc_8h.html#a6597501f13b4c73b399ef72ad9db8b24',1,'Append_CRC8_Check_Sum(unsigned char *pchMessage, unsigned int dwLength):&#160;crc.cpp']]],
+  ['append_5fcrc16_5fcheck_5fsum_54',['append_crc16_check_sum',['../crc_8h.html#ab64afc0e5dec0d04dee81fb98c274894',1,'Append_CRC16_Check_Sum(uint8_t *pchMessage, uint32_t dwLength):&#160;crc.cpp'],['../crc_8cpp.html#ab64afc0e5dec0d04dee81fb98c274894',1,'Append_CRC16_Check_Sum(uint8_t *pchMessage, uint32_t dwLength):&#160;crc.cpp']]],
+  ['append_5fcrc8_5fcheck_5fsum_55',['append_crc8_check_sum',['../crc_8h.html#a6597501f13b4c73b399ef72ad9db8b24',1,'Append_CRC8_Check_Sum(unsigned char *pchMessage, unsigned int dwLength):&#160;crc.cpp'],['../crc_8cpp.html#a6597501f13b4c73b399ef72ad9db8b24',1,'Append_CRC8_Check_Sum(unsigned char *pchMessage, unsigned int dwLength):&#160;crc.cpp']]],
   ['appropriate_20setup_20guide_20for_20your_20operating_20system_3a_20strong_56',['&lt;strong&gt;Please choose the appropriate setup guide for your operating system:&lt;/strong&gt;',['../index.html#autotoc_md3',1,'']]],
   ['arm_57',['arm',['../structlastfew.html#af1c85b7866cf8dab9c63975d928c1ee7',1,'lastfew']]],
   ['armor_5fid_58',['armor_id',['../structhurt__data__t.html#aec9ce4e19ce476e7a37734549d11ea3f',1,'hurt_data_t']]],
@@ -63,5 +63,8 @@ var searchData=
   ['attach_60',['attach',['../classCANHandler.html#a415414f5289348a031d5436a13cb10f8',1,'CANHandler']]],
   ['attack_5fbuff_61',['attack_buff',['../structbuff__t.html#a799ad73faa1b7ea97b60ef2bc109858e',1,'buff_t']]],
   ['attack_5ftime_62',['attack_time',['../structaerial__robot__energy__t.html#aa46c7d0624eb94583c591fb81c826157',1,'aerial_robot_energy_t']]],
-  ['auto_63',['AUTO',['../classShooterSubsystem.html#a87eddf897140bcd67267431a76ee1ee6a412d78a13763097f6f42cb1d7c214964',1,'ShooterSubsystem']]]
+  ['auto_63',['AUTO',['../classShooterSubsystem.html#a87eddf897140bcd67267431a76ee1ee6a412d78a13763097f6f42cb1d7c214964',1,'ShooterSubsystem']]],
+  ['ax_64',['ax',['../structISM330_1_1ISM330__DATA__TypeDef.html#a5bd98359f69321bd21b5d99eb3ca8ca1',1,'ISM330::ISM330_DATA_TypeDef::ax'],['../structISM330_1_1ISM330__RAW__DATA__TypeDef.html#a507d4bd360bc57e785d85c635551d42f',1,'ISM330::ISM330_RAW_DATA_TypeDef::ax']]],
+  ['ay_65',['ay',['../structISM330_1_1ISM330__RAW__DATA__TypeDef.html#a7e9e82daf39bdba830bfd77b5c322dbd',1,'ISM330::ISM330_RAW_DATA_TypeDef::ay'],['../structISM330_1_1ISM330__DATA__TypeDef.html#afaaf4d9a1974d376487ec18a1e2437e1',1,'ISM330::ISM330_DATA_TypeDef::ay']]],
+  ['az_66',['az',['../structISM330_1_1ISM330__RAW__DATA__TypeDef.html#ae12eeeac7dbba3ed248dbf1573782274',1,'ISM330::ISM330_RAW_DATA_TypeDef::az'],['../structISM330_1_1ISM330__DATA__TypeDef.html#a7cff0e1b316215d7dac027d9b0aa5f7a',1,'ISM330::ISM330_DATA_TypeDef::az']]]
 ];

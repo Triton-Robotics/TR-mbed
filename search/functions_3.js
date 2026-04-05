@@ -8,7 +8,7 @@ var searchData=
   ['calculateperiodicposition_5',['calculatePeriodicPosition',['../classDJIMotor.html#a1942d807d289eb95ab28d583a5f3618d',1,'DJIMotor']]],
   ['calculatepositionpid_6',['calculatePositionPID',['../classDJIMotor.html#acf52b5ee51bc51f61e2af0e97ab8e5e3',1,'DJIMotor']]],
   ['calculatespeedpid_7',['calculateSpeedPID',['../classDJIMotor.html#ac83ad8e3905a1d68e49af0e577b401cd',1,'DJIMotor']]],
-  ['calibrate_8',['calibrate',['../classBNO055.html#a35195101876415477413c1ca0af48b07',1,'BNO055::calibrate()'],['../classMPU6050.html#a35657154dd30e206e09ea6407ede106c',1,'MPU6050::calibrate()']]],
+  ['calibrate_8',['calibrate',['../classBNO055.html#a35195101876415477413c1ca0af48b07',1,'BNO055::calibrate()'],['../classISM330.html#ab6a541795f490fdb536bb5ac3dc202b4',1,'ISM330::calibrate()'],['../classMPU6050.html#a35657154dd30e206e09ea6407ede106c',1,'MPU6050::calibrate()']]],
   ['canhandler_9',['canhandler',['../classCANHandler.html#a9b8ed61c6dac73788e4091c12448c76e',1,'CANHandler::CANHandler()'],['../classCANHandler.html#a7ae4877d6ba72b43694593b5de105d45',1,'CANHandler::CANHandler(PinName canRx, PinName canTx)']]],
   ['canmsg_10',['canmsg',['../classCANMsg.html#af996bcbe3d52b8c90dd432d12294cf1c',1,'CANMsg::CANMsg()'],['../classCANMsg.html#af843ce3b8b5889c427e6b8237542999d',1,'CANMsg::CANMsg(int _id, const char *_data, char _len=8, CANType _type=CANData, CANFormat _format=CANStandard)'],['../classCANMsg.html#a2e19ae2a3e39908d407404c989cdc432',1,'CANMsg::CANMsg(int _id, CANFormat _format=CANStandard)']]],
   ['capangle_11',['capangle',['../general__functions_8cpp.html#ad0a1a08d5319979ce647f7c7879eca13',1,'capAngle(float curr_angle):&#160;general_functions.cpp'],['../general__functions_8h.html#ad0a1a08d5319979ce647f7c7879eca13',1,'capAngle(float curr_angle):&#160;general_functions.cpp']]],
@@ -20,5 +20,7 @@ var searchData=
   ['chip_5fready_17',['chip_ready',['../classBNO055.html#a4367136d057891191d873107cd9a6c31',1,'BNO055']]],
   ['clear_18',['clear',['../classCANMsg.html#a969dcb0af8e68883ab104249c8559146',1,'CANMsg']]],
   ['cleardisplay_19',['cleardisplay',['../classAdafruit__SSD1306.html#afe1e0f5efabd931aab7998275356744d',1,'Adafruit_SSD1306::clearDisplay()'],['../classSSD1308.html#aced1bba3c22637bb8b189a8c4a7cce00',1,'SSD1308::clearDisplay()']]],
-  ['command_20',['command',['../classAdafruit__SSD1306.html#a21922085457ef7cb35586ee68bbf4e79',1,'Adafruit_SSD1306::command()'],['../classAdafruit__SSD1306__Spi.html#aa0a3797008126ae63a2ce11a20f374fe',1,'Adafruit_SSD1306_Spi::command()'],['../classAdafruit__SSD1306__I2c.html#a0450b0cd6cef198f97198eab2aff7750',1,'Adafruit_SSD1306_I2c::command()']]]
+  ['command_20',['command',['../classAdafruit__SSD1306.html#a21922085457ef7cb35586ee68bbf4e79',1,'Adafruit_SSD1306::command()'],['../classAdafruit__SSD1306__Spi.html#aa0a3797008126ae63a2ce11a20f374fe',1,'Adafruit_SSD1306_Spi::command()'],['../classAdafruit__SSD1306__I2c.html#a0450b0cd6cef198f97198eab2aff7750',1,'Adafruit_SSD1306_I2c::command()']]],
+  ['computeanglesmadgwick_21',['computeAnglesMadgwick',['../classISM330.html#a78263ae7f3252b3d8b77ee4c126e7011',1,'ISM330']]],
+  ['computeanglesmah_22',['computeAnglesMah',['../classISM330.html#ab8127d0154f62cf53934c6ae5f4ae30c',1,'ISM330']]]
 ];

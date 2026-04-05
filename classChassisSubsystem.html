@@ -170,10 +170,10 @@ Public Member Functions</h2></td></tr>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:aa607367605375c164166596604cdc653" id="r_aa607367605375c164166596604cdc653"><td class="memItemLeft" align="right" valign="top">static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#aa607367605375c164166596604cdc653">limitAcceleration</a> (float desiredRPM, float <a class="el" href="classChassisSubsystem.html#aa6c6b1d723f51aa7f833377f38ccd12a">previousRPM</a>, int power)</td></tr>
 <tr class="separator:aa607367605375c164166596604cdc653"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60179d59153175c0b8ee5e4760ec45c3" id="r_a60179d59153175c0b8ee5e4760ec45c3"><td class="memItemLeft" align="right" valign="top">static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a60179d59153175c0b8ee5e4760ec45c3">p_theory</a> (int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm)</td></tr>
-<tr class="separator:a60179d59153175c0b8ee5e4760ec45c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a128186a64a493450fccf61359bb7d0a7" id="r_a128186a64a493450fccf61359bb7d0a7"><td class="memItemLeft" align="right" valign="top">static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a128186a64a493450fccf61359bb7d0a7">Bisection</a> (int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm, float chassisPowerLimit)</td></tr>
-<tr class="separator:a128186a64a493450fccf61359bb7d0a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d9603eec33d89b3bd51e40d19b04da6" id="r_a8d9603eec33d89b3bd51e40d19b04da6"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a8d9603eec33d89b3bd51e40d19b04da6">p_theory</a> (int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm)</td></tr>
+<tr class="separator:a8d9603eec33d89b3bd51e40d19b04da6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3081940375c51edc911b051aca4c51d4" id="r_a3081940375c51edc911b051aca4c51d4"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a3081940375c51edc911b051aca4c51d4">Bisection</a> (int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm, float chassisPowerLimit)</td></tr>
+<tr class="separator:a3081940375c51edc911b051aca4c51d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab8da1935b93b1d3c1f274f7c3e676878" id="r_ab8da1935b93b1d3c1f274f7c3e676878"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#ab8da1935b93b1d3c1f274f7c3e676878">radiansToDegrees</a> (double radians)</td></tr>
 <tr class="separator:ab8da1935b93b1d3c1f274f7c3e676878"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1f6046e375b1e3c29a15896181b3f736" id="r_a1f6046e375b1e3c29a15896181b3f736"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a1f6046e375b1e3c29a15896181b3f736">degreesToRadians</a> (double degrees)</td></tr>
@@ -354,8 +354,8 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a128186a64a493450fccf61359bb7d0a7" name="a128186a64a493450fccf61359bb7d0a7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a128186a64a493450fccf61359bb7d0a7">&#9670;&#160;</a></span>Bisection()</h2>
+<a id="a3081940375c51edc911b051aca4c51d4" name="a3081940375c51edc911b051aca4c51d4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3081940375c51edc911b051aca4c51d4">&#9670;&#160;</a></span>Bisection()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -364,7 +364,7 @@ Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">float ChassisSubsystem::Bisection </td>
+          <td class="memname">double ChassisSubsystem::Bisection </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>LeftFrontPower</em>, </td>
@@ -702,8 +702,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a60179d59153175c0b8ee5e4760ec45c3" name="a60179d59153175c0b8ee5e4760ec45c3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a60179d59153175c0b8ee5e4760ec45c3">&#9670;&#160;</a></span>p_theory()</h2>
+<a id="a8d9603eec33d89b3bd51e40d19b04da6" name="a8d9603eec33d89b3bd51e40d19b04da6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d9603eec33d89b3bd51e40d19b04da6">&#9670;&#160;</a></span>p_theory()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -712,7 +712,7 @@ Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">float ChassisSubsystem::p_theory </td>
+          <td class="memname">double ChassisSubsystem::p_theory </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>LeftFrontPower</em>, </td>

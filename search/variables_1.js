@@ -12,5 +12,8 @@ var searchData=
   ['arm_9',['arm',['../structlastfew.html#af1c85b7866cf8dab9c63975d928c1ee7',1,'lastfew']]],
   ['armor_5fid_10',['armor_id',['../structhurt__data__t.html#aec9ce4e19ce476e7a37734549d11ea3f',1,'hurt_data_t']]],
   ['attack_5fbuff_11',['attack_buff',['../structbuff__t.html#a799ad73faa1b7ea97b60ef2bc109858e',1,'buff_t']]],
-  ['attack_5ftime_12',['attack_time',['../structaerial__robot__energy__t.html#aa46c7d0624eb94583c591fb81c826157',1,'aerial_robot_energy_t']]]
+  ['attack_5ftime_12',['attack_time',['../structaerial__robot__energy__t.html#aa46c7d0624eb94583c591fb81c826157',1,'aerial_robot_energy_t']]],
+  ['ax_13',['ax',['../structISM330_1_1ISM330__RAW__DATA__TypeDef.html#a507d4bd360bc57e785d85c635551d42f',1,'ISM330::ISM330_RAW_DATA_TypeDef::ax'],['../structISM330_1_1ISM330__DATA__TypeDef.html#a5bd98359f69321bd21b5d99eb3ca8ca1',1,'ISM330::ISM330_DATA_TypeDef::ax']]],
+  ['ay_14',['ay',['../structISM330_1_1ISM330__RAW__DATA__TypeDef.html#a7e9e82daf39bdba830bfd77b5c322dbd',1,'ISM330::ISM330_RAW_DATA_TypeDef::ay'],['../structISM330_1_1ISM330__DATA__TypeDef.html#afaaf4d9a1974d376487ec18a1e2437e1',1,'ISM330::ISM330_DATA_TypeDef::ay']]],
+  ['az_15',['az',['../structISM330_1_1ISM330__RAW__DATA__TypeDef.html#ae12eeeac7dbba3ed248dbf1573782274',1,'ISM330::ISM330_RAW_DATA_TypeDef::az'],['../structISM330_1_1ISM330__DATA__TypeDef.html#a7cff0e1b316215d7dac027d9b0aa5f7a',1,'ISM330::ISM330_DATA_TypeDef::az']]]
 ];

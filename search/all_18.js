@@ -1,11 +1,14 @@
 var searchData=
 [
-  ['x_0',['x',['../structChassisSpeeds.html#a23c1d0c296f780c9a7faa22e7a87abfc',1,'ChassisSpeeds::x'],['../structrobot__pos__t.html#ad395fa75a16f47d58b713a8aaba1d56c',1,'robot_pos_t::x'],['../structBNO055__QUATERNION__TypeDef.html#adc4ea9cd9294f875b351498ee2b302a7',1,'BNO055_QUATERNION_TypeDef::x'],['../structBNO055__VECTOR__TypeDef.html#a85c6261e3519de020de2947c7ca1d5e7',1,'BNO055_VECTOR_TypeDef::x'],['../structIMU_1_1Quaternion.html#a3b9036e0a22f162d2e31276b0306bb20',1,'IMU::Quaternion::x'],['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fa02129bb861061d1a052c592e2dc6b383',1,'Remote::X']]],
+  ['x_0',['x',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fa02129bb861061d1a052c592e2dc6b383',1,'Remote::X'],['../structChassisSpeeds.html#a23c1d0c296f780c9a7faa22e7a87abfc',1,'ChassisSpeeds::x'],['../structrobot__pos__t.html#ad395fa75a16f47d58b713a8aaba1d56c',1,'robot_pos_t::x'],['../structBNO055__QUATERNION__TypeDef.html#adc4ea9cd9294f875b351498ee2b302a7',1,'BNO055_QUATERNION_TypeDef::x'],['../structBNO055__VECTOR__TypeDef.html#a85c6261e3519de020de2947c7ca1d5e7',1,'BNO055_VECTOR_TypeDef::x'],['../structIMU_1_1Quaternion.html#a3b9036e0a22f162d2e31276b0306bb20',1,'IMU::Quaternion::x'],['../structISM330_1_1ISM330__VECTOR__TypeDef.html#a019c508864021956fdf859c239616f0f',1,'ISM330::ISM330_VECTOR_TypeDef::x']]],
   ['x_5ffine_5fgain_1',['X_FINE_GAIN',['../MPU6050_8h.html#aca80739c2ec40ca15ba201d4537748ab',1,'MPU6050.h']]],
   ['xa_5foffset_5fh_2',['XA_OFFSET_H',['../MPU6050_8h.html#ae78e00d167f08af6530c8ee3bcaeb298',1,'MPU6050.h']]],
   ['xa_5foffset_5fl_5ftc_3',['XA_OFFSET_L_TC',['../MPU6050_8h.html#aa791c10b75c16bc5597478b1a40d529f',1,'MPU6050.h']]],
-  ['xframeheader_4',['xFrameHeader',['../structxFrameHeader.html',1,'']]],
-  ['xg_5foffs_5fusrh_5',['XG_OFFS_USRH',['../MPU6050_8h.html#a75ed9711e6453cadb7bc62a8457aefc7',1,'MPU6050.h']]],
-  ['xg_5foffs_5fusrl_6',['XG_OFFS_USRL',['../MPU6050_8h.html#a49299ef6d11d7ba69751f58abad33a54',1,'MPU6050.h']]],
-  ['xgoffs_5ftc_7',['XGOFFS_TC',['../MPU6050_8h.html#a0f102d53060f697468142dcc3d33775f',1,'MPU6050.h']]]
+  ['xenable_4',['xEnable',['../ISM330_8cpp.html#adb51e006a7600baed354d9a5567ff938',1,'ISM330.cpp']]],
+  ['xenablemax_5',['xEnableMax',['../ISM330_8cpp.html#a55197d03b110d6bd1bcbc6101078a68e',1,'ISM330.cpp']]],
+  ['xframeheader_6',['xFrameHeader',['../structxFrameHeader.html',1,'']]],
+  ['xg_5foffs_5fusrh_7',['XG_OFFS_USRH',['../MPU6050_8h.html#a75ed9711e6453cadb7bc62a8457aefc7',1,'MPU6050.h']]],
+  ['xg_5foffs_5fusrl_8',['XG_OFFS_USRL',['../MPU6050_8h.html#a49299ef6d11d7ba69751f58abad33a54',1,'MPU6050.h']]],
+  ['xgoffs_5ftc_9',['XGOFFS_TC',['../MPU6050_8h.html#a0f102d53060f697468142dcc3d33775f',1,'MPU6050.h']]],
+  ['xreg_10',['xReg',['../ISM330_8cpp.html#a349652947e5a461ba4cebc12723f39c8',1,'ISM330.cpp']]]
 ];
