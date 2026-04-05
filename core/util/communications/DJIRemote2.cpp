@@ -301,7 +301,6 @@ uint16_t DJIRemote2::getComputedCRC() const
 void DJIRemote2::readIncomingBytes()
 {
     uint8_t temp[32];
-
     while (serial_.readable()) {
         ssize_t bytesRead = serial_.read(temp, sizeof(temp));
         if (bytesRead <= 0) {
@@ -309,8 +308,8 @@ void DJIRemote2::readIncomingBytes()
         }
 
         size_t n = static_cast<size_t>(bytesRead);
-
         if (n >= STREAM_BUFFER_SIZE) {
+            printf("stream count updated to %d\n", STREAM_BUFFER_SIZE);
             std::memcpy(streamBuffer_, temp + (n - STREAM_BUFFER_SIZE), STREAM_BUFFER_SIZE);
             streamCount_ = STREAM_BUFFER_SIZE;
             continue;
@@ -323,28 +322,39 @@ void DJIRemote2::readIncomingBytes()
 
         std::memcpy(streamBuffer_ + streamCount_, temp, n);
         streamCount_ += n;
+        
+        printf("Buffer [%zu bytes]: ", streamCount_);
+        for (size_t i = 0; i < streamCount_; i++) {
+            printf("%02X ", streamBuffer_[i]);
+        }
+        printf("\n");
     }
 }
 
 bool DJIRemote2::tryParseFrame()
 {
+    //printf("daddys home");
+    //printf("%d\n", streamCount_);
     while (streamCount_ >= 2) {
-        int headerIndex = findHeader();
+        //printf("we cracked tho\n");
+        int headerIndex = findHeader(); // issue here
 
         if (headerIndex < 0) {
             if (streamCount_ > 1) {
                 streamBuffer_[0] = streamBuffer_[streamCount_ - 1];
                 streamCount_ = 1;
             }
+            //printf("Fail 1\n");
             validFrame_ = false;
             return false;
         }
-
+        //printf("%d\n", headerIndex);
         if (headerIndex > 0) {
             shiftLeft(static_cast<size_t>(headerIndex));
         }
 
         if (streamCount_ < FRAME_SIZE) {
+            printf("Fail 2\n");
             validFrame_ = false;
             return false;
         }
@@ -352,6 +362,7 @@ bool DJIRemote2::tryParseFrame()
         verifyCRC(streamBuffer_);
 
         if (!crcValid_) {
+            //printf("crc\n");
             shiftLeft(1);
             continue;
         }
@@ -364,10 +375,11 @@ bool DJIRemote2::tryParseFrame()
         }
         lastFrameTimeUs_ = currentFrameTimeUs_;
         validFrame_ = true;
-
+        printf("guud boi \n");
         shiftLeft(FRAME_SIZE);
         return true;
     }
+    printf("Fail 3/n");
 
     validFrame_ = false;
     return false;

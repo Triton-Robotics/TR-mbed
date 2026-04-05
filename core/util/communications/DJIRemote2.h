@@ -112,7 +112,7 @@ public:
     static constexpr size_t FRAME_SIZE = 21;
     static constexpr size_t STREAM_BUFFER_SIZE = 64;
 
-    DJIRemote2(PinName tx, PinName rx, int baud = 921600);
+    DJIRemote2(PinName tx, PinName rx, int baud = 115200);
 
     bool update();                      // returns true when a full new valid frame is decoded
     void clear();
