@@ -146,7 +146,7 @@ class Infantry : public BaseRobot {
           // clang-format off
         i2c_(IMU_I2C_SDA, IMU_I2C_SCL), 
         imu_(i2c_, 0x6B),
-        encoder_(PA_7),
+        encoder_(PB_4),
         jetson_raw_serial(PC_12, PD_2,115200), // TODO: check higher baud to see if still works
         jetson(jetson_raw_serial),
         turret_(turret_config, imu_),
@@ -175,14 +175,13 @@ class Infantry : public BaseRobot {
 
     void init() override {
         timer = us_ticker_read();
-        imu_.begin(0.1, 0.0);
+        imu_.begin(1, 0);
     }
 
     void periodic(unsigned long dt_us) override {
         // TODO this should be threaded inside imu instead
         imu_.mahonyUpdateIMU(dt_us / 1000000.0);
         imuAngles = imu_.getImuAngles();
-
         // TODO: use this in code correctly to drive faster
         max_linear_vel = 1.24 + 0.0513 * chassis_.power_limit +
                          0.000216 * (chassis_.power_limit * chassis_.power_limit);
@@ -250,7 +249,7 @@ class Infantry : public BaseRobot {
         set_jetson_state();
         jetson.write(stm_state);
 
-        // printf("time %ld", us_ticker_read());
+        // printf("time %.4f\n", dt_us / 1000000.0);
 
         // Debug print statements
         // printf("des: %.2f, %.2f, %.2f %d \n", jetson.read().desired_x_vel,
@@ -264,6 +263,7 @@ class Infantry : public BaseRobot {
         // remote_.getSwitch(Remote::Switch::RIGHT_SWITCH)); printf("imu:
         // %.2f\n", imu.getImuAngles().yaw);
         // printf("%.2f\n", encoder_.encoderMovingAverage());
+        // printf("%.2f, %.2f, %.2f\n", imuAngles.roll, imuAngles.pitch, imuAngles.yaw);
     }
 
     void end_of_loop() override {}

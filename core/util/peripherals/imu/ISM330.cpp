@@ -5,7 +5,7 @@
 
 // Scale factors for calculations 
 static constexpr float accelRangeScale = 0.122f;  // mg/LSB @ ±4g; see datasheet for other ranges
-static constexpr float gyroRangeScale  = 70.0f;   // mdps/LSB @ ±2000 dps
+static constexpr float gyroRangeScale  = 70.0 * 1.5;   // mdps/LSB @ ±2000 dps * 1.5 for scaling error
 
 static constexpr float g = 9.80665f; 
 static constexpr float dpsToRad = M_PI / 180.0f;
@@ -65,6 +65,7 @@ bool ISM330::begin(float prop_gain, float int_gain) noexcept
     mahonyStart(prop_gain, int_gain);
     calibrate();
     mahonyStart(prop_gain, int_gain);
+    madgwickStart(1.0f);
 
     return true;
 }
@@ -232,7 +233,8 @@ void ISM330::getAGVectors(ISM330_VECTOR_TypeDef& accel, ISM330_VECTOR_TypeDef& g
 
 // The original Mahony algorithm used a fast inverse square root approx, but for accuracy we can just do the real thing I think
 // If we need speed later, we can always switch to the approx
-float ISM330::invSqrt(float x) { 
+float ISM330::invSqrt(float x) 
+{ 
     return 1/sqrt(x);
 
     //For easy access later, here's the approx
@@ -249,28 +251,16 @@ float ISM330::invSqrt(float x) {
 }
 
 
-IMU::EulerAngles ISM330::getImuAngles() {
+IMU::EulerAngles ISM330::getImuAngles() 
+{
     IMU::EulerAngles angles;
     computeAnglesMah(angles);
     return angles;
 }
 
 // Mahony Sensor fusion
-// void ISM330::mahonyStart(float prop_gain, float int_gain) {
-//     twoKp = 2 * prop_gain; // 2 * proportional gain (Kp)
-//     twoKi = 2 * int_gain;  // 2 * integral gain (Ki)
-//     mahq0 = 1.0f;
-//     mahq1 = 0.0f;
-//     mahq2 = 0.0f;
-//     mahq3 = 0.0f;
-//     integralFBx = 0.0f;
-//     integralFBy = 0.0f;
-//     integralFBz = 0.0f;
-//     anglesComputed = false;
-//     //invSampleFreq = 1.0f / DEFAULT_SAMPLE_FREQ;
-// }
-
-void ISM330::mahonyStart(float prop_gain, float int_gain) {
+void ISM330::mahonyStart(float prop_gain, float int_gain) 
+{
     twoKp = 2.0f * prop_gain;
     twoKi = 2.0f * int_gain;
 
@@ -283,7 +273,8 @@ void ISM330::mahonyStart(float prop_gain, float int_gain) {
     anglesComputed = false;
 }
 
-void ISM330::initQuaternionFromAccel() {
+void ISM330::initQuaternionFromAccel() 
+{
     float axSum = 0, aySum = 0, azSum = 0;
     const int samples = 50;
 
@@ -322,10 +313,15 @@ void ISM330::initQuaternionFromAccel() {
     mahq1 = sr*cp*cy - cr*sp*sy;
     mahq2 = cr*sp*cy + sr*cp*sy;
     mahq3 = cr*cp*sy - sr*sp*cy;
+
+    q0 = cr*cp*cy + sr*sp*sy;
+    q1 = sr*cp*cy - cr*sp*sy;
+    q2 = cr*sp*cy + sr*cp*sy;
+    q3 = cr*cp*sy - sr*sp*cy;
 }
 
-
-void ISM330::mahonyUpdate(float mx, float my, float mz, float dt) {
+void ISM330::mahonyUpdate(float mx, float my, float mz, float dt) 
+{
     // Use IMU algorithm if magnetometer measurement invalid
     // (avoids NaN in magnetometer normalisation)
     if ((mx == 0.0f) && (my == 0.0f) && (mz == 0.0f)) {
@@ -440,7 +436,8 @@ void ISM330::mahonyUpdate(float mx, float my, float mz, float dt) {
   anglesComputed = 0;
 }
 
-void ISM330::mahonyUpdateIMU(float dt) {
+void ISM330::mahonyUpdateIMU(float dt) 
+{
     auto [ax, ay, az, gx, gy, gz] = readAG();
     
     ax /= g;
@@ -455,7 +452,7 @@ void ISM330::mahonyUpdateIMU(float dt) {
     // Only trust accel when it's reading close to 1g
     // If we're accelerating, magnitude deviates from 1.0 — skip correction
     float accelMag = sqrtf(ax*ax + ay*ay + az*az);
-    bool accelValid = (accelMag > 0.85f) && (accelMag < 1.15f);
+    bool accelValid = (accelMag > 0.5f) && (accelMag < 1.5f);
 
     if (accelValid && !((ax == 0.0f) && (ay == 0.0f) && (az == 0.0f))) {
         // Normalise accelerometer measurement
@@ -515,7 +512,8 @@ void ISM330::mahonyUpdateIMU(float dt) {
     anglesComputed = 0;
 }
 
-void ISM330::computeAnglesMah(IMU::EulerAngles& angles) {
+void ISM330::computeAnglesMah(IMU::EulerAngles& angles) 
+{
     angles.roll = atan2f(mahq0 * mahq1 + mahq2 * mahq3, 0.5f - mahq1 * mahq1 - mahq2 * mahq2)*radToDeg;
     angles.pitch = asinf(-2.0f * (mahq1 * mahq3 - mahq0 * mahq2))*radToDeg;
     angles.yaw = atan2f(mahq1 * mahq2 + mahq0 * mahq3, 0.5f - mahq2 * mahq2 - mahq3 * mahq3)*radToDeg;
@@ -525,3 +523,269 @@ void ISM330::computeAnglesMah(IMU::EulerAngles& angles) {
     anglesComputed = 1;
 }
 
+void ISM330::madgwickStart(float gain) {
+    beta = gain;
+    q0 = 1.0f;
+    q1 = 0.0f;
+    q2 = 0.0f;
+    q3 = 0.0f;
+
+    initQuaternionFromAccel();  
+    anglesComputed = false;
+}
+
+
+void ISM330::madgwickUpdate(float mx, float my, float mz, float dt) {
+    auto [ax, ay, az, gx, gy, gz] = readAG();
+
+    //Converting to g/s instead of m/s^2
+    ax /= g;
+    ay /= g;
+    az /= g;
+
+    float recipNorm;
+    float s0, s1, s2, s3;
+    float qDot1, qDot2, qDot3, qDot4;
+    float hx, hy;
+    float _2q0mx, _2q0my, _2q0mz, _2q1mx, _2bx, _2bz, _4bx, _4bz, _2q0, _2q1,
+        _2q2, _2q3, _2q0q2, _2q2q3, q0q0, q0q1, q0q2, q0q3, q1q1, q1q2, q1q3,
+        q2q2, q2q3, q3q3;
+
+    // Use IMU algorithm if magnetometer measurement invalid (avoids NaN in
+    // magnetometer normalisation)
+    if ((mx == 0.0f) && (my == 0.0f) && (mz == 0.0f)) {
+        madgwickUpdateIMU(dt);
+        return;
+    }
+
+    // Rate of change of quaternion from gyroscope
+    qDot1 = 0.5f * (-q1 * gx - q2 * gy - q3 * gz);
+    qDot2 = 0.5f * (q0 * gx + q2 * gz - q3 * gy);
+    qDot3 = 0.5f * (q0 * gy - q1 * gz + q3 * gx);
+    qDot4 = 0.5f * (q0 * gz + q1 * gy - q2 * gx);
+
+    // Compute feedback only if accelerometer measurement valid (avoids NaN in
+    // accelerometer normalisation)
+    if (!((ax == 0.0f) && (ay == 0.0f) && (az == 0.0f))) {
+
+        // Normalise accelerometer measurement
+        recipNorm = invSqrt(ax * ax + ay * ay + az * az);
+        ax *= recipNorm;
+        ay *= recipNorm;
+        az *= recipNorm;
+
+        // Normalise magnetometer measurement
+        recipNorm = invSqrt(mx * mx + my * my + mz * mz);
+        mx *= recipNorm;
+        my *= recipNorm;
+        mz *= recipNorm;
+
+        // Auxiliary variables to avoid repeated arithmetic
+        _2q0mx = 2.0f * q0 * mx;
+        _2q0my = 2.0f * q0 * my;
+        _2q0mz = 2.0f * q0 * mz;
+        _2q1mx = 2.0f * q1 * mx;
+        _2q0 = 2.0f * q0;
+        _2q1 = 2.0f * q1;
+        _2q2 = 2.0f * q2;
+        _2q3 = 2.0f * q3;
+        _2q0q2 = 2.0f * q0 * q2;
+        _2q2q3 = 2.0f * q2 * q3;
+        q0q0 = q0 * q0;
+        q0q1 = q0 * q1;
+        q0q2 = q0 * q2;
+        q0q3 = q0 * q3;
+        q1q1 = q1 * q1;
+        q1q2 = q1 * q2;
+        q1q3 = q1 * q3;
+        q2q2 = q2 * q2;
+        q2q3 = q2 * q3;
+        q3q3 = q3 * q3;
+
+        // Reference direction of Earth's magnetic field
+        hx = mx * q0q0 - _2q0my * q3 + _2q0mz * q2 + mx * q1q1 + _2q1 * my * q2 +
+            _2q1 * mz * q3 - mx * q2q2 - mx * q3q3;
+        hy = _2q0mx * q3 + my * q0q0 - _2q0mz * q1 + _2q1mx * q2 - my * q1q1 +
+            my * q2q2 + _2q2 * mz * q3 - my * q3q3;
+        _2bx = sqrtf(hx * hx + hy * hy);
+        _2bz = -_2q0mx * q2 + _2q0my * q1 + mz * q0q0 + _2q1mx * q3 - mz * q1q1 +
+            _2q2 * my * q3 - mz * q2q2 + mz * q3q3;
+        _4bx = 2.0f * _2bx;
+        _4bz = 2.0f * _2bz;
+
+        // Gradient decent algorithm corrective step
+        s0 = -_2q2 * (2.0f * q1q3 - _2q0q2 - ax) +
+            _2q1 * (2.0f * q0q1 + _2q2q3 - ay) -
+            _2bz * q2 * (_2bx * (0.5f - q2q2 - q3q3) + _2bz * (q1q3 - q0q2) - mx) +
+            (-_2bx * q3 + _2bz * q1) *
+                (_2bx * (q1q2 - q0q3) + _2bz * (q0q1 + q2q3) - my) +
+            _2bx * q2 * (_2bx * (q0q2 + q1q3) + _2bz * (0.5f - q1q1 - q2q2) - mz);
+        s1 = _2q3 * (2.0f * q1q3 - _2q0q2 - ax) +
+            _2q0 * (2.0f * q0q1 + _2q2q3 - ay) -
+            4.0f * q1 * (1 - 2.0f * q1q1 - 2.0f * q2q2 - az) +
+            _2bz * q3 * (_2bx * (0.5f - q2q2 - q3q3) + _2bz * (q1q3 - q0q2) - mx) +
+            (_2bx * q2 + _2bz * q0) *
+                (_2bx * (q1q2 - q0q3) + _2bz * (q0q1 + q2q3) - my) +
+            (_2bx * q3 - _4bz * q1) *
+                (_2bx * (q0q2 + q1q3) + _2bz * (0.5f - q1q1 - q2q2) - mz);
+        s2 = -_2q0 * (2.0f * q1q3 - _2q0q2 - ax) +
+            _2q3 * (2.0f * q0q1 + _2q2q3 - ay) -
+            4.0f * q2 * (1 - 2.0f * q1q1 - 2.0f * q2q2 - az) +
+            (-_4bx * q2 - _2bz * q0) *
+                (_2bx * (0.5f - q2q2 - q3q3) + _2bz * (q1q3 - q0q2) - mx) +
+            (_2bx * q1 + _2bz * q3) *
+                (_2bx * (q1q2 - q0q3) + _2bz * (q0q1 + q2q3) - my) +
+            (_2bx * q0 - _4bz * q2) *
+                (_2bx * (q0q2 + q1q3) + _2bz * (0.5f - q1q1 - q2q2) - mz);
+        s3 = _2q1 * (2.0f * q1q3 - _2q0q2 - ax) +
+            _2q2 * (2.0f * q0q1 + _2q2q3 - ay) +
+            (-_4bx * q3 + _2bz * q1) *
+                (_2bx * (0.5f - q2q2 - q3q3) + _2bz * (q1q3 - q0q2) - mx) +
+            (-_2bx * q0 + _2bz * q2) *
+                (_2bx * (q1q2 - q0q3) + _2bz * (q0q1 + q2q3) - my) +
+            _2bx * q1 * (_2bx * (q0q2 + q1q3) + _2bz * (0.5f - q1q1 - q2q2) - mz);
+        recipNorm = invSqrt(s0 * s0 + s1 * s1 + s2 * s2 +
+                            s3 * s3); // normalise step magnitude
+        s0 *= recipNorm;
+        s1 *= recipNorm;
+        s2 *= recipNorm;
+        s3 *= recipNorm;
+
+        // Apply feedback step
+        qDot1 -= beta * s0;
+        qDot2 -= beta * s1;
+        qDot3 -= beta * s2;
+        qDot4 -= beta * s3;
+    }
+
+    // Integrate rate of change of quaternion to yield quaternion
+    q0 += qDot1 * dt;
+    q1 += qDot2 * dt;
+    q2 += qDot3 * dt;
+    q3 += qDot4 * dt;
+
+    // Normalise quaternion
+    recipNorm = invSqrt(q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3);
+    q0 *= recipNorm;
+    q1 *= recipNorm;
+    q2 *= recipNorm;
+    q3 *= recipNorm;
+    anglesComputed = 0;
+}
+
+void ISM330::madgwickUpdateIMU (float dt) {
+    auto [ax, ay, az, gx, gy, gz] = readAG();
+    //Converting to g/s instead of m/s^2
+
+    // float ax_sum = 0;
+    // float ay_sum = 0;
+    // float az_sum = 0;
+    // float gx_sum = 0;
+    // float gy_sum = 0;
+    // float gz_sum = 0;
+
+    // for (int i = 1; i < 10; i++) {
+    //     auto [ax, ay, az, gx, gy, gz] = readAG();
+    //     ax_sum = ax;
+    //     ay_sum = ay;
+    //     az_sum = az;
+        
+    //     gx_sum = gx;
+    //     gy_sum = gy;
+    //     gz_sum = gz;
+    // }
+    // float ax = ax_sum;
+    // float ay = ay_sum;
+    // float az = az_sum;
+
+    // float gx = gx_sum;
+    // float gy = gy_sum;
+    // float gz = gz_sum;
+
+    ax /= g;
+    ay /= g;
+    az /= g;
+
+    float recipNorm;
+    float s0, s1, s2, s3;
+    float qDot1, qDot2, qDot3, qDot4;
+    float _2q0, _2q1, _2q2, _2q3, _4q0, _4q1, _4q2, _8q1, _8q2, q0q0, q1q1, q2q2, q3q3;
+
+
+
+    // Rate of change of quaternion from gyroscope
+    qDot1 = 0.5f * (-q1 * gx - q2 * gy - q3 * gz);
+    qDot2 = 0.5f * (q0 * gx + q2 * gz - q3 * gy);
+    qDot3 = 0.5f * (q0 * gy - q1 * gz + q3 * gx);
+    qDot4 = 0.5f * (q0 * gz + q1 * gy - q2 * gx);
+
+    // Compute feedback only if accelerometer measurement valid (avoids NaN in
+    // accelerometer normalisation)
+    if (!((ax == 0.0f) && (ay == 0.0f) && (az == 0.0f))) {
+
+        // Normalise accelerometer measurement
+        recipNorm = invSqrt(ax * ax + ay * ay + az * az);
+        ax *= recipNorm;
+        ay *= recipNorm;
+        az *= recipNorm;
+
+        // Auxiliary variables to avoid repeated arithmetic
+        _2q0 = 2.0f * q0;
+        _2q1 = 2.0f * q1;
+        _2q2 = 2.0f * q2;
+        _2q3 = 2.0f * q3;
+        _4q0 = 4.0f * q0;
+        _4q1 = 4.0f * q1;
+        _4q2 = 4.0f * q2;
+        _8q1 = 8.0f * q1;
+        _8q2 = 8.0f * q2;
+        q0q0 = q0 * q0;
+        q1q1 = q1 * q1;
+        q2q2 = q2 * q2;
+        q3q3 = q3 * q3;
+
+        // Gradient decent algorithm corrective step
+        s0 = _4q0 * q2q2 + _2q2 * ax + _4q0 * q1q1 - _2q1 * ay;
+        s1 = _4q1 * q3q3 - _2q3 * ax + 4.0f * q0q0 * q1 - _2q0 * ay - _4q1 +
+            _8q1 * q1q1 + _8q1 * q2q2 + _4q1 * az;
+        s2 = 4.0f * q0q0 * q2 + _2q0 * ax + _4q2 * q3q3 - _2q3 * ay - _4q2 +
+            _8q2 * q1q1 + _8q2 * q2q2 + _4q2 * az;
+        s3 = 4.0f * q1q1 * q3 - _2q1 * ax + 4.0f * q2q2 * q3 - _2q2 * ay;
+        recipNorm = invSqrt(s0 * s0 + s1 * s1 + s2 * s2 +
+                            s3 * s3); // normalise step magnitude
+        s0 *= recipNorm;
+        s1 *= recipNorm;
+        s2 *= recipNorm;
+        s3 *= recipNorm;
+
+        // Apply feedback step
+        qDot1 -= beta * s0;
+        qDot2 -= beta * s1;
+        qDot3 -= beta * s2;
+        qDot4 -= beta * s3;
+    }
+
+    // Integrate rate of change of quaternion to yield quaternion
+    q0 += qDot1 * dt;
+    q1 += qDot2 * dt;
+    q2 += qDot3 * dt;
+    q3 += qDot4 * dt;
+
+    // Normalise quaternion
+    recipNorm = invSqrt(q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3);
+    q0 *= recipNorm;
+    q1 *= recipNorm;
+    q2 *= recipNorm;
+    q3 *= recipNorm;
+    anglesComputed = 0;
+}
+
+void ISM330::computeAnglesMadgwick(IMU::EulerAngles& angles) {
+  angles.roll = atan2f(q0 * q1 + q2 * q3, 0.5f - q1 * q1 - q2 * q2)*radToDeg;
+  angles.pitch = asinf(-2.0f * (q1 * q3 - q0 * q2))*radToDeg;
+  angles.yaw = atan2f(q1 * q2 + q0 * q3, 0.5f - q2 * q2 - q3 * q3)*radToDeg;
+  grav[0] = 2.0f * (q1 * q3 - q0 * q2);
+  grav[1] = 2.0f * (q0 * q1 + q2 * q3);
+  grav[2] = 2.0f * (q0 * q0 - 0.5f + q3 * q3);
+  anglesComputed = 1;
+}

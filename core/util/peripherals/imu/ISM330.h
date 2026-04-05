@@ -97,6 +97,8 @@ public:
 
     // IMU Sensor Fusion
     void computeAnglesMah(IMU::EulerAngles& angles); // Mahony Compute Euler Angles
+
+    void computeAnglesMadgwick(IMU::EulerAngles& angles);
     
     // Mahony Sensor Fusion
     //Adafruit_Mahony(float prop_gain, float int_gain);
@@ -107,6 +109,14 @@ public:
     void mahonyUpdate(float mx, float my, float mz, float dt);
     
     void mahonyUpdateIMU(float dt);
+
+    // Madgwick Sensor Fusion
+
+    void madgwickStart(float gain);
+    
+    void madgwickUpdate(float mx, float my, float mz, float dt);
+    
+    void madgwickUpdateIMU(float dt);
 
     // Reading individual sensor values
     ISM330_VECTOR_TypeDef readAccel() noexcept;
