@@ -134,8 +134,8 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
             motor3.setPower(output_power),
             motor4.setPower(output_power);
             current_counter++;
-            if (current_counter > 10 && output_power <8001){
-                output_power++;
+            if (current_counter > 100 && output_power <8001){
+                output_power+=50;
                 current_counter = 0;
             }
 
@@ -186,7 +186,7 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
     // 7. Spreadsheet-Ready Printing
     static int count = 0;
     if (count++ % 100 == 0) { 
-        printf("%.3f\t%.2f\t%.4f\n", voltage, display_current, torque_nm);
+        printf("%d\t%.2f\t%.4f\n", output_power, display_current, torque_nm);
     }
 }
 
