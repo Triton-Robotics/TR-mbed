@@ -49,6 +49,7 @@ class BaseRobot {
     float tolerance = 0.05;
     // Keyboard Driving
     float mult = 0.7;
+    // Angular velocity of beyblade
     float omega_speed = 0;
     float max_linear_vel = 0;
 
@@ -196,7 +197,10 @@ class BaseRobot {
 
         // max_linear_vel = -1.24 + 0.0513 * chassis.power_limit + -0.000216 * (chassis.power_limit * chassis.power_limit);
         // float max_omega = 0.326 + 0.0857 * chassis_power_limit + -0.000183 * (chassis_power_limit * chassis_power_limit);
-        float max_omega = 4.8;
+        // const angular velocity
+        float max_omega = 2.5;
+
+        // factors: plot
 
         if(remote_.keyPressed(Remote::Key::CTRL)){
             jx = 0.0;
@@ -205,11 +209,17 @@ class BaseRobot {
         }
 
         float linear_hypo = sqrtf(jx * jx + jy * jy);
-        if(linear_hypo > 0.8){
-            linear_hypo = 0.8;
-        }
+        linear_hypo = fminf(linear_hypo, 1.0f);
 
-        float available_beyblade = 1.0 - linear_hypo;
+        // quadratic relationship
+        float available_beyblade = 1.0f - (linear_hypo * linear_hypo);
+
+        // direction matters
+        bool is_moving = (linear_hypo > 0.01f);
+        float axial_ratio = is_moving ? fmaxf(fabsf(jx), fabsf(jy)) / linear_hypo : 0.0f;
+        float direction_bonus = 1.0f + 0.4f * (1.0f - axial_ratio);
+        available_beyblade = fminf(1.0f, available_beyblade * direction_bonus);
+
         omega_speed = max_omega * available_beyblade;
     }
 };

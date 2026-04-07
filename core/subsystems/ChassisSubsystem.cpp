@@ -1,5 +1,4 @@
 #include "ChassisSubsystem.h"
-#include "util/motor/DJIMotor.h"
 #include <cmath>
 #include <stdexcept>
 
@@ -40,10 +39,10 @@ ChassisSubsystem::ChassisSubsystem(const Config &config)
     // LB.setSpeedPID(3, 0, 0);
     // RB.setSpeedPID(3 , 0, 0);
 
-    pid_LF.setPID(3, 0, 0);
-    pid_RF.setPID(3, 0, 0);
-    pid_LB.setPID(3, 0, 0);
-    pid_RB.setPID(3, 0, 0);
+    pid_LF.setPID(5.21, 0, 6.08); //5.21
+    pid_RF.setPID(5.64, 0, 6); //5.64
+    pid_LB.setPID(8.11, 0, 9.71); //8.11
+    pid_RB.setPID(2.93, 0, 7.83); //2.93
 
     brakeMode = COAST;
 
@@ -281,14 +280,10 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     int p4 = abs(powers[3]);
 
     
-    // int r1 = abs(LF.getData(VELOCITY));
-    // int r2 = abs(RF.getData(VELOCITY));
-    // int r3 = abs(LB.getData(VELOCITY));
-    // int r4 = abs(RB.getData(VELOCITY));
-    int r1 = abs(getMotorSpeed(MotorLocation::LEFT_FRONT, RPM));
-    int r2 = abs(getMotorSpeed(MotorLocation::RIGHT_FRONT, RPM));
-    int r3 = abs(getMotorSpeed(MotorLocation::LEFT_BACK, RPM));
-    int r4 = abs(getMotorSpeed(MotorLocation::RIGHT_BACK, RPM));
+    int r1 = abs(LF.getData(VELOCITY));
+    int r2 = abs(RF.getData(VELOCITY));
+    int r3 = abs(LB.getData(VELOCITY));
+    int r4 = abs(RB.getData(VELOCITY));
 
     double scale = Bisection(p1, p2, p3, p4, r1, r2, r3, r4, power_limit);
 
@@ -297,6 +292,8 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     
 
     // printf("Before Set:%.3f\n", p_theory(p1*scale, p2*scale, p3*scale, p4*scale, r1, r2, r3, r4));
+
+    
 
     LF.setPower(powers[0]*scale);
     RF.setPower(powers[1]*scale);
@@ -345,9 +342,44 @@ ChassisSpeeds ChassisSubsystem::getChassisSpeeds() const
     return m_chassisSpeeds;
 }
 
+float ChassisSubsystem::computeMaxOmega(float vX, float vY) const{
+    static constexpr float P_IDLE = 74.97f; // idle power
+    static constexpr float K_SPIN = 2.38f; // W per rad/s
+    static constexpr float K_TRANS_AXIAL = 5.14f; // W per m/s, axial motion
+    static constexpr float K_TRANS_DIAG = 2.19f; // W per m/s, diagonal motion
+    static constexpr float P_BUDGET = 90.0f; // power budget in watts
+
+    float vXY = sqrtf(vX*vX + vY*vY); 
+
+    bool is_moving = (vXY > 0.01f); 
+    float axial_ratio = is_moving ? fmaxf(fabsf(vX), fabsf(vY)) / vXY : 0.0f; // ratio of axial motion to total motion
+    // helps figure out direction of motion, which affects power draw 
+
+    // computes total power draw depending on the direction of motion
+    float K_TRANS = K_TRANS_DIAG + (K_TRANS_AXIAL - K_TRANS_DIAG)*axial_ratio; 
+
+    float power_available = P_BUDGET - P_IDLE - K_TRANS*vXY; 
+
+    float vOmega_max = power_available / K_SPIN;
+
+    return fmaxf(0.0f, vOmega_max);
+}
+
 float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode)
 {
-    double yawCurrent = 0;
+    float vOmega_max = computeMaxOmega(desiredChassisSpeeds_.vX, desiredChassisSpeeds_.vY);
+
+    static float vOmega_smoothed = 0.0f; 
+    static constexpr float OMEGA_RATE_LIMIT = 0.15f;  
+    float vOmega_target = fminf(fabsf(desiredChassisSpeeds_.vOmega), vOmega_max) * (desiredChassisSpeeds_.vOmega >= 0 ? 1.0f : -1.0f);
+    float vOmega_delta  = vOmega_target - vOmega_smoothed;
+    vOmega_delta = fmaxf(-OMEGA_RATE_LIMIT, fminf(OMEGA_RATE_LIMIT, vOmega_delta));
+    vOmega_smoothed += vOmega_delta;
+
+    ChassisSpeeds adjusted = desiredChassisSpeeds_; 
+    adjusted.vOmega = vOmega_smoothed;
+
+    
     if (mode == REVERSE_YAW_ORIENTED)
     {
         // printf("%f\n", double(yaw->getData(ANGLE)));
@@ -380,7 +412,7 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
     }
     else if (mode == ROBOT_ORIENTED)
     {
-        desiredChassisSpeeds = desiredChassisSpeeds_; // ChassisSpeeds in m/s
+        desiredChassisSpeeds = adjusted; // ChassisSpeeds in m/s
     }
     else if (mode == ODOM_ORIENTED) 
     {
@@ -400,12 +432,33 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
         double del = yawOdom + delta;
         while (del > 360.0) del -= 360;
         while (del < 0) del += 360;
-        desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yawOdom + delta);
+        desiredChassisSpeeds = rotateChassisSpeed(adjusted, yawOdom + delta);
     }
     WheelSpeeds wheelSpeeds = chassisSpeedsToWheelSpeeds(desiredChassisSpeeds); // in m/s (for now)
     wheelSpeeds = normalizeWheelSpeeds(wheelSpeeds);
     wheelSpeeds *= (1 / (WHEEL_DIAMETER_METERS / 2) / (2 * PI / 60) * M3508_GEAR_RATIO);
     float scale = setWheelSpeeds(wheelSpeeds);
+    
+    static int logCounter = 0;
+    if (++logCounter >= 25) {
+        float vX = desiredChassisSpeeds_.vX;
+        float vY = desiredChassisSpeeds_.vY;
+        float printVOmegaMax = computeMaxOmega(vX, vY);
+        float vXY  = sqrtf(vX*vX + vY*vY);
+        logCounter = 0;
+        printf("vX:%.3f vY:%.3f |vXY|:%.3f vOmegaMax:%.3f vW:%.3f | LF:%.2f RF:%.2f LB:%.2f RB:%.2f Total:%.2f W\n",
+            desiredChassisSpeeds_.vX,
+            desiredChassisSpeeds_.vY,
+            vXY, 
+            printVOmegaMax,
+            desiredChassisSpeeds_.vOmega,
+            m_wheelPowers.LF,
+            m_wheelPowers.RF,
+            m_wheelPowers.LB,
+            m_wheelPowers.RB,
+            m_wheelPowers.total);
+    }
+
     return scale;
 }
 
@@ -488,11 +541,12 @@ double ChassisSubsystem::getMotorSpeed(MotorLocation location, SPEED_UNIT unit =
     switch (unit)
     {
     case RPM:
-        return (speed * M3508_GEAR_RATIO) / (2 * PI / 60);
-    case METER_PER_SECOND:
-        return speed * (WHEEL_DIAMETER_METERS / 2);
-    case RAD_PER_SECOND:
         return speed;
+    case METER_PER_SECOND:
+        return (speed / M3508_GEAR_RATIO) * (2 * PI / 60) * (WHEEL_DIAMETER_METERS / 2);
+    case RAD_PER_SECOND:
+        // TODO this should be handled properly
+        return 0;
     }
 
     assert(false && "Invalid motor speed unit");
@@ -589,10 +643,10 @@ void ChassisSubsystem::setOmniKinematics(double radius, HOLONOMIC_MODE mode)
 //inputs chassis speeds in m/s, outputs wheel speeds in m/s
 WheelSpeeds ChassisSubsystem::chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds)
 {
-    return {(+chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r1x) + (m_OmniKinematics.r1y))),
-            (-chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y))),
-            (+chassisSpeeds.vX + chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y))),
-            (-chassisSpeeds.vX + chassisSpeeds.vY - chassisSpeeds.vOmega * ((m_OmniKinematics.r4x) + (m_OmniKinematics.r4y)))};
+    return {(chassisSpeeds.vY + chassisSpeeds.vX - chassisSpeeds.vOmega * ((m_OmniKinematics.r1x) + (m_OmniKinematics.r1y))),
+            (chassisSpeeds.vY - chassisSpeeds.vX - chassisSpeeds.vOmega * ((m_OmniKinematics.r2x) + (m_OmniKinematics.r2y))),
+            (-chassisSpeeds.vY + chassisSpeeds.vX - chassisSpeeds.vOmega * ((m_OmniKinematics.r3x) + (m_OmniKinematics.r3y))),
+            (-chassisSpeeds.vY - chassisSpeeds.vX - chassisSpeeds.vOmega * ((m_OmniKinematics.r4x) + (m_OmniKinematics.r4y)))};
 }
 
 // ChassisSpeeds ChassisSubsystem::wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds)

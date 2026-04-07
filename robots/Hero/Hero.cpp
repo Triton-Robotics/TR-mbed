@@ -187,6 +187,9 @@ public:
         des_chassis_state.vX = jy * max_linear_vel;
         des_chassis_state.vY = -jx * max_linear_vel;
 
+        // finding the joystick tension
+        float linear_hypo = sqrt((des_chassis_state.vX * des_chassis_state.vX) + (des_chassis_state.vY * des_chassis_state.vY));
+
         // Turret from remote
         yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * dt_us / 1000000;
         yaw_desired_angle -= jyaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
@@ -200,10 +203,12 @@ public:
 
         // Read jetson
         jetson_state = jetson.read();
-
-        // Chassis logic
-        if (drive == 'u' || (drive == 'o' && remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) ==
-                                                 Remote::SwitchState::UP)) {
+        chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
+        // TODO (chet): replace with drive mode being BEYBLADE
+        movavg = encoder_.encoderMovingAverage();
+        printf("%.2f\n",movavg);
+        if (remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP)
+        {
             // TODO: think about how we want to implement jetson aiming
             // des_turret_state.pitch_angle = jetson_state.desired_pitch_rads;
             // des_turret_state.yaw_angle = jetson_state.desired_yaw_rads;
@@ -211,11 +216,13 @@ public:
             des_chassis_state.vOmega = 0;
             chassis_.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
-        } else if (drive == 'd' ||
-                   (drive == 'o' &&
-                    remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::DOWN)) {
-            des_chassis_state.vOmega = omega_speed;
-            chassis_.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
+        }
+        else if (remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::DOWN)
+        {
+            // TODO (chet): change the vOmega and make it dynamic based on BEYBLADE
+            // this can follow a quadratic or cubic relationship
+            des_chassis_state.vOmega = 4.8;
+            chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
         } else {
             chassis_.setWheelPower({0, 0, 0, 0});
