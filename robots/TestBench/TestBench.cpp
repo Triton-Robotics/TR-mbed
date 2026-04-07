@@ -37,7 +37,7 @@ int current_counter = 0;
 
 class TestBench : public BaseRobot {
   public:
-    DJIMotor motor;
+    DJIMotor motor1, motor2, motor3, motor4;
     //Declare AnalogIn for current sensing
     mbed::AnalogIn ain;
 
@@ -50,14 +50,36 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
     TestBench(Config &config)
         : BaseRobot(config),
           // clang-format off
-        motor(DJIMotor::config{
+        motor1(DJIMotor::config{
+            1,
+            CANHandler::CANBUS_2,
+            M3508, 
+            "Test motor",
+            test_motor_vel_PID,
+            test_motor_pos_PID
+        }), motor2(DJIMotor::config{
+            2,
+            CANHandler::CANBUS_2,
+            M3508, 
+            "Test motor",
+            test_motor_vel_PID,
+            test_motor_pos_PID
+        }), motor3(DJIMotor::config{
             4,
             CANHandler::CANBUS_2,
             M3508, 
             "Test motor",
             test_motor_vel_PID,
             test_motor_pos_PID
-        }), ain(PA_7)
+        }), motor4(DJIMotor::config{
+            3,
+            CANHandler::CANBUS_2,
+            M3508, 
+            "Test motor",
+            test_motor_vel_PID,
+            test_motor_pos_PID
+        }), 
+        ain(PA_7)
         // clang-format on        
     {}
 
@@ -91,7 +113,10 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
     void periodic(unsigned long dt_us) override {
     // 1. Check Safety Latch First
     if (safety_tripped) {
-        motor.setPower(0); 
+        motor1.setPower(0); 
+        motor2.setPower(0);
+        motor3.setPower(0);
+        motor4.setPower(0);
         // We don't return here yet because we still want to see the 
         // Current/Voltage readings even if the motor is killed.
     } 
@@ -104,7 +129,10 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
             //         output_power = output_power + 100;
             //     }
             // }
-            motor.setPower(output_power);
+            motor1.setPower(output_power), 
+            motor2.setPower(output_power),
+            motor3.setPower(output_power),
+            motor4.setPower(output_power);
             current_counter++;
             if (current_counter > 10 && output_power <8001){
                 output_power++;
@@ -113,10 +141,18 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
 
         } 
         else if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID) {
-            motor.setPower(500);
+            motor1.setPower(500);
+            motor2.setPower(500);
+            motor3.setPower(500);
+            motor4.setPower(500);
         } 
         else {
-            motor.setPower(0);
+            motor1.setPower(0);
+            motor2.setPower(0);
+            motor3.setPower(0);
+            motor4.setPower(0);
+
+            output_power = 0; // Reset instead of flashing
         }
     }
 
@@ -133,7 +169,10 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
     // 5. Update Safety Latch
     if (abs(display_current) > 4.8f) { 
         safety_tripped = true;
-        motor.setPower(0);
+        motor1.setPower(0);
+        motor2.setPower(0);
+        motor3.setPower(0);
+        motor4.setPower(0);
         printf("!!! SAFETY TRIGGERED: %.2f A !!!\n", display_current);
         return; // Exit this loop immediately
     }
