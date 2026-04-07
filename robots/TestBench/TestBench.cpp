@@ -1,115 +1,113 @@
 #include "base_robot/BaseRobot.h"
-#include "util/algorithms/general_functions.h"
-
 #include "subsystems/ChassisSubsystem.h"
-#include "subsystems/ShooterSubsystem.h"
-#include "subsystems/TurretSubsystem.h"
-
 #include "util/communications/CANHandler.h"
-#include "util/communications/jetson/Jetson.h"
 #include "util/motor/DJIMotor.h"
 #include "util/peripherals/imu/BNO055.h"
 
 #include <algorithm>
 
-PID::config test_motor_vel_PID = {1, 0, 0};
-PID::config test_motor_pos_PID = {1, 0, 0};
-PwmIn encoder_(PA_7);
-double movavg = 0.0;
+
+constexpr auto IMU_I2C_SDA = PB_7;
+constexpr auto IMU_I2C_SCL = PB_8;
+constexpr auto IMU_RESET   = PA_8;
+
+constexpr PID::config FL_VEL_CONFIG = {3, 0, 0};
+constexpr PID::config FR_VEL_CONFIG = {3, 0, 0};
+constexpr PID::config BL_VEL_CONFIG = {3, 0, 0};
+constexpr PID::config BR_VEL_CONFIG = {3, 0, 0};
 
 
-class TestBench : public BaseRobot {
-  public:
-    // DJIMotor motor;
+ChassisSpeeds des_chassis_state;
 
-    TestBench(Config &config)
-        : BaseRobot(config)
-          // clang-format off
-        // motor(DJIMotor::config{
-        //     1,
-        //     CANHandler::CANBUS_1,
-        //     M3508,
-        //     "Test motor",
-        //     test_motor_vel_PID,
-        //     test_motor_pos_PID
-        // })
-        // clang-format on        
-    {}
 
-    ~TestBench() {}
+class Infantry : public BaseRobot {
+public:
+    I2C    i2c_;
+    BNO055 imu_;
 
-    void init() override 
-    {
-        
-    }
+    ChassisSubsystem chassis;
 
-    
-    double getEncoderYawPosition() {
-        static float filtered_yaw = 0.0f;
-        float filter_alpha = 0.2f;  // 0.0-1.0: lower = more smoothing, higher = more responsive
+    bool imu_initialized{false};
 
-        float duty_raw = encoder_.dutycycle();
-        float duty_min = 0.02943f;   // 2.943%
-        float duty_max = 0.97058f;   // 97.058%
-        double yaw_position = (double)(abs(((duty_raw - duty_min) / (duty_max - duty_min)) * 360.0));
-        filtered_yaw = filtered_yaw * (1.0f - filter_alpha) + yaw_position *  filter_alpha;
-        // printf("%.2f\n",yaw_position);
-        return filtered_yaw;
-    }
+    Infantry(Config& config)
+        : BaseRobot(config),
+          i2c_(IMU_I2C_SDA, IMU_I2C_SCL),
+          imu_(i2c_, IMU_RESET, MODE_IMU),
+          chassis(ChassisSubsystem::Config{
+              1,        // left_front_can_id
+              2,        // right_front_can_id
+              3,        // left_back_can_id
+              4,        // right_back_can_id
+              0.22617,  // radius
+              0.065,    // speed_pid_ff_ks
+              nullptr,  // no yaw motor
+              0,        // yaw_initial_offset_ticks
+              imu_}) {}
 
-    double encoderMovingAverage() {
-        const int windowSize = 20;
-        static double readings[windowSize] = {0};
-        static int index = 0;
-        static bool filled = false;
+    ~Infantry() {}
 
-        double newReading = getEncoderYawPosition();
+    void init() override {}
 
-        readings[index] = newReading;
-        index = (index + 1) % windowSize;
-        if (index == 0) {
-            filled = true;
-        }
-
-        double sum = 0.0;
-        double result = 0.0;
-
-        if (filled) {
-            for (int i = 0; i < windowSize; i++) {
-                sum += readings[i];
-            }
-            result = sum / windowSize;
-        } else {
-            for (int i = 0; i < index; i++) {
-                sum += readings[i];
-            }
-            result = sum / index;
-        }
-        // printf("%.2f\n",result);
-        return result;
-
-    }
-
-        
     void periodic(unsigned long dt_us) override {
         
-        movavg = encoderMovingAverage();
-        printf("%.2f\n",movavg);
-        fflush(stdout);
+        IMU::EulerAngles imuAngles = imu_.read();
 
+        if (!imu_initialized) {
+            IMU::EulerAngles angles = imu_.getImuAngles();
+            if (angles.pitch == 0.0 && angles.yaw == 0.0 && angles.roll == 0.0) {
+                return;
+            }
+            imu_initialized = true;
+        }
+
+        max_linear_vel = 1.24 + 0.0513 * chassis.power_limit + 0.000216 * (chassis.power_limit * chassis.power_limit);
+
+        des_chassis_state.vX = jy * max_linear_vel;
+        des_chassis_state.vY = jx * max_linear_vel;
+        des_chassis_state.vOmega = omega_speed;  
+
+        if (drive == 'u' ||
+            (drive == 'o' &&
+             remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) ==
+                 Remote::SwitchState::UP)) {
+
+            des_chassis_state.vOmega = 0;
+
+            chassis.setChassisSpeeds(
+                des_chassis_state,
+                ChassisSubsystem::DRIVE_MODE::ROBOT_ORIENTED);
+
+        } else if (drive == 'd' ||
+                   (drive == 'o' &&
+                    remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) ==
+                        Remote::SwitchState::DOWN)) {
+
+            des_chassis_state.vOmega = omega_speed;
+
+            chassis.setChassisSpeeds(
+                des_chassis_state,
+                ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
+
+        } else {
+            chassis.setWheelPower({0, 0, 0, 0});
+        }
+
+        chassis.periodic(&imuAngles);
     }
 
     void end_of_loop() override {}
 
-    unsigned int main_loop_dt_ms() override { return 2; } // 500 Hz loop
+    unsigned int main_loop_dt_ms() override {
+        return 2; // 500 Hz
+    }
 };
 
 
 int main() {
     printf("HELLO\n");
-    BaseRobot::Config config = BaseRobot::Config{}; 
-    TestBench TestBench(config);
 
-    TestBench.main_loop();
-    // blocking
+    BaseRobot::Config config{};
+    Infantry infantry(config);
+
+    infantry.main_loop();
 }

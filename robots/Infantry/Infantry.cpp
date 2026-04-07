@@ -261,7 +261,7 @@ class Infantry : public BaseRobot {
         // %.2f\n", remote_.getChassisX()); printf("switch: %d\n",
         // remote_.getSwitch(Remote::Switch::RIGHT_SWITCH)); printf("imu:
         // %.2f\n", imu.getImuAngles().yaw);
-        printf("%.2f\n", encoder_.encoderMovingAverage());
+        // printf("%.2f\n", encoder_.encoderMovingAverage());
     }
 
     void end_of_loop() override {}

@@ -52,6 +52,14 @@ struct WheelSpeeds
     }
 };
 
+struct WheelPowers{
+    float LF; 
+    float RF; 
+    float LB; 
+    float RB; 
+    float total; 
+}; 
+
 struct ChassisSpeeds
 {
     double vX;
@@ -176,6 +184,14 @@ public:
      * @return The chassis's current ChassisSpeeds
      */
     ChassisSpeeds getChassisSpeeds() const;
+
+    /**
+     * Calculates the maximum angular velocity based on available power
+     * @param vX The velocity in the X direction
+     * @param vY The velocity in the Y direction
+     * @return float The maximum angular velocity
+     */
+    float computeMaxOmega(float vX, float vY) const;
 
     /**
      * The setChassisSpeeds method is used to drive the chassis in a chassis relative manner.
@@ -308,6 +324,7 @@ public:
 
     ChassisSpeeds m_chassisSpeeds;
     WheelSpeeds m_wheelSpeeds;
+    WheelPowers m_wheelPowers; 
     
     int PEAK_POWER_ALL;
     int PEAK_POWER_SINGLE;

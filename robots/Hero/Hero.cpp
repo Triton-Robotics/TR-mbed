@@ -158,6 +158,9 @@ public:
         des_chassis_state.vX = remote_.getChannel(Remote::Channel::LEFT_VERTICAL);
         des_chassis_state.vY = remote_.getChannel(Remote::Channel::LEFT_HORIZONTAL);
 
+        // finding the joystick tension
+        float linear_hypo = sqrt((des_chassis_state.vX * des_chassis_state.vX) + (des_chassis_state.vY * des_chassis_state.vY));
+
         // Turret from remote
         float joystick_yaw = remote_.getChannel(Remote::Channel::RIGHT_HORIZONTAL);
         yaw_desired_angle -= joystick_yaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
@@ -175,6 +178,7 @@ public:
 
         jetson_state = jetson.read();
         chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
+        // TODO (chet): replace with drive mode being BEYBLADE
         movavg = encoder_.encoderMovingAverage();
         printf("%.2f\n",movavg);
         if (remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP)
@@ -189,6 +193,8 @@ public:
         }
         else if (remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::DOWN)
         {
+            // TODO (chet): change the vOmega and make it dynamic based on BEYBLADE
+            // this can follow a quadratic or cubic relationship
             des_chassis_state.vOmega = 4.8;
             chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;

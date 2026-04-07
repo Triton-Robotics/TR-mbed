@@ -6,7 +6,7 @@ find_program(MBED_CLI mbed-tools PATHS "~/.local/bin" REQUIRED)
 set(MBED_PLATFORM NUCLEO_F446RE)
 set(MBED_TOOLCHAIN GCC_ARM)
 set(DISABLE_WARNINGS OFF)
-set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_BUILD_TYPE Release CACHE STRING "")
 
 # Check if mbed-os is downloaded, if not download it
 if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/mbed-os)
