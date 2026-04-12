@@ -206,6 +206,10 @@ bool DJIRemote2::tryParseFrame()
             return false;
         }
 
+        // for (int i = 0; i < 21; i++) {
+        //     printf("%x ", streamBuffer_[i]);
+        // }
+        // printf("\n");
         decodeFrame(streamBuffer_);
 
         // TODO: make this a real test and not just a print
@@ -261,34 +265,22 @@ void DJIRemote2::decodeFrame(const uint8_t* frame)
 
     data_.trigger = (frame[9] >> 4) & 0x01;
 
-    data_.mouseX = static_cast<int16_t>(
-          ((static_cast<uint16_t>(frame[9])  >> 5) & 0x07)
-        | ( static_cast<uint16_t>(frame[10])       << 3)
-        | ((static_cast<uint16_t>(frame[11]) & 0x1F) << 11)
-    );
+    data_.mouseX = ((int16_t)frame[11]) | ((int16_t)frame[10] << 8);
 
-    data_.mouseY = static_cast<int16_t>(
-          ((static_cast<uint16_t>(frame[11]) >> 5) & 0x07)
-        | ( static_cast<uint16_t>(frame[12])       << 3)
-        | ((static_cast<uint16_t>(frame[13]) & 0x1F) << 11)
-    );
+    data_.mouseY = ((int16_t)frame[13]) | ((int16_t)frame[12] << 8);
 
-    data_.mouseZ = static_cast<int16_t>(
-          ((static_cast<uint16_t>(frame[13]) >> 5) & 0x07)
-        | ( static_cast<uint16_t>(frame[14])       << 3)
-        | ((static_cast<uint16_t>(frame[15]) & 0x1F) << 11)
-    );
+    data_.mouseZ = ((int16_t)frame[15]) | ((int16_t)frame[14] << 8);
 
-    data_.mouseL = (frame[15] >> 5) & 0x03;
 
-    data_.mouseR = ((static_cast<uint16_t>(frame[15]) >> 7) & 0x01)
-                 | ((static_cast<uint16_t>(frame[16]) & 0x01) << 1);
+    data_.mouseL = (frame[16]) & 0x01;
 
-    data_.mouseM = (frame[16] >> 1) & 0x03;
+    data_.mouseR = (frame[16] >> 2) & 0x01;
 
-    data_.keyboard = ((static_cast<uint16_t>(frame[16]) >> 3) & 0x1F)
-                   | ( static_cast<uint16_t>(frame[17])       << 5)
-                   | ((static_cast<uint16_t>(frame[18]) & 0x07) << 13);
+    data_.mouseM = (frame[16] >> 4) & 0x01;
+
+    data_.keyboard = (static_cast<uint16_t>(frame[17]) & 0x00FF)
+                    | ((static_cast<uint16_t>(frame[18]) << 8) & 0xFF00) ;
+
 
     data_.CRC_in = ((static_cast<uint16_t>(frame[18]) >> 3) & 0x1F)
                  | ( static_cast<uint16_t>(frame[19])       << 5)

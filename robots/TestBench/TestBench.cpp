@@ -1,166 +1,3 @@
-// #include "base_robot/BaseRobot.h"
-// #include "util/algorithms/general_functions.h"
-
-// #include "subsystems/ChassisSubsystem.h"
-// #include "subsystems/ShooterSubsystem.h"
-// #include "subsystems/TurretSubsystem.h"
-
-// #include "util/communications/CANHandler.h"
-// #include "util/communications/jetson/Jetson.h"
-// #include "util/motor/DJIMotor.h"
-// #include "util/peripherals/imu/BNO055.h"
-
-// #include <algorithm>
-// #include <string.h>
-// #include <us_ticker_api.h>
-
-// // testing (not used anymore)
-// // uint8_t tempByte;
-
-// PID::config test_motor_vel_PID = {1, 0, 0};
-// PID::config test_motor_pos_PID = {1, 0, 0};
-
-// struct VTMinput {
-// 	uint16_t ch0, ch1, ch2, ch3; // 11-bit
-// 	uint8_t  mode;               // 2 bits
-// 	uint8_t  pause, btnL, btnR;  // 1 bit
-// 	uint16_t dial;               // 11-bit
-// 	uint8_t  trigger;            // 1 bit
-// 	int16_t  mouseX, mouseY, mouseZ; // 16-bit 
-// 	uint8_t  mouseL, mouseR, mouseM; // 2-bit 
-// 	uint16_t keyboard;           // 16-bit
-// 	uint16_t CRC_in;				// 16-bit
-// };
-
-// class TestBench : public BaseRobot {
-//   public:
-
-// 	uint64_t lastFrameTime_us = 0;
-// 	uint64_t currentFrameTime_us = 0;
-
-// 	uint8_t rxBuffer[21]; 
-// 	uint16_t ch0 = 0; 
-// 	uint16_t ch1 = 0; 
-// 	uint16_t ch2 = 0; 
-// 	uint16_t ch3 = 0; 
-// 	uint8_t mode = 0;
-// 	uint8_t pause = 0;
-// 	uint8_t btnL = 0;
-// 	uint8_t btnR = 0;
-// 	uint16_t dial = 0;
-// 	uint8_t trigger = 0;
-// 	int16_t mouseX = 0;
-// 	int16_t mouseY = 0;
-// 	int16_t mouseZ = 0;
-// 	uint8_t mouseL = 0;
-// 	uint8_t mouseR = 0;
-// 	uint8_t mouseM = 0;
-// 	uint16_t keyboard = 0;
-	
-// 	uint16_t CRC_in = 0;
-// 	// initialize a variable to keep track of whether the header has been found
-// 	int headerFound = 0;
-// 	// declare pin number (bufferedserial)
-// 	BufferedSerial pc;  // TX, RX, baud
-
-//     TestBench(Config &config)
-//         : BaseRobot(config),
-//           // clang-format off
-// 		pc(PC_10, PC_11, 921600)
-//         // clang-format on        
-//     {}
-
-//     ~TestBench() {}
-
-//     void init() override 
-//     {
-        
-//     }
-    
-//     void periodic(unsigned long dt_us) override {
-// 		// logic goes here
-// 		if (pc.readable()){
-// 			pc.read(rxBuffer, sizeof(rxBuffer));
-// 		}
-		
-// 		for(unsigned int i = 0; i < sizeof(rxBuffer); i++) {
-// 			if((rxBuffer[i] == 0xA9) && (rxBuffer[i+1] == 0x53)) {
-// 				headerFound = 1;
-// 				// currentFrameTime_us = Kernel::Clock::now().time_since_epoch().count();
-// 				currentFrameTime_us = us_ticker_read();
-
-// 				if(lastFrameTime_us != 0) {
-// 					auto framePeriod = currentFrameTime_us - lastFrameTime_us;
-// 					printf("Frame dt = %llu us (%.2f Hz)\n",
-// 						framePeriod,
-// 						1e6 / (double)framePeriod);
-// 				}
-
-// 				lastFrameTime_us = currentFrameTime_us;
-// 				//debug purposes only
-// 				//printf("%x %x %x %x %x %x %x\n",rxBuffer[i],rxBuffer[i+1],rxBuffer[i+2],rxBuffer[i+3],rxBuffer[i+4],rxBuffer[i+5],rxBuffer[i+6]);
-
-// 				ch0 = ((uint16_t)(rxBuffer[i+2])) | ((uint16_t)(rxBuffer[i+3] & 0x07) << 8); // 11 bits for ch0
-// 				ch1 = ((((uint16_t)rxBuffer[i+3]) >> 3) & 0x1F) | ((((uint16_t)rxBuffer[i+4]) & 0x3F) << 5); // 11 bits for ch1
-// 				ch2 = (((uint16_t)rxBuffer[i+4] >> 6) & 0x03) | (((uint16_t)rxBuffer[i+5]) << 2) | ((((uint16_t)rxBuffer[i+6]) & 0x01) << 10); // 11 bits for ch2
-// 				ch3 = ((((uint16_t)rxBuffer[i+6]) >> 1) & 0x7F) | ((((uint16_t)rxBuffer[i+7]) & 0x0F) << 7); // 11 bits for ch3
-
-// 				mode = (rxBuffer[i+7] >> 4) & 0x03; // 2 bits for mode
-
-// 				pause = (rxBuffer[i+7] >> 6) & 0x01; // 1 bit for pause
-
-// 				btnL = (rxBuffer[i+7] >> 7) & 0x01; // 1 bit for btnL
-// 				btnR = (rxBuffer[i+8]) & 0x01;	// 1 bit for btnR
-
-// 				dial = ((((uint16_t)rxBuffer[i+8]) >> 1) & 0x7F) | ((((uint16_t)rxBuffer[i+9]) & 0x0F) << 7); // 11 bits for dial
-
-// 				trigger = (rxBuffer[i+9] >> 4) & 0x01; // 1 bit for trigger
-
-// 				mouseX = (int16_t)((((uint16_t)rxBuffer[i+9]  >> 5) & 0x07) | (((uint16_t)rxBuffer[i+10]) << 3) | ((((uint16_t)rxBuffer[i+11]) & 0x1F) << 11)); // 16 bits for mouseX
-// 				mouseY = (int16_t)((((uint16_t)rxBuffer[i+11] >> 5) & 0x07) | (((uint16_t)rxBuffer[i+12]) << 3) | ((((uint16_t)rxBuffer[i+13]) & 0x1F) << 11)); // 16 bits for mouseY
-// 				mouseZ = (int16_t)((((uint16_t)rxBuffer[i+13] >> 5) & 0x07) | (((uint16_t)rxBuffer[i+14]) << 3) | ((((uint16_t)rxBuffer[i+15]) & 0x1F) << 11)); // 16 bits for mouseZ
-
-// 				mouseL = (rxBuffer[i+15] >> 5) & 0x03; // 2 bits for mouseL
-// 				mouseR = (((uint16_t)(rxBuffer[i+15] >> 7) & 0x01)) | ((((uint16_t)rxBuffer[i+16]) & 0x01) << 1); // 2 bits for mouseR
-// 				mouseM = (rxBuffer[i+16] >> 1) & 0x03; // 2 bits for mouseM
-
-// 				keyboard = ((((uint16_t)rxBuffer[i+16]) >> 3) & 0x1F) | (((uint16_t)rxBuffer[i+17]) << 5) | ((((uint16_t)rxBuffer[i+18]) & 0x07) << 13); // 16 bits for keyboard
-				
-// 				CRC_in = ((((uint16_t)rxBuffer[i+18]) >> 3) & 0x1F) | (((uint16_t)rxBuffer[i+19]) << 5) | ((((uint16_t)rxBuffer[i+20]) & 0x07) << 13); // 16 bits for CRC
-				
-// 				// Print everything now!
-// 				//printf("ch0 = %u, ch1 = %u, ch2 = %u, ch3 = %u, mode = %u, pause = %u, btnL = %u, btnR = %u, dial = %u, trigger = %u, mouseX = %d, mouseY = %d, mouseZ = %d, mouseL = %u, mouseR = %u, mouseM = %u, keyboard = %u\n", 
-// 					//   ch0, ch1, ch2, ch3, mode, pause, btnL, btnR, dial, trigger, mouseX, mouseY, mouseZ, mouseL, mouseR, mouseM, keyboard);
-
-// 				//printf("CRC: %d\n", CRC_in);
-
-// 				break; // Exit the loop after 
-// 			}
-// 			// else {
-// 			// 	headerFound = 0;
-// 			// 	printf("No header found!\n");
-// 			// }
-				
-// 		}
-//     }
-
-//     void end_of_loop() override {}
-
-//     unsigned int main_loop_dt_ms() override { return 15; } // 500 Hz loop
-// };
-
-
-// int main() {
-//     //printf("HELLO\n");
-//     BaseRobot::Config config = BaseRobot::Config{}; 
-//     TestBench TestBench(config);
-	
-	
-
-//     TestBench.main_loop();
-//     // blocking
-// }
-
 #include "base_robot/BaseRobot.h"
 #include "util/algorithms/general_functions.h"
 
@@ -175,13 +12,81 @@
 
 #include "util/communications/DJIRemote2.h"
 
+constexpr auto IMU_I2C_SDA = PB_7;
+constexpr auto IMU_I2C_SCL = PB_8;
+constexpr auto IMU_RESET = PA_8;
+
+constexpr int pitch_zero_offset_ticks = 1500;
+constexpr float PITCH_LOWER_BOUND{-32.0};
+constexpr float PITCH_UPPER_BOUND{35.0};
+
+constexpr float JOYSTICK_YAW_SENSITIVITY_DPS = 600;
+constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 300;
+// Mouse sensitivity initialized
+constexpr float MOUSE_SENSITIVITY_YAW_DPS = 10.0;
+constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 10.0;
+
+constexpr PID::config YAW_VEL_PID = {350, 0.5, 2.5, 32000, 2000};
+constexpr PID::config YAW_POS_PID = {0.5, 0, 0, 90, 2};
+constexpr PID::config PITCH_VEL_PID = {500, 0.8, 0, 32000, 2000};
+constexpr PID::config PITCH_POS_PID = {1.5, 0.0005, 0.05, 30, 2};
+
+// State variables
+ChassisSpeeds des_chassis_state;
+TurretSubsystem::TurretInfo des_turret_state;
+ShootState des_shoot_state;
+
+int remoteTimer = 0;
+
+float pitch_desired_angle = 0.0;
+float yaw_desired_angle = 0.0;
+
+VTMInput in = {};
+
+
 class TestBench : public BaseRobot {
 public:
+    I2C i2c_;
+    BNO055 imu_;
     DJIRemote2 vtm;
+    TurretSubsystem turret;
+    ChassisSubsystem chassis;
+
 
     TestBench(Config &config)
         : BaseRobot(config),
-          vtm(PC_10, PC_11, 921600)
+          i2c_(IMU_I2C_SDA, IMU_I2C_SCL), 
+          imu_(i2c_, IMU_RESET, MODE_IMU),
+          vtm(PB_6, PA_10, 921600),
+          turret(TurretSubsystem::config{
+            4,
+            GM6020,
+            7,
+            GM6020,
+            pitch_zero_offset_ticks,
+            YAW_VEL_PID,
+            YAW_POS_PID,
+            PITCH_VEL_PID,
+            PITCH_POS_PID,
+            CANHandler::CANBUS_1,
+            CANHandler::CANBUS_2,
+            -1,
+            imu_,
+            PITCH_LOWER_BOUND,
+            PITCH_UPPER_BOUND
+        }    
+        ),
+          chassis(ChassisSubsystem::Config{
+            1,      // left_front_can_id
+            2,      // right_front_can_id
+            3,      // left_back_can_id
+            4,      // right_back_can_id
+            0.22617,  // radius
+            0.065,    // speed_pid_ff_ks
+            &turret.yaw,  // yaw_motor
+            356,     // yaw_initial_offset_ticks
+            imu_     
+        })
     {}
 
     ~TestBench() {}
@@ -191,16 +96,15 @@ public:
     }
 
     void periodic(unsigned long dt_us) override
-    {
+    {   
         if (vtm.update()) {
-            const VTMInput& in = vtm.getData();
-
+            in = vtm.getData();
             // printf("Frame dt = %llu us (%.2f Hz)\n",
             //        vtm.getFramePeriodUs(),
             //        vtm.getFrameRateHz());
             
             static int timer = 0;
-            if (timer++ % 10 == 0) {
+            if (timer++ % 5 == 0) {
                 printf("ch0=%u ch1=%u ch2=%u ch3=%u mode=%u pause=%u btnL=%u btnR=%u dial=%u trigger=%u "
                     "mX=%d mY=%d mZ=%d mL=%u mR=%u mM=%u kb=%u CRC=%u\n",
                     in.ch0, in.ch1, in.ch2, in.ch3,
@@ -211,6 +115,69 @@ public:
                     in.keyboard, in.CRC_in);
             }
         }
+
+        jx = (in.ch3 - 1024) / 660.0;
+        jy = (in.ch2 - 1024) / 660.0;
+        jyaw = (in.ch0 - 1024) / 660.0;
+        jpitch = (in.ch1 - 1024) / 660.0;
+
+
+        jx = (abs(jx) < tolerance) ? 0 : jx;
+        jy = (abs(jy) < tolerance) ? 0 : jy;
+        jpitch = (abs(jpitch) < tolerance) ? 0 : jpitch;
+        jyaw = (abs(jyaw) < tolerance) ? 0 : jyaw;
+
+        //Bounding the four j variables
+        jx = max(-1.0F, min(1.0F, jx));
+        jy = max(-1.0F, min(1.0F, jy));
+        jpitch = max(-1.0F, min(1.0F, jpitch));
+        jyaw = max(-1.0F, min(1.0F, jyaw));
+        
+        printf("%.2f,%.2f,%.2f,%.2f\n",jx,jy,jpitch,jyaw);
+
+        // TODO: use this in code correctly to drive faster
+        max_linear_vel = 1.24 + 0.0513 * chassis.power_limit + 0.000216 * (chassis.power_limit * chassis.power_limit);
+        des_chassis_state.vX = jy * max_linear_vel;
+        des_chassis_state.vY = -1 * jx * max_linear_vel;
+
+        printf("%.2f, %.2f, %.2f\n",des_chassis_state.vX,des_chassis_state.vY,des_chassis_state.vOmega);
+
+
+        // Turret from remote
+        yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * dt_us / 1000000;
+        yaw_desired_angle -= jyaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
+        yaw_desired_angle = capAngle(yaw_desired_angle);
+        des_turret_state.yaw_angle_degs = yaw_desired_angle;
+
+        pitch_desired_angle -= mpitch * MOUSE_SENSITIVITY_PITCH_DPS * dt_us / 1000000;
+        pitch_desired_angle += jpitch * JOYSTICK_PITCH_SENSITIVITY_DPS * dt_us / 1000000;
+        pitch_desired_angle = std::clamp(pitch_desired_angle, PITCH_LOWER_BOUND, PITCH_UPPER_BOUND);
+        des_turret_state.pitch_angle_degs = pitch_desired_angle;
+
+
+
+
+        if (in.mode == 2) {
+            // TODO: think about how we want to implement jetson aiming
+            // des_turret_state.pitch_angle = jetson_state.desired_pitch_rads;
+            // des_turret_state.yaw_angle = jetson_state.desired_yaw_rads;
+            printf("state2\n");
+            omega_speed = 2;
+            des_chassis_state.vOmega = -jyaw*omega_speed;;
+            chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::ROBOT_ORIENTED);
+            des_turret_state.turret_mode = TurretState::AIM;
+        } else if (in.mode == 0) {
+            printf("state0\n");
+            des_chassis_state.vOmega = 2;
+            chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::ROBOT_ORIENTED);
+            des_turret_state.turret_mode = TurretState::AIM;
+        } else {
+            printf("state1\n");
+            chassis.setWheelPower({0, 0, 0, 0});
+            des_turret_state.turret_mode = TurretState::SLEEP;
+        }
+
+
     }
 
     void end_of_loop() override {}
