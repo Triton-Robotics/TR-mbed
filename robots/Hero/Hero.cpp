@@ -120,7 +120,7 @@ public:
         0.22617,  // radius
         0.065,    // speed_pid_ff_ks
         &turret.yaw,  // yaw_motor
-        6500,     // yaw_initial_offset_ticks
+        5790,     // yaw_initial_offset_ticks (changed to account for CHASSIS_ALIGN)
         imu_,
 
         // ADD THESE (matching the existing fl/fr/bl/br configs already defined at the top):
@@ -193,7 +193,9 @@ public:
         else if (remote_.keyPressed(Remote::Key::G))
         {
             // set to Chassis Alignment mode
+            des_chassis_state.vOmega = 0;
             chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::CHASSIS_ALIGN); // add argument: double yawVelo = 0.0?
+            des_turret_state.turret_mode = TurretState::AIM;
         }
         else
         {
