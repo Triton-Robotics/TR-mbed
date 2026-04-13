@@ -61,7 +61,7 @@ float ChassisSubsystem::limitAcceleration(float desiredRPM, float previousRPM, u
     float diff = desiredRPM - previousRPM;
 
     // Calculate theoretical max acceleration
-    float trigDenom = 2 * max(abs(sin(theta + M_PI/4)), abs(sin(theta + M_PI/4)));
+    float trigDenom = max(abs(cos(theta + M_PI/4)), abs(sin(theta + M_PI/4)));
     float maxLinearAccel = (STATIC_FRICTION_CONSTANT * GRAVITY) / (ACCEL_DENOM_CONSTANT * trigDenom);
 
     // Maximum change in velocity over this time period, then change that to RPM
@@ -69,11 +69,6 @@ float ChassisSubsystem::limitAcceleration(float desiredRPM, float previousRPM, u
     float maxChangeRPM = maxChange * ((1 / (WHEEL_DIAMETER_METERS / 2) / (2 * PI / 60) * M3508_GEAR_RATIO));
 
     return desiredRPM; // TODO: remove this
-
-    
-    if ((desiredRPM > 0 && previousRPM < 0) || (desiredRPM < 0 && previousRPM > 0)) { // if robot trying to sudden change direction
-        return 0;
-    }
     
     if (diff > maxChangeRPM) {
         // if(power == 0) {

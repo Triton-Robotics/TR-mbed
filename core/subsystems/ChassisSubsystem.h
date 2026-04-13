@@ -21,7 +21,7 @@
 #define PI 3.14159265
 #define SECONDS_PER_MINUTE 60
 #define TICKS_PER_ROTATION 8192.0
-#define WHEEL_DIAMETER_METERS 0.146
+#define WHEEL_DIAMETER_METERS 0.146 // TODO: Update this for this year b/c it's off by 1/4 inch
 
 #define MAX_BEYBLADE_SPEED 1800
 #define BEYBLADE_ACCELERATION 0.05
