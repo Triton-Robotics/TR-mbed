@@ -123,8 +123,8 @@ class Infantry : public BaseRobot {
         chassis(ChassisSubsystem::Config{
             1,      // left_front_can_id
             2,      // right_front_can_id
-            3,      // left_back_can_id
-            4,      // right_back_can_id
+            4,      // left_back_can_id
+            3,      // right_back_can_id
             0.22617,  // radius
             0.065,    // speed_pid_ff_ks
             &turret.yaw,  // yaw_motor
