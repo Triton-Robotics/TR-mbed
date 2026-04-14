@@ -1,5 +1,7 @@
 #include "ThisThread.h"
 #include "ref_serial.h"
+#include <us_ticker_api.h>
+#include <us_ticker_defines.h>
 
 
 Referee::Referee(PinName pin_tx, PinName pin_rx) : ref(pin_tx, pin_rx, 115200) 
@@ -189,8 +191,9 @@ void Referee::readThread()
         {
             int rad = JudgeSystem_USART_Receive_DMA();
             mutex_read_.lock();
-            memcpy(JudgeSystem_rxBuff, JudgeSystem_rxBuff_priv, JUDGESYSTEM_PACKSIZE);
+            memcpy(&JudgeSystem_rxBuff[buff_tail], JudgeSystem_rxBuff_priv, rad);
             mutex_read_.unlock();
+            buff_tail += rad;
             Judge_GetMessage(rad);
 
             if(enablePrintRefData){

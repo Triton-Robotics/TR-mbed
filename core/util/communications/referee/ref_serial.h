@@ -51,6 +51,7 @@ private:
     Thread writeThread_;
     bool enablePrintRefData = 0;
 
+    int buff_tail = 0;
     uint8_t JudgeSystem_rxBuff_priv[JUDGESYSTEM_PACKSIZE];
     uint8_t JudgeSystem_rxBuff[JUDGESYSTEM_PACKSIZE]; //RX Buffer
     uint8_t Judge_Self_ID;        //Current robot ID

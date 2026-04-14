@@ -97,8 +97,8 @@
 // -------------------------------------
 // BELOW: from SCUT code line 733-1102
 
-/* Custom Frame Header */
-typedef struct
+/* 自定义帧头 */
+typedef struct //__packed struct
 {
     uint8_t  SOF;
     uint16_t DataLength;
@@ -146,7 +146,7 @@ typedef struct
     union
     {
         uint8_t dataBuff[32];
-        struct
+        struct __packed
         {
             uint16_t red_1_robot_HP;//Red 1 Hero Robot HP: 0 for off-field and penalized units
             uint16_t red_2_robot_HP;//Red 2 Engineering Robot Health Points
@@ -204,7 +204,7 @@ typedef struct
     union
     {
         uint8_t dataBuff[4];
-        struct
+        struct __packed
         {
             uint32_t event_type;
         };
@@ -218,7 +218,7 @@ typedef struct
     union
     {
         uint8_t dataBuff[4];
-        struct  
+        struct __packed
         {
             uint8_t supply_projectile_id;  //Supply Station Entrance ID
             uint8_t supply_robot_id;       //Reloading Robot ID
@@ -238,6 +238,19 @@ typedef struct
  uint8_t InfoUpdataFlag;
 }referee_warning_t;
 
+/* ID: 0x0105          Byte: 1       飞镖发射口倒计时  */
+typedef struct
+    {
+    union
+    {
+        uint8_t dataBuff[1];
+        struct __packed
+        {
+            uint8_t dart_remaining_time;//15s 倒计时
+        };
+    }data;
+    uint8_t InfoUpdataFlag;
+}ext_dart_remaining_time_t;
 
 /* ID: 0X0201          Byte: 27      Robot Status Data */
 typedef struct
@@ -245,7 +258,7 @@ typedef struct
     union
     {
         uint8_t dataBuff[27];
-        struct  
+        struct __packed
         {
             uint8_t robot_id;
 
@@ -262,7 +275,7 @@ typedef struct
 	uint8_t InfoUpdataFlag;
 }ext_game_robot_status_t;
 
-typedef struct  
+typedef struct __packed
 {
  uint8_t robot_id;
  uint8_t robot_level;
@@ -314,7 +327,7 @@ typedef struct
     uint8_t InfoUpdataFlag;
 }ext_buff_t;
 
-typedef struct  
+typedef struct __packed
 {
  uint8_t recovery_buff;
  uint8_t cooling_buff;
@@ -323,8 +336,22 @@ typedef struct
  uint16_t attack_buff;
 }buff_t;
 
-/* ID: 0X0206          Byte: 1       Damage Status Data */
-typedef struct  
+/* ID: 0X0205          Byte: 2       空中机器人能量状态数据 */
+typedef struct
+{
+    union
+    {
+        uint8_t dataBuff[2];
+        struct __packed
+        {
+            uint8_t attack_time;//可攻击时间 单位 s。30s 递减至 0
+        };
+    }data;
+    uint8_t InfoUpdataFlag;
+}aerial_robot_energy_t;
+
+/* ID: 0X0206          Byte: 1       伤害状态数据 */
+typedef struct __packed
 {
  uint8_t armor_id : 4;
  uint8_t HP_deduction_reason : 4;
@@ -366,7 +393,7 @@ typedef struct
     union
     {
         uint8_t dataBuff[4];
-        struct  
+        struct __packed
         {
             uint32_t rfid_status;
         };
@@ -387,7 +414,7 @@ typedef  struct
 }ext_student_interactive_header_data_t;
 
 /* data */
-typedef  struct  
+typedef  struct __packed
 {
     uint8_t data[20];//Data segment n is less than 113
 }robot_interactive_data_t;
@@ -407,7 +434,7 @@ typedef  struct
 }ext_client_custom_graphic_delete_t;
 
 // my copy
-typedef  struct  
+typedef  struct __packed
 {
     uint16_t data_cmd_id;
     uint16_t sender_ID;
@@ -433,7 +460,7 @@ typedef  struct
     uint32_t end_y:11;
 }graphic_data_struct_t;
 
-typedef  struct  
+typedef  struct __packed
 {
     uint8_t graphic_name[3];
     uint32_t operate_tpye:3;
@@ -492,7 +519,7 @@ typedef  struct
 }ext_student_interactive_header_data_graphic_t;
 
 // my copy
-typedef  struct  
+typedef  struct __packed
 {
     uint16_t data_cmd_id;
     uint16_t sender_ID;

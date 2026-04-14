@@ -1,6 +1,8 @@
 
 #include "ref_serial.h"
 
+#define REF_DEBUG true
+
 // -------------------------------------
 // From South China University of Technology 华南理工大学广州学院-野狼战队-步兵代码 ----------------------------------
 // https://github.com/wuzjun/2021RM_Infantry/blob/master/Devices/Devices.c/RM_JudgeSystem.c
@@ -9,9 +11,9 @@
 
 int Referee::JudgeSystem_USART_Receive_DMA() // modified
 {
-    // b->enable_input(TRUE);
+    ref.enable_input(true);
     // memset(JudgeSystem_rxBuff, 0, sizeof(JudgeSystem_rxBuff));
-    ref.enable_output(true);
+    // ref.enable_output(true);
     //memset (JudgeSystem_rxBuff,0,JUDGESYSTEM_PACKSIZE);
     return ref.read(JudgeSystem_rxBuff_priv, JUDGESYSTEM_PACKSIZE);
 }
@@ -20,18 +22,33 @@ int Referee::JudgeSystem_USART_Receive_DMA() // modified
 void Referee::Judge_GetMessage(uint16_t Data_Length)
 {
     #if REF_DEBUG
-    // for (int i = 0; i < Data_Length;i++)
-    // {
-    //     printf("%x ", JudgeSystem_rxBuff[i]);
-    // }
-    // printf("\n");
-    // printf("[%d]\n",Data_Length);
-    #endif
-    for (int n = 0; n < Data_Length;)
+    for (int i = 0; i < buff_tail + Data_Length;i++)
     {
-        
+        printf("%x ", JudgeSystem_rxBuff[i]);
+    }
+    printf("\n");
+    printf("[%d]\n",buff_tail + Data_Length);
+    
+    // Check if data looks bit-shifted by scanning for 0x4A (shifted 0xA5)
+    int headerCount = 0, shiftedCount = 0;
+    for (int i = 0; i < buff_tail; i++) {
+        if (JudgeSystem_rxBuff[i] == 0xA5) headerCount++;
+        if (JudgeSystem_rxBuff[i] == 0x4A) shiftedCount++;
+    }
+    printf("Real headers: %d  Shifted headers: %d\n", headerCount, shiftedCount);
+    #endif
+
+    int buff_head = 0;
+    int start_of_partial_data = 0;
+    while(buff_head < buff_tail)
+    {
+        int n = buff_head;
+        // printf("%d\n", n);
         if (JudgeSystem_rxBuff[n] == JUDGE_FRAME_HEADER)
         {
+            #if REF_DEBUG
+            printf("Joyous day \n");
+            #endif
             switch (JudgeSystem_rxBuff[n + 5] | JudgeSystem_rxBuff[n + 6] << 8)
             {
             case Judge_Game_StatusData: //Match Status Data
@@ -342,9 +359,36 @@ void Referee::Judge_GetMessage(uint16_t Data_Length)
                 n++;
                 break;
             } 
+            if (n > buff_head + 1)
+                start_of_partial_data = 1;
         }
         else
             n++;
+        buff_head = n;
+    }
+    if (start_of_partial_data != 0) {
+        std::memmove(&JudgeSystem_rxBuff[0], &JudgeSystem_rxBuff[buff_head],
+                        buff_tail - buff_head);
+
+        buff_tail = buff_tail - buff_head;
+    }
+
+    // circular buffer implementation
+    if (buff_tail >= JUDGESYSTEM_PACKSIZE) {
+        // Find the last 0xA5 in the buffer as a recovery point
+        int last_header = -1;
+        for (int i = buff_tail - 1; i >= 0; i--) {
+            if (JudgeSystem_rxBuff[i] == JUDGE_FRAME_HEADER) {
+                last_header = i;
+                break;
+            }
+        }
+        if (last_header > 0) {
+            memmove(JudgeSystem_rxBuff, JudgeSystem_rxBuff + last_header, buff_tail - last_header);
+            buff_tail -= last_header;
+        } else {
+            buff_tail = 0; // No header found, full reset
+        }
     }
     //JudgeSystem.InfoUpdateFrame++;
 }
