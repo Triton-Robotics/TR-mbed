@@ -72,7 +72,7 @@ float TurretSubsystem::get_yaw_angle_degs()
 
 float TurretSubsystem::get_pitch_angle_degs()
 {
-    return imuAngles.pitch;
+    return -1 * imuAngles.pitch;
 }
 
 float TurretSubsystem::get_pitch_vel_rads_per_sec()
