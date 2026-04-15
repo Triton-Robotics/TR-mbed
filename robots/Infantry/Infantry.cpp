@@ -1,10 +1,5 @@
 #include "base_robot/BaseRobot.h"
-#include "util/algorithms/general_functions.h"
-
 #include "subsystems/ChassisSubsystem.h"
-#include "subsystems/ShooterSubsystem.h"
-#include "subsystems/TurretSubsystem.h"
-
 #include "util/communications/CANHandler.h"
 #include "util/communications/PwmIn.h"
 #include "util/communications/jetson/Jetson.h"
@@ -44,10 +39,6 @@ constexpr PID::config FR_VEL_CONFIG = {3, 0, 0};
 constexpr PID::config BL_VEL_CONFIG = {3, 0, 0};
 constexpr PID::config BR_VEL_CONFIG = {3, 0, 0};
 
-constexpr PID::config FLYWHEEL_L_PID = {7.1849, 0.000042634, 0};
-constexpr PID::config FLYWHEEL_R_PID = {7.1849, 0.000042634, 0};
-constexpr PID::config INDEXER_PID_VEL = {2.7, 0.001, 0};
-constexpr PID::config INDEXER_PID_POS = {0.1, 0, 0.001};
 
 
 // Config variables
@@ -102,8 +93,6 @@ ShooterSubsystem::config shooter_config = {
 
 // State variables
 ChassisSpeeds des_chassis_state;
-TurretSubsystem::TurretInfo des_turret_state;
-ShootState des_shoot_state;
 
 int remoteTimer = 0;
 
@@ -116,8 +105,8 @@ float yaw_desired_angle = 0.0;
 
 IMU::EulerAngles imuAngles;
 class Infantry : public BaseRobot {
-  public:
-    I2C i2c_;
+public:
+    I2C    i2c_;
     BNO055 imu_;
     MA4 encoder_;  // Absolute encoder for yaw position
     // TODO: put the BufferedSerial inside Jetson (idk if we wanna do that tho
@@ -134,7 +123,7 @@ class Infantry : public BaseRobot {
 
     bool imu_initialized{false};
 
-    Infantry(Config &config)
+    Infantry(Config& config)
         : BaseRobot(config),
           // clang-format off
         i2c_(IMU_I2C_SDA, IMU_I2C_SCL), 
@@ -175,8 +164,6 @@ class Infantry : public BaseRobot {
             if (angles.pitch == 0.0 && angles.yaw == 0.0 && angles.roll == 0.0) {
                 return;
             }
-
-            yaw_desired_angle = angles.yaw;
             imu_initialized = true;
         }
 
@@ -286,9 +273,9 @@ class Infantry : public BaseRobot {
 
 int main() {
     printf("HELLO\n");
-    BaseRobot::Config config = BaseRobot::Config{};
+
+    BaseRobot::Config config{};
     Infantry infantry(config);
 
     infantry.main_loop();
-    // blocking
 }
