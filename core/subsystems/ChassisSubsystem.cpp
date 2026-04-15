@@ -374,17 +374,19 @@ float ChassisSubsystem::computeMaxOmega(float vX, float vY) const{
 
 float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode)
 {
-    float vOmega_max = computeMaxOmega(desiredChassisSpeeds_.vX, desiredChassisSpeeds_.vY);
+    ChassisSpeeds adjusted = desiredChassisSpeeds_;
+    if(!bypass_omega_limit) {
+        float vOmega_max = computeMaxOmega(desiredChassisSpeeds_.vX, desiredChassisSpeeds_.vY);
 
-    static float vOmega_smoothed = 0.0f; 
-    static constexpr float OMEGA_RATE_LIMIT = 0.15f;  
-    float vOmega_target = fminf(fabsf(desiredChassisSpeeds_.vOmega), vOmega_max) * (desiredChassisSpeeds_.vOmega >= 0 ? 1.0f : -1.0f);
-    float vOmega_delta  = vOmega_target - vOmega_smoothed;
-    vOmega_delta = fmaxf(-OMEGA_RATE_LIMIT, fminf(OMEGA_RATE_LIMIT, vOmega_delta));
-    vOmega_smoothed += vOmega_delta;
+        static float vOmega_smoothed = 0.0f; 
+        static constexpr float OMEGA_RATE_LIMIT = 0.15f;  
+        float vOmega_target = fminf(fabsf(desiredChassisSpeeds_.vOmega), vOmega_max) * (desiredChassisSpeeds_.vOmega >= 0 ? 1.0f : -1.0f);
+        float vOmega_delta  = vOmega_target - vOmega_smoothed;
+        vOmega_delta = fmaxf(-OMEGA_RATE_LIMIT, fminf(OMEGA_RATE_LIMIT, vOmega_delta));
+        vOmega_smoothed += vOmega_delta;
 
-    ChassisSpeeds adjusted = desiredChassisSpeeds_; 
-    adjusted.vOmega = vOmega_smoothed;
+        adjusted.vOmega = vOmega_smoothed;
+    }
 
     
     if (mode == REVERSE_YAW_ORIENTED)
