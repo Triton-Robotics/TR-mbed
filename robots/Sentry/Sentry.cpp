@@ -283,6 +283,8 @@ class Sentry : public BaseRobot {
         stm_state.game_state = 4;
         stm_state.robot_hp = 200;
 
+        stm_state.calibration = (remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP) ? 1 : 0;
+
         stm_state.chassis_x_velocity = chassis_.getChassisSpeeds().vX;
         stm_state.chassis_y_velocity = chassis_.getChassisSpeeds().vY;
         stm_state.chassis_rotation = chassis_.getChassisSpeeds().vOmega;
