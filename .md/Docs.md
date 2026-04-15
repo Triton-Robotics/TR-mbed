@@ -20,7 +20,7 @@ A file containing useful documentation, datasheets, pinouts, and links
 
 
 ## Images
-![](.assets/STM32_Nucleo_F446Re_Pinout.png)
+![](.assets/_Nucleo_F446Re_Pinout.png)
 
 ![](.assets/breakout_board.png)
 
