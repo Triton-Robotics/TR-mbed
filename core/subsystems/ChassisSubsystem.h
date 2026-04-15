@@ -153,6 +153,7 @@ public:
     static double Bisection(int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm, float chassisPowerLimit);
 
     float power_limit;
+    bool bypass_omega_limit = false; 
 
     /**
      * Gets the chassis's current WheelSpeeds
