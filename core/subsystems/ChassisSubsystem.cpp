@@ -256,8 +256,9 @@ float ChassisSubsystem::computeMaxOmega(float vX, float vY) const
 
 float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode)
 {
-
-    float vOmega_max = computeMaxOmega(desiredChassisSpeeds_.vX, desiredChassisSpeeds_.vY);
+    ChassisSpeeds adjusted = desiredChassisSpeeds_;
+    if(!bypass_omega_limit) {
+        float vOmega_max = computeMaxOmega(desiredChassisSpeeds_.vX, desiredChassisSpeeds_.vY);
 
     static float vOmega_smoothed = 0.0f;
     static constexpr float OMEGA_RATE_LIMIT = 0.15f;
