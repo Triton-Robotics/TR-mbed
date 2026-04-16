@@ -323,9 +323,6 @@ public:
     WheelSpeeds chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds);
     ChassisSpeeds wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds);
 
-    //new
-    float computeMaxOmega(float vX, float vY) const;
-
     struct WheelPowers {
     float LF = 0.0f;
     float RF = 0.0f;
@@ -334,7 +331,6 @@ public:
     float total = 0.0f;
     };
 
-    WheelPowers m_wheelPowers;
 
     ChassisSpeeds m_chassisSpeeds;
     WheelSpeeds m_wheelSpeeds;

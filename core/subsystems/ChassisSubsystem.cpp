@@ -179,9 +179,9 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     m_wheelPowers.total = m_wheelPowers.LF + m_wheelPowers.RF + m_wheelPowers.LB + m_wheelPowers.RB;
 
     // Debug print: RPMs, bisection scale, and predicted power before motors are set
-    printf("RPM LF:%.1f RF:%.1f LB:%.1f RB:%.1f | Scale:%.4f | Power:%.2f\n",
-        LFrpm, RFrpm, LBrpm, RBrpm, scale,
-        p_theory(p1, p2, p3, p4, r1, r2, r3, r4));
+    //printf("RPM LF:%.1f RF:%.1f LB:%.1f RB:%.1f | Scale:%.4f | Power:%.2f\n",
+        //LFrpm, RFrpm, LBrpm, RBrpm, scale,
+        //p_theory(p1, p2, p3, p4, r1, r2, r3, r4));
 
     // printf("Before Set:%.3f\n", p_theory(p1*scale, p2*scale, p3*scale, p4*scale, r1, r2, r3, r4));
 
@@ -198,6 +198,24 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     p4 = abs(RB.getData(POWEROUT));
 
     // printf("After Set:%.3f\n", p_theory(p1, p2, p3, p4, r1, r2, r3, r4));
+
+    static int logCounter = 0;
+    if (++logCounter >= 5) {   // every 5 loops at 500Hz = ~10ms, dense but not overwhelming
+        logCounter = 0;
+        p1 = abs(powers[0]);
+        p2 = abs(powers[1]);
+        p3 = abs(powers[2]);
+        p4 = abs(powers[3]);
+        float total_p = r1+r2+r3+r4;;
+        printf("vX:%.3f vY:%.3f vW:%.3f | LF:%d RF:%d LB:%d RB:%d | Total_P:%.2f | scale:%.4f | P_est:%.2f\n",
+            desiredChassisSpeeds.vX,
+            desiredChassisSpeeds.vY,
+            desiredChassisSpeeds.vOmega,
+            r1, r2, r3, r4,
+            total_p, 
+            scale,
+            p_theory(p1, p2, p3, p4, r1, r2, r3, r4));
+    }
 
     return scale;
 }
@@ -260,16 +278,17 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
     if(!bypass_omega_limit) {
         float vOmega_max = computeMaxOmega(desiredChassisSpeeds_.vX, desiredChassisSpeeds_.vY);
 
-    static float vOmega_smoothed = 0.0f;
-    static constexpr float OMEGA_RATE_LIMIT = 0.15f;
-    float vOmega_target = fminf(fabsf(desiredChassisSpeeds_.vOmega), vOmega_max)
-                          * (desiredChassisSpeeds_.vOmega >= 0 ? 1.0f : -1.0f);
-    float vOmega_delta  = vOmega_target - vOmega_smoothed;
-    vOmega_delta = fmaxf(-OMEGA_RATE_LIMIT, fminf(OMEGA_RATE_LIMIT, vOmega_delta));
-    vOmega_smoothed += vOmega_delta;
+        static float vOmega_smoothed = 0.0f;
+        static constexpr float OMEGA_RATE_LIMIT = 0.15f;
+        float vOmega_target = fminf(fabsf(desiredChassisSpeeds_.vOmega), vOmega_max)
+                            * (desiredChassisSpeeds_.vOmega >= 0 ? 1.0f : -1.0f);
+        float vOmega_delta  = vOmega_target - vOmega_smoothed;
+        vOmega_delta = fmaxf(-OMEGA_RATE_LIMIT, fminf(OMEGA_RATE_LIMIT, vOmega_delta));
+        vOmega_smoothed += vOmega_delta;
 
-    ChassisSpeeds adjusted = desiredChassisSpeeds_;
-    adjusted.vOmega = vOmega_smoothed;
+        adjusted = desiredChassisSpeeds_;
+        adjusted.vOmega = vOmega_smoothed;
+    }
 
     if (mode == REVERSE_YAW_ORIENTED)
     {
@@ -303,21 +322,6 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
     wheelSpeeds = normalizeWheelSpeeds(wheelSpeeds);
     wheelSpeeds *= (1 / (WHEEL_DIAMETER_METERS / 2) / (2 * PI / 60) * M3508_GEAR_RATIO);
     float scale = setWheelSpeeds(wheelSpeeds);
-
-    static int logCounter = 0;
-    if (++logCounter >= 25) {
-        logCounter = 0;
-        float vX  = desiredChassisSpeeds_.vX;
-        float vY  = desiredChassisSpeeds_.vY;
-        float vXY = sqrtf(vX*vX + vY*vY);
-        printf("vX:%.3f vY:%.3f |vXY|:%.3f vOmegaMax:%.3f vW:%.3f | LF:%.2f RF:%.2f LB:%.2f RB:%.2f Total:%.2f W\n",
-            vX, vY, vXY,
-            vOmega_max,
-            desiredChassisSpeeds_.vOmega,
-            m_wheelPowers.LF, m_wheelPowers.RF,
-            m_wheelPowers.LB, m_wheelPowers.RB,
-            m_wheelPowers.total);
-    }
 
     return scale;
 }
