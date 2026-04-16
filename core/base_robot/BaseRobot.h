@@ -198,9 +198,10 @@ class BaseRobot {
         // max_linear_vel = -1.24 + 0.0513 * chassis.power_limit + -0.000216 * (chassis.power_limit * chassis.power_limit);
         // float max_omega = 0.326 + 0.0857 * chassis_power_limit + -0.000183 * (chassis_power_limit * chassis_power_limit);
         // const angular velocity
-        float max_omega = 6.1;
 
-        // factors: plot
+        /**  
+        // dynamic beyblade stuff 
+        float max_omega = 2.5;
 
         if(remote_.keyPressed(Remote::Key::CTRL)){
             jx = 0.0;
@@ -221,5 +222,11 @@ class BaseRobot {
         available_beyblade = fminf(1.0f, available_beyblade * direction_bonus);
 
         omega_speed = max_omega * available_beyblade;
+        */
+
+        if(remote_.keyPressed(Remote::Key::CTRL)){
+            jx = 0.0;
+            jy = 0.0;
+        }
     }
 };
