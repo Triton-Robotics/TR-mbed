@@ -1,7 +1,7 @@
 
 #include "ref_serial.h"
 
-#define REF_DEBUG true
+// #define REF_DEBUG true
 
 // -------------------------------------
 // From South China University of Technology 华南理工大学广州学院-野狼战队-步兵代码 ----------------------------------
@@ -22,12 +22,12 @@ int Referee::JudgeSystem_USART_Receive_DMA() // modified
 void Referee::Judge_GetMessage(uint16_t Data_Length)
 {
     #if REF_DEBUG
-    for (int i = 0; i < buff_tail + Data_Length;i++)
-    {
-        printf("%x ", JudgeSystem_rxBuff[i]);
-    }
-    printf("\n");
-    printf("[%d]\n",buff_tail + Data_Length);
+    // for (int i = 0; i < buff_tail + Data_Length;i++)
+    // {
+    //     printf("%x ", JudgeSystem_rxBuff[i]);
+    // }
+    // printf("\n");
+    // printf("[%d]\n",buff_tail + Data_Length);
     
     // Check if data looks bit-shifted by scanning for 0x4A (shifted 0xA5)
     int headerCount = 0, shiftedCount = 0;
@@ -47,7 +47,7 @@ void Referee::Judge_GetMessage(uint16_t Data_Length)
         if (JudgeSystem_rxBuff[n] == JUDGE_FRAME_HEADER)
         {
             #if REF_DEBUG
-            printf("Joyous day \n");
+            // printf("Joyous day \n");
             #endif
             switch (JudgeSystem_rxBuff[n + 5] | JudgeSystem_rxBuff[n + 6] << 8)
             {
@@ -165,15 +165,15 @@ void Referee::Judge_GetMessage(uint16_t Data_Length)
                     #if REF_DEBUG
                     printf("RS[%d]\n", n);
                     robot_status_t* gamering = (robot_status_t*)&JudgeSystem_rxBuff[n + 7];
-                    // printf("G%u %u %u %u %u %u %u %x\n", 
-                    //     gamering->robot_id,
-                    //     gamering->robot_level,
-                    //     gamering->current_HP,
-                    //     gamering->maximum_HP,    
-                    //     gamering->shooter_barrel_cooling_value,
-                    //     gamering->shooter_barrel_heat_limit,
-                    //     gamering->chassis_power_limit,
-                    //     gamering->power_management_output);
+                    printf("G%u %u %u %u %u %u %u %x\n", 
+                        gamering->robot_id,
+                        gamering->robot_level,
+                        gamering->current_HP,
+                        gamering->maximum_HP,    
+                        gamering->shooter_barrel_cooling_value,
+                        gamering->shooter_barrel_heat_limit,
+                        gamering->chassis_power_limit,
+                        gamering->power_management_output);
                     #endif
                     memcpy(&robot_status, &JudgeSystem_rxBuff[n + 7], sizeof(uint8_t[JudgeLength_Robot_State - JUDGE_EXTRA]));
 
@@ -231,9 +231,9 @@ void Referee::Judge_GetMessage(uint16_t Data_Length)
                 else{
                     #if REF_DEBUG
                     printf("PH_NO[%d|", n);
-                    // for(int i = 0; i < JudgeLength_Power_Heat; i ++){
-                    //    printf("%2x|", (uint8_t)*(JudgeSystem_rxBuff+n+i));
-                    // }
+                    for(int i = 0; i < JudgeLength_Power_Heat; i ++){
+                       printf("%2x|", (uint8_t)*(JudgeSystem_rxBuff+n+i));
+                    }
                     #endif
                     n++;
                 }

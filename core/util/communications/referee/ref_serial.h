@@ -80,7 +80,7 @@ private:
     game_status_t 		                    game_status;
     game_result_t                           game_result;
     ext_game_robot_HP_t                     ext_game_robot_HP;
-    ext_dart_status_t                       ext_dart_status;
+    // ext_dart_status_t                       ext_dart_status;
     ext_ICRA_buff_debuff_zone_status_t      ext_ICRA_buff_debuff_zone_status;
     ext_event_data_t                        ext_even_data;
     ext_supply_projectile_action_t          ext_supply_projectile_action;
@@ -94,7 +94,7 @@ private:
     shoot_data_t                            shoot_data;
     projectile_allowance_t                  projectile_allowance;
     ext_rfid_status_t                       ext_rfid_status;
-    ext_dart_client_cmd_t                   ext_dart_client_cmd;
+    // ext_dart_client_cmd_t                   ext_dart_client_cmd;
 
     uint8_t Robot_Commute[26];
 
