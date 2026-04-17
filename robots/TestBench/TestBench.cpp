@@ -105,7 +105,7 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
     printf("Offset voltage: %.2f V\n", calibrated_offset);
 
     // Print headers for the spreadsheet
-    printf("\nVoltage\tCurrent\tTorque\n");
+    printf("\nPower\tVoltage\tCurrent\tTorque\n");
 
     curr_time = us_ticker_read(); // Initialize current time for remote control logic
     }
@@ -159,15 +159,15 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
     // 3. Sensor Calculations
     voltage = ain.read() * V_REF;
     current_amps = (voltage - calibrated_offset) / SENSITIVITY;
-
+    display_current = current_amps; 
     // 4. Low Pass Filter (The "Phase Lag" implementation!)
-    float alpha = 0.1f; 
-    filtered_current = alpha * current_amps + (1.0f - alpha) * filtered_current;
+    // float alpha = 0.1f; 
+    // filtered_current = alpha * current_amps + (1.0f - alpha) * filtered_current;
     
-    display_current = filtered_current;
+    // display_current = filtered_current;
 
     // 5. Update Safety Latch
-    if (abs(display_current) > 4.8f) { 
+    if (fabsf(display_current) > 4.8f) { 
         safety_tripped = true;
         motor1.setPower(0);
         motor2.setPower(0);
@@ -177,10 +177,10 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
         return; // Exit this loop immediately
     }
 
-    // 6. Deadzone & Torque
-    if(abs(display_current) < 0.12f) { 
-        display_current = 0.0f;
-    }
+    // // 6. Deadzone & Torque
+    // if(abs(display_current) < 0.12f) { 
+    //     display_current = 0.0f;
+    // }
 
     // 7. Spreadsheet-Ready Printing
     static int count = 0;
