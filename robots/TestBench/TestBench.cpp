@@ -52,28 +52,28 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
           // clang-format off
         motor1(DJIMotor::config{
             1,
-            CANHandler::CANBUS_1,
+            CANHandler::CANBUS_2,
             M3508, 
             "Test motor",
             test_motor_vel_PID,
             test_motor_pos_PID
         }), motor2(DJIMotor::config{
             2,
-            CANHandler::CANBUS_1,
+            CANHandler::CANBUS_2,
             M3508, 
             "Test motor",
             test_motor_vel_PID,
             test_motor_pos_PID
         }), motor3(DJIMotor::config{
             4,
-            CANHandler::CANBUS_1,
+            CANHandler::CANBUS_2,
             M3508, 
             "Test motor",
             test_motor_vel_PID,
             test_motor_pos_PID
         }), motor4(DJIMotor::config{
             3,
-            CANHandler::CANBUS_1,
+            CANHandler::CANBUS_2,
             M3508, 
             "Test motor",
             test_motor_vel_PID,
@@ -134,8 +134,8 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
             motor3.setPower(output_power),
             motor4.setPower(output_power);
             current_counter++;
-            if (current_counter > 100 && output_power <1500){
-                output_power+=50;
+            if (current_counter > 100 && output_power <1700){
+                output_power+=10;
                 current_counter = 0;
             }
 
@@ -185,7 +185,7 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
     // 7. Spreadsheet-Ready Printing
     static int count = 0;
     if (count++ % 100 == 0) { 
-        printf("%d\t%.2f\t%.4f\n", output_power, display_current, motor1.getData(TORQUE));
+        printf("%d\t%.3f\t%.2f\t%.4f\n", output_power, voltage, display_current, motor1.getData(TORQUE));
     }
 }
 
