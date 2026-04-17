@@ -47,7 +47,7 @@ var searchData=
   ['drawchar_44',['drawChar',['../classAdafruit__GFX.html#ab7f5a29b3a3dffe30c6a3f4c1f604a5a',1,'Adafruit_GFX']]],
   ['drawpixel_45',['drawpixel',['../classAdafruit__GFX.html#ab7fbf72885c873266f9c7eb53b5c8896',1,'Adafruit_GFX::drawPixel()'],['../classAdafruit__SSD1306.html#ae2851d927a047a770c569c7c9fde4807',1,'Adafruit_SSD1306::drawPixel()']]],
   ['drive_5fmode_46',['DRIVE_MODE',['../classChassisSubsystem.html#a16e8ea4a14a3a2ae416a52db8d31ca36',1,'ChassisSubsystem']]],
-  ['dt_5fglobal_47',['dt_global',['../Infantry_8cpp.html#a23d031cfbca365bd399e69e01b28ed68',1,'Infantry.cpp']]],
+  ['dt_5fglobal_47',['dt_global',['../Infantry_8cpp.html#a23d031cfbca365bd399e69e01b28ed68',1,'dt_global:&#160;Infantry.cpp'],['../Sentry_8cpp.html#a23d031cfbca365bd399e69e01b28ed68',1,'dt_global:&#160;Sentry.cpp']]],
   ['dumpinfo_48',['dumpInfo',['../classRemote.html#ab3e55d985b57ba798e757b24b8ed76de',1,'Remote']]],
   ['dutycycle_49',['dutycycle',['../classPwmIn.html#a68f1c3bd4aadb9bccc4834a676c292c8',1,'PwmIn']]]
 ];

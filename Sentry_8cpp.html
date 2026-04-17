@@ -82,15 +82,21 @@ $(function() {
 <div class="contents">
 <div class="textblock"><code>#include &quot;base_robot/BaseRobot.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="general__functions_8h_source.html">util/algorithms/general_functions.h</a>&quot;</code><br />
+<code>#include &quot;ResetReason.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="ChassisSubsystem_8h_source.html">subsystems/ChassisSubsystem.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ShooterSubsystem_8h_source.html">subsystems/ShooterSubsystem.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="TurretSubsystem_8h_source.html">subsystems/TurretSubsystem.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="CANHandler_8h_source.html">util/communications/CANHandler.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="PwmIn_8h_source.html">util/communications/PwmIn.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Jetson_8h_source.html">util/communications/jetson/Jetson.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="DJIMotor_8h_source.html">util/motor/DJIMotor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="BNO055_8h_source.html">util/peripherals/imu/BNO055.h</a>&quot;</code><br />
 <code>#include &quot;util/peripherals/encoder/MA4.h&quot;</code><br />
+<code>#include &quot;<a class="el" href="ISM330_8h_source.html">util/peripherals/imu/ISM330.h</a>&quot;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
+<code>#include &lt;pinmap.h&gt;</code><br />
+<code>#include &lt;us_ticker_api.h&gt;</code><br />
+<code>#include &lt;us_ticker_defines.h&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -174,6 +180,10 @@ Variables</h2></td></tr>
 <tr class="separator:ab71473beb60dbf36e0fd1b792a540501"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad8801eb97c2d91be4b45c86f6566c000" id="r_ad8801eb97c2d91be4b45c86f6566c000"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#ad8801eb97c2d91be4b45c86f6566c000">yaw_desired_angle</a> = 0.0</td></tr>
 <tr class="separator:ad8801eb97c2d91be4b45c86f6566c000"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23d031cfbca365bd399e69e01b28ed68" id="r_a23d031cfbca365bd399e69e01b28ed68"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a23d031cfbca365bd399e69e01b28ed68">dt_global</a> = 0.0</td></tr>
+<tr class="separator:a23d031cfbca365bd399e69e01b28ed68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a61d9ef65d75b66821896182b133b31de" id="r_a61d9ef65d75b66821896182b133b31de"><td class="memItemLeft" align="right" valign="top">unsigned long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#a61d9ef65d75b66821896182b133b31de">timer</a> = 0</td></tr>
+<tr class="separator:a61d9ef65d75b66821896182b133b31de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afe4f140163b3f2d0e5e12b8326967de1" id="r_afe4f140163b3f2d0e5e12b8326967de1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structIMU_1_1EulerAngles.html">IMU::EulerAngles</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Sentry_8cpp.html#afe4f140163b3f2d0e5e12b8326967de1">imuAngles</a></td></tr>
 <tr class="separator:afe4f140163b3f2d0e5e12b8326967de1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -276,6 +286,20 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="structTurretSubsystem_1_1TurretInfo.html">TurretSubsystem::TurretInfo</a> des_turret_state</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a23d031cfbca365bd399e69e01b28ed68" name="a23d031cfbca365bd399e69e01b28ed68"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a23d031cfbca365bd399e69e01b28ed68">&#9670;&#160;</a></span>dt_global</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float dt_global = 0.0</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -786,13 +810,27 @@ Variables</h2></td></tr>
 <div class="line">    <a class="code hl_enumvalue" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a>,</div>
 <div class="line">    <span class="keyword">true</span></div>
 <div class="line">}</div>
-<div class="ttc" id="aSentry_8cpp_html_a1ea04a52763bf7f2606c421fe4e7e1b1"><div class="ttname"><a href="Sentry_8cpp.html#a1ea04a52763bf7f2606c421fe4e7e1b1">INDEXER_PID_VEL</a></div><div class="ttdeci">constexpr PID::config INDEXER_PID_VEL</div><div class="ttdef"><b>Definition</b> Sentry.cpp:48</div></div>
-<div class="ttc" id="aSentry_8cpp_html_a481bad22389d7769991f1c7931a9961e"><div class="ttname"><a href="Sentry_8cpp.html#a481bad22389d7769991f1c7931a9961e">INDEXER_PID_POS</a></div><div class="ttdeci">constexpr PID::config INDEXER_PID_POS</div><div class="ttdef"><b>Definition</b> Sentry.cpp:49</div></div>
-<div class="ttc" id="aSentry_8cpp_html_a72a2008cea726c6159fd4c4fcbe42906"><div class="ttname"><a href="Sentry_8cpp.html#a72a2008cea726c6159fd4c4fcbe42906">FLYWHEEL_R_PID</a></div><div class="ttdeci">constexpr PID::config FLYWHEEL_R_PID</div><div class="ttdef"><b>Definition</b> Sentry.cpp:47</div></div>
-<div class="ttc" id="aSentry_8cpp_html_ac4d24743ce03ec73c3a2296c69b32490"><div class="ttname"><a href="Sentry_8cpp.html#ac4d24743ce03ec73c3a2296c69b32490">FLYWHEEL_L_PID</a></div><div class="ttdeci">constexpr PID::config FLYWHEEL_L_PID</div><div class="ttdef"><b>Definition</b> Sentry.cpp:46</div></div>
+<div class="ttc" id="aSentry_8cpp_html_a1ea04a52763bf7f2606c421fe4e7e1b1"><div class="ttname"><a href="Sentry_8cpp.html#a1ea04a52763bf7f2606c421fe4e7e1b1">INDEXER_PID_VEL</a></div><div class="ttdeci">constexpr PID::config INDEXER_PID_VEL</div><div class="ttdef"><b>Definition</b> Sentry.cpp:54</div></div>
+<div class="ttc" id="aSentry_8cpp_html_a481bad22389d7769991f1c7931a9961e"><div class="ttname"><a href="Sentry_8cpp.html#a481bad22389d7769991f1c7931a9961e">INDEXER_PID_POS</a></div><div class="ttdeci">constexpr PID::config INDEXER_PID_POS</div><div class="ttdef"><b>Definition</b> Sentry.cpp:55</div></div>
+<div class="ttc" id="aSentry_8cpp_html_a72a2008cea726c6159fd4c4fcbe42906"><div class="ttname"><a href="Sentry_8cpp.html#a72a2008cea726c6159fd4c4fcbe42906">FLYWHEEL_R_PID</a></div><div class="ttdeci">constexpr PID::config FLYWHEEL_R_PID</div><div class="ttdef"><b>Definition</b> Sentry.cpp:53</div></div>
+<div class="ttc" id="aSentry_8cpp_html_ac4d24743ce03ec73c3a2296c69b32490"><div class="ttname"><a href="Sentry_8cpp.html#ac4d24743ce03ec73c3a2296c69b32490">FLYWHEEL_L_PID</a></div><div class="ttdeci">constexpr PID::config FLYWHEEL_L_PID</div><div class="ttdef"><b>Definition</b> Sentry.cpp:52</div></div>
 <div class="ttc" id="aclassCANHandler_html_a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14"><div class="ttname"><a href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a></div><div class="ttdeci">@ CANBUS_2</div><div class="ttdef"><b>Definition</b> CANHandler.h:45</div></div>
 <div class="ttc" id="aclassShooterSubsystem_html_a87eddf897140bcd67267431a76ee1ee6a1cb70508234417d1eb3c9683dd42bb77"><div class="ttname"><a href="classShooterSubsystem.html#a87eddf897140bcd67267431a76ee1ee6a1cb70508234417d1eb3c9683dd42bb77">ShooterSubsystem::BURST</a></div><div class="ttdeci">@ BURST</div><div class="ttdef"><b>Definition</b> ShooterSubsystem.h:22</div></div>
 </div><!-- fragment -->
+</div>
+</div>
+<a id="a61d9ef65d75b66821896182b133b31de" name="a61d9ef65d75b66821896182b133b31de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a61d9ef65d75b66821896182b133b31de">&#9670;&#160;</a></span>timer</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned long timer = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
 </div>
 </div>
 <a id="a39c7b036219664cecd90b69fed15fadf" name="a39c7b036219664cecd90b69fed15fadf"></a>
@@ -807,7 +845,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">= {</div>
-<div class="line">    4,</div>
+<div class="line">    7,</div>
 <div class="line">    <a class="code hl_enumvalue" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a28474eec9dbe74a0107e8bfb33d0751f">M3508</a>,</div>
 <div class="line">    8,</div>
 <div class="line">    <a class="code hl_enumvalue" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a28474eec9dbe74a0107e8bfb33d0751f">M3508</a>,</div>
@@ -829,18 +867,18 @@ Variables</h2></td></tr>
 <div class="line">    <a class="code hl_variable" href="Sentry_8cpp.html#acc7f892b25436a7b155a82b0cdf86d94">PITCH_UPPER_BOUND</a></div>
 <div class="line">}</div>
 <div class="ttc" id="aDJIMotor_8h_html_aa0b95df57b6ae3d5b5ac026d56968a54a28474eec9dbe74a0107e8bfb33d0751f"><div class="ttname"><a href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a28474eec9dbe74a0107e8bfb33d0751f">M3508</a></div><div class="ttdeci">@ M3508</div><div class="ttdef"><b>Definition</b> DJIMotor.h:43</div></div>
-<div class="ttc" id="aSentry_8cpp_html_a187deff0a2be11d3a0632017532431ce"><div class="ttname"><a href="Sentry_8cpp.html#a187deff0a2be11d3a0632017532431ce">pitch_kinetic_friction</a></div><div class="ttdeci">const float pitch_kinetic_friction</div><div class="ttdef"><b>Definition</b> Sentry.cpp:39</div></div>
-<div class="ttc" id="aSentry_8cpp_html_a30673a77f83408ab6681311170220a8a"><div class="ttname"><a href="Sentry_8cpp.html#a30673a77f83408ab6681311170220a8a">pitch_gravity_feedforward</a></div><div class="ttdeci">const float pitch_gravity_feedforward</div><div class="ttdef"><b>Definition</b> Sentry.cpp:37</div></div>
-<div class="ttc" id="aSentry_8cpp_html_a33f6c1c8bd9077a3224435cd22891326"><div class="ttname"><a href="Sentry_8cpp.html#a33f6c1c8bd9077a3224435cd22891326">yaw_kinetic_friction</a></div><div class="ttdeci">const float yaw_kinetic_friction</div><div class="ttdef"><b>Definition</b> Sentry.cpp:33</div></div>
-<div class="ttc" id="aSentry_8cpp_html_a7b00de443582840b527f8610e94316a3"><div class="ttname"><a href="Sentry_8cpp.html#a7b00de443582840b527f8610e94316a3">pitch_static_friction</a></div><div class="ttdeci">const float pitch_static_friction</div><div class="ttdef"><b>Definition</b> Sentry.cpp:38</div></div>
-<div class="ttc" id="aSentry_8cpp_html_a8ad1aa6e9f3b5c79e797a9ac735e37da"><div class="ttname"><a href="Sentry_8cpp.html#a8ad1aa6e9f3b5c79e797a9ac735e37da">pitch_zero_offset_ticks</a></div><div class="ttdeci">constexpr int pitch_zero_offset_ticks</div><div class="ttdef"><b>Definition</b> Sentry.cpp:20</div></div>
-<div class="ttc" id="aSentry_8cpp_html_a914be9179942bf8439ce9abc372f8bc7"><div class="ttname"><a href="Sentry_8cpp.html#a914be9179942bf8439ce9abc372f8bc7">yaw_static_friction</a></div><div class="ttdeci">const float yaw_static_friction</div><div class="ttdef"><b>Definition</b> Sentry.cpp:32</div></div>
-<div class="ttc" id="aSentry_8cpp_html_ab0aeccefb25e92d2195c914bef8c78c0"><div class="ttname"><a href="Sentry_8cpp.html#ab0aeccefb25e92d2195c914bef8c78c0">PITCH_POS_PID</a></div><div class="ttdeci">constexpr PID::config PITCH_POS_PID</div><div class="ttdef"><b>Definition</b> Sentry.cpp:36</div></div>
-<div class="ttc" id="aSentry_8cpp_html_abc376771b0d17187ccf30ac66435de82"><div class="ttname"><a href="Sentry_8cpp.html#abc376771b0d17187ccf30ac66435de82">PITCH_VEL_PID</a></div><div class="ttdeci">constexpr PID::config PITCH_VEL_PID</div><div class="ttdef"><b>Definition</b> Sentry.cpp:35</div></div>
-<div class="ttc" id="aSentry_8cpp_html_ac934aa5d311e980958d6ddc464858fab"><div class="ttname"><a href="Sentry_8cpp.html#ac934aa5d311e980958d6ddc464858fab">YAW_POS_PID</a></div><div class="ttdeci">constexpr PID::config YAW_POS_PID</div><div class="ttdef"><b>Definition</b> Sentry.cpp:31</div></div>
-<div class="ttc" id="aSentry_8cpp_html_acc7f892b25436a7b155a82b0cdf86d94"><div class="ttname"><a href="Sentry_8cpp.html#acc7f892b25436a7b155a82b0cdf86d94">PITCH_UPPER_BOUND</a></div><div class="ttdeci">constexpr float PITCH_UPPER_BOUND</div><div class="ttdef"><b>Definition</b> Sentry.cpp:22</div></div>
-<div class="ttc" id="aSentry_8cpp_html_ad2140529015bdef1173e030ebef1e7ae"><div class="ttname"><a href="Sentry_8cpp.html#ad2140529015bdef1173e030ebef1e7ae">PITCH_LOWER_BOUND</a></div><div class="ttdeci">constexpr float PITCH_LOWER_BOUND</div><div class="ttdef"><b>Definition</b> Sentry.cpp:21</div></div>
-<div class="ttc" id="aSentry_8cpp_html_ad77739da33f21c8882d24e2fecff8143"><div class="ttname"><a href="Sentry_8cpp.html#ad77739da33f21c8882d24e2fecff8143">YAW_VEL_PID</a></div><div class="ttdeci">constexpr PID::config YAW_VEL_PID</div><div class="ttdef"><b>Definition</b> Sentry.cpp:30</div></div>
+<div class="ttc" id="aSentry_8cpp_html_a187deff0a2be11d3a0632017532431ce"><div class="ttname"><a href="Sentry_8cpp.html#a187deff0a2be11d3a0632017532431ce">pitch_kinetic_friction</a></div><div class="ttdeci">const float pitch_kinetic_friction</div><div class="ttdef"><b>Definition</b> Sentry.cpp:45</div></div>
+<div class="ttc" id="aSentry_8cpp_html_a30673a77f83408ab6681311170220a8a"><div class="ttname"><a href="Sentry_8cpp.html#a30673a77f83408ab6681311170220a8a">pitch_gravity_feedforward</a></div><div class="ttdeci">const float pitch_gravity_feedforward</div><div class="ttdef"><b>Definition</b> Sentry.cpp:43</div></div>
+<div class="ttc" id="aSentry_8cpp_html_a33f6c1c8bd9077a3224435cd22891326"><div class="ttname"><a href="Sentry_8cpp.html#a33f6c1c8bd9077a3224435cd22891326">yaw_kinetic_friction</a></div><div class="ttdeci">const float yaw_kinetic_friction</div><div class="ttdef"><b>Definition</b> Sentry.cpp:39</div></div>
+<div class="ttc" id="aSentry_8cpp_html_a7b00de443582840b527f8610e94316a3"><div class="ttname"><a href="Sentry_8cpp.html#a7b00de443582840b527f8610e94316a3">pitch_static_friction</a></div><div class="ttdeci">const float pitch_static_friction</div><div class="ttdef"><b>Definition</b> Sentry.cpp:44</div></div>
+<div class="ttc" id="aSentry_8cpp_html_a8ad1aa6e9f3b5c79e797a9ac735e37da"><div class="ttname"><a href="Sentry_8cpp.html#a8ad1aa6e9f3b5c79e797a9ac735e37da">pitch_zero_offset_ticks</a></div><div class="ttdeci">constexpr int pitch_zero_offset_ticks</div><div class="ttdef"><b>Definition</b> Sentry.cpp:26</div></div>
+<div class="ttc" id="aSentry_8cpp_html_a914be9179942bf8439ce9abc372f8bc7"><div class="ttname"><a href="Sentry_8cpp.html#a914be9179942bf8439ce9abc372f8bc7">yaw_static_friction</a></div><div class="ttdeci">const float yaw_static_friction</div><div class="ttdef"><b>Definition</b> Sentry.cpp:38</div></div>
+<div class="ttc" id="aSentry_8cpp_html_ab0aeccefb25e92d2195c914bef8c78c0"><div class="ttname"><a href="Sentry_8cpp.html#ab0aeccefb25e92d2195c914bef8c78c0">PITCH_POS_PID</a></div><div class="ttdeci">constexpr PID::config PITCH_POS_PID</div><div class="ttdef"><b>Definition</b> Sentry.cpp:42</div></div>
+<div class="ttc" id="aSentry_8cpp_html_abc376771b0d17187ccf30ac66435de82"><div class="ttname"><a href="Sentry_8cpp.html#abc376771b0d17187ccf30ac66435de82">PITCH_VEL_PID</a></div><div class="ttdeci">constexpr PID::config PITCH_VEL_PID</div><div class="ttdef"><b>Definition</b> Sentry.cpp:41</div></div>
+<div class="ttc" id="aSentry_8cpp_html_ac934aa5d311e980958d6ddc464858fab"><div class="ttname"><a href="Sentry_8cpp.html#ac934aa5d311e980958d6ddc464858fab">YAW_POS_PID</a></div><div class="ttdeci">constexpr PID::config YAW_POS_PID</div><div class="ttdef"><b>Definition</b> Sentry.cpp:37</div></div>
+<div class="ttc" id="aSentry_8cpp_html_acc7f892b25436a7b155a82b0cdf86d94"><div class="ttname"><a href="Sentry_8cpp.html#acc7f892b25436a7b155a82b0cdf86d94">PITCH_UPPER_BOUND</a></div><div class="ttdeci">constexpr float PITCH_UPPER_BOUND</div><div class="ttdef"><b>Definition</b> Sentry.cpp:28</div></div>
+<div class="ttc" id="aSentry_8cpp_html_ad2140529015bdef1173e030ebef1e7ae"><div class="ttname"><a href="Sentry_8cpp.html#ad2140529015bdef1173e030ebef1e7ae">PITCH_LOWER_BOUND</a></div><div class="ttdeci">constexpr float PITCH_LOWER_BOUND</div><div class="ttdef"><b>Definition</b> Sentry.cpp:27</div></div>
+<div class="ttc" id="aSentry_8cpp_html_ad77739da33f21c8882d24e2fecff8143"><div class="ttname"><a href="Sentry_8cpp.html#ad77739da33f21c8882d24e2fecff8143">YAW_VEL_PID</a></div><div class="ttdeci">constexpr PID::config YAW_VEL_PID</div><div class="ttdef"><b>Definition</b> Sentry.cpp:36</div></div>
 <div class="ttc" id="aclassCANHandler_html_a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4"><div class="ttname"><a href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4">CANHandler::CANBUS_1</a></div><div class="ttdeci">@ CANBUS_1</div><div class="ttdef"><b>Definition</b> CANHandler.h:45</div></div>
 </div><!-- fragment -->
 </div>

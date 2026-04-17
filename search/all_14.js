@@ -26,7 +26,7 @@ var searchData=
   ['tickstoradians_23',['ticksToRadians',['../classChassisSubsystem.html#a4108e8bc0138701d2db304702c37168e',1,'ChassisSubsystem']]],
   ['time_24',['time',['../structlastfew.html#a7499456ff4a3b4706c480543af9ec3e2',1,'lastfew']]],
   ['timeout_5fms_25',['TIMEOUT_MS',['../DJIMotor_8h.html#a3ba39dd2e759bb75ccb5787bca51a590',1,'DJIMotor.h']]],
-  ['timer_26',['timer',['../Infantry_8cpp.html#a61d9ef65d75b66821896182b133b31de',1,'Infantry.cpp']]],
+  ['timer_26',['timer',['../Infantry_8cpp.html#a61d9ef65d75b66821896182b133b31de',1,'timer:&#160;Infantry.cpp'],['../Sentry_8cpp.html#a61d9ef65d75b66821896182b133b31de',1,'timer:&#160;Sentry.cpp']]],
   ['to_20diverge_20from_20the_20cli_20setup_20guide_20and_20set_20up_20an_20ide_20instead_20check_20out_20the_20setup_20instructions_20for_20ref_20home_20runner_20work_20tr_20mbed_20tr_20mbed_20md_20ide_20clion_20md_20clion_20or_20ref_20home_20runner_20work_20tr_20mbed_20tr_20mbed_20md_20ide_20vscode_20md_20vscode_20we_20higly_20recommend_20ref_20home_20runner_20work_20tr_20mbed_20tr_20mbed_20md_20ide_20clion_20md_20clion_27',['At this point, you may choose to diverge from the CLI setup guide and set up an IDE instead. Check out the setup instructions for @ref &quot;/home/runner/work/TR-mbed/TR-mbed/.md/ide/clion.md&quot; &quot;CLion&quot; or @ref &quot;/home/runner/work/TR-mbed/TR-mbed/.md/ide/vscode.md&quot; &quot;VSCode&quot;. We higly recommend @ref &quot;/home/runner/work/TR-mbed/TR-mbed/.md/ide/clion.md&quot; &quot;CLion&quot;.',['../index.html#autotoc_md6',1,'']]],
   ['to_20jlink_28',['Flashing to JLink',['../index.html#autotoc_md10',1,'']]],
   ['tonum_29',['toNum',['../classSerialCommunication.html#a09419c84e1bc2a085e1357a68b1e8319',1,'SerialCommunication']]],
@@ -40,14 +40,14 @@ var searchData=
   ['troubleshooting_37',['Troubleshooting',['../index.html#autotoc_md16',1,'']]],
   ['true_38',['TRUE',['../ref__constants_8h.html#aa8cecfc5c5c054d2875c03e77b7be15d',1,'ref_constants.h']]],
   ['turret_39',['turret',['../classHero.html#a1c32a81f45fef07ccce667a181b22886',1,'Hero']]],
-  ['turret_5f_40',['turret_',['../classInfantry.html#ac1acb74b0258f1bc16b494088d80683e',1,'Infantry']]],
+  ['turret_5f_40',['turret_',['../classSentry.html#a97f1db27b03f9152926a86d5b126426f',1,'Sentry::turret_'],['../classInfantry.html#ac1acb74b0258f1bc16b494088d80683e',1,'Infantry::turret_']]],
   ['turret_5fconfig_41',['turret_config',['../Infantry_8cpp.html#a39c7b036219664cecd90b69fed15fadf',1,'turret_config:&#160;Infantry.cpp'],['../Sentry_8cpp.html#a39c7b036219664cecd90b69fed15fadf',1,'turret_config:&#160;Sentry.cpp']]],
   ['turret_5fmode_42',['turret_mode',['../structTurretSubsystem_1_1TurretInfo.html#a19f9a6408e6266912f5c8b65c9107931',1,'TurretSubsystem::TurretInfo']]],
   ['turretinfo_43',['TurretInfo',['../structTurretSubsystem_1_1TurretInfo.html',1,'TurretSubsystem']]],
-  ['turretpacket_44',['turretpacket',['../classTurretPacket.html#af552536eabce562688bc04a6e7b34309',1,'TurretPacket::TurretPacket()'],['../classTurretPacket.html',1,'TurretPacket']]],
+  ['turretpacket_44',['turretpacket',['../classTurretPacket.html',1,'TurretPacket'],['../classTurretPacket.html#af552536eabce562688bc04a6e7b34309',1,'TurretPacket::TurretPacket()']]],
   ['turretstate_45',['TurretState',['../TurretSubsystem_8h.html#a198d76ba0521fe4dfc9de418310f65cc',1,'TurretSubsystem.h']]],
   ['turretsubsystem_46',['turretsubsystem',['../classTurretSubsystem.html#a3cd16cfed964b0e2c78f5c9caad17a18',1,'TurretSubsystem::TurretSubsystem()'],['../classTurretSubsystem.html',1,'TurretSubsystem']]],
   ['turretsubsystem_2ecpp_47',['TurretSubsystem.cpp',['../TurretSubsystem_8cpp.html',1,'']]],
   ['turretsubsystem_2eh_48',['TurretSubsystem.h',['../TurretSubsystem_8h.html',1,'']]],
-  ['type_49',['type',['../classDJIMotor.html#a72f41290da81929cbce3c01e820b7376',1,'DJIMotor::type'],['../PIDTools_8h.html#a0bc6723d5d4776ab7cdc646728b775f7',1,'TYPE:&#160;PIDTools.h'],['../structShooterSubsystem_1_1config.html#a4aa136061720724ab1dcf33db697b32a',1,'ShooterSubsystem::config::type'],['../structDJIMotor_1_1config.html#a467ac093d49103527957713503d220ee',1,'DJIMotor::config::type']]]
+  ['type_49',['type',['../PIDTools_8h.html#a0bc6723d5d4776ab7cdc646728b775f7',1,'TYPE:&#160;PIDTools.h'],['../classDJIMotor.html#a72f41290da81929cbce3c01e820b7376',1,'DJIMotor::type'],['../structShooterSubsystem_1_1config.html#a4aa136061720724ab1dcf33db697b32a',1,'ShooterSubsystem::config::type'],['../structDJIMotor_1_1config.html#a467ac093d49103527957713503d220ee',1,'DJIMotor::config::type']]]
 ];
