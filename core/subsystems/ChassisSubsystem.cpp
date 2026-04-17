@@ -200,21 +200,30 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     // printf("After Set:%.3f\n", p_theory(p1, p2, p3, p4, r1, r2, r3, r4));
 
     static int logCounter = 0;
-    if (++logCounter >= 5) {   // every 5 loops at 500Hz = ~10ms, dense but not overwhelming
-        logCounter = 0;
-        p1 = abs(powers[0]);
-        p2 = abs(powers[1]);
-        p3 = abs(powers[2]);
-        p4 = abs(powers[3]);
-        float total_p = r1+r2+r3+r4;;
-        printf("vX:%.3f vY:%.3f vW:%.3f | LF:%d RF:%d LB:%d RB:%d | Total_P:%.2f | scale:%.4f | P_est:%.2f\n",
-            desiredChassisSpeeds.vX,
-            desiredChassisSpeeds.vY,
-            desiredChassisSpeeds.vOmega,
-            r1, r2, r3, r4,
-            total_p, 
-            scale,
-            p_theory(p1, p2, p3, p4, r1, r2, r3, r4));
+    static bool idle_printed = false;
+
+    bool is_idle = (fabsf(m_chassisSpeeds.vX)     < 0.001f &&
+                    fabsf(m_chassisSpeeds.vY)     < 0.001f &&
+                    fabsf(m_chassisSpeeds.vOmega) < 0.001f);
+
+    if (!is_idle || !idle_printed) {
+        if (++logCounter >= 5) {
+            logCounter = 0;
+            idle_printed = is_idle;
+            p1 = abs(powers[0]);
+            p2 = abs(powers[1]);
+            p3 = abs(powers[2]);
+            p4 = abs(powers[3]);
+            float total_p = r1 + r2 + r3 + r4;
+            printf("vX:%.3f vY:%.3f vW:%.3f | LF:%d RF:%d LB:%d RB:%d | Total_P:%.2f | scale:%.4f | P_est:%.2f\n",
+                m_chassisSpeeds.vX,
+                m_chassisSpeeds.vY,
+                m_chassisSpeeds.vOmega,
+                r1, r2, r3, r4,
+                total_p,
+                scale,
+                p_theory(p1, p2, p3, p4, r1, r2, r3, r4));
+        }
     }
 
     return scale;
