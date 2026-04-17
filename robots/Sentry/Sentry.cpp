@@ -1,17 +1,23 @@
 #include "base_robot/BaseRobot.h"
 #include "util/algorithms/general_functions.h"
+#include "ResetReason.h"
 
 #include "subsystems/ChassisSubsystem.h"
 #include "subsystems/ShooterSubsystem.h"
 #include "subsystems/TurretSubsystem.h"
 
 #include "util/communications/CANHandler.h"
+#include "util/communications/PwmIn.h"
 #include "util/communications/jetson/Jetson.h"
 #include "util/motor/DJIMotor.h"
 #include "util/peripherals/imu/BNO055.h"
 #include "util/peripherals/encoder/MA4.h"
+#include "util/peripherals/imu/ISM330.h"
 
 #include <algorithm>
+#include <pinmap.h>
+#include <us_ticker_api.h>
+#include <us_ticker_defines.h>
 
 constexpr auto IMU_I2C_SDA = PB_7;
 constexpr auto IMU_I2C_SCL = PB_8;
@@ -51,7 +57,7 @@ constexpr PID::config INDEXER_PID_POS = {0.1, 0, 0.001};
 
 // Config variables
 TurretSubsystem::config turret_config = {
-    4,
+    7,
     M3508,
     8,
     M3508,
@@ -108,7 +114,8 @@ int remoteTimer = 0;
 
 float pitch_desired_angle = 0.0;
 float yaw_desired_angle = 0.0;
-
+float dt_global = 0.0;
+unsigned long timer = 0;
 
 // TODOS make example directory with simple examples of how to use motors /
 // subsystems as reference for testbench
@@ -117,7 +124,8 @@ IMU::EulerAngles imuAngles;
 class Sentry : public BaseRobot {
   public:
     I2C i2c_;
-    BNO055 imu_;
+    // BNO055 imu_;
+    ISM330 imu_;
     MA4 encoder_;  // Absolute encoder for yaw position
     // TODO: put the BufferedSerial inside Jetson (idk if we wanna do that tho
     // for SPI)
@@ -127,8 +135,8 @@ class Sentry : public BaseRobot {
     Jetson::WriteState stm_state;
     Jetson::ReadState jetson_state;
 
-    // TurretSubsystem turret_;
-    // ShooterSubsystem shooter_;
+    TurretSubsystem turret_;
+    ShooterSubsystem shooter_;
     ChassisSubsystem chassis_;
 
     bool imu_initialized{false};
@@ -137,61 +145,57 @@ class Sentry : public BaseRobot {
         : BaseRobot(config),
           // clang-format off
         i2c_(IMU_I2C_SDA, IMU_I2C_SCL), 
-        imu_(i2c_, IMU_RESET, MODE_IMU),
-        encoder_(PA_7),
+        imu_(i2c_, 0x6B),
+        encoder_(PB_4),
         jetson_raw_serial(PC_12, PD_2,115200), // TODO: check higher baud to see if still works
         jetson(jetson_raw_serial),
-        // turret_(turret_config, imu_),
-        // shooter_(shooter_config),
+        turret_(turret_config, imu_),
+        shooter_(shooter_config),
 
         // TODO add passing in individual PID objects for the motors
         chassis_(ChassisSubsystem::Config{
             1,      // left_front_can_id
-            3,      // right_front_can_id
-            6,      // left_back_can_id
-            2,      // right_back_can_id
+            2,      // right_front_can_id
+            4,      // left_back_can_id
+            3,      // right_back_can_id
             0.22617,  // radius
             0.065,    // speed_pid_ff_ks
-            163.8 + 90,     // yaw_initial_offset_ticks
+            86,     // yaw_initial_offset_ticks
             imu_,
             &encoder_   
         }
         )
     // clang-format on
-    {}
+    {
+        pin_mode(IMU_I2C_SCL, PinMode::OpenDrainPullUp);
+        pin_mode(IMU_I2C_SDA, PinMode::OpenDrainPullUp);
+    }
 
     ~Sentry() {}
 
-    void init() override {}
+    void init() override {
+        timer = us_ticker_read();
+        imu_.begin(1, 0);
+    }
 
     void periodic(unsigned long dt_us) override {
         // TODO this should be threaded inside imu instead
-        imuAngles = imu_.read();
-
-        if (!imu_initialized) {
-            IMU::EulerAngles angles = imu_.getImuAngles();
-            if (angles.pitch == 0.0 && angles.yaw == 0.0 && angles.roll == 0.0) {
-                return;
-            }
-
-            yaw_desired_angle = angles.yaw;
-            imu_initialized = true;
-        }
-
+        imu_.mahonyUpdateIMU(dt_us / 1000000.0);
+        imuAngles = imu_.getImuAngles();
         // TODO: use this in code correctly to drive faster
         max_linear_vel = 1.24 + 0.0513 * chassis_.power_limit +
                          0.000216 * (chassis_.power_limit * chassis_.power_limit);
-        des_chassis_state.vX = remote_.getChannel(Remote::Channel::LEFT_VERTICAL) * max_linear_vel;
-        des_chassis_state.vY = -1 * remote_.getChannel(Remote::Channel::LEFT_HORIZONTAL) * max_linear_vel;
+        des_chassis_state.vX = jy * max_linear_vel;
+        des_chassis_state.vY = jx * max_linear_vel;
 
         // Turret from remote
-        float joystick_yaw = remote_.getChannel(Remote::Channel::RIGHT_HORIZONTAL);
-        yaw_desired_angle -= joystick_yaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
+        yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * dt_us / 1000000;
+        yaw_desired_angle -= jyaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
         yaw_desired_angle = capAngle(yaw_desired_angle);
         des_turret_state.yaw_angle_degs = yaw_desired_angle;
 
-        float joystick_pitch = remote_.getChannel(Remote::Channel::RIGHT_VERTICAL);
-        pitch_desired_angle += joystick_pitch * JOYSTICK_PITCH_SENSITIVITY_DPS * dt_us / 1000000;
+        pitch_desired_angle -= mpitch * MOUSE_SENSITIVITY_PITCH_DPS * dt_us / 1000000;
+        pitch_desired_angle += jpitch * JOYSTICK_PITCH_SENSITIVITY_DPS * dt_us / 1000000;
         pitch_desired_angle = std::clamp(pitch_desired_angle, PITCH_LOWER_BOUND, PITCH_UPPER_BOUND);
         des_turret_state.pitch_angle_degs = pitch_desired_angle;
 
@@ -199,15 +203,18 @@ class Sentry : public BaseRobot {
         jetson_state = jetson.read();
 
         // Chassis logic
-        // if(jetson_state.localization_calibration == 1){
-        //     chassis_.setOdomReference();
-        // }
+        if (drive == 'u' || (drive == 'o' && remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) ==
+                                                 Remote::SwitchState::UP)) {
+            // TODO: think about how we want to implement jetson aiming
+            // des_turret_state.pitch_angle = jetson_state.desired_pitch_rads;
+            // des_turret_state.yaw_angle = jetson_state.desired_yaw_rads;
 
-        if (remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP) {
             des_chassis_state.vOmega = 0;
             chassis_.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
-        } else if (remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::DOWN) {
+        } else if (drive == 'd' ||
+                   (drive == 'o' &&
+                    remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::DOWN)) {
             // Jetson odom
             if( (us_ticker_read() - jetson_state.stamp_us ) / 1000 > 500 ) {
                 des_chassis_state.vX = 0;
@@ -226,13 +233,13 @@ class Sentry : public BaseRobot {
                 des_turret_state.yaw_angle_degs = jetson_state.desired_yaw_rads * (180 / M_PI);
                 des_turret_state.pitch_angle_degs = jetson_state.desired_pitch_rads * (180 / M_PI);
             }
-
             chassis_.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
+            des_turret_state.turret_mode = TurretState::AIM;
         } else {
             chassis_.setWheelPower({0, 0, 0, 0});
             des_turret_state.turret_mode = TurretState::SLEEP;
-            // des_turret_state.yaw_angle_degs = turret_.getState().yaw_angle_degs;
-            // yaw_desired_angle = turret_.getState().yaw_angle_degs;
+            des_turret_state.yaw_angle_degs = turret_.getState().yaw_angle_degs;
+            yaw_desired_angle = turret_.getState().yaw_angle_degs;
             des_turret_state.pitch_angle_degs = 0;
         }
 
@@ -247,19 +254,19 @@ class Sentry : public BaseRobot {
             des_shoot_state = ShootState::OFF;
         }
 
-        // turret_.setState(des_turret_state);
-        // shooter_.setState(des_shoot_state);
+        turret_.setState(des_turret_state);
+        shooter_.setState(des_shoot_state);
 
-        // turret_.periodic(chassis_.getChassisSpeeds().vOmega * 60 / (2 * PI));
+        turret_.periodic(chassis_.getChassisSpeeds().vOmega * 60 / (2 * PI));
         chassis_.periodic(&imuAngles);
-        // shooter_.periodic(referee_.power_heat_data.shooter_17mm_1_barrel_heat,
-        //                  referee_.robot_status.shooter_barrel_heat_limit);
+        shooter_.periodic(referee_.power_heat_data.shooter_17mm_1_barrel_heat,
+                         referee_.robot_status.shooter_barrel_heat_limit);
 
         // jetson comms
         set_jetson_state();
         jetson.write(stm_state);
 
-        // printf("time %ld", us_ticker_read());
+        // printf("time %.4f\n", dt_us / 1000000.0);
 
         // Debug print statements
         // printf("des: %.2f, %.2f, %.2f %d \n", jetson.read().desired_x_vel,
@@ -272,7 +279,8 @@ class Sentry : public BaseRobot {
         // %.2f\n", remote_.getChassisX()); printf("switch: %d\n",
         // remote_.getSwitch(Remote::Switch::RIGHT_SWITCH)); printf("imu:
         // %.2f\n", imu.getImuAngles().yaw);
-        printf("%.2f\n", encoder_.encoderMovingAverage());
+        // printf("%.2f\n", encoder_.encoderMovingAverage());
+        // printf("%.2f, %.2f, %.2f\n", imuAngles.roll, imuAngles.pitch, imuAngles.yaw);
     }
 
     void end_of_loop() override {}
@@ -288,10 +296,10 @@ class Sentry : public BaseRobot {
         stm_state.chassis_rotation = chassis_.getChassisSpeeds().vOmega;
 
         // TODO angle_degrees and angle_radians
-        // stm_state.yaw_angle_rads = degreesToRadians(turret_.getState().yaw_angle_degs);
-        // stm_state.yaw_velocity = degreesToRadians(turret_.getState().yaw_velo_rad_s);
-        // stm_state.pitch_angle_rads = degreesToRadians(turret_.getState().pitch_angle_degs);
-        // stm_state.pitch_velocity = degreesToRadians(turret_.getState().pitch_velo_rad_s);
+        stm_state.yaw_angle_rads = degreesToRadians(turret_.getState().yaw_angle_degs);
+        stm_state.yaw_velocity = degreesToRadians(turret_.getState().yaw_velo_rad_s);
+        stm_state.pitch_angle_rads = degreesToRadians(turret_.getState().pitch_angle_degs);
+        stm_state.pitch_velocity = degreesToRadians(turret_.getState().pitch_velo_rad_s);
     }
 };
 
