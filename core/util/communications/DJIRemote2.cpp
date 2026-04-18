@@ -291,7 +291,7 @@ void DJIRemote2::shiftLeft(size_t count)
 }
 
 float DJIRemote2::apply_deadzone(float num) const{
-    const float deadzone = 0.05;
+    const float deadzone = 0.0;
     return fabs(num) < deadzone ? 0.0 : num; 
 }
 
@@ -334,9 +334,33 @@ bool DJIRemote2::TriggerPressed() const { return data_.trigger != 0;}
 
 bool DJIRemote2::CUSTLPressed() const { return data_.btnL != 0; }
 
-bool DJIRemote2::CUSTRPressed() const {	return data_.btnR != 0;}
+bool DJIRemote2::CUSTLToggled() const {	
+	static bool lastState = false;
+	bool currentState = CUSTLPressed();
+	bool toggled = (currentState != lastState) && currentState;
+	lastState = currentState;
+	return toggled;
+}
+
+bool DJIRemote2::CUSTRPressed() const { return data_.btnR != 0; }
+
+bool DJIRemote2::CUSTRToggled() const {	
+	static bool lastState = false;
+	bool currentState = CUSTRPressed();
+	bool toggled = (currentState != lastState) && currentState;
+	lastState = currentState;
+	return toggled;
+}
 
 bool DJIRemote2::PAUSEPressed() const {	return data_.pause != 0;}
+
+bool DJIRemote2::PAUSEToggled() const {	
+	static bool lastState = false;
+	bool currentState = PAUSEPressed();
+	bool toggled = (currentState != lastState) && currentState;
+	lastState = currentState;
+	return toggled;
+}
 
 int16_t DJIRemote2::getMouseX() const { return data_.mouseX; }
 

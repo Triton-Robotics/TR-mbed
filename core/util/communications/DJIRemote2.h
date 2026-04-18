@@ -88,7 +88,7 @@ public:
         V,
         B
     };
-	
+
 	// check if trigger is pressed
 	bool TriggerPressed() const;
 	// check if custom left button is pressed
@@ -133,6 +133,13 @@ public:
      */
     int16_t getWheel() const;
 
+	bool CUSTLToggled() const;
+	bool CUSTRToggled() const;
+	bool PAUSEToggled() const;
+
+	float getJoystickValue(Joystick joy) const;
+	float apply_deadzone(float value) const;
+	float getDialValue() const;
 
 private:
     BufferedSerial serial_;
@@ -154,9 +161,6 @@ private:
     int findHeader() const;
     void decodeFrame(const uint8_t* frame);
     void shiftLeft(size_t count);
-	float getJoystickValue(Joystick joy) const;
-	float apply_deadzone(float value) const;
-	float getDialValue() const;
 };
 
 #endif
