@@ -299,13 +299,13 @@ float DJIRemote2::getJoystickValue(Joystick joy) const{
     switch (joy)
     {
         case Joystick::RIGHT_HORIZONTAL:
-            return apply_deadzone(float(data_.ch0) / STICK_MAX_VALUE);
+            return 2 * apply_deadzone((float(data_.ch0) - 364) / (STICK_MAX_VALUE - 364))  - 1;
         case Joystick::RIGHT_VERTICAL:
-            return apply_deadzone(float(data_.ch1) / STICK_MAX_VALUE);
+            return 2 * apply_deadzone((float(data_.ch1) - 364) / (STICK_MAX_VALUE - 364)) - 1;
         case Joystick::LEFT_VERTICAL:
-            return apply_deadzone(float(data_.ch2) / STICK_MAX_VALUE);
+            return 2 * apply_deadzone((float(data_.ch2) - 364) / (STICK_MAX_VALUE - 364)) - 1;
         case Joystick::LEFT_HORIZONTAL:
-            return apply_deadzone(float(data_.ch3) / STICK_MAX_VALUE);
+            return 2 * apply_deadzone((float(data_.ch3) - 364) / (STICK_MAX_VALUE - 364)) - 1;
     }
     return 0;
 }

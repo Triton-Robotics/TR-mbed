@@ -33,7 +33,7 @@ class BaseRobot {
 	// };
 
     DJIRemote2 remote_;
-    Referee referee;
+    // Referee referee;
 
     CANHandler canHandler1_;
     CANHandler canHandler2_;
@@ -74,8 +74,8 @@ class BaseRobot {
 
     // clang-format off
     BaseRobot(const Config &config)
-        : remote_(config.remote_tx_pin, config.remote_rx_pin),
-		referee(config.referee_tx_pin, config.referee_rx_pin), 
+        : remote_(config.referee_tx_pin, config.referee_rx_pin),
+		// referee(config.referee_tx_pin, config.referee_rx_pin), 
           canHandler1_(config.can1_rx_pin, config.can1_tx_pin),
           canHandler2_(config.can2_rx_pin, config.can2_tx_pin),
           led0_(config.led0_pin),
@@ -115,8 +115,8 @@ class BaseRobot {
 
             // 20 ms remote read
             if ((loop_clock_us - prev_remote_time_us) / 1000 >= 15) {
-                //remote_.read();
-                //remoteRead();
+                remote_.update();
+                remoteRead();
                 prev_remote_time_us = us_ticker_read();
             }
 
@@ -141,13 +141,13 @@ class BaseRobot {
     void remoteRead()
     {
         //Keyboard-based drive and shoot mode
-        if(remote_.keyPressed(DJIRemote2::Key::R)){
-            drive = 'm';
-        }else if(remote_.keyPressed(DJIRemote2::Key::E)){
-            drive = 'u';
-        }else if(remote_.keyPressed(DJIRemote2::Key::Q)){
-            drive = 'd';        
-        }
+        // if(remote_.keyPressed(DJIRemote2::Key::R)){
+        //     drive = 'm';
+        // }else if(remote_.keyPressed(DJIRemote2::Key::E)){
+        //     drive = 'u';
+        // }else if(remote_.keyPressed(DJIRemote2::Key::Q)){
+        //     drive = 'd';        
+        // }
 
         if(remote_.keyPressed(DJIRemote2::Key::V)){
             shot = 'm';

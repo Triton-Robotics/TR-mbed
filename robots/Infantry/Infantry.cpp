@@ -7,6 +7,7 @@
 #include "subsystems/TurretSubsystem.h"
 
 #include "util/communications/CANHandler.h"
+#include "util/communications/DJIRemote2.h"
 #include "util/communications/PwmIn.h"
 #include "util/communications/jetson/Jetson.h"
 #include "util/motor/DJIMotor.h"
@@ -235,10 +236,11 @@ class Infantry : public BaseRobot {
         turret_.setState(des_turret_state);
         shooter_.setState(des_shoot_state);
 
-        turret_.periodic(chassis_.getChassisSpeeds().vOmega * 60 / (2 * PI));
-        chassis_.periodic(&imuAngles);
-        shooter_.periodic(referee_.power_heat_data.shooter_17mm_1_barrel_heat,
-                         referee_.robot_status.shooter_barrel_heat_limit);
+        turret.periodic(chassis.getChassisSpeeds().vOmega * 60 / (2 * PI));
+        chassis.periodic(&imuAngles);
+        // shooter.periodic(referee.power_heat_data.shooter_17mm_1_barrel_heat,
+        //                  referee.robot_status.shooter_barrel_heat_limit);
+        shooter.periodic(0, 100);
 
         // jetson comms
         set_jetson_state();
@@ -257,8 +259,8 @@ class Infantry : public BaseRobot {
         // %.2f\n", remote_.getChassisX()); printf("switch: %d\n",
         // remote_.getSwitch(DJIRemote2::Switch::RIGHT_SWITCH)); printf("imu:
         // %.2f\n", imu.getImuAngles().yaw);
-        // printf("%.2f\n", encoder_.encoderMovingAverage());
-        // printf("%.2f, %.2f, %.2f\n", imuAngles.roll, imuAngles.pitch, imuAngles.yaw);
+
+        printf("%d\n", static_cast<int>(remote_.getMode()));
     }
 
     void end_of_loop() override {}
