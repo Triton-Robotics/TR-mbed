@@ -6,7 +6,7 @@
  * @param radius radius in meters
  */
 ChassisSubsystem::ChassisSubsystem(const Config &config)
-    : power_limit(50.0F),
+    : power_limit(80.0F),
       LF(config.left_front_can_id, CAN_BUS_TYPE, MOTOR_TYPE),
       RF(config.right_front_can_id, CAN_BUS_TYPE, MOTOR_TYPE),
       LB(config.left_back_can_id, CAN_BUS_TYPE, MOTOR_TYPE),
@@ -192,6 +192,7 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     LB.setPower(powers[2]*scale);
     RB.setPower(powers[3]*scale);
 
+    // pwm command sent to motor after bisection scaling
     p1 = abs(LF.getData(POWEROUT));
     p2 = abs(RF.getData(POWEROUT));
     p3 = abs(LB.getData(POWEROUT));
@@ -199,33 +200,32 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
 
     // printf("After Set:%.3f\n", p_theory(p1, p2, p3, p4, r1, r2, r3, r4));
 
+    // P_est: approximation of the watts based on p_theory
+    // P_set: a physical current+voltage sensor on referee board
+
     static int logCounter = 0;
     static bool idle_printed = false;
 
-    bool is_idle = (fabsf(m_chassisSpeeds.vX)     < 0.001f &&
-                    fabsf(m_chassisSpeeds.vY)     < 0.001f &&
-                    fabsf(m_chassisSpeeds.vOmega) < 0.001f);
+    float vXY = sqrtf(m_chassisSpeeds.vX * m_chassisSpeeds.vX + m_chassisSpeeds.vY * m_chassisSpeeds.vY);
+    float angle = atan2f(m_chassisSpeeds.vY, m_chassisSpeeds.vX) * (180.0f / M_PI);
+    float P_est = p_theory(p1, p2, p3, p4, r1, r2, r3, r4);
+
+    bool is_idle = (vXY < 0.001f && fabsf(m_chassisSpeeds.vOmega) < 0.001f);
 
     if (!is_idle || !idle_printed) {
         if (++logCounter >= 5) {
             logCounter = 0;
             idle_printed = is_idle;
-            p1 = abs(powers[0]);
-            p2 = abs(powers[1]);
-            p3 = abs(powers[2]);
-            p4 = abs(powers[3]);
-            float total_p = r1 + r2 + r3 + r4;
-            printf("vX:%.3f vY:%.3f vW:%.3f | LF:%d RF:%d LB:%d RB:%d | Total_P:%.2f | scale:%.4f | P_est:%.2f\n",
+            printf("vX:%.3f vY:%.3f vXY:%.3f angle:%.1f vW:%.3f | scale:%.4f | P_est:%.2f\n",
                 m_chassisSpeeds.vX,
                 m_chassisSpeeds.vY,
+                vXY,
+                angle,
                 m_chassisSpeeds.vOmega,
-                r1, r2, r3, r4,
-                total_p,
                 scale,
-                p_theory(p1, p2, p3, p4, r1, r2, r3, r4));
+                P_est);
         }
     }
-
     return scale;
 }
 
