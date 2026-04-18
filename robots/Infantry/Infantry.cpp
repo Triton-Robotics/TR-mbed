@@ -236,11 +236,11 @@ class Infantry : public BaseRobot {
         turret_.setState(des_turret_state);
         shooter_.setState(des_shoot_state);
 
-        turret.periodic(chassis.getChassisSpeeds().vOmega * 60 / (2 * PI));
-        chassis.periodic(&imuAngles);
+        turret_.periodic(chassis_.getChassisSpeeds().vOmega * 60 / (2 * PI));
+        chassis_.periodic(&imuAngles);
         // shooter.periodic(referee.power_heat_data.shooter_17mm_1_barrel_heat,
         //                  referee.robot_status.shooter_barrel_heat_limit);
-        shooter.periodic(0, 100);
+        shooter_.periodic(0, 100);
 
         // jetson comms
         set_jetson_state();
