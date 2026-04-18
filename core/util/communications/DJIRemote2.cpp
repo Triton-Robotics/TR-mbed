@@ -87,14 +87,6 @@ bool verify_crc16_check_sum(uint8_t *p_msg, uint16_t len)
     return ((w_expected & 0xff) == p_msg[len - 2] && ((w_expected >> 8) & 0xff) == p_msg[len - 1]);
 }
 
-
-
-
-
-
-
-
-
 DJIRemote2::DJIRemote2(PinName tx, PinName rx, int baud)
     : serial_(tx, rx, baud),
       streamCount_(0),
@@ -296,4 +288,45 @@ void DJIRemote2::shiftLeft(size_t count)
 
     std::memmove(streamBuffer_, streamBuffer_ + count, streamCount_ - count);
     streamCount_ -= count;
+}
+
+float DJIRemote2::apply_deadzone(float num) const{
+    const float deadzone = 0.05;
+    return fabs(num) < deadzone ? 0.0 : num; 
+}
+
+float DJIRemote2::getJoystickValue(Joystick joy) const{
+    switch (joy)
+    {
+        case Joystick::RIGHT_HORIZONTAL:
+            return apply_deadzone(float(data_.ch0) / STICK_MAX_VALUE);
+        case Joystick::RIGHT_VERTICAL:
+            return apply_deadzone(float(data_.ch1) / STICK_MAX_VALUE);
+        case Joystick::LEFT_VERTICAL:
+            return apply_deadzone(float(data_.ch2) / STICK_MAX_VALUE);
+        case Joystick::LEFT_HORIZONTAL:
+            return apply_deadzone(float(data_.ch3) / STICK_MAX_VALUE);
+    }
+    return 0;
+}
+
+DJIRemote2::ModeSwitch DJIRemote2::getMode() const
+{
+    switch (data_.mode)
+    {
+        case 0:
+            return DJIRemote2::ModeSwitch::MODE_C;
+        case 1:
+            return DJIRemote2::ModeSwitch::MODE_N;
+        case 2:
+            return DJIRemote2::ModeSwitch::MODE_S;
+        default:
+            return DJIRemote2::ModeSwitch::MODE_N;
+    }
+}
+
+
+float DJIRemote2::getDialValue() const
+{
+    return (2.0f * ((float)(data_.dial) - 364.0f) / (1684.0f - 364.0f)) - 1.0f;
 }

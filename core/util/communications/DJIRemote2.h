@@ -37,6 +37,7 @@ public:
     static constexpr uint8_t HEADER_BYTE_1 = 0x53;
     static constexpr size_t FRAME_SIZE = 21;
     static constexpr size_t STREAM_BUFFER_SIZE = 64;
+	static constexpr float STICK_MAX_VALUE = 1684.0f;
 
     DJIRemote2(PinName tx, PinName rx, int baud = 921600);
 
@@ -58,6 +59,14 @@ public:
         LEFT_HORIZONTAL,
         LEFT_VERTICAL
     };
+
+	enum class Button
+	{
+		TRGR = 0,
+		CUSTL,
+		CUSTR,
+		PAUSE
+	};
 
 	// specifies a particular mode 
 	enum class ModeSwitch
@@ -101,11 +110,16 @@ private:
     uint64_t currentFrameTimeUs_;
     uint64_t framePeriodUs_;
 
+	ModeSwitch getMode() const;
+
     void readIncomingBytes();
     bool tryParseFrame();
     int findHeader() const;
     void decodeFrame(const uint8_t* frame);
     void shiftLeft(size_t count);
+	float getJoystickValue(Joystick joy) const;
+	float apply_deadzone(float value) const;
+	float getDialValue() const;
 };
 
 #endif
