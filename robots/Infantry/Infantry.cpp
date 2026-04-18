@@ -188,7 +188,7 @@ class Infantry : public BaseRobot {
         des_chassis_state.vX = jy * max_linear_vel;
         des_chassis_state.vY = jx * max_linear_vel;
 
-        // Turret from remote
+        // Turret from DJIRemote2
         yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * dt_us / 1000000;
         yaw_desired_angle -= jyaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
         yaw_desired_angle = capAngle(yaw_desired_angle);
@@ -203,8 +203,7 @@ class Infantry : public BaseRobot {
         jetson_state = jetson.read();
 
         // Chassis logic
-        if (drive == 'u' || (drive == 'o' && remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) ==
-                                                 Remote::SwitchState::UP)) {
+        if (drive == 'u' || (drive =='o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_S)) {
             // TODO: think about how we want to implement jetson aiming
             // des_turret_state.pitch_angle = jetson_state.desired_pitch_rads;
             // des_turret_state.yaw_angle = jetson_state.desired_yaw_rads;
@@ -212,9 +211,7 @@ class Infantry : public BaseRobot {
             des_chassis_state.vOmega = 0;
             chassis_.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
-        } else if (drive == 'd' ||
-                   (drive == 'o' &&
-                    remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::DOWN)) {
+        } else if (drive == 'd' || (drive =='o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_C)) {
             des_chassis_state.vOmega = omega_speed;
             chassis_.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
@@ -227,11 +224,9 @@ class Infantry : public BaseRobot {
         }
 
         // Shooter Logic
-        if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP ||
-            remote_.getMouseL()) {
+        if (remote_.TriggerPressed() == true || remote_.getMouseL()) {
             des_shoot_state = ShootState::SHOOT;
-        } else if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID ||
-                   shot == 'd') {
+        } else if (remote_.PAUSEToggled() == true|| shot == 'd') {
             des_shoot_state = ShootState::FLYWHEEL;
         } else {
             des_shoot_state = ShootState::OFF;
@@ -260,7 +255,7 @@ class Infantry : public BaseRobot {
         // %.2f\n", turret.getState().pitch_angle); printf("%d\n",
         // shooter.getState()); printf("v:%d\n",testmot>>VELOCITY); printf("cx:
         // %.2f\n", remote_.getChassisX()); printf("switch: %d\n",
-        // remote_.getSwitch(Remote::Switch::RIGHT_SWITCH)); printf("imu:
+        // remote_.getSwitch(DJIRemote2::Switch::RIGHT_SWITCH)); printf("imu:
         // %.2f\n", imu.getImuAngles().yaw);
         // printf("%.2f\n", encoder_.encoderMovingAverage());
         // printf("%.2f, %.2f, %.2f\n", imuAngles.roll, imuAngles.pitch, imuAngles.yaw);

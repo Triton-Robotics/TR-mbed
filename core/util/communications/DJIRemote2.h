@@ -140,6 +140,7 @@ public:
 	float getJoystickValue(Joystick joy) const;
 	float apply_deadzone(float value) const;
 	float getDialValue() const;
+	ModeSwitch getMode() const;
 
 private:
     BufferedSerial serial_;
@@ -154,7 +155,6 @@ private:
     uint64_t currentFrameTimeUs_;
     uint64_t framePeriodUs_;
 
-	ModeSwitch getMode() const;
 
     void readIncomingBytes();
     bool tryParseFrame();
