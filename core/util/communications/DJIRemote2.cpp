@@ -325,8 +325,29 @@ DJIRemote2::ModeSwitch DJIRemote2::getMode() const
     }
 }
 
-
 float DJIRemote2::getDialValue() const
 {
     return (2.0f * ((float)(data_.dial) - 364.0f) / (1684.0f - 364.0f)) - 1.0f;
 }
+
+bool DJIRemote2::TriggerPressed() const { return data_.trigger != 0;}
+
+bool DJIRemote2::CUSTLPressed() const { return data_.btnL != 0; }
+
+bool DJIRemote2::CUSTRPressed() const {	return data_.btnR != 0;}
+
+bool DJIRemote2::PAUSEPressed() const {	return data_.pause != 0;}
+
+int16_t DJIRemote2::getMouseX() const { return data_.mouseX; }
+
+int16_t DJIRemote2::getMouseY() const { return data_.mouseY; }
+
+int16_t DJIRemote2::getMouseZ() const { return data_.mouseZ; }
+
+bool DJIRemote2::getMouseL() const { return data_.mouseL; }
+
+bool DJIRemote2::getMouseR() const { return data_.mouseR; }
+
+bool DJIRemote2::keyPressed(Key key) const { return (data_.keyboard & (1 << (uint8_t)key)) != 0; }
+
+int16_t DJIRemote2::getWheel() const { return data_.mouseM; }

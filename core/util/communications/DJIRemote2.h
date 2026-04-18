@@ -60,14 +60,6 @@ public:
         LEFT_VERTICAL
     };
 
-	enum class Button
-	{
-		TRGR = 0,
-		CUSTL,
-		CUSTR,
-		PAUSE
-	};
-
 	// specifies a particular mode 
 	enum class ModeSwitch
     {
@@ -96,6 +88,51 @@ public:
         V,
         B
     };
+	
+	// check if trigger is pressed
+	bool TriggerPressed() const;
+	// check if custom left button is pressed
+	bool CUSTLPressed() const;
+	// check if custom right button is pressed
+	bool CUSTRPressed() const;
+	// check if pause button is pressed
+	bool PAUSEPressed() const;
+	
+    /**
+     * @return The current mouse x value.
+     */
+    int16_t getMouseX() const;
+
+    /**
+     * @return The current mouse y value.
+     */
+    int16_t getMouseY() const;
+
+    /**
+     * @return The current mouse z value.
+     */
+    int16_t getMouseZ() const;
+
+    /**
+     * @return The current mouse l value.
+     */
+    bool getMouseL() const;
+
+    /**
+     * @return The current mouse r value.
+     */
+    bool getMouseR() const;
+
+    /**
+     * @return `true` if the given `key` is pressed, `false` otherwise.
+     */
+    bool keyPressed(Key key) const;
+
+    /**
+     * @return the value of the wheel, between `[-STICK_MAX_VALUE, STICK_MAX_VALUE]`.
+     */
+    int16_t getWheel() const;
+
 
 private:
     BufferedSerial serial_;

@@ -91,9 +91,6 @@ int16_t Remote::getChannelInt(Channel ch) const{
     return 0;
 }
 
-
-
-
 Remote::SwitchState Remote::getSwitch(Switch sw) const{
     switch (sw){
         case Switch::LEFT_SWITCH:
