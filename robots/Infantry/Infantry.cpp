@@ -179,14 +179,26 @@ class Infantry : public BaseRobot {
         // Chassis logic — ROBOT_ORIENTED so yaw offset doesn't interfere
         if (drive == 'u' || (drive == 'o' && remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP)) {
             des_chassis_state.vOmega = 0;
+            printf("des_vW:%.3f omega_speed:%.3f drive:%c\n",
+                des_chassis_state.vOmega,
+                omega_speed,
+                drive);
             chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::ROBOT_ORIENTED);
             des_turret_state.turret_mode = AIM;
         } else if (drive == 'd' || (drive == 'o' && remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::DOWN)) {
             des_chassis_state.vOmega = omega_speed;
+            printf("des_vW:%.3f omega_speed:%.3f drive:%c\n",
+                des_chassis_state.vOmega,
+                omega_speed,
+                drive);
             chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::ROBOT_ORIENTED);
             des_turret_state.turret_mode = AIM;
         } else {
             des_chassis_state.vOmega = 0;
+            printf("des_vW:%.3f omega_speed:%.3f drive:%c\n",
+                des_chassis_state.vOmega,
+                omega_speed,
+                drive);
             chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::ROBOT_ORIENTED);
             des_turret_state.turret_mode = SLEEP;
         }
@@ -207,6 +219,13 @@ class Infantry : public BaseRobot {
 
         turret.periodic(chassis.getChassisSpeeds().vOmega * 60 / (2 * PI));
         chassis.periodic(&imuAngles);
+        static int refLogCounter = 0;
+        if (++refLogCounter >= 5) {
+            refLogCounter = 0;
+            printf("P_set:%.2f | P_buffer:%.2f\n",
+                referee_.power_heat_data.chassis_power,
+                (float)referee_.power_heat_data.chassis_power_buffer);
+        }
         shooter.periodic(referee_.power_heat_data.shooter_17mm_1_barrel_heat,
                          referee_.robot_status.shooter_barrel_heat_limit);
 
