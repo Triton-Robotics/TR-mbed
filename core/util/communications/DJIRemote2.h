@@ -50,6 +50,44 @@ public:
     uint64_t getFramePeriodUs() const;
     double getFrameRateHz() const;
 
+	// specifies a particular joystick
+	enum class Joystick
+    {
+        RIGHT_HORIZONTAL,
+        RIGHT_VERTICAL,
+        LEFT_HORIZONTAL,
+        LEFT_VERTICAL
+    };
+
+	// specifies a particular mode 
+	enum class ModeSwitch
+    {
+        MODE_C,
+        MODE_N,
+		MODE_S
+    };
+
+	// A list of the particular keys to interact with, in bit order.
+	enum class Key
+    {
+        W = 0,
+        S,
+        A,
+        D,
+        SHIFT,
+        CTRL,
+        Q,
+        E,
+        R,
+        F,
+        G,
+        Z,
+        X,
+        C,
+        V,
+        B
+    };
+
 private:
     BufferedSerial serial_;
 
