@@ -202,17 +202,19 @@ bool DJIRemote2::tryParseFrame()
         //     printf("%x ", streamBuffer_[i]);
         // }
         // printf("\n");
-        decodeFrame(streamBuffer_);
-
+        
         // TODO: make this a real test and not just a print
-        // printf("CRC: %d\n", verify_crc16_check_sum(streamBuffer_,21));
-
-        currentFrameTimeUs_ = static_cast<uint64_t>(us_ticker_read());
-        if (lastFrameTimeUs_ != 0) {
-            framePeriodUs_ = currentFrameTimeUs_ - lastFrameTimeUs_;
+        printf("CRC: %d\n", verify_crc16_check_sum(streamBuffer_,21));
+        validFrame_ = verify_crc16_check_sum(streamBuffer_,21);
+        
+        if (validFrame_) {
+            decodeFrame(streamBuffer_);
+            currentFrameTimeUs_ = static_cast<uint64_t>(us_ticker_read());
+            if (lastFrameTimeUs_ != 0) {
+                framePeriodUs_ = currentFrameTimeUs_ - lastFrameTimeUs_;
+            }
+            lastFrameTimeUs_ = currentFrameTimeUs_;
         }
-        lastFrameTimeUs_ = currentFrameTimeUs_;
-        validFrame_ = true;
 
         // Remove parsed frame
         shiftLeft(FRAME_SIZE);

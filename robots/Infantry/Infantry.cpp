@@ -260,7 +260,7 @@ class Infantry : public BaseRobot {
         // remote_.getSwitch(DJIRemote2::Switch::RIGHT_SWITCH)); printf("imu:
         // %.2f\n", imu.getImuAngles().yaw);
 
-        printf("%d\n", remote_.PAUSEToggled());
+        // printf("%d %.2f\n", remote_.PAUSEToggled(), remote_.getJoystickValue(DJIRemote2::Joystick::LEFT_VERTICAL));
     }
 
     void end_of_loop() override {}
