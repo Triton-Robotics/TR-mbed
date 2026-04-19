@@ -291,7 +291,7 @@ void DJIRemote2::shiftLeft(size_t count)
 }
 
 float DJIRemote2::apply_deadzone(float num) const{
-    const float deadzone = 0.0;
+    const float deadzone = 0.05;
     return fabs(num) < deadzone ? 0.0 : num; 
 }
 
@@ -299,13 +299,13 @@ float DJIRemote2::getJoystickValue(Joystick joy) const{
     switch (joy)
     {
         case Joystick::RIGHT_HORIZONTAL:
-            return 2 * apply_deadzone((float(data_.ch0) - 364) / (STICK_MAX_VALUE - 364))  - 1;
+            return apply_deadzone(2 * (float(data_.ch0) - 364) / (STICK_MAX_VALUE - 364) - 1);
         case Joystick::RIGHT_VERTICAL:
-            return 2 * apply_deadzone((float(data_.ch1) - 364) / (STICK_MAX_VALUE - 364)) - 1;
+            return apply_deadzone(2 * (float(data_.ch1) - 364) / (STICK_MAX_VALUE - 364) - 1);
         case Joystick::LEFT_VERTICAL:
-            return 2 * apply_deadzone((float(data_.ch2) - 364) / (STICK_MAX_VALUE - 364)) - 1;
+            return apply_deadzone(2 * (float(data_.ch2) - 364) / (STICK_MAX_VALUE - 364) - 1);
         case Joystick::LEFT_HORIZONTAL:
-            return 2 * apply_deadzone((float(data_.ch3) - 364) / (STICK_MAX_VALUE - 364)) - 1;
+            return apply_deadzone(2 * (float(data_.ch3) - 364) / (STICK_MAX_VALUE - 364) - 1);
     }
     return 0;
 }
@@ -337,17 +337,23 @@ bool DJIRemote2::CUSTLPressed() const { return data_.btnL != 0; }
 bool DJIRemote2::CUSTLToggled() const {	
 	static bool lastState = false;
 	bool currentState = CUSTLPressed();
-	bool toggled = (currentState != lastState) && currentState;
+    static bool toggled = false;
+	if (currentState != lastState && currentState){
+        toggled = !toggled;
+    }
 	lastState = currentState;
 	return toggled;
 }
 
 bool DJIRemote2::CUSTRPressed() const { return data_.btnR != 0; }
 
-bool DJIRemote2::CUSTRToggled() const {	
+bool DJIRemote2::CUSTRToggled() const {
 	static bool lastState = false;
 	bool currentState = CUSTRPressed();
-	bool toggled = (currentState != lastState) && currentState;
+	static bool toggled = false;
+	if (currentState != lastState && currentState){
+        toggled = !toggled;
+    }
 	lastState = currentState;
 	return toggled;
 }
@@ -357,7 +363,10 @@ bool DJIRemote2::PAUSEPressed() const {	return data_.pause != 0;}
 bool DJIRemote2::PAUSEToggled() const {	
 	static bool lastState = false;
 	bool currentState = PAUSEPressed();
-	bool toggled = (currentState != lastState) && currentState;
+	static bool toggled = false;
+	if (currentState != lastState && currentState){
+        toggled = !toggled;
+    }
 	lastState = currentState;
 	return toggled;
 }
