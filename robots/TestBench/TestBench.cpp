@@ -22,9 +22,7 @@ PID::config test_motor_pos_PID = {1, 0, 0};
 //Constants for ACS712 and M2006 motor
 const float V_REF = 3.3f; // Reference voltage for AnalogIn
 const float SENSOR_VCC = 5.0f; // Voltage supply for ACS712 sensor
-const float SENSITIVITY = 0.066f; //185mV/A for 30A model
-const float KT_M2006 = 0.18f; // Torque constant for M2006 motor, in Nm/A
-const float KT_M3508 = 0.30f; // Torque constant for M3508 motor, in Nm/A
+const float SENSITIVITY = 0.185f; //185mV/A for 5A model
 bool safety_tripped = false;
 
 
@@ -99,7 +97,7 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
     }
     
     calibrated_offset = sum / samples;
-    printf("Offset voltage: %.2f V\n", calibrated_offset);
+    printf("Offset voltage: %.4f V\n", calibrated_offset);
 
     // Print headers for the spreadsheet
     printf("\nPower\tVoltage\tCurrent\tTorque\n");
@@ -111,9 +109,9 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
     // 1. Check Safety Latch First
     if (safety_tripped) {
         motor1.setPower(0); 
-        motor2.setPower(0);
-        motor3.setPower(0);
-        motor4.setPower(0);
+        // motor2.setPower(0);
+        // motor3.setPower(0);
+        // motor4.setPower(0);
         // We don't return here yet because we still want to see the 
         // Current/Voltage readings even if the motor is killed.
     } 
@@ -127,9 +125,9 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
             //     }
             // }
             motor1.setPower(output_power), 
-            motor2.setPower(output_power),
-            motor3.setPower(output_power),
-            motor4.setPower(output_power);
+            // motor2.setPower(output_power),
+            // motor3.setPower(output_power),
+            // motor4.setPower(output_power);
             current_counter++;
             if (current_counter > 100 && output_power <15000){
                 output_power+=10;
@@ -139,50 +137,48 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
         } 
         else if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID) {
             motor1.setPower(500);
-            motor2.setPower(500);
-            motor3.setPower(500);
-            motor4.setPower(500);
+            // motor2.setPower(500);
+            // motor3.setPower(500);
+            // motor4.setPower(500);
         } 
         else {
             motor1.setPower(0);
-            motor2.setPower(0);
-            motor3.setPower(0);
-            motor4.setPower(0);
+            // motor2.setPower(0);
+            // motor3.setPower(0);
+            // motor4.setPower(0);
 
             output_power = 0; // Reset instead of flashing
         }
     }
 
-    // 3. Sensor Calculations
+    // Sensor Calculations
     voltage = ain.read() * V_REF;
     current_amps = (voltage - calibrated_offset) / SENSITIVITY;
-    display_current = current_amps; 
-    // 4. Low Pass Filter (The "Phase Lag" implementation!)
-    // float alpha = 0.1f; 
-    // filtered_current = alpha * current_amps + (1.0f - alpha) * filtered_current;
-    
-    // display_current = filtered_current;
+   //Low Pass Filter to reduce noise 
+    float alpha = 0.1f;
+    filtered_current = alpha * current_amps + (1.0f - alpha) * filtered_current;
+    display_current = filtered_current;
 
-    // 5. Update Safety Latch
+    // Apply deadzone for display purposes
+    if (fabsf(display_current) < 0.1f) {
+    display_current = 0.0f;
+}
+
+    //Current Limter
     if (fabsf(display_current) > 20.5f) { 
         safety_tripped = true;
         motor1.setPower(0);
-        motor2.setPower(0);
-        motor3.setPower(0);
-        motor4.setPower(0);
+        // motor2.setPower(0);
+        // motor3.setPower(0);
+        // motor4.setPower(0);
         printf("!!! SAFETY TRIGGERED: %.2f A !!!\n", display_current);
         return; // Exit this loop immediately
     }
 
-    // // 6. Deadzone & Torque
-    // if(abs(display_current) < 0.12f) { 
-    //     display_current = 0.0f;
-    // }
-
-    // 7. Spreadsheet-Ready Printing
+   //Printing Values for Spreadsheet
     static int count = 0;
     if (count++ % 100 == 0) { 
-        printf("%d\t%.3f\t%.3f\t%d\n", output_power, voltage, display_current, motor1.getData(TORQUE));
+        printf("%d\t%.4f\t%.4f\t%d\n", output_power, voltage, display_current, motor1.getData(TORQUE));
     }
 }
 
