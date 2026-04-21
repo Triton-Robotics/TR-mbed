@@ -22,7 +22,7 @@ PID::config test_motor_pos_PID = {1, 0, 0};
 //Constants for ACS712 and M2006 motor
 const float V_REF = 3.3f; // Reference voltage for AnalogIn
 const float SENSOR_VCC = 5.0f; // Voltage supply for ACS712 sensor
-const float SENSITIVITY = 0.185f; //185mV/A for 5A model
+const float SENSITIVITY = 0.066f; //185mV/A for 30A model
 const float KT_M2006 = 0.18f; // Torque constant for M2006 motor, in Nm/A
 const float KT_M3508 = 0.30f; // Torque constant for M3508 motor, in Nm/A
 bool safety_tripped = false;
@@ -51,42 +51,39 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
         : BaseRobot(config),
           // clang-format off
         motor1(DJIMotor::config{
-            1,
-            CANHandler::CANBUS_2,
-            M3508, 
-            "Test motor",
-            test_motor_vel_PID,
-            test_motor_pos_PID
-        }), motor2(DJIMotor::config{
-            2,
-            CANHandler::CANBUS_2,
-            M3508, 
-            "Test motor",
-            test_motor_vel_PID,
-            test_motor_pos_PID
-        }), motor3(DJIMotor::config{
-            4,
-            CANHandler::CANBUS_2,
-            M3508, 
-            "Test motor",
-            test_motor_vel_PID,
-            test_motor_pos_PID
-        }), motor4(DJIMotor::config{
-            3,
+            7,
             CANHandler::CANBUS_2,
             M3508, 
             "Test motor",
             test_motor_vel_PID,
             test_motor_pos_PID
         }), 
+        //motor2(DJIMotor::config{
+        //     2,
+        //     CANHandler::CANBUS_2,
+        //     M3508, 
+        //     "Test motor",
+        //     test_motor_vel_PID,
+        //     test_motor_pos_PID
+        // }), motor3(DJIMotor::config{
+        //     4,
+        //     CANHandler::CANBUS_2,
+        //     M3508, 
+        //     "Test motor",
+        //     test_motor_vel_PID,
+        //     test_motor_pos_PID
+        // }), motor4(DJIMotor::config{
+        //     3,
+        //     CANHandler::CANBUS_2,
+        //     M3508, 
+        //     "Test motor",
+        //     test_motor_vel_PID,
+        //     test_motor_pos_PID
+        // }), 
         ain(PA_7)
         // clang-format on        
     {}
 
-    //Torque Calculation From ACS712 Current Sensor
-    float calculateTorque(float amps) {
-        return amps * KT_M3508;
-    }
 
     ~TestBench() {}
 
@@ -134,7 +131,7 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
             motor3.setPower(output_power),
             motor4.setPower(output_power);
             current_counter++;
-            if (current_counter > 100 && output_power <1700){
+            if (current_counter > 100 && output_power <15000){
                 output_power+=10;
                 current_counter = 0;
             }
@@ -167,7 +164,7 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
     // display_current = filtered_current;
 
     // 5. Update Safety Latch
-    if (fabsf(display_current) > 4.8f) { 
+    if (fabsf(display_current) > 20.5f) { 
         safety_tripped = true;
         motor1.setPower(0);
         motor2.setPower(0);
@@ -185,7 +182,7 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
     // 7. Spreadsheet-Ready Printing
     static int count = 0;
     if (count++ % 100 == 0) { 
-        printf("%d\t%.3f\t%.2f\t%.4f\n", output_power, voltage, display_current, motor1.getData(TORQUE));
+        printf("%d\t%.3f\t%.3f\t%d\n", output_power, voltage, display_current, motor1.getData(TORQUE));
     }
 }
 
