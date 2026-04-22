@@ -22,7 +22,7 @@ PID::config test_motor_pos_PID = {1, 0, 0};
 //Constants for ACS712 and M2006 motor
 const float V_REF = 3.3f; // Reference voltage for AnalogIn
 const float SENSOR_VCC = 5.0f; // Voltage supply for ACS712 sensor
-const float SENSITIVITY = 0.185f; //185mV/A for 5A model
+const float SENSITIVITY = 0.066f; //66mV/A for 30A model
 bool safety_tripped = false;
 
 
@@ -100,7 +100,7 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
     printf("Offset voltage: %.4f V\n", calibrated_offset);
 
     // Print headers for the spreadsheet
-    printf("\nPower\tVoltage\tCurrent\tTorque\n");
+    printf("\nPower\tVoltage\tRawCurrent\tFiltCurrent\tTorque\n");
 
     curr_time = us_ticker_read(); // Initialize current time for remote control logic
     }
@@ -118,12 +118,7 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
     else {
         // Remote Control Logic
         if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP) {
-            // if (curr_time - us_ticker_read() > 10000000) { // Every 1 second
-            //     curr_time = us_ticker_read();
-            //     if (output_power < 8000) {
-            //         output_power = output_power + 100;
-            //     }
-            // }
+    
             motor1.setPower(output_power), 
             // motor2.setPower(output_power),
             // motor3.setPower(output_power),
@@ -153,7 +148,7 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
 
     // Sensor Calculations
     voltage = ain.read() * V_REF;
-    current_amps = (voltage - calibrated_offset) / SENSITIVITY;
+    current_amps = -(voltage - calibrated_offset) / SENSITIVITY;
    //Low Pass Filter to reduce noise 
     float alpha = 0.1f;
     filtered_current = alpha * current_amps + (1.0f - alpha) * filtered_current;
@@ -165,7 +160,7 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
 }
 
     //Current Limter
-    if (fabsf(display_current) > 20.5f) { 
+    if (fabsf(display_current) > 25.5f) { 
         safety_tripped = true;
         motor1.setPower(0);
         // motor2.setPower(0);
@@ -178,7 +173,7 @@ float calibrated_offset = 2.5f; // Initial guess for offset voltage, will be cal
    //Printing Values for Spreadsheet
     static int count = 0;
     if (count++ % 100 == 0) { 
-        printf("%d\t%.4f\t%.4f\t%d\n", output_power, voltage, display_current, motor1.getData(TORQUE));
+        printf("%d\t%.4f\t%.4f\t%.4f\t%d\n", output_power, voltage, current_amps, display_current, motor1.getData(TORQUE));
     }
 }
 
