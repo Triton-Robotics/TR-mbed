@@ -2,7 +2,7 @@
 #include "util/algorithms/general_functions.h"
 #include "ResetReason.h"
 
-#include "subsystems/ChassisSubsystem.h"
+#include "subsystems/OmniWheelSubsystem.h"
 #include "subsystems/ShooterSubsystem.h"
 #include "subsystems/TurretSubsystem.h"
 
@@ -91,19 +91,20 @@ ShooterSubsystem::config shooter_config = {
     CANHandler::CANBUS_2,
     true
 };
-// ChassisSubsystem::Config chassis_config = {
-//     1,      // left_front_can_id
-//     2,      // right_front_can_id
-//     3,      // left_back_can_id
-//     4,      // right_back_can_id
-//     FL_VEL_CONFIG,
-//     FR_VEL_CONFIG,
-//     BL_VEL_CONFIG,
-//     BR_VEL_CONFIG,
-//     0.22617,  // radius
-//     0.065,    // speed_pid_ff_ks
-//     1700,     // yaw_initial_offset_ticks
-// };
+OmniWheelSubsystem::Config chassis_config = {
+    1,      // left_front_can_id
+    2,      // right_front_can_id
+    4,      // left_back_can_id
+    3,      // right_back_can_id
+    FL_VEL_CONFIG,
+    FR_VEL_CONFIG,
+    BL_VEL_CONFIG,
+    BR_VEL_CONFIG,
+    0.22617,  // radius
+    0.065,    // speed_pid_ff_ks
+    86,     // yaw_initial_offset_ticks
+    120,
+};
 
 // State variables
 ChassisSpeeds des_chassis_state;
@@ -117,18 +118,12 @@ float yaw_desired_angle = 0.0;
 float dt_global = 0.0;
 unsigned long timer = 0;
 
-// TODOS make example directory with simple examples of how to use motors /
-// subsystems as reference for testbench
-
 IMU::EulerAngles imuAngles;
 class Infantry : public BaseRobot {
   public:
     I2C i2c_;
-    // BNO055 imu_;
     ISM330 imu_;
-    MA4 encoder_;  // Absolute encoder for yaw position
-    // TODO: put the BufferedSerial inside Jetson (idk if we wanna do that tho
-    // for SPI)
+    MA4 encoder_;
     BufferedSerial jetson_raw_serial;
     Jetson jetson;
 
@@ -137,13 +132,13 @@ class Infantry : public BaseRobot {
 
     TurretSubsystem turret_;
     ShooterSubsystem shooter_;
-    ChassisSubsystem chassis_;
+    OmniWheelSubsystem chassis_;
 
     bool imu_initialized{false};
 
     Infantry(Config &config)
         : BaseRobot(config),
-          // clang-format off
+        // clang-format off
         i2c_(IMU_I2C_SDA, IMU_I2C_SCL), 
         imu_(i2c_, 0x6B),
         encoder_(PB_4),
@@ -151,21 +146,8 @@ class Infantry : public BaseRobot {
         jetson(jetson_raw_serial),
         turret_(turret_config, imu_),
         shooter_(shooter_config),
-
-        // TODO add passing in individual PID objects for the motors
-        chassis_(ChassisSubsystem::Config{
-            1,      // left_front_can_id
-            2,      // right_front_can_id
-            4,      // left_back_can_id
-            3,      // right_back_can_id
-            0.22617,  // radius
-            0.065,    // speed_pid_ff_ks
-            86,     // yaw_initial_offset_ticks
-            imu_,
-            &encoder_   
-        }
-        )
-    // clang-format on
+        chassis_(chassis_config, &encoder_)
+        // clang-format on
     {
         pin_mode(IMU_I2C_SCL, PinMode::OpenDrainPullUp);
         pin_mode(IMU_I2C_SDA, PinMode::OpenDrainPullUp);
@@ -210,16 +192,18 @@ class Infantry : public BaseRobot {
             // des_turret_state.yaw_angle = jetson_state.desired_yaw_rads;
 
             des_chassis_state.vOmega = 0;
-            chassis_.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
+            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
         } else if (drive == 'd' ||
                    (drive == 'o' &&
                     remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::DOWN)) {
             des_chassis_state.vOmega = omega_speed;
-            chassis_.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
+            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
-        } else {
-            chassis_.setWheelPower({0, 0, 0, 0});
+        } 
+        else 
+        {
+            chassis_.setChassisSpeeds({0, 0, 0});
             des_turret_state.turret_mode = TurretState::SLEEP;
             des_turret_state.yaw_angle_degs = turret_.getState().yaw_angle_degs;
             yaw_desired_angle = turret_.getState().yaw_angle_degs;
