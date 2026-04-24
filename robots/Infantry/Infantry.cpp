@@ -3,6 +3,7 @@
 #include "ResetReason.h"
 
 #include "subsystems/OmniWheelSubsystem.h"
+#include "subsystems/OmniWheelSubsystem.h"
 #include "subsystems/ShooterSubsystem.h"
 #include "subsystems/TurretSubsystem.h"
 
@@ -191,15 +192,16 @@ class Infantry : public BaseRobot {
         // Chassis logic
         if (drive == 'u' || (drive == 'o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_S)) {
             des_chassis_state.vOmega = 0;
-            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::YAW_ORIENTED);
+            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
             referee_.is_aligned = false;
             referee_.is_cv_on = false;
             referee_.is_spinning = false;
         } else if (drive == 'd' ||
                    (drive == 'o' &&
-                    remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::DOWN)) {
-            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::BEYBLADE);
+                    remote_.getMode() == DJIRemote2::ModeSwitch::MODE_C)) {
+            des_chassis_state.vOmega = omega_speed;
+            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
             referee_.is_aligned = false;
             referee_.is_cv_on = false;
