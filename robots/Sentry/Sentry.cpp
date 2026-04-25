@@ -212,6 +212,8 @@ class Sentry : public BaseRobot {
             des_chassis_state.vOmega = 0;
             chassis_.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
+            stm_state.activate_CV = 0;
+            stm_state.calibration = 0;
         } else if (drive == 'd' ||
                    (drive == 'o' &&
                     remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::DOWN)) {
@@ -226,21 +228,25 @@ class Sentry : public BaseRobot {
                 // des_turret_state.pitch_angle_degs = turret_.getState().pitch_angle_degs;
             } else {
                 des_chassis_state.vX = jetson_state.desired_x_vel;
-                des_chassis_state.vY = jetson_state.desired_y_vel;
+                des_chassis_state.vY = -jetson_state.desired_y_vel;
                 des_chassis_state.vOmega = jetson_state.desired_angular_vel;
 
                 des_turret_state.turret_mode = TurretState::AIM;
                 des_turret_state.yaw_angle_degs = jetson_state.desired_yaw_rads * (180 / M_PI);
-                des_turret_state.pitch_angle_degs = jetson_state.desired_pitch_rads * (180 / M_PI);
+                des_turret_state.pitch_angle_degs = -jetson_state.desired_pitch_rads * (180 / M_PI);
             }
             chassis_.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
+            stm_state.activate_CV = 1;
+            stm_state.calibration = 0;
         } else {
             chassis_.setWheelPower({0, 0, 0, 0});
             des_turret_state.turret_mode = TurretState::SLEEP;
             des_turret_state.yaw_angle_degs = turret_.getState().yaw_angle_degs;
             yaw_desired_angle = turret_.getState().yaw_angle_degs;
             des_turret_state.pitch_angle_degs = 0;
+            stm_state.activate_CV = 0;
+            stm_state.calibration = 1;
         }
 
         // Shooter Logic
@@ -288,8 +294,8 @@ class Sentry : public BaseRobot {
     unsigned int main_loop_dt_ms() override { return 2; } // 500 Hz loop
 
     void set_jetson_state() {
-        stm_state.game_state = 4;
-        stm_state.robot_hp = 200;
+        stm_state.game_state = 4;// referee_.get_game_progress();
+        stm_state.robot_hp = referee_.get_remain_hp();
 
         stm_state.chassis_x_velocity = chassis_.getChassisSpeeds().vX;
         stm_state.chassis_y_velocity = chassis_.getChassisSpeeds().vY;
@@ -298,7 +304,7 @@ class Sentry : public BaseRobot {
         // TODO angle_degrees and angle_radians
         stm_state.yaw_angle_rads = degreesToRadians(turret_.getState().yaw_angle_degs);
         stm_state.yaw_velocity = degreesToRadians(turret_.getState().yaw_velo_rad_s);
-        stm_state.pitch_angle_rads = degreesToRadians(turret_.getState().pitch_angle_degs);
+        stm_state.pitch_angle_rads = -degreesToRadians(turret_.getState().pitch_angle_degs);
         stm_state.pitch_velocity = degreesToRadians(turret_.getState().pitch_velo_rad_s);
     }
 };
