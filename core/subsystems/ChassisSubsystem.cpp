@@ -351,7 +351,7 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
     if (mode == REVERSE_YAW_ORIENTED)
     {
         // printf("%f\n", double(yaw->getData(ANGLE)));
-        yawCurrent = 360 - encoder->encoderMovingAverage();
+        yawCurrent = encoder->encoderMovingAverage();
         if (yawCurrent < 0.0) {
             yawCurrent += 360.0;
         }
@@ -366,7 +366,7 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
     else if (mode == YAW_ORIENTED)
     {
         // printf("%f\n", double(yaw->getData(ANGLE)));
-        yawCurrent = 360 - encoder->encoderMovingAverage();
+        yawCurrent = encoder->encoderMovingAverage();
         if (yawCurrent < 0.0) {
             yawCurrent += 360.0;
         }
@@ -384,7 +384,7 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
     }
     else if (mode == ODOM_ORIENTED) 
     {
-        yawCurrent = 360 - encoder->encoderMovingAverage();
+        yawCurrent = encoder->encoderMovingAverage();
         if (yawCurrent < 0.0) {
             yawCurrent += 360.0;
         }

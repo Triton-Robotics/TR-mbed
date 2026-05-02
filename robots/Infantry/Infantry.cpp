@@ -81,8 +81,8 @@ TurretSubsystem::config turret_config = {
 ShooterSubsystem::config shooter_config = {
     ShooterSubsystem::BURST,
     0,
-    1,
     2,
+    4,
     6,
     FLYWHEEL_L_PID,
     FLYWHEEL_R_PID,
@@ -156,11 +156,11 @@ class Infantry : public BaseRobot {
         chassis_(ChassisSubsystem::Config{
             1,      // left_front_can_id
             2,      // right_front_can_id
-            4,      // left_back_can_id
-            3,      // right_back_can_id
+            3,      // left_back_can_id
+            4,      // right_back_can_id
             0.22617,  // radius
             0.065,    // speed_pid_ff_ks
-            86,     // yaw_initial_offset_ticks
+            240,     // yaw_initial_offset_ticks
             imu_,
             &encoder_   
         }
@@ -186,7 +186,7 @@ class Infantry : public BaseRobot {
         max_linear_vel = 1.24 + 0.0513 * chassis_.power_limit +
                          0.000216 * (chassis_.power_limit * chassis_.power_limit);
         des_chassis_state.vX = jy * max_linear_vel;
-        des_chassis_state.vY = jx * max_linear_vel;
+        des_chassis_state.vY = -jx * max_linear_vel;
 
         // Turret from remote
         yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * dt_us / 1000000;
@@ -262,7 +262,7 @@ class Infantry : public BaseRobot {
         // %.2f\n", remote_.getChassisX()); printf("switch: %d\n",
         // remote_.getSwitch(Remote::Switch::RIGHT_SWITCH)); printf("imu:
         // %.2f\n", imu.getImuAngles().yaw);
-        // printf("%.2f\n", encoder_.encoderMovingAverage());
+        printf("yp %.2f ", encoder_.encoderMovingAverage());
         // printf("%.2f, %.2f, %.2f\n", imuAngles.roll, imuAngles.pitch, imuAngles.yaw);
     }
 
@@ -279,10 +279,10 @@ class Infantry : public BaseRobot {
         stm_state.chassis_rotation = chassis_.getChassisSpeeds().vOmega;
 
         // TODO angle_degrees and angle_radians
-        stm_state.yaw_angle_rads = degreesToRadians(turret_.getState().yaw_angle_degs);
-        stm_state.yaw_velocity = degreesToRadians(turret_.getState().yaw_velo_rad_s);
-        stm_state.pitch_angle_rads = degreesToRadians(turret_.getState().pitch_angle_degs);
-        stm_state.pitch_velocity = degreesToRadians(turret_.getState().pitch_velo_rad_s);
+        // stm_state.yaw_angle_rads = degreesToRadians(turret_.getState().yaw_angle_degs);
+        // stm_state.yaw_velocity = degreesToRadians(turret_.getState().yaw_velo_rad_s);
+        // stm_state.pitch_angle_rads = degreesToRadians(turret_.getState().pitch_angle_degs);
+        // stm_state.pitch_velocity = degreesToRadians(turret_.getState().pitch_velo_rad_s);
     }
 };
 
