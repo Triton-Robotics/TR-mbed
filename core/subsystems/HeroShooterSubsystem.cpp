@@ -4,21 +4,21 @@
 HeroShooterSubsystem::HeroShooterSubsystem(config cfg):
     flywheelL({
         cfg.flywheelL_id,
-        cfg.canBus,
+        cfg.canBusTopFeed,
         M3508,
         "Left Flywheel",
         cfg.flywheelL_PID
     }),
     flywheelR({
         cfg.flywheelR_id,
-        cfg.canBus,
+        cfg.canBusTopFeed,
         M3508,
         "Right Flywheel",
         cfg.flywheelR_PID
     }),
     indexer({
         cfg.indexer_id,
-        cfg.canBus,
+        cfg.canBusIndexer,
         M3508,
         "Indexer",
         cfg.indexer_PID_vel,
@@ -26,7 +26,7 @@ HeroShooterSubsystem::HeroShooterSubsystem(config cfg):
     }),
     feeder({
         cfg.feeder_id,
-        cfg.canBus,
+        cfg.canBusTopFeed,
         M2006,
         "Feeder",
         cfg.feeder_PID
@@ -56,8 +56,8 @@ void HeroShooterSubsystem::periodic(int curr_heat, int heat_limit)
 
     if (shoot == OFF) 
     {
-        flywheelL.setPower(0);
-        flywheelR.setPower(0);
+        flywheelL.setSpeed(0);
+        flywheelR.setSpeed(0);
         indexer.setPower(0);
         shootReady = true;
     }

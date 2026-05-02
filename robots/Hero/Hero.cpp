@@ -10,38 +10,101 @@
 #include "util/motor/DJIMotor.h"
 #include "util/peripherals/imu/BNO055.h"
 #include "util/peripherals/encoder/MA4.h"
+#include "util/peripherals/imu/ISM330.h"
 
 #include <algorithm>
+#include <pinmap.h>
+#include <us_ticker_api.h>
+#include <us_ticker_defines.h>
 
 constexpr auto IMU_I2C_SDA = PB_7;
 constexpr auto IMU_I2C_SCL = PB_8;
 constexpr auto IMU_RESET = PA_8;
 
 constexpr int pitch_zero_offset_ticks = 1500;
-constexpr float PITCH_LOWER_BOUND{-32.0};
-constexpr float PITCH_UPPER_BOUND{35.0};
-double movavg = 0.0;
+constexpr float PITCH_LOWER_BOUND{-22.0};
+constexpr float PITCH_UPPER_BOUND{20.0};
 
 constexpr float JOYSTICK_YAW_SENSITIVITY_DPS = 600;
 constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 300;
 
+// Mouse sensitivity initialized
+constexpr float MOUSE_SENSITIVITY_YAW_DPS = 10.0;
+constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 10.0;
 
-PID::config yaw_vel_PID = {350, 0.5, 2.5, 32000, 2000};
-PID::config yaw_pos_PID = {0.5, 0, 0, 90, 2};
-PID::config pitch_vel_PID = {500,0.8,0, 32000, 2000};
-PID::config pitch_pos_PID = {1.5,0.0005,0.05, 30, 2};
+constexpr PID::config YAW_VEL_PID     = {181, 3.655 * 10e-3, 4.51 * 2.25, 32000, 1000};
+constexpr PID::config YAW_POS_PID     = {1, 0, 0, 90, 2};
+const float yaw_static_friction       = -150;       // We multiply it by dir
+const float yaw_kinetic_friction      = 0;       // We multiply this by yawvelo
 
+constexpr PID::config PITCH_VEL_PID   = {173.8994, 4.898 * 10e-9, 12.474 * 10, 16000, 1000}; //{25, 0.001, 5, 16000, 1000};
+constexpr PID::config PITCH_POS_PID   = {1, 0, 0,30,2}; //{1, 0, 0, 30, 2};
+const float pitch_gravity_feedforward = -500;    // We multiply this by cos(angle)
+const float pitch_static_friction     = 635.0 / 5;       // We multiply it by dir
+const float pitch_kinetic_friction    = 0; //5.5;     // We multiply this by pitchvelo
 
-PID::config fl_vel_config = {3, 0, 0};
-PID::config fr_vel_config = {3, 0, 0};
-PID::config bl_vel_config = {3, 0, 0};
-PID::config br_vel_config = {3, 0, 0};
+constexpr PID::config FL_VEL_CONFIG = {3, 0, 0};
+constexpr PID::config FR_VEL_CONFIG = {3, 0, 0};
+constexpr PID::config BL_VEL_CONFIG = {3, 0, 0};
+constexpr PID::config BR_VEL_CONFIG = {3, 0, 0};
 
-PID::config flywheelL_PID = {7.1849, 0.000042634, 0};
-PID::config flywheelR_PID = {7.1849, 0.000042634, 0};
-PID::config feeder_PID = {4, 0, 1};
-PID::config indexer_PID_vel = {2.7, 0.001, 0};
-PID::config indexer_PID_pos = {0.1,0,0.001};
+constexpr PID::config FLYWHEEL_L_PID = {7.1849, 0.000042634, 0};
+constexpr PID::config FLYWHEEL_R_PID = {7.1849, 0.000042634, 0};
+constexpr PID::config FEEDER_PID = {4, 0, 1};
+constexpr PID::config INDEXER_PID_VEL = {2.7, 0.001, 0};
+constexpr PID::config INDEXER_PID_POS = {0.1,0,0.001};
+
+// Config variables
+TurretSubsystem::config turret_config = {
+    7,
+    M3508,
+    8,
+    M3508,
+    pitch_zero_offset_ticks,
+    YAW_VEL_PID,
+    YAW_POS_PID,
+    PITCH_VEL_PID,
+    PITCH_POS_PID,
+    yaw_static_friction,
+    yaw_kinetic_friction,
+    pitch_gravity_feedforward,
+    pitch_static_friction,
+    pitch_kinetic_friction,
+    CANHandler::CANBUS_1,
+    CANHandler::CANBUS_2,
+    -1,
+    (1.0 / 3.0),
+    PITCH_LOWER_BOUND,
+    PITCH_UPPER_BOUND
+};
+HeroShooterSubsystem::config shooter_config = {
+    0,
+    4,
+    5,
+    6,
+    1,
+    FLYWHEEL_L_PID,
+    FLYWHEEL_R_PID,
+    FEEDER_PID,
+    INDEXER_PID_VEL,
+    INDEXER_PID_POS,
+    CANHandler::CANBUS_2,
+    CANHandler::CANBUS_1,
+    true
+};
+// ChassisSubsystem::Config chassis_config = {
+//     1,      // left_front_can_id
+//     2,      // right_front_can_id
+//     3,      // left_back_can_id
+//     4,      // right_back_can_id
+//     FL_VEL_CONFIG,
+//     FR_VEL_CONFIG,
+//     BL_VEL_CONFIG,
+//     BR_VEL_CONFIG,
+//     0.22617,  // radius
+//     0.065,    // speed_pid_ff_ks
+//     1700,     // yaw_initial_offset_ticks
+// };
 
 // State variables
 ChassisSpeeds des_chassis_state;
@@ -52,188 +115,138 @@ int remoteTimer = 0;
 
 float pitch_desired_angle = 0.0;
 float yaw_desired_angle = 0.0;
+float dt_global = 0.0;
+unsigned long timer = 0;
 
-// TODOS make example directory with simple examples of how to use motors / subsystems as reference for testbench
+// TODOS make example directory with simple examples of how to use motors / 
+// subsystems as reference for testbench
 
+IMU::EulerAngles imuAngles;
 class Hero : public BaseRobot {
 public:
-
     I2C i2c_;
-    BNO055 imu_;
+    // BNO055 imu_;
+    ISM330 imu_;
     MA4 encoder_;  // Absolute encoder for yaw position
-
-    // TODO: put the BufferedSerial inside Jetson (idk if we wanna do that tho for SPI)
+    // TODO: put the BufferedSerial inside Jetson (idk if we wanna do that tho 
+    // for SPI)
     BufferedSerial jetson_raw_serial;
     Jetson jetson;
 
     Jetson::WriteState stm_state;
     Jetson::ReadState jetson_state;
 
-    TurretSubsystem turret;
-    HeroShooterSubsystem shooter;
-    ChassisSubsystem chassis;
+    TurretSubsystem turret_;
+    HeroShooterSubsystem shooter_;
+    ChassisSubsystem chassis_;
 
     bool imu_initialized{false};
 
-    Hero(Config &config) : 
-        BaseRobot(config),     
+    Hero(Config &config) 
+    : BaseRobot(config),     
     i2c_(IMU_I2C_SDA, IMU_I2C_SCL),
-    imu_(i2c_, IMU_RESET, MODE_IMU),
-    encoder_(PA_7),
+    imu_(i2c_, 0x6B),
+    encoder_(PB_4),
     jetson_raw_serial(PC_12, PD_2, 115200), // TODO: check higher baud to see if still works
     jetson(jetson_raw_serial),
-    turret(TurretSubsystem::config{
-        4,
-        GM6020,
-        7,
-        GM6020,
-        pitch_zero_offset_ticks,
-        yaw_vel_PID,
-        yaw_pos_PID,
-        pitch_vel_PID,
-        pitch_pos_PID,
-        CANHandler::CANBUS_1,
-        CANHandler::CANBUS_2,
-        -1,
-        imu_,
-        PITCH_LOWER_BOUND,
-        PITCH_UPPER_BOUND
-    }    
-    ),
+    turret_(turret_config, imu_),
+    shooter_(shooter_config),
 
-    shooter(HeroShooterSubsystem::config{
-        0,
-        1,
-        2,
-        7,
-        5,
-        flywheelL_PID,
-        flywheelR_PID,
-        feeder_PID,
-        indexer_PID_vel,
-        indexer_PID_pos,
-        CANHandler::CANBUS_2,
-        false
-    }),
-
-    chassis(ChassisSubsystem::Config{
-        1,      // left_front_can_id
-        2,      // right_front_can_id
-        3,      // left_back_can_id
-        4,      // right_back_can_id
-        0.22617,  // radius
-        0.065,    // speed_pid_ff_ks
-        &turret.yaw,  // yaw_motor
-        6500,     // yaw_initial_offset_ticks out of 8192
-        imu_,
-        &encoder_  // external encoder
-    }
+    chassis_(ChassisSubsystem::Config{
+            1,      // left_front_can_id
+            2,      // right_front_can_id
+            3,      // left_back_can_id
+            4,      // right_back_can_id
+            0.22617,  // radius
+            0.065,    // speed_pid_ff_ks
+            40,     // yaw_initial_offset_ticks
+            imu_,
+            &encoder_   
+        }
     )
-    {}
+    // clang-format on
+    {
+        pin_mode(IMU_I2C_SCL, PinMode::OpenDrainPullUp);
+        pin_mode(IMU_I2C_SDA, PinMode::OpenDrainPullUp);
+    }
 
     ~Hero() {}
 
-    void init() override 
-    {
-        
+    void init() override {
+        timer = us_ticker_read();
+        imu_.begin(1, 0);
     }
     
     void periodic(unsigned long dt_us) override {
         // TODO this should be threaded inside imu instead
-        IMU::EulerAngles imuAngles = imu_.read();
-
-        if (!imu_initialized){
-            IMU::EulerAngles angles = imu_.getImuAngles();
-            if (angles.pitch == 0.0 && angles.yaw == 0.0 && angles.roll == 0.0) {
-                return;
-            }
-
-            yaw_desired_angle = angles.yaw;
-            imu_initialized = true;
-        }
-
-
-        // Chassis + Turret Logic
-        // TODO migrate away from remote chassis/pitch/yaw specific code
-        des_chassis_state.vX = remote_.getChannel(Remote::Channel::LEFT_VERTICAL);
-        des_chassis_state.vY = remote_.getChannel(Remote::Channel::LEFT_HORIZONTAL);
+        imu_.mahonyUpdateIMU(dt_us / 1000000.0);
+        imuAngles = imu_.getImuAngles();
+        // TODO: use this in code correctly to drive faster
+        max_linear_vel = 1.24 + 0.0513 * chassis_.power_limit +
+                         0.000216 * (chassis_.power_limit * chassis_.power_limit);
+        des_chassis_state.vX = jy * max_linear_vel;
+        des_chassis_state.vY = -jx * max_linear_vel;
 
         // Turret from remote
-        float joystick_yaw = remote_.getChannel(Remote::Channel::RIGHT_HORIZONTAL);
-        yaw_desired_angle -= joystick_yaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
+        yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * dt_us / 1000000;
+        yaw_desired_angle -= jyaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
         yaw_desired_angle = capAngle(yaw_desired_angle);
         des_turret_state.yaw_angle_degs = yaw_desired_angle;
-        
-        float joystick_pitch = remote_.getChannel(Remote::Channel::RIGHT_VERTICAL);
-        pitch_desired_angle += joystick_pitch * JOYSTICK_PITCH_SENSITIVITY_DPS * dt_us / 1000000;
+
+        pitch_desired_angle -= mpitch * MOUSE_SENSITIVITY_PITCH_DPS * dt_us / 1000000;
+        pitch_desired_angle += jpitch * JOYSTICK_PITCH_SENSITIVITY_DPS * dt_us / 1000000;
         pitch_desired_angle = std::clamp(pitch_desired_angle, PITCH_LOWER_BOUND, PITCH_UPPER_BOUND);
         des_turret_state.pitch_angle_degs = pitch_desired_angle;
-        
-        ///
 
-
-
+        // Read jetson
         jetson_state = jetson.read();
-        chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
-        movavg = encoder_.encoderMovingAverage();
-        printf("%.2f\n",movavg);
-        if (remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP)
-        {
+
+        // Chassis logic
+        if (drive == 'u' || (drive == 'o' && remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) ==
+                                                 Remote::SwitchState::UP)) {
             // TODO: think about how we want to implement jetson aiming
             // des_turret_state.pitch_angle = jetson_state.desired_pitch_rads;
             // des_turret_state.yaw_angle = jetson_state.desired_yaw_rads;
 
             des_chassis_state.vOmega = 0;
-            chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
+            chassis_.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
-        }
-        else if (remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::DOWN)
-        {
-            des_chassis_state.vOmega = 4.8;
-            chassis.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
+        } else if (drive == 'd' ||
+                   (drive == 'o' &&
+                    remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::DOWN)) {
+            des_chassis_state.vOmega = omega_speed;
+            chassis_.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
-        }
-        else
-        {
-            chassis.setWheelPower({0, 0, 0, 0});
+        } else {
+            chassis_.setWheelPower({0, 0, 0, 0});
             des_turret_state.turret_mode = TurretState::SLEEP;
+            des_turret_state.yaw_angle_degs = turret_.getState().yaw_angle_degs;
+            yaw_desired_angle = turret_.getState().yaw_angle_degs;
+            des_turret_state.pitch_angle_degs = 0;
         }
+
                 
         // Shooter Logic
-        if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP)
-        {
+        if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP ||
+            remote_.getMouseL()) {
             des_shoot_state = ShootState::SHOOT;
-        }
-        else if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID)
-        {
+        } else if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID ||
+                   shot == 'd') {
             des_shoot_state = ShootState::FLYWHEEL;
-        }
-        else
-        {
+        } else {
             des_shoot_state = ShootState::OFF;
         }
         
-        // printf("time %ld", us_ticker_read());
+        turret_.setState(des_turret_state);
+        shooter_.setState(des_shoot_state);
         
-        turret.setState(des_turret_state);
-        shooter.setState(des_shoot_state);
-        
-        turret.periodic(chassis.getChassisSpeeds().vOmega * 60 / (2*PI));
-        chassis.periodic(&imuAngles);
-        shooter.periodic(referee_.power_heat_data.shooter_17mm_1_barrel_heat, referee_.robot_status.shooter_barrel_heat_limit);
+        turret_.periodic(chassis_.getChassisSpeeds().vOmega * 60 / (2 * PI));
+        chassis_.periodic(&imuAngles);
+        shooter_.periodic(referee_.power_heat_data.shooter_42mm_barrel_heat, 
+                         referee_.robot_status.shooter_barrel_heat_limit);
 
         // jetson comms
-        stm_state.game_state = referee_.get_game_progress();
-        stm_state.robot_hp = referee_.get_remain_hp();
-
-        stm_state.chassis_x_velocity = chassis.getChassisSpeeds().vX;
-        stm_state.chassis_y_velocity = chassis.getChassisSpeeds().vY;
-        stm_state.chassis_rotation = chassis.getChassisSpeeds().vOmega;
-
-        stm_state.yaw_angle_rads = turret.getState().yaw_angle_degs;
-        stm_state.yaw_velocity = turret.getState().yaw_velo_rad_s;
-        stm_state.pitch_angle_rads = turret.getState().pitch_angle_degs;
-        stm_state.pitch_velocity = turret.getState().pitch_velo_rad_s;
+        set_jetson_state();
         jetson.write(stm_state);
 
 
@@ -249,15 +262,30 @@ public:
         // printf("v:%d\n",testmot>>VELOCITY);
         // printf("cx: %.2f\n", remote_.getChassisX());
         // printf("switch: %d\n", remote_.getSwitch(Remote::Switch::RIGHT_SWITCH));
-        // printf("imu: %.2f\n", imu.getImuAngles().yaw);
+                printf("%.2f\n", encoder_.encoderMovingAverage());
+
+        // printf("%.2f, %.2f, %.2f\n", imuAngles.roll, imuAngles.pitch, imuAngles.yaw);
     }
 
     void end_of_loop() override {}
 
     unsigned int main_loop_dt_ms() override { return 2; } // 500 Hz loop
-};
+    
+    void set_jetson_state() {
+        stm_state.game_state = 4;
+        stm_state.robot_hp = 200;
 
-DigitalOut led0 = PC_1;
+        stm_state.chassis_x_velocity = chassis_.getChassisSpeeds().vX;
+        stm_state.chassis_y_velocity = chassis_.getChassisSpeeds().vY;
+        stm_state.chassis_rotation = chassis_.getChassisSpeeds().vOmega;
+
+        // TODO angle_degrees and angle_radians
+        stm_state.yaw_angle_rads = degreesToRadians(turret_.getState().yaw_angle_degs);
+        stm_state.yaw_velocity = degreesToRadians(turret_.getState().yaw_velo_rad_s);
+        stm_state.pitch_angle_rads = degreesToRadians(turret_.getState().pitch_angle_degs);
+        stm_state.pitch_velocity = degreesToRadians(turret_.getState().pitch_velo_rad_s);
+    }
+};
 
 int main() {
     printf("HELLO\n");

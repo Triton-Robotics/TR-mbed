@@ -27,7 +27,8 @@ public:
         PID::config indexer_PID_vel;
         PID::config indexer_PID_pos;
 
-        CANHandler::CANBus canBus;
+        CANHandler::CANBus canBusTopFeed;
+        CANHandler::CANBus canBusIndexer;
 
         bool invert = false;
     };
@@ -40,16 +41,16 @@ public:
 
 private:
     unsigned long shooter_time;
+    bool invert_flywheel;
 
     DJIMotor flywheelL, flywheelR, indexer, feeder;
 
     ShootState shoot;
+    
     
     int barrel_heat;
     int barrel_heat_limit;
     bool shootReady;
 
     int shootTargetPosition;
-
-    bool invert_flywheel;
 };
