@@ -8,7 +8,7 @@ var searchData=
   ['serialcommunication_5',['SerialCommunication',['../classSerialCommunication.html#a865e5834845e3eb13862bdde71b14eaa',1,'SerialCommunication']]],
   ['set_6',['set',['../classPWMMotor.html#a242bea613c0f4cb5e4e6cd962b37e0c0',1,'PWMMotor']]],
   ['set_5finitial_5fdt_5fto_5fregs_7',['set_initial_dt_to_regs',['../classBNO055.html#a633ba0fa2266142d6a2af7f60783560b',1,'BNO055']]],
-  ['set_5fjetson_5fstate_8',['set_jetson_state',['../classInfantry.html#a774ce5c4156ccec41f26b48d6c573013',1,'Infantry::set_jetson_state()'],['../classSentry.html#a7ac96859a6ef71701a55808ad7817507',1,'Sentry::set_jetson_state()']]],
+  ['set_5fjetson_5fstate_8',['set_jetson_state',['../classHero.html#a8aa77a856832588f3e0536cfe6aca579',1,'Hero::set_jetson_state()'],['../classInfantry.html#a774ce5c4156ccec41f26b48d6c573013',1,'Infantry::set_jetson_state()'],['../classSentry.html#a7ac96859a6ef71701a55808ad7817507',1,'Sentry::set_jetson_state()']]],
   ['set_5fmounting_5fposition_9',['set_mounting_position',['../classBNO055.html#a5a4db61ef267b92d2558a3075c4c3de2',1,'BNO055']]],
   ['setbrakemode_10',['setBrakeMode',['../classChassisSubsystem.html#a1de97ef034da132eefda33aa108f0cd3',1,'ChassisSubsystem']]],
   ['setcanhandlers_11',['setCanHandlers',['../classDJIMotor.html#adc223a43967a9a1b49ed665040493a26',1,'DJIMotor']]],

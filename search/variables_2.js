@@ -1,7 +1,7 @@
 var searchData=
 [
   ['baddatachainnumber_0',['badDataChainNumber',['../classRemote.html#a4da81903b311b6f779459f18a60b2538',1,'Remote']]],
-  ['bl_5fvel_5fconfig_1',['bl_vel_config',['../structOmniWheelSubsystem_1_1config.html#a643c7f6f76828089a7c4f611ecbb7116',1,'OmniWheelSubsystem::config::bl_vel_config'],['../Sentry_8cpp.html#ac1531c0208a008e02902f9f807fed136',1,'BL_VEL_CONFIG:&#160;Sentry.cpp'],['../Infantry_8cpp.html#ac1531c0208a008e02902f9f807fed136',1,'BL_VEL_CONFIG:&#160;Infantry.cpp'],['../Hero_8cpp.html#a0b0944514eb945e2c972bc4f68806a70',1,'bl_vel_config:&#160;Hero.cpp']]],
+  ['bl_5fvel_5fconfig_1',['bl_vel_config',['../structOmniWheelSubsystem_1_1config.html#a643c7f6f76828089a7c4f611ecbb7116',1,'OmniWheelSubsystem::config::bl_vel_config'],['../Sentry_8cpp.html#ac1531c0208a008e02902f9f807fed136',1,'BL_VEL_CONFIG:&#160;Sentry.cpp'],['../Infantry_8cpp.html#ac1531c0208a008e02902f9f807fed136',1,'BL_VEL_CONFIG:&#160;Infantry.cpp'],['../Hero_8cpp.html#ac1531c0208a008e02902f9f807fed136',1,'BL_VEL_CONFIG:&#160;Hero.cpp']]],
   ['blid_2',['blid',['../structOmniWheelSubsystem_1_1config.html#af855e43c5398c6c130da8c91f320077d',1,'OmniWheelSubsystem::config']]],
   ['blockupdate_3',['blockUpdate',['../ISM330_8cpp.html#a143ba83c896646a6a2314645d52c8324',1,'ISM330.cpp']]],
   ['blue1_5fbullet_5fleft_4',['blue1_bullet_left',['../structext__ICRA__buff__debuff__zone__status__t.html#a5dcaa37daa319b6f547db36c588e1397',1,'ext_ICRA_buff_debuff_zone_status_t']]],
@@ -16,7 +16,7 @@ var searchData=
   ['blue_5foutpost_5fhp_13',['blue_outpost_HP',['../structext__game__robot__HP__t.html#aa53b8b36feffbdd808eef6e2d7c26de6',1,'ext_game_robot_HP_t']]],
   ['bno055_5fid_5finf_14',['bno055_id_inf',['../imuExampleQuaternions_8cpp.html#ad567fe76e73137e70f5a3a728a297069',1,'bno055_id_inf:&#160;imuExampleQuaternions.cpp'],['../imuExampleAllData_8cpp.html#ad567fe76e73137e70f5a3a728a297069',1,'bno055_id_inf:&#160;imuExampleAllData.cpp']]],
   ['bootldr_5frev_5fid_15',['bootldr_rev_id',['../structBNO055__ID__INF__TypeDef.html#a6bb814e805dc107ccb3809668b614ea1',1,'BNO055_ID_INF_TypeDef']]],
-  ['br_5fvel_5fconfig_16',['br_vel_config',['../Infantry_8cpp.html#a3f201557a3030171140f37a8b7311ec1',1,'BR_VEL_CONFIG:&#160;Infantry.cpp'],['../Hero_8cpp.html#a20b36f6ee2d3fd9058b94da798e9c551',1,'br_vel_config:&#160;Hero.cpp'],['../Sentry_8cpp.html#a3f201557a3030171140f37a8b7311ec1',1,'BR_VEL_CONFIG:&#160;Sentry.cpp'],['../structOmniWheelSubsystem_1_1config.html#a17918ca5882fc1381086759ec7ed2681',1,'OmniWheelSubsystem::config::br_vel_config']]],
+  ['br_5fvel_5fconfig_16',['br_vel_config',['../Infantry_8cpp.html#a3f201557a3030171140f37a8b7311ec1',1,'BR_VEL_CONFIG:&#160;Infantry.cpp'],['../Hero_8cpp.html#a3f201557a3030171140f37a8b7311ec1',1,'BR_VEL_CONFIG:&#160;Hero.cpp'],['../Sentry_8cpp.html#a3f201557a3030171140f37a8b7311ec1',1,'BR_VEL_CONFIG:&#160;Sentry.cpp'],['../structOmniWheelSubsystem_1_1config.html#a17918ca5882fc1381086759ec7ed2681',1,'OmniWheelSubsystem::config::br_vel_config']]],
   ['brid_17',['brid',['../structOmniWheelSubsystem_1_1config.html#a65b01f0f17bfba54a845c3a7b56dcd10',1,'OmniWheelSubsystem::config']]],
   ['buffer_18',['buffer',['../classAdafruit__SSD1306.html#aa46a1a2f6f2fd330ea5d806222699091',1,'Adafruit_SSD1306']]],
   ['buffer_5fenergy_19',['buffer_energy',['../structpower__heat__data__t.html#a9c6208823f6b2d7f03643f71d7e72a03',1,'power_heat_data_t']]],

@@ -13,7 +13,7 @@ var searchData=
   ['datalength_10',['DataLength',['../structxFrameHeader.html#ac15f58966ccc45104926122188a7f015',1,'xFrameHeader']]],
   ['dataready_11',['dataReady',['../classMPU6050.html#aafc3767ff1a351ed03b8aead396e1711',1,'MPU6050']]],
   ['dbuffer_12',['dBuffer',['../classPID.html#a220ea9c305c0f48b0b8443bcbe9cced5',1,'PID']]],
-  ['dc_13',['dc',['../classAdafruit__SSD1306__Spi.html#a0edbab47342673545a8acd03379bbfb6',1,'Adafruit_SSD1306_Spi::dc'],['../classPID.html#af825b006e765120ff387c4e15c6a7f8a',1,'PID::dC']]],
+  ['dc_13',['dc',['../classPID.html#af825b006e765120ff387c4e15c6a7f8a',1,'PID::dC'],['../classAdafruit__SSD1306__Spi.html#a0edbab47342673545a8acd03379bbfb6',1,'Adafruit_SSD1306_Spi::dc']]],
   ['debugging_14',['Debugging',['../index.html#autotoc_md18',1,'']]],
   ['default_15',['DEFAULT',['../TRMutex_8h.html#af5f478ebdb1815432fb04589309d5492a88ec7d5086d2469ba843c7fcceade8a6',1,'TRMutex.h']]],
   ['defence_5fbuff_16',['defence_buff',['../structbuff__t.html#a91c22d83e4bb3394dee2643fb6bff29c',1,'buff_t']]],
@@ -47,7 +47,7 @@ var searchData=
   ['drawchar_44',['drawChar',['../classAdafruit__GFX.html#ab7f5a29b3a3dffe30c6a3f4c1f604a5a',1,'Adafruit_GFX']]],
   ['drawpixel_45',['drawpixel',['../classAdafruit__GFX.html#ab7fbf72885c873266f9c7eb53b5c8896',1,'Adafruit_GFX::drawPixel()'],['../classAdafruit__SSD1306.html#ae2851d927a047a770c569c7c9fde4807',1,'Adafruit_SSD1306::drawPixel()']]],
   ['drive_5fmode_46',['DRIVE_MODE',['../classChassisSubsystem.html#a16e8ea4a14a3a2ae416a52db8d31ca36',1,'ChassisSubsystem']]],
-  ['dt_5fglobal_47',['dt_global',['../Infantry_8cpp.html#a23d031cfbca365bd399e69e01b28ed68',1,'dt_global:&#160;Infantry.cpp'],['../Sentry_8cpp.html#a23d031cfbca365bd399e69e01b28ed68',1,'dt_global:&#160;Sentry.cpp']]],
+  ['dt_5fglobal_47',['dt_global',['../Hero_8cpp.html#a23d031cfbca365bd399e69e01b28ed68',1,'dt_global:&#160;Hero.cpp'],['../Infantry_8cpp.html#a23d031cfbca365bd399e69e01b28ed68',1,'dt_global:&#160;Infantry.cpp'],['../Sentry_8cpp.html#a23d031cfbca365bd399e69e01b28ed68',1,'dt_global:&#160;Sentry.cpp']]],
   ['dumpinfo_48',['dumpInfo',['../classRemote.html#ab3e55d985b57ba798e757b24b8ed76de',1,'Remote']]],
   ['dutycycle_49',['dutycycle',['../classPwmIn.html#a68f1c3bd4aadb9bccc4834a676c292c8',1,'PwmIn']]]
 ];
