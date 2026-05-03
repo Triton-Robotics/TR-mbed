@@ -90,7 +90,7 @@ HeroShooterSubsystem::config shooter_config = {
     INDEXER_PID_POS,
     CANHandler::CANBUS_2,
     CANHandler::CANBUS_1,
-    true
+    false
 };
 // ChassisSubsystem::Config chassis_config = {
 //     1,      // left_front_can_id
@@ -262,8 +262,8 @@ public:
         // printf("v:%d\n",testmot>>VELOCITY);
         // printf("cx: %.2f\n", remote_.getChassisX());
         // printf("switch: %d\n", remote_.getSwitch(Remote::Switch::RIGHT_SWITCH));
-                printf("%.2f\n", encoder_.encoderMovingAverage());
-
+                // printf("%.2f\n", encoder_.encoderMovingAverage());
+        printf("%.2f %.2f\n", shooter_.flywheelL.getData(VELOCITY), shooter_.flywheelR.getData(VELOCITY));
         // printf("%.2f, %.2f, %.2f\n", imuAngles.roll, imuAngles.pitch, imuAngles.yaw);
     }
 

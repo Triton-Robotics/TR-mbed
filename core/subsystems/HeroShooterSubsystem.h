@@ -38,12 +38,13 @@ public:
     void setState(ShootState shoot_state);
 
     void periodic(int curr_heat, int heat_limit);
+    DJIMotor flywheelL, flywheelR, indexer, feeder;
 
 private:
     unsigned long shooter_time;
     bool invert_flywheel;
 
-    DJIMotor flywheelL, flywheelR, indexer, feeder;
+
 
     ShootState shoot;
     

@@ -5,14 +5,14 @@ HeroShooterSubsystem::HeroShooterSubsystem(config cfg):
     flywheelL({
         cfg.flywheelL_id,
         cfg.canBusTopFeed,
-        M3508,
+        M3508_FLYWHEEL,
         "Left Flywheel",
         cfg.flywheelL_PID
     }),
     flywheelR({
         cfg.flywheelR_id,
         cfg.canBusTopFeed,
-        M3508,
+        M3508_FLYWHEEL,
         "Right Flywheel",
         cfg.flywheelR_PID
     }),
@@ -64,12 +64,12 @@ void HeroShooterSubsystem::periodic(int curr_heat, int heat_limit)
     else if (shoot == FLYWHEEL)
     {
         if (!invert_flywheel) {
-            flywheelL.setSpeed(-FLYWHEEL_VELO);
-            flywheelR.setSpeed(FLYWHEEL_VELO);
+            flywheelL.setSpeed(-HERO_FLYWHEEL_VELO);
+            flywheelR.setSpeed(HERO_FLYWHEEL_VELO);
         }
         else {
-            flywheelL.setSpeed(FLYWHEEL_VELO);
-            flywheelR.setSpeed(-FLYWHEEL_VELO);
+            flywheelL.setSpeed(HERO_FLYWHEEL_VELO);
+            flywheelR.setSpeed(-HERO_FLYWHEEL_VELO);
         }
 
         indexer.pidSpeed.feedForward = 0;
@@ -82,12 +82,12 @@ void HeroShooterSubsystem::periodic(int curr_heat, int heat_limit)
     else if (shoot == SHOOT)
     {
         if (!invert_flywheel) {
-            flywheelL.setSpeed(-FLYWHEEL_VELO);
-            flywheelR.setSpeed(FLYWHEEL_VELO);
+            flywheelL.setSpeed(-HERO_FLYWHEEL_VELO);
+            flywheelR.setSpeed(HERO_FLYWHEEL_VELO);
         }
         else {
-            flywheelL.setSpeed(FLYWHEEL_VELO);
-            flywheelR.setSpeed(-FLYWHEEL_VELO);
+            flywheelL.setSpeed(HERO_FLYWHEEL_VELO);
+            flywheelR.setSpeed(-HERO_FLYWHEEL_VELO);
         }
 
         if ((us_ticker_read() - shooter_time)/1000 < 200){
