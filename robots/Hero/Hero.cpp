@@ -90,7 +90,7 @@ HeroShooterSubsystem::config shooter_config = {
     INDEXER_PID_POS,
     CANHandler::CANBUS_2,
     CANHandler::CANBUS_1,
-    true
+    false
 };
 // ChassisSubsystem::Config chassis_config = {
 //     1,      // left_front_can_id

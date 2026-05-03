@@ -30,7 +30,7 @@ public:
         CANHandler::CANBus canBusTopFeed;
         CANHandler::CANBus canBusIndexer;
 
-        bool invert = false;
+        bool invert;
     };
 
     HeroShooterSubsystem(config configuration);
