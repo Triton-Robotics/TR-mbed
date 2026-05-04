@@ -95,10 +95,10 @@ void HeroShooterSubsystem::periodic(int curr_heat, int heat_limit)
         } else {
             feeder.setSpeed(0);
         }
-        if ((us_ticker_read() - shooter_time)/1000 < 500){
+        if ((us_ticker_read() - shooter_time)/1000 < 150){
             indexer.setSpeed(6000);
         }else if ((us_ticker_read() - shooter_time)/1000 > 500 && (us_ticker_read() - shooter_time)/1000 < 650){
-            indexer.setPower(-16000);
+            indexer.setPower(-8000);
         } else {
             indexer.setPower(0);
         }
