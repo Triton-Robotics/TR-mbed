@@ -294,7 +294,7 @@ class Sentry : public BaseRobot {
     unsigned int main_loop_dt_ms() override { return 2; } // 500 Hz loop
 
     void set_jetson_state() {
-        stm_state.game_state = 4;// referee_.get_game_progress();
+        stm_state.game_state = referee_.get_game_progress();
         stm_state.robot_hp = referee_.get_remain_hp();
 
         stm_state.chassis_x_velocity = chassis_.getChassisSpeeds().vX;

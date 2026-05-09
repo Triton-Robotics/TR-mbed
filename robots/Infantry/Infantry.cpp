@@ -262,6 +262,7 @@ class Infantry : public BaseRobot {
         // %.2f\n", remote_.getChassisX()); printf("switch: %d\n",
         // remote_.getSwitch(Remote::Switch::RIGHT_SWITCH)); printf("imu:
         // %.2f\n", imu.getImuAngles().yaw);
+        // printf("%d\n", referee_.get_game_progress());
         printf("yp %.2f \n", encoder_.encoderMovingAverage());
         // printf("%.2f, %.2f, %.2f\n", imuAngles.roll, imuAngles.pitch, imuAngles.yaw);
     }
@@ -271,8 +272,8 @@ class Infantry : public BaseRobot {
     unsigned int main_loop_dt_ms() override { return 2; } // 500 Hz loop
 
     void set_jetson_state() {
-        stm_state.game_state = 4;
-        stm_state.robot_hp = 200;
+        stm_state.game_state = referee_.get_game_progress();
+        stm_state.robot_hp = referee_.get_remain_hp();
 
         stm_state.chassis_x_velocity = chassis_.getChassisSpeeds().vX;
         stm_state.chassis_y_velocity = chassis_.getChassisSpeeds().vY;
