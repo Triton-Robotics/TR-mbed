@@ -17,6 +17,13 @@ public:
      * @param p The pwm input pin (must support InterruptIn)
      */ 
     MA4(PinName p);
+
+    /** Create a PwmIn
+     *
+     * @param p The pwm input pin (must support InterruptIn)
+     * @param invert invert cw and ccw cuz ma4 is a hoe
+     */ 
+    MA4(PinName p, bool invert);
     
     /** Read the current period
      *
@@ -56,6 +63,7 @@ protected:
     InterruptIn _p;
     Timer _t;
     float _pulsewidth, _period;
+    bool _invert;
 };
 
 #endif

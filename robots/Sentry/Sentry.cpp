@@ -146,7 +146,7 @@ class Sentry : public BaseRobot {
           // clang-format off
         i2c_(IMU_I2C_SDA, IMU_I2C_SCL), 
         imu_(i2c_, 0x6B),
-        encoder_(PB_4),
+        encoder_(PB_4, true),
         jetson_raw_serial(PC_12, PD_2,115200), // TODO: check higher baud to see if still works
         jetson(jetson_raw_serial),
         turret_(turret_config, imu_),
@@ -160,7 +160,7 @@ class Sentry : public BaseRobot {
             3,      // right_back_can_id
             0.22617,  // radius
             0.065,    // speed_pid_ff_ks
-            86,     // yaw_initial_offset_ticks
+            85.27,     // yaw_initial_offset_ticks
             imu_,
             &encoder_   
         }

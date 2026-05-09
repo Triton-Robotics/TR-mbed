@@ -262,7 +262,7 @@ class Infantry : public BaseRobot {
         // %.2f\n", remote_.getChassisX()); printf("switch: %d\n",
         // remote_.getSwitch(Remote::Switch::RIGHT_SWITCH)); printf("imu:
         // %.2f\n", imu.getImuAngles().yaw);
-        printf("yp %.2f ", encoder_.encoderMovingAverage());
+        printf("yp %.2f \n", encoder_.encoderMovingAverage());
         // printf("%.2f, %.2f, %.2f\n", imuAngles.roll, imuAngles.pitch, imuAngles.yaw);
     }
 
@@ -279,10 +279,10 @@ class Infantry : public BaseRobot {
         stm_state.chassis_rotation = chassis_.getChassisSpeeds().vOmega;
 
         // TODO angle_degrees and angle_radians
-        // stm_state.yaw_angle_rads = degreesToRadians(turret_.getState().yaw_angle_degs);
-        // stm_state.yaw_velocity = degreesToRadians(turret_.getState().yaw_velo_rad_s);
-        // stm_state.pitch_angle_rads = degreesToRadians(turret_.getState().pitch_angle_degs);
-        // stm_state.pitch_velocity = degreesToRadians(turret_.getState().pitch_velo_rad_s);
+        stm_state.yaw_angle_rads = degreesToRadians(turret_.getState().yaw_angle_degs);
+        stm_state.yaw_velocity = degreesToRadians(turret_.getState().yaw_velo_rad_s);
+        stm_state.pitch_angle_rads = degreesToRadians(turret_.getState().pitch_angle_degs);
+        stm_state.pitch_velocity = degreesToRadians(turret_.getState().pitch_velo_rad_s);
     }
 };
 

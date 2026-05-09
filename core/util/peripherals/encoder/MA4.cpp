@@ -8,6 +8,14 @@ MA4::MA4(PinName p) : _p(p) {
     _t.start();
 }
 
+MA4::MA4(PinName p, bool invert) : _p(p), _invert(invert) {
+    _p.rise(callback(this, &MA4::rise));
+    _p.fall(callback(this, &MA4::fall));
+    _period = 0.0;
+    _pulsewidth = 0.0;
+    _t.start();
+}
+
 float MA4::period() {
     return _period;
 }
@@ -44,6 +52,9 @@ double MA4::getEncoderYawPosition() {
     double yaw_position = (double)(abs(((duty_raw - duty_min) / (duty_max - duty_min)) * 360.0));
     filtered_yaw = filtered_yaw * (1.0f - filter_alpha) + yaw_position *  filter_alpha;
     // printf("%.2f\n",yaw_position);
+    if (_invert) {
+        return (360.0 - filtered_yaw);
+    }
     return filtered_yaw;
 }
 
