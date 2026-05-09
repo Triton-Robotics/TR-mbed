@@ -1,7 +1,6 @@
 #pragma once
 
 #include "mbed.h"
-#include "subsystems/ChassisSubsystem.h"
 #include "util/peripherals/imu/IMU.h"
 #include "util/peripherals/encoder/MA4.h"
 #include "util/motor/DJIMotor.h"
@@ -82,6 +81,9 @@ public:
 
         float power_limit_watts = 60.f; ///< total chassis power budget [W]
 
+        /// Maximum beyblade spin rate at power_limit_watts with no lateral movement [rad/s].
+        double max_beyblade_omega_radps = 25.0;
+
         HolonomicMode chassis_type = OMNI;
     };
 
@@ -146,6 +148,13 @@ private:
 
     double m_maxWheelSpeedMps;
     double m_maxOmegaRadps;
+
+    // ── Beyblade ───────────────────────────────────────────────────────────────
+    /// Calibrated ω_max [rad/s] at the reference power level (= power_limit_watts
+    /// from the constructor config).  The actual ω_max is derived at runtime by
+    /// scaling this value with √(power_limit / m_beybladeRefPowerW).
+    double m_beybladeMaxOmega;     ///< ω_max at reference power  [rad/s]
+    double m_beybladeRefPowerW;    ///< reference power used to calibrate ω_max  [W]
 
     // ── PID / rate-limiting state ──────────────────────────────────────────────
     uint32_t      m_lastPidUs    = 0;
