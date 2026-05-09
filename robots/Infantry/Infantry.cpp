@@ -95,6 +95,8 @@ OmniWheelSubsystem::Config chassis_config = {
     2,      // right_front_can_id
     3,      // left_back_can_id
     4,      // right_back_can_id
+    3,      // left_back_can_id
+    4,      // right_back_can_id
     FL_VEL_CONFIG,
     FR_VEL_CONFIG,
     BL_VEL_CONFIG,
@@ -192,7 +194,7 @@ class Infantry : public BaseRobot {
         // Chassis logic
         if (drive == 'u' || (drive == 'o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_S)) {
             des_chassis_state.vOmega = 0;
-            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::DRIVE_MODE::YAW_ORIENTED);
+            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
             referee_.is_aligned = false;
             referee_.is_cv_on = false;
@@ -201,7 +203,7 @@ class Infantry : public BaseRobot {
                    (drive == 'o' &&
                     remote_.getMode() == DJIRemote2::ModeSwitch::MODE_C)) {
             des_chassis_state.vOmega = omega_speed;
-            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::DRIVE_MODE::YAW_ORIENTED);
+            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
             referee_.is_aligned = false;
             referee_.is_cv_on = false;

@@ -1,399 +1,407 @@
 #include "OmniWheelSubsystem.h"
+#include <cmath>
+#include <cassert>
+#include <algorithm>
+#include <us_ticker_defines.h>
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Constructor
+// ─────────────────────────────────────────────────────────────────────────────
 
-OmniWheelSubsystem::OmniWheelSubsystem(config cfg):
-fl({
-        cfg.flid,
-        cfg.canBus,
-        M3508,
-        "Front Left",
-        cfg.fl_vel_config,
-}),
-fr({
-        cfg.frid,
-        cfg.canBus,
-        M3508,
-        "Front Right",
-        cfg.fr_vel_config,
-}),
-bl({
-        cfg.blid,
-        cfg.canBus,
-        M3508,
-        "Back Left",
-        cfg.bl_vel_config,
-}),
-br({
-        cfg.brid,
-        cfg.canBus,
-        M3508,
-        "Back Right",
-        cfg.br_vel_config,
-}),
-
-imu(cfg.imu),
-yaw(cfg.yaw)
+OmniWheelSubsystem::OmniWheelSubsystem(const Config &cfg, MA4 *encoder)
+    : power_limit(cfg.power_limit_watts),
+      LF(DJIMotor::config({ short(cfg.lf_can_id), CANHandler::CANBUS_1, M3508, "left_front",  cfg.lf_pid })),
+      RF(DJIMotor::config({ short(cfg.rf_can_id), CANHandler::CANBUS_1, M3508, "right_front", cfg.rf_pid })),
+      LB(DJIMotor::config({ short(cfg.lb_can_id), CANHandler::CANBUS_1, M3508, "left_back",   cfg.lb_pid })),
+      RB(DJIMotor::config({ short(cfg.rb_can_id), CANHandler::CANBUS_1, M3508, "right_back",  cfg.rb_pid })),
+      m_encoder(encoder),
+      m_yawOffsetDeg(cfg.yaw_initial_offset_deg),
+      m_maxWheelSpeedMps(DEFAULT_MAX_WHEEL_MPS),
+      m_maxOmegaRadps(DEFAULT_MAX_OMEGA_RADPS)
 {
-    imuAngles = imu.getImuAngles();
-    
-    radius = cfg.radius;
-    power_limit = cfg.power_limit;
-
-    // TODO: figure out how to set a good maxVel and maxAccel
-    // maxVel = cfg.max_vel;
-    maxVel = -1.24 + 0.0513 * cfg.power_limit + -0.000216 * (cfg.power_limit * cfg.power_limit);
-    maxAccel = cfg.max_accel;
-    FF_Ks = cfg.feed_forward;
-    maxBeyblade = cfg.max_beyblade;
-
-    dt = (us_ticker_read() - prev_time) / 1000;
-    prev_time = us_ticker_read();
-
-    setYawReference(cfg.yaw, cfg.initial_angle, cfg.yawAlign);
-
-    // calculateAccelLimit();
-    // setOmniKinematics();
+    LF.outputCap = RF.outputCap = LB.outputCap = RB.outputCap = 16000;
+    initKinematics(cfg.chassis_radius, cfg.chassis_type);
 }
 
-void OmniWheelSubsystem::setChassisState(ChassisState state)
+// ─────────────────────────────────────────────────────────────────────────────
+// Kinematics setup
+// ─────────────────────────────────────────────────────────────────────────────
+
+void OmniWheelSubsystem::initKinematics(double chassisRadius, HolonomicMode mode)
 {
-    // Convert state velocity from a range of [-1,1] to real values
-    desired_state.vel.vX = state.vel.vX * maxVel;
-    desired_state.vel.vY = state.vel.vY * maxVel;
-    desired_state.vel.vOmega = state.vel.vOmega * maxBeyblade;
-
-    desired_state.mode = state.mode;
-}
-
-OmniWheelSubsystem::ChassisState OmniWheelSubsystem::getChassisState()
-{
-    return curr_state;
-}
-
-void OmniWheelSubsystem::setYawReference(TurretSubsystem &_yaw, float initial_angle, float _yawAlign)
-{
-    // yaw = _yaw;
-    yawAlign = _yawAlign;
-    yawPhase = initial_angle;
-}
-
-bool OmniWheelSubsystem::setOdomReference()
-{
-    yawOdom = yaw.getTicks();
-    imuOdom = imuAngles.yaw;
-    return true;
-}
-
-void OmniWheelSubsystem::periodic()
-{
-    // Update curr_state and curr_wheelspeed
-    imuAngles = imu.getImuAngles();
-    getOmniState();
-
-    sendPower();
-}
-
-void OmniWheelSubsystem::getOmniState()
-{
-    // Updating wheelspeeds
-    curr_wheelspeed.fl = fl.getData(VELOCITY);
-    curr_wheelspeed.fr = fr.getData(VELOCITY);
-    curr_wheelspeed.bl = bl.getData(VELOCITY);
-    curr_wheelspeed.br = br.getData(VELOCITY);
-
-    calculateChassisSpeed();
-
-    curr_state.mode = desired_state.mode;
-}
-
-void OmniWheelSubsystem::setDesiredWheelSpeed()
-{
-    double yawCurrent = yaw.getTicks();
-    ChassisSpeed desiredChassisSpeeds;
-
-    switch (curr_state.mode)
-    {
-    case YAW_ORIENTED:
-    {
-        desiredChassisSpeeds = rotateChassisSpeed(desired_state.vel, yawCurrent);
-        break;
+    if (mode == OMNI) {
+        // Each wheel sits at 45° to the robot axes.
+        // Its moment-arm components in X and Y are both (radius / √2).
+        // The vOmega term uses (r_x + r_y) = radius * √2.
+        m_kinL = chassisRadius * std::sqrt(2.0);
+    } else { // MECANUM
+        // Axis-aligned wheels; moment arm = half-width + half-length.
+        m_kinL = MECANUM_HALF_X + MECANUM_HALF_Y;
     }
-    case BEYBLADE:
-    {
-        // TODO: change maxBeyblade dynamically based on keypress (add another state?)
-        float jx = desired_state.vel.vX / maxVel;
-        float jy = desired_state.vel.vY / maxVel;
-        float linear_hypo = sqrtf(jx * jx + jy * jy);
-
-        if(linear_hypo > 1.0){
-            linear_hypo = 1.0;
-        }
-
-        desired_state.vel.vOmega = maxBeyblade * (1.0 - linear_hypo);
-
-        desiredChassisSpeeds = rotateChassisSpeed(desired_state.vel, yawCurrent);
-        break;
-    }
-    case ROBOT_ORIENTED:
-    {
-        desiredChassisSpeeds = desired_state.vel; // ChassisSpeeds in m/s
-        break;
-    }
-    case ODOM_ORIENTED:
-    {
-        double yawDelta = yawOdom - yawCurrent;
-        double imuDelta = imuOdom - imuAngles.yaw;
-        double delta = imuDelta - yawDelta;
-        double del = yawOdom + delta;
-        while (del > 360.0)
-            del -= 360;
-        while (del < 0)
-            del += 360;
-        desiredChassisSpeeds = rotateChassisSpeed(desired_state.vel, yawOdom + delta);
-        break;
-    }
-    case YAW_ALIGNED:
-    {
-        // Compute yaw error(how much the yaw needs to recorrect)
-        float yawError = (yawCurrent - yawAlign);
-        while (yawError > 180) yawError -= 360;
-        while (yawError < -180) yawError += 360;
-        
-        if (abs(yawError) < 5) yawError = 0;
-
-        if ((yawError >= 45 && yawError < 135)) {
-            yawError -= 90;
-        }
-        if ((yawError >= 135)) {
-            yawError -= 180;
-        }
-        if (yawError < -135) {
-            yawError += 180;
-        }
-        if ((yawError >= -135 && yawError < -45)) {
-            yawError += 90;
-        }
-
-        //tune these two for optimal performance
-        float gain_align = 2;
-        float gain_yaw = 3;
-        float deg2rad = PI/180; // convert to rad and just run at 2x that rad/s
-        float omegaCmd = (gain_align * yawError * deg2rad + gain_yaw * yaw.getTicks());
-
-        if (abs(omegaCmd) < 0.1) omegaCmd = 0;
-
-        ChassisSpeed xAlignSpeeds = {desired_state.vel.vX, desired_state.vel.vY, omegaCmd};
-
-        desiredChassisSpeeds = rotateChassisSpeed(xAlignSpeeds, yawCurrent);
-        break;
-    }
-    case OFF: 
-    {
-        desiredChassisSpeeds = {0.0, 0.0, 0.0};
-        break;
-    }
-    }
-
-    calculateWheelSpeed(desiredChassisSpeeds); // in m/s
 }
 
-OmniWheelSubsystem::ChassisSpeed OmniWheelSubsystem::rotateChassisSpeed(ChassisSpeed desired_vel, float frame_angle)
+// ─────────────────────────────────────────────────────────────────────────────
+// Periodic update  (call every control tick)
+// ─────────────────────────────────────────────────────────────────────────────
+
+void OmniWheelSubsystem::periodic(const IMU::EulerAngles &imu)
 {
-    float theta = (frame_angle - yawPhase) / 180 * PI;
-    return {desired_vel.vX * cos(theta) - desired_vel.vY * sin(theta),
-            desired_vel.vX * sin(theta) + desired_vel.vY * cos(theta),
-            desired_vel.vOmega};
-}
+    m_imu = imu;
 
-void OmniWheelSubsystem::calculateWheelSpeed(ChassisSpeed chassisSpeeds)
-{
-    float SQRT_2 = sqrt(2);
-    desired_wheelspeed = {(chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * (radius * SQRT_2)),
-            (-chassisSpeeds.vX - chassisSpeeds.vY - chassisSpeeds.vOmega * (radius * SQRT_2)),
-            (chassisSpeeds.vX + chassisSpeeds.vY - chassisSpeeds.vOmega * (radius * SQRT_2)),
-            (-chassisSpeeds.vX + chassisSpeeds.vY - chassisSpeeds.vOmega * (radius * SQRT_2))};
-    
-}
-
-// TODO: Verify calculations PLEASE
-void OmniWheelSubsystem::calculateChassisSpeed()
-{
-    float dist = radius / sqrt(2);
-    float vX = (-curr_wheelspeed.fl - curr_wheelspeed.fr + curr_wheelspeed.bl + curr_wheelspeed.br) / 4;
-    float vY = (-curr_wheelspeed.fl + curr_wheelspeed.fr - curr_wheelspeed.bl + curr_wheelspeed.br) / 4;
-    float vOmega = (-curr_wheelspeed.fl - curr_wheelspeed.fr - curr_wheelspeed.bl - curr_wheelspeed.br) / (4 * (2 * dist));
-
-    // Convert from RPM to m/s and rad/s
-    vX = (vX / M3508_GEAR_RATIO) * (2 * PI / 60) * (WHEEL_DIAMETER_METERS / 2);
-    vY = (vY / M3508_GEAR_RATIO) * (2 * PI / 60) * (WHEEL_DIAMETER_METERS / 2);
-    vOmega = (vOmega / M3508_GEAR_RATIO) * (2 * PI / 60) * (WHEEL_DIAMETER_METERS / 2);
-    
-    curr_state.vel = {vX, vY, vOmega};
-}
-
-void OmniWheelSubsystem::sendPower()
-{
-    // Set the correct desired_wheelspeed and desired power
-    setDesiredWheelSpeed();
-
-    std::array<DJIMotor*, 4> motors = { &fl, &fr, &bl, &br };
-    std::array<double, 4> desired = 
-    {
-        desired_wheelspeed.fl,
-        desired_wheelspeed.fr,
-        desired_wheelspeed.bl,
-        desired_wheelspeed.br
-    };
-    std::array<double, 4> previous = 
-    {
-        curr_wheelspeed.fl,
-        curr_wheelspeed.fr,
-        curr_wheelspeed.bl,
-        curr_wheelspeed.br
+    // Read wheel tangential speeds [m/s] from motor encoders
+    m_wheelSpeeds = {
+        getWheelSpeedMps(LEFT_FRONT),
+        getWheelSpeedMps(RIGHT_FRONT),
+        getWheelSpeedMps(LEFT_BACK),
+        getWheelSpeedMps(RIGHT_BACK),
     };
 
-    for (size_t i = 0; i < 4; ++i) 
-    {
-        // Find power output needed to run these motors
-        motor_power[i] = motors[i]->calculateSpeedPID
-        (
-            desired[i],
-            motors[i]->getData(VELOCITY),
-            dt
-        );
-
-        if (desired[i] != 0.0) 
-        {
-            double sign = desired[i] / std::abs(desired[i]);
-            motors[i]->pidSpeed.feedForward = sign * FF_Ks;
-        } 
-        else 
-        {
-            motors[i]->pidSpeed.feedForward = 0.0;
-        }
-
-        // Limit the accel
-        float diff = desired[i] - previous[i];
-        if ((desired[i] > 0 && previous[i] < 0) || (desired[i] < 0 && previous[i] > 0))
-        { // if robot trying to sudden change direction
-            desired[i] = 0;
-        }
-        if (diff > maxAccel)
-        { // if the difference is greater than the max acceleration
-            if (motor_power[i] != 0)
-            {
-                motor_power[i] = previous[i] + maxAccel;
-            }
-        }
-        else if (diff < -maxAccel)
-        {
-            if (motor_power[i] != 0)
-            {
-                motor_power[i] = previous[i] - maxAccel;
-            }
-        }
-
-        // Recalculate the power needed
-        motor_power[i] = motors[i]->calculateSpeedPID
-        (
-            desired[i],
-            motors[i]->getData(VELOCITY),
-            dt
-        );
-
-        if (desired[i] != 0.0) 
-        {
-            double sign = desired[i] / std::abs(desired[i]);
-            motors[i]->pidSpeed.feedForward = sign * FF_Ks;
-        } 
-        else 
-        {
-            motors[i]->pidSpeed.feedForward = 0.0;
-        }
-    }
-
-    // I lowk cba to do this, make someone else do it plz :3
-    float scale = Bisection
-    (
-        motor_power[0], 
-        motor_power[1], 
-        motor_power[2], 
-        motor_power[3], 
-        fl.getData(VELOCITY), 
-        fr.getData(VELOCITY), 
-        bl.getData(VELOCITY), 
-        br.getData(VELOCITY), 
-        power_limit
-    );
-    motor_power[0] *= scale;
-    motor_power[1] *= scale;
-    motor_power[2] *= scale;
-    motor_power[3] *= scale;
-
-    fl.setPower(motor_power[0]);
-    fr.setPower(motor_power[1]);
-    bl.setPower(motor_power[2]);
-    br.setPower(motor_power[3]);
+    // Derive robot-frame chassis speeds via inverse kinematics
+    m_chassisSpeeds = wheelToChassis(m_wheelSpeeds);
 }
 
-float OmniWheelSubsystem::Bisection(int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm, float chassisPowerLimit)
+// ─────────────────────────────────────────────────────────────────────────────
+// High-level drive  (public)
+// ─────────────────────────────────────────────────────────────────────────────
+
+float OmniWheelSubsystem::setChassisSpeeds(ChassisSpeeds desired, DriveMode mode)
 {
-    float scale = 0.5;      // initial scale
-    float precision = 0.25; // initial precision
-    float powerInit = p_theory(LeftFrontPower, RightFrontPower, LeftBackPower, RightBackPower, LeftFrontRpm, RightFrontRpm, LeftBackRpm, RightBackRpm);
+    // ── Step 1: Resolve coordinate frame → robot frame ────────────────────────
+    ChassisSpeeds robotFrame;
 
-    if (powerInit > chassisPowerLimit)
-    {
+    switch (mode) {
 
-        float powerScaled = p_theory(LeftFrontPower * scale, RightFrontPower * scale, LeftBackPower * scale, RightBackPower * scale, LeftFrontRpm, RightFrontRpm, LeftBackRpm, RightBackRpm);
+        case ROBOT_ORIENTED:
+            robotFrame = desired;
+            break;
 
-        for (int i = 0; i < 6; i++)
-        {
-
-            if (powerScaled > chassisPowerLimit)
-            {
-                scale = scale - precision;
-                precision = precision / 2;
-                powerScaled = p_theory(LeftFrontPower * scale, RightFrontPower * scale, LeftBackPower * scale, RightBackPower * scale, LeftFrontRpm, RightFrontRpm, LeftBackRpm, RightBackRpm);
-                // printf("powerScaled Down: %f\n", powerScaled);
-            }
-
-            else
-            { // power is low enough
-                scale = scale + precision;
-                precision = precision / 2;
-                powerScaled = p_theory(LeftFrontPower * scale, RightFrontPower * scale, LeftBackPower * scale, RightBackPower * scale, LeftFrontRpm, RightFrontRpm, LeftBackRpm, RightBackRpm);
-                // printf("powerScaled Up: %f\n", powerScaled);
-            }
+        case YAW_ORIENTED: {
+            // Field-frame input; rotate into robot frame using current encoder heading.
+            double headingDeg = getEncoderYawDeg();
+            robotFrame = rotateToRobotFrame(desired, headingDeg);
+            break;
         }
-        return scale;
+
+        case ODOM_ORIENTED: {
+            // Fuse encoder and IMU to estimate heading relative to the stored reference.
+            // The IMU captures slow drift that the encoder misses (slip, etc.) and vice versa.
+            double encoderNow    = getEncoderYawDeg();
+            double imuDeltaDeg   = m_odomImuRefDeg     - m_imu.yaw;  // IMU drift since ref
+            double encDeltaDeg   = m_odomEncoderRefDeg - encoderNow; // encoder change since ref
+            double fusedDeg      = m_odomEncoderRefDeg + (imuDeltaDeg - encDeltaDeg);
+            while (fusedDeg >  360.0) fusedDeg -= 360.0;
+            while (fusedDeg <    0.0) fusedDeg += 360.0;
+            robotFrame = rotateToRobotFrame(desired, fusedDeg);
+            break;
+        }
     }
 
-    else
-    {
-        return 1;
-    }
+    // ── Step 2: Forward kinematics → per-wheel tangential speeds [m/s] ────────
+    WheelSpeeds wheelMps = chassisToWheel(robotFrame);
+
+    // ── Step 3: Clamp — no wheel may exceed m_maxWheelSpeedMps ────────────────
+    wheelMps = normalizeWheelSpeeds(wheelMps);
+
+    // ── Step 4: PID + power budget → motor set-points ─────────────────────────
+    return setWheelSpeeds(wheelMps);
 }
 
-float OmniWheelSubsystem::p_theory(int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm)
+void OmniWheelSubsystem::setOdomReference()
 {
-    float krpm2 = 0.000000000616869908524917;
-    float kpwr2 = 2.8873053310419543e-26;
-    float kboth = 0.00000000679867734389254;
-    float a = 0.019247609510979;
+    m_odomEncoderRefDeg = getEncoderYawDeg();
+    m_odomImuRefDeg     = m_imu.yaw;
+}
 
-    float p1 = (kboth * LeftFrontPower * LeftFrontRpm) + (krpm2 * LeftFrontRpm * LeftFrontRpm) + (kpwr2 * LeftFrontPower * LeftFrontPower) + a;
-    float p2 = (kboth * RightFrontPower * RightFrontRpm) + (krpm2 * RightFrontRpm * RightFrontRpm) + (kpwr2 * RightFrontPower * RightFrontPower) + a;
-    float p3 = (kboth * LeftBackPower * LeftBackRpm) + (krpm2 * LeftBackRpm * LeftBackRpm) + (kpwr2 * LeftBackPower * LeftBackPower) + a;
-    float p4 = (kboth * RightBackPower * RightBackRpm) + (krpm2 * RightBackRpm * RightBackRpm) + (kpwr2 * RightBackPower * RightBackPower) + a;
+// ─────────────────────────────────────────────────────────────────────────────
+// Kinematics
+// ─────────────────────────────────────────────────────────────────────────────
 
-    float p_tot = p1 + p2 + p3 + p4;
+/*
+ * Forward kinematics — robot frame → individual wheel tangential speeds
+ *
+ * Wheel layout (top view, +X = robot forward):
+ *
+ *         +X
+ *          ↑
+ *    LF ───┼─── RF      LF/RB wheels roll along [+1, −1]/√2
+ *          │             RF/LB wheels roll along [−1, −1]/√2
+ *    LB ───┼─── RB  →+Y
+ *
+ * This gives the Jacobian rows:
+ *   v_LF = +vX  −  vY  −  vOmega · L
+ *   v_RF = −vX  −  vY  −  vOmega · L
+ *   v_LB = +vX  +  vY  −  vOmega · L
+ *   v_RB = −vX  +  vY  −  vOmega · L
+ *
+ * where L = m_kinL (the effective rotation moment arm [m]).
+ * All values in m/s.
+ */
+WheelSpeeds OmniWheelSubsystem::chassisToWheel(ChassisSpeeds cs) const
+{
+    const double L = m_kinL;
+    return {
+        +cs.vX - cs.vY - cs.vOmega * L,   // LF
+        -cs.vX - cs.vY - cs.vOmega * L,   // RF
+        +cs.vX + cs.vY - cs.vOmega * L,   // LB
+        -cs.vX + cs.vY - cs.vOmega * L,   // RB
+    };
+}
 
-    float A = 224.9;
-    float B = 215.8;
-    float C = 0.7955;
+/*
+ * Inverse kinematics — wheel tangential speeds → robot frame
+ *
+ * Derived by left-multiplying the pseudoinverse of the 4×3 Jacobian above.
+ * You can verify these by substituting the forward-kinematics rows:
+ *
+ *   vX     =  ( LF − RF + LB − RB) / 4
+ *   vY     =  (−LF − RF + LB + RB) / 4
+ *   vOmega = −(LF + RF + LB + RB) / (4 · L)
+ *
+ * NOTE: the original code had vX = (LF+RF−LB−RB)/4 and vY = (LF−RF+LB−RB)/4,
+ * which is wrong — those expressions evaluate to −vY and +vX respectively.
+ */
+ChassisSpeeds OmniWheelSubsystem::wheelToChassis(WheelSpeeds ws) const
+{
+    const double L = m_kinL;
+    return {
+        ( ws.LF - ws.RF + ws.LB - ws.RB) / 4.0,          // vX
+        (-ws.LF - ws.RF + ws.LB + ws.RB) / 4.0,          // vY
+        -(ws.LF + ws.RF + ws.LB + ws.RB) / (4.0 * L),    // vOmega
+    };
+}
 
-    float p_tot_c = (A * p_tot * p_tot) + (B * p_tot) + C;
+WheelSpeeds OmniWheelSubsystem::normalizeWheelSpeeds(WheelSpeeds ws) const
+{
+    double maxAbs = std::max({ std::abs(ws.LF), std::abs(ws.RF),
+                               std::abs(ws.LB), std::abs(ws.RB) });
 
-    return p_tot_c;
+    if (maxAbs > m_maxWheelSpeedMps) {
+        ws *= (m_maxWheelSpeedMps / maxAbs);
+    }
+    return ws;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Field-orientation helpers
+// ─────────────────────────────────────────────────────────────────────────────
+
+float OmniWheelSubsystem::getEncoderYawDeg() const
+{
+    // Invert the encoder direction to match the CCW-positive convention.
+    float deg = m_encoder->encoderMovingAverage();
+    while (deg <   0.0f) deg += 360.0f;
+    while (deg > 360.0f) deg -= 360.0f;
+    return deg;
+}
+
+/*
+ * Rotate field-frame ChassisSpeeds into robot frame.
+ *
+ * theta = (headingDeg − m_yawOffsetDeg) is the CCW angle from the encoder's
+ * "field +X" zero to the robot's current heading.
+ *
+ * vOmega is frame-independent and passes through unchanged.
+ */
+ChassisSpeeds OmniWheelSubsystem::rotateToRobotFrame(ChassisSpeeds fieldSpeeds,
+                                                       double headingDeg) const
+{
+    double theta = (headingDeg - m_yawOffsetDeg) * OMNI_PI / 180.0;
+    double c = std::cos(theta), s = std::sin(theta);
+    return {
+        fieldSpeeds.vX * c - fieldSpeeds.vY * s,
+        fieldSpeeds.vX * s + fieldSpeeds.vY * c,
+        fieldSpeeds.vOmega,
+    };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Unit conversions
+// ─────────────────────────────────────────────────────────────────────────────
+
+/*
+ * getData(VELOCITY) returns the wheel OUTPUT-SHAFT angular velocity in rad/s.
+ * The DJIMotor driver already divides the raw encoder velocity by the gear
+ * ratio — do NOT apply M3508_GEAR_RATIO again here.
+ *
+ * Derived quantities:
+ *   wheel_mps  = omega_wheel [rad/s]  × WHEEL_RADIUS_M
+ *   motor_rpm  = omega_wheel [rad/s]  × M3508_GEAR_RATIO  × (60 / 2π)
+ */
+
+double OmniWheelSubsystem::getWheelSpeedMps(MotorLocation loc)
+{
+    double omegaWheelRadps = getMotor(loc).getData(VELOCITY); // [rad/s], post gear reduction
+    return omegaWheelRadps * WHEEL_RADIUS_M;                  // → [m/s]
+}
+
+double OmniWheelSubsystem::getMotorShaftRpm(MotorLocation loc)
+{
+    double omegaWheelRadps = getMotor(loc).getData(VELOCITY); // [rad/s]
+    return omegaWheelRadps * M3508_GEAR_RATIO * (60.0 / (2.0 * OMNI_PI)); // → [RPM]
+}
+
+double OmniWheelSubsystem::wheelMpsToMotorRpm(double mps)
+{
+    // mps → omega_wheel rad/s → motor shaft RPM
+    return (mps / WHEEL_RADIUS_M) * M3508_GEAR_RATIO * (60.0 / (2.0 * OMNI_PI));
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Low-level motor drive
+// ─────────────────────────────────────────────────────────────────────────────
+
+float OmniWheelSubsystem::setWheelSpeeds(WheelSpeeds targetMps)
+{
+    // Convert desired wheel tangential speeds [m/s] → motor shaft RPM (pre-gearbox)
+    float targetMotorRpm[4] = {
+        (float)wheelMpsToMotorRpm(targetMps.LF),
+        (float)wheelMpsToMotorRpm(targetMps.RF),
+        (float)wheelMpsToMotorRpm(targetMps.LB),
+        (float)wheelMpsToMotorRpm(targetMps.RB),
+    };
+
+    // Rate-limit each motor to avoid large current spikes.
+    // m_prevMotorRpm holds the actual motor shaft RPM read at the end of the last tick.
+    float cmdRpm[4] = {
+        limitAcceleration(targetMotorRpm[0], m_prevMotorRpm[0], LF.getData(POWEROUT)),
+        limitAcceleration(targetMotorRpm[1], m_prevMotorRpm[1], RF.getData(POWEROUT)),
+        limitAcceleration(targetMotorRpm[2], m_prevMotorRpm[2], LB.getData(POWEROUT)),
+        limitAcceleration(targetMotorRpm[3], m_prevMotorRpm[3], RB.getData(POWEROUT)),
+    };
+
+    uint32_t now = us_ticker_read();
+    uint32_t dt  = now - m_lastPidUs;
+
+    // Run speed PID.
+    // setpoint  = rate-limited motor shaft RPM command
+    // feedback  = actual motor shaft RPM from previous tick (m_prevMotorRpm)
+    // The DJIMotor speed-PID output must be scaled by M3508_GEAR_RATIO to
+    // produce the correct raw motor power magnitude.
+    int power[4] = {
+        (int)(M3508_GEAR_RATIO * LF.calculateSpeedPID(cmdRpm[0], m_prevMotorRpm[0], dt)),
+        (int)(M3508_GEAR_RATIO * RF.calculateSpeedPID(cmdRpm[1], m_prevMotorRpm[1], dt)),
+        (int)(M3508_GEAR_RATIO * LB.calculateSpeedPID(cmdRpm[2], m_prevMotorRpm[2], dt)),
+        (int)(M3508_GEAR_RATIO * RB.calculateSpeedPID(cmdRpm[3], m_prevMotorRpm[3], dt)),
+    };
+
+    if (targetMotorRpm[0] == 0 && targetMotorRpm[1] == 0 && targetMotorRpm[2] == 0 && targetMotorRpm[3] == 0) {
+        power[0] = 0;
+        power[1] = 0;
+        power[2] = 0;
+        power[3] = 0;
+    }
+    m_lastPidUs = now;
+
+    // Snapshot actual motor shaft RPM for the next tick's rate-limit and PID feedback.
+    m_prevMotorRpm[0] = (float)getMotorShaftRpm(LEFT_FRONT);
+    m_prevMotorRpm[1] = (float)getMotorShaftRpm(RIGHT_FRONT);
+    m_prevMotorRpm[2] = (float)getMotorShaftRpm(LEFT_BACK);
+    m_prevMotorRpm[3] = (float)getMotorShaftRpm(RIGHT_BACK);
+
+    // Power budget: estimate total chassis draw and scale down if over budget.
+    float totalEstimatedWatts = estimatePowerWatts(LF.getData(TORQUE))
+                               + estimatePowerWatts(RF.getData(TORQUE))
+                               + estimatePowerWatts(LB.getData(TORQUE))
+                               + estimatePowerWatts(RB.getData(TORQUE));
+
+    // A small epsilon in the denominator prevents division by zero when idle.
+    constexpr float POWER_MARGIN_W = 10.0f;
+    float scale = std::min(1.0f, power_limit / (totalEstimatedWatts + POWER_MARGIN_W));
+    // printf("s: %.2f, %d %d %d %d\n", totalEstimatedWatts, power[0], power[1], power[2], power[3]);
+    // printf("%.2f\n", power_limit);
+
+    LF.setPower(power[0] * scale);
+    RF.setPower(power[1] * scale);
+    LB.setPower(power[2] * scale);
+    RB.setPower(power[3] * scale);
+
+    return scale;
+}
+
+/*
+ * Rate-limit the commanded motor shaft RPM.
+ *
+ * If the motor is currently unpowered (currentPower == 0) the limit is
+ * skipped — there is no risk of overcurrent and the motor needs to spin up.
+ *
+ * If the direction would flip sign we pass through zero first to avoid a
+ * sudden reversal.
+ */
+float OmniWheelSubsystem::limitAcceleration(float desired, float prev, int currentPower)
+{
+    constexpr float MAX_DELTA_RPM = 100.0f;
+
+    // Snap to zero before reversing direction
+    bool reversing = (desired > 0.0f && prev < 0.0f) || (desired < 0.0f && prev > 0.0f);
+    if (reversing) return 0.0f;
+
+    if (desired == 0.0f) return 0.0f;
+
+    // Skip limiting when the motor is unpowered (no overcurrent risk)
+    if (currentPower == 0) return desired;
+
+    float delta = desired - prev;
+    if      (delta >  MAX_DELTA_RPM) return prev + MAX_DELTA_RPM;
+    else if (delta < -MAX_DELTA_RPM) return prev - MAX_DELTA_RPM;
+    else                             return desired;
+}
+
+/*
+ * Estimate instantaneous motor power [W] from the raw torque register.
+ *
+ * Piecewise-linear current model, calibrated for M3508:
+ *   • linear region:    I = (|counts| / PEAK_COUNTS) × LINEAR_SLOPE  [A]
+ *   • saturation region (ratio > SATURATION_RATIO): I = SATURATION_CURRENT [A]
+ *
+ * Assumed bus voltage: 24 V.  Power = 24 V × I_total.
+ */
+float OmniWheelSubsystem::estimatePowerWatts(int torqueCounts)
+{
+    constexpr int   PEAK_TORQUE_COUNTS  = 5596;
+    constexpr float SATURATION_RATIO    = 0.4375f;
+    constexpr float SATURATION_CURRENT  = 1.22f;   // [A]
+    constexpr float LINEAR_SLOPE        = 14.0f / 4.9f;
+    constexpr float BUS_VOLTAGE         = 24.0f;   // [V]
+
+    float ratio = std::abs(static_cast<float>(torqueCounts)) / PEAK_TORQUE_COUNTS;
+
+    float currentA;
+    if (ratio > SATURATION_RATIO) {
+        // Log an over-torque event at most once every 200 ms
+        if ((us_ticker_read() - m_lastTorqueUs) / 1000UL > 200UL) {
+            m_lastTorqueUs = us_ticker_read();
+        }
+        currentA = SATURATION_CURRENT;
+    } else {
+        currentA = ratio * LINEAR_SLOPE;
+    }
+
+    return BUS_VOLTAGE * currentA;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Motor access / configuration
+// ─────────────────────────────────────────────────────────────────────────────
+
+DJIMotor &OmniWheelSubsystem::getMotor(MotorLocation loc)
+{
+    switch (loc) {
+        case LEFT_FRONT:  return LF;
+        case RIGHT_FRONT: return RF;
+        case LEFT_BACK:   return LB;
+        case RIGHT_BACK:  return RB;
+    }
+    assert(false && "invalid MotorLocation");
+    __builtin_unreachable();
+}
+
+void OmniWheelSubsystem::setMotorSpeedPID(MotorLocation loc, float kP, float kI, float kD)
+{
+    getMotor(loc).setSpeedPID(kP, kI, kD);
+}
+
+void OmniWheelSubsystem::setSpeedLimits(double maxLinearMps, double maxOmegaRadps)
+{
+    m_maxWheelSpeedMps = maxLinearMps;
+    m_maxOmegaRadps    = maxOmegaRadps;
 }
