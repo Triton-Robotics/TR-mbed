@@ -1,13 +1,5 @@
 #include "MA4.h"
 
-MA4::MA4(PinName p) : _p(p) {
-    _p.rise(callback(this, &MA4::rise));
-    _p.fall(callback(this, &MA4::fall));
-    _period = 0.0;
-    _pulsewidth = 0.0;
-    _t.start();
-}
-
 MA4::MA4(PinName p, bool invert) : _p(p), _invert(invert) {
     _p.rise(callback(this, &MA4::rise));
     _p.fall(callback(this, &MA4::fall));
