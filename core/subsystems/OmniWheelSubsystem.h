@@ -82,7 +82,7 @@ public:
         float power_limit_watts = 60.f; ///< total chassis power budget [W]
 
         /// Maximum beyblade spin rate at power_limit_watts with no lateral movement [rad/s].
-        double max_beyblade_omega_radps = 25.0;
+        double max_beyblade_omega_radps = 8.0;
 
         HolonomicMode chassis_type = OMNI;
     };
