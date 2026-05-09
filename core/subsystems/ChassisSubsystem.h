@@ -345,6 +345,7 @@ public:
 
     uint32_t lastPIDTime = 0;
 
+
     // int8_t isInverted[4];
 
     double prevVel;
@@ -406,6 +407,10 @@ private:
 
     double getMotorSpeedRPM(MotorLocation location);
     int motorPIDtoPower(MotorLocation location, double speed, uint32_t dt);
+
+    //new from arihant branch chassis-refactor
+    unsigned long last_torque_time = 0;
+    float curr_fit(int x);
 
     // ChassisKalman chassisKalman;
     double testAngle;

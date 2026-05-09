@@ -134,6 +134,16 @@ double ChassisSubsystem::Bisection(int LeftFrontPower, int RightFrontPower, int 
     }
 }
 
+float ChassisSubsystem::curr_fit(int x) {
+    if ((static_cast<float>(x)) / 5596 > 0.4375) {
+        if ((us_ticker_read() - last_torque_time) / 1000 > 200) {
+            last_torque_time = us_ticker_read();
+            return 1.22;
+        }
+    }
+    return (abs(static_cast<float>(x)) / 5596) * (14 / 4.9);
+}
+
 float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
 {
     desiredWheelSpeeds = wheelSpeeds; // WheelSpeeds in RPM
