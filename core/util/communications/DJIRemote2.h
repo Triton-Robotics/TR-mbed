@@ -6,17 +6,17 @@
 #include <cstddef>
 
 struct VTMInput {
-    uint16_t ch0 = 0;
-    uint16_t ch1 = 0;
-    uint16_t ch2 = 0;
-    uint16_t ch3 = 0;
+    uint16_t ch0 = 1024;
+    uint16_t ch1 = 1024;
+    uint16_t ch2 = 1024;
+    uint16_t ch3 = 1024;
 
     uint8_t mode = 0;
     uint8_t pause = 0;
     uint8_t btnL = 0;
     uint8_t btnR = 0;
 
-    uint16_t dial = 0;
+    uint16_t dial = 1024;
     uint8_t trigger = 0;
 
     int16_t mouseX = 0;
@@ -43,6 +43,9 @@ public:
 
     bool update();                      // returns true when a full new frame is decoded
     void clear();
+    void zeroInputs();  
+
+    uint64_t prevFrameTime = 0;         
 
     const VTMInput& getData() const;
     bool hasValidFrame() const;

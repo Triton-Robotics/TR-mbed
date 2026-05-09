@@ -10,8 +10,8 @@
 class BaseRobot {
   public:
     struct Config {
-		PinName remote_tx_pin = PA_12; 
-		PinName remote_rx_pin = PA_11;
+		PinName remote_tx_pin = NC; 
+		PinName remote_rx_pin = PA_10;
 
         PinName referee_tx_pin = PC_10;
         PinName referee_rx_pin = PC_11;
@@ -33,7 +33,7 @@ class BaseRobot {
 	// };
 
     DJIRemote2 remote_;
-    // Referee referee;
+    Referee referee;
 
     CANHandler canHandler1_;
     CANHandler canHandler2_;
@@ -74,8 +74,8 @@ class BaseRobot {
 
     // clang-format off
     BaseRobot(const Config &config)
-        : remote_(config.referee_tx_pin, config.referee_rx_pin),
-		// referee(config.referee_tx_pin, config.referee_rx_pin), 
+        : remote_(config.remote_tx_pin, config.remote_rx_pin),
+		referee(config.referee_tx_pin, config.referee_rx_pin), 
           canHandler1_(config.can1_rx_pin, config.can1_tx_pin),
           canHandler2_(config.can2_rx_pin, config.can2_tx_pin),
           led0_(config.led0_pin),

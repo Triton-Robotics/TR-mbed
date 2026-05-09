@@ -102,6 +102,12 @@ DJIRemote2::DJIRemote2(PinName tx, PinName rx, int baud)
 bool DJIRemote2::update()
 {
     readIncomingBytes();
+    uint64_t curr_time = us_ticker_read();
+    // if it's been more than 250 ms since we've received a valid frame, zero inputs for safety
+    if (curr_time - lastFrameTimeUs_ > 250 * 1000) { 
+        zeroInputs();
+    }
+    
     return tryParseFrame();
 }
 
@@ -114,6 +120,33 @@ void DJIRemote2::clear()
     currentFrameTimeUs_ = 0;
     std::memset(streamBuffer_, 0, sizeof(streamBuffer_));
     data_ = VTMInput{};
+}
+
+void DJIRemote2::zeroInputs()
+{
+    data_.ch0 = 1024;
+    data_.ch1 = 1024;
+    data_.ch2 = 1024;
+    data_.ch3 = 1024;
+
+    data_.mode = 0;
+    data_.pause = 0;
+    data_.btnL = 0;
+    data_.btnR = 0;
+
+    data_.dial = 1024;
+    data_.trigger = 0;
+
+    data_.mouseX = 0;
+    data_.mouseY = 0;
+    data_.mouseZ = 0;
+
+    data_.mouseL = 0;
+    data_.mouseR = 0;
+    data_.mouseM = 0;
+
+    data_.keyboard = 0;
+    data_.CRC_in = 0;
 }
 
 const VTMInput& DJIRemote2::getData() const
@@ -203,8 +236,7 @@ bool DJIRemote2::tryParseFrame()
         // }
         // printf("\n");
         
-        // TODO: make this a real test and not just a print
-        printf("CRC: %d\n", verify_crc16_check_sum(streamBuffer_,21));
+        // printf("CRC: %d\n", verify_crc16_check_sum(streamBuffer_,21));
         validFrame_ = verify_crc16_check_sum(streamBuffer_,21);
         
         if (validFrame_) {
@@ -214,6 +246,7 @@ bool DJIRemote2::tryParseFrame()
                 framePeriodUs_ = currentFrameTimeUs_ - lastFrameTimeUs_;
             }
             lastFrameTimeUs_ = currentFrameTimeUs_;
+            // printf("Frame received! Time since last frame: %.2f ms, Frame rate: %.2f Hz\n", framePeriodUs_ / 1000.0, getFrameRateHz());
         }
 
         // Remove parsed frame
