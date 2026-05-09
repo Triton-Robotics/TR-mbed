@@ -17,7 +17,9 @@ OmniWheelSubsystem::OmniWheelSubsystem(const Config &cfg, MA4 *encoder)
       m_encoder(encoder),
       m_yawOffsetDeg(cfg.yaw_initial_offset_deg),
       m_maxWheelSpeedMps(DEFAULT_MAX_WHEEL_MPS),
-      m_maxOmegaRadps(DEFAULT_MAX_OMEGA_RADPS)
+      m_maxOmegaRadps(DEFAULT_MAX_OMEGA_RADPS),
+      m_beybladeMaxOmega(cfg.max_beyblade_omega_radps),
+      m_beybladeRefPowerW(cfg.power_limit_watts)
 {
     LF.outputCap = RF.outputCap = LB.outputCap = RB.outputCap = 16000;
     initKinematics(cfg.chassis_radius, cfg.chassis_type);
@@ -92,6 +94,34 @@ float OmniWheelSubsystem::setChassisSpeeds(ChassisSpeeds desired, DriveMode mode
             while (fusedDeg >  360.0) fusedDeg -= 360.0;
             while (fusedDeg <    0.0) fusedDeg += 360.0;
             robotFrame = rotateToRobotFrame(desired, fusedDeg);
+            break;
+        }
+
+        case BEYBLADE: {
+            // ── Lateral component (field-frame → robot frame) ──────────────────
+            // The chassis is spinning, so we must field-orient the lateral input
+            // every tick so the driver always pushes in the direction they intend.
+            double headingDeg = getEncoderYawDeg();
+            ChassisSpeeds lateral = rotateToRobotFrame({desired.vX, desired.vY, 0.0}, headingDeg);
+
+            // ── Beyblade omega budget ──────────────────────────────────────────
+            //
+            // Power model (exact for omni kinematics, no cross terms):
+            //   Σ(v_wheel²) = 4·(vX² + vY² + (ω·L)²)
+            //
+            // Scale ω_max to the current power_limit (P ∝ ω² so ω ∝ √P):
+            //   ω_max_actual = ω_max_ref · √(power_limit / power_limit_ref)
+            //
+            // Solve for ω that fills the remaining budget after lateral:
+            //   ω_available = √(max(0, ω_max_actual² − (vX² + vY²) / L²))
+            //
+            double lateralSpeedSq = lateral.vX * lateral.vX + lateral.vY * lateral.vY;
+            double omegaSq        = m_beybladeMaxOmega * m_beybladeMaxOmega
+                                    - lateralSpeedSq / (m_kinL * m_kinL);
+            double omegaAvail     = (omegaSq > 0.0) ? std::sqrt(omegaSq) : 0.0;
+
+            // Positive omega = CCW spin.  Negate here for CW if preferred.
+            robotFrame = { lateral.vX, lateral.vY, omegaAvail };
             break;
         }
     }
