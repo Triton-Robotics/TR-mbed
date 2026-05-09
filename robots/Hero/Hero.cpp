@@ -202,8 +202,7 @@ public:
         jetson_state = jetson.read();
 
         // Chassis logic
-        if (drive == 'u' || (drive == 'o' && remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) ==
-                                                 Remote::SwitchState::UP)) {
+        if (drive == 'u' || (drive == 'o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_S)) {
             // TODO: think about how we want to implement jetson aiming
             // des_turret_state.pitch_angle = jetson_state.desired_pitch_rads;
             // des_turret_state.yaw_angle = jetson_state.desired_yaw_rads;
@@ -213,7 +212,7 @@ public:
             des_turret_state.turret_mode = TurretState::AIM;
         } else if (drive == 'd' ||
                    (drive == 'o' &&
-                    remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::DOWN)) {
+                    remote_.getMode() == DJIRemote2::ModeSwitch::MODE_C)) {
             des_chassis_state.vOmega = omega_speed;
             chassis_.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
@@ -227,10 +226,10 @@ public:
 
                 
         // Shooter Logic
-        if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP ||
+        if (remote_.TriggerPressed() == true ||
             remote_.getMouseL()) {
             des_shoot_state = ShootState::SHOOT;
-        } else if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID ||
+        } else if (remote_.PAUSEToggled() == true ||
                    shot == 'd') {
             des_shoot_state = ShootState::FLYWHEEL;
         } else {
@@ -263,8 +262,19 @@ public:
         // printf("cx: %.2f\n", remote_.getChassisX());
         // printf("switch: %d\n", remote_.getSwitch(Remote::Switch::RIGHT_SWITCH));
                 // printf("%.2f\n", encoder_.encoderMovingAverage());
-        printf("%.2f %.2f\n", shooter_.flywheelL.getData(VELOCITY), shooter_.flywheelR.getData(VELOCITY));
+        // printf("%.2f %.2f\n", shooter_.flywheelL.getData(VELOCITY), shooter_.flywheelR.getData(VELOCITY));
         // printf("%.2f, %.2f, %.2f\n", imuAngles.roll, imuAngles.pitch, imuAngles.yaw);
+        printf("%d %.2f %.2f %.2f %.2f %d %.2f %d %d %d\n", 
+                            remote_.PAUSEToggled(), 
+                            remote_.getJoystickValue(DJIRemote2::Joystick::LEFT_VERTICAL), 
+                            remote_.getJoystickValue(DJIRemote2::Joystick::LEFT_HORIZONTAL), 
+                            remote_.getJoystickValue(DJIRemote2::Joystick::RIGHT_VERTICAL), 
+                            remote_.getJoystickValue(DJIRemote2::Joystick::RIGHT_HORIZONTAL),
+                            remote_.TriggerPressed(),
+                            remote_.getDialValue(),
+                            remote_.CUSTLPressed(),
+                            remote_.CUSTRPressed(),
+                            static_cast<int>(remote_.getMode()));
     }
 
     void end_of_loop() override {}

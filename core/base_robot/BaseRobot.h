@@ -2,7 +2,7 @@
 
 #include "PinNames.h"
 #include "mbed.h"
-#include "util/communications/DJIRemote.h"
+#include "util/communications/DJIRemote2.h"
 #include "util/communications/referee/ref_serial.h"
 #include "util/motor/DJIMotor.h"
 #include <us_ticker_api.h>
@@ -10,7 +10,8 @@
 class BaseRobot {
   public:
     struct Config {
-        PinName remote_pin = PA_10;
+        PinName remote_tx_pin = NC; 
+		PinName remote_rx_pin = PA_10;
 
         PinName referee_tx_pin = PC_10;
         PinName referee_rx_pin = PC_11;
@@ -26,7 +27,7 @@ class BaseRobot {
         PinName led2_pin = PC_0;
     };
 
-    Remote remote_;
+    DJIRemote2 remote_;
     Referee referee_;
 
     CANHandler canHandler1_;
@@ -68,7 +69,7 @@ class BaseRobot {
 
     // clang-format off
     BaseRobot(const Config &config)
-        : remote_(config.remote_pin),
+        : remote_(config.remote_tx_pin, config.remote_rx_pin),
           referee_(config.referee_tx_pin, config.referee_rx_pin), 
           canHandler1_(config.can1_rx_pin, config.can1_tx_pin),
           canHandler2_(config.can2_rx_pin, config.can2_tx_pin),
@@ -109,7 +110,7 @@ class BaseRobot {
 
             // 20 ms remote read
             if ((loop_clock_us - prev_remote_time_us) / 1000 >= 15) {
-                remote_.read();
+                remote_.update();
                 remoteRead();
                 prev_remote_time_us = us_ticker_read();
             }
@@ -135,21 +136,21 @@ class BaseRobot {
     void remoteRead()
     {
         //Keyboard-based drive and shoot mode
-        if(remote_.keyPressed(Remote::Key::R)){
+        if(remote_.keyPressed(DJIRemote2::Key::R)){
             drive = 'm';
-        }else if(remote_.keyPressed(Remote::Key::E)){
+        }else if(remote_.keyPressed(DJIRemote2::Key::E)){
             drive = 'u';
-        }else if(remote_.keyPressed(Remote::Key::Q)){
+        }else if(remote_.keyPressed(DJIRemote2::Key::Q)){
             drive = 'd';        
         }
 
-        if(remote_.keyPressed(Remote::Key::V)){
+        if(remote_.keyPressed(DJIRemote2::Key::V)){
             shot = 'm';
-        }else if(remote_.keyPressed(Remote::Key::C)){
+        }else if(remote_.keyPressed(DJIRemote2::Key::C)){
             shot = 'd';        
         }
         
-        if(remote_.getMouseR() || remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID){
+        if(remote_.getMouseR() || remote_.PAUSEToggled() == true){
             cv_enabled = true;
         }else if(!remote_.getMouseR() ){
             cv_enabled = false;
@@ -157,11 +158,11 @@ class BaseRobot {
 
         //Driving input
         scalar = 1;
-        jx = remote_.leftX() * scalar; // -1 to 1
-        jy = remote_.leftY() * scalar; // -1 to 1
+        jx = remote_.getJoystickValue(DJIRemote2::Joystick::LEFT_HORIZONTAL) * scalar; // -1 to 1
+        jy = remote_.getJoystickValue(DJIRemote2::Joystick::LEFT_VERTICAL) * scalar; // -1 to 1
         //Pitch, Yaw
-        jpitch = remote_.rightY() * scalar; // -1 to 1
-        jyaw = remote_.rightX() * scalar; // -1 to 1
+        jpitch = remote_.getJoystickValue(DJIRemote2::Joystick::RIGHT_VERTICAL) * scalar; // -1 to 1
+        jyaw = remote_.getJoystickValue(DJIRemote2::Joystick::RIGHT_HORIZONTAL) * scalar; // -1 to 1
 
         myaw = remote_.getMouseX();
         mpitch = -remote_.getMouseY();
@@ -173,15 +174,15 @@ class BaseRobot {
         
 
         // Shift to make robot go slower
-        if (remote_.keyPressed(Remote::Key::SHIFT)) {
+        if (remote_.keyPressed(DJIRemote2::Key::SHIFT)) {
             mult = 0.5;
         }
-        if(remote_.keyPressed(Remote::Key::CTRL)){
+        if(remote_.keyPressed(DJIRemote2::Key::CTRL)){
             mult = 1;
         }
 
-        jx += mult * ((remote_.keyPressed(Remote::Key::D) ? 1 : 0) + (remote_.keyPressed(Remote::Key::A) ? -1 : 0));
-        jy += mult * ((remote_.keyPressed(Remote::Key::W) ? 1 : 0) + (remote_.keyPressed(Remote::Key::S) ? -1 : 0));
+        jx += mult * ((remote_.keyPressed(DJIRemote2::Key::D) ? 1 : 0) + (remote_.keyPressed(DJIRemote2::Key::A) ? -1 : 0));
+        jy += mult * ((remote_.keyPressed(DJIRemote2::Key::W) ? 1 : 0) + (remote_.keyPressed(DJIRemote2::Key::S) ? -1 : 0));
 
         float j_hypo = sqrt(jx * jx + jy * jy);
         if(j_hypo > 1.0){
@@ -198,7 +199,7 @@ class BaseRobot {
         // float max_omega = 0.326 + 0.0857 * chassis_power_limit + -0.000183 * (chassis_power_limit * chassis_power_limit);
         float max_omega = 4.8;
 
-        if(remote_.keyPressed(Remote::Key::CTRL)){
+        if(remote_.keyPressed(DJIRemote2::Key::CTRL)){
             jx = 0.0;
             jy = 0.0;
             max_omega = 6.1;
