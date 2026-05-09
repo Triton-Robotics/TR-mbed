@@ -227,8 +227,8 @@ class Sentry : public BaseRobot {
                 // des_turret_state.yaw_angle_degs = turret_.getState().yaw_angle_degs;
                 // des_turret_state.pitch_angle_degs = turret_.getState().pitch_angle_degs;
             } else {
-                des_chassis_state.vX = jetson_state.desired_x_vel;
-                des_chassis_state.vY = -jetson_state.desired_y_vel;
+                des_chassis_state.vX += jetson_state.desired_x_vel;
+                des_chassis_state.vY += -jetson_state.desired_y_vel;
                 des_chassis_state.vOmega = jetson_state.desired_angular_vel;
 
                 des_turret_state.turret_mode = TurretState::AIM;
