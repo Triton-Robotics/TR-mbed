@@ -92,15 +92,14 @@ ShooterSubsystem::config shooter_config = {
 OmniWheelSubsystem::Config chassis_config = {
     1,      // left_front_can_id
     2,      // right_front_can_id
-    4,      // left_back_can_id
-    3,      // right_back_can_id
+    3,      // left_back_can_id
+    4,      // right_back_can_id
     FL_VEL_CONFIG,
     FR_VEL_CONFIG,
     BL_VEL_CONFIG,
     BR_VEL_CONFIG,
     0.22617,  // radius
-    0.065,    // speed_pid_ff_ks
-    86,     // yaw_initial_offset_ticks
+    40,     // yaw_initial_offset_ticks
     120,
 };
 
@@ -163,8 +162,10 @@ class Infantry : public BaseRobot {
         imu_.mahonyUpdateIMU(dt_us / 1000000.0);
         imuAngles = imu_.getImuAngles();
         // TODO: use this in code correctly to drive faster
+        // chassis_.power_limit = referee_.robot_status.chassis_power_limit;
         max_linear_vel = 1.24 + 0.0513 * chassis_.power_limit +
                          0.000216 * (chassis_.power_limit * chassis_.power_limit);
+        // max_linear_vel = 5.0;
         des_chassis_state.vX = jy * max_linear_vel;
         des_chassis_state.vY = -jx * max_linear_vel;
 
@@ -190,7 +191,7 @@ class Infantry : public BaseRobot {
         // Chassis logic
         if (drive == 'u' || (drive == 'o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_S)) {
             des_chassis_state.vOmega = 0;
-            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::DRIVE_MODE::YAW_ORIENTED);
+            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
             referee_.is_aligned = false;
             referee_.is_cv_on = false;
@@ -199,7 +200,7 @@ class Infantry : public BaseRobot {
                    (drive == 'o' &&
                     remote_.getMode() == DJIRemote2::ModeSwitch::MODE_C)) {
             des_chassis_state.vOmega = omega_speed;
-            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::DRIVE_MODE::YAW_ORIENTED);
+            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
             referee_.is_aligned = false;
             referee_.is_cv_on = false;
@@ -236,7 +237,7 @@ class Infantry : public BaseRobot {
         shooter_.setState(des_shoot_state);
 
         turret_.periodic(chassis_.getChassisSpeeds().vOmega * 60 / (2 * PI));
-        chassis_.periodic(&imuAngles);
+        chassis_.periodic(imuAngles);
         shooter_.periodic(referee_.power_heat_data.shooter_17mm_1_barrel_heat,
                          referee_.robot_status.shooter_barrel_heat_limit);
 

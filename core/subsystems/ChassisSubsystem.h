@@ -2,7 +2,7 @@
 #define TR_EMBEDDED_CHASSIS_SUBSYSTEM_H
 
 #include "mbed.h"
-#include "util/peripherals/imu/BNO055.h"
+#include "util/peripherals/imu/IMU.h"
 #include "util/communications/PwmIn.h"
 #include "util/peripherals/encoder/MA4.h"
 

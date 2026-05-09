@@ -1,295 +1,214 @@
-#ifndef TR_EMBEDDED_CHASSIS_SUBSYSTEM_H
-#define TR_EMBEDDED_CHASSIS_SUBSYSTEM_H
+#pragma once
 
 #include "mbed.h"
+#include "subsystems/ChassisSubsystem.h"
 #include "util/peripherals/imu/IMU.h"
-#include "util/communications/PwmIn.h"
 #include "util/peripherals/encoder/MA4.h"
+#include "util/motor/DJIMotor.h"
+#include "util/communications/CANHandler.h"
+#include "util/algorithms/PID.h"
 
 #include <cstdint>
-#include <util/motor/DJIMotor.h>
-#include <util/communications/CANHandler.h>
-#include <util/peripherals/oled/SSD1308.h>
-// #include <subsystems/ChassisKalman.h>
-// #include <algorithms/WheelKalman.h>
-#include <util/algorithms/PID.h>
-// #include <algorithms/WheelSpeeds.h>
-// #include <algorithms/ChassisSpeeds.h>
 
-#define CAN_BUS_TYPE CANHandler::CANBUS_1
-#define MOTOR_TYPE M3508
-#define M3508_POST_MAX_RPM 469
-#define INPUT_THRESHOLD 0.01
+// ── Physical / hardware constants ──────────────────────────────────────────────
+// Adjust if hardware changes.
 
-#define PI 3.14159265
-#define SECONDS_PER_MINUTE 60
-#define TICKS_PER_ROTATION 8192.0
-#define WHEEL_DIAMETER_METERS 0.146
-#define WHEEL_TO_CHASSIS_CENTER_LX 0.21
-#define WHEEL_TO_CHASSIS_CENTER_LY 0.14
+static constexpr double OMNI_PI              = 3.14159265358979;
+static constexpr double WHEEL_RADIUS_M       = 0.073;   ///< 146 mm diameter / 2  [m]
+static constexpr double MECANUM_HALF_X       = 0.14;    ///< wheel-centre to chassis X-axis [m]
+static constexpr double MECANUM_HALF_Y       = 0.21;    ///< wheel-centre to chassis Y-axis [m]
+static constexpr double DEFAULT_MAX_WHEEL_MPS  = 2.92;  ///< linear wheel speed cap  [m/s]
+static constexpr double DEFAULT_MAX_OMEGA_RADPS = 8.0;  ///< angular velocity cap  [rad/s]
 
-constexpr float STATIC_FRICTION_CONSTANT = 0.233924f;
-constexpr float STATIC_FRICTION_CONSTANT_ALT = 0.8f;
-constexpr float GRAVITY = 9.80665f;
-constexpr int ACCEL_DENOM_CONSTANT = 2;
+// ── Kinematic types ────────────────────────────────────────────────────────────
 
-#define MAX_BEYBLADE_SPEED 1800
-#define BEYBLADE_ACCELERATION 0.05
-#define MAX_VEL 2.92
-
-struct OmniKinematics
-{
-    double r1x, r1y, r2x, r2y, r3x, r3y, r4x, r4y;
+/// Tangential speed at each wheel hub [m/s].
+/// Sign convention: positive means the wheel rolls in the "forward-contributing" direction.
+struct WheelSpeeds {
+    double LF, RF, LB, RB;
+    void operator*=(double s) { LF *= s; RF *= s; LB *= s; RB *= s; }
 };
 
-struct WheelSpeeds
-{
-    double LF;
-    double RF;
-    double LB;
-    double RB;
-
-    void operator*=(double scalar)
-    {
-        LF *= scalar;
-        RF *= scalar;
-        LB *= scalar;
-        RB *= scalar;
-    }
+/// Robot-frame chassis velocity.
+/// +X = forward, +Y = left, +Ω = counter-clockwise (right-hand Z-up).
+struct ChassisSpeeds {
+    double vX;      ///< forward velocity    [m/s]
+    double vY;      ///< leftward velocity   [m/s]
+    double vOmega;  ///< CCW angular rate    [rad/s]
 };
 
-struct ChassisSpeeds
-{
-    double vX;
-    double vY;
-    double vOmega;
-};
-
-struct OmniKinematicsLimits
-{
-    double max_Vel;
-    double max_vOmega;
-};
+// ──────────────────────────────────────────────────────────────────────────────
 
 /**
- * The OmniWheelSubsystem class is a wrapper for the DJIMotor class that allows for easy control of the chassis.
+ * OmniWheelSubsystem — velocity-controlled 4-wheel holonomic drive.
  *
- * The OmniWheelSubsystem class also contains methods for controlling the chassis with the IMU. The IMU is used to control the
- * chassis in a field-relative manner, and to control the chassis with an offset angle.
+ * Coordinate frame (robot frame):
+ *   +X  forward   +Y  left   +Ω  counter-clockwise (right-hand, Z-up)
+ *
+ * Wheel layout (top view, robot nose points up):
+ *
+ *        +X (forward)
+ *         ↑
+ *   LF ───┼─── RF
+ *         │
+ *   LB ───┼─── RB      → +Y (left)
+ *
+ * In OMNI mode each wheel is mounted at 45° to the robot X-axis.
+ * In MECANUM mode wheels are axis-aligned with 45° rollers.
  */
-class OmniWheelSubsystem
-{
+class OmniWheelSubsystem {
 public:
 
-    enum MotorLocation
-    {
-        LEFT_FRONT,
-        RIGHT_FRONT,
-        LEFT_BACK,
-        RIGHT_BACK
+    enum MotorLocation { LEFT_FRONT, RIGHT_FRONT, LEFT_BACK, RIGHT_BACK };
+
+    enum DriveMode {
+        ROBOT_ORIENTED,  ///< vX/vY in robot frame  (+X = robot nose)
+        YAW_ORIENTED,    ///< vX/vY in field frame, heading sourced from turret encoder
+        ODOM_ORIENTED,   ///< vX/vY in field frame, heading from fused encoder + IMU
+        BEYBLADE,
     };
 
-    enum SPEED_UNIT
-    {
-        RAD_PER_SECOND,
-        RPM,
-        METER_PER_SECOND,
-    };
+    enum HolonomicMode { OMNI, MECANUM };
 
-    enum DRIVE_MODE
-    {
-        YAW_ORIENTED,
-        YAW_ALIGN,
-        ROBOT_ORIENTED,
-        ODOM_ORIENTED
-    };
-
-    enum HOLONOMIC_MODE
-    {
-        OMNI,
-        MECANUM
-    };
-    
     struct Config {
-        int left_front_can_id;
-        int right_front_can_id;
-        int left_back_can_id;
-        int right_back_can_id;
+        int lf_can_id, rf_can_id, lb_can_id, rb_can_id; ///< motor CAN IDs
+        PID::config lf_pid, rf_pid, lb_pid, rb_pid;     ///< per-motor speed PID configs
 
-        PID::config lf_pid;
-        PID::config rf_pid;
-        PID::config lb_pid;
-        PID::config rb_pid;
+        double chassis_radius;         ///< wheel-centre to chassis-centre distance [m]
 
-        const double radius;
-        const double speed_pid_ff_ks;
+        /// Encoder reading (degrees) that corresponds to the robot facing field +X.
+        /// Used to zero out field-oriented drive.
+        float yaw_initial_offset_deg;
 
-        float yaw_initial_offset_ticks;
-        float power_limit = 60;
+        float power_limit_watts = 60.f; ///< total chassis power budget [W]
 
-        HOLONOMIC_MODE chassis_type = OMNI;
+        HolonomicMode chassis_type = OMNI;
     };
 
-    /**
-     * The Chassis constructor.
-     */
-    OmniWheelSubsystem(const Config &config, MA4 *encoder_);
+    explicit OmniWheelSubsystem(const Config &cfg, MA4 *encoder);
 
-    float previousRPM[4] = {0, 0, 0, 0};
+    // ── Main loop ──────────────────────────────────────────────────────────────
 
-    static float limitAcceleration(float desiredRPM, float previousRPM, unsigned long deltatime, float theta);
+    /// Must be called every control-loop iteration.
+    /// Updates wheel-speed and chassis-speed odometry from motor encoders + IMU.
+    void periodic(const IMU::EulerAngles &imu);
 
-    float power_limit;
+    // ── Drive commands ─────────────────────────────────────────────────────────
 
-    /**
-     * Gets the chassis's current WheelSpeeds
-     * @return The chassis's current WheelSpeeds
-     */
-    WheelSpeeds getWheelSpeeds() const;
+    /// Set chassis velocity.
+    /// @param speeds  desired [vX m/s, vY m/s, vOmega rad/s] in the chosen frame
+    /// @param mode    coordinate frame for vX / vY (vOmega is always robot-relative)
+    /// @return        power-budget scale factor in [0, 1]  (1.0 = no limiting)
+    float setChassisSpeeds(ChassisSpeeds speeds, DriveMode mode = ROBOT_ORIENTED);
 
-    /**
-     * The setWheelSpeeds method drives each motor at a specific speed
-     * @param wheelSpeeds The speeds in RPM to drive each motor at
-     */
-    float setWheelSpeeds(WheelSpeeds wheelSpeeds);
+    /// Snapshot the current heading as the reference origin for ODOM_ORIENTED mode.
+    void setOdomReference();
 
-    /**
-     * The normalizeWheelSpeeds method normalizes each motor with respect to m_OmniKinematicsLimits.max_Vel
-     * @param wheelSpeeds The speeds in m/s to drive each motor at
-     */
-    WheelSpeeds normalizeWheelSpeeds(WheelSpeeds wheelSpeeds) const;
+    // ── Odometry ──────────────────────────────────────────────────────────────
 
-    /**
-     * Gets the chassis's current ChassisSpeeds from odometry (only velocity state)
-     * @return The chassis's current ChassisSpeeds
-     */
-    ChassisSpeeds getChassisSpeeds() const;
+    WheelSpeeds   getWheelSpeeds()   const { return m_wheelSpeeds;   }
+    ChassisSpeeds getChassisSpeeds() const { return m_chassisSpeeds; }
 
-    /**
-     * The setChassisSpeeds method is used to drive the chassis in a chassis relative manner.
-     *
-     * @param desiredChassisSpeeds The robot-relative speeds (vX, vY, and vOmega) in m/s
-     */
-    float setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DRIVE_MODE mode = ROBOT_ORIENTED);
+    // ── Runtime configuration ──────────────────────────────────────────────────
 
-    /**
-     * The rotateChassisSpeed method
-     *
-     * @param speeds The relative speeds (vX, vY, and vOmega) in m/s
-     * @param yawCurrent The CCW-positive angle in degrees
-     */
-    ChassisSpeeds rotateChassisSpeed(ChassisSpeeds speeds, double yawCurrent);
+    /// Override the default speed limits.
+    void setSpeedLimits(double maxLinearMps, double maxOmegaRadps);
 
-    /**
-     * A helper method to find a DJIMotor object from an index.
-     *
-     * @param location The MotorLocation of the motor (LF, RF, LB, RB)
-     * @return a DJIMotor object
-     */
-    DJIMotor &getMotor(MotorLocation location);
+    // ── Motor-level access (for PID tuning / telemetry) ────────────────────────
 
-    /**
-     * Sets the P, I, and D control parameters
-     * @param location The MotorLocation of the motor (LF, RF, LB, RB)
-     * @param kP The new P (proportional) parameter
-     * @param kI The new I (integral) parameter
-     * @param kD The new D (derivative) parameter
-     */
-    void setMotorSpeedPID(MotorLocation location, float kP, float kI, float kD);
+    DJIMotor &getMotor(MotorLocation loc);
+    void setMotorSpeedPID(MotorLocation loc, float kP, float kI, float kD);
 
-    /**
-     * Sets the Feedforward for the SpeedPID
-     * @param location The MotorLocation of the motor (LF, RF, LB, RB)
-     * @param FF The arbitrary Feedforward value ranges from [-1, 1]
-     */
-    void setSpeedFeedforward(MotorLocation location, double FF);
+    float power_limit; ///< chassis power budget [W] — may be changed at runtime
 
-
-    /**
-     * A method that should be run every main loop to update the Chassis's estimated position
-     */
-    void periodic(IMU::EulerAngles *imuCurr = nullptr);
-
-    /**
-     * Helper method to convert an angle from degrees to radians
-     * @param radians An angle measurement in radians
-     * @return The angle converted to degree
-     */
-    static double radiansToDegrees(double radians);
-
-    /**
-     * Helper method to convert an angle from radians to degrees
-     * @param degrees An angle measurement in degrees
-     * @return The angle converted to radians
-     */
-    static double degreesToRadians(double degrees);
-
-    /**
-     * gets motor speed based on location and speed unit
-     * @return motor speed in selected unit
-     *
-     * @param location location of the motor
-     * @param unit unit of speed
-     */
-    double getMotorSpeed(MotorLocation location, SPEED_UNIT unit);
-
-    /**
-     * sets chassis speeds limits
-     *
-     * @param max_Vel maximum linear velocity of chassis
-     * @param max_vOmega maximum angular velocity of chassis
-     */
-    void setOmniKinematicsLimits(double max_Vel, double max_vOmega);
-
-    /**
-     * Yaw motor is a motor that controls the Turret
-     * yawOdom is the world pose representation of our robot
-     * (basically which direction you want your Heading to be w.r.t Yaw Motor)
-     */
-    bool setOdomReference();
-
-    
-    private:
+private:
+    // ── Hardware ───────────────────────────────────────────────────────────────
     DJIMotor LF, RF, LB, RB;
-    DJIMotor *yaw = 0;
-    MA4 *encoder = nullptr;
-    double yawPhase;
-    
-    // double beybladeSpeed;
-    IMU::EulerAngles imuAngles;
-    
-    ChassisSpeeds desiredChassisSpeeds;
-    WheelSpeeds desiredWheelSpeeds;
+    MA4     *m_encoder;
 
-    OmniKinematicsLimits m_OmniKinematicsLimits;
-    WheelSpeeds chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSpeeds);
-    ChassisSpeeds wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds);
+    // ── Odometry state ─────────────────────────────────────────────────────────
+    WheelSpeeds      m_wheelSpeeds   = {};
+    ChassisSpeeds    m_chassisSpeeds = {};
+    IMU::EulerAngles m_imu           = {};
 
-    ChassisSpeeds m_chassisSpeeds;
-    WheelSpeeds m_wheelSpeeds;
+    // ── Field-orientation ──────────────────────────────────────────────────────
+    float  m_yawOffsetDeg;          ///< encoder value == "robot facing field +X"  [deg]
 
-    uint32_t lastPIDTime = 0;
-    unsigned long last_torque_time = 0;
-    float curr_fit(int x);
+    /// Snapshots stored by setOdomReference() for ODOM_ORIENTED heading fusion.
+    double m_odomEncoderRefDeg = 0.0;
+    double m_odomImuRefDeg     = 0.0;
 
-    double yawOdom;
-    double imuOdom;
-    int testData[300][4];
-    int testDataIndex = 0;
+    // ── Kinematics ─────────────────────────────────────────────────────────────
+    /// Effective moment arm for the vOmega term: (r_x + r_y) [m].
+    /// For OMNI:    chassis_radius * √2
+    /// For MECANUM: MECANUM_HALF_X + MECANUM_HALF_Y
+    double m_kinL;
 
-    static double radiansToTicks(double radians);
-    static double ticksToRadians(double ticks);
+    double m_maxWheelSpeedMps;
+    double m_maxOmegaRadps;
 
-    void updateYawPhaseFromEncoder();
-    
-    static double rpmToRadPerSecond(double RPM);
-    static double radPerSecondToRPM(double radPerSecond);
+    // ── PID / rate-limiting state ──────────────────────────────────────────────
+    uint32_t      m_lastPidUs    = 0;
+    unsigned long m_lastTorqueUs = 0;
 
-    OmniKinematics m_OmniKinematics;
-    float chassis_radius;
-    void setOmniKinematics(double radius, HOLONOMIC_MODE mode = OMNI);
+    /// Motor-shaft RPM (pre-gearbox) measured at the END of the previous tick.
+    /// Used as both the rate-limit reference and the PID feedback.
+    float m_prevMotorRpm[4] = {};
 
-    double FF_Ks;
+    // ── Internal helpers ───────────────────────────────────────────────────────
+
+    void initKinematics(double chassisRadius, HolonomicMode mode);
+
+    // ─ Unit conversions ─────────────────────────────────────────────────────
+    //
+    // DJIMotor::getData(VELOCITY) returns the wheel output-shaft angular velocity
+    // in rad/s (i.e. the raw encoder velocity has already been divided by the
+    // gear ratio inside the driver).  Everything below is derived from that.
+
+    /// Wheel tangential speed from encoder [m/s].
+    ///   wheel_mps = omega_wheel_radps * WHEEL_RADIUS_M
+    double getWheelSpeedMps(MotorLocation loc);
+
+    /// Motor shaft speed (pre-gearbox) from encoder [RPM].
+    ///   motor_rpm = omega_wheel_radps * M3508_GEAR_RATIO * (60 / 2π)
+    double getMotorShaftRpm(MotorLocation loc);
+
+    /// Convert wheel tangential speed to motor shaft RPM.
+    ///   motor_rpm = (mps / WHEEL_RADIUS_M) * M3508_GEAR_RATIO * (60 / 2π)
+    static double wheelMpsToMotorRpm(double mps);
+
+    // ─ Kinematics ───────────────────────────────────────────────────────────
+
+    /// Forward kinematics: robot-frame speeds [m/s, m/s, rad/s] → wheel tangential speeds [m/s].
+    WheelSpeeds chassisToWheel(ChassisSpeeds cs) const;
+
+    /// Inverse kinematics: wheel tangential speeds [m/s] → robot-frame speeds [m/s, m/s, rad/s].
+    /// This is the exact pseudoinverse of chassisToWheel.
+    ChassisSpeeds wheelToChassis(WheelSpeeds ws) const;
+
+    /// Scale wheel speeds down proportionally so no wheel exceeds m_maxWheelSpeedMps.
+    WheelSpeeds normalizeWheelSpeeds(WheelSpeeds ws) const;
+
+    // ─ Field-orientation ────────────────────────────────────────────────────
+
+    /// Read encoder heading, normalised to [0, 360) degrees.
+    float getEncoderYawDeg() const;
+
+    /// Rotate field-frame desired speeds into robot frame.
+    /// @param headingDeg  current robot heading in field frame, CCW-positive [deg]
+    ChassisSpeeds rotateToRobotFrame(ChassisSpeeds fieldSpeeds, double headingDeg) const;
+
+    // ─ Motor drive ──────────────────────────────────────────────────────────
+
+    /// Drive all four wheels at the given tangential speeds [m/s].
+    /// Converts to motor shaft RPM, applies rate-limiting, runs PID, and
+    /// enforces the power budget.
+    /// @return power-limit scale factor [0, 1]
+    float setWheelSpeeds(WheelSpeeds targetMps);
+
+    /// Clamp the per-tick RPM change to prevent large current spikes.
+    static float limitAcceleration(float desiredMotorRpm, float prevMotorRpm, int currentPower);
+
+    /// Estimate instantaneous motor power [W] from the raw torque register.
+    float estimatePowerWatts(int torqueCounts);
 };
-
-#endif // TR_EMBEDDED_CHASSIS_SUBSYSTEM_H
