@@ -10,7 +10,7 @@
 #include "../referee/ref_serial.h"
 
 uint8_t seq = 0;
-int ui_self_id = 1; // ENSURE THAT THIS IS SET TO THE PROPER VARIABLE BEFORE SENDING ANY DATA!!!
+uint16_t ui_self_id = 1; // ENSURE THAT THIS IS SET TO THE PROPER VARIABLE BEFORE SENDING ANY DATA!!!
 std::function<void(uint8_t*, uint16_t )> send_packet_func = NULL; // Function that sends the data to the server
 
 ui_string_frame_t _ui_string_frame;
@@ -25,6 +25,12 @@ ui_7_frame_t _ui_7_frame;
  * @param length length of message
 */
 void print_message(const uint8_t *message, const int length) {
+    
+    for (int i = 0; i < length; i++) {
+        printf("%2d ", i);
+    }
+    printf("\n");
+
     for (int i = 0; i < length; i++) {
         printf("%02x ", message[i]);
     }
@@ -138,7 +144,7 @@ void ui_proc_1_frame(ui_1_frame_t *msg) {
     uint16_t id = 0x0101;
 
     msg->header.SOF = 0xA5;                                 
-    msg->header.length = 6 + 15 * num;                      
+    msg->header.length = 6 + 15 * num; //15 for the length of the frame                  
     msg->header.seq = seq++;                                
     msg->header.crc8 = calc_crc8((uint8_t*)msg, 4);        
     msg->header.cmd_id = 0x0301;                            

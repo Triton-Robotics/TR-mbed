@@ -205,14 +205,13 @@ void Referee::readThread()
 void Referee::writeThread()
 {
     // Some variables required to properrly send
-    ui_self_id = robot_status.robot_id;
+    // ui_self_id = robot_status.robot_id;
     send_packet_func = [this](uint8_t *packet, uint16_t len) {referee_data_pack_handle(packet, len);};
 
     ui_init_g();
     while(1)
     {
-        // TODO: figure out write then un-nest it
-        write();
+        // write();
         ui_update_g();
         ThisThread::yield();
     }

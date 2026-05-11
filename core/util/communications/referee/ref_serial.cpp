@@ -521,9 +521,6 @@ void Referee::referee_data_pack_handle(uint8_t sof,uint16_t cmd_id, uint8_t *p_d
 
 void Referee::referee_data_pack_handle(uint8_t *packet, uint16_t len)
 {
-    // Creates buffer
-	uint8_t tx_buff[MAX_SIZE];
-
     // Accquires thread resources
     mutex_write_.lock();
 	/*****数据上传*****/
