@@ -23,6 +23,8 @@
 // User Code End
 
 // Structures for various figures/numbers/strings
+
+#pragma pack(push, 1)
 typedef struct {
 uint8_t figure_name[3];
 uint32_t operate_type:3;
@@ -38,7 +40,9 @@ uint32_t _c:10;
 uint32_t _d:11;
 uint32_t _e:11;
 } ui_interface_figure_t;
+#pragma pack(pop)
 
+#pragma pack(push, 1)
 typedef struct {
 uint8_t figure_name[3];
 uint32_t operate_type:3;
@@ -54,7 +58,9 @@ uint32_t _c:10;
 uint32_t end_x:11;
 uint32_t end_y:11;
 } ui_interface_line_t;
+#pragma pack(pop)
 
+#pragma pack(push, 1)
 typedef struct {
 uint8_t figure_name[3];
 uint32_t operate_type:3;
@@ -70,7 +76,9 @@ uint32_t _c:10;
 uint32_t end_x:11;
 uint32_t end_y:11;
 } ui_interface_rect_t;
+#pragma pack(pop)
 
+#pragma pack(push, 1)
 typedef struct {
 uint8_t figure_name[3];
 uint32_t operate_type:3;
@@ -86,7 +94,9 @@ uint32_t r:10;
 uint32_t _d:11;
 uint32_t _e:11;
 } ui_interface_round_t;
+#pragma pack(pop)
 
+#pragma pack(push, 1)
 typedef struct {
 uint8_t figure_name[3];
 uint32_t operate_type:3;
@@ -102,7 +112,9 @@ uint32_t _c:10;
 uint32_t rx:11;
 uint32_t ry:11;
 } ui_interface_ellipse_t;
+#pragma pack(pop)
 
+#pragma pack(push, 1)
 typedef struct {
 uint8_t figure_name[3];
 uint32_t operate_type:3;
@@ -118,7 +130,9 @@ uint32_t _c:10;
 uint32_t rx:11;
 uint32_t ry:11;
 } ui_interface_arc_t;
+#pragma pack(pop)
 
+#pragma pack(push, 1)
 typedef struct {
     uint8_t figure_name[3];
     uint32_t operate_type: 3;
@@ -132,7 +146,9 @@ typedef struct {
     uint32_t start_y: 11;
     int32_t number;
 } MESSAGE_PACKED ui_interface_number_t;
+#pragma pack(pop)
 
+#pragma pack(push, 1)
 typedef struct {
     uint8_t figure_name[3];
     uint32_t operate_type: 3;
@@ -149,8 +165,10 @@ typedef struct {
     uint32_t _e: 11;
     char string[30];
 } MESSAGE_PACKED ui_interface_string_t;
+#pragma pack(pop)
 
 // Structure for frame header
+#pragma pack(push, 1)
 typedef struct {
     uint8_t SOF;
     uint16_t length;
@@ -158,46 +176,59 @@ typedef struct {
     uint16_t cmd_id, sub_id;
     uint16_t send_id, recv_id;
 } MESSAGE_PACKED ui_frame_header_t;
+#pragma pack(pop)
 
 // Structure for sending figure data in various sized packets
+#pragma pack(push, 1)
 typedef struct {
 ui_frame_header_t header;
 ui_interface_figure_t data[1];
 uint16_t crc16;
 } MESSAGE_PACKED ui_1_frame_t;
+#pragma pack(pop)
 
+#pragma pack(push, 1)
 typedef struct {
 ui_frame_header_t header;
 ui_interface_figure_t data[2];
 uint16_t crc16;
 } MESSAGE_PACKED ui_2_frame_t;
+#pragma pack(pop)
 
+#pragma pack(push, 1)
 typedef struct {
 ui_frame_header_t header;
 ui_interface_figure_t data[5];
 uint16_t crc16;
 } MESSAGE_PACKED ui_5_frame_t;
+#pragma pack(pop)
 
+#pragma pack(push, 1)
 typedef struct {
 ui_frame_header_t header;
 ui_interface_figure_t data[7];
 uint16_t crc16;
 } MESSAGE_PACKED ui_7_frame_t;
+#pragma pack(pop)
 
 // Structure for sending string data in packets
+#pragma pack(push, 1)
 typedef struct {
     ui_frame_header_t header;
     ui_interface_string_t option;
     uint16_t crc16;
 } MESSAGE_PACKED ui_string_frame_t;
+#pragma pack(pop)
 
 // Structure for deleting layers
+#pragma pack(push, 1)
 typedef struct {
     ui_frame_header_t header;
     uint8_t delete_type;
     uint8_t layer;
     uint16_t crc16;
 } MESSAGE_PACKED ui_delete_frame_t;
+#pragma pack(pop)
 
 // Grabs these variables from another file
 extern ui_string_frame_t _ui_string_frame;

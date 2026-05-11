@@ -9,7 +9,7 @@
 #include "ui_types.h"
 #include <functional>
 
-extern int ui_self_id;
+extern uint16_t ui_self_id;
 extern std::function<void(uint8_t*, uint16_t )> send_packet_func;
 
 void print_message(const uint8_t* message, int length);
