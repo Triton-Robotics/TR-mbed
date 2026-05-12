@@ -278,8 +278,11 @@ float OmniWheelSubsystem::getEncoderYawDeg() const
 ChassisSpeeds OmniWheelSubsystem::rotateToRobotFrame(ChassisSpeeds fieldSpeeds,
                                                        double headingDeg) const
 {
+    // TODO remove magic number 0.2
+    // converting the beyblade speed in rad/s to rad by multiplying by the loop latency (200ms)
+    double beyblade_offset = m_chassisSpeeds.vOmega * 0.2;
     double theta = (headingDeg - m_yawOffsetDeg) * OMNI_PI / 180.0;
-    double c = std::cos(theta), s = std::sin(theta);
+    double c = std::cos(theta - beyblade_offset), s = std::sin(theta - beyblade_offset);
     return {
         fieldSpeeds.vX * c - fieldSpeeds.vY * s,
         fieldSpeeds.vX * s + fieldSpeeds.vY * c,
@@ -422,7 +425,7 @@ float OmniWheelSubsystem::limitAcceleration(float desiredRPM, float previousRPM,
 
     // Maximum change in velocity over this time period, then change that to RPM
     float maxChange = maxLinearAccel * (deltaTime / 1000000.0);
-    float maxChangeRPM = 10 * maxChange * ((1 / WHEEL_RADIUS_M / (2 * PI / 60) * M3508_GEAR_RATIO));
+    float maxChangeRPM = 5 * maxChange * ((1 / WHEEL_RADIUS_M / (2 * PI / 60) * M3508_GEAR_RATIO)); // TODO remove magic number 5
     
     if (diff > maxChangeRPM) {
         if(desiredRPM == 0) {
