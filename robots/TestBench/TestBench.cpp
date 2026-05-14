@@ -6,12 +6,12 @@
 #include "util/motor/DJIMotor.h"
 #include <cstdint>
 
-#define IMPULSE_STRENGTH 1000
+#define IMPULSE_STRENGTH 4000
 
 // Testing Parameters (change these to set the relevant motor)
 // (CHECK THE CONFIG FOR NEW ROBOTS!!!!)
 bool infantry = true, hero = false;
-bool pitch = true, yaw = false;
+bool pitch = false, yaw = true;
 bool ind = false;
 bool flywheel = false;
 bool chassis = false;
@@ -72,7 +72,7 @@ class TestBench : public BaseRobot {
             test_motor_pos_PID
         }),
         infYaw(DJIMotor::config{
-            5,
+            7,
             CANHandler::CANBUS_1,
             M3508,
             "inf yaw",
@@ -204,11 +204,14 @@ class TestBench : public BaseRobot {
         velocityBuffer = testMot->getData(VELOCITY);
         torqueBuffer = (*testMot)>>TORQUE;
 
-        if (switL || switR || switLDown || switRDown) { // print only when test is active
-            if (position) {
+        if (velocity) {
+            if (abs(powerBuffer) > 0 || abs(velocityBuffer) > 0.01) {
+            printf("%d\t%.2f\n", powerBuffer, velocityBuffer);
+            }
+        }
+        if (position) {
+            if (abs(powerBuffer) > 0 || abs(velocityBuffer) > 0.01) {
                 printf("%d\t%d\n", powerBuffer, angleBuffer);
-            } else if (velocity) {
-                printf("%d\t%.2f\n", powerBuffer, velocityBuffer);
             }
         }
     }
