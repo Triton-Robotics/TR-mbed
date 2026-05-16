@@ -425,7 +425,7 @@ float OmniWheelSubsystem::limitAcceleration(float desiredRPM, float previousRPM,
 
     // Maximum change in velocity over this time period, then change that to RPM
     float maxChange = maxLinearAccel * (deltaTime / 1000000.0);
-    float maxChangeRPM = 5 * maxChange * ((1 / WHEEL_RADIUS_M / (2 * PI / 60) * M3508_GEAR_RATIO)); // TODO remove magic number 5
+    float maxChangeRPM = 10 * maxChange * ((1 / WHEEL_RADIUS_M / (2 * PI / 60) * M3508_GEAR_RATIO)); // TODO remove magic number 5
     
     if (diff > maxChangeRPM) {
         if(desiredRPM == 0) {
