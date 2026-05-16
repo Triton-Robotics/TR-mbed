@@ -146,7 +146,7 @@ class Infantry : public BaseRobot {
           // clang-format off
         i2c_(IMU_I2C_SDA, IMU_I2C_SCL), 
         imu_(i2c_, 0x6B),
-        encoder_(PB_4),
+        encoder_(PB_4, true),
         jetson_raw_serial(PC_12, PD_2,115200), // TODO: check higher baud to see if still works
         jetson(jetson_raw_serial),
         turret_(turret_config, imu_),
@@ -160,7 +160,7 @@ class Infantry : public BaseRobot {
             4,      // right_back_can_id
             0.22617,  // radius
             0.065,    // speed_pid_ff_ks
-            40,     // yaw_initial_offset_ticks
+            130,     // yaw_initial_offset_ticks
             imu_,
             &encoder_   
         }
@@ -185,7 +185,7 @@ class Infantry : public BaseRobot {
         // TODO: use this in code correctly to drive faster
         max_linear_vel = 1.24 + 0.0513 * chassis_.power_limit +
                          0.000216 * (chassis_.power_limit * chassis_.power_limit);
-        des_chassis_state.vX = jy * max_linear_vel;
+        des_chassis_state.vX = -jy * max_linear_vel;
         des_chassis_state.vY = -jx * max_linear_vel;
 
         // Turret from remote
