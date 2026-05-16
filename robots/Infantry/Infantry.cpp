@@ -226,8 +226,7 @@ class Infantry : public BaseRobot {
         }
 
         // Shooter Logic
-        if (remote_.TriggerPressed() == true ||
-            remote_.getMouseL()) {
+        if ((remote_.PAUSEToggled() == true && remote_.TriggerPressed() == true) || remote_.getMouseL()) {
             des_shoot_state = ShootState::SHOOT;
         } else if (remote_.PAUSEToggled() == true ||
                    shot == 'd') {

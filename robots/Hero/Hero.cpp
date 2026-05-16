@@ -112,7 +112,6 @@ HeroShooterSubsystem::config shooter_config = {
 ChassisSpeeds des_chassis_state;
 TurretSubsystem::TurretInfo des_turret_state;
 ShootState des_shoot_state;
-ShootState prev_shoot_state;
 
 int remoteTimer = 0;
 
@@ -229,8 +228,7 @@ public:
 
                 
         // Shooter Logic
-        if (remote_.TriggerPressed() == true ||
-            remote_.getMouseL()) {
+        if ((remote_.PAUSEToggled() == true && remote_.TriggerPressed() == true) || remote_.getMouseL()) {
             des_shoot_state = ShootState::SHOOT;
         } else if (remote_.PAUSEToggled() == true ||
                    shot == 'd') {
@@ -267,7 +265,6 @@ public:
                 // printf("%.2f\n", encoder_.encoderMovingAverage());
         // printf("%.2f %.2f\n", shooter_.flywheelL.getData(VELOCITY), shooter_.flywheelR.getData(VELOCITY));
         // printf("%.2f, %.2f, %.2f\n", imuAngles.roll, imuAngles.pitch, imuAngles.yaw);
-
         // printf("%d %.2f %.2f %.2f %.2f %d %.2f %d %d %d\n", 
         //                     remote_.PAUSEToggled(), 
         //                     remote_.getJoystickValue(DJIRemote2::Joystick::LEFT_VERTICAL), 
