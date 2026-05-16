@@ -202,8 +202,8 @@ class Infantry : public BaseRobot {
         } else if (drive == 'd' ||
                    (drive == 'o' &&
                     remote_.getMode() == DJIRemote2::ModeSwitch::MODE_C)) {
-            des_chassis_state.vOmega = omega_speed;
-            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::YAW_ORIENTED);
+            // des_chassis_state.vOmega = omega_speed;
+            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::BEYBLADE);
             des_turret_state.turret_mode = TurretState::AIM;
             referee_.is_aligned = false;
             referee_.is_cv_on = false;
