@@ -2,7 +2,7 @@
 #include "util/algorithms/general_functions.h"
 #include "ResetReason.h"
 
-#include "subsystems/ChassisSubsystem.h"
+#include "subsystems/OmniWheelSubsystem.h"
 #include "subsystems/ShooterSubsystem.h"
 #include "subsystems/TurretSubsystem.h"
 
@@ -43,10 +43,10 @@ const float pitch_gravity_feedforward = -500;    // We multiply this by cos(angl
 const float pitch_static_friction     = 635.0 / 5;       // We multiply it by dir
 const float pitch_kinetic_friction    = 0; //5.5;     // We multiply this by pitchvelo
 
-constexpr PID::config FL_VEL_CONFIG = {3, 0, 0};
-constexpr PID::config FR_VEL_CONFIG = {3, 0, 0};
-constexpr PID::config BL_VEL_CONFIG = {3, 0, 0};
-constexpr PID::config BR_VEL_CONFIG = {3, 0, 0};
+constexpr PID::config FL_VEL_CONFIG = {3.38, 0, 0.0361};
+constexpr PID::config FR_VEL_CONFIG = {3.38, 0, 0.0361};
+constexpr PID::config BL_VEL_CONFIG = {3.38, 0, 0.0361};
+constexpr PID::config BR_VEL_CONFIG = {3.38, 0, 0.0361};
 
 constexpr PID::config FLYWHEEL_L_PID = {7.1849, 0.000042634, 0};
 constexpr PID::config FLYWHEEL_R_PID = {7.1849, 0.000042634, 0};
@@ -79,8 +79,8 @@ TurretSubsystem::config turret_config = {
 ShooterSubsystem::config shooter_config = {
     ShooterSubsystem::BURST,
     0,
-    1,
     2,
+    4,
     6,
     FLYWHEEL_L_PID,
     FLYWHEEL_R_PID,
@@ -89,19 +89,19 @@ ShooterSubsystem::config shooter_config = {
     CANHandler::CANBUS_2,
     true
 };
-// ChassisSubsystem::Config chassis_config = {
-//     1,      // left_front_can_id
-//     2,      // right_front_can_id
-//     3,      // left_back_can_id
-//     4,      // right_back_can_id
-//     FL_VEL_CONFIG,
-//     FR_VEL_CONFIG,
-//     BL_VEL_CONFIG,
-//     BR_VEL_CONFIG,
-//     0.22617,  // radius
-//     0.065,    // speed_pid_ff_ks
-//     1700,     // yaw_initial_offset_ticks
-// };
+OmniWheelSubsystem::Config chassis_config = {
+    1,      // left_front_can_id
+    2,      // right_front_can_id
+    3,      // left_back_can_id
+    4,      // right_back_can_id
+    FL_VEL_CONFIG,
+    FR_VEL_CONFIG,
+    BL_VEL_CONFIG,
+    BR_VEL_CONFIG,
+    0.51,  // radius
+    40,     // yaw_initial_offset_ticks
+    120,
+};
 
 // State variables
 ChassisSpeeds des_chassis_state;
@@ -115,18 +115,12 @@ float yaw_desired_angle = 0.0;
 float dt_global = 0.0;
 unsigned long timer = 0;
 
-// TODOS make example directory with simple examples of how to use motors /
-// subsystems as reference for testbench
-
 IMU::EulerAngles imuAngles;
 class Sentry : public BaseRobot {
   public:
     I2C i2c_;
-    // BNO055 imu_;
     ISM330 imu_;
-    MA4 encoder_;  // Absolute encoder for yaw position
-    // TODO: put the BufferedSerial inside Jetson (idk if we wanna do that tho
-    // for SPI)
+    MA4 encoder_;
     BufferedSerial jetson_raw_serial;
     Jetson jetson;
 
@@ -135,13 +129,13 @@ class Sentry : public BaseRobot {
 
     TurretSubsystem turret_;
     ShooterSubsystem shooter_;
-    ChassisSubsystem chassis_;
+    OmniWheelSubsystem chassis_;
 
     bool imu_initialized{false};
 
     Sentry(Config &config)
         : BaseRobot(config),
-          // clang-format off
+        // clang-format off
         i2c_(IMU_I2C_SDA, IMU_I2C_SCL), 
         imu_(i2c_, 0x6B),
         encoder_(PB_4, true),
@@ -149,21 +143,8 @@ class Sentry : public BaseRobot {
         jetson(jetson_raw_serial),
         turret_(turret_config, imu_),
         shooter_(shooter_config),
-
-        // TODO add passing in individual PID objects for the motors
-        chassis_(ChassisSubsystem::Config{
-            1,      // left_front_can_id
-            2,      // right_front_can_id
-            4,      // left_back_can_id
-            3,      // right_back_can_id
-            0.22617,  // radius
-            0.065,    // speed_pid_ff_ks
-            85.27,     // yaw_initial_offset_ticks
-            imu_,
-            &encoder_   
-        }
-        )
-    // clang-format on
+        chassis_(chassis_config, &encoder_)
+        // clang-format on
     {
         pin_mode(IMU_I2C_SCL, PinMode::OpenDrainPullUp);
         pin_mode(IMU_I2C_SDA, PinMode::OpenDrainPullUp);
@@ -181,8 +162,10 @@ class Sentry : public BaseRobot {
         imu_.mahonyUpdateIMU(dt_us / 1000000.0);
         imuAngles = imu_.getImuAngles();
         // TODO: use this in code correctly to drive faster
+        // chassis_.power_limit = referee_.robot_status.chassis_power_limit;
         max_linear_vel = 1.24 + 0.0513 * chassis_.power_limit +
                          0.000216 * (chassis_.power_limit * chassis_.power_limit);
+        // max_linear_vel = 5.0;
         des_chassis_state.vX = jy * max_linear_vel;
         des_chassis_state.vY = jx * max_linear_vel;
 
@@ -204,7 +187,7 @@ class Sentry : public BaseRobot {
         // Chassis logic
         if (drive == 'u' || (drive == 'o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_S)) {
             des_chassis_state.vOmega = 0;
-            chassis_.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
+            chassis_.setChassisSpeeds(des_chassis_state, dt_us/1000000, OmniWheelSubsystem::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
             // stm_state.activate_CV = 0;
             // stm_state.calibration = 0;
@@ -231,7 +214,7 @@ class Sentry : public BaseRobot {
                 des_turret_state.yaw_angle_degs = jetson_state.desired_yaw_rads * (180 / M_PI);
                 des_turret_state.pitch_angle_degs = -jetson_state.desired_pitch_rads * (180 / M_PI);
             }
-            chassis_.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
+            chassis_.setChassisSpeeds(des_chassis_state, dt_us/1000000,  OmniWheelSubsystem::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
             referee_.is_aligned = false;
             referee_.is_cv_on = true;
@@ -275,7 +258,7 @@ class Sentry : public BaseRobot {
         shooter_.setState(des_shoot_state);
 
         turret_.periodic(chassis_.getChassisSpeeds().vOmega * 60 / (2 * PI));
-        chassis_.periodic(&imuAngles);
+        chassis_.periodic(imuAngles);
         shooter_.periodic(referee_.power_heat_data.shooter_17mm_1_barrel_heat,
                          referee_.robot_status.shooter_barrel_heat_limit);
 

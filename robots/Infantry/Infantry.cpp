@@ -194,7 +194,7 @@ class Infantry : public BaseRobot {
         // Chassis logic
         if (drive == 'u' || (drive == 'o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_S)) {
             des_chassis_state.vOmega = 0;
-            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::YAW_ORIENTED);
+            chassis_.setChassisSpeeds(des_chassis_state, dt_us/1000000, OmniWheelSubsystem::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
             referee_.is_aligned = false;
             referee_.is_cv_on = false;
@@ -203,7 +203,7 @@ class Infantry : public BaseRobot {
                    (drive == 'o' &&
                     remote_.getMode() == DJIRemote2::ModeSwitch::MODE_C)) {
             // des_chassis_state.vOmega = omega_speed;
-            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::BEYBLADE);
+            chassis_.setChassisSpeeds(des_chassis_state, dt_us/1000000, OmniWheelSubsystem::BEYBLADE);
             des_turret_state.turret_mode = TurretState::AIM;
             referee_.is_aligned = false;
             referee_.is_cv_on = false;
@@ -211,7 +211,7 @@ class Infantry : public BaseRobot {
         } 
         else 
         {
-            chassis_.setChassisSpeeds({0, 0, 0});
+            chassis_.setChassisSpeeds({0, 0, 0}, dt_us/1000000);
             des_turret_state.turret_mode = TurretState::SLEEP;
             des_turret_state.yaw_angle_degs = turret_.getState().yaw_angle_degs;
             yaw_desired_angle = turret_.getState().yaw_angle_degs;

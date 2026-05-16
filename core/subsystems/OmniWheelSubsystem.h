@@ -105,7 +105,7 @@ public:
     // @param speeds  desired [vX m/s, vY m/s, vOmega rad/s] in the chosen frame
     // @param mode    coordinate frame for vX / vY (vOmega is always robot-relative)
     // @return        power-budget scale factor in [0, 1]  (1.0 = no limiting)
-    float setChassisSpeeds(ChassisSpeeds speeds, DriveMode mode = ROBOT_ORIENTED);
+    float setChassisSpeeds(ChassisSpeeds speeds, unsigned long dt_s, DriveMode mode = ROBOT_ORIENTED);
 
     // Snapshot the current heading as the reference origin for ODOM_ORIENTED mode.
     void setOdomReference();
@@ -208,7 +208,7 @@ private:
 
     // Rotate field-frame desired speeds into robot frame.
     // @param headingDeg  current robot heading in field frame, CCW-positive [deg]
-    ChassisSpeeds rotateToRobotFrame(ChassisSpeeds fieldSpeeds, double headingDeg) const;
+    ChassisSpeeds rotateToRobotFrame(ChassisSpeeds fieldSpeeds, double headingDeg, unsigned long dt_s) const;
 
     // Calculate max available beyblad velocity
     double CalculateBeybladeVelo(float vOmega, ChassisSpeeds lateral);

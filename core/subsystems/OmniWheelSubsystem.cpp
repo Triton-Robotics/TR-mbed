@@ -104,7 +104,7 @@ void OmniWheelSubsystem::periodic(const IMU::EulerAngles &imu)
 // High-level drive  (public)
 // ─────────────────────────────────────────────────────────────────────────────
 
-float OmniWheelSubsystem::setChassisSpeeds(ChassisSpeeds desired, DriveMode mode)
+float OmniWheelSubsystem::setChassisSpeeds(ChassisSpeeds desired, unsigned long dt_s, DriveMode mode)
 {
     // ── Step 1: Resolve coordinate frame → robot frame ────────────────────────
     ChassisSpeeds robotFrame;
@@ -118,7 +118,7 @@ float OmniWheelSubsystem::setChassisSpeeds(ChassisSpeeds desired, DriveMode mode
         case YAW_ORIENTED: {
             // Field-frame input; rotate into robot frame using current encoder heading.
             double headingDeg = getEncoderYawDeg();
-            robotFrame = rotateToRobotFrame(desired, headingDeg);
+            robotFrame = rotateToRobotFrame(desired, headingDeg, dt_s);
             double omegaAvail = CalculateBeybladeVelo(robotFrame.vOmega, robotFrame);
             robotFrame.vOmega = omegaAvail;
             break;
@@ -133,7 +133,7 @@ float OmniWheelSubsystem::setChassisSpeeds(ChassisSpeeds desired, DriveMode mode
             double fusedDeg      = m_odomEncoderRefDeg + (imuDeltaDeg - encDeltaDeg);
             while (fusedDeg >  360.0) fusedDeg -= 360.0;
             while (fusedDeg <    0.0) fusedDeg += 360.0;
-            robotFrame = rotateToRobotFrame(desired, fusedDeg);
+            robotFrame = rotateToRobotFrame(desired, fusedDeg, dt_s);
             double omegaAvail = CalculateBeybladeVelo(robotFrame.vOmega, robotFrame);
             robotFrame.vOmega = omegaAvail;
             break;
@@ -144,7 +144,7 @@ float OmniWheelSubsystem::setChassisSpeeds(ChassisSpeeds desired, DriveMode mode
             // The chassis is spinning, so we must field-orient the lateral input
             // every tick so the driver always pushes in the direction they intend.
             double headingDeg = getEncoderYawDeg();
-            ChassisSpeeds lateral = rotateToRobotFrame({desired.vX, desired.vY, 0.0}, headingDeg);
+            ChassisSpeeds lateral = rotateToRobotFrame({desired.vX, desired.vY, 0.0}, headingDeg, dt_s);
             double omegaAvail = CalculateBeybladeVelo(m_beybladeMaxOmega, lateral);
             // Positive omega = CCW spin.  Negate here for CW if preferred.
             robotFrame = { lateral.vX, lateral.vY, omegaAvail };
@@ -276,11 +276,10 @@ float OmniWheelSubsystem::getEncoderYawDeg() const
  * vOmega is frame-independent and passes through unchanged.
  */
 ChassisSpeeds OmniWheelSubsystem::rotateToRobotFrame(ChassisSpeeds fieldSpeeds,
-                                                       double headingDeg) const
+                                                       double headingDeg, unsigned long dt_s) const
 {
-    // TODO remove magic number 0.2
-    // converting the beyblade speed in rad/s to rad by multiplying by the loop latency (200ms)
-    double beyblade_offset = m_chassisSpeeds.vOmega * 0.2;
+    // converting the beyblade speed in rad/s to rad by multiplying by the loop latency (dt = 200ms (0.2s))
+    double beyblade_offset = m_chassisSpeeds.vOmega * dt_s;
     double theta = (headingDeg - m_yawOffsetDeg) * OMNI_PI / 180.0;
     double c = std::cos(theta - beyblade_offset), s = std::sin(theta - beyblade_offset);
     return {
@@ -373,11 +372,17 @@ float OmniWheelSubsystem::setWheelSpeeds(WheelSpeeds targetMps)
         (int)(M3508_GEAR_RATIO * RB.calculateSpeedPID(cmdRpm[3], m_prevMotorRpm[3], dt)),
     };
 
-    // if (targetMotorRpm[0] == 0 && targetMotorRpm[1] == 0 && targetMotorRpm[2] == 0 && targetMotorRpm[3] == 0) {
-    if (abs(targetMotorRpm[0]) < 150 && abs(targetMotorRpm[1]) < 150 && abs(targetMotorRpm[2]) < 150 && abs(targetMotorRpm[3]) < 150) {
+    // TODO remove magic number 150
+    if (abs(targetMotorRpm[0]) < 150) {
         power[0] = 0;
+    } 
+    if (abs(targetMotorRpm[1]) < 150){
         power[1] = 0;
+    } 
+    if (abs(targetMotorRpm[2]) < 150) {
         power[2] = 0;
+    } 
+    if (abs(targetMotorRpm[3]) < 150) {
         power[3] = 0;
     }
     m_lastPidUs = now;
@@ -425,7 +430,7 @@ float OmniWheelSubsystem::limitAcceleration(float desiredRPM, float previousRPM,
 
     // Maximum change in velocity over this time period, then change that to RPM
     float maxChange = maxLinearAccel * (deltaTime / 1000000.0);
-    float maxChangeRPM = 10 * maxChange * ((1 / WHEEL_RADIUS_M / (2 * PI / 60) * M3508_GEAR_RATIO)); // TODO remove magic number 5
+    float maxChangeRPM = 10 * maxChange * ((1 / WHEEL_RADIUS_M / (2 * PI / 60) * M3508_GEAR_RATIO)); // TODO remove magic number 10
     
     if (diff > maxChangeRPM) {
         if(desiredRPM == 0) {
