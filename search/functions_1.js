@@ -1,13 +1,15 @@
 var searchData=
 [
   ['accel_0',['accel',['../classMPU6050.html#aa9b1bc4b9a59ea9f95cfea046d34ae37',1,'MPU6050']]],
-  ['adafruit_5fgfx_1',['Adafruit_GFX',['../classAdafruit__GFX.html#a6f6f1abccf677eac244fa17d105133ea',1,'Adafruit_GFX']]],
-  ['adafruit_5fssd1306_2',['Adafruit_SSD1306',['../classAdafruit__SSD1306.html#aa33b968e1317c5eb545ed2721985266c',1,'Adafruit_SSD1306']]],
-  ['adafruit_5fssd1306_5fi2c_3',['Adafruit_SSD1306_I2c',['../classAdafruit__SSD1306__I2c.html#aedd8bbda96e97453b2a55c1773a190b5',1,'Adafruit_SSD1306_I2c']]],
-  ['adafruit_5fssd1306_5fspi_4',['Adafruit_SSD1306_Spi',['../classAdafruit__SSD1306__Spi.html#a95bd78e1ae613b2f2f3f5cb53b9e86d4',1,'Adafruit_SSD1306_Spi']]],
-  ['add_5',['add',['../structlastfew.html#a1dbce47ae04790d89240743d87c44b17',1,'lastfew']]],
-  ['append_5fcrc16_5fcheck_5fsum_6',['append_crc16_check_sum',['../crc_8cpp.html#ab64afc0e5dec0d04dee81fb98c274894',1,'Append_CRC16_Check_Sum(uint8_t *pchMessage, uint32_t dwLength):&#160;crc.cpp'],['../crc_8h.html#ab64afc0e5dec0d04dee81fb98c274894',1,'Append_CRC16_Check_Sum(uint8_t *pchMessage, uint32_t dwLength):&#160;crc.cpp']]],
-  ['append_5fcrc8_5fcheck_5fsum_7',['append_crc8_check_sum',['../crc_8cpp.html#a6597501f13b4c73b399ef72ad9db8b24',1,'Append_CRC8_Check_Sum(unsigned char *pchMessage, unsigned int dwLength):&#160;crc.cpp'],['../crc_8h.html#a6597501f13b4c73b399ef72ad9db8b24',1,'Append_CRC8_Check_Sum(unsigned char *pchMessage, unsigned int dwLength):&#160;crc.cpp']]],
-  ['apply_5fdeadzone_8',['apply_deadzone',['../classDJIRemote2.html#aa11445dc5cfb1630cd1c1a02f0d24b4d',1,'DJIRemote2']]],
-  ['attach_9',['attach',['../classCANHandler.html#a415414f5289348a031d5436a13cb10f8',1,'CANHandler']]]
+  ['acceltempoffset_1',['accelTempOffset',['../classISM330.html#a54e75ce9eaab57cb5c457cf6ae394389',1,'ISM330']]],
+  ['acceltempscale_2',['accelTempScale',['../classISM330.html#a1cf5620c566c7dae90097771cd99673f',1,'ISM330']]],
+  ['adafruit_5fgfx_3',['Adafruit_GFX',['../classAdafruit__GFX.html#a6f6f1abccf677eac244fa17d105133ea',1,'Adafruit_GFX']]],
+  ['adafruit_5fssd1306_4',['Adafruit_SSD1306',['../classAdafruit__SSD1306.html#aa33b968e1317c5eb545ed2721985266c',1,'Adafruit_SSD1306']]],
+  ['adafruit_5fssd1306_5fi2c_5',['Adafruit_SSD1306_I2c',['../classAdafruit__SSD1306__I2c.html#aedd8bbda96e97453b2a55c1773a190b5',1,'Adafruit_SSD1306_I2c']]],
+  ['adafruit_5fssd1306_5fspi_6',['Adafruit_SSD1306_Spi',['../classAdafruit__SSD1306__Spi.html#a95bd78e1ae613b2f2f3f5cb53b9e86d4',1,'Adafruit_SSD1306_Spi']]],
+  ['add_7',['add',['../structlastfew.html#a1dbce47ae04790d89240743d87c44b17',1,'lastfew']]],
+  ['append_5fcrc16_5fcheck_5fsum_8',['append_crc16_check_sum',['../crc_8cpp.html#ab64afc0e5dec0d04dee81fb98c274894',1,'Append_CRC16_Check_Sum(uint8_t *pchMessage, uint32_t dwLength):&#160;crc.cpp'],['../crc_8h.html#ab64afc0e5dec0d04dee81fb98c274894',1,'Append_CRC16_Check_Sum(uint8_t *pchMessage, uint32_t dwLength):&#160;crc.cpp']]],
+  ['append_5fcrc8_5fcheck_5fsum_9',['append_crc8_check_sum',['../crc_8cpp.html#a6597501f13b4c73b399ef72ad9db8b24',1,'Append_CRC8_Check_Sum(unsigned char *pchMessage, unsigned int dwLength):&#160;crc.cpp'],['../crc_8h.html#a6597501f13b4c73b399ef72ad9db8b24',1,'Append_CRC8_Check_Sum(unsigned char *pchMessage, unsigned int dwLength):&#160;crc.cpp']]],
+  ['apply_5fdeadzone_10',['apply_deadzone',['../classDJIRemote2.html#aa11445dc5cfb1630cd1c1a02f0d24b4d',1,'DJIRemote2']]],
+  ['attach_11',['attach',['../classCANHandler.html#a415414f5289348a031d5436a13cb10f8',1,'CANHandler']]]
 ];

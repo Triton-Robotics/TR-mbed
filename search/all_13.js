@@ -216,7 +216,6 @@ var searchData=
   ['sw_5frev_5fid_213',['sw_rev_id',['../structBNO055__ID__INF__TypeDef.html#aadfe87d8f2715963a84dacebef0bfa12',1,'BNO055_ID_INF_TypeDef']]],
   ['switch_214',['Switch',['../classRemote.html#add727f68db8fff42e6f572b19008ec66',1,'Remote']]],
   ['switchstate_215',['SwitchState',['../classRemote.html#affd0b019d5483d546bc29b07447649bb',1,'Remote']]],
-  ['swrst_216',['SWRST',['../ISM330_8cpp.html#a16bc32a812181e34b48ec13724c446c7',1,'ISM330.cpp']]],
-  ['synctimestamp_217',['SyncTimeStamp',['../structgame__status__t.html#ab0e56bd4de22797513b22cdb02f97833',1,'game_status_t']]],
-  ['system_3a_20strong_218',['&lt;strong&gt;Please choose the appropriate setup guide for your operating system:&lt;/strong&gt;',['../index.html#autotoc_md3',1,'']]]
+  ['synctimestamp_216',['SyncTimeStamp',['../structgame__status__t.html#ab0e56bd4de22797513b22cdb02f97833',1,'game_status_t']]],
+  ['system_3a_20strong_217',['&lt;strong&gt;Please choose the appropriate setup guide for your operating system:&lt;/strong&gt;',['../index.html#autotoc_md3',1,'']]]
 ];

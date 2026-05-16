@@ -123,6 +123,16 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a13fe4b03e2ce3900b5fed21fa851ddd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9cf0ea69bed9499a64a7f9117be3de4c" id="r_a9cf0ea69bed9499a64a7f9117be3de4c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structISM330_1_1ISM330__DATA__TypeDef.html">ISM330_DATA_TypeDef</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classISM330.html#a9cf0ea69bed9499a64a7f9117be3de4c">readAG</a> () noexcept</td></tr>
 <tr class="separator:a9cf0ea69bed9499a64a7f9117be3de4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac1fb7ff00bcacbc05e691ffc01d09512" id="r_ac1fb7ff00bcacbc05e691ffc01d09512"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classISM330.html#ac1fb7ff00bcacbc05e691ffc01d09512">readTemperature</a> () noexcept</td></tr>
+<tr class="separator:ac1fb7ff00bcacbc05e691ffc01d09512"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1cf5620c566c7dae90097771cd99673f" id="r_a1cf5620c566c7dae90097771cd99673f"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classISM330.html#a1cf5620c566c7dae90097771cd99673f">accelTempScale</a> (float temp)</td></tr>
+<tr class="separator:a1cf5620c566c7dae90097771cd99673f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54e75ce9eaab57cb5c457cf6ae394389" id="r_a54e75ce9eaab57cb5c457cf6ae394389"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classISM330.html#a54e75ce9eaab57cb5c457cf6ae394389">accelTempOffset</a> (float temp)</td></tr>
+<tr class="separator:a54e75ce9eaab57cb5c457cf6ae394389"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a08d2dbaaab687311d25664fc4a298786" id="r_a08d2dbaaab687311d25664fc4a298786"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classISM330.html#a08d2dbaaab687311d25664fc4a298786">gyroTempScale</a> (float temp)</td></tr>
+<tr class="separator:a08d2dbaaab687311d25664fc4a298786"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add36512c028c678c1cea6f3755aff368" id="r_add36512c028c678c1cea6f3755aff368"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classISM330.html#add36512c028c678c1cea6f3755aff368">gyroTempOffset</a> (float temp)</td></tr>
+<tr class="separator:add36512c028c678c1cea6f3755aff368"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e87493738ce52e17fc053bba90183fc" id="r_a0e87493738ce52e17fc053bba90183fc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classISM330.html#a0e87493738ce52e17fc053bba90183fc">getAGVectors</a> (<a class="el" href="structISM330_1_1ISM330__VECTOR__TypeDef.html">ISM330_VECTOR_TypeDef</a> &amp;accel, <a class="el" href="structISM330_1_1ISM330__VECTOR__TypeDef.html">ISM330_VECTOR_TypeDef</a> &amp;gyro)</td></tr>
 <tr class="separator:a0e87493738ce52e17fc053bba90183fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab8127d0154f62cf53934c6ae5f4ae30c" id="r_ab8127d0154f62cf53934c6ae5f4ae30c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classISM330.html#ab8127d0154f62cf53934c6ae5f4ae30c">computeAnglesMah</a> (<a class="el" href="structIMU_1_1EulerAngles.html">IMU::EulerAngles</a> &amp;angles)</td></tr>
@@ -193,6 +203,42 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a54e75ce9eaab57cb5c457cf6ae394389" name="a54e75ce9eaab57cb5c457cf6ae394389"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a54e75ce9eaab57cb5c457cf6ae394389">&#9670;&#160;</a></span>accelTempOffset()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float ISM330::accelTempOffset </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>temp</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1cf5620c566c7dae90097771cd99673f" name="a1cf5620c566c7dae90097771cd99673f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1cf5620c566c7dae90097771cd99673f">&#9670;&#160;</a></span>accelTempScale()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float ISM330::accelTempScale </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>temp</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a3c1c03074dc5b8c0e6735cbeb53d0b18" name="a3c1c03074dc5b8c0e6735cbeb53d0b18"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3c1c03074dc5b8c0e6735cbeb53d0b18">&#9670;&#160;</a></span>begin()</h2>
 
@@ -348,6 +394,42 @@ false if device detection fails. </dd></dl>
 </div><div class="memdoc">
 
 <p>Reimplemented from <a class="el" href="classIMU.html#a69995952f0d2ca2b7bf25a6f32a59e96">IMU</a>.</p>
+
+</div>
+</div>
+<a id="add36512c028c678c1cea6f3755aff368" name="add36512c028c678c1cea6f3755aff368"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#add36512c028c678c1cea6f3755aff368">&#9670;&#160;</a></span>gyroTempOffset()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float ISM330::gyroTempOffset </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>temp</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a08d2dbaaab687311d25664fc4a298786" name="a08d2dbaaab687311d25664fc4a298786"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a08d2dbaaab687311d25664fc4a298786">&#9670;&#160;</a></span>gyroTempScale()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float ISM330::gyroTempScale </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>temp</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -643,6 +725,31 @@ false if device detection fails. </dd></dl>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="structISM330_1_1ISM330__VECTOR__TypeDef.html">ISM330::ISM330_VECTOR_TypeDef</a> ISM330::readGyro </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac1fb7ff00bcacbc05e691ffc01d09512" name="ac1fb7ff00bcacbc05e691ffc01d09512"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac1fb7ff00bcacbc05e691ffc01d09512">&#9670;&#160;</a></span>readTemperature()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float ISM330::readTemperature </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>

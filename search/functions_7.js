@@ -39,15 +39,17 @@ var searchData=
   ['getmotorspeed_36',['getMotorSpeed',['../classChassisSubsystem.html#a939fe5b5b9ca7d9e00732b191273e459',1,'ChassisSubsystem']]],
   ['getmousel_37',['getmousel',['../classRemote.html#a8eed352a5638ea183317a4a479618bef',1,'Remote::getMouseL()'],['../classDJIRemote2.html#ab7f184129de45ef2bc8ab766986942d5',1,'DJIRemote2::getMouseL() const']]],
   ['getmouser_38',['getmouser',['../classDJIRemote2.html#a430a200301f43a576d9a32bfa97c758b',1,'DJIRemote2::getMouseR()'],['../classRemote.html#aed082668b7076301499751e71657214a',1,'Remote::getMouseR() const']]],
-  ['getmousex_39',['getmousex',['../classRemote.html#a78576f85d239c63887ee0b515c066912',1,'Remote::getMouseX()'],['../classDJIRemote2.html#a5ad8959c4aca92791a31b53d97e99104',1,'DJIRemote2::getMouseX() const']]],
-  ['getmousey_40',['getmousey',['../classDJIRemote2.html#ad0c4d1d0fceea1a89561fec957ab7bb1',1,'DJIRemote2::getMouseY()'],['../classRemote.html#abef178b9009cad1bc69e0dd4d565d19c',1,'Remote::getMouseY()']]],
+  ['getmousex_39',['getmousex',['../classRemote.html#a78576f85d239c63887ee0b515c066912',1,'Remote::getMouseX()'],['../classDJIRemote2.html#a5ad8959c4aca92791a31b53d97e99104',1,'DJIRemote2::getMouseX()']]],
+  ['getmousey_40',['getmousey',['../classRemote.html#abef178b9009cad1bc69e0dd4d565d19c',1,'Remote::getMouseY()'],['../classDJIRemote2.html#ad0c4d1d0fceea1a89561fec957ab7bb1',1,'DJIRemote2::getMouseY() const']]],
   ['getmousez_41',['getmousez',['../classDJIRemote2.html#aa154852d00dc05f544ecae712c854b3b',1,'DJIRemote2::getMouseZ()'],['../classRemote.html#a18755c249bf7a3b11b2a6b6d4b9d3218',1,'Remote::getMouseZ()']]],
   ['getrotation_42',['getRotation',['../classAdafruit__GFX.html#a9ef3e09da4d3185aa4b1131ff2fd5e05',1,'Adafruit_GFX']]],
-  ['getstate_43',['getstate',['../classSubsystem.html#a823ea7ff8d16e49ff6313be1d7a6fcb9',1,'Subsystem::getState()'],['../classTurretSubsystem.html#a73577896fcdc990545d240f2336f0765',1,'TurretSubsystem::getState()']]],
+  ['getstate_43',['getstate',['../classTurretSubsystem.html#a73577896fcdc990545d240f2336f0765',1,'TurretSubsystem::getState()'],['../classSubsystem.html#a823ea7ff8d16e49ff6313be1d7a6fcb9',1,'Subsystem::getState()']]],
   ['getswitch_44',['getSwitch',['../classRemote.html#aa0a6fb97ea858254e89f553e010c1b4e',1,'Remote']]],
   ['getticks_45',['getTicks',['../classTurretSubsystem.html#aed8971ff1e59a68288a682e69195c662',1,'TurretSubsystem']]],
   ['getupdatecounter_46',['getUpdateCounter',['../classRemote.html#abb3d462dab9f4d0093883bb362305e6c',1,'Remote']]],
   ['getwheel_47',['getwheel',['../classRemote.html#a0f1fd8cdfc6ac4037d008a6a3782322e',1,'Remote::getWheel()'],['../classDJIRemote2.html#a2d46b2447bf5c742f108c3c6d24e5d15',1,'DJIRemote2::getWheel()']]],
   ['getwheelspeeds_48',['getWheelSpeeds',['../classChassisSubsystem.html#af2f3a0a20b5738cd06a0f54fbd2c2127',1,'ChassisSubsystem']]],
-  ['gyro_49',['gyro',['../classMPU6050.html#a0ceff2258ef37d56103b3af58901249f',1,'MPU6050']]]
+  ['gyro_49',['gyro',['../classMPU6050.html#a0ceff2258ef37d56103b3af58901249f',1,'MPU6050']]],
+  ['gyrotempoffset_50',['gyroTempOffset',['../classISM330.html#add36512c028c678c1cea6f3755aff368',1,'ISM330']]],
+  ['gyrotempscale_51',['gyroTempScale',['../classISM330.html#a08d2dbaaab687311d25664fc4a298786',1,'ISM330']]]
 ];
