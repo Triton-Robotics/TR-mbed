@@ -18,9 +18,13 @@ var searchData=
   ['chassisspeedstowheelspeeds_15',['chassisSpeedsToWheelSpeeds',['../classChassisSubsystem.html#a33767ca30473849bea591e4f46c1c2ae',1,'ChassisSubsystem']]],
   ['chassissubsystem_16',['ChassisSubsystem',['../classChassisSubsystem.html#af7d31076c9a7a28ee5019a0a7f537fbf',1,'ChassisSubsystem']]],
   ['chip_5fready_17',['chip_ready',['../classBNO055.html#a4367136d057891191d873107cd9a6c31',1,'BNO055']]],
-  ['clear_18',['clear',['../classCANMsg.html#a969dcb0af8e68883ab104249c8559146',1,'CANMsg']]],
-  ['cleardisplay_19',['cleardisplay',['../classAdafruit__SSD1306.html#afe1e0f5efabd931aab7998275356744d',1,'Adafruit_SSD1306::clearDisplay()'],['../classSSD1308.html#aced1bba3c22637bb8b189a8c4a7cce00',1,'SSD1308::clearDisplay()']]],
+  ['clear_18',['clear',['../classDJIRemote2.html#a0f2150b2d10b284f04657a89442daad5',1,'DJIRemote2::clear()'],['../classCANMsg.html#a969dcb0af8e68883ab104249c8559146',1,'CANMsg::clear()']]],
+  ['cleardisplay_19',['cleardisplay',['../classSSD1308.html#aced1bba3c22637bb8b189a8c4a7cce00',1,'SSD1308::clearDisplay()'],['../classAdafruit__SSD1306.html#afe1e0f5efabd931aab7998275356744d',1,'Adafruit_SSD1306::clearDisplay(void)']]],
   ['command_20',['command',['../classAdafruit__SSD1306.html#a21922085457ef7cb35586ee68bbf4e79',1,'Adafruit_SSD1306::command()'],['../classAdafruit__SSD1306__Spi.html#aa0a3797008126ae63a2ce11a20f374fe',1,'Adafruit_SSD1306_Spi::command()'],['../classAdafruit__SSD1306__I2c.html#a0450b0cd6cef198f97198eab2aff7750',1,'Adafruit_SSD1306_I2c::command()']]],
   ['computeanglesmadgwick_21',['computeAnglesMadgwick',['../classISM330.html#a78263ae7f3252b3d8b77ee4c126e7011',1,'ISM330']]],
-  ['computeanglesmah_22',['computeAnglesMah',['../classISM330.html#ab8127d0154f62cf53934c6ae5f4ae30c',1,'ISM330']]]
+  ['computeanglesmah_22',['computeAnglesMah',['../classISM330.html#ab8127d0154f62cf53934c6ae5f4ae30c',1,'ISM330']]],
+  ['custlpressed_23',['CUSTLPressed',['../classDJIRemote2.html#ac5831abb109772ec77d51de1b8349f11',1,'DJIRemote2']]],
+  ['custltoggled_24',['CUSTLToggled',['../classDJIRemote2.html#ab4572887a5940fffd11d5f0ef5b83a57',1,'DJIRemote2']]],
+  ['custrpressed_25',['CUSTRPressed',['../classDJIRemote2.html#ad6e408b56364e243d395dd03ea664f0c',1,'DJIRemote2']]],
+  ['custrtoggled_26',['CUSTRToggled',['../classDJIRemote2.html#a6cb5c64c14c7c247fc37f77d6f6b03c2',1,'DJIRemote2']]]
 ];

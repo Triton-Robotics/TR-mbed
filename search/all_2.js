@@ -1,12 +1,12 @@
 var searchData=
 [
-  ['b_0',['B',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fa9d5ed678fe57bcca610140957afab571',1,'Remote']]],
+  ['b_0',['b',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fa9d5ed678fe57bcca610140957afab571',1,'Remote::B'],['../classDJIRemote2.html#a807b9397256c70e28ef2f72bc5e35650a9d5ed678fe57bcca610140957afab571',1,'DJIRemote2::B']]],
   ['baddatachainnumber_1',['badDataChainNumber',['../classRemote.html#a4da81903b311b6f779459f18a60b2538',1,'Remote']]],
   ['begin_2',['begin',['../classAdafruit__SSD1306.html#afe86f20e7816f3ec4b04c272690d5c8c',1,'Adafruit_SSD1306::begin()'],['../classISM330.html#a3c1c03074dc5b8c0e6735cbeb53d0b18',1,'ISM330::begin()']]],
   ['beyblade_3',['BEYBLADE',['../classOmniWheelSubsystem.html#ac515d6ca6dd2cb83fc6baea95d14f917ab255e0ce2445ee4510092a3535245a3a',1,'OmniWheelSubsystem']]],
   ['beyblade_5facceleration_4',['BEYBLADE_ACCELERATION',['../ChassisSubsystem_8h.html#a671b7b1546d2fb81d6ab9076e297dfa3',1,'ChassisSubsystem.h']]],
   ['bisection_5',['Bisection',['../classChassisSubsystem.html#a3081940375c51edc911b051aca4c51d4',1,'ChassisSubsystem']]],
-  ['bl_5fvel_5fconfig_6',['bl_vel_config',['../Sentry_8cpp.html#ac1531c0208a008e02902f9f807fed136',1,'BL_VEL_CONFIG:&#160;Sentry.cpp'],['../Infantry_8cpp.html#ac1531c0208a008e02902f9f807fed136',1,'BL_VEL_CONFIG:&#160;Infantry.cpp'],['../Hero_8cpp.html#ac1531c0208a008e02902f9f807fed136',1,'BL_VEL_CONFIG:&#160;Hero.cpp'],['../structOmniWheelSubsystem_1_1config.html#a643c7f6f76828089a7c4f611ecbb7116',1,'OmniWheelSubsystem::config::bl_vel_config']]],
+  ['bl_5fvel_5fconfig_6',['bl_vel_config',['../Hero_8cpp.html#ac1531c0208a008e02902f9f807fed136',1,'BL_VEL_CONFIG:&#160;Hero.cpp'],['../Infantry_8cpp.html#ac1531c0208a008e02902f9f807fed136',1,'BL_VEL_CONFIG:&#160;Infantry.cpp'],['../Sentry_8cpp.html#ac1531c0208a008e02902f9f807fed136',1,'BL_VEL_CONFIG:&#160;Sentry.cpp'],['../structOmniWheelSubsystem_1_1config.html#a643c7f6f76828089a7c4f611ecbb7116',1,'OmniWheelSubsystem::config::bl_vel_config']]],
   ['black_7',['BLACK',['../Adafruit__GFX_8h.html#a7b3b25cba33b07c303f3060fe41887f6',1,'Adafruit_GFX.h']]],
   ['blid_8',['blid',['../structOmniWheelSubsystem_1_1config.html#af855e43c5398c6c130da8c91f320077d',1,'OmniWheelSubsystem::config']]],
   ['blink_5fenable_9',['BLINK_ENABLE',['../SSD1308_8h.html#a1808dc41d92dee646c8e87ef528b0e6a',1,'SSD1308.h']]],
@@ -124,10 +124,12 @@ var searchData=
   ['brake_121',['BRAKE',['../classChassisSubsystem.html#a27e1d49873290db6eb14db2c6bb87ebeaf3cd680194fd4f1c924c396aa6a2ead2',1,'ChassisSubsystem']]],
   ['brakemode_122',['BrakeMode',['../classChassisSubsystem.html#a27e1d49873290db6eb14db2c6bb87ebe',1,'ChassisSubsystem']]],
   ['brid_123',['brid',['../structOmniWheelSubsystem_1_1config.html#a65b01f0f17bfba54a845c3a7b56dcd10',1,'OmniWheelSubsystem::config']]],
-  ['buff_5ft_124',['buff_t',['../structbuff__t.html',1,'']]],
-  ['buffer_125',['buffer',['../classAdafruit__SSD1306.html#aa46a1a2f6f2fd330ea5d806222699091',1,'Adafruit_SSD1306']]],
-  ['buffer_5fenergy_126',['buffer_energy',['../structpower__heat__data__t.html#a9c6208823f6b2d7f03643f71d7e72a03',1,'power_heat_data_t']]],
-  ['building_20code_127',['Flashing and building code',['../index.html#autotoc_md8',1,'']]],
-  ['bullet_5ftype_128',['bullet_type',['../structshoot__data__t.html#a583471b74dc25cf438d27c37d4e5b63b',1,'shoot_data_t']]],
-  ['burst_129',['BURST',['../classShooterSubsystem.html#a87eddf897140bcd67267431a76ee1ee6a1cb70508234417d1eb3c9683dd42bb77',1,'ShooterSubsystem']]]
+  ['btnl_124',['btnL',['../structVTMInput.html#a2112edd536e014c10af616962ffc7a64',1,'VTMInput']]],
+  ['btnr_125',['btnR',['../structVTMInput.html#afe25bbd63db1c63ff7518f55bc981d25',1,'VTMInput']]],
+  ['buff_5ft_126',['buff_t',['../structbuff__t.html',1,'']]],
+  ['buffer_127',['buffer',['../classAdafruit__SSD1306.html#aa46a1a2f6f2fd330ea5d806222699091',1,'Adafruit_SSD1306']]],
+  ['buffer_5fenergy_128',['buffer_energy',['../structpower__heat__data__t.html#a9c6208823f6b2d7f03643f71d7e72a03',1,'power_heat_data_t']]],
+  ['building_20code_129',['Flashing and building code',['../index.html#autotoc_md8',1,'']]],
+  ['bullet_5ftype_130',['bullet_type',['../structshoot__data__t.html#a583471b74dc25cf438d27c37d4e5b63b',1,'shoot_data_t']]],
+  ['burst_131',['BURST',['../classShooterSubsystem.html#a87eddf897140bcd67267431a76ee1ee6a1cb70508234417d1eb3c9683dd42bb77',1,'ShooterSubsystem']]]
 ];

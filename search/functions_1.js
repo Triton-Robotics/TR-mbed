@@ -8,5 +8,6 @@ var searchData=
   ['add_5',['add',['../structlastfew.html#a1dbce47ae04790d89240743d87c44b17',1,'lastfew']]],
   ['append_5fcrc16_5fcheck_5fsum_6',['append_crc16_check_sum',['../crc_8cpp.html#ab64afc0e5dec0d04dee81fb98c274894',1,'Append_CRC16_Check_Sum(uint8_t *pchMessage, uint32_t dwLength):&#160;crc.cpp'],['../crc_8h.html#ab64afc0e5dec0d04dee81fb98c274894',1,'Append_CRC16_Check_Sum(uint8_t *pchMessage, uint32_t dwLength):&#160;crc.cpp']]],
   ['append_5fcrc8_5fcheck_5fsum_7',['append_crc8_check_sum',['../crc_8cpp.html#a6597501f13b4c73b399ef72ad9db8b24',1,'Append_CRC8_Check_Sum(unsigned char *pchMessage, unsigned int dwLength):&#160;crc.cpp'],['../crc_8h.html#a6597501f13b4c73b399ef72ad9db8b24',1,'Append_CRC8_Check_Sum(unsigned char *pchMessage, unsigned int dwLength):&#160;crc.cpp']]],
-  ['attach_8',['attach',['../classCANHandler.html#a415414f5289348a031d5436a13cb10f8',1,'CANHandler']]]
+  ['apply_5fdeadzone_8',['apply_deadzone',['../classDJIRemote2.html#aa11445dc5cfb1630cd1c1a02f0d24b4d',1,'DJIRemote2']]],
+  ['attach_9',['attach',['../classCANHandler.html#a415414f5289348a031d5436a13cb10f8',1,'CANHandler']]]
 ];

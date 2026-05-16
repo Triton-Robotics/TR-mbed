@@ -22,12 +22,14 @@ var searchData=
   ['start_5fid_19',['start_id',['../structRangeCallback.html#a2ae1eb84d13399fafb18ac8380941f7a',1,'RangeCallback']]],
   ['start_5fx_20',['start_x',['../structClientData__struct__t.html#a6f68c3e70c4b34cff3627d6ebfd52cec',1,'ClientData_struct_t::start_x'],['../structgraphic__data__struct__t.html#adca8f950a00d0f4669f6241b52849691',1,'graphic_data_struct_t::start_x']]],
   ['start_5fy_21',['start_y',['../structgraphic__data__struct__t.html#a4c673aea5c0f90040dd6770ebd68e6c7',1,'graphic_data_struct_t::start_y'],['../structClientData__struct__t.html#a04d0b0aa703dcde93fa98f11abbd5371',1,'ClientData_struct_t::start_y']]],
-  ['stm_5fstate_22',['stm_state',['../classHero.html#a65f696b4928fcef5ca14c68a520553c4',1,'Hero::stm_state'],['../classInfantry.html#ae9aa38d7f2949dbbccbb46f9b43d3203',1,'Infantry::stm_state'],['../classSentry.html#a5861f333ea3829347d8bfdcb0ec2872c',1,'Sentry::stm_state']]],
-  ['supply_5fprojectile_5fid_23',['supply_projectile_id',['../structext__supply__projectile__action__t.html#ae3efe06531f823bc5d53b0928da52dcd',1,'ext_supply_projectile_action_t']]],
-  ['supply_5fprojectile_5fnum_24',['supply_projectile_num',['../structext__supply__projectile__action__t.html#ac0d6383817dbc38380c34cf4085dcefd',1,'ext_supply_projectile_action_t']]],
-  ['supply_5fprojectile_5fstep_25',['supply_projectile_step',['../structext__supply__projectile__action__t.html#a0abced6715ab8ac0ac5cbe5d32761bfa',1,'ext_supply_projectile_action_t']]],
-  ['supply_5frobot_5fid_26',['supply_robot_id',['../structext__supply__projectile__action__t.html#a284ea14f549b9d81dd9f25955b689b1b',1,'ext_supply_projectile_action_t']]],
-  ['sw_5frev_5fid_27',['sw_rev_id',['../structBNO055__ID__INF__TypeDef.html#aadfe87d8f2715963a84dacebef0bfa12',1,'BNO055_ID_INF_TypeDef']]],
-  ['swrst_28',['SWRST',['../ISM330_8cpp.html#a16bc32a812181e34b48ec13724c446c7',1,'ISM330.cpp']]],
-  ['synctimestamp_29',['SyncTimeStamp',['../structgame__status__t.html#ab0e56bd4de22797513b22cdb02f97833',1,'game_status_t']]]
+  ['stick_5fmax_5fvalue_22',['STICK_MAX_VALUE',['../classDJIRemote2.html#a109fcf3560f1fb1041d58bc0500f32c9',1,'DJIRemote2']]],
+  ['stm_5fstate_23',['stm_state',['../classHero.html#a65f696b4928fcef5ca14c68a520553c4',1,'Hero::stm_state'],['../classInfantry.html#ae9aa38d7f2949dbbccbb46f9b43d3203',1,'Infantry::stm_state'],['../classSentry.html#a5861f333ea3829347d8bfdcb0ec2872c',1,'Sentry::stm_state']]],
+  ['stream_5fbuffer_5fsize_24',['STREAM_BUFFER_SIZE',['../classDJIRemote2.html#affcae6dc93d8a8d1ba2b43f57b2b3223',1,'DJIRemote2']]],
+  ['supply_5fprojectile_5fid_25',['supply_projectile_id',['../structext__supply__projectile__action__t.html#ae3efe06531f823bc5d53b0928da52dcd',1,'ext_supply_projectile_action_t']]],
+  ['supply_5fprojectile_5fnum_26',['supply_projectile_num',['../structext__supply__projectile__action__t.html#ac0d6383817dbc38380c34cf4085dcefd',1,'ext_supply_projectile_action_t']]],
+  ['supply_5fprojectile_5fstep_27',['supply_projectile_step',['../structext__supply__projectile__action__t.html#a0abced6715ab8ac0ac5cbe5d32761bfa',1,'ext_supply_projectile_action_t']]],
+  ['supply_5frobot_5fid_28',['supply_robot_id',['../structext__supply__projectile__action__t.html#a284ea14f549b9d81dd9f25955b689b1b',1,'ext_supply_projectile_action_t']]],
+  ['sw_5frev_5fid_29',['sw_rev_id',['../structBNO055__ID__INF__TypeDef.html#aadfe87d8f2715963a84dacebef0bfa12',1,'BNO055_ID_INF_TypeDef']]],
+  ['swrst_30',['SWRST',['../ISM330_8cpp.html#a16bc32a812181e34b48ec13724c446c7',1,'ISM330.cpp']]],
+  ['synctimestamp_31',['SyncTimeStamp',['../structgame__status__t.html#ab0e56bd4de22797513b22cdb02f97833',1,'game_status_t']]]
 ];

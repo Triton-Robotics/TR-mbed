@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['a_0',['A',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fa7fc56270e7a70fa81a5935b72eacbe29',1,'Remote']]],
+  ['a_0',['a',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fa7fc56270e7a70fa81a5935b72eacbe29',1,'Remote::A'],['../classDJIRemote2.html#a807b9397256c70e28ef2f72bc5e35650a7fc56270e7a70fa81a5935b72eacbe29',1,'DJIRemote2::A']]],
   ['afs_5f16g_1',['AFS_16G',['../MPU6050_8h.html#ad70a0b09993694925c04d1b62dd9848cac69ba62b40838fa92ea9a1853210dc26',1,'MPU6050.h']]],
   ['afs_5f2g_2',['AFS_2G',['../MPU6050_8h.html#ad70a0b09993694925c04d1b62dd9848ca93154da7a495cfb3b9ab29d2d5d4891b',1,'MPU6050.h']]],
   ['afs_5f4g_3',['AFS_4G',['../MPU6050_8h.html#ad70a0b09993694925c04d1b62dd9848ca80ff3efadbf6aab6beaa8f3fc54cd2e5',1,'MPU6050.h']]],

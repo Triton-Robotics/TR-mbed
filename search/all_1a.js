@@ -1,12 +1,13 @@
 var searchData=
 [
-  ['z_0',['z',['../structBNO055__QUATERNION__TypeDef.html#af1fea9525c1cdf4b5d10b28382199d7a',1,'BNO055_QUATERNION_TypeDef::z'],['../structBNO055__VECTOR__TypeDef.html#a2915bc86a1f0100f459e7458079dfdfe',1,'BNO055_VECTOR_TypeDef::z'],['../structIMU_1_1Quaternion.html#a8ce2a68f7515cae4aafa6d762998eaf8',1,'IMU::Quaternion::z'],['../structISM330_1_1ISM330__VECTOR__TypeDef.html#a9866fee7334df7b400ad85b863ec554d',1,'ISM330::ISM330_VECTOR_TypeDef::z'],['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fa21c2e59531c8710156d34a3c30ac81d5',1,'Remote::Z']]],
+  ['z_0',['z',['../structBNO055__QUATERNION__TypeDef.html#af1fea9525c1cdf4b5d10b28382199d7a',1,'BNO055_QUATERNION_TypeDef::z'],['../structBNO055__VECTOR__TypeDef.html#a2915bc86a1f0100f459e7458079dfdfe',1,'BNO055_VECTOR_TypeDef::z'],['../structIMU_1_1Quaternion.html#a8ce2a68f7515cae4aafa6d762998eaf8',1,'IMU::Quaternion::z'],['../structISM330_1_1ISM330__VECTOR__TypeDef.html#a9866fee7334df7b400ad85b863ec554d',1,'ISM330::ISM330_VECTOR_TypeDef::z'],['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fa21c2e59531c8710156d34a3c30ac81d5',1,'Remote::Z'],['../classDJIRemote2.html#a807b9397256c70e28ef2f72bc5e35650a21c2e59531c8710156d34a3c30ac81d5',1,'DJIRemote2::Z']]],
   ['z_5ffine_5fgain_1',['Z_FINE_GAIN',['../MPU6050_8h.html#a3a7ba0accd4030b06d353933b16f8996',1,'MPU6050.h']]],
   ['za_5foffset_5fh_2',['ZA_OFFSET_H',['../MPU6050_8h.html#a3beaaac6dcdf69ac6d4971944650c92e',1,'MPU6050.h']]],
   ['za_5foffset_5fl_5ftc_3',['ZA_OFFSET_L_TC',['../MPU6050_8h.html#ad2c767fc7821a921a286b1442cc5ae9a',1,'MPU6050.h']]],
-  ['zg_5foffs_5fusrh_4',['ZG_OFFS_USRH',['../MPU6050_8h.html#a272087902ac250d729833f566dc0e7a7',1,'MPU6050.h']]],
-  ['zg_5foffs_5fusrl_5',['ZG_OFFS_USRL',['../MPU6050_8h.html#a21bfc74e9d45847e56fda9243cd4a1a1',1,'MPU6050.h']]],
-  ['zgoffs_5ftc_6',['ZGOFFS_TC',['../MPU6050_8h.html#a645e89dbc915ad02c627910b797ed8b4',1,'MPU6050.h']]],
-  ['zmot_5fthr_7',['ZMOT_THR',['../MPU6050_8h.html#acba14d5cc97ac5d30f48a3a14f203d01',1,'MPU6050.h']]],
-  ['zrmot_5fdur_8',['ZRMOT_DUR',['../MPU6050_8h.html#aea8c245e80349e063d172a10a40cf6a3',1,'MPU6050.h']]]
+  ['zeroinputs_4',['zeroInputs',['../classDJIRemote2.html#a98ce89123dfb6264c3adbae1b2cef2de',1,'DJIRemote2']]],
+  ['zg_5foffs_5fusrh_5',['ZG_OFFS_USRH',['../MPU6050_8h.html#a272087902ac250d729833f566dc0e7a7',1,'MPU6050.h']]],
+  ['zg_5foffs_5fusrl_6',['ZG_OFFS_USRL',['../MPU6050_8h.html#a21bfc74e9d45847e56fda9243cd4a1a1',1,'MPU6050.h']]],
+  ['zgoffs_5ftc_7',['ZGOFFS_TC',['../MPU6050_8h.html#a645e89dbc915ad02c627910b797ed8b4',1,'MPU6050.h']]],
+  ['zmot_5fthr_8',['ZMOT_THR',['../MPU6050_8h.html#acba14d5cc97ac5d30f48a3a14f203d01',1,'MPU6050.h']]],
+  ['zrmot_5fdur_9',['ZRMOT_DUR',['../MPU6050_8h.html#aea8c245e80349e063d172a10a40cf6a3',1,'MPU6050.h']]]
 ];

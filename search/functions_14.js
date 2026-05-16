@@ -1,7 +1,7 @@
 var searchData=
 [
   ['unit_5fselection_0',['unit_selection',['../classBNO055.html#a236e74fb55e1fcf6d6ee67db325b81e6',1,'BNO055']]],
-  ['update_1',['update',['../classSerialCommunication.html#a2655518d96d0f9b59bdc3398ac34bf21',1,'SerialCommunication']]],
+  ['update_1',['update',['../classDJIRemote2.html#a05ef867ac514f3fb057d9265fe8d6165',1,'DJIRemote2::update()'],['../classSerialCommunication.html#a2655518d96d0f9b59bdc3398ac34bf21',1,'SerialCommunication::update()']]],
   ['updatecans_2',['updateCANs',['../classCANHandler.html#a423563c96d7a7da836a957c5b0c88745',1,'CANHandler']]],
   ['updatepriority_3',['updatePriority',['../classTRMutex.html#a38565f6d25cef7576e7ad4d5d96c3ccb',1,'TRMutex']]],
   ['updateyawphasefromencoder_4',['updateYawPhaseFromEncoder',['../classChassisSubsystem.html#aa17ae6e8494d118d8f761d0e66679fc1',1,'ChassisSubsystem']]],

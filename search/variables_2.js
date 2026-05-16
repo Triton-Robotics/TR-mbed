@@ -1,7 +1,7 @@
 var searchData=
 [
   ['baddatachainnumber_0',['badDataChainNumber',['../classRemote.html#a4da81903b311b6f779459f18a60b2538',1,'Remote']]],
-  ['bl_5fvel_5fconfig_1',['bl_vel_config',['../structOmniWheelSubsystem_1_1config.html#a643c7f6f76828089a7c4f611ecbb7116',1,'OmniWheelSubsystem::config::bl_vel_config'],['../Sentry_8cpp.html#ac1531c0208a008e02902f9f807fed136',1,'BL_VEL_CONFIG:&#160;Sentry.cpp'],['../Infantry_8cpp.html#ac1531c0208a008e02902f9f807fed136',1,'BL_VEL_CONFIG:&#160;Infantry.cpp'],['../Hero_8cpp.html#ac1531c0208a008e02902f9f807fed136',1,'BL_VEL_CONFIG:&#160;Hero.cpp']]],
+  ['bl_5fvel_5fconfig_1',['bl_vel_config',['../structOmniWheelSubsystem_1_1config.html#a643c7f6f76828089a7c4f611ecbb7116',1,'OmniWheelSubsystem::config::bl_vel_config'],['../Infantry_8cpp.html#ac1531c0208a008e02902f9f807fed136',1,'BL_VEL_CONFIG:&#160;Infantry.cpp'],['../Hero_8cpp.html#ac1531c0208a008e02902f9f807fed136',1,'BL_VEL_CONFIG:&#160;Hero.cpp'],['../Sentry_8cpp.html#ac1531c0208a008e02902f9f807fed136',1,'BL_VEL_CONFIG:&#160;Sentry.cpp']]],
   ['blid_2',['blid',['../structOmniWheelSubsystem_1_1config.html#af855e43c5398c6c130da8c91f320077d',1,'OmniWheelSubsystem::config']]],
   ['blockupdate_3',['blockUpdate',['../ISM330_8cpp.html#a143ba83c896646a6a2314645d52c8324',1,'ISM330.cpp']]],
   ['blue1_5fbullet_5fleft_4',['blue1_bullet_left',['../structext__ICRA__buff__debuff__zone__status__t.html#a5dcaa37daa319b6f547db36c588e1397',1,'ext_ICRA_buff_debuff_zone_status_t']]],
@@ -18,7 +18,9 @@ var searchData=
   ['bootldr_5frev_5fid_15',['bootldr_rev_id',['../structBNO055__ID__INF__TypeDef.html#a6bb814e805dc107ccb3809668b614ea1',1,'BNO055_ID_INF_TypeDef']]],
   ['br_5fvel_5fconfig_16',['br_vel_config',['../Infantry_8cpp.html#a3f201557a3030171140f37a8b7311ec1',1,'BR_VEL_CONFIG:&#160;Infantry.cpp'],['../Hero_8cpp.html#a3f201557a3030171140f37a8b7311ec1',1,'BR_VEL_CONFIG:&#160;Hero.cpp'],['../Sentry_8cpp.html#a3f201557a3030171140f37a8b7311ec1',1,'BR_VEL_CONFIG:&#160;Sentry.cpp'],['../structOmniWheelSubsystem_1_1config.html#a17918ca5882fc1381086759ec7ed2681',1,'OmniWheelSubsystem::config::br_vel_config']]],
   ['brid_17',['brid',['../structOmniWheelSubsystem_1_1config.html#a65b01f0f17bfba54a845c3a7b56dcd10',1,'OmniWheelSubsystem::config']]],
-  ['buffer_18',['buffer',['../classAdafruit__SSD1306.html#aa46a1a2f6f2fd330ea5d806222699091',1,'Adafruit_SSD1306']]],
-  ['buffer_5fenergy_19',['buffer_energy',['../structpower__heat__data__t.html#a9c6208823f6b2d7f03643f71d7e72a03',1,'power_heat_data_t']]],
-  ['bullet_5ftype_20',['bullet_type',['../structshoot__data__t.html#a583471b74dc25cf438d27c37d4e5b63b',1,'shoot_data_t']]]
+  ['btnl_18',['btnL',['../structVTMInput.html#a2112edd536e014c10af616962ffc7a64',1,'VTMInput']]],
+  ['btnr_19',['btnR',['../structVTMInput.html#afe25bbd63db1c63ff7518f55bc981d25',1,'VTMInput']]],
+  ['buffer_20',['buffer',['../classAdafruit__SSD1306.html#aa46a1a2f6f2fd330ea5d806222699091',1,'Adafruit_SSD1306']]],
+  ['buffer_5fenergy_21',['buffer_energy',['../structpower__heat__data__t.html#a9c6208823f6b2d7f03643f71d7e72a03',1,'power_heat_data_t']]],
+  ['bullet_5ftype_22',['bullet_type',['../structshoot__data__t.html#a583471b74dc25cf438d27c37d4e5b63b',1,'shoot_data_t']]]
 ];

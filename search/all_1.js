@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['a_0',['A',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fa7fc56270e7a70fa81a5935b72eacbe29',1,'Remote']]],
+  ['a_0',['a',['../classDJIRemote2.html#a807b9397256c70e28ef2f72bc5e35650a7fc56270e7a70fa81a5935b72eacbe29',1,'DJIRemote2::A'],['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fa7fc56270e7a70fa81a5935b72eacbe29',1,'Remote::A']]],
   ['acc_5fchip_1',['acc_chip',['../structBNO055__TEMPERATURE__TypeDef.html#a304129cdac3e7468650aa141ba433c2d',1,'BNO055_TEMPERATURE_TypeDef']]],
   ['acc_5fid_2',['acc_id',['../structBNO055__ID__INF__TypeDef.html#a334542bf248c838bf5c88cda47303405',1,'BNO055_ID_INF_TypeDef']]],
   ['accel_3',['accel',['../classMPU6050.html#aa9b1bc4b9a59ea9f95cfea046d34ae37',1,'MPU6050']]],
@@ -56,15 +56,16 @@ var searchData=
   ['angular_5facc_53',['angular_acc',['../imuExampleAllData_8cpp.html#acd2c04b75392304205a57d8923addd8d',1,'imuExampleAllData.cpp']]],
   ['append_5fcrc16_5fcheck_5fsum_54',['append_crc16_check_sum',['../crc_8h.html#ab64afc0e5dec0d04dee81fb98c274894',1,'Append_CRC16_Check_Sum(uint8_t *pchMessage, uint32_t dwLength):&#160;crc.cpp'],['../crc_8cpp.html#ab64afc0e5dec0d04dee81fb98c274894',1,'Append_CRC16_Check_Sum(uint8_t *pchMessage, uint32_t dwLength):&#160;crc.cpp']]],
   ['append_5fcrc8_5fcheck_5fsum_55',['append_crc8_check_sum',['../crc_8h.html#a6597501f13b4c73b399ef72ad9db8b24',1,'Append_CRC8_Check_Sum(unsigned char *pchMessage, unsigned int dwLength):&#160;crc.cpp'],['../crc_8cpp.html#a6597501f13b4c73b399ef72ad9db8b24',1,'Append_CRC8_Check_Sum(unsigned char *pchMessage, unsigned int dwLength):&#160;crc.cpp']]],
-  ['appropriate_20setup_20guide_20for_20your_20operating_20system_3a_20strong_56',['&lt;strong&gt;Please choose the appropriate setup guide for your operating system:&lt;/strong&gt;',['../index.html#autotoc_md3',1,'']]],
-  ['arm_57',['arm',['../structlastfew.html#af1c85b7866cf8dab9c63975d928c1ee7',1,'lastfew']]],
-  ['armor_5fid_58',['armor_id',['../structhurt__data__t.html#aec9ce4e19ce476e7a37734549d11ea3f',1,'hurt_data_t']]],
-  ['at_20this_20point_20you_20may_20choose_20to_20diverge_20from_20the_20cli_20setup_20guide_20and_20set_20up_20an_20ide_20instead_20check_20out_20the_20setup_20instructions_20for_20ref_20home_20runner_20work_20tr_20mbed_20tr_20mbed_20md_20ide_20clion_20md_20clion_20or_20ref_20home_20runner_20work_20tr_20mbed_20tr_20mbed_20md_20ide_20vscode_20md_20vscode_20we_20higly_20recommend_20ref_20home_20runner_20work_20tr_20mbed_20tr_20mbed_20md_20ide_20clion_20md_20clion_59',['At this point, you may choose to diverge from the CLI setup guide and set up an IDE instead. Check out the setup instructions for @ref &quot;/home/runner/work/TR-mbed/TR-mbed/.md/ide/clion.md&quot; &quot;CLion&quot; or @ref &quot;/home/runner/work/TR-mbed/TR-mbed/.md/ide/vscode.md&quot; &quot;VSCode&quot;. We higly recommend @ref &quot;/home/runner/work/TR-mbed/TR-mbed/.md/ide/clion.md&quot; &quot;CLion&quot;.',['../index.html#autotoc_md6',1,'']]],
-  ['attach_60',['attach',['../classCANHandler.html#a415414f5289348a031d5436a13cb10f8',1,'CANHandler']]],
-  ['attack_5fbuff_61',['attack_buff',['../structbuff__t.html#a799ad73faa1b7ea97b60ef2bc109858e',1,'buff_t']]],
-  ['attack_5ftime_62',['attack_time',['../structaerial__robot__energy__t.html#aa46c7d0624eb94583c591fb81c826157',1,'aerial_robot_energy_t']]],
-  ['auto_63',['AUTO',['../classShooterSubsystem.html#a87eddf897140bcd67267431a76ee1ee6a412d78a13763097f6f42cb1d7c214964',1,'ShooterSubsystem']]],
-  ['ax_64',['ax',['../structISM330_1_1ISM330__DATA__TypeDef.html#a5bd98359f69321bd21b5d99eb3ca8ca1',1,'ISM330::ISM330_DATA_TypeDef::ax'],['../structISM330_1_1ISM330__RAW__DATA__TypeDef.html#a507d4bd360bc57e785d85c635551d42f',1,'ISM330::ISM330_RAW_DATA_TypeDef::ax']]],
-  ['ay_65',['ay',['../structISM330_1_1ISM330__RAW__DATA__TypeDef.html#a7e9e82daf39bdba830bfd77b5c322dbd',1,'ISM330::ISM330_RAW_DATA_TypeDef::ay'],['../structISM330_1_1ISM330__DATA__TypeDef.html#afaaf4d9a1974d376487ec18a1e2437e1',1,'ISM330::ISM330_DATA_TypeDef::ay']]],
-  ['az_66',['az',['../structISM330_1_1ISM330__RAW__DATA__TypeDef.html#ae12eeeac7dbba3ed248dbf1573782274',1,'ISM330::ISM330_RAW_DATA_TypeDef::az'],['../structISM330_1_1ISM330__DATA__TypeDef.html#a7cff0e1b316215d7dac027d9b0aa5f7a',1,'ISM330::ISM330_DATA_TypeDef::az']]]
+  ['apply_5fdeadzone_56',['apply_deadzone',['../classDJIRemote2.html#aa11445dc5cfb1630cd1c1a02f0d24b4d',1,'DJIRemote2']]],
+  ['appropriate_20setup_20guide_20for_20your_20operating_20system_3a_20strong_57',['&lt;strong&gt;Please choose the appropriate setup guide for your operating system:&lt;/strong&gt;',['../index.html#autotoc_md3',1,'']]],
+  ['arm_58',['arm',['../structlastfew.html#af1c85b7866cf8dab9c63975d928c1ee7',1,'lastfew']]],
+  ['armor_5fid_59',['armor_id',['../structhurt__data__t.html#aec9ce4e19ce476e7a37734549d11ea3f',1,'hurt_data_t']]],
+  ['at_20this_20point_20you_20may_20choose_20to_20diverge_20from_20the_20cli_20setup_20guide_20and_20set_20up_20an_20ide_20instead_20check_20out_20the_20setup_20instructions_20for_20ref_20home_20runner_20work_20tr_20mbed_20tr_20mbed_20md_20ide_20clion_20md_20clion_20or_20ref_20home_20runner_20work_20tr_20mbed_20tr_20mbed_20md_20ide_20vscode_20md_20vscode_20we_20higly_20recommend_20ref_20home_20runner_20work_20tr_20mbed_20tr_20mbed_20md_20ide_20clion_20md_20clion_60',['At this point, you may choose to diverge from the CLI setup guide and set up an IDE instead. Check out the setup instructions for @ref &quot;/home/runner/work/TR-mbed/TR-mbed/.md/ide/clion.md&quot; &quot;CLion&quot; or @ref &quot;/home/runner/work/TR-mbed/TR-mbed/.md/ide/vscode.md&quot; &quot;VSCode&quot;. We higly recommend @ref &quot;/home/runner/work/TR-mbed/TR-mbed/.md/ide/clion.md&quot; &quot;CLion&quot;.',['../index.html#autotoc_md6',1,'']]],
+  ['attach_61',['attach',['../classCANHandler.html#a415414f5289348a031d5436a13cb10f8',1,'CANHandler']]],
+  ['attack_5fbuff_62',['attack_buff',['../structbuff__t.html#a799ad73faa1b7ea97b60ef2bc109858e',1,'buff_t']]],
+  ['attack_5ftime_63',['attack_time',['../structaerial__robot__energy__t.html#aa46c7d0624eb94583c591fb81c826157',1,'aerial_robot_energy_t']]],
+  ['auto_64',['AUTO',['../classShooterSubsystem.html#a87eddf897140bcd67267431a76ee1ee6a412d78a13763097f6f42cb1d7c214964',1,'ShooterSubsystem']]],
+  ['ax_65',['ax',['../structISM330_1_1ISM330__DATA__TypeDef.html#a5bd98359f69321bd21b5d99eb3ca8ca1',1,'ISM330::ISM330_DATA_TypeDef::ax'],['../structISM330_1_1ISM330__RAW__DATA__TypeDef.html#a507d4bd360bc57e785d85c635551d42f',1,'ISM330::ISM330_RAW_DATA_TypeDef::ax']]],
+  ['ay_66',['ay',['../structISM330_1_1ISM330__RAW__DATA__TypeDef.html#a7e9e82daf39bdba830bfd77b5c322dbd',1,'ISM330::ISM330_RAW_DATA_TypeDef::ay'],['../structISM330_1_1ISM330__DATA__TypeDef.html#afaaf4d9a1974d376487ec18a1e2437e1',1,'ISM330::ISM330_DATA_TypeDef::ay']]],
+  ['az_67',['az',['../structISM330_1_1ISM330__RAW__DATA__TypeDef.html#ae12eeeac7dbba3ed248dbf1573782274',1,'ISM330::ISM330_RAW_DATA_TypeDef::az'],['../structISM330_1_1ISM330__DATA__TypeDef.html#a7cff0e1b316215d7dac027d9b0aa5f7a',1,'ISM330::ISM330_DATA_TypeDef::az']]]
 ];

@@ -7,7 +7,8 @@ var searchData=
   ['tickstoradians_4',['ticksToRadians',['../classChassisSubsystem.html#a4108e8bc0138701d2db304702c37168e',1,'ChassisSubsystem']]],
   ['time_5',['time',['../structlastfew.html#a7499456ff4a3b4706c480543af9ec3e2',1,'lastfew']]],
   ['tonum_6',['toNum',['../classSerialCommunication.html#a09419c84e1bc2a085e1357a68b1e8319',1,'SerialCommunication']]],
-  ['trmutex_7',['TRMutex',['../classTRMutex.html#a3f42e63f89376a505d97b090c1f98b32',1,'TRMutex']]],
-  ['turretpacket_8',['TurretPacket',['../classTurretPacket.html#af552536eabce562688bc04a6e7b34309',1,'TurretPacket']]],
-  ['turretsubsystem_9',['TurretSubsystem',['../classTurretSubsystem.html#a3cd16cfed964b0e2c78f5c9caad17a18',1,'TurretSubsystem']]]
+  ['triggerpressed_7',['TriggerPressed',['../classDJIRemote2.html#a9271f412881bb56606207ee25eaa11cc',1,'DJIRemote2']]],
+  ['trmutex_8',['TRMutex',['../classTRMutex.html#a3f42e63f89376a505d97b090c1f98b32',1,'TRMutex']]],
+  ['turretpacket_9',['TurretPacket',['../classTurretPacket.html#af552536eabce562688bc04a6e7b34309',1,'TurretPacket']]],
+  ['turretsubsystem_10',['TurretSubsystem',['../classTurretSubsystem.html#a3cd16cfed964b0e2c78f5c9caad17a18',1,'TurretSubsystem']]]
 ];
