@@ -411,6 +411,7 @@ private:
     //new from arihant branch chassis-refactor
     unsigned long last_torque_time = 0;
     float curr_fit(int x);
+    float estimatePowerWatts(int torqueCounts);
 
     // ChassisKalman chassisKalman;
     double testAngle;

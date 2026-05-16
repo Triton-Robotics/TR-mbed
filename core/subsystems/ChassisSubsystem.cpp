@@ -181,7 +181,19 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     int r3 = abs(LB.getData(VELOCITY));
     int r4 = abs(RB.getData(VELOCITY));
 
-    double scale = Bisection(p1, p2, p3, p4, r1, r2, r3, r4, power_limit);
+    float totalEstimatedWatts = estimatePowerWatts(LF.getData(TORQUE))
+                              + estimatePowerWatts(RF.getData(TORQUE))
+                              + estimatePowerWatts(LB.getData(TORQUE))
+                              + estimatePowerWatts(RB.getData(TORQUE));
+
+    constexpr float POWER_MARGIN_W = 10.0f;
+    float scale = std::min(1.0f, power_limit / (totalEstimatedWatts + POWER_MARGIN_W));
+ 
+    m_wheelPowers.LF    = p_theory(p1*scale, 0, 0, 0, r1, 0, 0, 0);
+    m_wheelPowers.RF    = p_theory(0, p2*scale, 0, 0, 0, r2, 0, 0);
+    m_wheelPowers.LB    = p_theory(0, 0, p3*scale, 0, 0, 0, r3, 0);
+    m_wheelPowers.RB    = p_theory(0, 0, 0, p4*scale, 0, 0, 0, r4);
+    m_wheelPowers.total = m_wheelPowers.LF + m_wheelPowers.RF + m_wheelPowers.LB + m_wheelPowers.RB;
 
     // Debug print: RPMs, bisection scale, and predicted power before motors are set
     //printf("RPM LF:%.1f RF:%.1f LB:%.1f RB:%.1f | Scale:%.4f | Power:%.2f\n",
@@ -681,4 +693,28 @@ double ChassisSubsystem::rpmToRadPerSecond(double RPM)
 double ChassisSubsystem::radPerSecondToRPM(double radPerSecond)
 {
     return radPerSecond / (2 * PI) * SECONDS_PER_MINUTE;
+}
+
+float ChassisSubsystem::estimatePowerWatts(int torqueCounts)
+{
+    constexpr int   PEAK_TORQUE_COUNTS  = 5596;
+    constexpr float SATURATION_RATIO    = 0.4375f;
+    constexpr float SATURATION_CURRENT  = 1.22f;
+    constexpr float TORQUE_TO_AMP       = 14.0f / 4.9f;
+    constexpr float BUS_VOLTAGE         = 24.0f;
+
+    float torque = std::abs(static_cast<float>(torqueCounts)) / PEAK_TORQUE_COUNTS;
+
+    float currentA;
+    if (torque > SATURATION_RATIO) {
+        if ((us_ticker_read() - last_torque_time) / 1000UL > 200UL) {
+            last_torque_time = us_ticker_read();
+            currentA = SATURATION_CURRENT;
+        }
+        currentA = torque;
+    } else {
+        currentA = torque * TORQUE_TO_AMP;
+    }
+
+    return BUS_VOLTAGE * currentA;
 }
