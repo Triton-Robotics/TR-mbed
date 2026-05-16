@@ -225,12 +225,15 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
 
     float vXY = sqrtf(m_chassisSpeeds.vX * m_chassisSpeeds.vX + m_chassisSpeeds.vY * m_chassisSpeeds.vY);
     float angle = atan2f(m_chassisSpeeds.vY, m_chassisSpeeds.vX) * (180.0f / M_PI);
-    float P_est = p_theory(p1, p2, p3, p4, r1, r2, r3, r4);
+    float P_est = estimatePowerWatts(LF.getData(TORQUE))
+                              + estimatePowerWatts(RF.getData(TORQUE))
+                              + estimatePowerWatts(LB.getData(TORQUE))
+                              + estimatePowerWatts(RB.getData(TORQUE));
 
     bool is_idle = (vXY < 0.001f && fabsf(m_chassisSpeeds.vOmega) < 0.001f);
 
     if (!is_idle || !idle_printed) {
-        if (++logCounter >= 5) {
+        if (++logCounter >= 1) {
             logCounter = 0;
             idle_printed = is_idle;
             printf("vX:%.3f vY:%.3f vXY:%.3f angle:%.1f vW:%.3f | scale:%.4f | P_est:%.2f\n",
