@@ -458,7 +458,7 @@ double ChassisSubsystem::getMotorSpeed(MotorLocation location, SPEED_UNIT unit =
     case RPM:
         return speed;
     case METER_PER_SECOND:
-        return (speed / M3508_GEAR_RATIO) * (2 * PI / 60) * (WHEEL_DIAMETER_METERS / 2);
+        return speed * (WHEEL_DIAMETER_METERS / 2);
     case RAD_PER_SECOND:
         // TODO this should be handled properly
         return 0;
@@ -548,8 +548,8 @@ WheelSpeeds ChassisSubsystem::chassisSpeedsToWheelSpeeds(ChassisSpeeds chassisSp
 ChassisSpeeds ChassisSubsystem::wheelSpeedsToChassisSpeeds(WheelSpeeds wheelSpeeds)
 {
     float dist = chassis_radius/sqrt(2);
-    float vX     = (wheelSpeeds.LF + wheelSpeeds.RF - wheelSpeeds.LB - wheelSpeeds.RB) / 4;
-    float vY     = (wheelSpeeds.LF - wheelSpeeds.RF + wheelSpeeds.LB - wheelSpeeds.RB) / 4;
+    float vX     = (wheelSpeeds.LF - wheelSpeeds.RF + wheelSpeeds.LB - wheelSpeeds.RB) / 4;
+    float vY     = (-wheelSpeeds.LF - wheelSpeeds.RF + wheelSpeeds.LB + wheelSpeeds.RB) / 4;
     float vOmega = (-wheelSpeeds.LF - wheelSpeeds.RF - wheelSpeeds.LB - wheelSpeeds.RB) / (4*(2 * dist));
     return {vX, vY, vOmega};
 }
