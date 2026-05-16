@@ -16,17 +16,17 @@ static constexpr float gyroConversion = gyroRangeScale * dpsToRad / 1000.0f;   /
 
 
 static constexpr uint8_t ISM330_CHIP_ID = 0x6B;   // Expected WHO_AM_I
-const char WhoAmIReg[] = {0x0F};
+static const char WhoAmIReg[] = {0x0F};
 
 //Reading and Write Addresses
-const int readAddr = 0b11010101;
-const int writeAddr = 0b11010100;
+static constexpr int readAddr = 0b11010101;
+static constexpr int writeAddr = 0b11010100;
 
-const char SWRST[] = {0x12,0x01}; // Software Reset command
-const char xEnable[] = {0x10, 0x7A}; // Enable accelerometer at 833Hz, +/-4g
-const char xEnableMax[] = {0x10, 0xAA}; // Enable accelerometer at 
-const char gEnable[] = {0x11, 0x7C}; // Enable gyroscope at 833Hz, 2000dps
-const char gEnableMax[] = {0x11, 0xAC}; // Enable gyroscope at 833Hz, 2000dps, with low pass filter
+static const char SWRST[] = {0x12,0x01}; // Software Reset command
+static const char xEnable[] = {0x10, 0x7A}; // Enable accelerometer at 833Hz, +/-4g
+//static const char xEnableMax[] = {0x10, 0xAA}; // Enable accelerometer at 
+static const char gEnable[] = {0x11, 0x7C}; // Enable gyroscope at 833Hz, 2000dps
+//static const char gEnableMax[] = {0x11, 0xAC}; // Enable gyroscope at 833Hz, 2000dps, with low pass filter
 
 // Accelerometer and gyro register definitions
 static constexpr uint8_t CTRL1_XL = 0x10;
@@ -35,10 +35,11 @@ static constexpr uint8_t CTRL3_C  = 0x12;
 static constexpr uint8_t CTRL4_C  = 0x13;
 static constexpr uint8_t CTRL6_C  = 0x15;
 static constexpr uint8_t STATUS_REG = 0x1E;
-const char gReg[] = {0x22,0x23,0x24,0x25,0x26,0x27}; //Gyro Register values
-const char xReg[] = {0x28,0x29,0x2A, 0x2B, 0x2C, 0x2D,}; //Accel Register Values
-const char gyroLowPassFilter[] = {CTRL6_C, 0x03}; // Low pass filter
-const char blockUpdate[] = {CTRL3_C, 0x44}; // Block update for reading consistent data
+static const char gReg[] = {0x22,0x23,0x24,0x25,0x26,0x27}; //Gyro Register values
+static const char xReg[] = {0x28,0x29,0x2A, 0x2B, 0x2C, 0x2D,}; //Accel Register Values
+static const char tReg[] = {0x20, 0x21}; //Temperature register values
+static const char gyroLowPassFilter[] = {CTRL6_C, 0x03}; // Low pass filter
+static const char blockUpdate[] = {CTRL3_C, 0x44}; // Block update for reading consistent data
 
 // ------------------- CONSTRUCTOR -------------------
 ISM330::ISM330(I2C &i2c, uint8_t address) noexcept  //Put in an i2c object, and the device address (in this case 0x6B)
@@ -129,7 +130,7 @@ void ISM330::reset() noexcept
 //Helper functions to convert accel readings to real values
 
 //Raw values to Acceleration (m/s^2)
-ISM330::ISM330_VECTOR_TypeDef ISM330::readingToAccel(const uint8_t *readings) 
+ISM330::ISM330_VECTOR_TypeDef ISM330::readingToAccel(const uint8_t *readings, float temp) 
 {
     int16_t rawX = (int16_t)(((uint16_t)readings[1] << 8) | readings[0]);
     int16_t rawY = (int16_t)(((uint16_t)readings[3] << 8) | readings[2]);
@@ -139,16 +140,16 @@ ISM330::ISM330_VECTOR_TypeDef ISM330::readingToAccel(const uint8_t *readings)
     float rawYfloat = static_cast<float>(rawY);
     float rawZfloat = static_cast<float>(rawZ);
 
-    float x = ((rawXfloat) * accelConversion);
-    float y = ((rawYfloat) * accelConversion);
-    float z = ((rawZfloat) * accelConversion); // removing bias for gravity vector
+    float x = (((rawXfloat) * accelConversion) + accelTempOffset(temp)) *(1 + accelTempScale(temp));
+    float y = (((rawYfloat) * accelConversion) + accelTempOffset(temp)) *(1 + accelTempScale(temp));
+    float z = (((rawZfloat) * accelConversion) + accelTempOffset(temp)) *(1 + accelTempScale(temp));
 
 
     return {x, y, z};
 }
 
 //Raw to Gyro (Radians/second)
-ISM330::ISM330_VECTOR_TypeDef ISM330::readingToGyro(const uint8_t *readings) 
+ISM330::ISM330_VECTOR_TypeDef ISM330::readingToGyro(const uint8_t *readings, float temp) 
 {
     int16_t rawX = (int16_t)(((uint16_t)readings[1] << 8) | readings[0]);
     int16_t rawY = (int16_t)(((uint16_t)readings[3] << 8) | readings[2]);
@@ -158,10 +159,9 @@ ISM330::ISM330_VECTOR_TypeDef ISM330::readingToGyro(const uint8_t *readings)
     float rawYfloat = static_cast<float>(rawY);
     float rawZfloat = static_cast<float>(rawZ);
 
-
-    float x = ((rawXfloat-wxBias) * gyroConversion); 
-    float y = ((rawYfloat-wyBias) * gyroConversion);
-    float z = ((rawZfloat-wzBias) * gyroConversion);
+    float x = (((rawXfloat-wxBias) * gyroConversion) + gyroTempOffset(temp)) *(1 + gyroTempScale(temp));
+    float y = (((rawYfloat-wyBias) * gyroConversion) + gyroTempOffset(temp)) *(1 + gyroTempScale(temp));
+    float z = (((rawZfloat-wzBias) * gyroConversion) + gyroTempOffset(temp)) *(1 + gyroTempScale(temp));
 
     return {x, y, z};
 }
@@ -172,7 +172,7 @@ ISM330::ISM330_VECTOR_TypeDef ISM330::readAccel() noexcept
     i2c.write(writeAddr, xReg, 1, false);
     i2c.read(readAddr, reinterpret_cast<char*>(xReadings), 6, true);
     
-    ISM330_VECTOR_TypeDef accel_reading = readingToAccel(xReadings);
+    ISM330_VECTOR_TypeDef accel_reading = readingToAccel(xReadings, 0);
     return accel_reading;
 }
 
@@ -181,7 +181,7 @@ ISM330::ISM330_VECTOR_TypeDef ISM330::readGyro() noexcept
     i2c.write(writeAddr, gReg, 1, false);
     i2c.read(readAddr, reinterpret_cast<char*>(gReadings), 6, true);
 
-    ISM330_VECTOR_TypeDef gyro_reading = readingToGyro(gReadings);
+    ISM330_VECTOR_TypeDef gyro_reading = readingToGyro(gReadings, 0);
     return gyro_reading;
 }
 
@@ -205,13 +205,19 @@ ISM330::ISM330_RAW_DATA_TypeDef ISM330::readAGraw() noexcept
 
 
 
-ISM330::ISM330_DATA_TypeDef ISM330::readAG() noexcept
+ISM330::ISM330_DATA_TypeDef ISM330::readAG() noexcept //
 {
-    i2c.write(writeAddr, gReg, 1, false); 
-    i2c.read(readAddr, reinterpret_cast<char*>(agReadings), 12, true);
+    i2c.write(writeAddr, tReg, 1, false); 
+    i2c.read(readAddr, reinterpret_cast<char*>(agReadings), 14, true);
 
-    auto [gx,gy,gz] = readingToGyro(&agReadings[0]);
-    auto [ax,ay,az] = readingToAccel(&agReadings[6]);
+    int16_t rawTemp = (int16_t)((agReadings[1] << 8) | agReadings[0]);
+    float temp = rawTemp / 256.0f;
+    temperature = temp;
+
+    //printf("Temperature: %.2f \n", temp);
+
+    auto [gx,gy,gz] = readingToGyro(&agReadings[2], temp);
+    auto [ax,ay,az] = readingToAccel(&agReadings[8], temp);
 
     // ISM330_VECTOR_TypeDef accelVector = {ax, ay, az};
     // ISM330_VECTOR_TypeDef gyroVector = {gx, gy, gz};
@@ -228,6 +234,28 @@ void ISM330::getAGVectors(ISM330_VECTOR_TypeDef& accel, ISM330_VECTOR_TypeDef& g
     gyro.x = imu_data.gx;
     gyro.y = imu_data.gy;
     gyro.z = imu_data.gz;
+}
+
+float ISM330::readTemperature() noexcept // This is here for Debugging mostly, the actual temperature is already a part of the accel and gyro
+{
+    return temperature;
+}
+
+float ISM330::accelTempScale(float temp) 
+{
+    return temp * 0.00005f; // Datasheet says 0.005% per C
+}
+
+float ISM330::accelTempOffset(float temp) {
+    return temp * 0.0001f * g; // Datasheet says 0.1mg per C
+}
+
+float ISM330::gyroTempScale(float temp) {
+    return temp * 0.00007f; // Datasheet says 0.007% per C
+}
+
+float ISM330::gyroTempOffset(float temp) {
+    return temp * 0.005f * dpsToRad; // Datasheet says 0.005 dps/C, but we're working in rad
 }
 
 

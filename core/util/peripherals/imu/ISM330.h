@@ -92,6 +92,18 @@ public:
     ISM330_DATA_TypeDef readAG() noexcept;
 
 
+    // Temperature Reading
+    float readTemperature() noexcept; // Returns temp in C-25, so at 25C it should read 0
+    // If you're wondering why, it's just how the IMU is calibrated
+
+    float accelTempScale(float temp); // Returns the scaling of the accelerometer with respect to Temperature; At 25C = 0;
+
+    float accelTempOffset(float temp); // Returns the offset of the accelerometer with respect to Temperature; At 25C = 0; (Just adding a constant)
+
+    float gyroTempScale(float temp); // Returns the scaling of the gyro with respect to Temperature; At 25C = 0;
+
+    float gyroTempOffset(float temp); // Returns the offset of the gyro with respect to Temperature; At 25C = 0; (Just adding a constant)
+
     // Update Structs
     void getAGVectors(ISM330_VECTOR_TypeDef& accel, ISM330_VECTOR_TypeDef& gyro);
 
@@ -140,10 +152,11 @@ private:
     uint8_t agReadings[12]; //Accel and Gyro Readings buffer
     uint8_t xReadings[6]; //Accel Readings buffer
     uint8_t gReadings[6]; //Gyro Readings buffer
+    float temperature; //Temperature in C-25, so at 25C it should read 0
 
-    ISM330_VECTOR_TypeDef readingToAccel(const uint8_t *readings);
+    ISM330_VECTOR_TypeDef readingToAccel(const uint8_t *readings, float temp);
     
-    ISM330_VECTOR_TypeDef readingToGyro(const uint8_t *readings);
+    ISM330_VECTOR_TypeDef readingToGyro(const uint8_t *readings, float temp);
         
     float invSqrt(float x); //Inverse square root, used for normalizing vectors
     
