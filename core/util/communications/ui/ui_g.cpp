@@ -1,8 +1,3 @@
-//
-// Created by RM UI Designer
-// Dynamic Edition
-//
-
 /*
 Notes:
 - ui_g.c & ui_g.h can be replaced all the time
@@ -10,44 +5,15 @@ Notes:
 */
 
 #include "string.h"
-#include "ui_interface.h"
 #include "ui_g.h"
 
-#define TOTAL_FIGURE 7
-#define TOTAL_STRING 1
-
-// Init types
-ui_interface_figure_t ui_g_now_figures[TOTAL_FIGURE];
-uint8_t ui_g_dirty_figure[TOTAL_FIGURE];
-ui_interface_string_t ui_g_now_strings[TOTAL_STRING];
-uint8_t ui_g_dirty_string[TOTAL_STRING];
-
-// Maximum amount of times a certain figure should be sent
-uint8_t ui_g_max_send_count[TOTAL_FIGURE + TOTAL_STRING] = {
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
-};
-
-// Creates last figure/string lists to compare changes between the current and prev itterations
-//      if not doing manual dirty
-#ifndef MANUAL_DIRTY
-ui_interface_figure_t ui_g_last_figures[TOTAL_FIGURE];
-ui_interface_string_t ui_g_last_strings[TOTAL_STRING];
-#endif
-
-// Macro for sending data (Currently only just prints)
+// Macro for sending data
 #define SCAN_AND_SEND() ui_scan_and_send(ui_g_now_figures, ui_g_dirty_figure, ui_g_now_strings, ui_g_dirty_string, TOTAL_FIGURE, TOTAL_STRING)
 
 /** 
  * @brief Setup up all figures & strings
 */
-void ui_init_g() {
+void UI::ui_init_g() {
     ui_g_Shapes_GreenRect->figure_type = 1;
     ui_g_Shapes_GreenRect->operate_type = 1;
     ui_g_Shapes_GreenRect->layer = 0;
@@ -174,7 +140,7 @@ void ui_init_g() {
     @brief Checks what figures/strings has been updated and only sends those that have changes
         to the server
 */
-void ui_update_g() {
+void UI::ui_update_g() {
     #ifndef MANUAL_DIRTY
         // Records which figures/strings have changed (based on the last itteration) and raises
         //      a flag (ui_g_dirty_figure) as a signal to udpate
