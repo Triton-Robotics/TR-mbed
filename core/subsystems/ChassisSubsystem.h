@@ -410,6 +410,7 @@ private:
 
     //new from arihant branch chassis-refactor
     unsigned long last_torque_time = 0;
+    float last_scale = 1.0f;
     float curr_fit(int x);
     float estimatePowerWatts(int torqueCounts);
 

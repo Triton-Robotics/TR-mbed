@@ -220,32 +220,7 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     // P_est: approximation of the watts based on p_theory
     // P_set: a physical current+voltage sensor on referee board
 
-    static int logCounter = 0;
-    static bool idle_printed = false;
-
-    float vXY = sqrtf(m_chassisSpeeds.vX * m_chassisSpeeds.vX + m_chassisSpeeds.vY * m_chassisSpeeds.vY);
-    float angle = atan2f(m_chassisSpeeds.vY, m_chassisSpeeds.vX) * (180.0f / M_PI);
-    float P_est = estimatePowerWatts(LF.getData(TORQUE))
-                              + estimatePowerWatts(RF.getData(TORQUE))
-                              + estimatePowerWatts(LB.getData(TORQUE))
-                              + estimatePowerWatts(RB.getData(TORQUE));
-
-    bool is_idle = (vXY < 0.001f && fabsf(m_chassisSpeeds.vOmega) < 0.001f);
-
-    if (!is_idle || !idle_printed) {
-        if (++logCounter >= 1) {
-            logCounter = 0;
-            idle_printed = is_idle;
-            printf("vX:%.3f vY:%.3f vXY:%.3f angle:%.1f vW:%.3f | scale:%.4f | P_est:%.2f\n",
-                m_chassisSpeeds.vX,
-                m_chassisSpeeds.vY,
-                vXY,
-                angle,
-                m_chassisSpeeds.vOmega,
-                scale,
-                P_est);
-        }
-    }
+    last_scale = scale;
     return scale;
 }
 
@@ -484,6 +459,32 @@ void ChassisSubsystem::periodic(IMU::EulerAngles *imuCurr)
                      getMotorSpeed(LEFT_BACK,  METER_PER_SECOND), getMotorSpeed(RIGHT_BACK,  METER_PER_SECOND)};
 
     m_chassisSpeeds = wheelSpeedsToChassisSpeeds(m_wheelSpeeds);
+
+    float vXY = sqrtf(m_chassisSpeeds.vX * m_chassisSpeeds.vX + m_chassisSpeeds.vY * m_chassisSpeeds.vY);
+    float angle = atan2f(m_chassisSpeeds.vY, m_chassisSpeeds.vX) * (180.0f / M_PI);
+    float P_est = estimatePowerWatts(LF.getData(TORQUE))
+                + estimatePowerWatts(RF.getData(TORQUE))
+                + estimatePowerWatts(LB.getData(TORQUE))
+                + estimatePowerWatts(RB.getData(TORQUE));
+
+    bool is_idle = (vXY < 0.001f && fabsf(m_chassisSpeeds.vOmega) < 0.001f);
+    static bool idle_printed = false;
+    static int logCounter = 0;
+
+    if (!is_idle || !idle_printed) {
+        if (++logCounter >= 1) {
+            logCounter = 0;
+            idle_printed = is_idle;
+            printf("vX:%.3f vY:%.3f vXY:%.3f angle:%.1f vW:%.3f | scale:%.4f | P_est:%.2f\n",
+                m_chassisSpeeds.vX,
+                m_chassisSpeeds.vY,
+                vXY,
+                angle,
+                m_chassisSpeeds.vOmega,
+                last_scale,
+                P_est);
+        }
+    }
 }
 
 double ChassisSubsystem::degreesToRadians(double degrees)
