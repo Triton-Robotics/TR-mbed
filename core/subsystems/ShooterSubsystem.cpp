@@ -53,6 +53,7 @@ void ShooterSubsystem::periodic(int curr_heat, int heat_limit)
         flywheelR.setSpeed(0);
         indexer.setPower(0);
         shootReady = true;
+        shooter_time = 0;
     }
     else if (shoot == FLYWHEEL)
     {

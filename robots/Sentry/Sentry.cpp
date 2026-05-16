@@ -203,8 +203,7 @@ class Sentry : public BaseRobot {
         jetson_state = jetson.read();
 
         // Chassis logic
-        if (drive == 'u' || (drive == 'o' && remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) ==
-                                                 Remote::SwitchState::UP)) {
+        if (drive == 'u' || (drive == 'o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_S)) {
             // TODO: think about how we want to implement jetson aiming
             // des_turret_state.pitch_angle = jetson_state.desired_pitch_rads;
             // des_turret_state.yaw_angle = jetson_state.desired_yaw_rads;
@@ -216,7 +215,7 @@ class Sentry : public BaseRobot {
             stm_state.calibration = 0;
         } else if (drive == 'd' ||
                    (drive == 'o' &&
-                    remote_.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::DOWN)) {
+                    remote_.getMode() == DJIRemote2::ModeSwitch::MODE_C)) {
             // Jetson odom
             if( (us_ticker_read() - jetson_state.stamp_us ) / 1000 > 500 ) {
                 des_chassis_state.vX = 0;
@@ -250,10 +249,10 @@ class Sentry : public BaseRobot {
         }
 
         // Shooter Logic
-        if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP ||
+        if (remote_.TriggerPressed() == true ||
             remote_.getMouseL()) {
             des_shoot_state = ShootState::SHOOT;
-        } else if (remote_.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID ||
+        } else if (remote_.PAUSEToggled() == true ||
                    shot == 'd') {
             des_shoot_state = ShootState::FLYWHEEL;
         } else {
