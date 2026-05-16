@@ -60,9 +60,7 @@ void HeroShooterSubsystem::periodic(int curr_heat, int heat_limit)
         flywheelR.setSpeed(0);
         indexer.setPower(0);
         shootReady = true;
-        if(barrel_heat_limit < 10 || barrel_heat < barrel_heat_limit - 110) {
-            shooter_time = us_ticker_read();
-        }
+        shooter_time = 0;
     }
     else if (shoot == FLYWHEEL)
     {
