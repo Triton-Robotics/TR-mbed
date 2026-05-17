@@ -3,22 +3,23 @@
 
 class UI {
     public:
+    
+    /* 
+    How to copy code from generated c files
+                from generated ui_g.h
+                - copy and paste all the #define macros to this ui_g.h file
+                from generated ui_g.c
+                - copy and paste TOTAL_FIGURE, TOTAL_STRING, ui_g_max_send_count 
+                to this ui_g.h file
+                - copy and paste ui_init_g and ui_update_g functions to the ui_g.c
+                file found in this repo 
+                - Delete “uint32_t idx = 0;” in the ui_init_g function
+    */
+               
+        /*==============================COPY HERE==============================*/
+               
         #define TOTAL_FIGURE 7
         #define TOTAL_STRING 1
-
-        /* 
-            How to copy code from generated c files
-                from generated ui_g.h
-                    - copy and paste all the #define functions to this ui_g.h file
-                from generated ui_g.c
-                    - copy and paste TOTAL_FIGURE, TOTAL_STRING, ui_g_max_send_count 
-                        to this ui_g.h file
-                    - copy and paste ui_init_g and ui_update_g functions to the ui_g.c
-                        file found in this repo 
-        */
-        
-        /*==============================COPY HERE==============================*/
-        // Maximum amount of times a certain figure should be sent
         uint8_t ui_g_max_send_count[TOTAL_FIGURE + TOTAL_STRING] = {
             1,
             1,
@@ -66,28 +67,28 @@ class UI {
 
         /*============================END COPY HERE============================*/
 
-        // Init types
-        ui_interface_figure_t ui_g_now_figures[TOTAL_FIGURE];
-        uint8_t ui_g_dirty_figure[TOTAL_FIGURE];
-        ui_interface_string_t ui_g_now_strings[TOTAL_STRING];
-        uint8_t ui_g_dirty_string[TOTAL_STRING];
+        
+        ui_interface_figure_t ui_g_now_figures[TOTAL_FIGURE]; // contains all figures w/ current data
+        uint8_t ui_g_dirty_figure[TOTAL_FIGURE]; // contains which figures need to be sent and how many times
+        ui_interface_string_t ui_g_now_strings[TOTAL_STRING]; // contains all data for strings
+        uint8_t ui_g_dirty_string[TOTAL_STRING]; // contains which strings need to be sent and how many times
 
         // Creates last figure/string lists to compare changes between the current and prev itterations
         //      if not doing manual dirty
         #ifndef MANUAL_DIRTY
-        ui_interface_figure_t ui_g_last_figures[TOTAL_FIGURE];
-        ui_interface_string_t ui_g_last_strings[TOTAL_STRING];
+        ui_interface_figure_t ui_g_last_figures[TOTAL_FIGURE]; // contains all figure data since last sending transmission
+        ui_interface_string_t ui_g_last_strings[TOTAL_STRING]; // contains all string data since last sending transmission
         #endif
-        
+
+        UI(uint16_t robot_id, std::function<void(uint8_t*, uint16_t )> send_func);
         void ui_init_g();
         void ui_update_g();
-        void set_robot_id(uint16_t id);
-        void set_send_packet_func(std::function<void(uint8_t*, uint16_t )> send_packet_func);
         
     private:
         std::function<void(uint8_t*, uint16_t )> send_packet_func;
         uint16_t ui_self_id;
-        uint8_t seq = 0;    
+        inline static uint8_t seq = 0;    
+        inline static uint32_t idx = 0;
             
         ui_string_frame_t _ui_string_frame;
         ui_1_frame_t _ui_1_frame;

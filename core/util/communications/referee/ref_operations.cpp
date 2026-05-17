@@ -204,9 +204,10 @@ void Referee::readThread()
 void Referee::writeThread()
 {
     // Some variables required to properrly send
-    UI mainUI;
-    mainUI.set_robot_id(robot_status.robot_id);
-    mainUI.set_send_packet_func([this](uint8_t *packet, uint16_t len) {referee_data_pack_handle(packet, len);});
+    UI mainUI(
+        robot_status.robot_id, 
+        [this](uint8_t *packet, uint16_t len) {referee_data_pack_handle(packet, len);}
+    );
     mainUI.ui_init_g();
 
     while(1)

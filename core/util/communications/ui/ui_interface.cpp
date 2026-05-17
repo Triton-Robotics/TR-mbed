@@ -8,12 +8,13 @@
 #include <functional>
 #include "ui_g.h"
 
-
-void UI::set_robot_id(uint16_t id) {
-    ui_self_id = id;
-}
-
-void UI::set_send_packet_func(std::function<void(uint8_t*, uint16_t )> send_func) {
+/** 
+ * @brief Sets up robot id and sending function
+ * @param robot_id is the robot id to send the UI to
+ * @param send_func is the function used to send the data
+*/
+UI::UI(uint16_t robot_id, std::function<void(uint8_t*, uint16_t )> send_func) {
+    ui_self_id = robot_id;
     send_packet_func = send_func;
 }
 
