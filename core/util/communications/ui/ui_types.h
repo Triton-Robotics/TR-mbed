@@ -8,9 +8,7 @@
 
 // User Code Begin
 
-// Not 100% sure what MANUAL_DIRTY is but guessing it is for more control over
-//      handling the variable named "dirty" in ui_g. This allows for more control
-//      of when to update
+// Defines whether or not we want to manually handling updtaing or not (comment out if we want automatic handling)
 // #define MANUAL_DIRTY
 
 #if defined(__GNUC__) || defined(__CC_ARM)

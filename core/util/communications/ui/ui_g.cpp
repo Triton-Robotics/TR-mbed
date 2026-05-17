@@ -97,7 +97,6 @@ void UI::ui_init_g() {
     strcpy(ui_g_Text_CyanText->string, "Hello World");
 
     // Sets up ids for each figure/string
-    uint32_t idx = 0;
     for (int i = 0; i < TOTAL_FIGURE; i++) {
         ui_g_now_figures[i].figure_name[2] = idx & 0xFF;
         ui_g_now_figures[i].figure_name[1] = (idx >> 8) & 0xFF;
@@ -122,7 +121,7 @@ void UI::ui_init_g() {
         #endif
         // Indicates that the current string should be sent
         ui_g_dirty_string[i] = 1;
-        idx++;
+        idx++;  
     }
 
     SCAN_AND_SEND();
