@@ -1,6 +1,6 @@
 #include "ThisThread.h"
 #include "ref_serial.h"
-#include "../ui/ui_g.h"
+#include "../ui/ui_status.h"
 
 
 Referee::Referee(PinName pin_tx, PinName pin_rx) : ref(pin_tx, pin_rx, 115200) 
@@ -204,8 +204,9 @@ void Referee::readThread()
 void Referee::writeThread()
 {
     // Some variables required to properrly send
-    UI mainUI(
-        robot_status.robot_id, 
+    UIStatus mainUI(
+        1,
+        // robot_status.robot_id, 
         [this](uint8_t *packet, uint16_t len) {referee_data_pack_handle(packet, len);}
     );
     mainUI.ui_init_g();
