@@ -1,6 +1,8 @@
 #include "ui_types.h"
 #include <functional>
+#include <cstdio>
 
+template<size_t TOTAL_FIGURE, size_t TOTAL_STRING>
 class UI {
     public:
     
@@ -17,53 +19,52 @@ class UI {
     */
                
         /*==============================COPY HERE==============================*/
-               
-        #define TOTAL_FIGURE 7
-        #define TOTAL_STRING 1
-        uint8_t ui_g_max_send_count[TOTAL_FIGURE + TOTAL_STRING] = {
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-        };
+        // #define TOTAL_FIGURE figure_num
+        // #define TOTAL_STRING size_num
+        // uint8_t ui_g_max_send_count[TOTAL_FIGURE + TOTAL_STRING] = {
+        //     1,
+        //     1,
+        //     1,
+        //     1,
+        //     1,
+        //     1,
+        //     1,
+        //     1,
+        // };
 
-        #define ui_g_Shapes_GreenRect ((ui_interface_rect_t*)&(ui_g_now_figures[0]))
-        #define ui_g_Shapes_RedLine ((ui_interface_line_t*)&(ui_g_now_figures[1]))
-        #define ui_g_Shapes_PurpleCircle ((ui_interface_round_t*)&(ui_g_now_figures[2]))
-        #define ui_g_Shapes_RedEllipse ((ui_interface_ellipse_t*)&(ui_g_now_figures[3]))
-        #define ui_g_Shapes_WhiteArc ((ui_interface_arc_t*)&(ui_g_now_figures[4]))
-        #define ui_g_Ungroup_RedNumber ((ui_interface_number_t*)&(ui_g_now_figures[5]))
-        #define ui_g_Ungroup_RedFloat ((ui_interface_number_t*)&(ui_g_now_figures[6]))
+        // #define ui_g_Shapes_GreenRect ((ui_interface_rect_t*)&(ui_g_now_figures[0]))
+        // #define ui_g_Shapes_RedLine ((ui_interface_line_t*)&(ui_g_now_figures[1]))
+        // #define ui_g_Shapes_PurpleCircle ((ui_interface_round_t*)&(ui_g_now_figures[2]))
+        // #define ui_g_Shapes_RedEllipse ((ui_interface_ellipse_t*)&(ui_g_now_figures[3]))
+        // #define ui_g_Shapes_WhiteArc ((ui_interface_arc_t*)&(ui_g_now_figures[4]))
+        // #define ui_g_Ungroup_RedNumber ((ui_interface_number_t*)&(ui_g_now_figures[5]))
+        // #define ui_g_Ungroup_RedFloat ((ui_interface_number_t*)&(ui_g_now_figures[6]))
 
-        #define ui_g_Text_CyanText (&(ui_g_now_strings[0]))
+        // #define ui_g_Text_CyanText (&(ui_g_now_strings[0]))
 
-        // Macros to get size of specific figures/strings
-        #define ui_g_Shapes_GreenRect_max_send_count (ui_g_max_send_count[0])
-        #define ui_g_Shapes_RedLine_max_send_count (ui_g_max_send_count[1])
-        #define ui_g_Shapes_PurpleCircle_max_send_count (ui_g_max_send_count[2])
-        #define ui_g_Shapes_RedEllipse_max_send_count (ui_g_max_send_count[3])
-        #define ui_g_Shapes_WhiteArc_max_send_count (ui_g_max_send_count[4])
-        #define ui_g_Ungroup_RedNumber_max_send_count (ui_g_max_send_count[5])
-        #define ui_g_Ungroup_RedFloat_max_send_count (ui_g_max_send_count[6])
+        // // Macros to get size of specific figures/strings
+        // #define ui_g_Shapes_GreenRect_max_send_count (ui_g_max_send_count[0])
+        // #define ui_g_Shapes_RedLine_max_send_count (ui_g_max_send_count[1])
+        // #define ui_g_Shapes_PurpleCircle_max_send_count (ui_g_max_send_count[2])
+        // #define ui_g_Shapes_RedEllipse_max_send_count (ui_g_max_send_count[3])
+        // #define ui_g_Shapes_WhiteArc_max_send_count (ui_g_max_send_count[4])
+        // #define ui_g_Ungroup_RedNumber_max_send_count (ui_g_max_send_count[5])
+        // #define ui_g_Ungroup_RedFloat_max_send_count (ui_g_max_send_count[6])
 
-        #define ui_g_Text_CyanText_max_send_count (ui_g_max_send_count[7])
+        // #define ui_g_Text_CyanText_max_send_count (ui_g_max_send_count[7])
 
-        // Macros to get amount of proccess needed for a specific figure/string
-        #ifdef MANUAL_DIRTY
-        #define ui_g_Shapes_GreenRect_dirty (ui_g_dirty_figure[0])
-        #define ui_g_Shapes_RedLine_dirty (ui_g_dirty_figure[1])
-        #define ui_g_Shapes_PurpleCircle_dirty (ui_g_dirty_figure[2])
-        #define ui_g_Shapes_RedEllipse_dirty (ui_g_dirty_figure[3])
-        #define ui_g_Shapes_WhiteArc_dirty (ui_g_dirty_figure[4])
-        #define ui_g_Ungroup_RedNumber_dirty (ui_g_dirty_figure[5])
-        #define ui_g_Ungroup_RedFloat_dirty (ui_g_dirty_figure[6])
+        // // Macros to get amount of proccess needed for a specific figure/string
+        // #ifdef MANUAL_DIRTY
+        // #define ui_g_Shapes_GreenRect_dirty (ui_g_dirty_figure[0])
+        // #define ui_g_Shapes_RedLine_dirty (ui_g_dirty_figure[1])
+        // #define ui_g_Shapes_PurpleCircle_dirty (ui_g_dirty_figure[2])
+        // #define ui_g_Shapes_RedEllipse_dirty (ui_g_dirty_figure[3])
+        // #define ui_g_Shapes_WhiteArc_dirty (ui_g_dirty_figure[4])
+        // #define ui_g_Ungroup_RedNumber_dirty (ui_g_dirty_figure[5])
+        // #define ui_g_Ungroup_RedFloat_dirty (ui_g_dirty_figure[6])
 
-        #define ui_g_Text_CyanText_dirty (ui_g_dirty_string[0])
-        #endif
+        // #define ui_g_Text_CyanText_dirty (ui_g_dirty_string[0])
+        // #endif
 
         /*============================END COPY HERE============================*/
 
@@ -80,11 +81,15 @@ class UI {
         ui_interface_string_t ui_g_last_strings[TOTAL_STRING]; // contains all string data since last sending transmission
         #endif
 
-        UI(uint16_t robot_id, std::function<void(uint8_t*, uint16_t )> send_func);
-        void ui_init_g();
-        void ui_update_g();
-        
-    private:
+        // UI(uint16_t robot_id, std::function<void(uint8_t*, uint16_t )> send_func);
+        UI(uint16_t robot_id, std::function<void(uint8_t*, uint16_t )> send_func) {
+            ui_self_id = robot_id;
+            send_packet_func = send_func;
+        }
+        virtual void ui_init_g() = 0;
+        virtual void ui_update_g() = 0;
+
+    protected:
         std::function<void(uint8_t*, uint16_t )> send_packet_func;
         uint16_t ui_self_id;
         inline static uint8_t seq = 0;    
@@ -150,20 +155,257 @@ class UI {
             0x74, 0x2a, 0xc8, 0x96, 0x15, 0x4b, 0xa9, 0xf7, 0xb6, 0xe8, 0x0a, 0x54, 0xd7, 0x89, 0x6b, 0x35,
         };
 
-        void print_message(const uint8_t *message, const int length);
-        void send_message(uint8_t* message, uint16_t length);
-        
-        unsigned char calc_crc8(unsigned char *pchMessage, unsigned int dwLength);
-        uint16_t calc_crc16(uint8_t *pchMessage, uint32_t dwLength);
-        
-        void ui_proc_1_frame(ui_1_frame_t *msg);
-        void ui_proc_2_frame(ui_2_frame_t *msg);
-        void ui_proc_5_frame(ui_5_frame_t *msg);
-        void ui_proc_7_frame(ui_7_frame_t *msg);
-        void ui_proc_string_frame(ui_string_frame_t *msg);
-        void ui_proc_delete_frame(ui_delete_frame_t *msg);
+        // void print_message(const uint8_t *message, const int length);
+        void print_message(const uint8_t *message, const int length) {
+            for (int i = 0; i < length; i++) {
+                printf("%2d ", i);
+            }
+            printf("\n");
+            
+            for (int i = 0; i < length; i++) {
+                printf("%02x ", message[i]);
+            }
+            printf("\n\n");
+        }
 
-        void ui_delete_layer(const uint8_t delete_type, const uint8_t layer);
-        void ui_scan_and_send(const ui_interface_figure_t* ui_now_figures, uint8_t* ui_dirty_figure, const ui_interface_string_t* ui_now_strings, uint8_t* ui_dirty_string, int total_figures, int total_strings);
+        // void send_message(uint8_t* message, uint16_t length);
+        void send_message(uint8_t* message, uint16_t length) {
+            print_message(message, length);
+            if(send_packet_func != NULL) {
+                send_packet_func(message, length);
+            }
+        }
+        
+        // unsigned char calc_crc8(unsigned char *pchMessage, unsigned int dwLength);
+        unsigned char calc_crc8(unsigned char *pchMessage, unsigned int dwLength) {
+            unsigned char ucCRC8 = 0xff;
+            unsigned char ucIndex;
+            while (dwLength--) {
+                ucIndex = ucCRC8 ^ (*pchMessage++);
+                ucCRC8 = CRC8_TAB[ucIndex];
+            }
+            return (ucCRC8);
+        }
 
+        // uint16_t calc_crc16(uint8_t *pchMessage, uint32_t dwLength);
+        uint16_t calc_crc16(uint8_t *pchMessage, uint32_t dwLength) {
+            uint16_t wCRC = 0xffff;
+            uint8_t chData;
+            if (pchMessage == NULL)
+            {
+                return 0xFFFF;
+            }
+            while(dwLength--)
+            {
+                chData = *pchMessage++;
+                (wCRC) = ((uint16_t)(wCRC) >> 8) ^ wCRC_Table[((uint16_t)(wCRC) ^ (uint16_t)(chData)) & 0x00ff];
+            }
+            return wCRC;
+        }
+
+
+        // void ui_proc_1_frame(ui_1_frame_t *msg);
+        void ui_proc_1_frame(ui_1_frame_t *msg) {
+            uint16_t num = 1;
+            uint16_t id = 0x0101;
+
+            msg->header.SOF = 0xA5;                                 
+            msg->header.length = 6 + 15 * num; //15 for the length of the frame                  
+            msg->header.seq = seq++;                                
+            msg->header.crc8 = calc_crc8((uint8_t*)msg, 4);        
+            msg->header.cmd_id = 0x0301;                            
+            msg->header.sub_id = id;                                
+            msg->header.send_id = ui_self_id;                       
+            msg->header.recv_id = ui_self_id + 256;                 
+            msg->crc16 = calc_crc16((uint8_t*)msg, 13 + 15 * num); 
+        }
+
+        // void ui_proc_2_frame(ui_2_frame_t *msg);
+        void ui_proc_2_frame(ui_2_frame_t *msg) {
+            uint16_t num = 2;
+            uint16_t id = 0x0102;
+            
+            msg->header.SOF = 0xA5;                                 
+            msg->header.length = 6 + 15 * num;                      
+            msg->header.seq = seq++;                                
+            msg->header.crc8 = calc_crc8((uint8_t*)msg, 4);        
+            msg->header.cmd_id = 0x0301;                            
+            msg->header.sub_id = id;                                
+            msg->header.send_id = ui_self_id;                       
+            msg->header.recv_id = ui_self_id + 256;                 
+            msg->crc16 = calc_crc16((uint8_t*)msg, 13 + 15 * num); 
+        }
+        
+        // void ui_proc_5_frame(ui_5_frame_t *msg);
+        void ui_proc_5_frame(ui_5_frame_t *msg) {
+            uint16_t num = 5;
+            uint16_t id = 0x0103;
+            msg->header.SOF = 0xA5;                                 
+            msg->header.length = 6 + 15 * num;                      
+            msg->header.seq = seq++;                                
+            msg->header.crc8 = calc_crc8((uint8_t*)msg, 4);        
+            msg->header.cmd_id = 0x0301;                            
+            msg->header.sub_id = id;                                
+            msg->header.send_id = ui_self_id;                       
+            msg->header.recv_id = ui_self_id + 256;                 
+            msg->crc16 = calc_crc16((uint8_t*)msg, 13 + 15 * num); 
+        }
+        
+        // void ui_proc_7_frame(ui_7_frame_t *msg);
+        void ui_proc_7_frame(ui_7_frame_t *msg) {
+            uint16_t num = 7;
+            uint16_t id = 0x0104;
+
+            msg->header.SOF = 0xA5;                                 
+            msg->header.length = 6 + 15 * num;                      
+            msg->header.seq = seq++;                                
+            msg->header.crc8 = calc_crc8((uint8_t*)msg, 4);        
+            msg->header.cmd_id = 0x0301;                            
+            msg->header.sub_id = id;                                
+            msg->header.send_id = ui_self_id;                       
+            msg->header.recv_id = ui_self_id + 256;                 
+            msg->crc16 = calc_crc16((uint8_t*)msg, 13 + 15 * num); 
+        }
+
+        // void ui_proc_string_frame(ui_string_frame_t *msg);
+        void ui_proc_string_frame(ui_string_frame_t *msg) {
+            msg->header.SOF = 0xA5;
+            msg->header.length = 51;
+            msg->header.seq = seq++;
+            msg->header.crc8 = calc_crc8((uint8_t *) msg, 4);
+            msg->header.cmd_id = 0x0301;
+            msg->header.sub_id = 0x0110;
+            msg->header.send_id = ui_self_id;
+            msg->header.recv_id = ui_self_id + 256;
+            msg->option.str_length = strlen(msg->option.string);
+            msg->crc16 = calc_crc16((uint8_t *) msg, 58);
+        }
+
+        // void ui_proc_delete_frame(ui_delete_frame_t *msg);
+        void ui_proc_delete_frame(ui_delete_frame_t *msg) {
+            msg->header.SOF = 0xA5;
+            msg->header.length = 8;
+            msg->header.seq = seq++;
+            msg->header.crc8 = calc_crc8((uint8_t *) msg, 4);
+            msg->header.cmd_id = 0x0301;
+            msg->header.sub_id = 0x0100;
+            msg->header.send_id = ui_self_id;
+            msg->header.recv_id = ui_self_id + 256;
+            msg->crc16 = calc_crc16((uint8_t *) msg, 15);
+        }
+
+        ui_delete_frame_t ui_delete_frame;
+
+        // void ui_delete_layer(const uint8_t delete_type, const uint8_t layer);
+        void ui_delete_layer(const uint8_t delete_type, const uint8_t layer) {
+            ui_delete_frame.delete_type = delete_type;
+            ui_delete_frame.layer = layer;
+            ui_proc_delete_frame(&ui_delete_frame);
+            send_message((uint8_t *) &ui_delete_frame, sizeof(ui_delete_frame));
+        }
+
+        // void ui_scan_and_send(const ui_interface_figure_t* ui_now_figures, uint8_t* ui_dirty_figure, const ui_interface_string_t* ui_now_strings, uint8_t* ui_dirty_string, int total_figures, int total_strings);
+        void ui_scan_and_send(const ui_interface_figure_t *ui_now_figures, uint8_t *ui_dirty_figure,
+                      const ui_interface_string_t *ui_now_strings, uint8_t *ui_dirty_string, 
+                      const int total_figures, const int total_strings) {
+            // Counts the amount of UI figures that need to be sent
+            if (total_figures > 0) {
+                int total_figure = 0; // Amount of actual figures that need to be sent
+                for (int i = 0; i < total_figures; i++) {
+                    if (ui_dirty_figure[i] > 0) {
+                        total_figure++;
+                    }
+                }
+
+                // Puts each figure into a packet
+                for (int i = 0, now_cap = 0, pack_size = 0; i < total_figures; i++) {
+                    if (ui_dirty_figure[i] > 0) {
+                        // Determines which index to be packed into
+                        const int now_idx = now_cap % 7;
+
+                        // If now_idx is 0, we are on a new packet. Thus we determine
+                        // what size this new packet is
+                        if (now_idx == 0) {
+                            const int remain_size = total_figure - now_cap;
+                            if (remain_size > 5) {
+                                pack_size = 7;
+                            } else if (remain_size > 2) {
+                                pack_size = 5;
+                            } else if (remain_size > 1) {
+                                pack_size = 2;
+                            } else {
+                                pack_size = 1;
+                            }
+                        }
+
+                        // Assigns our figure to the appropiate index in the appropiate packet
+                        if (pack_size == 7) {
+                            _ui_7_frame.data[now_idx] = ui_now_figures[i];
+                        } else if (pack_size == 5) {
+                            _ui_5_frame.data[now_idx] = ui_now_figures[i];
+                        } else if (pack_size == 2) {
+                            _ui_2_frame.data[now_idx] = ui_now_figures[i];
+                        } else {
+                            _ui_1_frame.data[now_idx] = ui_now_figures[i];
+                        }
+
+                        // Checks if this figure is at the end of our current packet or 
+                        // this is the the last packet in in the function
+                        if (now_idx + 1 == pack_size || now_cap + 1 == total_figure) {
+                            // Fills all remaining packet indexes with the "no operation" command
+                            // just in case there is left-over data from previous itterations 
+                            for (int j = now_idx + 1; j < pack_size + 1; j++) {
+                                if (pack_size == 7) {
+                                    _ui_7_frame.data[j].operate_type = 0;
+                                } else if (pack_size == 5) {
+                                    _ui_5_frame.data[j].operate_type = 0;
+                                } else if (pack_size == 2) {
+                                    _ui_2_frame.data[j].operate_type = 0;
+                                } else {
+                                    _ui_1_frame.data[j].operate_type = 0;
+                                }
+                            }
+
+                            // Send message because we're complete with our packet
+                            if (pack_size == 7) {
+                                ui_proc_7_frame(&_ui_7_frame);
+                                send_message((uint8_t *) &_ui_7_frame, sizeof(_ui_7_frame));
+                            } else if (pack_size == 5) {
+                                ui_proc_5_frame(&_ui_5_frame);
+                                send_message((uint8_t *) &_ui_5_frame, sizeof(_ui_5_frame));
+                            } else if (pack_size == 2) {
+                                ui_proc_2_frame(&_ui_2_frame);
+                                send_message((uint8_t *) &_ui_2_frame, sizeof(_ui_2_frame));
+                            } else {
+                                ui_proc_1_frame(&_ui_1_frame);
+                                send_message((uint8_t *) &_ui_1_frame, sizeof(_ui_1_frame));
+                            }
+                        }
+
+                        // Shifts which index of the packet we're putting the next figure into
+                        now_cap++;
+
+                        // Decreases it to signal that the figure has been proccessed once
+                        // ui_dirty_figure[i]--;
+                    }
+                }
+            }
+
+            // Proccesses and sends all the strings
+            if (total_strings > 0) {
+                for (int i = 0; i < total_strings; i++) {
+                    if (ui_dirty_string[i] > 0) {
+                        _ui_string_frame.option = ui_now_strings[i];
+                        ui_proc_string_frame(&_ui_string_frame);
+                        send_message((uint8_t *) &_ui_string_frame, sizeof(_ui_string_frame));
+                        // ui_dirty_string[i]--;
+                    }
+                }
+            }
+        }
+
+        // void SCAN_AND_SEND();
+        void SCAN_AND_SEND() {
+            ui_scan_and_send(ui_g_now_figures, ui_g_dirty_figure, ui_g_now_strings, ui_g_dirty_string, TOTAL_FIGURE, TOTAL_STRING);
+        }
 };
