@@ -31,7 +31,7 @@
 #define      JUDGESYSTEM_PACKSIZE 		    389u		//裁判系统包大小(354+35)
 
 //红蓝方
-#define BLUE 0
+#define BLUE 2
 #define RED  1
 
 //信息传输

@@ -443,7 +443,7 @@ void Referee::Judge_GetMessage(uint16_t Data_Length)
   */
 void Referee::determine_ID()
 {
-    bool Color = is_red_or_blue();
+    int8_t Color = is_red_or_blue();
     if (Color == BLUE)
     {
         Judge_SelfClient_ID = 0x0100 + robot_status.robot_id; //计算客户端ID
