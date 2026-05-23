@@ -199,8 +199,7 @@ class BaseRobot {
         // float max_omega = 0.326 + 0.0857 * chassis_power_limit + -0.000183 * (chassis_power_limit * chassis_power_limit);
         // const angular velocity
 
-        /**  
-        // dynamic beyblade stuff 
+        // dynamic beyblade stuff
         float max_omega = 2.5;
 
         if(remote_.keyPressed(Remote::Key::CTRL)){
@@ -212,7 +211,7 @@ class BaseRobot {
         float linear_hypo = sqrtf(jx * jx + jy * jy);
         linear_hypo = fminf(linear_hypo, 1.0f);
 
-        // quadratic relationship
+        // quadratic relationship: more translation = less spin
         float available_beyblade = 1.0f - (linear_hypo * linear_hypo);
 
         // direction matters
@@ -222,7 +221,6 @@ class BaseRobot {
         available_beyblade = fminf(1.0f, available_beyblade * direction_bonus);
 
         omega_speed = max_omega * available_beyblade;
-        */
 
         if(remote_.keyPressed(Remote::Key::CTRL)){
             jx = 0.0;
