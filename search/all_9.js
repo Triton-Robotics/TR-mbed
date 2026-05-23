@@ -80,7 +80,7 @@ var searchData=
   ['internal_5firef_77',['INTERNAL_IREF',['../SSD1308_8h.html#a9f42f90d1351825ac5bc5c44f7e49e4d',1,'SSD1308.h']]],
   ['invert_78',['invert',['../structShooterSubsystem_1_1config.html#a8e5485a093968a827fc07fd3f5999b16',1,'ShooterSubsystem::config::invert'],['../structHeroShooterSubsystem_1_1config.html#a0417a2c39bd738b3df83269e798aed79',1,'HeroShooterSubsystem::config::invert']]],
   ['invertdisplay_79',['invertdisplay',['../classAdafruit__SSD1306.html#a3e9436a654c826a55942606a2261b5ee',1,'Adafruit_SSD1306::invertDisplay()'],['../classAdafruit__GFX.html#a05c19e8fe1a1e49aba4c4d93709ef155',1,'Adafruit_GFX::invertDisplay()']]],
-  ['is_5fred_5for_5fblue_80',['is_red_or_blue',['../classReferee.html#a84f9a43848b85fbb0ac37ea0b853a55f',1,'Referee']]],
+  ['is_5fred_5for_5fblue_80',['is_red_or_blue',['../classReferee.html#ac1741ce79eec9185ef171e9f073f27b1',1,'Referee']]],
   ['ism330_81',['ism330',['../classISM330.html#a936f6b5b23f13e3d6fee9fff6b6d6482',1,'ISM330::ISM330()'],['../classISM330.html',1,'ISM330']]],
   ['ism330_2ecpp_82',['ISM330.cpp',['../ISM330_8cpp.html',1,'']]],
   ['ism330_2eh_83',['ISM330.h',['../ISM330_8h.html',1,'']]],
