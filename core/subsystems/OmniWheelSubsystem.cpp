@@ -281,7 +281,7 @@ ChassisSpeeds OmniWheelSubsystem::rotateToRobotFrame(ChassisSpeeds fieldSpeeds,
     // converting the beyblade speed in rad/s to rad by multiplying by the loop latency (dt = 200ms (0.2s))
     double beyblade_offset = m_chassisSpeeds.vOmega * dt_s;
     double theta = (headingDeg - m_yawOffsetDeg) * OMNI_PI / 180.0;
-    double c = std::cos(theta - beyblade_offset), s = std::sin(theta - beyblade_offset);
+    double c = std::cos(theta + beyblade_offset), s = std::sin(theta + beyblade_offset);
     return {
         fieldSpeeds.vX * c - fieldSpeeds.vY * s,
         fieldSpeeds.vX * s + fieldSpeeds.vY * c,
@@ -358,8 +358,6 @@ float OmniWheelSubsystem::setWheelSpeeds(WheelSpeeds targetMps)
         limitAcceleration(targetMotorRpm[3], m_prevMotorRpm[3], dt, theta),
     };
 
-    printf("%.2f\n", cmdRpm[0]);
-
     // Run speed PID.
     // setpoint  = rate-limited motor shaft RPM command
     // feedback  = actual motor shaft RPM from previous tick (m_prevMotorRpm)
@@ -372,17 +370,16 @@ float OmniWheelSubsystem::setWheelSpeeds(WheelSpeeds targetMps)
         (int)(M3508_GEAR_RATIO * RB.calculateSpeedPID(cmdRpm[3], m_prevMotorRpm[3], dt)),
     };
 
-    // TODO remove magic number 150
-    if (abs(targetMotorRpm[0]) < 150) {
+    if (abs(cmdRpm[0]) < 10) {
         power[0] = 0;
     } 
-    if (abs(targetMotorRpm[1]) < 150){
+    if (abs(cmdRpm[1]) < 10){
         power[1] = 0;
     } 
-    if (abs(targetMotorRpm[2]) < 150) {
+    if (abs(cmdRpm[2]) < 10) {
         power[2] = 0;
     } 
-    if (abs(targetMotorRpm[3]) < 150) {
+    if (abs(cmdRpm[3]) < 10) {
         power[3] = 0;
     }
     m_lastPidUs = now;
@@ -430,20 +427,24 @@ float OmniWheelSubsystem::limitAcceleration(float desiredRPM, float previousRPM,
 
     // Maximum change in velocity over this time period, then change that to RPM
     float maxChange = maxLinearAccel * (deltaTime / 1000000.0);
-    float maxChangeRPM = 10 * maxChange * ((1 / WHEEL_RADIUS_M / (2 * PI / 60) * M3508_GEAR_RATIO)); // TODO remove magic number 10
-    
+    float maxChangeRPM = 10 * maxChange * ((1 / WHEEL_RADIUS_M / (2 * PI / 60) * M3508_GEAR_RATIO)); // TODO remove magic number
+    // float maxChangeRPM = 150;
+    if ((desiredRPM > 0.0 && previousRPM < 0.0) || (desiredRPM < 0.0 && previousRPM > 0.0)) { // if wheel trying to sudden change direction
+        if (abs(diff) < maxChangeRPM) {
+            return 0;
+        }
+    }
+
     if (diff > maxChangeRPM) {
-        if(desiredRPM == 0) {
+        if(desiredRPM == 0.0) {
             return desiredRPM; // let robot do its thing b/c it wont take power
         }
-
         return previousRPM + maxChangeRPM;
     } 
     else if (diff < -maxChangeRPM) { // Also check deceleration
-        if(desiredRPM == 0) {
+        if(desiredRPM == 0.0) {
             return desiredRPM; // let robot do its thing b/c it wont take power
         }
-
         return previousRPM - maxChangeRPM;
     } 
     else { // Under acceleration limit

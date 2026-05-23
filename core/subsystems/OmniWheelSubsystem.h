@@ -22,6 +22,7 @@ static constexpr float STATIC_FRICTION_CONSTANT = 0.233924f;
 static constexpr float STATIC_FRICTION_CONSTANT_ALT = 0.8f;
 static constexpr float GRAVITY = 9.80665f;
 static constexpr int ACCEL_DENOM_CONSTANT = 2;
+static constexpr int MIN_MOTOR_RPM = 1000;
 
 // ── Kinematic types ────────────────────────────────────────────────────────────
 
@@ -165,7 +166,7 @@ private:
 
     // Motor-shaft RPM (pre-gearbox) measured at the END of the previous tick.
     // Used as both the rate-limit reference and the PID feedback.
-    float m_prevMotorRpm[4] = {};
+    float m_prevMotorRpm[4] = {0, 0, 0, 0};
 
     // ── Internal helpers ───────────────────────────────────────────────────────
 

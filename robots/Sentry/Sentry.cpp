@@ -92,14 +92,14 @@ ShooterSubsystem::config shooter_config = {
 OmniWheelSubsystem::Config chassis_config = {
     1,      // left_front_can_id
     2,      // right_front_can_id
-    3,      // left_back_can_id
-    4,      // right_back_can_id
+    4,      // left_back_can_id
+    3,      // right_back_can_id
     FL_VEL_CONFIG,
     FR_VEL_CONFIG,
     BL_VEL_CONFIG,
     BR_VEL_CONFIG,
     0.51,  // radius
-    40,     // yaw_initial_offset_ticks
+    85.27,     // yaw_initial_offset_ticks
     120,
 };
 
@@ -139,7 +139,7 @@ class Sentry : public BaseRobot {
         i2c_(IMU_I2C_SDA, IMU_I2C_SCL), 
         imu_(i2c_, 0x6B),
         encoder_(PB_4, true),
-        jetson_raw_serial(PC_12, PD_2,115200),
+        jetson_raw_serial(PC_12, PD_2,115200), // TODO: check higher baud to see if still works
         jetson(jetson_raw_serial),
         turret_(turret_config, imu_),
         shooter_(shooter_config),
@@ -279,7 +279,8 @@ class Sentry : public BaseRobot {
         // %.2f\n", remote_.getChassisX()); printf("switch: %d\n",
         // remote_.getSwitch(Remote::Switch::RIGHT_SWITCH)); printf("imu:
         // %.2f\n", imu.getImuAngles().yaw);
-        // printf("%.2f\n", encoder_.encoderMovingAverage());
+        // printf("%d\n", referee_.get_game_progress());
+        // printf("yp %.2f \n", encoder_.encoderMovingAverage());
         // printf("%.2f, %.2f, %.2f\n", imuAngles.roll, imuAngles.pitch, imuAngles.yaw);
         printf("%d \n", referee_.is_red_or_blue());
     }
@@ -300,7 +301,7 @@ class Sentry : public BaseRobot {
 
         stm_state.yaw_angle_rads = degreesToRadians(turret_.getState().yaw_angle_degs);
         stm_state.yaw_velocity = degreesToRadians(turret_.getState().yaw_velo_rad_s);
-        stm_state.pitch_angle_rads = -degreesToRadians(turret_.getState().pitch_angle_degs);
+        stm_state.pitch_angle_rads = degreesToRadians(turret_.getState().pitch_angle_degs);
         stm_state.pitch_velocity = degreesToRadians(turret_.getState().pitch_velo_rad_s);
     }
 };
