@@ -211,8 +211,8 @@ class Sentry : public BaseRobot {
             des_chassis_state.vOmega = 0;
             chassis_.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
-            stm_state.activate_CV = 0;
-            stm_state.calibration = 0;
+            // stm_state.activate_CV = 0;
+            // stm_state.calibration = 0;
         } else if (drive == 'd' ||
                    (drive == 'o' &&
                     remote_.getMode() == DJIRemote2::ModeSwitch::MODE_C)) {
@@ -223,8 +223,6 @@ class Sentry : public BaseRobot {
                 des_chassis_state.vOmega = 0;
 
                 des_turret_state.turret_mode = TurretState::AIM;
-                // des_turret_state.yaw_angle_degs = turret_.getState().yaw_angle_degs;
-                // des_turret_state.pitch_angle_degs = turret_.getState().pitch_angle_degs;
             } else {
                 des_chassis_state.vX = jetson_state.desired_x_vel;
                 des_chassis_state.vY = -jetson_state.desired_y_vel;
@@ -236,16 +234,25 @@ class Sentry : public BaseRobot {
             }
             chassis_.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
-            stm_state.activate_CV = 1;
-            stm_state.calibration = 0;
         } else {
             chassis_.setWheelPower({0, 0, 0, 0});
             des_turret_state.turret_mode = TurretState::SLEEP;
             des_turret_state.yaw_angle_degs = turret_.getState().yaw_angle_degs;
             yaw_desired_angle = turret_.getState().yaw_angle_degs;
             des_turret_state.pitch_angle_degs = 0;
+        }
+
+        if (remote_.CUSTLToggled()) {
+            stm_state.activate_CV = 1;
+        }
+        else {
             stm_state.activate_CV = 0;
+        }
+        if (remote_.CUSTRToggled())  {
             stm_state.calibration = 1;
+        }
+        else {
+            stm_state.calibration = 0;
         }
 
         // Shooter Logic
