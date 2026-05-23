@@ -272,6 +272,7 @@ class Infantry : public BaseRobot {
     void set_jetson_state() {
         stm_state.game_state = referee_.get_game_progress();
         stm_state.robot_hp = referee_.get_remain_hp();
+        stm_state.team_color = referee_.is_red_or_blue();
 
         stm_state.chassis_x_velocity = chassis_.getChassisSpeeds().vX;
         stm_state.chassis_y_velocity = chassis_.getChassisSpeeds().vY;

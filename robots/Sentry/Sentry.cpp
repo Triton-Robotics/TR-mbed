@@ -285,6 +285,7 @@ class Sentry : public BaseRobot {
         // %.2f\n", imu.getImuAngles().yaw);
         // printf("%.2f\n", encoder_.encoderMovingAverage());
         // printf("%.2f, %.2f, %.2f\n", imuAngles.roll, imuAngles.pitch, imuAngles.yaw);
+        // printf("%d \n", referee_.is_red_or_blue());
     }
 
     void end_of_loop() override {}
@@ -294,6 +295,7 @@ class Sentry : public BaseRobot {
     void set_jetson_state() {
         stm_state.game_state = referee_.get_game_progress();
         stm_state.robot_hp = referee_.get_remain_hp();
+        stm_state.team_color = referee_.is_red_or_blue();
 
         stm_state.chassis_x_velocity = chassis_.getChassisSpeeds().vX;
         stm_state.chassis_y_velocity = chassis_.getChassisSpeeds().vY;

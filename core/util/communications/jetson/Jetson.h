@@ -20,6 +20,7 @@ class Jetson {
         float yaw_velocity;
 
         int8_t game_state;
+        int8_t team_color; // 1 red 2 blue 0 undef
         int16_t robot_hp;
 
         // user input
@@ -115,7 +116,7 @@ class WritePacket {
 class RefWritePacket : public WritePacket {
   public:
     static int constexpr HEADER = 0xBB;
-    static int constexpr PAYLOAD_SIZE = 3;
+    static int constexpr PAYLOAD_SIZE = 4;
     RefWritePacket() : WritePacket(HEADER, PAYLOAD_SIZE) {};
 
   private:
@@ -123,7 +124,8 @@ class RefWritePacket : public WritePacket {
                             char *buff) override {
 
         std::memcpy(&buff[0], &write_state.game_state, sizeof(uint8_t));
-        std::memcpy(&buff[1], &write_state.robot_hp, sizeof(int16_t));
+        std::memcpy(&buff[1], &write_state.team_color, sizeof(uint8_t));
+        std::memcpy(&buff[2], &write_state.robot_hp, sizeof(int16_t));
     }
 };
 

@@ -241,7 +241,7 @@ bool Referee::is_red_or_blue()
 
     if (robot_status.robot_id > 10)
     {
-        return 0; //蓝方 (blue)
+        return 2; //蓝方 (blue)
     }
     else
     {
