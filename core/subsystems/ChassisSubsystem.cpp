@@ -40,10 +40,13 @@ ChassisSubsystem::ChassisSubsystem(const Config &config)
     // LB.setSpeedPID(3, 0, 0);
     // RB.setSpeedPID(3 , 0, 0);
 
-    pid_LF.setPID(3, 0, 0);
-    pid_RF.setPID(3, 0, 0);
-    pid_LB.setPID(3, 0, 0);
-    pid_RB.setPID(3, 0, 0);
+    pid_LF.setPID(3.38, 0, 0);
+    pid_RF.setPID(3.38, 0, 0);
+    pid_LB.setPID(3.38, 0, 0);
+    pid_RB.setPID(3.38, 0, 0);
+    pid_align.setPID(5, 0.0, 0.5);
+    pid_align.setOutputCap(1000);
+    yaw_velo_gain = 100;
 
     brakeMode = COAST;
 
@@ -87,77 +90,6 @@ float ChassisSubsystem::limitAcceleration(float desiredRPM, float previousRPM, i
     else {
         return desiredRPM; // under acceleration cap
     }
-
-
-
-
-    // if (diff > maxAccel){   // if the difference is greater than the max acceleration
-
-    //     if(power > 0) { // power: + rpm: + (acceleraiton)
-    //         return previousRPM + maxAccel;
-    //     }
-
-    //     else if(power < 0 && desiredRPM > 0) { // power: - rpm: + (deceleration)
-    //         return previousRPM + maxAccel; // ignore diff, just decelerate 
-    //     }
-
-    //     else if(power == 0) {
-    //         return desiredRPM; // let robot do its thing b/c it wont take power
-    //     }
-
-    // }
-    // else if (diff < -maxAccel) {
-        
-    //     if(power < 0 && desiredRPM < 0) { // power: - rpm: - (acceleration)
-    //         return previousRPM - maxAccel; 
-    //     }
-
-    //     else if(power > 0 && desiredRPM < 0) { // power: + rpm: - (deceleration)
-    //         return previousRPM - maxAccel; // ignore diff, just decelerate
-    //     }
-
-    //     else if(power == 0) {
-    //         return desiredRPM; // let robot do its thing b/c it wont take power
-    //     }
-
-    // }
-    // else {
-    //     return desiredRPM; // under acceleration
-    // }
-
-
-
-
-
-
-
-
-
-    // if(previousRPM > 0){
-    //     float maxRPMthisFrame = previousRPM + maxAccel;
-    //     if(desiredRPM > 0){
-    //         if(desiredRPM > maxRPMthisFrame){
-    //             return maxRPMthisFrame;
-    //         }else {
-    //             return desiredRPM;
-    //         }
-    //     }else {
-    //         return 0;
-    //     }
-    // }else if(previousRPM < 0){
-    //     float minRPMthisFrame = previousRPM - maxAccel;
-    //     if(desiredRPM < 0){
-    //         if(desiredRPM < minRPMthisFrame){
-    //             return minRPMthisFrame;
-    //         }else {
-    //             return desiredRPM;
-    //         }
-    //     }else{
-    //         return 0;
-    //     }
-    // }else{
-    //     return 0;
-    // }
 }
 
 double ChassisSubsystem::p_theory(int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm){
@@ -265,38 +197,17 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     powers[3] = motorPIDtoPower(RIGHT_BACK,RBrpm, (time - lastPIDTime));
     lastPIDTime = time;
 
-
-    // int sum = powers[0] + powers[1] + powers[2] + powers[3];
-
-    // if(sum > PEAK_POWER_ALL){
-    //     powers[0] = (powers[0] * PEAK_POWER_ALL)/sum;
-    //     powers[1] = (powers[1] * PEAK_POWER_ALL)/sum;
-    //     powers[2] = (powers[2] * PEAK_POWER_ALL)/sum;
-    //     powers[3] = (powers[3] * PEAK_POWER_ALL)/sum;
-    // }
-
     int p1 = abs(powers[0]);
     int p2 = abs(powers[1]);
     int p3 = abs(powers[2]);
     int p4 = abs(powers[3]);
 
-    
-    // int r1 = abs(LF.getData(VELOCITY));
-    // int r2 = abs(RF.getData(VELOCITY));
-    // int r3 = abs(LB.getData(VELOCITY));
-    // int r4 = abs(RB.getData(VELOCITY));
     int r1 = abs(getMotorSpeed(MotorLocation::LEFT_FRONT, RPM));
     int r2 = abs(getMotorSpeed(MotorLocation::RIGHT_FRONT, RPM));
     int r3 = abs(getMotorSpeed(MotorLocation::LEFT_BACK, RPM));
     int r4 = abs(getMotorSpeed(MotorLocation::RIGHT_BACK, RPM));
 
     double scale = Bisection(p1, p2, p3, p4, r1, r2, r3, r4, power_limit);
-
-
-
-    
-
-    // printf("Before Set:%.3f\n", p_theory(p1*scale, p2*scale, p3*scale, p4*scale, r1, r2, r3, r4));
 
     LF.setPower(powers[0]*scale);
     RF.setPower(powers[1]*scale);
@@ -307,10 +218,6 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     p2 = abs(RF.getData(POWEROUT));
     p3 = abs(LB.getData(POWEROUT));
     p4 = abs(RB.getData(POWEROUT));
-
-    // printf("After Set:%.3f\n", p_theory(p1, p2, p3, p4, r1, r2, r3, r4));
-
-
 
     return scale;
 }
@@ -350,7 +257,6 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
     double yawCurrent = 0;
     if (mode == REVERSE_YAW_ORIENTED)
     {
-        // printf("%f\n", double(yaw->getData(ANGLE)));
         yawCurrent = encoder->encoderMovingAverage();
         if (yawCurrent < 0.0) {
             yawCurrent += 360.0;
@@ -358,14 +264,10 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
         else if (yawCurrent > 360.0) {
             yawCurrent -= 360.0;
         }
-        // if (yawCurrent == -1.0) {
-        //     yawCurrent = (1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
-        // }
         desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yawCurrent);
     }
     else if (mode == YAW_ORIENTED)
     {
-        // printf("%f\n", double(yaw->getData(ANGLE)));
         yawCurrent = encoder->encoderMovingAverage();
         if (yawCurrent < 0.0) {
             yawCurrent += 360.0;
@@ -373,9 +275,6 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
         else if (yawCurrent > 360.0) {
             yawCurrent -= 360.0;
         }
-        // if (yawCurrent == -1.0) {
-        //     yawCurrent = (1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
-        // }
         desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yawCurrent);
     }
     else if (mode == ROBOT_ORIENTED)
@@ -391,9 +290,7 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
         else if (yawCurrent > 360.0) {
             yawCurrent -= 360.0;
         }
-        // if (yawCurrent == -1.0) {
-        //     yawCurrent = (1.0 - (double(yaw->getData(ANGLE)) / TICKS_REVOLUTION)) * 360.0; // change Yaw to CCW +, and ranges from 0 to 360
-        // }
+
         double yawDelta = yawOdom - yawCurrent;
         double imuDelta = imuOdom - imuAngles.yaw;
         double delta = imuDelta - yawDelta;
@@ -402,6 +299,38 @@ float ChassisSubsystem::setChassisSpeeds(ChassisSpeeds desiredChassisSpeeds_, DR
         while (del < 0) del += 360;
         desiredChassisSpeeds = rotateChassisSpeed(desiredChassisSpeeds_, yawOdom + delta);
     }
+    else if (mode == YAW_ALIGN)
+    {
+        yawCurrent = encoder->encoderMovingAverage();
+        if (yawCurrent < 0.0) {
+            yawCurrent += 360.0;
+        }
+        else if (yawCurrent > 360.0) {
+            yawCurrent -= 360.0;
+        }
+
+        // Compute yaw error(how much the yaw needs to recorrect)
+        double yawError = (yawCurrent - yawPhase);
+        while (yawError > 180) yawError -= 360;
+        while (yawError < -180) yawError += 360;
+        
+        if (abs(yawError) < 5) yawError = 0;
+
+        if (yawError > 90) yawError -= 180;
+        else if (yawError < -90) yawError += 180;
+
+        float yaw_velo = (yawCurrent - yawPrior);
+        float deg2rad = PI/180; // convert to rad and just run at 2x that rad/s
+        pid_align.feedForward = yaw_velo * yaw_velo_gain;
+        float omegaCmd = pid_align.calculatePeriodic(yawError, 1000) * deg2rad;
+
+        if (abs(omegaCmd) < 0.1) omegaCmd = 0;
+
+        ChassisSpeeds xAlignSpeeds = {desiredChassisSpeeds_.vX, desiredChassisSpeeds_.vY, omegaCmd};
+        desiredChassisSpeeds = rotateChassisSpeed(xAlignSpeeds, yawCurrent);
+    }
+    yawPrior = encoder->encoderMovingAverage();
+    
     WheelSpeeds wheelSpeeds = chassisSpeedsToWheelSpeeds(desiredChassisSpeeds); // in m/s (for now)
     wheelSpeeds = normalizeWheelSpeeds(wheelSpeeds);
     wheelSpeeds *= (1 / (WHEEL_DIAMETER_METERS / 2) / (2 * PI / 60) * M3508_GEAR_RATIO);

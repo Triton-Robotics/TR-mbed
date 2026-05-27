@@ -127,7 +127,8 @@ public:
         YAW_ORIENTED,
         REVERSE_YAW_ORIENTED,
         ROBOT_ORIENTED,
-        ODOM_ORIENTED
+        ODOM_ORIENTED,
+        YAW_ALIGN
     };
 
     enum HOLONOMIC_MODE
@@ -315,12 +316,13 @@ public:
     PID pid_RF;
     PID pid_LB;
     PID pid_RB;
+    
+    PID pid_align;
+    double yaw_velo_gain = 0;
+    double yawPrior; // previous yaw for yaw_align
 
     uint32_t lastPIDTime = 0;
 
-    // int8_t isInverted[4];
-
-    double prevVel;
 
     /**
      * yawPhase is an initial offset of your Yaw Motor Angle (basically which direction you want your Heading to be w.r.t Yaw Motor)

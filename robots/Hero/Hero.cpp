@@ -210,7 +210,7 @@ public:
             // des_turret_state.yaw_angle = jetson_state.desired_yaw_rads;
 
             des_chassis_state.vOmega = 0;
-            chassis_.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
+            chassis_.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ALIGN);
             des_turret_state.turret_mode = TurretState::AIM;
         } else if (drive == 'd' ||
                    (drive == 'o' &&
