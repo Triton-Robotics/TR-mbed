@@ -104,10 +104,14 @@ Public Types</h2></td></tr>
 , <a class="el" href="classChassisSubsystem.html#a86a23efcf850099cd72fe19e7e6d8ffda58d43d61b189fda50051e481ebbe4244">METER_PER_SECOND</a>
  }</td></tr>
 <tr class="separator:a86a23efcf850099cd72fe19e7e6d8ffd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a16e8ea4a14a3a2ae416a52db8d31ca36" id="r_a16e8ea4a14a3a2ae416a52db8d31ca36"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a16e8ea4a14a3a2ae416a52db8d31ca36">DRIVE_MODE</a> { <a class="el" href="classChassisSubsystem.html#a16e8ea4a14a3a2ae416a52db8d31ca36afd5cac9fdc8103802794047469e00313">YAW_ORIENTED</a>
+<tr class="memitem:a16e8ea4a14a3a2ae416a52db8d31ca36" id="r_a16e8ea4a14a3a2ae416a52db8d31ca36"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a16e8ea4a14a3a2ae416a52db8d31ca36">DRIVE_MODE</a> { <br />
+&#160;&#160;<a class="el" href="classChassisSubsystem.html#a16e8ea4a14a3a2ae416a52db8d31ca36afd5cac9fdc8103802794047469e00313">YAW_ORIENTED</a>
 , <a class="el" href="classChassisSubsystem.html#a16e8ea4a14a3a2ae416a52db8d31ca36a8748e9f0656c9d5c876cf81f9772d499">REVERSE_YAW_ORIENTED</a>
 , <a class="el" href="classChassisSubsystem.html#a16e8ea4a14a3a2ae416a52db8d31ca36ab78149079b4fe5928cf656b49265cb99">ROBOT_ORIENTED</a>
 , <a class="el" href="classChassisSubsystem.html#a16e8ea4a14a3a2ae416a52db8d31ca36a95df1e2c287d2fc7a150a5295df2c463">ODOM_ORIENTED</a>
+, <br />
+&#160;&#160;<a class="el" href="classChassisSubsystem.html#a16e8ea4a14a3a2ae416a52db8d31ca36a1063eb5f2d52d1d92d071e5057ea6c5f">YAW_ALIGN</a>
+<br />
  }</td></tr>
 <tr class="separator:a16e8ea4a14a3a2ae416a52db8d31ca36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab89726e3c07ae5d0fedd2d9207c1a21c" id="r_ab89726e3c07ae5d0fedd2d9207c1a21c"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#ab89726e3c07ae5d0fedd2d9207c1a21c">HOLONOMIC_MODE</a> { <a class="el" href="classChassisSubsystem.html#ab89726e3c07ae5d0fedd2d9207c1a21ca82f7881c2e05e0eeb97795fc5ecae829">OMNI</a>
@@ -211,10 +215,14 @@ Public Attributes</h2></td></tr>
 <tr class="separator:afbe9a3e08a60cbfe710e139e14baa48f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af8b4e27cd4d6316ad47f0072ecee2bac" id="r_af8b4e27cd4d6316ad47f0072ecee2bac"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPID.html">PID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#af8b4e27cd4d6316ad47f0072ecee2bac">pid_RB</a></td></tr>
 <tr class="separator:af8b4e27cd4d6316ad47f0072ecee2bac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46033641f352d29278006e842a1e61be" id="r_a46033641f352d29278006e842a1e61be"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPID.html">PID</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a46033641f352d29278006e842a1e61be">pid_align</a></td></tr>
+<tr class="separator:a46033641f352d29278006e842a1e61be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc564f79f0e02859cbf108ccd871ab78" id="r_acc564f79f0e02859cbf108ccd871ab78"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#acc564f79f0e02859cbf108ccd871ab78">yaw_velo_gain</a> = 0</td></tr>
+<tr class="separator:acc564f79f0e02859cbf108ccd871ab78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26124b136e0a9a1921d61e79e972c921" id="r_a26124b136e0a9a1921d61e79e972c921"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a26124b136e0a9a1921d61e79e972c921">yawPrior</a></td></tr>
+<tr class="separator:a26124b136e0a9a1921d61e79e972c921"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1e7484d5468f36e24b0c4ef493e88f09" id="r_a1e7484d5468f36e24b0c4ef493e88f09"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a1e7484d5468f36e24b0c4ef493e88f09">lastPIDTime</a> = 0</td></tr>
 <tr class="separator:a1e7484d5468f36e24b0c4ef493e88f09"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4ba63eb1bf8015fd0957ca367cf5d60e" id="r_a4ba63eb1bf8015fd0957ca367cf5d60e"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a4ba63eb1bf8015fd0957ca367cf5d60e">prevVel</a></td></tr>
-<tr class="separator:a4ba63eb1bf8015fd0957ca367cf5d60e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a08f9805e5c54c217e7ff5bf7a76b3656" id="r_a08f9805e5c54c217e7ff5bf7a76b3656"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#a08f9805e5c54c217e7ff5bf7a76b3656">yawOdom</a></td></tr>
 <tr class="separator:a08f9805e5c54c217e7ff5bf7a76b3656"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae9e0ce77349fb0ca11124d90cb6f91d3" id="r_ae9e0ce77349fb0ca11124d90cb6f91d3"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classChassisSubsystem.html#ae9e0ce77349fb0ca11124d90cb6f91d3">imuOdom</a></td></tr>
@@ -263,6 +271,7 @@ Public Attributes</h2></td></tr>
 <tr><td class="fieldname"><a id="a16e8ea4a14a3a2ae416a52db8d31ca36a8748e9f0656c9d5c876cf81f9772d499" name="a16e8ea4a14a3a2ae416a52db8d31ca36a8748e9f0656c9d5c876cf81f9772d499"></a>REVERSE_YAW_ORIENTED&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a16e8ea4a14a3a2ae416a52db8d31ca36ab78149079b4fe5928cf656b49265cb99" name="a16e8ea4a14a3a2ae416a52db8d31ca36ab78149079b4fe5928cf656b49265cb99"></a>ROBOT_ORIENTED&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a16e8ea4a14a3a2ae416a52db8d31ca36a95df1e2c287d2fc7a150a5295df2c463" name="a16e8ea4a14a3a2ae416a52db8d31ca36a95df1e2c287d2fc7a150a5295df2c463"></a>ODOM_ORIENTED&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a16e8ea4a14a3a2ae416a52db8d31ca36a1063eb5f2d52d1d92d071e5057ea6c5f" name="a16e8ea4a14a3a2ae416a52db8d31ca36a1063eb5f2d52d1d92d071e5057ea6c5f"></a>YAW_ALIGN&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -1377,6 +1386,20 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a46033641f352d29278006e842a1e61be" name="a46033641f352d29278006e842a1e61be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a46033641f352d29278006e842a1e61be">&#9670;&#160;</a></span>pid_align</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classPID.html">PID</a> ChassisSubsystem::pid_align</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="afbe9a3e08a60cbfe710e139e14baa48f" name="afbe9a3e08a60cbfe710e139e14baa48f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afbe9a3e08a60cbfe710e139e14baa48f">&#9670;&#160;</a></span>pid_LB</h2>
 
@@ -1461,20 +1484,6 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a4ba63eb1bf8015fd0957ca367cf5d60e" name="a4ba63eb1bf8015fd0957ca367cf5d60e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4ba63eb1bf8015fd0957ca367cf5d60e">&#9670;&#160;</a></span>prevVel</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">double ChassisSubsystem::prevVel</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="ae90abd7845187509b4baba34ffee2076" name="ae90abd7845187509b4baba34ffee2076"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae90abd7845187509b4baba34ffee2076">&#9670;&#160;</a></span>testData</h2>
 
@@ -1503,6 +1512,20 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="acc564f79f0e02859cbf108ccd871ab78" name="acc564f79f0e02859cbf108ccd871ab78"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acc564f79f0e02859cbf108ccd871ab78">&#9670;&#160;</a></span>yaw_velo_gain</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double ChassisSubsystem::yaw_velo_gain = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a08f9805e5c54c217e7ff5bf7a76b3656" name="a08f9805e5c54c217e7ff5bf7a76b3656"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a08f9805e5c54c217e7ff5bf7a76b3656">&#9670;&#160;</a></span>yawOdom</h2>
 
@@ -1515,6 +1538,20 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>yawPhase is an initial offset of your Yaw Motor Angle (basically which direction you want your Heading to be w.r.t Yaw Motor) </p>
+
+</div>
+</div>
+<a id="a26124b136e0a9a1921d61e79e972c921" name="a26124b136e0a9a1921d61e79e972c921"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a26124b136e0a9a1921d61e79e972c921">&#9670;&#160;</a></span>yawPrior</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double ChassisSubsystem::yawPrior</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>

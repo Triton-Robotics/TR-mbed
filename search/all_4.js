@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['d_0',['d',['../structPID_1_1config.html#a7d44e288f702d3de860d8cf559a6f130',1,'PID::config::d'],['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4faf623e75af30e62bbd73d6df5b50bb7b5',1,'Remote::D'],['../classDJIRemote2.html#a807b9397256c70e28ef2f72bc5e35650af623e75af30e62bbd73d6df5b50bb7b5',1,'DJIRemote2::D']]],
+  ['d_0',['d',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4faf623e75af30e62bbd73d6df5b50bb7b5',1,'Remote::D'],['../classDJIRemote2.html#a807b9397256c70e28ef2f72bc5e35650af623e75af30e62bbd73d6df5b50bb7b5',1,'DJIRemote2::D'],['../structPID_1_1config.html#a7d44e288f702d3de860d8cf559a6f130',1,'PID::config::d']]],
   ['dart_5fattack_5ftarget_1',['dart_attack_target',['../structext__dart__client__cmd__t.html#a14919418d881fdeb01e2de5058d3a1a3',1,'ext_dart_client_cmd_t']]],
   ['dart_5fbelong_2',['dart_belong',['../structext__dart__status__t.html#ae2b8d294de50883029357532262b639e',1,'ext_dart_status_t']]],
   ['dart_5flaunch_5fopening_5fstatus_3',['dart_launch_opening_status',['../structext__dart__client__cmd__t.html#a0ed58fe58c282f6519b1f497905f2a8e',1,'ext_dart_client_cmd_t']]],
@@ -13,7 +13,7 @@ var searchData=
   ['datalength_10',['DataLength',['../structxFrameHeader.html#ac15f58966ccc45104926122188a7f015',1,'xFrameHeader']]],
   ['dataready_11',['dataReady',['../classMPU6050.html#aafc3767ff1a351ed03b8aead396e1711',1,'MPU6050']]],
   ['dbuffer_12',['dBuffer',['../classPID.html#a220ea9c305c0f48b0b8443bcbe9cced5',1,'PID']]],
-  ['dc_13',['dc',['../classPID.html#af825b006e765120ff387c4e15c6a7f8a',1,'PID::dC'],['../classAdafruit__SSD1306__Spi.html#a0edbab47342673545a8acd03379bbfb6',1,'Adafruit_SSD1306_Spi::dc']]],
+  ['dc_13',['dc',['../classAdafruit__SSD1306__Spi.html#a0edbab47342673545a8acd03379bbfb6',1,'Adafruit_SSD1306_Spi::dc'],['../classPID.html#af825b006e765120ff387c4e15c6a7f8a',1,'PID::dC']]],
   ['debugging_14',['Debugging',['../index.html#autotoc_md18',1,'']]],
   ['default_15',['DEFAULT',['../TRMutex_8h.html#af5f478ebdb1815432fb04589309d5492a88ec7d5086d2469ba843c7fcceade8a6',1,'TRMutex.h']]],
   ['defence_5fbuff_16',['defence_buff',['../structbuff__t.html#a91c22d83e4bb3394dee2643fb6bff29c',1,'buff_t']]],
