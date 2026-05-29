@@ -41,45 +41,6 @@ void OmniWheelSubsystem::initKinematics(double chassisRadius, HolonomicMode mode
     }
 }
 
-double OmniWheelSubsystem::calibrateMaxBeybladeOmega()
-{
-    // ── Sanity-check: robot must actually be spinning ──────────────────────────
-    double omegaMeasured = std::abs(m_chassisSpeeds.vOmega); // from odometry [rad/s]
-    constexpr double MIN_OMEGA_RADPS = 0.5;
-    if (omegaMeasured < MIN_OMEGA_RADPS) {
-        // Not spinning fast enough for a reliable measurement; return current estimate.
-        return m_beybladeMaxOmega;
-    }
- 
-    // ── Measure actual power draw from torque registers ────────────────────────
-    float pMeasured = estimatePowerWatts(LF.getData(TORQUE))
-                    + estimatePowerWatts(RF.getData(TORQUE))
-                    + estimatePowerWatts(LB.getData(TORQUE))
-                    + estimatePowerWatts(RB.getData(TORQUE));
- 
-    constexpr float MIN_POWER_W = 1.0f;
-    if (pMeasured < MIN_POWER_W) {
-        return m_beybladeMaxOmega;
-    }
- 
-    // ── Back-calculate ω_max ───────────────────────────────────────────────────
-    //
-    // From P ∝ (ω·L)², two operating points give:
-    //
-    //   P_measured   (ω_measured)²
-    //   ──────────── = ─────────────
-    //   power_limit  (ω_max)²
-    //
-    //   ω_max = ω_measured · √(power_limit / P_measured)
-    //
-    double omegaMax = omegaMeasured * std::sqrt(power_limit / pMeasured);
- 
-    // Store so BEYBLADE mode uses the calibrated value immediately.
-    m_beybladeMaxOmega  = omegaMax;
- 
-    return omegaMax;
-}
-
 // ─────────────────────────────────────────────────────────────────────────────
 // Periodic update  (call every control tick)
 // ─────────────────────────────────────────────────────────────────────────────
@@ -165,16 +126,8 @@ float OmniWheelSubsystem::setChassisSpeeds(ChassisSpeeds desired, unsigned long 
 double OmniWheelSubsystem::CalculateBeybladeVelo(float vOmega, ChassisSpeeds lateral) {
     // ── Beyblade omega budget ──────────────────────────────────────────
     //
-    // Power model (exact for omni kinematics, no cross terms):
-    //   Σ(v_wheel²) = 4·(vX² + vY² + (ω·L)²)
-    //
-    // Solve for ω that fills the remaining budget after lateral:
-    //   ω_available = √(max(0, ω_max_actual² − (vX² + vY²) / L²))
-    //
     double lateralSpeedSq = lateral.vX * lateral.vX + lateral.vY * lateral.vY;
-    double omegaSq        = m_beybladeMaxOmega * m_beybladeMaxOmega
-                            - lateralSpeedSq / (m_kinL * m_kinL);
-    double omegaAvail     = (omegaSq > 0.0) ? std::sqrt(omegaSq) : 0.0;
+    double omegaAvail = sqrt(1 * abs(power_limit - VXY_SCALE * lateralSpeedSq));
 
     if (omegaAvail < vOmega) return omegaAvail;
     else return vOmega;
@@ -280,8 +233,8 @@ ChassisSpeeds OmniWheelSubsystem::rotateToRobotFrame(ChassisSpeeds fieldSpeeds,
 {
     // converting the beyblade speed in rad/s to rad by multiplying by the loop latency (dt = 200ms (0.2s))
     double beyblade_offset = m_chassisSpeeds.vOmega * dt_s;
-    double theta = (headingDeg - m_yawOffsetDeg) * OMNI_PI / 180.0;
-    double c = std::cos(theta + beyblade_offset), s = std::sin(theta + beyblade_offset);
+    double theta = capAngle(headingDeg - m_yawOffsetDeg) * OMNI_PI / 180.0;
+    double c = std::cos(theta - beyblade_offset), s = std::sin(theta - beyblade_offset);
     return {
         fieldSpeeds.vX * c - fieldSpeeds.vY * s,
         fieldSpeeds.vX * s + fieldSpeeds.vY * c,
