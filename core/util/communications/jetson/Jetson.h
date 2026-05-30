@@ -19,9 +19,9 @@ class Jetson {
         float pitch_velocity;
         float yaw_velocity;
 
-        int8_t game_state;
-        int8_t team_color; // 1 red 2 blue 0 undef
-        int16_t robot_hp;
+        uint8_t game_state;
+        uint8_t team_color; // 1 red 2 blue 0 undef
+        uint16_t robot_hp;
 
         // user input
         uint8_t calibration;
@@ -125,7 +125,7 @@ class RefWritePacket : public WritePacket {
 
         std::memcpy(&buff[0], &write_state.game_state, sizeof(uint8_t));
         std::memcpy(&buff[1], &write_state.team_color, sizeof(uint8_t));
-        std::memcpy(&buff[2], &write_state.robot_hp, sizeof(int16_t));
+        std::memcpy(&buff[2], &write_state.robot_hp, sizeof(uint16_t));
     }
 };
 
