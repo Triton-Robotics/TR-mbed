@@ -60,4 +60,5 @@ private:
     bool shootReady;
 
     int shootTargetPosition;
+    int backfeedPosition;
 };

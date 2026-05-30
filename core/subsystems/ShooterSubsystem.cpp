@@ -89,6 +89,7 @@ void ShooterSubsystem::periodic(int curr_heat, int heat_limit)
                 shootReady = false; // Cant shoot twice immediately
 
                 shootTargetPosition = (8192 * M2006_GEAR_RATIO / 9 * NUM_BALLS_SHOT) + (indexer>>MULTITURNANGLE);
+                backfeedPosition = (indexer>>MULTITURNANGLE) - (8192 * M2006_GEAR_RATIO / 9 * NUM_BALLS_SHOT);
             }
         }
 
@@ -99,6 +100,39 @@ void ShooterSubsystem::periodic(int curr_heat, int heat_limit)
         }
         else
         {
+
+            // backfeeding code
+            
+            if ((abs(float(indexer>>TORQUE) / 5596) > 1.65 && (abs((indexer >> MULTITURNANGLE) - shootTargetPosition) > int(8192/360)))) {
+                printf("%.2f, %d BACKFEED TIME\n", abs(float(indexer>>TORQUE) / 5596), abs((indexer >> MULTITURNANGLE) - shootTargetPosition));
+                indexer.pidSpeed.feedForward = (-(indexer>>VELOCITY) / 4788.0) * 630 * 6; // todo what are these magic numbers?
+                //indexer.setSpeed(-60 * M2006_GEAR_RATIO);
+                indexer.setPosition(backfeedPosition);
+                
+                // Reversing flywheel direction to unjam 
+                if (!invert_flywheel) {
+                    flywheelL.setSpeed(FLYWHEEL_VELO);
+                    flywheelR.setSpeed(-FLYWHEEL_VELO);
+                }
+                else {
+                    flywheelL.setSpeed(-FLYWHEEL_VELO);
+                    flywheelR.setSpeed(FLYWHEEL_VELO);
+                }
+  
+                // if (!jammed) {
+                //     // First time entering — record the start time
+                //     jamCurrTime = us_ticker_read();
+                //     jammed = 1;
+                // }
+
+                // // Check if 250ms have elapsed since we entered the jam state
+                // if (us_ticker_read() - jamCurrTime > 250000) {
+                //     jammed = 0;
+                // }
+
+
+            }
+
             indexer.pidSpeed.feedForward = (indexer >> VELOCITY) / 4788 * 630;
             indexer.setPosition(shootTargetPosition);
         }
