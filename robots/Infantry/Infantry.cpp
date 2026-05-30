@@ -228,8 +228,9 @@ class Infantry : public BaseRobot {
         // Shooter Logic
         if ((remote_.PAUSEToggled() == true && remote_.TriggerPressed() == true) || remote_.getMouseL()) {
             des_shoot_state = ShootState::SHOOT;
-        } else if (remote_.PAUSEToggled() == true ||
-                   shot == 'd') {
+        } else if (remote_.CUSTRPressed() == true && remote_.PAUSEToggled() == true) { //Make sure flywheel is on since that's part 
+            des_shoot_state = ShootState::JAM;
+        } else if (remote_.PAUSEToggled() == true || shot == 'd') {
             des_shoot_state = ShootState::FLYWHEEL;
         } else {
             des_shoot_state = ShootState::OFF;

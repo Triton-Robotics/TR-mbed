@@ -13,7 +13,7 @@ constexpr int FLYWHEEL_VELO = 550;
 constexpr int HERO_FLYWHEEL_VELO = 950;
 
 // enum for states
-enum ShootState {OFF, FLYWHEEL, SHOOT};
+enum ShootState {OFF, FLYWHEEL, SHOOT, JAM};
 
 // struct for config
 class ShooterSubsystem : public Subsystem
@@ -61,4 +61,10 @@ private:
 
     int shootTargetPosition;
     int backfeedPosition;
+
+    int jammed;
+    int jamCurrTime;
+
+    void setFlywheels();
+    void reverseFlywheels();
 };
