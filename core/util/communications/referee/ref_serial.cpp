@@ -1,5 +1,6 @@
 
 #include "ref_serial.h"
+#include "../ui/ui_g.h"
 
 // -------------------------------------
 // From South China University of Technology 华南理工大学广州学院-野狼战队-步兵代码 ----------------------------------
@@ -454,15 +455,6 @@ void Referee::determine_ID()
     }
 }
 
-/**
-  * @brief  上传自定义数据
-  * @param  void
-  * @retval void
-  * @attention  数据打包,打包完成后通过串口发送到裁判系统
-  */
-
-
-// MY PART -------------------------------------
 
 void Referee::init_referee_struct_data()
 {
@@ -519,6 +511,7 @@ void Referee::referee_data_pack_handle(uint8_t sof,uint16_t cmd_id, uint8_t *p_d
     ref.write(tx_buff, frame_length);
 }
 
+
 void Referee::referee_data_pack_handle(uint8_t *packet, uint16_t len)
 {
     // Accquires thread resources
@@ -528,4 +521,179 @@ void Referee::referee_data_pack_handle(uint8_t *packet, uint16_t len)
     mutex_write_.unlock();
     
     ref.write(packet, len);
+}
+
+
+Referee::Referee(PinName pin_tx, PinName pin_rx) : ref(pin_tx, pin_rx, 115200) 
+{
+    memset(JudgeSystem_rxBuff, 0, JUDGESYSTEM_PACKSIZE);
+
+    this->readThread_.start(callback(this, &Referee::readThread));
+    this->writeThread_.start(callback(this, &Referee::writeThread));
+}
+
+
+bool Referee::readable()
+{
+    return ref.readable();
+}
+
+
+void Referee::read()
+{
+    if(ref.readable())
+    {
+        int rad = JudgeSystem_USART_Receive_DMA();
+        mutex_read_.lock();
+        memcpy(JudgeSystem_rxBuff, JudgeSystem_rxBuff_priv, JUDGESYSTEM_PACKSIZE);
+        mutex_read_.unlock();
+        Judge_GetMessage(rad);
+
+        if(enablePrintRefData){
+            string output = "robot id: %s  ";
+
+            if(is_red_or_blue()){
+                output += "RED  ";
+            }
+            else{
+                output += "BLUE  ";
+            }
+            output += "robot hp: %d  max hp: %d  angle: %d  power: %d  current: %d  volt: %d \n";
+        }
+    }
+    else{
+        if(enablePrintRefData){
+            printf("REFEREE - Not readable!\n");
+        }
+    }
+}
+
+
+void Referee::readThread()
+{
+    while(1)
+    {
+        // Un-nested read since all it does is call another fn
+        // read();
+        if(ref.readable())
+        {
+            int rad = JudgeSystem_USART_Receive_DMA();
+            mutex_read_.lock();
+            memcpy(JudgeSystem_rxBuff, JudgeSystem_rxBuff_priv, JUDGESYSTEM_PACKSIZE);
+            mutex_read_.unlock();
+            Judge_GetMessage(rad);
+
+            if(enablePrintRefData){
+                string output = "robot id: %s  ";
+
+                if(is_red_or_blue()){
+                    output += "RED  ";
+                }
+                else{
+                    output += "BLUE  ";
+                }
+                output += "robot hp: %d  max hp: %d  angle: %d  power: %d  current: %d  volt: %d \n";
+            }
+        }
+        else{
+            if(enablePrintRefData){
+                printf("REFEREE - Not readable!\n");
+            }
+        }
+
+        ThisThread::yield();
+    }
+}
+
+
+void Referee::writeThread()
+{
+    
+    while(get_robot_id() == 0) {
+        ThisThread::yield();
+    }
+    
+    // Some variables required to properrly send
+    bool ui_dirty = false;
+    bool prev_is_spinning = false;
+    bool prev_is_flywheel_on = false;
+    bool prev_is_cv_on = false;
+    bool prev_is_aligned = false;
+    
+    UI mainUI(
+        uint16_t(get_robot_id()),
+        // robot_status.robot_id, 
+        [this](uint8_t *packet, uint16_t len) {referee_data_pack_handle(packet, len);}
+    );
+    mainUI.ui_init_g();
+
+    while(1)
+    {
+        if (prev_is_spinning != is_spinning) {
+            mainUI.set_spin_ui(is_spinning);
+            prev_is_spinning = is_spinning;
+            ui_dirty = true;
+        }
+        if (prev_is_flywheel_on != is_flywheel_on) {
+            mainUI.set_flywheel_ui(is_flywheel_on);
+            prev_is_flywheel_on = is_flywheel_on;
+            ui_dirty = true;
+        }
+        if (prev_is_cv_on != is_cv_on) {
+            mainUI.set_cv_ui(is_cv_on);
+            prev_is_cv_on = is_cv_on;
+            ui_dirty = true;
+        }
+        if (prev_is_aligned != is_aligned) {
+            mainUI.set_alignment_ui(is_aligned);
+            prev_is_aligned = is_aligned;
+            ui_dirty = true;
+        }
+        
+        if(ui_dirty) {
+            mainUI.ui_update_g();
+            ui_dirty = false;
+        }
+
+        ThisThread::yield();
+    }
+}
+
+
+uint8_t Referee::get_robot_id()
+{
+    return robot_status.robot_id;
+}
+
+
+uint8_t Referee::get_remain_hp()
+{
+    return robot_status.current_HP;
+}
+
+
+uint8_t Referee::get_game_progress()
+{
+    return game_status.game_progress;
+}
+
+
+/**
+  * @brief  判断自己红蓝方
+  * @param  void
+  * @retval RED   BLUE
+  * @attention  数据打包,打包完成后通过串口发送到裁判系统
+  */
+bool Referee::is_red_or_blue()
+{
+    Judge_Self_ID = robot_status.robot_id; //读取当前机器人ID
+
+    if (robot_status.robot_id > 10)
+    {
+        return 0; //蓝方 (blue)
+    }
+    else
+    {
+        return 1; //红方 (red)
+    }
 }
