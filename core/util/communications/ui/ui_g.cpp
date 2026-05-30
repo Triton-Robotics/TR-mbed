@@ -290,7 +290,6 @@ void UI::ui_scan_and_send(const ui_interface_figure_t *ui_now_figures, uint8_t *
     if (total_figures > 0) {
         int dirty_count = 0; // Amount of actual figures that need to be sent
         int dirty_indices[total_figures];
-        ui_lock.lock();
         for (int i = 0; i < total_figures; i++) {
             if (ui_dirty_figure[i] > 0) {
                 dirty_indices[dirty_count] = i;
@@ -350,52 +349,35 @@ void UI::ui_scan_and_send(const ui_interface_figure_t *ui_now_figures, uint8_t *
                 // Send message because we're complete with our packet
                 if (pack_size == 7) {
                     ui_proc_7_frame(&_ui_7_frame);
-                    ui_7_frame_t frame_copy = _ui_7_frame;   // snapshot under lock
-                    ui_lock.unlock();
-                    send_message((uint8_t *) &frame_copy, sizeof(_ui_7_frame));
-                    ui_lock.lock();
+                    send_message((uint8_t *) &_ui_7_frame, sizeof(_ui_7_frame));
                 } else if (pack_size == 5) {
                     ui_proc_5_frame(&_ui_5_frame);
-                    ui_5_frame_t frame_copy = _ui_5_frame;   // snapshot under lock
-                    ui_lock.unlock();
-                    send_message((uint8_t *) &frame_copy, sizeof(frame_copy));
-                    ui_lock.lock();
+                    send_message((uint8_t *) &_ui_5_frame, sizeof(_ui_5_frame));
                 } else if (pack_size == 2) {
                     ui_proc_2_frame(&_ui_2_frame);
-                    ui_2_frame_t frame_copy = _ui_2_frame;   // snapshot under lock
-                    ui_lock.unlock();
-                    send_message((uint8_t *) &frame_copy, sizeof(frame_copy));
-                    ui_lock.lock();
+                    send_message((uint8_t *) &_ui_2_frame, sizeof(_ui_2_frame));
                 } else {
                     ui_proc_1_frame(&_ui_1_frame);
-                    ui_1_frame_t frame_copy = _ui_1_frame;   // snapshot under lock
-                    ui_lock.unlock();
-                    send_message((uint8_t *) &frame_copy, sizeof(frame_copy));
-                    ui_lock.lock();
+                    send_message((uint8_t *) &_ui_1_frame, sizeof(_ui_1_frame));
                 }
             }
-
             // Shifts which index of the packet we're putting the next figure into
             now_cap++;
-
             // Decreases it to signal that the figure has been proccessed once
             ui_dirty_figure[i]--;
         }
-        ui_lock.unlock();
     }
     
     // Proccesses and sends all the strings
     if (total_strings > 0) {
         for (int i = 0; i < total_strings; i++) {
             bool should_send = false;
-            ui_lock.lock();
             if (ui_dirty_string[i] > 0 && ui_self_id != 0) {
                 _ui_string_frame.option = ui_now_strings[i];
                 ui_proc_string_frame(&_ui_string_frame);
                 ui_dirty_string[i]--;
                 should_send = true;
             }
-            ui_lock.unlock();
             
             if(should_send) {
                 send_message((uint8_t *) &_ui_string_frame, sizeof(_ui_string_frame));

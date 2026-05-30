@@ -25,9 +25,6 @@ public:
 
     void read();
 
-    // TODO: figure out how to write ui or interobot comms 
-    void write();
-
     // Return 1 if robot is in red team, 0 if blue.
     uint8_t is_red_or_blue();
 
@@ -68,14 +65,6 @@ private:
     void Judge_GetMessage(uint16_t Data_Length);
     void Judge_sendPC();
     void RobotStatus_LEDYellow();
-
-
-    // Draw text on the UI
-    void ui_graph_characters(int operation_type, string str, int x, int y, char name);
-
-    // Delete a layer of UI drawing
-    void ui_delete_layer(int layer);
-    
 
     // ------------------------------
     // Extra stuff
