@@ -203,14 +203,18 @@ void Referee::readThread()
 
 void Referee::writeThread()
 {
-    // Some variables required to properrly send
-    bool prev_is_spinning = false;
-    bool prev_is_flywheel_on = false;
-    bool prev_is_cv_on = false;
-    bool prev_is_aligned = false;
+    
     while(get_robot_id() == 0) {
         ThisThread::yield();
     }
+    
+    // Some variables required to properrly send
+    bool ui_dirty = false;
+    bool prev_is_spinning = false;     // force update on first iteration
+    bool prev_is_flywheel_on = false;
+    bool prev_is_cv_on = false;
+    bool prev_is_aligned = false;
+    
     UI mainUI(
         uint16_t(get_robot_id()),
         // robot_status.robot_id, 
@@ -218,25 +222,35 @@ void Referee::writeThread()
     );
     mainUI.ui_init_g();
 
+
     while(1)
     {
         if (prev_is_spinning != is_spinning) {
             mainUI.set_spin_ui(is_spinning);
             prev_is_spinning = is_spinning;
+            ui_dirty = true;
         }
         if (prev_is_flywheel_on != is_flywheel_on) {
             mainUI.set_flywheel_ui(is_flywheel_on);
             prev_is_flywheel_on = is_flywheel_on;
+            ui_dirty = true;
         }
         if (prev_is_cv_on != is_cv_on) {
             mainUI.set_cv_ui(is_cv_on);
             prev_is_cv_on = is_cv_on;
+            ui_dirty = true;
         }
         if (prev_is_aligned != is_aligned) {
             mainUI.set_alignment_ui(is_aligned);
             prev_is_aligned = is_aligned;
+            ui_dirty = true;
         }
-        mainUI.ui_update_g();
+        
+        if(ui_dirty) {
+            mainUI.ui_update_g();
+            ui_dirty = false;
+        }
+
         ThisThread::yield();
     }
 }

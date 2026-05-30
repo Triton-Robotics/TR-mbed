@@ -131,11 +131,4 @@ typedef struct __attribute__((__packed__)) {
     uint16_t crc16;
 } MESSAGE_PACKED ui_delete_frame_t;
 
-// Grabs these variables from another file
-extern ui_string_frame_t _ui_string_frame;
-extern ui_1_frame_t _ui_1_frame;
-extern ui_2_frame_t _ui_2_frame;
-extern ui_5_frame_t _ui_5_frame;
-extern ui_7_frame_t _ui_7_frame;
-
 #endif //UI_TYPES_H

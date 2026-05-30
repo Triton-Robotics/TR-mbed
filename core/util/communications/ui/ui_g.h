@@ -11,21 +11,16 @@ class UI {
         const static int TOTAL_STRING = 4;
 
         uint8_t ui_g_max_send_count[TOTAL_FIGURE + TOTAL_STRING] = {
-            3,
-            3,
-            3,
-            3,
+            5,
+            5,
+            5,
+            5,
         };
         
         ui_interface_figure_t ui_g_now_figures[TOTAL_FIGURE]; // contains all figures w/ current data
         uint8_t ui_g_dirty_figure[TOTAL_FIGURE]; // contains which figures need to be sent and how many times
         ui_interface_string_t ui_g_now_strings[TOTAL_STRING]; // contains all data for strings
         uint8_t ui_g_dirty_string[TOTAL_STRING]; // contains which strings need to be sent and how many times
-
-        // Creates last figure/string lists to compare changes between the current and prev itterations
-        //      if not doing manual dirty
-        ui_interface_figure_t ui_g_last_figures[TOTAL_FIGURE]; // contains all figure data since last sending transmission
-        ui_interface_string_t ui_g_last_strings[TOTAL_STRING]; // contains all string data since last sending transmission
 
         UI(uint16_t robot_id, std::function<void(uint8_t*, uint16_t )> send_func);
         
@@ -41,8 +36,7 @@ class UI {
     private:
         Mutex ui_lock;
         std::function<void(uint8_t*, uint16_t )> send_packet_func;
-        inline static uint8_t seq = 0;    
-        inline static uint32_t idx = 0;
+        uint8_t seq = 0;    
 
             
         ui_string_frame_t _ui_string_frame;
