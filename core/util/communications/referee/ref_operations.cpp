@@ -204,8 +204,11 @@ void Referee::readThread()
 void Referee::writeThread()
 {
     // Some variables required to properrly send
+    while(get_robot_id() == 0) {
+        ThisThread::yield();
+    }
     UI mainUI(
-        1,
+        uint16_t(get_robot_id()),
         // robot_status.robot_id, 
         [this](uint8_t *packet, uint16_t len) {referee_data_pack_handle(packet, len);}
     );
@@ -214,6 +217,7 @@ void Referee::writeThread()
     while(1)
     {
         // write();
+        printf("robot id: %d\n", get_robot_id());
         mainUI.ui_update_g();
         ThisThread::yield();
     }

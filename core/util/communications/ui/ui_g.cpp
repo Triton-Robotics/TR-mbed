@@ -30,6 +30,7 @@ void UI::ui_init_g() {
     ui_g_Ungroup_Bayblade->width = 8;
     ui_g_Ungroup_Bayblade->font_size = 80;
     ui_g_Ungroup_Bayblade->str_length = 7;
+    memset(ui_g_Ungroup_Bayblade->string, 0, sizeof(ui_g_Ungroup_Bayblade->string));
     strcpy(ui_g_Ungroup_Bayblade->string, "SPIN!!!");
 
     ui_g_Ungroup_Flywheel->figure_type = 7;
@@ -41,6 +42,7 @@ void UI::ui_init_g() {
     ui_g_Ungroup_Flywheel->width = 6;
     ui_g_Ungroup_Flywheel->font_size = 60;
     ui_g_Ungroup_Flywheel->str_length = 7;
+    memset(ui_g_Ungroup_Flywheel->string, 0, sizeof(ui_g_Ungroup_Flywheel->string));
     strcpy(ui_g_Ungroup_Flywheel->string, "FLY-OFF");
 
     ui_g_Ungroup_CV->figure_type = 7;
@@ -52,6 +54,7 @@ void UI::ui_init_g() {
     ui_g_Ungroup_CV->width = 5;
     ui_g_Ungroup_CV->font_size = 50;
     ui_g_Ungroup_CV->str_length = 6;
+    memset(ui_g_Ungroup_CV->string, 0, sizeof(ui_g_Ungroup_CV->string));
     strcpy(ui_g_Ungroup_CV->string, "CV-OFF");
 
     ui_g_Ungroup_Alignment->figure_type = 7;
@@ -63,6 +66,7 @@ void UI::ui_init_g() {
     ui_g_Ungroup_Alignment->width = 6;
     ui_g_Ungroup_Alignment->font_size = 60;
     ui_g_Ungroup_Alignment->str_length = 2;
+    memset(ui_g_Ungroup_Alignment->string, 0, sizeof(ui_g_Ungroup_Alignment->string));
     strcpy(ui_g_Ungroup_Alignment->string, "AL");
 
     uint32_t idx = 0;
@@ -235,8 +239,8 @@ void UI::ui_proc_string_frame(ui_string_frame_t *msg) {
     msg->header.sub_id = 0x0110;
     msg->header.send_id = ui_self_id;
     msg->header.recv_id = ui_self_id + 256;
-    msg->option.str_length = strlen(msg->option.string);
-    msg->crc16 = calc_crc16((uint8_t *) msg, 58);
+    msg->option.str_length = msg->option.str_length;
+    msg->crc16 = calc_crc16((uint8_t *) msg, sizeof(msg->header) + sizeof(msg->option));
 }
 
 /**
@@ -373,7 +377,7 @@ void UI::ui_scan_and_send(const ui_interface_figure_t *ui_now_figures, uint8_t *
     if (total_strings > 0) {
         for (int i = 0; i < total_strings; i++) {
             ui_lock.lock();
-            if (ui_dirty_string[i] > 0) {
+            if (ui_dirty_string[i] > 0 && ui_self_id != 0) {
                 _ui_string_frame.option = ui_now_strings[i];
                 ui_proc_string_frame(&_ui_string_frame);
                 send_message((uint8_t *) &_ui_string_frame, sizeof(_ui_string_frame));
@@ -392,8 +396,10 @@ void UI::set_spin_ui(bool is_spinning) {
     ui_lock.lock();
     if(is_spinning) {
         strcpy(ui_g_Ungroup_Bayblade->string, "SPIN!!!");
+        ui_g_Ungroup_Bayblade->str_length = 7;
     } else {
         strcpy(ui_g_Ungroup_Bayblade->string, "STOP");
+        ui_g_Ungroup_Bayblade->str_length = 4;
     }
     *ui_g_Ungroup_Bayblade_send_count = ui_g_Ungroup_Bayblade_max_send_count;
     ui_lock.unlock();
@@ -403,8 +409,10 @@ void UI::set_flywheel_ui(bool is_flywheel_on) {
     ui_lock.lock();
     if(is_flywheel_on) {
         strcpy(ui_g_Ungroup_Flywheel->string, "FLY-ON");
+        ui_g_Ungroup_Flywheel->str_length = 6;
     } else {
         strcpy(ui_g_Ungroup_Flywheel->string, "FLY-OFF");
+        ui_g_Ungroup_Flywheel->str_length = 7;
     }
     *ui_g_Ungroup_Flywheel_send_count = ui_g_Ungroup_Flywheel_max_send_count;
     ui_lock.unlock();
@@ -412,10 +420,12 @@ void UI::set_flywheel_ui(bool is_flywheel_on) {
 
 void UI::set_cv_ui(bool is_cv_on) {
     ui_lock.lock();
-    if(is_cv_on) {
+    if(!is_cv_on) {
         strcpy(ui_g_Ungroup_CV->string, "CV-OFF");
+        ui_g_Ungroup_CV->str_length = 6;
     } else {
         strcpy(ui_g_Ungroup_CV->string, "CV-ON");
+        ui_g_Ungroup_CV->str_length = 5;
     }
     *ui_g_Ungroup_CV_send_count = ui_g_Ungroup_CV_max_send_count;
     ui_lock.unlock();
@@ -425,8 +435,10 @@ void UI::set_alignment_ui(bool is_aligned) {
     ui_lock.lock();
     if(is_aligned) {
         strcpy(ui_g_Ungroup_Alignment->string, "AL");
+        ui_g_Ungroup_Alignment->str_length = 2;
     } else {
         strcpy(ui_g_Ungroup_Alignment->string, "NO-AL");
+        ui_g_Ungroup_Alignment->str_length = 5;
     }
     *ui_g_Ungroup_Alignment_send_count = ui_g_Ungroup_Alignment_max_send_count;
     ui_lock.unlock();

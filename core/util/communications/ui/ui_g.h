@@ -11,10 +11,10 @@ class UI {
         const static int TOTAL_STRING = 4;
 
         uint8_t ui_g_max_send_count[TOTAL_FIGURE + TOTAL_STRING] = {
-            1,
-            1,
-            1,
-            1,
+            3,
+            3,
+            3,
+            3,
         };
         
         ui_interface_figure_t ui_g_now_figures[TOTAL_FIGURE]; // contains all figures w/ current data
@@ -37,10 +37,10 @@ class UI {
         void set_cv_ui(bool is_cv_on);
         void set_alignment_ui(bool is_aligned);
 
+        uint16_t ui_self_id;
     private:
         Mutex ui_lock;
         std::function<void(uint8_t*, uint16_t )> send_packet_func;
-        uint16_t ui_self_id;
         inline static uint8_t seq = 0;    
         inline static uint32_t idx = 0;
 
@@ -62,10 +62,10 @@ class UI {
         uint8_t *ui_g_Ungroup_Alignment_send_count = (&(ui_g_dirty_string[3]));
 
 
-        uint8_t ui_g_Ungroup_Bayblade_max_send_count = (ui_g_max_send_count[0]);
-        uint8_t ui_g_Ungroup_Flywheel_max_send_count = (ui_g_max_send_count[1]);
-        uint8_t ui_g_Ungroup_CV_max_send_count = (ui_g_max_send_count[2]);
-        uint8_t ui_g_Ungroup_Alignment_max_send_count = (ui_g_max_send_count[3]);
+        uint8_t& ui_g_Ungroup_Bayblade_max_send_count = (ui_g_max_send_count[0]);
+        uint8_t& ui_g_Ungroup_Flywheel_max_send_count = (ui_g_max_send_count[1]);
+        uint8_t& ui_g_Ungroup_CV_max_send_count = (ui_g_max_send_count[2]);
+        uint8_t& ui_g_Ungroup_Alignment_max_send_count = (ui_g_max_send_count[3]);
 
         const uint16_t wCRC_Table[256] = {
             0x0000, 0x1189, 0x2312, 0x329b, 0x4624, 0x57ad, 0x6536, 0x74bf,
