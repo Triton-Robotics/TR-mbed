@@ -204,6 +204,10 @@ void Referee::readThread()
 void Referee::writeThread()
 {
     // Some variables required to properrly send
+    bool prev_is_spinning = false;
+    bool prev_is_flywheel_on = false;
+    bool prev_is_cv_on = false;
+    bool prev_is_aligned = false;
     while(get_robot_id() == 0) {
         ThisThread::yield();
     }
@@ -216,8 +220,22 @@ void Referee::writeThread()
 
     while(1)
     {
-        // write();
-        printf("robot id: %d\n", get_robot_id());
+        if (prev_is_spinning != is_spinning) {
+            mainUI.set_spin_ui(is_spinning);
+            prev_is_spinning = is_spinning;
+        }
+        if (prev_is_flywheel_on != is_flywheel_on) {
+            mainUI.set_flywheel_ui(is_flywheel_on);
+            prev_is_flywheel_on = is_flywheel_on;
+        }
+        if (prev_is_cv_on != is_cv_on) {
+            mainUI.set_cv_ui(is_cv_on);
+            prev_is_cv_on = is_cv_on;
+        }
+        if (prev_is_aligned != is_aligned) {
+            mainUI.set_alignment_ui(is_aligned);
+            prev_is_aligned = is_aligned;
+        }
         mainUI.ui_update_g();
         ThisThread::yield();
     }

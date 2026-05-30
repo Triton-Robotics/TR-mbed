@@ -43,6 +43,10 @@ public:
     
     robot_status_t                          robot_status;
     power_heat_data_t                       power_heat_data;
+    bool is_spinning = false;
+    bool is_flywheel_on = false;
+    bool is_cv_on = false;
+    bool is_aligned = false;
 private:
     BufferedSerial ref;
     Mutex mutex_write_;
