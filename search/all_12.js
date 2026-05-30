@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['r_0',['r',['../structBNO055__EULER__TypeDef.html#a9233895337c4cc141d4e0ffa570c1d2e',1,'BNO055_EULER_TypeDef::r'],['../classDJIRemote2.html#a807b9397256c70e28ef2f72bc5e35650ae1e1d3d40573127e9ee0480caf1283d6',1,'DJIRemote2::R'],['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fae1e1d3d40573127e9ee0480caf1283d6',1,'Remote::R']]],
+  ['r_0',['r',['../classDJIRemote2.html#a807b9397256c70e28ef2f72bc5e35650ae1e1d3d40573127e9ee0480caf1283d6',1,'DJIRemote2::R'],['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fae1e1d3d40573127e9ee0480caf1283d6',1,'Remote::R'],['../structBNO055__EULER__TypeDef.html#a9233895337c4cc141d4e0ffa570c1d2e',1,'BNO055_EULER_TypeDef::r']]],
   ['r1x_1',['r1x',['../structOmniKinematics.html#a25ef8fd96df52462f4385c6afb4a3ae9',1,'OmniKinematics']]],
   ['r1y_2',['r1y',['../structOmniKinematics.html#a137dea521cbe5649d56b4405e3604aa8',1,'OmniKinematics']]],
   ['r2x_3',['r2x',['../structOmniKinematics.html#a60f2c8b05d185bb53569e016b114d86c',1,'OmniKinematics']]],

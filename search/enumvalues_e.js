@@ -1,9 +1,13 @@
 var searchData=
 [
-  ['s_0',['s',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fa5dbc98dcc983a70728bd082d1a47546e',1,'Remote::S'],['../classDJIRemote2.html#a807b9397256c70e28ef2f72bc5e35650a5dbc98dcc983a70728bd082d1a47546e',1,'DJIRemote2::S']]],
-  ['shift_1',['shift',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fa46afff2b309b8b16a46d812172a9235c',1,'Remote::SHIFT'],['../classDJIRemote2.html#a807b9397256c70e28ef2f72bc5e35650a46afff2b309b8b16a46d812172a9235c',1,'DJIRemote2::SHIFT']]],
-  ['shoot_2',['SHOOT',['../ShooterSubsystem_8h.html#ac047e8409f3282e918dbe77d54770185a38317998d0db1f65b5a5d3f9990c02f3',1,'ShooterSubsystem.h']]],
-  ['sleep_3',['SLEEP',['../TurretSubsystem_8h.html#a198d76ba0521fe4dfc9de418310f65ccad6137abebe4fdc59e2f0f2c84bdbe3fa',1,'TurretSubsystem.h']]],
-  ['spd_4',['SPD',['../classDJIMotor.html#a7e6f4875c86af59d54804cec2d28965ca39c98992355576ed59d5c47cf3ea4ac2',1,'DJIMotor']]],
-  ['standard_5',['STANDARD',['../DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a9de934790934fe831fe946c851e8338e',1,'DJIMotor.h']]]
+  ['r_0',['r',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fae1e1d3d40573127e9ee0480caf1283d6',1,'Remote::R'],['../classDJIRemote2.html#a807b9397256c70e28ef2f72bc5e35650ae1e1d3d40573127e9ee0480caf1283d6',1,'DJIRemote2::R']]],
+  ['rad_5fper_5fsecond_1',['RAD_PER_SECOND',['../classChassisSubsystem.html#a86a23efcf850099cd72fe19e7e6d8ffdab4cb95505d3c4454085ecf8e17d143af',1,'ChassisSubsystem']]],
+  ['reverse_5fyaw_5foriented_2',['REVERSE_YAW_ORIENTED',['../classChassisSubsystem.html#a16e8ea4a14a3a2ae416a52db8d31ca36a8748e9f0656c9d5c876cf81f9772d499',1,'ChassisSubsystem']]],
+  ['right_5fback_3',['RIGHT_BACK',['../classChassisSubsystem.html#a32583c046895b96d68bd1a5b6b3db4e2a3741b3baa8e04729c145ea3d4b48716a',1,'ChassisSubsystem']]],
+  ['right_5ffront_4',['RIGHT_FRONT',['../classChassisSubsystem.html#a32583c046895b96d68bd1a5b6b3db4e2a3f992195223ec7721362e295e31d658c',1,'ChassisSubsystem']]],
+  ['right_5fhorizontal_5',['right_horizontal',['../classRemote.html#a0584fcca643d59d1b4d8b2624d2807eba9d428ae6820060c90bd43d8bd9828fed',1,'Remote::RIGHT_HORIZONTAL'],['../classDJIRemote2.html#a2f595f628fbe4724baf4e70dede81ceda9d428ae6820060c90bd43d8bd9828fed',1,'DJIRemote2::RIGHT_HORIZONTAL']]],
+  ['right_5fswitch_6',['RIGHT_SWITCH',['../classRemote.html#add727f68db8fff42e6f572b19008ec66a7b9e2549181a1d8662e63dba8fc064c7',1,'Remote']]],
+  ['right_5fvertical_7',['right_vertical',['../classRemote.html#a0584fcca643d59d1b4d8b2624d2807eba9da7be8ebb1891ae625897f06d61b12c',1,'Remote::RIGHT_VERTICAL'],['../classDJIRemote2.html#a2f595f628fbe4724baf4e70dede81ceda9da7be8ebb1891ae625897f06d61b12c',1,'DJIRemote2::RIGHT_VERTICAL']]],
+  ['robot_5foriented_8',['robot_oriented',['../classChassisSubsystem.html#a16e8ea4a14a3a2ae416a52db8d31ca36ab78149079b4fe5928cf656b49265cb99',1,'ChassisSubsystem::ROBOT_ORIENTED'],['../classOmniWheelSubsystem.html#ac515d6ca6dd2cb83fc6baea95d14f917a11b0df1d169fc21d45767db11c204934',1,'OmniWheelSubsystem::ROBOT_ORIENTED']]],
+  ['rpm_9',['RPM',['../classChassisSubsystem.html#a86a23efcf850099cd72fe19e7e6d8ffda36650eacce6a2f4e82c8bebcca24df45',1,'ChassisSubsystem']]]
 ];

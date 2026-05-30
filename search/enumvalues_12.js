@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['w_0',['w',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fa61e9c06ea9a85a5088a499df6458d276',1,'Remote::W'],['../classDJIRemote2.html#a807b9397256c70e28ef2f72bc5e35650a61e9c06ea9a85a5088a499df6458d276',1,'DJIRemote2::W']]],
-  ['warning_1',['WARNING',['../TRMutex_8h.html#af5f478ebdb1815432fb04589309d5492a984de77c680eaff141ec910e25568a81',1,'TRMutex.h']]]
+  ['v_0',['v',['../classRemote.html#aed14f81cb3e89567535a07bb6a1b9d4fa5206560a306a2e085a437fd258eb57ce',1,'Remote::V'],['../classDJIRemote2.html#a807b9397256c70e28ef2f72bc5e35650a5206560a306a2e085a437fd258eb57ce',1,'DJIRemote2::V']]],
+  ['value_1',['VALUE',['../DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4ad3a10aa8b647d6a6db651ef882ff8bff',1,'DJIMotor.h']]],
+  ['velocity_2',['velocity',['../DJIMotor_8h.html#a238767f13820c0bc654f141bb45ae8e4a06e15744a8bd69fceeeb39ab3614b3f6',1,'VELOCITY:&#160;DJIMotor.h'],['../PIDTools_8h.html#a0bc6723d5d4776ab7cdc646728b775f7a7b4354bded455eb379e3c764806cda7b',1,'VELOCITY:&#160;PIDTools.h']]]
 ];
