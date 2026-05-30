@@ -83,7 +83,7 @@ var searchData=
   ['rightx_80',['rightX',['../classRemote.html#a01e063379fb4e1d8065b93062f812203',1,'Remote']]],
   ['righty_81',['rightY',['../classRemote.html#ab8174b12219992a5137b335f08fb839e',1,'Remote']]],
   ['rise_82',['rise',['../classMPU6050.html#ad3fac98f2f942cf38f5a572bed2d4190',1,'MPU6050::rise(Callback&lt; void(void)&gt; func)'],['../classMPU6050.html#a0d1bf8e14c5f5b1877ffda3cd7a928fc',1,'MPU6050::rise(T *tptr, void(T::*mptr)(void))'],['../classPwmIn.html#ab44bd19c1ef2b94f366821fb730de835',1,'PwmIn::rise()']]],
-  ['robot_5fhp_83',['robot_hp',['../structJetson_1_1WriteState.html#aa024d865a2f3b610c8da4f335f7714db',1,'Jetson::WriteState']]],
+  ['robot_5fhp_83',['robot_hp',['../structJetson_1_1WriteState.html#ae8e6e1abc713f269b91d0a4564a8b47f',1,'Jetson::WriteState']]],
   ['robot_5fid_84',['robot_id',['../structext__game__robot__status__t.html#a55117053320cdec3e6f4ce22933d9bb0',1,'ext_game_robot_status_t::robot_id'],['../structrobot__status__t.html#a4846caece08bfc2bcb0ef4e70cc40970',1,'robot_status_t::robot_id']]],
   ['robot_5finteractive_5fdata_5ft_85',['robot_interactive_data_t',['../structrobot__interactive__data__t.html',1,'']]],
   ['robot_5flevel_86',['robot_level',['../structext__game__robot__status__t.html#a30ce85bbc9d0efa20f39259b1fed86a9',1,'ext_game_robot_status_t::robot_level'],['../structrobot__status__t.html#aa671f69e0feebf1a68c9f8ae746c08bb',1,'robot_status_t::robot_level']]],

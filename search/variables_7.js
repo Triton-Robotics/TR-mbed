@@ -1,7 +1,7 @@
 var searchData=
 [
   ['game_5fprogress_0',['game_progress',['../structgame__status__t.html#abb492a5b9b8d38952c68e61508a189d3',1,'game_status_t::game_progress'],['../structext__map__command__t.html#af007b56a4e8f5767d831ed8543c271b6',1,'ext_map_command_t::game_progress']]],
-  ['game_5fstate_1',['game_state',['../structJetson_1_1WriteState.html#ab3f87a859c260d3bfd9225cde6a69fda',1,'Jetson::WriteState']]],
+  ['game_5fstate_1',['game_state',['../structJetson_1_1WriteState.html#a09fcc31690615074ed47a40208db38e7',1,'Jetson::WriteState']]],
   ['game_5ftype_2',['game_type',['../structext__map__command__t.html#aa2215108606b5c0f68905325e7de44a5',1,'ext_map_command_t::game_type'],['../structgame__status__t.html#a4d2ca5b937e9bfd03b10bd35b05c00bc',1,'game_status_t::game_type']]],
   ['gear_5fratio_3',['gear_ratio',['../structTurretSubsystem_1_1config.html#a787ba51b311e63451456e9ce5dabf5e6',1,'TurretSubsystem::config']]],
   ['gooddatachainnumber_4',['goodDataChainNumber',['../classRemote.html#aa67aa0e1bd7548e39f70481b395ed04a',1,'Remote']]],

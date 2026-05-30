@@ -1,7 +1,7 @@
 var searchData=
 [
   ['target_5fchange_5ftime_0',['target_change_time',['../structext__dart__client__cmd__t.html#af8c84e129c5a94e5d04f25275c04486d',1,'ext_dart_client_cmd_t']]],
-  ['team_5fcolor_1',['team_color',['../structJetson_1_1WriteState.html#ac3e667e06da72f1ffc24d2818704060b',1,'Jetson::WriteState']]],
+  ['team_5fcolor_1',['team_color',['../structJetson_1_1WriteState.html#a4df5afa08659f2b8ed3aa1f24771253f',1,'Jetson::WriteState']]],
   ['test_5fmotor_5fpos_5fpid_2',['test_motor_pos_PID',['../TestBench_8cpp.html#a4b57447c4e628a897f1d1a39eea04729',1,'TestBench.cpp']]],
   ['test_5fmotor_5fvel_5fpid_3',['test_motor_vel_PID',['../TestBench_8cpp.html#a60412dd3b21aaabe560c0c7f317390a4',1,'TestBench.cpp']]],
   ['testdata_4',['testData',['../classChassisSubsystem.html#ae90abd7845187509b4baba34ffee2076',1,'ChassisSubsystem']]],

@@ -33,7 +33,7 @@ var searchData=
   ['rfid_5fstatus_30',['rfid_status',['../structext__rfid__status__t.html#ab50e14760ebb0917702776f4bb7d655d',1,'ext_rfid_status_t']]],
   ['right_5fback_5fcan_5fid_31',['right_back_can_id',['../structChassisSubsystem_1_1Config.html#aeb7c4746ab83e247f319db74d85fa483',1,'ChassisSubsystem::Config']]],
   ['right_5ffront_5fcan_5fid_32',['right_front_can_id',['../structChassisSubsystem_1_1Config.html#ad5e80243b61cd4f73068bc7cebe1843f',1,'ChassisSubsystem::Config']]],
-  ['robot_5fhp_33',['robot_hp',['../structJetson_1_1WriteState.html#aa024d865a2f3b610c8da4f335f7714db',1,'Jetson::WriteState']]],
+  ['robot_5fhp_33',['robot_hp',['../structJetson_1_1WriteState.html#ae8e6e1abc713f269b91d0a4564a8b47f',1,'Jetson::WriteState']]],
   ['robot_5fid_34',['robot_id',['../structext__game__robot__status__t.html#a55117053320cdec3e6f4ce22933d9bb0',1,'ext_game_robot_status_t::robot_id'],['../structrobot__status__t.html#a4846caece08bfc2bcb0ef4e70cc40970',1,'robot_status_t::robot_id']]],
   ['robot_5flevel_35',['robot_level',['../structext__game__robot__status__t.html#a30ce85bbc9d0efa20f39259b1fed86a9',1,'ext_game_robot_status_t::robot_level'],['../structrobot__status__t.html#aa671f69e0feebf1a68c9f8ae746c08bb',1,'robot_status_t::robot_level']]],
   ['robot_5fstatus_36',['robot_status',['../classReferee.html#a49c8deed2b295461fc9cb08fed221d4b',1,'Referee']]],
