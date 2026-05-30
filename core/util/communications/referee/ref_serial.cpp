@@ -552,7 +552,7 @@ void Referee::read()
         if(enablePrintRefData){
             string output = "robot id: %s  ";
 
-            if(is_red_or_blue()){
+            if(is_red_or_blue() == RED) {
                 output += "RED  ";
             }
             else{
@@ -586,7 +586,7 @@ void Referee::readThread()
             if(enablePrintRefData){
                 string output = "robot id: %s  ";
 
-                if(is_red_or_blue()){
+                if(is_red_or_blue() == RED) {
                     output += "RED  ";
                 }
                 else{
@@ -684,16 +684,16 @@ uint8_t Referee::get_game_progress()
   * @retval RED   BLUE
   * @attention  数据打包,打包完成后通过串口发送到裁判系统
   */
-bool Referee::is_red_or_blue()
+int8_t Referee::is_red_or_blue()
 {
     Judge_Self_ID = robot_status.robot_id; //读取当前机器人ID
 
     if (robot_status.robot_id > 10)
     {
-        return 0; //蓝方 (blue)
+        return BLUE; //蓝方 (blue)
     }
     else
     {
-        return 1; //红方 (red)
+        return RED; //红方 (red)
     }
 }
