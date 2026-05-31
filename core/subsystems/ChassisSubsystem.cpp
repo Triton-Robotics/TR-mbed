@@ -154,6 +154,32 @@ double ChassisSubsystem::Bisection(int LeftFrontPower, int RightFrontPower, int 
 
 }
 
+float ChassisSubsystem::estimatePowerWatts(int torqueCounts)
+{
+    constexpr int   PEAK_TORQUE_COUNTS  = 5596;
+    constexpr float SATURATION_RATIO    = 0.4375f;
+    constexpr float SATURATION_CURRENT  = 1.22f;   // [A]
+    constexpr float TORQUE_TO_AMP        = 14.0f / 4.0f;
+    constexpr float BUS_VOLTAGE         = 24.0f;   // [V]
+
+    float torque = std::abs(static_cast<float>(torqueCounts)) / PEAK_TORQUE_COUNTS;
+
+    float currentA;
+    if (torque > SATURATION_RATIO) {
+        // Log an over-torque event at most once every 200 ms
+        if ((us_ticker_read() - m_lastTorqueUs) / 1000UL > 200UL) {
+            m_lastTorqueUs = us_ticker_read();
+            currentA = SATURATION_CURRENT;
+        }
+        currentA = torque * TORQUE_TO_AMP;
+    } else {
+        currentA = torque * TORQUE_TO_AMP;
+    }
+
+    return BUS_VOLTAGE * currentA;
+}
+
+
 float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
 {
     desiredWheelSpeeds = wheelSpeeds; // WheelSpeeds in RPM
@@ -172,24 +198,10 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     float LBrpm = limitAcceleration(wheelSpeeds.LB, previousRPM[2], powers[2]);
     float RBrpm = limitAcceleration(wheelSpeeds.RB, previousRPM[3], powers[3]);
 
-    // float LFrpm = wheelSpeeds.LF;
-    // float RFrpm = wheelSpeeds.RF;
-    // float LBrpm = wheelSpeeds.LB;
-    // float RBrpm = wheelSpeeds.RB;
-
-    
-    // float LFrpm = limitAcceleration(wheelSpeeds.LF, previousRPM[0], LF.getData(POWEROUT));
-    // float RFrpm = limitAcceleration(wheelSpeeds.RF, previousRPM[1], RF.getData(POWEROUT));
-    // float LBrpm = limitAcceleration(wheelSpeeds.LB, previousRPM[2], LB.getData(POWEROUT));
-    // float RBrpm = limitAcceleration(wheelSpeeds.RB, previousRPM[3], RB.getData(POWEROUT));
-
     previousRPM[0] = LFrpm;
     previousRPM[1] = RFrpm;
     previousRPM[2] = LBrpm;
     previousRPM[3] = RBrpm;
-
-
-    
 
     powers[0] = motorPIDtoPower(LEFT_FRONT,LFrpm, (time - lastPIDTime));
     powers[1] = motorPIDtoPower(RIGHT_FRONT,RFrpm, (time - lastPIDTime));
@@ -207,7 +219,14 @@ float ChassisSubsystem::setWheelSpeeds(WheelSpeeds wheelSpeeds)
     int r3 = abs(getMotorSpeed(MotorLocation::LEFT_BACK, RPM));
     int r4 = abs(getMotorSpeed(MotorLocation::RIGHT_BACK, RPM));
 
-    double scale = Bisection(p1, p2, p3, p4, r1, r2, r3, r4, power_limit);
+    float totalEstimatedWatts = estimatePowerWatts(LF.getData(TORQUE))
+                               + estimatePowerWatts(RF.getData(TORQUE))
+                               + estimatePowerWatts(LB.getData(TORQUE))
+                               + estimatePowerWatts(RB.getData(TORQUE));
+
+    // A small epsilon in the denominator prevents division by zero when idle.
+    constexpr float POWER_MARGIN_W = 10.0f;
+    float scale = std::min(1.0f, power_limit / (totalEstimatedWatts + POWER_MARGIN_W));
 
     LF.setPower(powers[0]*scale);
     RF.setPower(powers[1]*scale);
