@@ -143,6 +143,8 @@ public:
 
     static double p_theory(int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm);
 
+    float estimatePowerWatts(int torqueCounts);
+
     static double Bisection(int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm, float chassisPowerLimit);
 
     float power_limit;
@@ -385,6 +387,7 @@ private:
     // ChassisKalman chassisKalman;
     double testAngle;
     int lastTimeMs;
+    unsigned long m_lastTorqueUs = 0;
 };
 
 #endif // TR_EMBEDDED_CHASSIS_SUBSYSTEM_H
