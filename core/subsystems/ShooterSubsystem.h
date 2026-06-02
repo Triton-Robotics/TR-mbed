@@ -48,6 +48,7 @@ public:
 
 private:
     unsigned long shooter_time;
+    unsigned long shooter_start_timer;
     bool invert_flywheel;
 
     DJIMotor flywheelL, flywheelR, indexer;

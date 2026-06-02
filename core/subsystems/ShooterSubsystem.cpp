@@ -1,5 +1,6 @@
 #include "ShooterSubsystem.h"
 #include "util/motor/DJIMotor.h"
+#include <us_ticker_api.h>
 
 ShooterSubsystem::ShooterSubsystem(config cfg):
     flywheelL({
@@ -34,6 +35,7 @@ ShooterSubsystem::ShooterSubsystem(config cfg):
     shooter_type = cfg.type;
     invert_flywheel = cfg.invert;
     shooter_time = us_ticker_read();
+    shooter_start_timer = 0;
 }
 
 void ShooterSubsystem::setFlywheels() {
@@ -66,6 +68,22 @@ void ShooterSubsystem::setState(ShootState shoot_state)
 
 void ShooterSubsystem::periodic(int curr_heat, int heat_limit) 
 {
+    // These first 3 if statements do dedicated unjamming at start up
+    if (shooter_start_timer == 0) {
+        shooter_start_timer = us_ticker_read();
+    }
+    // My code is a lil funny but this statement runs after the 3rd if, it just "vomits" the ball out if stuck; I thought writing like this would make it slightly more optimized
+    if ((us_ticker_read() - shooter_start_timer) > 4000000 && (us_ticker_read() - shooter_start_timer) < 5000000) { // For first 4 seconds, reverse flywheels to prevent jamming
+        setFlywheels();
+        return;
+    }
+    // For first 4 seconds, the flywheels reverse so that the ball backs up. Be aware that the head should face down.
+    // If the head is facing up the ball isn't vomited out, and could re-jam if you turn the head down w/o shooting first
+    else if ((us_ticker_read() - shooter_start_timer) < 4000000) { 
+        reverseFlywheels();
+        return;
+    }
+
     barrel_heat = curr_heat;
     barrel_heat_limit = heat_limit;
 
@@ -73,20 +91,16 @@ void ShooterSubsystem::periodic(int curr_heat, int heat_limit)
     {
         flywheelL.setSpeed(0);
         flywheelR.setSpeed(0);
+        // flywheelL.setPower(0);
+        // flywheelR.setPower(0);
+        
         indexer.setPower(0);
         shootReady = true;
         shooter_time = 0;
     }
     else if (shoot == FLYWHEEL)
     {
-        if (!invert_flywheel) {
-            flywheelL.setSpeed(-FLYWHEEL_VELO);
-            flywheelR.setSpeed(FLYWHEEL_VELO);
-        }
-        else {
-            flywheelL.setSpeed(FLYWHEEL_VELO);
-            flywheelR.setSpeed(-FLYWHEEL_VELO);
-        }
+        setFlywheels();
 
         indexer.pidSpeed.feedForward = 0;
         indexer.setSpeed(0);
@@ -94,13 +108,10 @@ void ShooterSubsystem::periodic(int curr_heat, int heat_limit)
     }
     else if (shoot == SHOOT && shooter_type == BURST)
     {
-        if (!invert_flywheel) {
-            flywheelL.setSpeed(-FLYWHEEL_VELO);
-            flywheelR.setSpeed(FLYWHEEL_VELO);
-        }
-        else {
-            flywheelL.setSpeed(FLYWHEEL_VELO);
-            flywheelR.setSpeed(-FLYWHEEL_VELO);
+        setFlywheels();
+        
+        if (abs(flywheelR >> VELOCITY) < abs(FLYWHEEL_VELO * 0.75) || abs(flywheelL >> VELOCITY) < abs(FLYWHEEL_VELO * 0.75)) {
+            return;
         }
 
         // Set target position

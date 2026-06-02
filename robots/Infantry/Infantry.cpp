@@ -225,7 +225,8 @@ class Infantry : public BaseRobot {
             des_turret_state.pitch_angle_degs = 0;
         }
 
-        // Shooter Logic
+        // Shooter Logic 
+        //REMOVED remote_.PAUSEToggled() == true && FROM THE FIRST CONDITION
         if ((remote_.PAUSEToggled() == true && remote_.TriggerPressed() == true) || remote_.getMouseL()) {
             des_shoot_state = ShootState::SHOOT;
         } else if (remote_.CUSTRPressed() == true && remote_.PAUSEToggled() == true) { //Make sure flywheel is on since that's part 

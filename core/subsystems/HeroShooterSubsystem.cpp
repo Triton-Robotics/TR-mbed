@@ -82,6 +82,7 @@ void HeroShooterSubsystem::periodic(int curr_heat, int heat_limit)
     }
     else if (shoot == SHOOT)
     {
+        
         if (!invert_flywheel) {
             flywheelL.setSpeed(-HERO_FLYWHEEL_VELO);
             flywheelR.setSpeed(HERO_FLYWHEEL_VELO);
@@ -89,6 +90,10 @@ void HeroShooterSubsystem::periodic(int curr_heat, int heat_limit)
         else {
             flywheelL.setSpeed(HERO_FLYWHEEL_VELO);
             flywheelR.setSpeed(-HERO_FLYWHEEL_VELO);
+        }
+
+        if (abs(flywheelR >> VELOCITY) < abs(HERO_FLYWHEEL_VELO * 0.75) || abs(flywheelL >> VELOCITY) < abs(HERO_FLYWHEEL_VELO * 0.75)) {
+            return;
         }
 
         if ((us_ticker_read() - shooter_time)/1000 < 200){
