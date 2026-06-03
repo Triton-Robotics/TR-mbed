@@ -25,6 +25,7 @@ class UI {
         UI(uint16_t robot_id, std::function<void(uint8_t*, uint16_t )> send_func);
         
         void ui_init_g();
+        void ui_reinit_g();
         void ui_update_g();
 
         void set_spin_ui(bool is_spinning);

@@ -565,7 +565,7 @@ void Referee::read()
         if(enablePrintRefData){
             printf("REFEREE - Not readable!\n");
         }
-    }
+            }
 }
 
 
@@ -626,9 +626,26 @@ void Referee::writeThread()
         [this](uint8_t *packet, uint16_t len) {referee_data_pack_handle(packet, len);}
     );
     mainUI.ui_init_g();
+    uint64_t last_ref_update = us_ticker_read();
 
     while(1)
     {
+
+        uint64_t curr_time = us_ticker_read();
+        if (ref.readable()) { 
+            // if ref has not been able to be read from for more than 1 sec 
+            // but ref can currently be read from, re-init everything
+            if(curr_time - last_ref_update > 1000000) {
+                mainUI.ui_reinit_g();
+            } 
+            last_ref_update = curr_time;
+        } else {
+            // If cannot read, then not connected in server
+            // which in that case do not need to try and send packets
+            ThisThread::yield();
+            continue;
+        }
+
         if (prev_is_spinning != is_spinning) {
             mainUI.set_spin_ui(is_spinning);
             prev_is_spinning = is_spinning;
