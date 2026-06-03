@@ -78,6 +78,36 @@ void UI::ui_init_g() {
         ui_g_dirty_string[i] = 1;
         idx++;
     }
+    
+    for (int i = 0; i < TOTAL_FIGURE; i++) {
+        ui_g_now_figures[i].figure_name[2] = idx & 0xFF;
+        ui_g_now_figures[i].figure_name[1] = (idx >> 8) & 0xFF;
+        ui_g_now_figures[i].figure_name[0] = (idx >> 16) & 0xFF;
+        ui_g_now_figures[i].operate_type = 1;
+        ui_g_dirty_figure[i] = 1;
+        idx++;
+    }
+
+    SCAN_AND_SEND();
+
+    for (int i = 0; i < TOTAL_STRING; i++) {
+        ui_g_now_strings[i].operate_type = 2;
+    }
+}
+
+/**
+ * Tells server to re-add stuff
+ */
+void UI::ui_reinit_g() {
+    for (int i = 0; i < TOTAL_STRING; i++) {
+        ui_g_now_strings[i].operate_type = 1;
+        ui_g_dirty_string[i] = 1;
+    }
+    
+    for (int i = 0; i < TOTAL_FIGURE; i++) {
+        ui_g_now_figures[i].operate_type = 1;
+        ui_g_dirty_figure[i] = 1;
+    }
 
     SCAN_AND_SEND();
 
