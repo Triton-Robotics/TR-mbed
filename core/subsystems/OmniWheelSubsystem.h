@@ -168,6 +168,7 @@ private:
     // Motor-shaft RPM (pre-gearbox) measured at the END of the previous tick.
     // Used as both the rate-limit reference and the PID feedback.
     float m_prevMotorRpm[4] = {0, 0, 0, 0};
+    float m_prevActualMotorRpm[4] = {0, 0, 0, 0};
 
     // ── Internal helpers ───────────────────────────────────────────────────────
 
@@ -224,8 +225,23 @@ private:
     float setWheelSpeeds(WheelSpeeds targetMps);
 
     // Clamp the per-tick RPM change to prevent large current spikes.
-    static float limitAcceleration(float desiredRPM, float previousRPM, uint32_t deltaTime, float theta);
+    //static float limitAcceleration(float desiredRPM, float previousRPM, uint32_t deltaTime, float theta);
+    // static float limitAcceleration(float desiredRPM, float previousRPM, int power);
+    static float limitAcceleration(float desiredRPM, float previousRPM);
 
     // Estimate instantaneous motor power [W] from the raw torque register.
     float estimatePowerWatts(int torqueCounts);
+
+
+    //Old power limiting BS goes here :)
+
+    int power[4] = {0, 0, 0, 0};
+
+    int motorPIDtoPower(MotorLocation location, double speed, uint32_t dt);
+
+    int lastPIDTime = 0;
+
+
+
+
 };

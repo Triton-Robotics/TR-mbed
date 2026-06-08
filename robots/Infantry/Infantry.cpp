@@ -44,10 +44,10 @@ const float pitch_gravity_feedforward = -500;    // We multiply this by cos(angl
 const float pitch_static_friction     = 635.0 / 5;       // We multiply it by dir
 const float pitch_kinetic_friction    = 0; //5.5;     // We multiply this by pitchvelo
 
-constexpr PID::config FL_VEL_CONFIG = {3.38, 0, 0.0361};
-constexpr PID::config FR_VEL_CONFIG = {3.38, 0, 0.0361};
-constexpr PID::config BL_VEL_CONFIG = {3.38, 0, 0.0361};
-constexpr PID::config BR_VEL_CONFIG = {3.38, 0, 0.0361};
+constexpr PID::config FL_VEL_CONFIG = {1.5, 0, 0.0361};
+constexpr PID::config FR_VEL_CONFIG = {1.5, 0, 0.0361};
+constexpr PID::config BL_VEL_CONFIG = {1.5, 0, 0.0361};
+constexpr PID::config BR_VEL_CONFIG = {1.5, 0, 0.0361};
 
 constexpr PID::config FLYWHEEL_L_PID = {7.1849, 0.000042634, 0};
 constexpr PID::config FLYWHEEL_R_PID = {7.1849, 0.000042634, 0};

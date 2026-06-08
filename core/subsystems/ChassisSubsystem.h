@@ -387,6 +387,7 @@ private:
     // ChassisKalman chassisKalman;
     double testAngle;
     int lastTimeMs;
+
     unsigned long m_lastTorqueUs = 0;
 };
 

@@ -3,6 +3,12 @@
 #include <cmath>
 #include <stdexcept>
 
+
+
+float power_limit;
+
+
+
 /**
  * @param radius radius in meters
  */

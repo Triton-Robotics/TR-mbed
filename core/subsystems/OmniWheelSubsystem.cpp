@@ -22,6 +22,11 @@ OmniWheelSubsystem::OmniWheelSubsystem(const Config &cfg, MA4 *encoder)
 {
     LF.outputCap = RF.outputCap = LB.outputCap = RB.outputCap = 16000;
     initKinematics(cfg.chassis_radius, cfg.chassis_type);
+
+    LF.pidSpeed.setIntegralCap(500.0f);
+    RF.pidSpeed.setIntegralCap(500.0f);
+    LB.pidSpeed.setIntegralCap(500.0f);
+    RB.pidSpeed.setIntegralCap(500.0f);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -283,7 +288,6 @@ float OmniWheelSubsystem::setWheelSpeeds(WheelSpeeds targetMps)
     uint32_t now = us_ticker_read();
     uint32_t dt  = now - m_lastPidUs;
     
-    // Convert desired wheel tangential speeds [m/s] → motor shaft RPM (pre-gearbox)
     float targetMotorRpm[4] = {
         (float)wheelMpsToMotorRpm(targetMps.LF),
         (float)wheelMpsToMotorRpm(targetMps.RF),
@@ -291,65 +295,43 @@ float OmniWheelSubsystem::setWheelSpeeds(WheelSpeeds targetMps)
         (float)wheelMpsToMotorRpm(targetMps.RB),
     };
 
-    float diffLF = targetMotorRpm[0] - m_prevMotorRpm[0];
-    float diffRF = targetMotorRpm[1] - m_prevMotorRpm[1];
-    float diffLB = targetMotorRpm[2] - m_prevMotorRpm[2];
-    float diffRB = targetMotorRpm[3] - m_prevMotorRpm[3];
-
-    // These are in arbitrary units because we only need to find the direction
-    float accelX = diffLF + diffRF - diffLB - diffRB;
-    float accelY = diffLF - diffRF + diffLB - diffRB;
-    float theta = atan2(accelY, accelX) + M_PI/2;
-
-
-    // Rate-limit each motor to avoid large current spikes.
-    // m_prevMotorRpm holds the actual motor shaft RPM read at the end of the last tick.
     float cmdRpm[4] = {
-        limitAcceleration(targetMotorRpm[0], m_prevMotorRpm[0], dt, theta),
-        limitAcceleration(targetMotorRpm[1], m_prevMotorRpm[1], dt, theta),
-        limitAcceleration(targetMotorRpm[2], m_prevMotorRpm[2], dt, theta),
-        limitAcceleration(targetMotorRpm[3], m_prevMotorRpm[3], dt, theta),
+        limitAcceleration(targetMotorRpm[0], m_prevMotorRpm[0]),
+        limitAcceleration(targetMotorRpm[1], m_prevMotorRpm[1]),
+        limitAcceleration(targetMotorRpm[2], m_prevMotorRpm[2]),
+        limitAcceleration(targetMotorRpm[3], m_prevMotorRpm[3]),
     };
 
-    // Run speed PID.
-    // setpoint  = rate-limited motor shaft RPM command
-    // feedback  = actual motor shaft RPM from previous tick (m_prevMotorRpm)
-    // The DJIMotor speed-PID output must be scaled by M3508_GEAR_RATIO to
-    // produce the correct raw motor power magnitude.
+    // Store rate-limited command for next tick's limiter
+    m_prevMotorRpm[0] = cmdRpm[0];
+    m_prevMotorRpm[1] = cmdRpm[1];
+    m_prevMotorRpm[2] = cmdRpm[2];
+    m_prevMotorRpm[3] = cmdRpm[3];
+
+    
     int power[4] = {
-        (int)(M3508_GEAR_RATIO * LF.calculateSpeedPID(cmdRpm[0], m_prevMotorRpm[0], dt)),
-        (int)(M3508_GEAR_RATIO * RF.calculateSpeedPID(cmdRpm[1], m_prevMotorRpm[1], dt)),
-        (int)(M3508_GEAR_RATIO * LB.calculateSpeedPID(cmdRpm[2], m_prevMotorRpm[2], dt)),
-        (int)(M3508_GEAR_RATIO * RB.calculateSpeedPID(cmdRpm[3], m_prevMotorRpm[3], dt)),
+        (int)(M3508_GEAR_RATIO * LF.calculateSpeedPID(cmdRpm[0], m_prevActualMotorRpm[0], dt)),
+        (int)(M3508_GEAR_RATIO * RF.calculateSpeedPID(cmdRpm[1], m_prevActualMotorRpm[1], dt)),
+        (int)(M3508_GEAR_RATIO * LB.calculateSpeedPID(cmdRpm[2], m_prevActualMotorRpm[2], dt)),
+        (int)(M3508_GEAR_RATIO * RB.calculateSpeedPID(cmdRpm[3], m_prevActualMotorRpm[3], dt)),
     };
-
-    if (abs(cmdRpm[0]) < 10) {
-        power[0] = 0;
-    } 
-    if (abs(cmdRpm[1]) < 10){
-        power[1] = 0;
-    } 
-    if (abs(cmdRpm[2]) < 10) {
-        power[2] = 0;
-    } 
-    if (abs(cmdRpm[3]) < 10) {
-        power[3] = 0;
+    
+    for(int i = 0; i < 4; i++) {
+        if(abs(cmdRpm[i]) < 10) power[i]= 0; // If the target RPM is low, its better to just cut the power rather than make the PID do the work
     }
+
     m_lastPidUs = now;
 
-    // Snapshot actual motor shaft RPM for the next tick's rate-limit and PID feedback.
-    m_prevMotorRpm[0] = (float)getMotorShaftRpm(LEFT_FRONT);
-    m_prevMotorRpm[1] = (float)getMotorShaftRpm(RIGHT_FRONT);
-    m_prevMotorRpm[2] = (float)getMotorShaftRpm(LEFT_BACK);
-    m_prevMotorRpm[3] = (float)getMotorShaftRpm(RIGHT_BACK);
+    m_prevActualMotorRpm[0] = (float)getMotorShaftRpm(LEFT_FRONT);
+    m_prevActualMotorRpm[1] = (float)getMotorShaftRpm(RIGHT_FRONT);
+    m_prevActualMotorRpm[2] = (float)getMotorShaftRpm(LEFT_BACK);
+    m_prevActualMotorRpm[3] = (float)getMotorShaftRpm(RIGHT_BACK);
 
-    // Power budget: estimate total chassis draw and scale down if over budget.
     float totalEstimatedWatts = estimatePowerWatts(LF.getData(TORQUE))
                                + estimatePowerWatts(RF.getData(TORQUE))
                                + estimatePowerWatts(LB.getData(TORQUE))
                                + estimatePowerWatts(RB.getData(TORQUE));
 
-    // A small epsilon in the denominator prevents division by zero when idle.
     constexpr float POWER_MARGIN_W = 10.0f;
     float scale = std::min(1.0f, power_limit / (totalEstimatedWatts + POWER_MARGIN_W));
 
@@ -370,54 +352,96 @@ float OmniWheelSubsystem::setWheelSpeeds(WheelSpeeds targetMps)
  * If the direction would flip sign we pass through zero first to avoid a
  * sudden reversal.
  */
-float OmniWheelSubsystem::limitAcceleration(float desiredRPM, float previousRPM, uint32_t deltaTime, float theta)
+
+
+ 
+//  float OmniWheelSubsystem::limitAcceleration(float desiredRPM, float previousRPM, uint32_t deltaTime, float theta)
+// {
+//     float diff = desiredRPM - previousRPM;
+
+//     // Calculate theoretical max acceleration
+//     float trigDenom = max(abs(cos(theta + M_PI/4)), abs(sin(theta + M_PI/4)));
+//     float maxLinearAccel = (STATIC_FRICTION_CONSTANT * GRAVITY) / (ACCEL_DENOM_CONSTANT * trigDenom);
+
+//     // Maximum change in velocity over this time period, then change that to RPM
+//     float maxChange = maxLinearAccel * (deltaTime / 1000000.0);
+//     float maxChangeRPM = 10 * maxChange * ((1 / WHEEL_RADIUS_M / (2 * PI / 60) * M3508_GEAR_RATIO)); // TODO remove magic number
+//     // float maxChangeRPM = 150;
+//     if ((desiredRPM > 0.0 && previousRPM < 0.0) || (desiredRPM < 0.0 && previousRPM > 0.0)) { // if wheel trying to sudden change direction
+//         if (abs(diff) < maxChangeRPM) {
+//             return 0;
+//         }
+//     }
+
+//     if (diff > maxChangeRPM) {
+//         if(desiredRPM == 0.0) {
+//             return desiredRPM; // let robot do its thing b/c it wont take power
+//         }
+//         return previousRPM + maxChangeRPM;
+//     } 
+//     else if (diff < -maxChangeRPM) { // Also check deceleration
+//         if(desiredRPM == 0.0) {
+//             return desiredRPM; // let robot do its thing b/c it wont take power
+//         }
+//         return previousRPM - maxChangeRPM;
+//     } 
+//     else { // Under acceleration limit
+//         return desiredRPM;
+//     }
+
+
+// float OmniWheelSubsystem::limitAcceleration(float desiredRPM, float previousRPM, int power)
+// {
+//     float maxAccel = 100;
+//     float diff = desiredRPM - previousRPM;
+
+//     if ((desiredRPM > 0 && previousRPM < 0) || (desiredRPM < 0 && previousRPM > 0)) { // if robot trying to sudden change direction
+//         return 0;
+//     }
+//     if (diff > maxAccel){   // if the difference is greater than the max acceleration
+//         if(power == 0) {
+//             return desiredRPM; // let robot do its thing b/c it wont take power
+//         }
+//         return previousRPM + maxAccel;
+//     }
+//     else if (diff < -maxAccel) {
+//         if(power == 0) {
+//             return desiredRPM; // let robot do its thing b/c it wont take power
+//         }
+//         return previousRPM - maxAccel;
+//     }
+//     else {
+//         return desiredRPM; // under acceleration cap
+//     }
+//     // constexpr float MAX_DELTA_RPM = 100.0f;
+
+//     // // Snap to zero before reversing direction
+//     // bool reversing = (desired > 0.0f && prev < 0.0f) || (desired < 0.0f && prev > 0.0f);
+//     // if (reversing) return 0.0f;
+
+//     // if (desired == 0.0f) return 0.0f;
+
+//     // // Skip limiting when the motor is unpowered (no overcurrent risk)
+//     // if (currentPower == 0) return desired;
+
+//     // float delta = desired - prev;
+//     // if      (delta >  MAX_DELTA_RPM) return prev + MAX_DELTA_RPM;
+//     // else if (delta < -MAX_DELTA_RPM) return prev - MAX_DELTA_RPM;
+//     // else                             return desired;
+// }
+
+float OmniWheelSubsystem::limitAcceleration(float desiredRPM, float previousRPM)
 {
+    constexpr float MAX_ACCEL = 100.0f;
     float diff = desiredRPM - previousRPM;
 
-    // Calculate theoretical max acceleration
-    float trigDenom = max(abs(cos(theta + M_PI/4)), abs(sin(theta + M_PI/4)));
-    float maxLinearAccel = (STATIC_FRICTION_CONSTANT * GRAVITY) / (ACCEL_DENOM_CONSTANT * trigDenom);
+    // Snap through zero before reversing direction
+    if ((desiredRPM > 0 && previousRPM < 0) || (desiredRPM < 0 && previousRPM > 0))
+        return 0.0f;
 
-    // Maximum change in velocity over this time period, then change that to RPM
-    float maxChange = maxLinearAccel * (deltaTime / 1000000.0);
-    float maxChangeRPM = 10 * maxChange * ((1 / WHEEL_RADIUS_M / (2 * PI / 60) * M3508_GEAR_RATIO)); // TODO remove magic number
-    // float maxChangeRPM = 150;
-    if ((desiredRPM > 0.0 && previousRPM < 0.0) || (desiredRPM < 0.0 && previousRPM > 0.0)) { // if wheel trying to sudden change direction
-        if (abs(diff) < maxChangeRPM) {
-            return 0;
-        }
-    }
-
-    if (diff > maxChangeRPM) {
-        if(desiredRPM == 0.0) {
-            return desiredRPM; // let robot do its thing b/c it wont take power
-        }
-        return previousRPM + maxChangeRPM;
-    } 
-    else if (diff < -maxChangeRPM) { // Also check deceleration
-        if(desiredRPM == 0.0) {
-            return desiredRPM; // let robot do its thing b/c it wont take power
-        }
-        return previousRPM - maxChangeRPM;
-    } 
-    else { // Under acceleration limit
-        return desiredRPM;
-    }
-    // constexpr float MAX_DELTA_RPM = 100.0f;
-
-    // // Snap to zero before reversing direction
-    // bool reversing = (desired > 0.0f && prev < 0.0f) || (desired < 0.0f && prev > 0.0f);
-    // if (reversing) return 0.0f;
-
-    // if (desired == 0.0f) return 0.0f;
-
-    // // Skip limiting when the motor is unpowered (no overcurrent risk)
-    // if (currentPower == 0) return desired;
-
-    // float delta = desired - prev;
-    // if      (delta >  MAX_DELTA_RPM) return prev + MAX_DELTA_RPM;
-    // else if (delta < -MAX_DELTA_RPM) return prev - MAX_DELTA_RPM;
-    // else                             return desired;
+    if      (diff >  MAX_ACCEL) return previousRPM + MAX_ACCEL;
+    else if (diff < -MAX_ACCEL) return previousRPM - MAX_ACCEL;
+    else                        return desiredRPM;
 }
 
 /*
@@ -446,7 +470,7 @@ float OmniWheelSubsystem::estimatePowerWatts(int torqueCounts)
             m_lastTorqueUs = us_ticker_read();
             currentA = SATURATION_CURRENT;
         }
-        currentA = torque;
+        currentA = torque * TORQUE_TO_AMP;
     } else {
         currentA = torque * TORQUE_TO_AMP;
     }
