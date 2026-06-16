@@ -6,6 +6,7 @@
 #include <util/communications/CANHandler.h>
 #include "Subsystem.h"
 #include "TurretSubsystem.h"
+#include <queue>
 
 #define WHEEL_DIAMETER_METERS 0.146
 #define PI 3.14159265
@@ -93,6 +94,12 @@ public:
     bool setOdomReference();
 
     void periodic();
+
+    /**
+     * Adds all motor ids from this subclass that are currently disconnected
+     * @param disconnectedMotors queue to put motor id in
+     */
+    void updateDisconnectedMotors(queue<int> disconnectedMotors);
 
 private:
     struct WheelSpeed

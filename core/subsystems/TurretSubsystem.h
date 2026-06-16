@@ -6,6 +6,7 @@
 #include <util/motor/DJIMotor.h>
 #include "Subsystem.h"
 #include <cmath>
+#include <queue>
 
 
 // enums for state
@@ -75,7 +76,14 @@ public:
     int getTicks(); // only thing chassis should have is this basically, or a pointer to turret
     
     DJIMotor yaw; // TODO fix chassissubsystem and put this into private
-private:
+
+    /**
+     * Adds all motor ids from this subclass that are currently disconnected
+     * @param disconnectedMotors queue to put motor id in
+     */
+    void updateDisconnectedMotors(queue<int> disconnectedMotors);
+
+    private:
 
     DJIMotor pitch;
 

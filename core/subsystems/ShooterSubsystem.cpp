@@ -196,3 +196,16 @@ void ShooterSubsystem::periodic(int curr_heat, int heat_limit)
 
     shooter_time = us_ticker_read();
 }
+
+void ShooterSubsystem::updateDisconnectedMotors(queue<int> disconnectedMotors) 
+{
+    if(!flywheelL.isConnected()) {
+        disconnectedMotors.push(flywheelL.getMotorID());
+    }
+    if(!flywheelR.isConnected()) {
+        disconnectedMotors.push(flywheelR.getMotorID());
+    }
+    if(!indexer.isConnected()) {
+        disconnectedMotors.push(indexer.getMotorID());
+    }
+}

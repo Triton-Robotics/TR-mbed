@@ -6,6 +6,7 @@
 #include <util/communications/CANHandler.h>
 #include <util/motor/DJIMotor.h>
 #include "Subsystem.h"
+#include <queue>
 
 // Constants
 constexpr int NUM_BALLS_SHOT = 3;
@@ -45,6 +46,12 @@ public:
     void setState(ShootState shoot_state);
 
     void periodic(int curr_heat, int heat_limit);
+
+    /**
+     * Adds all motor ids from this subclass that are currently disconnected
+     * @param disconnectedMotors queue to put motor id in
+     */
+    void updateDisconnectedMotors(queue<int> disconnectedMotors);
 
 private:
     unsigned long shooter_time;

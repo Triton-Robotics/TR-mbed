@@ -7,6 +7,7 @@
 #include <util/motor/DJIMotor.h>
 #include "Subsystem.h"
 #include "ShooterSubsystem.h"
+#include <queue>
 
 // struct for config
 class HeroShooterSubsystem : public Subsystem
@@ -39,6 +40,12 @@ public:
 
     void periodic(int curr_heat, int heat_limit);
     DJIMotor flywheelL, flywheelR, indexer, feeder;
+
+    /**
+     * Adds all motor ids from this subclass that are currently disconnected
+     * @param disconnectedMotors queue to put motor id in
+     */
+    void updateDisconnectedMotors(queue<int> disconnectedMotors);
 
 private:
     unsigned long shooter_time;

@@ -397,3 +397,19 @@ float OmniWheelSubsystem::p_theory(int LeftFrontPower, int RightFrontPower, int 
 
     return p_tot_c;
 }
+
+void OmniWheelSubsystem::updateDisconnectedMotors(queue<int> disconnectedMotors) 
+{
+    if(!fl.isConnected()) {
+        disconnectedMotors.push(fl.getMotorID());
+    }
+    if(!fr.isConnected()) {
+        disconnectedMotors.push(fr.getMotorID());
+    }
+    if(!br.isConnected()) {
+        disconnectedMotors.push(br.getMotorID());
+    }
+    if(!bl.isConnected()) {
+        disconnectedMotors.push(bl.getMotorID());
+    }
+}

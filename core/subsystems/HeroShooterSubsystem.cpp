@@ -105,3 +105,19 @@ void HeroShooterSubsystem::periodic(int curr_heat, int heat_limit)
         }
     }
 }
+
+void HeroShooterSubsystem::updateDisconnectedMotors(queue<int> disconnectedMotors) 
+{
+    if(!flywheelL.isConnected()) {
+        disconnectedMotors.push(flywheelL.getMotorID());
+    }
+    if(!flywheelR.isConnected()) {
+        disconnectedMotors.push(flywheelR.getMotorID());
+    }
+    if(!indexer.isConnected()) {
+        disconnectedMotors.push(indexer.getMotorID());
+    }
+    if(!feeder.isConnected()) {
+        disconnectedMotors.push(feeder.getMotorID());
+    }
+}

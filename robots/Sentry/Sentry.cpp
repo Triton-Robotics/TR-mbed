@@ -19,6 +19,8 @@
 #include <us_ticker_api.h>
 #include <us_ticker_defines.h>
 
+#include <queue>
+
 constexpr auto IMU_I2C_SDA = PB_7;
 constexpr auto IMU_I2C_SCL = PB_8;
 constexpr auto IMU_RESET = PA_8;
@@ -116,6 +118,11 @@ float pitch_desired_angle = 0.0;
 float yaw_desired_angle = 0.0;
 float dt_global = 0.0;
 unsigned long timer = 0;
+
+queue<int> disconnected_motors;
+int disconnected_id = 0;
+bool disconnected_led_on = false;
+unsigned long disconnected_timer;
 
 // TODOS make example directory with simple examples of how to use motors /
 // subsystems as reference for testbench
@@ -343,6 +350,48 @@ class Sentry : public BaseRobot {
         // printf("%.2f\n", encoder_.encoderMovingAverage());
         // printf("%.2f, %.2f, %.2f\n", imuAngles.roll, imuAngles.pitch, imuAngles.yaw);
         // printf("%d \n", referee_.is_red_or_blue());
+        
+        disconnected_timer -= dt_us;
+ 
+        // updates lights only if timer has ran out
+        if(disconnected_timer <= 0) {
+            // current id has been all "printed" out and needs to get new id
+            if(disconnected_id == 0) {
+                // adds more ids in queue
+                if(disconnected_motors.empty()) {
+                    // refresh from all subsystems
+                    turret_.updateDisconnectedMotors(disconnected_motors);
+                    shooter_.updateDisconnectedMotors(disconnected_motors);
+                    chassis_.updateDisconnectedMotors(disconnected_motors);
+                } 
+
+                // gets first id in queue 
+                if(!disconnected_motors.empty()) {
+                    disconnected_id = disconnected_motors.front();
+                    disconnected_motors.pop();
+                }
+
+                // longer time buffer between IDs
+                disconnected_timer = 3000000; // 3 sec
+                
+                // turn off led
+                led1_.write(0);
+                disconnected_led_on = false;
+            } 
+            // turn on light
+            else if(!disconnected_led_on) {
+                disconnected_id--;
+                disconnected_timer = 100000; // 0.1 sec
+                led1_.write(1);
+                disconnected_led_on = true;
+            }
+            // turn off light
+            else {
+                disconnected_timer = 100000; // 0.1 sec
+                led1_.write(0);
+                disconnected_led_on = false;
+            }
+        }
     }
 
     void end_of_loop() override {}

@@ -128,6 +128,10 @@ public:
         return us_ticker_read() / 1000 - timeOfLastFeedback <= TIMEOUT_MS;
     }
 
+    inline short getMotorID() {
+        return motorID_0 + 1; // bc motorID_0 = motorID - 1
+    }
+
     inline int operator>>(motorDataType data)                                                       { return getData(data); }
     DJIMotor(const DJIMotor&) = delete;
     DJIMotor& operator=(const DJIMotor&) = delete;

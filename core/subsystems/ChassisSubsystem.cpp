@@ -715,3 +715,18 @@ double ChassisSubsystem::radPerSecondToRPM(double radPerSecond)
 {
     return radPerSecond / (2 * PI) * SECONDS_PER_MINUTE;
 }
+
+void ChassisSubsystem::updateDisconnectedMotors(queue<int> disconnectedMotors) {
+    if(!LF.isConnected()) {
+        disconnectedMotors.push(LF.getMotorID());
+    }
+    if(!RF.isConnected()) {
+        disconnectedMotors.push(RF.getMotorID());
+    }
+    if(!LB.isConnected()) {
+        disconnectedMotors.push(RB.getMotorID());
+    }
+    if(!RB.isConnected()) {
+        disconnectedMotors.push(LB.getMotorID());
+    }
+}

@@ -15,6 +15,8 @@
 // #include <algorithms/WheelSpeeds.h>
 // #include <algorithms/ChassisSpeeds.h>
 
+#include <queue>
+
 #define CAN_BUS_TYPE CANHandler::CANBUS_1
 #define MOTOR_TYPE M3508
 #define M3508_POST_MAX_RPM 469
@@ -354,6 +356,12 @@ public:
      * Call this to calibrate yawPhase using the encoder
      */
     void updateYawPhaseFromEncoder();
+
+    /**
+     * Adds all motor ids from this subclass that are currently disconnected
+     * @param disconnectedMotors queue to put motor id in
+     */
+    void updateDisconnectedMotors(queue<int> disconnectedMotors);
 
 private:
     DJIMotor LF, RF, LB, RB;

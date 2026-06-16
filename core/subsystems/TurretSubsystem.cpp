@@ -160,3 +160,13 @@ void TurretSubsystem::periodic(float chassisRpm)
 
     turret_time = us_ticker_read();
 }
+
+void TurretSubsystem::updateDisconnectedMotors(queue<int> disconnectedMotors) 
+{
+    if(!yaw.isConnected()) {
+        disconnectedMotors.push(yaw.getMotorID());
+    }
+    if(!pitch.isConnected()) {
+        disconnectedMotors.push(pitch.getMotorID());
+    }
+}
