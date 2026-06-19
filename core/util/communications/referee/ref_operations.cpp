@@ -217,7 +217,7 @@ uint8_t Referee::get_robot_id()
 }
 
 
-uint8_t Referee::get_remain_hp()
+uint16_t Referee::get_remain_hp()
 {
     return robot_status.current_HP;
 }

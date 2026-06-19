@@ -35,7 +35,7 @@ public:
     uint8_t get_robot_id();
 
     // Return robot remaining HP.
-    uint8_t get_remain_hp();
+    uint16_t get_remain_hp();
     
     // Return game progress
     uint8_t get_game_progress();
