@@ -14,7 +14,7 @@ var searchData=
   ['get_5fmag_11',['get_mag',['../classBNO055.html#afe1a70c3cd44482d3ecd828ece47d941',1,'BNO055']]],
   ['get_5foperating_5fmode_12',['get_operating_mode',['../classBNO055.html#ac5e6c79b0fa5c86615a510a3ca9b94ba',1,'BNO055']]],
   ['get_5fquaternion_13',['get_quaternion',['../classBNO055.html#a31dc7d5a3db043d03eb203e91225ee34',1,'BNO055']]],
-  ['get_5fremain_5fhp_14',['get_remain_hp',['../classReferee.html#abc1fe04799eaf6afffea63b285ca4558',1,'Referee']]],
+  ['get_5fremain_5fhp_14',['get_remain_hp',['../classReferee.html#a889ce2839c62f9c80d2e7504a6aeef25',1,'Referee']]],
   ['get_5frobot_5fid_15',['get_robot_id',['../classReferee.html#a1f8097423b69796ed221f01e0f8bc90c',1,'Referee']]],
   ['getagvectors_16',['getAGVectors',['../classISM330.html#a0e87493738ce52e17fc053bba90183fc',1,'ISM330']]],
   ['getbrakemode_17',['getBrakeMode',['../classChassisSubsystem.html#ae66ee8319e14814e10e46e7f1429b337',1,'ChassisSubsystem']]],
