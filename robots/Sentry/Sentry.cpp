@@ -175,7 +175,7 @@ class Sentry : public BaseRobot {
 
     void init() override {
         timer = us_ticker_read();
-        imu_.begin(1, 0);
+        imu_.begin(0.9, 0);
     }
 
     void periodic(unsigned long dt_us) override {
@@ -195,7 +195,7 @@ class Sentry : public BaseRobot {
         des_turret_state.yaw_angle_degs = yaw_desired_angle;
 
         pitch_desired_angle -= mpitch * MOUSE_SENSITIVITY_PITCH_DPS * dt_us / 1000000;
-        pitch_desired_angle += jpitch * JOYSTICK_PITCH_SENSITIVITY_DPS * dt_us / 1000000;
+        pitch_desired_angle -= jpitch * JOYSTICK_PITCH_SENSITIVITY_DPS * dt_us / 1000000;
         pitch_desired_angle = std::clamp(pitch_desired_angle, PITCH_LOWER_BOUND, PITCH_UPPER_BOUND);
         des_turret_state.pitch_angle_degs = pitch_desired_angle;
 

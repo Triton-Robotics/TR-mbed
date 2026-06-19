@@ -66,7 +66,7 @@ bool ISM330::begin(float prop_gain, float int_gain) noexcept
     mahonyStart(prop_gain, int_gain);
     calibrate();
     mahonyStart(prop_gain, int_gain);
-    madgwickStart(1.0f);
+    // madgwickStart(1.0f);
 
     return true;
 }
@@ -74,7 +74,7 @@ bool ISM330::begin(float prop_gain, float int_gain) noexcept
 void ISM330::calibrate() noexcept
 {
     // Throw out first few readings
-    for (int i = 0; i < 200; i++) {
+    for (int i = 0; i < 500; i++) {
         readAGraw();
         ThisThread::sleep_for(1ms);
     }
@@ -87,7 +87,7 @@ void ISM330::calibrate() noexcept
     wyBias = 0;
     wzBias = 0;
 
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 5000; i++) {
         ISM330_RAW_DATA_TypeDef raw_data = readAGraw();
         axBias += raw_data.ax;
         ayBias += raw_data.ay;
@@ -98,12 +98,12 @@ void ISM330::calibrate() noexcept
         ThisThread::sleep_for(1ms);
     }
 
-    axBias /= 1000.0f;
-    ayBias /= 1000.0f;
-    azBias /= 1000.0f;
-    wxBias /= 1000.0f;
-    wyBias /= 1000.0f;
-    wzBias /= 1000.0f;
+    axBias /= 5000.0f;
+    ayBias /= 5000.0f;
+    azBias /= 5000.0f;
+    wxBias /= 5000.0f;
+    wyBias /= 5000.0f;
+    wzBias /= 5000.0f;
 }
 
 
