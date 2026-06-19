@@ -240,6 +240,7 @@ class Infantry : public BaseRobot {
         shooter_.setState(des_shoot_state);
 
         turret_.periodic(chassis_.getChassisSpeeds().vOmega * 60 / (2 * PI));
+        chassis_.power_limit = referee_.robot_status.chassis_power_limit;
         chassis_.periodic(imuAngles);
         shooter_.periodic(referee_.power_heat_data.shooter_17mm_1_barrel_heat,
                          referee_.robot_status.shooter_barrel_heat_limit);
