@@ -111,7 +111,7 @@ class BaseRobot {
             if ((loop_clock_us - prev_remote_time_us) / 1000 >= 15) {
                 remote_.update();
                 remoteRead();
-                prev_remote_time_us = us_ticker_read();
+                prev_remote_time_us = loop_clock_us;
             }
 
             if ((loop_clock_us - prev_loop_time_us) / 1000 >= main_loop_dt_ms) {
@@ -119,7 +119,7 @@ class BaseRobot {
                 led0_ = !led0_;
 
                 periodic(loop_clock_us - prev_loop_time_us);
-                prev_loop_time_us = us_ticker_read();
+                prev_loop_time_us = loop_clock_us;
 
                 // Motor updates
                 DJIMotor::sendValues();

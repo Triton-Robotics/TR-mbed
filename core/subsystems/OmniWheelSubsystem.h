@@ -16,7 +16,7 @@ static constexpr double OMNI_PI              = 3.14159265358979;
 static constexpr double WHEEL_RADIUS_M       = 0.073;   //< 146 mm diameter / 2  [m]
 static constexpr double MECANUM_HALF_X       = 0.14;    //< wheel-centre to chassis X-axis [m]
 static constexpr double MECANUM_HALF_Y       = 0.21;    //< wheel-centre to chassis Y-axis [m]
-static constexpr double DEFAULT_MAX_WHEEL_MPS  = 5;  //< linear wheel speed cap  [m/s]
+static constexpr double DEFAULT_MAX_WHEEL_MPS  = 3;  //< linear wheel speed cap  [m/s]
 static constexpr double DEFAULT_MAX_OMEGA_RADPS = 8.0;  //< angular velocity cap  [rad/s]
 static constexpr double VXY_SCALE = 110.53;
 static constexpr float STATIC_FRICTION_CONSTANT = 0.233924f;
@@ -107,7 +107,7 @@ public:
     // @param speeds  desired [vX m/s, vY m/s, vOmega rad/s] in the chosen frame
     // @param mode    coordinate frame for vX / vY (vOmega is always robot-relative)
     // @return        power-budget scale factor in [0, 1]  (1.0 = no limiting)
-    float setChassisSpeeds(ChassisSpeeds speeds, unsigned long dt_s, DriveMode mode = ROBOT_ORIENTED);
+    float setChassisSpeeds(ChassisSpeeds speeds, DriveMode mode = ROBOT_ORIENTED);
 
     // Snapshot the current heading as the reference origin for ODOM_ORIENTED mode.
     void setOdomReference();
@@ -168,7 +168,6 @@ private:
     // Motor-shaft RPM (pre-gearbox) measured at the END of the previous tick.
     // Used as both the rate-limit reference and the PID feedback.
     float m_prevMotorRpm[4] = {0, 0, 0, 0};
-    float m_prevActualMotorRpm[4] = {0, 0, 0, 0};
 
     // ── Internal helpers ───────────────────────────────────────────────────────
 
@@ -211,7 +210,7 @@ private:
 
     // Rotate field-frame desired speeds into robot frame.
     // @param headingDeg  current robot heading in field frame, CCW-positive [deg]
-    ChassisSpeeds rotateToRobotFrame(ChassisSpeeds fieldSpeeds, double headingDeg, unsigned long dt_s) const;
+    ChassisSpeeds rotateToRobotFrame(ChassisSpeeds fieldSpeeds, double headingDeg) const;
 
     // Calculate max available beyblad velocity
     double CalculateBeybladeVelo(float vOmega, ChassisSpeeds lateral);
@@ -239,9 +238,5 @@ private:
 
     int motorPIDtoPower(MotorLocation location, double speed, uint32_t dt);
 
-    int lastPIDTime = 0;
-
-
-
-
+    unsigned long period_time = 0;
 };

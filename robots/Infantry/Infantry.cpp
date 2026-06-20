@@ -44,10 +44,10 @@ const float pitch_gravity_feedforward = -500;    // We multiply this by cos(angl
 const float pitch_static_friction     = 635.0 / 5;       // We multiply it by dir
 const float pitch_kinetic_friction    = 0; //5.5;     // We multiply this by pitchvelo
 
-constexpr PID::config FL_VEL_CONFIG = {1.5, 0, 0.0361};
-constexpr PID::config FR_VEL_CONFIG = {1.5, 0, 0.0361};
-constexpr PID::config BL_VEL_CONFIG = {1.5, 0, 0.0361};
-constexpr PID::config BR_VEL_CONFIG = {1.5, 0, 0.0361};
+constexpr PID::config FL_VEL_CONFIG = {2.58, 0.23 * 1e-3, 17.3 * 1e-3};
+constexpr PID::config FR_VEL_CONFIG = {2.75, 0.574 * 1e-3, 17.9 * 1e-3};
+constexpr PID::config BL_VEL_CONFIG = {4.1, 0.0523 * 1e-3, 10.9 * 1e-3};
+constexpr PID::config BR_VEL_CONFIG = {3.9, 0.159 * 1e-3, 26.1 * 1e-3};
 
 constexpr PID::config FLYWHEEL_L_PID = {7.1849, 0.000042634, 0};
 constexpr PID::config FLYWHEEL_R_PID = {7.1849, 0.000042634, 0};
@@ -102,7 +102,7 @@ OmniWheelSubsystem::Config chassis_config = {
     BL_VEL_CONFIG,
     BR_VEL_CONFIG,
     0.51,  // radius
-    40,     // yaw_initial_offset_ticks
+    35,     // yaw_initial_offset_ticks
     120,
 };
 
@@ -170,7 +170,7 @@ class Infantry : public BaseRobot {
                          0.000216 * (chassis_.power_limit * chassis_.power_limit);
         // max_linear_vel = 5.0;
         des_chassis_state.vX = jy * max_linear_vel;
-        des_chassis_state.vY = -jx * max_linear_vel;
+        // des_chassis_state.vY = -jx * max_linear_vel;
 
         // Read jetson
         jetson_state = jetson.read();
@@ -194,7 +194,7 @@ class Infantry : public BaseRobot {
         // Chassis logic
         if (drive == 'u' || (drive == 'o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_S)) {
             des_chassis_state.vOmega = 0;
-            chassis_.setChassisSpeeds(des_chassis_state, dt_us/1000000, OmniWheelSubsystem::YAW_ORIENTED);
+            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
             referee_.is_aligned = false;
             referee_.is_cv_on = false;
@@ -203,7 +203,7 @@ class Infantry : public BaseRobot {
                    (drive == 'o' &&
                     remote_.getMode() == DJIRemote2::ModeSwitch::MODE_C)) {
             // des_chassis_state.vOmega = omega_speed;
-            chassis_.setChassisSpeeds(des_chassis_state, dt_us/1000000, OmniWheelSubsystem::BEYBLADE);
+            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::BEYBLADE);
             des_turret_state.turret_mode = TurretState::AIM;
             referee_.is_aligned = false;
             referee_.is_cv_on = false;
@@ -211,7 +211,7 @@ class Infantry : public BaseRobot {
         } 
         else 
         {
-            chassis_.setChassisSpeeds({0, 0, 0}, dt_us/1000000);
+            chassis_.setChassisSpeeds({0, 0, 0});
             des_turret_state.turret_mode = TurretState::SLEEP;
             des_turret_state.yaw_angle_degs = turret_.getState().yaw_angle_degs;
             yaw_desired_angle = turret_.getState().yaw_angle_degs;
@@ -240,7 +240,7 @@ class Infantry : public BaseRobot {
         shooter_.setState(des_shoot_state);
 
         turret_.periodic(chassis_.getChassisSpeeds().vOmega * 60 / (2 * PI));
-        chassis_.power_limit = referee_.robot_status.chassis_power_limit;
+        // chassis_.power_limit = referee_.robot_status.chassis_power_limit;
         chassis_.periodic(imuAngles);
         shooter_.periodic(referee_.power_heat_data.shooter_17mm_1_barrel_heat,
                          referee_.robot_status.shooter_barrel_heat_limit);
