@@ -95,8 +95,6 @@ OmniWheelSubsystem::Config chassis_config = {
     2,      // right_front_can_id
     3,      // left_back_can_id
     4,      // right_back_can_id
-    3,      // left_back_can_id
-    4,      // right_back_can_id
     FL_VEL_CONFIG,
     FR_VEL_CONFIG,
     BL_VEL_CONFIG,

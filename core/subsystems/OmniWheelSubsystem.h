@@ -4,7 +4,6 @@
 #include "util/peripherals/imu/IMU.h"
 #include "util/peripherals/encoder/MA4.h"
 #include "util/motor/DJIMotor.h"
-#include "util/communications/CANHandler.h"
 #include "util/algorithms/PID.h"
 
 #include <cstdint>

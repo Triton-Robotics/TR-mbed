@@ -187,7 +187,7 @@ class Sentry : public BaseRobot {
         // Chassis logic
         if (drive == 'u' || (drive == 'o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_S)) {
             des_chassis_state.vOmega = 0;
-            chassis_.setChassisSpeeds(des_chassis_state, dt_us/1000000, OmniWheelSubsystem::YAW_ORIENTED);
+            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
             // stm_state.activate_CV = 0;
             // stm_state.calibration = 0;
@@ -214,13 +214,13 @@ class Sentry : public BaseRobot {
                 des_turret_state.yaw_angle_degs = jetson_state.desired_yaw_rads * (180 / M_PI);
                 des_turret_state.pitch_angle_degs = -jetson_state.desired_pitch_rads * (180 / M_PI);
             }
-            chassis_.setChassisSpeeds(des_chassis_state, dt_us/1000000,  OmniWheelSubsystem::YAW_ORIENTED);
+            chassis_.setChassisSpeeds(des_chassis_state,  OmniWheelSubsystem::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
             referee_.is_aligned = false;
             referee_.is_cv_on = true;
             referee_.is_spinning = false;
         } else {
-            chassis_.setWheelPower({0, 0, 0, 0});
+            chassis_.setChassisSpeeds({0, 0, 0});
             des_turret_state.turret_mode = TurretState::SLEEP;
             des_turret_state.yaw_angle_degs = turret_.getState().yaw_angle_degs;
             yaw_desired_angle = turret_.getState().yaw_angle_degs;
@@ -283,7 +283,7 @@ class Sentry : public BaseRobot {
         // printf("%d\n", referee_.get_game_progress());
         // printf("yp %.2f \n", encoder_.encoderMovingAverage());
         // printf("%.2f, %.2f, %.2f\n", imuAngles.roll, imuAngles.pitch, imuAngles.yaw);
-        printf("%d \n", referee_.is_red_or_blue());
+        // printf("%d \n", referee_.is_red_or_blue());
     }
 
     void end_of_loop() override {}
