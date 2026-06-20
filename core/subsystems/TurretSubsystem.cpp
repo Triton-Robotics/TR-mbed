@@ -30,7 +30,6 @@ TurretSubsystem::TurretSubsystem(config cfg, IMU &imu):
     pitch_kinetic_friction(cfg.pitch_kinetic_friction),
     pitch_gravity_feedforward(cfg.pitch_gravity_feedforward)
 {
-    pitch_offset_ticks = cfg.pitch_offset_ticks; // TBD remove with pitch imu
     pitch.pidPosition.dBuffer.lastY = 5;
 
     imuAngles = imu_.getImuAngles();

@@ -23,7 +23,6 @@ constexpr auto IMU_I2C_SDA = PB_7;
 constexpr auto IMU_I2C_SCL = PB_8;
 constexpr auto IMU_RESET = PA_8;
 
-constexpr int pitch_zero_offset_ticks = 1500;
 constexpr float PITCH_LOWER_BOUND{-22.0};
 constexpr float PITCH_UPPER_BOUND{20.0};
 
@@ -62,7 +61,6 @@ TurretSubsystem::config turret_config = {
     M3508,
     8,
     M3508,
-    pitch_zero_offset_ticks,
     YAW_VEL_PID,
     YAW_POS_PID,
     PITCH_VEL_PID,
@@ -149,7 +147,7 @@ public:
     i2c_(IMU_I2C_SDA, IMU_I2C_SCL),
     imu_(i2c_, 0x6B),
     encoder_(PB_4),
-    jetson_raw_serial(PC_12, PD_2, 115200), // TODO: check higher baud to see if still works
+    jetson_raw_serial(PC_12, PD_2, 115200),
     jetson(jetson_raw_serial),
     turret_(turret_config, imu_),
     shooter_(shooter_config),
@@ -205,10 +203,6 @@ public:
 
         // Chassis logic
         if (drive == 'u' || (drive == 'o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_S)) {
-            // TODO: think about how we want to implement jetson aiming
-            // des_turret_state.pitch_angle = jetson_state.desired_pitch_rads;
-            // des_turret_state.yaw_angle = jetson_state.desired_yaw_rads;
-
             des_chassis_state.vOmega = 0;
             chassis_.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ALIGN);
             des_turret_state.turret_mode = TurretState::AIM;
@@ -283,14 +277,15 @@ public:
     unsigned int main_loop_dt_ms() override { return 2; } // 500 Hz loop
     
     void set_jetson_state() {
-        stm_state.game_state = 4;
-        stm_state.robot_hp = 200;
+        stm_state.activate_CV = cv_enabled_;
+        stm_state.game_state = referee_.get_game_progress();
+        stm_state.robot_hp = referee_.get_remain_hp();
+        stm_state.team_color = referee_.is_red_or_blue();
 
         stm_state.chassis_x_velocity = chassis_.getChassisSpeeds().vX;
         stm_state.chassis_y_velocity = chassis_.getChassisSpeeds().vY;
         stm_state.chassis_rotation = chassis_.getChassisSpeeds().vOmega;
 
-        // TODO angle_degrees and angle_radians
         stm_state.yaw_angle_rads = degreesToRadians(turret_.getState().yaw_angle_degs);
         stm_state.yaw_velocity = degreesToRadians(turret_.getState().yaw_velo_rad_s);
         stm_state.pitch_angle_rads = degreesToRadians(turret_.getState().pitch_angle_degs);

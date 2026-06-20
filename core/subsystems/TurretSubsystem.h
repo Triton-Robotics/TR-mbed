@@ -28,8 +28,6 @@ public:
         short pitch_id;
         motorType pitch_type = motorType::GM6020;
         
-        int pitch_offset_ticks; // TODO: Change this (to deg) when IMU on pitch! (also post 25' inf)
-
         PID::config yaw_vel_PID;
         PID::config yaw_pos_PID;
 
@@ -74,10 +72,9 @@ public:
 
     int getTicks(); // only thing chassis should have is this basically, or a pointer to turret
     
-    DJIMotor yaw; // TODO fix chassissubsystem and put this into private
 private:
 
-    DJIMotor pitch;
+    DJIMotor pitch, yaw;
 
     TurretInfo turret_state;
 
@@ -94,8 +91,6 @@ private:
     const float pitch_static_friction;
     const float pitch_kinetic_friction;
     const float pitch_gravity_feedforward;
-
-    int pitch_offset_ticks;
 
     unsigned long turret_time;
 

@@ -23,7 +23,6 @@ constexpr auto IMU_I2C_SDA = PB_7;
 constexpr auto IMU_I2C_SCL = PB_8;
 constexpr auto IMU_RESET = PA_8;
 
-constexpr int pitch_zero_offset_ticks = 1500;
 constexpr float PITCH_LOWER_BOUND{-22.0};
 constexpr float PITCH_UPPER_BOUND{20.0};
 
@@ -61,7 +60,6 @@ TurretSubsystem::config turret_config = {
     M3508,
     8,
     M3508,
-    pitch_zero_offset_ticks,
     YAW_VEL_PID,
     YAW_POS_PID,
     PITCH_VEL_PID,
@@ -147,7 +145,7 @@ class Sentry : public BaseRobot {
         i2c_(IMU_I2C_SDA, IMU_I2C_SCL), 
         imu_(i2c_, 0x6B),
         encoder_(PB_4, true),
-        jetson_raw_serial(PC_12, PD_2,115200), // TODO: check higher baud to see if still works
+        jetson_raw_serial(PC_12, PD_2,115200),
         jetson(jetson_raw_serial),
         turret_(turret_config, imu_),
         shooter_(shooter_config),
@@ -188,6 +186,9 @@ class Sentry : public BaseRobot {
         des_chassis_state.vX = jy * max_linear_vel;
         des_chassis_state.vY = jx * max_linear_vel;
 
+        // Read jetson
+        jetson_state = jetson.read();
+
         // Turret from remote
         yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * dt_us / 1000000;
         yaw_desired_angle -= jyaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
@@ -199,20 +200,11 @@ class Sentry : public BaseRobot {
         pitch_desired_angle = std::clamp(pitch_desired_angle, PITCH_LOWER_BOUND, PITCH_UPPER_BOUND);
         des_turret_state.pitch_angle_degs = pitch_desired_angle;
 
-        // Read jetson
-        jetson_state = jetson.read();
-
         // Chassis logic
         if (drive == 'u' || (drive == 'o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_S)) {
-            // TODO: think about how we want to implement jetson aiming
-            // des_turret_state.pitch_angle = jetson_state.desired_pitch_rads;
-            // des_turret_state.yaw_angle = jetson_state.desired_yaw_rads;
-
             des_chassis_state.vOmega = 0;
             chassis_.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
-            // stm_state.activate_CV = 0;
-            // stm_state.calibration = 0;
         } else if (drive == 'd' ||
                    (drive == 'o' &&
                     remote_.getMode() == DJIRemote2::ModeSwitch::MODE_C)) {
@@ -242,12 +234,6 @@ class Sentry : public BaseRobot {
             des_turret_state.pitch_angle_degs = 0;
         }
 
-        if (remote_.CUSTLToggled()) {
-            stm_state.activate_CV = 1;
-        }
-        else {
-            stm_state.activate_CV = 0;
-        }
         if (remote_.CUSTRToggled())  {
             stm_state.calibration = 1;
         }
@@ -258,7 +244,7 @@ class Sentry : public BaseRobot {
         // Shooter Logic
         if ((remote_.PAUSEToggled() == true && remote_.TriggerPressed() == true) || remote_.getMouseL()) {
             des_shoot_state = ShootState::SHOOT;
-        } else if (remote_.CUSTRPressed() == true && remote_.PAUSEToggled() == true) { //Make sure flywheel is on since that's part 
+        } else if (remote_.CUSTRPressed() == true && remote_.PAUSEToggled() == true) {
             des_shoot_state = ShootState::JAM;
         }else if (remote_.PAUSEToggled() == true ||
                    shot == 'd') {
@@ -294,7 +280,7 @@ class Sentry : public BaseRobot {
         // %.2f\n", imu.getImuAngles().yaw);
         // printf("%.2f\n", encoder_.encoderMovingAverage());
         // printf("%.2f, %.2f, %.2f\n", imuAngles.roll, imuAngles.pitch, imuAngles.yaw);
-        // printf("%d \n", referee_.is_red_or_blue());
+        printf("%d \n", referee_.is_red_or_blue());
     }
 
     void end_of_loop() override {}
@@ -302,6 +288,7 @@ class Sentry : public BaseRobot {
     unsigned int main_loop_dt_ms() override { return 2; } // 500 Hz loop
 
     void set_jetson_state() {
+        stm_state.activate_CV = cv_enabled_;
         stm_state.game_state = referee_.get_game_progress();
         stm_state.robot_hp = referee_.get_remain_hp();
         stm_state.team_color = referee_.is_red_or_blue();
@@ -310,7 +297,6 @@ class Sentry : public BaseRobot {
         stm_state.chassis_y_velocity = chassis_.getChassisSpeeds().vY;
         stm_state.chassis_rotation = chassis_.getChassisSpeeds().vOmega;
 
-        // TODO angle_degrees and angle_radians
         stm_state.yaw_angle_rads = degreesToRadians(turret_.getState().yaw_angle_degs);
         stm_state.yaw_velocity = degreesToRadians(turret_.getState().yaw_velo_rad_s);
         stm_state.pitch_angle_rads = -degreesToRadians(turret_.getState().pitch_angle_degs);

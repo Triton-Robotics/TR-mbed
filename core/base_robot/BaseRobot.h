@@ -54,7 +54,6 @@ class BaseRobot {
     float max_linear_vel = 0;
 
     // drive and shooting mode
-    // TODO rename these chars?????
     // "o" - joystick
     // "u" - drive
     // "d" - beyblade
@@ -65,7 +64,7 @@ class BaseRobot {
     // "m" - flywheel off
     char drive = 'o'; //default o when using joystick 
     char shot = 'o'; //default o when using joystick
-    bool cv_enabled = false; // TODO add to inf main maybe? altho i think cv should always be on
+    bool cv_enabled_ = false;
 
     // clang-format off
     BaseRobot(const Config &config)
@@ -150,10 +149,10 @@ class BaseRobot {
             shot = 'd';        
         }
         
-        if(remote_.getMouseR() || remote_.PAUSEToggled() == true){
-            cv_enabled = true;
+        if(remote_.getMouseR() || remote_.getDialValue() == -1){
+            cv_enabled_ = true;
         }else if(!remote_.getMouseR() ){
-            cv_enabled = false;
+            cv_enabled_ = false;
         }
 
         //Driving input
