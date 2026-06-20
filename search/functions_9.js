@@ -8,6 +8,6 @@ var searchData=
   ['initializeimu_5',['initializeImu',['../classChassisSubsystem.html#a8a6956deb7e9b27facf38e5890b0427f',1,'ChassisSubsystem']]],
   ['initquaternionfromaccel_6',['initQuaternionFromAccel',['../classISM330.html#a353563f6f9f96f8b42885a127d6692f3',1,'ISM330']]],
   ['invertdisplay_7',['invertdisplay',['../classAdafruit__GFX.html#a05c19e8fe1a1e49aba4c4d93709ef155',1,'Adafruit_GFX::invertDisplay()'],['../classAdafruit__SSD1306.html#a3e9436a654c826a55942606a2261b5ee',1,'Adafruit_SSD1306::invertDisplay()']]],
-  ['is_5fred_5for_5fblue_8',['is_red_or_blue',['../classReferee.html#ac1741ce79eec9185ef171e9f073f27b1',1,'Referee']]],
+  ['is_5fred_5for_5fblue_8',['is_red_or_blue',['../classReferee.html#a9f8cfdeb39c3858b384d29a36e5dc466',1,'Referee']]],
   ['ism330_9',['ISM330',['../classISM330.html#a936f6b5b23f13e3d6fee9fff6b6d6482',1,'ISM330']]]
 ];
