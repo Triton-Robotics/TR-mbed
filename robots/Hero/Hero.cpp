@@ -138,6 +138,8 @@ OmniWheelSubsystem::Config chassis_config = {
     0.51,  // radius
     35,     // yaw_initial_offset_ticks
     120,
+	8.0,   // max_beyblade_omega_radps
+    OmniWheelSubsystem::MECANUM
 };
 
 // ChassisSubsystem::Config chassis_config = {
