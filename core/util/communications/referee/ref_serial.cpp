@@ -683,7 +683,7 @@ uint8_t Referee::get_robot_id()
 }
 
 
-uint8_t Referee::get_remain_hp()
+uint16_t Referee::get_remain_hp()
 {
     return robot_status.current_HP;
 }
@@ -701,7 +701,7 @@ uint8_t Referee::get_game_progress()
   * @retval RED   BLUE
   * @attention  数据打包,打包完成后通过串口发送到裁判系统
   */
-int8_t Referee::is_red_or_blue()
+uint8_t Referee::is_red_or_blue()
 {
     Judge_Self_ID = robot_status.robot_id; //读取当前机器人ID
 
