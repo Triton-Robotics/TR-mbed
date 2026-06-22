@@ -1,13 +1,35 @@
+// #include "base_robot/BaseRobot.h"
+// #include "util/algorithms/general_functions.h"
+
+
+// #include "subsystems/ChassisSubsystem.h"
+// #include "subsystems/HeroShooterSubsystem.h"
+// #include "subsystems/TurretSubsystem.h"
+
+// #include "util/communications/CANHandler.h"
+
+// #include "util/communications/jetson/Jetson.h"
+// #include "util/motor/DJIMotor.h"
+// #include "util/peripherals/imu/BNO055.h"
+// #include "util/peripherals/encoder/MA4.h"
+// #include "util/peripherals/imu/ISM330.h"
+
+// #include <algorithm>
+// #include <pinmap.h>
+// #include <us_ticker_api.h>
+// #include <us_ticker_defines.h>
+
 #include "base_robot/BaseRobot.h"
 #include "util/algorithms/general_functions.h"
+#include "ResetReason.h"
 
-
-#include "subsystems/ChassisSubsystem.h"
-#include "subsystems/HeroShooterSubsystem.h"
+#include "subsystems/OmniWheelSubsystem.h"
+#include "subsystems/OmniWheelSubsystem.h"
+#include "subsystems/ShooterSubsystem.h"
 #include "subsystems/TurretSubsystem.h"
 
 #include "util/communications/CANHandler.h"
-
+#include "util/communications/PwmIn.h"
 #include "util/communications/jetson/Jetson.h"
 #include "util/motor/DJIMotor.h"
 #include "util/peripherals/imu/BNO055.h"
@@ -44,16 +66,26 @@ const float pitch_gravity_feedforward = -500;    // We multiply this by cos(angl
 const float pitch_static_friction     = 635.0 / 5;       // We multiply it by dir
 const float pitch_kinetic_friction    = 0; //5.5;     // We multiply this by pitchvelo
 
-constexpr PID::config FL_VEL_CONFIG = {3, 0, 0};
-constexpr PID::config FR_VEL_CONFIG = {3, 0, 0};
-constexpr PID::config BL_VEL_CONFIG = {3, 0, 0};
-constexpr PID::config BR_VEL_CONFIG = {3, 0, 0};
+// constexpr PID::config FL_VEL_CONFIG = {3, 0, 0};
+// constexpr PID::config FR_VEL_CONFIG = {3, 0, 0};
+// constexpr PID::config BL_VEL_CONFIG = {3, 0, 0};
+// constexpr PID::config BR_VEL_CONFIG = {3, 0, 0};
+
+// constexpr PID::config FLYWHEEL_L_PID = {7.1849, 0.000042634, 0};
+// constexpr PID::config FLYWHEEL_R_PID = {7.1849, 0.000042634, 0};
+constexpr PID::config FEEDER_PID = {4, 0, 1};
+// constexpr PID::config INDEXER_PID_VEL = {2.7, 0.001, 0};
+// constexpr PID::config INDEXER_PID_POS = {0.1,0,0.001};
+
+constexpr PID::config FL_VEL_CONFIG = {2.58, 0.23 * 1e-3, 17.3 * 1e-3};
+constexpr PID::config FR_VEL_CONFIG = {2.75, 0.574 * 1e-3, 17.9 * 1e-3};
+constexpr PID::config BL_VEL_CONFIG = {4.1, 0.0523 * 1e-3, 10.9 * 1e-3};
+constexpr PID::config BR_VEL_CONFIG = {3.9, 0.159 * 1e-3, 26.1 * 1e-3};
 
 constexpr PID::config FLYWHEEL_L_PID = {7.1849, 0.000042634, 0};
 constexpr PID::config FLYWHEEL_R_PID = {7.1849, 0.000042634, 0};
-constexpr PID::config FEEDER_PID = {4, 0, 1};
 constexpr PID::config INDEXER_PID_VEL = {2.7, 0.001, 0};
-constexpr PID::config INDEXER_PID_POS = {0.1,0,0.001};
+constexpr PID::config INDEXER_PID_POS = {0.1, 0, 0.001};
 
 // Config variables
 TurretSubsystem::config turret_config = {
@@ -77,7 +109,8 @@ TurretSubsystem::config turret_config = {
     PITCH_LOWER_BOUND,
     PITCH_UPPER_BOUND
 };
-HeroShooterSubsystem::config shooter_config = {
+
+ShooterSubsystem::config shooter_config = {
     0,
     4,
     5,
@@ -92,6 +125,21 @@ HeroShooterSubsystem::config shooter_config = {
     CANHandler::CANBUS_1,
     false
 };
+
+OmniWheelSubsystem::Config chassis_config = {
+    1,      // left_front_can_id
+    2,      // right_front_can_id
+    3,      // left_back_can_id
+    4,      // right_back_can_id
+    FL_VEL_CONFIG,
+    FR_VEL_CONFIG,
+    BL_VEL_CONFIG,
+    BR_VEL_CONFIG,
+    0.51,  // radius
+    35,     // yaw_initial_offset_ticks
+    120,
+};
+
 // ChassisSubsystem::Config chassis_config = {
 //     1,      // left_front_can_id
 //     2,      // right_front_can_id
@@ -137,22 +185,22 @@ public:
     Jetson::ReadState jetson_state;
 
     TurretSubsystem turret_;
-    HeroShooterSubsystem shooter_;
-    ChassisSubsystem chassis_;
+    ShooterSubsystem shooter_;
+    OmniWheelSubsystem chassis_;
 
     bool imu_initialized{false};
 
     Hero(Config &config) 
-    : BaseRobot(config),     
-    i2c_(IMU_I2C_SDA, IMU_I2C_SCL),
-    imu_(i2c_, 0x6B),
-    encoder_(PB_4),
-    jetson_raw_serial(PC_12, PD_2, 115200),
-    jetson(jetson_raw_serial),
-    turret_(turret_config, imu_),
-    shooter_(shooter_config),
+    	: BaseRobot(config),     
+    	i2c_(IMU_I2C_SDA, IMU_I2C_SCL),
+    	imu_(i2c_, 0x6B),
+    	encoder_(PB_4),
+    	jetson_raw_serial(PC_12, PD_2, 115200),
+    	jetson(jetson_raw_serial),
+    	turret_(turret_config, imu_),
+    	shooter_(shooter_config),
 
-    chassis_(ChassisSubsystem::Config{
+    	chassis_(OmniWheelSubsystem::Config{
             1,      // left_front_can_id
             2,      // right_front_can_id
             3,      // left_back_can_id
@@ -163,12 +211,12 @@ public:
             imu_,
             &encoder_   
         }
-    )
-    // clang-format on
-    {
+    	)
+    	// clang-format on
+    	{
         pin_mode(IMU_I2C_SCL, PinMode::OpenDrainPullUp);
         pin_mode(IMU_I2C_SDA, PinMode::OpenDrainPullUp);
-    }
+    	}
 
     ~Hero() {}
 
@@ -201,43 +249,96 @@ public:
         // Read jetson
         jetson_state = jetson.read();
 
-        // Chassis logic
+        // Old Chassis logic
+        // if (drive == 'u' || (drive == 'o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_S)) {
+        //     des_chassis_state.vOmega = 0;
+        //     chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::DRIVE_MODE::YAW_ALIGN);
+        //     des_turret_state.turret_mode = TurretState::AIM;
+        // } else if (drive == 'd' ||
+        //            (drive == 'o' &&
+        //             remote_.getMode() == DJIRemote2::ModeSwitch::MODE_C)) {
+        //     des_chassis_state.vOmega = omega_speed;
+        //     chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::DRIVE_MODE::YAW_ORIENTED);
+        //     des_turret_state.turret_mode = TurretState::AIM;
+        // } else {
+        //     chassis_.setWheelPower({0, 0, 0, 0});
+        //     des_turret_state.turret_mode = TurretState::SLEEP;
+        //     des_turret_state.yaw_angle_degs = turret_.getState().yaw_angle_degs;
+        //     yaw_desired_angle = turret_.getState().yaw_angle_degs;
+        //     des_turret_state.pitch_angle_degs = 0;
+        // }
+
+		// New Chassis logic
         if (drive == 'u' || (drive == 'o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_S)) {
             des_chassis_state.vOmega = 0;
-            chassis_.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ALIGN);
+            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
+            referee_.is_aligned = false;
+            referee_.is_cv_on = false;
+            referee_.is_spinning = false;
         } else if (drive == 'd' ||
                    (drive == 'o' &&
                     remote_.getMode() == DJIRemote2::ModeSwitch::MODE_C)) {
-            des_chassis_state.vOmega = omega_speed;
-            chassis_.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
+            // des_chassis_state.vOmega = omega_speed;
+            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::BEYBLADE);
             des_turret_state.turret_mode = TurretState::AIM;
-        } else {
-            chassis_.setWheelPower({0, 0, 0, 0});
+            referee_.is_aligned = false;
+            referee_.is_cv_on = false;
+            referee_.is_spinning = true;
+        } 
+        else 
+        {
+            chassis_.setChassisSpeeds({0, 0, 0});
             des_turret_state.turret_mode = TurretState::SLEEP;
             des_turret_state.yaw_angle_degs = turret_.getState().yaw_angle_degs;
             yaw_desired_angle = turret_.getState().yaw_angle_degs;
             des_turret_state.pitch_angle_degs = 0;
+            referee_.is_aligned = true;
+            referee_.is_cv_on = true;
+            referee_.is_spinning = false;
         }
-
                 
-        // Shooter Logic
+        // Old Shooter Logic
+        // if ((remote_.PAUSEToggled() == true && remote_.TriggerPressed() == true) || remote_.getMouseL()) {
+        //     des_shoot_state = ShootState::SHOOT;
+        // } else if (remote_.PAUSEToggled() == true ||
+        //            shot == 'd') {
+        //     des_shoot_state = ShootState::FLYWHEEL;
+        // } else {
+        //     des_shoot_state = ShootState::OFF;
+        // }
+        
+        // turret_.setState(des_turret_state);
+        // shooter_.setState(des_shoot_state);
+        
+        // turret_.periodic(chassis_.getChassisSpeeds().vOmega * 60 / (2 * PI));
+        // chassis_.power_limit = referee_.robot_status.chassis_power_limit;
+        // chassis_.periodic(&imuAngles);
+        // shooter_.periodic(referee_.power_heat_data.shooter_42mm_barrel_heat, 
+        //                  referee_.robot_status.shooter_barrel_heat_limit);
+
+		// New Shooter Logic 
+        //REMOVED remote_.PAUSEToggled() == true && FROM THE FIRST CONDITION
         if ((remote_.PAUSEToggled() == true && remote_.TriggerPressed() == true) || remote_.getMouseL()) {
             des_shoot_state = ShootState::SHOOT;
-        } else if (remote_.PAUSEToggled() == true ||
-                   shot == 'd') {
+            referee_.is_flywheel_on = true;
+        } else if (remote_.CUSTRPressed() == true && remote_.PAUSEToggled() == true) { //Make sure flywheel is on since that's part 
+            des_shoot_state = ShootState::JAM;
+        } else if (remote_.PAUSEToggled() == true || shot == 'd') {
             des_shoot_state = ShootState::FLYWHEEL;
+            referee_.is_flywheel_on = true;
         } else {
             des_shoot_state = ShootState::OFF;
+            referee_.is_flywheel_on = false;
         }
-        
+
         turret_.setState(des_turret_state);
         shooter_.setState(des_shoot_state);
-        
+
         turret_.periodic(chassis_.getChassisSpeeds().vOmega * 60 / (2 * PI));
-        chassis_.power_limit = referee_.robot_status.chassis_power_limit;
-        chassis_.periodic(&imuAngles);
-        shooter_.periodic(referee_.power_heat_data.shooter_42mm_barrel_heat, 
+        // chassis_.power_limit = referee_.robot_status.chassis_power_limit;
+        chassis_.periodic(imuAngles);
+        shooter_.periodic(referee_.power_heat_data.shooter_17mm_1_barrel_heat,
                          referee_.robot_status.shooter_barrel_heat_limit);
 
         // jetson comms
