@@ -18,12 +18,10 @@
 // #include <pinmap.h>
 // #include <us_ticker_api.h>
 // #include <us_ticker_defines.h>
-
 #include "base_robot/BaseRobot.h"
 #include "util/algorithms/general_functions.h"
 #include "ResetReason.h"
 
-#include "subsystems/OmniWheelSubsystem.h"
 #include "subsystems/OmniWheelSubsystem.h"
 #include "subsystems/ShooterSubsystem.h"
 #include "subsystems/TurretSubsystem.h"
@@ -192,34 +190,49 @@ public:
 
     bool imu_initialized{false};
 
-    Hero(Config &config) 
-    	: BaseRobot(config),     
-    	i2c_(IMU_I2C_SDA, IMU_I2C_SCL),
-    	imu_(i2c_, 0x6B),
-    	encoder_(PB_4),
-    	jetson_raw_serial(PC_12, PD_2, 115200),
-    	jetson(jetson_raw_serial),
-    	turret_(turret_config, imu_),
-    	shooter_(shooter_config),
+    // Hero(Config &config) 
+    // 	: BaseRobot(config),     
+    // 	i2c_(IMU_I2C_SDA, IMU_I2C_SCL),
+    // 	imu_(i2c_, 0x6B),
+    // 	encoder_(PB_4),
+    // 	jetson_raw_serial(PC_12, PD_2, 115200),
+    // 	jetson(jetson_raw_serial),
+    // 	turret_(turret_config, imu_),
+    // 	shooter_(shooter_config),
 
-    	chassis_(OmniWheelSubsystem::Config{
-            1,      // left_front_can_id
-            2,      // right_front_can_id
-            3,      // left_back_can_id
-            4,      // right_back_can_id
-            0.22617,  // radius
-            0.065,    // speed_pid_ff_ks
-            40,     // yaw_initial_offset_ticks
-            imu_,
-            &encoder_   
-        }
-    	)
-    	// clang-format on
-    	{
-        pin_mode(IMU_I2C_SCL, PinMode::OpenDrainPullUp);
-        pin_mode(IMU_I2C_SDA, PinMode::OpenDrainPullUp);
-    	}
+    // 	chassis_(OmniWheelSubsystem::Config{
+    //         1,      // left_front_can_id
+    //         2,      // right_front_can_id
+    //         3,      // left_back_can_id
+    //         4,      // right_back_can_id
+    //         0.22617,  // radius
+    //         0.065,    // speed_pid_ff_ks
+    //         40,     // yaw_initial_offset_ticks
+    //         imu_,
+    //         &encoder_   
+    //     }
+    // 	)
+    // 	// clang-format on
+    // 	{
+    //     pin_mode(IMU_I2C_SCL, PinMode::OpenDrainPullUp);
+    //     pin_mode(IMU_I2C_SDA, PinMode::OpenDrainPullUp);
+    // 	}
 
+	Hero(Config &config) 
+    : BaseRobot(config),     
+      i2c_(IMU_I2C_SDA, IMU_I2C_SCL),
+      imu_(i2c_, 0x6B),
+      encoder_(PB_4),
+      jetson_raw_serial(PC_12, PD_2, 115200),
+      jetson(jetson_raw_serial),
+      turret_(turret_config, imu_),
+      shooter_(shooter_config),
+      chassis_(chassis_config, &encoder_)
+	{
+	// clang-format on
+    pin_mode(IMU_I2C_SCL, PinMode::OpenDrainPullUp);
+    pin_mode(IMU_I2C_SDA, PinMode::OpenDrainPullUp);
+	}
     ~Hero() {}
 
     void init() override {
