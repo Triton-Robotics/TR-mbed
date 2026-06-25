@@ -25,6 +25,7 @@
 #include "subsystems/OmniWheelSubsystem.h"
 #include "subsystems/ShooterSubsystem.h"
 #include "subsystems/TurretSubsystem.h"
+#include "subsystems/HeroShooterSubsystem.h"
 
 #include "util/communications/CANHandler.h"
 #include "util/communications/PwmIn.h"
@@ -108,7 +109,24 @@ TurretSubsystem::config turret_config = {
     PITCH_UPPER_BOUND
 };
 
-ShooterSubsystem::config shooter_config = {
+// ShooterSubsystem::config shooter_config = {
+//     0,
+//     4,
+//     5,
+//     6,
+//     1,
+//     FLYWHEEL_L_PID,
+//     FLYWHEEL_R_PID,
+//     FEEDER_PID,
+//     INDEXER_PID_VEL,
+//     INDEXER_PID_POS,
+//     CANHandler::CANBUS_2,
+//     CANHandler::CANBUS_1,
+//     false
+// };
+
+
+HeroShooterSubsystem::config shooter_config = {
     0,
     4,
     5,
@@ -185,7 +203,7 @@ public:
     Jetson::ReadState jetson_state;
 
     TurretSubsystem turret_;
-    ShooterSubsystem shooter_;
+    HeroShooterSubsystem shooter_;
     OmniWheelSubsystem chassis_;
 
     bool imu_initialized{false};
