@@ -168,7 +168,7 @@ class Infantry : public BaseRobot {
                          0.000216 * (chassis_.power_limit * chassis_.power_limit);
         // max_linear_vel = 5.0;
         des_chassis_state.vX = jy * max_linear_vel;
-        // des_chassis_state.vY = -jx * max_linear_vel;
+        des_chassis_state.vY = -jx * max_linear_vel;
 
         // Read jetson
         jetson_state = jetson.read();
