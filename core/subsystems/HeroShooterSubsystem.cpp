@@ -76,7 +76,8 @@ void HeroShooterSubsystem::periodic(int curr_heat, int heat_limit)
         indexer.pidSpeed.feedForward = 0;
         indexer.setSpeed(0);
         shootReady = true;
-        if(barrel_heat_limit < 10 || barrel_heat < barrel_heat_limit - 110) {
+        // TODO: There !! HAS !! to be a better way to do this 
+        if(barrel_heat_limit < 300 || barrel_heat < barrel_heat_limit - 110) {
             shooter_time = us_ticker_read();
         }
     }
@@ -95,7 +96,7 @@ void HeroShooterSubsystem::periodic(int curr_heat, int heat_limit)
         if (abs(flywheelR >> VELOCITY) < abs(HERO_FLYWHEEL_VELO * 0.75) || abs(flywheelL >> VELOCITY) < abs(HERO_FLYWHEEL_VELO * 0.75)) {
             return;
         }
-
+        
         if ((us_ticker_read() - shooter_time)/1000 < 200){
             feeder.setSpeed(7000);
         } else {
