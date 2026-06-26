@@ -231,10 +231,9 @@ class Sentry : public BaseRobot {
         }
 
 
-        if (remote_.CUSTRToggled())  {
+        if (remote_.getDialValue() > 0.5f) {
             stm_state.calibration = 1;
-        }
-        else {
+        } else {
             stm_state.calibration = 0;
         }
 
