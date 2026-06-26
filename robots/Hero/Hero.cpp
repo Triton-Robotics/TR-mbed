@@ -131,7 +131,7 @@ HeroShooterSubsystem::config shooter_config = {
     4,
     5,
     6,
-    1,
+    6,
     FLYWHEEL_L_PID,
     FLYWHEEL_R_PID,
     FEEDER_PID,
