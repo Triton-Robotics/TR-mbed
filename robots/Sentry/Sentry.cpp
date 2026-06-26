@@ -43,10 +43,10 @@ const float pitch_gravity_feedforward = -500;    // We multiply this by cos(angl
 const float pitch_static_friction     = 635.0 / 5;       // We multiply it by dir
 const float pitch_kinetic_friction    = 0; //5.5;     // We multiply this by pitchvelo
 
-constexpr PID::config FL_VEL_CONFIG = {3.38, 0, 0.0361};
-constexpr PID::config FR_VEL_CONFIG = {3.38, 0, 0.0361};
-constexpr PID::config BL_VEL_CONFIG = {3.38, 0, 0.0361};
-constexpr PID::config BR_VEL_CONFIG = {3.38, 0, 0.0361};
+constexpr PID::config FL_VEL_CONFIG = {2.58, 0.23 * 1e-3, 17.3 * 1e-3};
+constexpr PID::config FR_VEL_CONFIG = {2.75, 0.574 * 1e-3, 17.9 * 1e-3};
+constexpr PID::config BL_VEL_CONFIG = {4.1, 0.0523 * 1e-3, 10.9 * 1e-3};
+constexpr PID::config BR_VEL_CONFIG = {3.9, 0.159 * 1e-3, 26.1 * 1e-3};
 
 constexpr PID::config FLYWHEEL_L_PID = {7.1849, 0.000042634, 0};
 constexpr PID::config FLYWHEEL_R_PID = {7.1849, 0.000042634, 0};
@@ -92,14 +92,14 @@ ShooterSubsystem::config shooter_config = {
 OmniWheelSubsystem::Config chassis_config = {
     1,      // left_front_can_id
     2,      // right_front_can_id
-    4,      // left_back_can_id
-    3,      // right_back_can_id
+    3,      // left_back_can_id
+    4,      // right_back_can_id
     FL_VEL_CONFIG,
     FR_VEL_CONFIG,
     BL_VEL_CONFIG,
     BR_VEL_CONFIG,
     0.51,  // radius
-    85.27,     // yaw_initial_offset_ticks
+    35,     // yaw_initial_offset_ticks
     120,
 };
 
@@ -132,13 +132,15 @@ class Sentry : public BaseRobot {
     OmniWheelSubsystem chassis_;
 
     bool imu_initialized{false};
+    int game_state_override_ = 0;  // 0=normal, 1=force 1, 2=force 4
+    bool fn_prev_pressed_ = false;
 
     Sentry(Config &config)
         : BaseRobot(config),
         // clang-format off
-        i2c_(IMU_I2C_SDA, IMU_I2C_SCL), 
+        i2c_(IMU_I2C_SDA, IMU_I2C_SCL),
         imu_(i2c_, 0x6B),
-        encoder_(PB_4, true),
+        encoder_(PB_4),
         jetson_raw_serial(PC_12, PD_2,115200), // TODO: check higher baud to see if still works
         jetson(jetson_raw_serial),
         turret_(turret_config, imu_),
@@ -167,7 +169,7 @@ class Sentry : public BaseRobot {
                          0.000216 * (chassis_.power_limit * chassis_.power_limit);
         // max_linear_vel = 5.0;
         des_chassis_state.vX = jy * max_linear_vel;
-        des_chassis_state.vY = jx * max_linear_vel;
+        des_chassis_state.vY = -jx * max_linear_vel;
 
         // Read jetson
         jetson_state = jetson.read();
@@ -207,7 +209,7 @@ class Sentry : public BaseRobot {
                 des_turret_state.turret_mode = TurretState::AIM;
             } else {
                 des_chassis_state.vX = jetson_state.desired_x_vel;
-                des_chassis_state.vY = -jetson_state.desired_y_vel;
+                des_chassis_state.vY = jetson_state.desired_y_vel;
                 des_chassis_state.vOmega = jetson_state.desired_angular_vel;
 
                 des_turret_state.turret_mode = TurretState::AIM;
@@ -231,6 +233,12 @@ class Sentry : public BaseRobot {
         }
 
 
+        bool fn_pressed = remote_.CUSTLPressed();
+        if (fn_pressed && !fn_prev_pressed_) {
+            game_state_override_ = (game_state_override_ + 1) % 3;
+        }
+        fn_prev_pressed_ = fn_pressed;
+
         if (remote_.getDialValue() > 0.5f) {
             stm_state.calibration = 1;
         } else {
@@ -241,7 +249,7 @@ class Sentry : public BaseRobot {
         if ((remote_.PAUSEToggled() == true && remote_.TriggerPressed() == true) || remote_.getMouseL()) {
             des_shoot_state = ShootState::SHOOT;
             referee_.is_flywheel_on = true;
-        } else if (remote_.CUSTRPressed() == true && remote_.PAUSEToggled() == true) { //Make sure flywheel is on since that's part 
+        } else if (remote_.CUSTRPressed() == true && remote_.PAUSEToggled() == true) { //Make sure flywheel is on since that's part
             des_shoot_state = ShootState::JAM;
             referee_.is_flywheel_on = true;
         }else if (remote_.PAUSEToggled() == true ||
@@ -258,7 +266,9 @@ class Sentry : public BaseRobot {
 
         turret_.periodic(chassis_.getChassisSpeeds().vOmega * 60 / (2 * PI));
         chassis_.periodic(imuAngles);
-        chassis_.power_limit = referee_.robot_status.chassis_power_limit;
+        if (referee_.robot_status.chassis_power_limit > 0) {
+            chassis_.power_limit = referee_.robot_status.chassis_power_limit;
+        }
         shooter_.periodic(referee_.power_heat_data.shooter_17mm_1_barrel_heat,
                          referee_.robot_status.shooter_barrel_heat_limit);
 
@@ -291,9 +301,12 @@ class Sentry : public BaseRobot {
 
     void set_jetson_state() {
         stm_state.activate_CV = cv_enabled_;
-        stm_state.game_state = referee_.get_game_progress();
-        stm_state.robot_hp = referee_.get_remain_hp();
-        stm_state.team_color = referee_.is_red_or_blue();
+        if (game_state_override_ == 1)      stm_state.game_state = 1;
+        else if (game_state_override_ == 2) stm_state.game_state = 4;
+        else                                stm_state.game_state = referee_.get_game_progress();
+        // stm_state.robot_hp = referee_.get_remain_hp();
+        stm_state.robot_hp = 1000;
+        stm_state.team_color = 1;
 
         stm_state.chassis_x_velocity = chassis_.getChassisSpeeds().vX;
         stm_state.chassis_y_velocity = chassis_.getChassisSpeeds().vY;
