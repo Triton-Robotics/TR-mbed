@@ -89,8 +89,8 @@ float OmniWheelSubsystem::setChassisSpeeds(ChassisSpeeds desired, DriveMode mode
             double headingDeg = getEncoderYawDeg();
             robotFrame = rotateToRobotFrame(desired, headingDeg);
             period_time = us_ticker_read();
-            double omegaAvail = CalculateBeybladeVelo(robotFrame.vOmega, robotFrame);
-            robotFrame.vOmega = omegaAvail;
+            // double omegaAvail = CalculateBeybladeVelo(robotFrame.vOmega, robotFrame);
+            // robotFrame.vOmega = omegaAvail;
             break;
         }
 
@@ -105,8 +105,8 @@ float OmniWheelSubsystem::setChassisSpeeds(ChassisSpeeds desired, DriveMode mode
             while (fusedDeg <    0.0) fusedDeg += 360.0;
             robotFrame = rotateToRobotFrame(desired, fusedDeg);
             period_time = us_ticker_read();
-            double omegaAvail = CalculateBeybladeVelo(robotFrame.vOmega, robotFrame);
-            robotFrame.vOmega = omegaAvail;
+            // double omegaAvail = CalculateBeybladeVelo(robotFrame.vOmega, robotFrame);
+            // robotFrame.vOmega = omegaAvail;
             break;
         }
 
@@ -140,7 +140,10 @@ double OmniWheelSubsystem::CalculateBeybladeVelo(float vOmega, ChassisSpeeds lat
     double lateralSpeedSq = lateral.vX * lateral.vX + lateral.vY * lateral.vY;
     double omegaAvail = sqrt(abs(power_limit - VXY_SCALE * lateralSpeedSq));
 
-    if (omegaAvail < vOmega) return omegaAvail;
+    if (omegaAvail < vOmega) {
+        if (omegaAvail < MIN_BEYBLADE_SPEED) return MIN_BEYBLADE_SPEED;
+        else return omegaAvail;
+    }
     else return vOmega;
 }
 

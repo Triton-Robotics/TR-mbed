@@ -17,6 +17,7 @@ static constexpr double MECANUM_HALF_X       = 0.14;    //< wheel-centre to chas
 static constexpr double MECANUM_HALF_Y       = 0.21;    //< wheel-centre to chassis Y-axis [m]
 static constexpr double DEFAULT_MAX_WHEEL_MPS  = 3;  //< linear wheel speed cap  [m/s]
 static constexpr double DEFAULT_MAX_OMEGA_RADPS = 8.0;  //< angular velocity cap  [rad/s]
+static constexpr double MIN_BEYBLADE_SPEED = 2.0;   //< min bb velo [rad/s]
 static constexpr double VXY_SCALE = 110.53;
 static constexpr float STATIC_FRICTION_CONSTANT = 0.233924f;
 static constexpr float STATIC_FRICTION_CONSTANT_ALT = 0.8f;
