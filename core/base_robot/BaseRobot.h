@@ -147,6 +147,8 @@ class BaseRobot {
             shot = 'm';
         }else if(remote_.keyPressed(DJIRemote2::Key::C)){
             shot = 'd';        
+        }else if(remote_.keyPressed(DJIRemote2::Key::Z)){
+            shot = 'z';
         }
         
         if(remote_.getMouseR() || remote_.getDialValue() == -1){

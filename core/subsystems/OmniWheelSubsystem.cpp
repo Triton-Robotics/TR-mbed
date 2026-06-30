@@ -331,7 +331,7 @@ float OmniWheelSubsystem::setWheelSpeeds(WheelSpeeds targetMps)
                                + estimatePowerWatts(LB.getData(TORQUE))
                                + estimatePowerWatts(RB.getData(TORQUE));
 
-    constexpr float POWER_MARGIN_W = 10.0f;
+    constexpr float POWER_MARGIN_W = 0.0f;
     float scale = std::min(1.0f, power_limit / (totalEstimatedWatts + POWER_MARGIN_W));
 
     LF.setPower(power[0] * scale);
