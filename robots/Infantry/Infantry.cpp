@@ -33,9 +33,9 @@ constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 300;
 constexpr float MOUSE_SENSITIVITY_YAW_DPS = 10.0;
 constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 10.0;
 
-constexpr PID::config YAW_VEL_PID     = {181, 3.655 * 10e-3, 4.51 * 2.25, 32000, 1000};
-constexpr PID::config YAW_POS_PID     = {1, 0, 0, 50, 2};
-const float yaw_static_friction       = -150;       // We multiply it by dir
+constexpr PID::config YAW_VEL_PID     = {181, 3.655 * 10e-3, 4.51 * 5, 32000, 1000};
+constexpr PID::config YAW_POS_PID     = {1, 0, 0, 45, 2};
+const float yaw_static_friction       = 0;//-150;       // We multiply it by dir
 const float yaw_kinetic_friction      = 0;       // We multiply this by yawvelo
 
 constexpr PID::config PITCH_VEL_PID   = {173.8994, 4.898 * 10e-6, 12.474 * 10e3, 16000, 2000}; //{25, 0.001, 5, 16000, 1000};
