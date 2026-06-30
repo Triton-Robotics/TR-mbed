@@ -25,7 +25,7 @@ constexpr auto IMU_I2C_SCL = PB_8;
 constexpr auto IMU_RESET = PA_8;
 
 constexpr float PITCH_LOWER_BOUND{-22.0};
-constexpr float PITCH_UPPER_BOUND{20.0};
+constexpr float PITCH_UPPER_BOUND{25.0};
 
 constexpr float JOYSTICK_YAW_SENSITIVITY_DPS = 600;
 constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 300;
@@ -34,14 +34,14 @@ constexpr float MOUSE_SENSITIVITY_YAW_DPS = 10.0;
 constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 10.0;
 
 constexpr PID::config YAW_VEL_PID     = {181, 3.655 * 10e-3, 4.51 * 2.25, 32000, 1000};
-constexpr PID::config YAW_POS_PID     = {1, 0, 0, 90, 2};
+constexpr PID::config YAW_POS_PID     = {1, 0, 0, 50, 2};
 const float yaw_static_friction       = -150;       // We multiply it by dir
 const float yaw_kinetic_friction      = 0;       // We multiply this by yawvelo
 
-constexpr PID::config PITCH_VEL_PID   = {173.8994, 4.898 * 10e-9, 12.474 * 10, 16000, 1000}; //{25, 0.001, 5, 16000, 1000};
+constexpr PID::config PITCH_VEL_PID   = {173.8994, 4.898 * 10e-6, 12.474 * 10e3, 16000, 2000}; //{25, 0.001, 5, 16000, 1000};
 constexpr PID::config PITCH_POS_PID   = {1, 0, 0,30,2}; //{1, 0, 0, 30, 2};
-const float pitch_gravity_feedforward = -500;    // We multiply this by cos(angle)
-const float pitch_static_friction     = 635.0 / 5;       // We multiply it by dir
+const float pitch_gravity_feedforward = -1200;    // We multiply this by cos(angle)
+const float pitch_static_friction     = 0;//635.0 / 2;       // We multiply it by dir
 const float pitch_kinetic_friction    = 0; //5.5;     // We multiply this by pitchvelo
 
 constexpr PID::config FL_VEL_CONFIG = {2.58, 0.23 * 1e-3, 17.3 * 1e-3};
@@ -92,15 +92,15 @@ ShooterSubsystem::config shooter_config = {
 };
 OmniWheelSubsystem::Config chassis_config = {
     1,      // left_front_can_id
-    2,      // right_front_can_id
-    3,      // left_back_can_id
-    4,      // right_back_can_id
+    3,      // right_front_can_id
+    4,      // left_back_can_id
+    2,      // right_back_can_id
     FL_VEL_CONFIG,
     FR_VEL_CONFIG,
     BL_VEL_CONFIG,
     BR_VEL_CONFIG,
     0.51,  // radius
-    35,     // yaw_initial_offset_ticks
+    188,     // yaw_initial_offset_ticks
     120,
 };
 
