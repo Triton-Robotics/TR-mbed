@@ -148,7 +148,7 @@ void UI::print_message(const uint8_t *message, const int length) {
  * @param length length of message
  */
 void UI::send_message(uint8_t* message, uint16_t length) {
-    print_message(message, length);
+    // print_message(message, length);
     if(send_packet_func != NULL) {
         send_packet_func(message, length);
     }

@@ -378,8 +378,8 @@ float OmniWheelSubsystem::estimatePowerWatts(int torqueCounts)
 {
     constexpr int   PEAK_TORQUE_COUNTS  = 5596;
     constexpr float SATURATION_RATIO    = 0.4375f;
-    constexpr float SATURATION_CURRENT  = 1.22f;   // [A]
-    constexpr float TORQUE_TO_AMP        = 14.0f / 4.9f;
+    constexpr float SATURATION_CURRENT  = 1.25f;   // [A]
+    constexpr float TORQUE_TO_AMP        = 1.25 * (14.0f / 4.9f);
     constexpr float BUS_VOLTAGE         = 24.0f;   // [V]
 
     float torque = std::abs(static_cast<float>(torqueCounts)) / PEAK_TORQUE_COUNTS;
