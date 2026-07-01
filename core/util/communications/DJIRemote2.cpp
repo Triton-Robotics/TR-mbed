@@ -129,7 +129,7 @@ void DJIRemote2::zeroInputs()
     data_.ch2 = 1024;
     data_.ch3 = 1024;
 
-    data_.mode = 1;
+    data_.mode = 0;
     data_.pause = 0;
     data_.btnL = 0;
     data_.btnR = 0;
@@ -358,7 +358,7 @@ DJIRemote2::ModeSwitch DJIRemote2::getMode() const
         case 2:
             return DJIRemote2::ModeSwitch::MODE_S;
         default:
-            return DJIRemote2::ModeSwitch::MODE_N;
+            return DJIRemote2::ModeSwitch::MODE_C;
     }
 }
 

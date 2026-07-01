@@ -24,8 +24,8 @@ constexpr auto IMU_RESET = PA_8;
 constexpr float PITCH_LOWER_BOUND{-22.0};
 constexpr float PITCH_UPPER_BOUND{25.0};
 
-constexpr float JOYSTICK_YAW_SENSITIVITY_DPS = 600;
-constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 300;
+constexpr float JOYSTICK_YAW_SENSITIVITY_DPS = 200;
+constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 100;
 // Mouse sensitivity initialized
 constexpr float MOUSE_SENSITIVITY_YAW_DPS = 1.0;
 constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 1.0;
@@ -54,7 +54,7 @@ constexpr PID::config INDEXER_PID_POS = {0.1, 0, 0.001};
 
 // Config variables
 TurretSubsystem::config turret_config = {
-    7,
+    3,
     M3508,
     8,
     M3508,
@@ -79,7 +79,7 @@ ShooterSubsystem::config shooter_config = {
     0,
     2,
     4,
-    6,
+    1,
     FLYWHEEL_L_PID,
     FLYWHEEL_R_PID,
     INDEXER_PID_VEL,
@@ -89,7 +89,7 @@ ShooterSubsystem::config shooter_config = {
 };
 OmniWheelSubsystem::Config chassis_config = {
     1,      // left_front_can_id
-    3,      // right_front_can_id
+    5,      // right_front_can_id
     4,      // left_back_can_id
     2,      // right_back_can_id
     FL_VEL_CONFIG,
@@ -97,7 +97,7 @@ OmniWheelSubsystem::Config chassis_config = {
     BL_VEL_CONFIG,
     BR_VEL_CONFIG,
     0.51,  // radius
-    188,     // yaw_initial_offset_ticks
+    298,     // yaw_initial_offset_ticks
     120,
 };
 

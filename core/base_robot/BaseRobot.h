@@ -162,7 +162,7 @@ class BaseRobot {
 
         //Driving input
         scalar = 1;
-        jx = remote_.getJoystickValue(DJIRemote2::Joystick::LEFT_HORIZONTAL) * scalar; // -1 to 1
+        jx = -remote_.getJoystickValue(DJIRemote2::Joystick::LEFT_HORIZONTAL) * scalar; // -1 to 1
         jy = remote_.getJoystickValue(DJIRemote2::Joystick::LEFT_VERTICAL) * scalar; // -1 to 1
         //Pitch, Yaw
         jpitch = remote_.getJoystickValue(DJIRemote2::Joystick::RIGHT_VERTICAL) * scalar; // -1 to 1

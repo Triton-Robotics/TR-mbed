@@ -47,8 +47,8 @@ constexpr auto IMU_RESET = PA_8;
 constexpr float PITCH_LOWER_BOUND{-22.0};
 constexpr float PITCH_UPPER_BOUND{20.0};
 
-constexpr float JOYSTICK_YAW_SENSITIVITY_DPS = 600;
-constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 300;
+constexpr float JOYSTICK_YAW_SENSITIVITY_DPS = 200;
+constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 100;
 
 // Mouse sensitivity initialized
 constexpr float MOUSE_SENSITIVITY_YAW_DPS = 10.0;
@@ -65,21 +65,12 @@ const float pitch_gravity_feedforward = -500;    // We multiply this by cos(angl
 const float pitch_static_friction     = 635.0 / 5;       // We multiply it by dir
 const float pitch_kinetic_friction    = 0; //5.5;     // We multiply this by pitchvelo
 
-// constexpr PID::config FL_VEL_CONFIG = {3, 0, 0};
-// constexpr PID::config FR_VEL_CONFIG = {3, 0, 0};
-// constexpr PID::config BL_VEL_CONFIG = {3, 0, 0};
-// constexpr PID::config BR_VEL_CONFIG = {3, 0, 0};
-
-// constexpr PID::config FLYWHEEL_L_PID = {7.1849, 0.000042634, 0};
-// constexpr PID::config FLYWHEEL_R_PID = {7.1849, 0.000042634, 0};
-constexpr PID::config FEEDER_PID = {4, 0, 1};
-// constexpr PID::config INDEXER_PID_VEL = {2.7, 0.001, 0};
-// constexpr PID::config INDEXER_PID_POS = {0.1,0,0.001};
-
 constexpr PID::config FL_VEL_CONFIG = {2.58, 0.23 * 1e-3, 17.3 * 1e-3};
 constexpr PID::config FR_VEL_CONFIG = {2.75, 0.574 * 1e-3, 17.9 * 1e-3};
 constexpr PID::config BL_VEL_CONFIG = {4.1, 0.0523 * 1e-3, 10.9 * 1e-3};
 constexpr PID::config BR_VEL_CONFIG = {3.9, 0.159 * 1e-3, 26.1 * 1e-3};
+
+constexpr PID::config FEEDER_PID = {4, 0, 1};
 
 constexpr PID::config FLYWHEEL_L_PID = {7.1849, 0.000042634, 0};
 constexpr PID::config FLYWHEEL_R_PID = {7.1849, 0.000042634, 0};
@@ -108,23 +99,6 @@ TurretSubsystem::config turret_config = {
     PITCH_LOWER_BOUND,
     PITCH_UPPER_BOUND
 };
-
-// ShooterSubsystem::config shooter_config = {
-//     0,
-//     4,
-//     5,
-//     6,
-//     1,
-//     FLYWHEEL_L_PID,
-//     FLYWHEEL_R_PID,
-//     FEEDER_PID,
-//     INDEXER_PID_VEL,
-//     INDEXER_PID_POS,
-//     CANHandler::CANBUS_2,
-//     CANHandler::CANBUS_1,
-//     false
-// };
-
 
 HeroShooterSubsystem::config shooter_config = {
     0,
@@ -157,20 +131,6 @@ OmniWheelSubsystem::Config chassis_config = {
 	8.0,   // max_beyblade_omega_radps
     OmniWheelSubsystem::MECANUM
 };
-
-// ChassisSubsystem::Config chassis_config = {
-//     1,      // left_front_can_id
-//     2,      // right_front_can_id
-//     3,      // left_back_can_id
-//     4,      // right_back_can_id
-//     FL_VEL_CONFIG,
-//     FR_VEL_CONFIG,
-//     BL_VEL_CONFIG,
-//     BR_VEL_CONFIG,
-//     0.22617,  // radius
-//     0.065,    // speed_pid_ff_ks
-//     1700,     // yaw_initial_offset_ticks
-// };
 
 // State variables
 ChassisSpeeds des_chassis_state;
@@ -207,34 +167,6 @@ public:
     OmniWheelSubsystem chassis_;
 
     bool imu_initialized{false};
-
-    // Hero(Config &config) 
-    // 	: BaseRobot(config),     
-    // 	i2c_(IMU_I2C_SDA, IMU_I2C_SCL),
-    // 	imu_(i2c_, 0x6B),
-    // 	encoder_(PB_4),
-    // 	jetson_raw_serial(PC_12, PD_2, 115200),
-    // 	jetson(jetson_raw_serial),
-    // 	turret_(turret_config, imu_),
-    // 	shooter_(shooter_config),
-
-    // 	chassis_(OmniWheelSubsystem::Config{
-    //         1,      // left_front_can_id
-    //         2,      // right_front_can_id
-    //         3,      // left_back_can_id
-    //         4,      // right_back_can_id
-    //         0.22617,  // radius
-    //         0.065,    // speed_pid_ff_ks
-    //         40,     // yaw_initial_offset_ticks
-    //         imu_,
-    //         &encoder_   
-    //     }
-    // 	)
-    // 	// clang-format on
-    // 	{
-    //     pin_mode(IMU_I2C_SCL, PinMode::OpenDrainPullUp);
-    //     pin_mode(IMU_I2C_SDA, PinMode::OpenDrainPullUp);
-    // 	}
 
 	Hero(Config &config) 
     : BaseRobot(config),     
@@ -323,26 +255,6 @@ public:
             referee_.is_spinning = false;
         }
                 
-        // Old Shooter Logic
-        // if ((remote_.PAUSEToggled() == true && remote_.TriggerPressed() == true) || remote_.getMouseL()) {
-        //     des_shoot_state = ShootState::SHOOT;
-        // } else if (remote_.PAUSEToggled() == true ||
-        //            shot == 'd') {
-        //     des_shoot_state = ShootState::FLYWHEEL;
-        // } else {
-        //     des_shoot_state = ShootState::OFF;
-        // }
-        
-        // turret_.setState(des_turret_state);
-        // shooter_.setState(des_shoot_state);
-        
-        // turret_.periodic(chassis_.getChassisSpeeds().vOmega * 60 / (2 * PI));
-        // chassis_.power_limit = referee_.robot_status.chassis_power_limit;
-        // chassis_.periodic(&imuAngles);
-        // shooter_.periodic(referee_.power_heat_data.shooter_42mm_barrel_heat, 
-        //                  referee_.robot_status.shooter_barrel_heat_limit);
-
-		// New Shooter Logic 
         //REMOVED remote_.PAUSEToggled() == true && FROM THE FIRST CONDITION
         if ((remote_.PAUSEToggled() == true && remote_.TriggerPressed() == true) || remote_.getMouseL()) {
             des_shoot_state = ShootState::SHOOT;

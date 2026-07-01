@@ -26,8 +26,8 @@ constexpr auto IMU_RESET = PA_8;
 constexpr float PITCH_LOWER_BOUND{-22.0};
 constexpr float PITCH_UPPER_BOUND{20.0};
 
-constexpr float JOYSTICK_YAW_SENSITIVITY_DPS = 600;
-constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 300;
+constexpr float JOYSTICK_YAW_SENSITIVITY_DPS = 200;
+constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 100;
 // Mouse sensitivity initialized
 constexpr float MOUSE_SENSITIVITY_YAW_DPS = 1.0;
 constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 1.0;
