@@ -1,36 +1,13 @@
 #include "mbed.h"
 #include <cstdio>
 
-// ================================
-// CHANGE THESE PINS IF NEEDED
-// For many STM32 Nucleo boards:
-// CAN RD = PA_11
-// CAN TD = PA_12
-// ================================
 CAN can1(PA_11, PA_12);
 
-// Change this if your C620 ID is not 1
 const int MOTOR_ID = 1;
-
-// Feedback ID for motor ID 1 is usually 0x201
 const int MOTOR_FEEDBACK_ID = 0x200 + MOTOR_ID;
-
-// Current command ID:
-// Motors 1 to 4 use 0x200
-// Motors 5 to 8 use 0x1FF
 const int MOTOR_COMMAND_ID = 0x200;
-
-// Small safe test current
-// Do NOT start with 5000 or 10000
 const int16_t TEST_CURRENT = 300;
 
-// ================================
-// Send current command to motors 1-4
-// id1 controls motor ID 1
-// id2 controls motor ID 2
-// id3 controls motor ID 3
-// id4 controls motor ID 4
-// ================================
 void send_m3508_current(int16_t id1, int16_t id2, int16_t id3, int16_t id4) {
     char data[8];
 
@@ -50,9 +27,6 @@ void send_m3508_current(int16_t id1, int16_t id2, int16_t id3, int16_t id4) {
     can1.write(msg);
 }
 
-// ================================
-// Choose which motor gets current
-// ================================
 void send_test_current(int16_t current) {
     if (MOTOR_ID == 1) {
         send_m3508_current(current, 0, 0, 0);
@@ -63,14 +37,9 @@ void send_test_current(int16_t current) {
     } else if (MOTOR_ID == 4) {
         send_m3508_current(0, 0, 0, current);
     } else {
-        // This simple test code only supports motor IDs 1-4
         send_m3508_current(0, 0, 0, 0);
     }
 }
-
-// ================================
-// Read C620 feedback
-// ================================
 void read_can_feedback() {
     CANMessage rx_msg;
 
@@ -96,9 +65,6 @@ void read_can_feedback() {
     }
 }
 
-// ================================
-// Send one pulse
-// ================================
 void motor_pulse(int16_t current, int duration_ms) {
     printf("Sending current: %d\n", current);
 
@@ -122,14 +88,12 @@ void motor_pulse(int16_t current, int duration_ms) {
 int main() {
     printf("\n\n=== M3508 + C620 Motor Test Started ===\n");
 
-    // C620 CAN is usually 1 Mbps
     can1.frequency(1000000);
 
     printf("CAN frequency set to 1 Mbps\n");
     printf("Testing motor ID: %d\n", MOTOR_ID);
     printf("Expected feedback ID: 0x%03X\n", MOTOR_FEEDBACK_ID);
 
-    // Always start with zero current
     printf("Sending zero current first...\n");
 
     for (int i = 0; i < 200; i++) {
