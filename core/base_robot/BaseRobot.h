@@ -58,6 +58,7 @@ class BaseRobot {
     // "u" - drive
     // "d" - beyblade
     // "m" - off
+    // "y" - yaw-align
 
     // "o" - joystick
     // "d" - flywheel
@@ -141,6 +142,8 @@ class BaseRobot {
             drive = 'u';
         }else if(remote_.keyPressed(DJIRemote2::Key::Q)){
             drive = 'd';        
+        }else if(remote_.keyPressed(DJIRemote2::Key::B)){
+            drive = 'y';
         }
 
         if(remote_.keyPressed(DJIRemote2::Key::V)){
@@ -182,7 +185,7 @@ class BaseRobot {
             mult = 1;
         }
 
-        jx += mult * ((remote_.keyPressed(DJIRemote2::Key::D) ? 1 : 0) + (remote_.keyPressed(DJIRemote2::Key::A) ? -1 : 0));
+        jx += mult * ((remote_.keyPressed(DJIRemote2::Key::D) ? -1 : 0) + (remote_.keyPressed(DJIRemote2::Key::A) ? 1 : 0));
         jy += mult * ((remote_.keyPressed(DJIRemote2::Key::W) ? 1 : 0) + (remote_.keyPressed(DJIRemote2::Key::S) ? -1 : 0));
 
         float j_hypo = sqrt(jx * jx + jy * jy);

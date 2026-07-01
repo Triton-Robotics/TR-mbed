@@ -262,13 +262,18 @@ public:
         // TODO this should be threaded inside imu instead
         imu_.mahonyUpdateIMU(dt_us / 1000000.0);
         imuAngles = imu_.getImuAngles();
-        // TODO: use this in code correctly to drive faster
-        max_linear_vel = 1.24 + 0.0513 * chassis_.power_limit +
-                         0.000216 * (chassis_.power_limit * chassis_.power_limit);
+        
+        max_linear_vel = MAX_LINEAR_VELOCITY;
         des_chassis_state.vX = jy * max_linear_vel;
-        des_chassis_state.vY = -jx * max_linear_vel;
+        des_chassis_state.vY = jx * max_linear_vel;
+
 
         // Turret from remote
+        if (cv_enabled_ && (us_ticker_read() - jetson_state.stamp_us ) / 1000 < 500) {
+            yaw_desired_angle = jetson_state.desired_yaw_rads;
+            pitch_desired_angle = jetson_state.desired_pitch_rads;
+        }
+
         yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * dt_us / 1000000;
         yaw_desired_angle -= jyaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
         yaw_desired_angle = capAngle(yaw_desired_angle);
@@ -282,26 +287,6 @@ public:
         // Read jetson
         jetson_state = jetson.read();
 
-        // Old Chassis logic
-        // if (drive == 'u' || (drive == 'o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_S)) {
-        //     des_chassis_state.vOmega = 0;
-        //     chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::DRIVE_MODE::YAW_ALIGN);
-        //     des_turret_state.turret_mode = TurretState::AIM;
-        // } else if (drive == 'd' ||
-        //            (drive == 'o' &&
-        //             remote_.getMode() == DJIRemote2::ModeSwitch::MODE_C)) {
-        //     des_chassis_state.vOmega = omega_speed;
-        //     chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::DRIVE_MODE::YAW_ORIENTED);
-        //     des_turret_state.turret_mode = TurretState::AIM;
-        // } else {
-        //     chassis_.setWheelPower({0, 0, 0, 0});
-        //     des_turret_state.turret_mode = TurretState::SLEEP;
-        //     des_turret_state.yaw_angle_degs = turret_.getState().yaw_angle_degs;
-        //     yaw_desired_angle = turret_.getState().yaw_angle_degs;
-        //     des_turret_state.pitch_angle_degs = 0;
-        // }
-
-		// New Chassis logic
         if (drive == 'u' || (drive == 'o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_S)) {
             des_chassis_state.vOmega = 0;
             chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::YAW_ORIENTED);
@@ -318,7 +303,14 @@ public:
             referee_.is_aligned = false;
             referee_.is_cv_on = false;
             referee_.is_spinning = true;
-        } 
+        } else if (drive == 'y') {
+            des_chassis_state.vOmega = 0;
+            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::YAW_ALIGN, turret_.getState().yaw_velo_rad_s);
+            des_turret_state.turret_mode = TurretState::AIM;
+            referee_.is_aligned = false;
+            referee_.is_cv_on = false;
+            referee_.is_spinning = false;
+        }
         else 
         {
             chassis_.setChassisSpeeds({0, 0, 0});

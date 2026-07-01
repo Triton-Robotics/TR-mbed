@@ -27,8 +27,8 @@ constexpr float PITCH_UPPER_BOUND{25.0};
 constexpr float JOYSTICK_YAW_SENSITIVITY_DPS = 600;
 constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 300;
 // Mouse sensitivity initialized
-constexpr float MOUSE_SENSITIVITY_YAW_DPS = 10.0;
-constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 10.0;
+constexpr float MOUSE_SENSITIVITY_YAW_DPS = 1.0;
+constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 1.0;
 
 constexpr PID::config YAW_VEL_PID     = {181, 3.655 * 10e-3, 4.51 * 7.5, 32000, 1000};
 constexpr PID::config YAW_POS_PID     = {1, 0, 0, 45, 2};
@@ -159,13 +159,11 @@ class Infantry : public BaseRobot {
         // TODO this should be threaded inside imu instead
         imu_.mahonyUpdateIMU(dt_us / 1000000.0);
         imuAngles = imu_.getImuAngles();
-        // TODO: use this in code correctly to drive faster
-        // chassis_.power_limit = referee_.robot_status.chassis_power_limit;
-        max_linear_vel = 1.24 + 0.0513 * chassis_.power_limit +
-                         0.000216 * (chassis_.power_limit * chassis_.power_limit);
-        // max_linear_vel = 5.0;
+        
+        max_linear_vel = MAX_LINEAR_VELOCITY;
         des_chassis_state.vX = jy * max_linear_vel;
-        des_chassis_state.vY = -jx * max_linear_vel;
+        des_chassis_state.vY = jx * max_linear_vel;
+
 
         // Read jetson
         jetson_state = jetson.read();
@@ -203,7 +201,14 @@ class Infantry : public BaseRobot {
             referee_.is_aligned = false;
             referee_.is_cv_on = false;
             referee_.is_spinning = true;
-        } 
+        } else if (drive == 'y') {
+            des_chassis_state.vOmega = 0;
+            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::YAW_ALIGN, turret_.getState().yaw_velo_rad_s);
+            des_turret_state.turret_mode = TurretState::AIM;
+            referee_.is_aligned = false;
+            referee_.is_cv_on = false;
+            referee_.is_spinning = false;
+        }
         else 
         {
             chassis_.setChassisSpeeds({0, 0, 0});

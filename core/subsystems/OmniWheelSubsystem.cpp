@@ -73,7 +73,7 @@ void OmniWheelSubsystem::periodic(const IMU::EulerAngles &imu)
 // High-level drive  (public)
 // ─────────────────────────────────────────────────────────────────────────────
 
-float OmniWheelSubsystem::setChassisSpeeds(ChassisSpeeds desired, DriveMode mode)
+float OmniWheelSubsystem::setChassisSpeeds(ChassisSpeeds desired, DriveMode mode, float yawVelo)
 {
     // ── Step 1: Resolve coordinate frame → robot frame ────────────────────────
     ChassisSpeeds robotFrame;
@@ -120,6 +120,40 @@ float OmniWheelSubsystem::setChassisSpeeds(ChassisSpeeds desired, DriveMode mode
             double omegaAvail = CalculateBeybladeVelo(m_beybladeMaxOmega, lateral);
             // Positive omega = CCW spin.  Negate here for CW if preferred.
             robotFrame = { lateral.vX, lateral.vY, omegaAvail };
+            break;
+        }
+
+        case YAW_ALIGN: {
+            // Compute yaw error(how much the yaw needs to recorrect)
+            float yawCurr = getEncoderYawDeg();
+            float yawError = (yawCurr - m_yawOffsetDeg);
+            while (yawError > 180) yawError -= 360;
+            while (yawError < -180) yawError += 360;
+            
+            if (abs(yawError) < 5) yawError = 0;
+
+            if ((yawError >= 45 && yawError < 135)) {
+                yawError -= 90;
+            }
+            if ((yawError >= 135)) {
+                yawError -= 180;
+            }
+            if (yawError < -135) {
+                yawError += 180;
+            }
+            if ((yawError >= -135 && yawError < -45)) {
+                yawError += 90;
+            }
+
+            //tune these two for optimal performance
+            float gain_align = 2;
+            float gain_yaw = 3;
+            float deg2rad = PI/180; // convert to rad and just run at 2x that rad/s
+            float omegaCmd = (gain_align * yawError * deg2rad + gain_yaw * yawVelo);
+
+            if (abs(omegaCmd) < 0.1) omegaCmd = 0;
+
+            robotFrame = rotateToRobotFrame({desired.vX, desired.vY, omegaCmd}, yawCurr);
             break;
         }
     }

@@ -312,6 +312,8 @@ void DJIRemote2::decodeFrame(const uint8_t* frame)
     data_.CRC_in = ((static_cast<uint16_t>(frame[18]) >> 3) & 0x1F)
                  | ( static_cast<uint16_t>(frame[19])       << 5)
                  | ((static_cast<uint16_t>(frame[20]) & 0x07) << 13);
+
+    printf("X: %02x %02x  Y: %02x %02x\n", frame[10], frame[11], frame[12], frame[13]);
 }
 
 void DJIRemote2::shiftLeft(size_t count)
