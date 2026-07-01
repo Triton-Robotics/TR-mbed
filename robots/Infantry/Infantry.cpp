@@ -187,7 +187,7 @@ class Infantry : public BaseRobot {
         des_turret_state.pitch_angle_degs = pitch_desired_angle;
 
         // Chassis logic
-        if (drive == 'u' || (drive == 'o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_S)) {
+        if (drive == 'u' || (drive == 'o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_N)) {
             des_chassis_state.vOmega = 0;
             chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
@@ -196,7 +196,7 @@ class Infantry : public BaseRobot {
             referee_.is_spinning = false;
         } else if (drive == 'd' ||
                    (drive == 'o' &&
-                    remote_.getMode() == DJIRemote2::ModeSwitch::MODE_C)) {
+                    remote_.getMode() == DJIRemote2::ModeSwitch::MODE_S)) {
             // des_chassis_state.vOmega = omega_speed;
             chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::BEYBLADE);
             des_turret_state.turret_mode = TurretState::AIM;

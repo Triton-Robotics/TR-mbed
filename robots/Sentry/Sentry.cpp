@@ -56,7 +56,7 @@ constexpr PID::config INDEXER_PID_POS = {0.1, 0, 0.001};
 
 // Config variables
 TurretSubsystem::config turret_config = {
-    7,
+    3,
     M3508,
     8,
     M3508,
@@ -81,25 +81,25 @@ ShooterSubsystem::config shooter_config = {
     0,
     2,
     4,
-    6,
+    1,
     FLYWHEEL_L_PID,
     FLYWHEEL_R_PID,
     INDEXER_PID_VEL,
     INDEXER_PID_POS,
     CANHandler::CANBUS_2,
-    true
+    false
 };
 OmniWheelSubsystem::Config chassis_config = {
     1,      // left_front_can_id
-    2,      // right_front_can_id
+    5,      // right_front_can_id
     4,      // left_back_can_id
-    3,      // right_back_can_id
+    2,      // right_back_can_id
     FL_VEL_CONFIG,
     FR_VEL_CONFIG,
     BL_VEL_CONFIG,
     BR_VEL_CONFIG,
     0.51,  // radius
-    85.27,     // yaw_initial_offset_ticks
+    298,     // yaw_initial_offset_ticks
     120,
 };
 
@@ -138,7 +138,7 @@ class Sentry : public BaseRobot {
         // clang-format off
         i2c_(IMU_I2C_SDA, IMU_I2C_SCL), 
         imu_(i2c_, 0x6B),
-        encoder_(PB_4, true),
+        encoder_(PB_4),
         jetson_raw_serial(PC_12, PD_2,115200), // TODO: check higher baud to see if still works
         jetson(jetson_raw_serial),
         turret_(turret_config, imu_),
@@ -185,7 +185,7 @@ class Sentry : public BaseRobot {
         des_turret_state.pitch_angle_degs = pitch_desired_angle;
 
         // Chassis logic
-        if (drive == 'u' || (drive == 'o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_S)) {
+        if (drive == 'u' || (drive == 'o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_N)) {
             des_chassis_state.vOmega = 0;
             chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
@@ -197,7 +197,7 @@ class Sentry : public BaseRobot {
             referee_.is_spinning = false;
         } else if (drive == 'd' ||
                    (drive == 'o' &&
-                    remote_.getMode() == DJIRemote2::ModeSwitch::MODE_C)) {
+                    remote_.getMode() == DJIRemote2::ModeSwitch::MODE_S)) {
             // Jetson odom
             if( (us_ticker_read() - jetson_state.stamp_us ) / 1000 > 500 ) {
                 des_chassis_state.vX = 0;
