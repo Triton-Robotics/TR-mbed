@@ -1,60 +1,119 @@
-#include "base_robot/BaseRobot.h"
-#include "util/algorithms/general_functions.h"
+#include "mbed.h"
+#include <cstdio>
 
-#include "subsystems/ChassisSubsystem.h"
-#include "subsystems/ShooterSubsystem.h"
-#include "subsystems/TurretSubsystem.h"
+CAN can1(PA_11, PA_12);
 
-#include "util/communications/CANHandler.h"
-#include "util/communications/jetson/Jetson.h"
-#include "util/motor/DJIMotor.h"
-#include "util/peripherals/imu/BNO055.h"
+const int MOTOR_ID = 1;
+const int MOTOR_FEEDBACK_ID = 0x200 + MOTOR_ID;
+const int MOTOR_COMMAND_ID = 0x200;
+const int16_t TEST_CURRENT = 300;
 
-#include <algorithm>
+void send_m3508_current(int16_t id1, int16_t id2, int16_t id3, int16_t id4) {
+    char data[8];
 
-PID::config test_motor_vel_PID = {1, 0, 0};
-PID::config test_motor_pos_PID = {1, 0, 0};
+    data[0] = (id1 >> 8) & 0xFF;
+    data[1] = id1 & 0xFF;
 
-class TestBench : public BaseRobot {
-  public:
-    DJIMotor motor;
+    data[2] = (id2 >> 8) & 0xFF;
+    data[3] = id2 & 0xFF;
 
-    TestBench(Config &config)
-        : BaseRobot(config),
-          // clang-format off
-        motor(DJIMotor::config{
-            1,
-            CANHandler::CANBUS_1,
-            M3508,
-            "Test motor",
-            test_motor_vel_PID,
-            test_motor_pos_PID
-        })
-        // clang-format on        
-    {}
+    data[4] = (id3 >> 8) & 0xFF;
+    data[5] = id3 & 0xFF;
 
-    ~TestBench() {}
+    data[6] = (id4 >> 8) & 0xFF;
+    data[7] = id4 & 0xFF;
 
-    void init() override 
-    {
-        
+    CANMessage msg(MOTOR_COMMAND_ID, data, 8);
+    can1.write(msg);
+}
+
+void send_test_current(int16_t current) {
+    if (MOTOR_ID == 1) {
+        send_m3508_current(current, 0, 0, 0);
+    } else if (MOTOR_ID == 2) {
+        send_m3508_current(0, current, 0, 0);
+    } else if (MOTOR_ID == 3) {
+        send_m3508_current(0, 0, current, 0);
+    } else if (MOTOR_ID == 4) {
+        send_m3508_current(0, 0, 0, current);
+    } else {
+        send_m3508_current(0, 0, 0, 0);
     }
-    
-    void periodic(unsigned long dt_us) override {
-        motor.setPower(0);
+}
+void read_can_feedback() {
+    CANMessage rx_msg;
+
+    while (can1.read(rx_msg)) {
+        if (rx_msg.id == MOTOR_FEEDBACK_ID && rx_msg.len == 8) {
+            uint16_t angle = ((uint8_t)rx_msg.data[0] << 8) | (uint8_t)rx_msg.data[1];
+
+            int16_t speed_rpm = ((uint8_t)rx_msg.data[2] << 8) | (uint8_t)rx_msg.data[3];
+
+            int16_t actual_current = ((uint8_t)rx_msg.data[4] << 8) | (uint8_t)rx_msg.data[5];
+
+            uint8_t temperature = (uint8_t)rx_msg.data[6];
+
+            printf("Feedback received | ID: 0x%03X | angle: %u | speed: %d rpm | current: %d | temp: %u C\n",
+                   rx_msg.id,
+                   angle,
+                   speed_rpm,
+                   actual_current,
+                   temperature);
+        } else {
+            printf("Other CAN msg | ID: 0x%03X | len: %d\n", rx_msg.id, rx_msg.len);
+        }
+    }
+}
+
+void motor_pulse(int16_t current, int duration_ms) {
+    printf("Sending current: %d\n", current);
+
+    int loops = duration_ms / 10;
+
+    for (int i = 0; i < loops; i++) {
+        send_test_current(current);
+        read_can_feedback();
+        ThisThread::sleep_for(10ms);
     }
 
-    void end_of_loop() override {}
+    printf("Stopping motor\n");
 
-    unsigned int main_loop_dt_ms() override { return 2; } // 500 Hz loop
-};
-
+    for (int i = 0; i < 50; i++) {
+        send_test_current(0);
+        read_can_feedback();
+        ThisThread::sleep_for(10ms);
+    }
+}
 
 int main() {
-    printf("HELLO\n");
-    BaseRobot::Config config = BaseRobot::Config{}; 
-    TestBench TestBench(config);
+    printf("\n\n=== M3508 + C620 Motor Test Started ===\n");
 
-    TestBench.main_loop();
-    // blocking
+    can1.frequency(1000000);
+
+    printf("CAN frequency set to 1 Mbps\n");
+    printf("Testing motor ID: %d\n", MOTOR_ID);
+    printf("Expected feedback ID: 0x%03X\n", MOTOR_FEEDBACK_ID);
+
+    printf("Sending zero current first...\n");
+
+    for (int i = 0; i < 200; i++) {
+        send_test_current(0);
+        read_can_feedback();
+        ThisThread::sleep_for(10ms);
+    }
+
+    printf("If feedback appears above, CAN is working.\n");
+    printf("Now sending small test pulses.\n");
+
+    while (true) {
+        // Forward small pulse
+        motor_pulse(TEST_CURRENT, 500);
+
+        ThisThread::sleep_for(1000ms);
+
+        // Reverse small pulse
+        motor_pulse(-TEST_CURRENT, 500);
+
+        ThisThread::sleep_for(2000ms);
+    }
 }
