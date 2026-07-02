@@ -13,8 +13,8 @@
 
 static constexpr double OMNI_PI              = 3.14159265358979;
 static constexpr double WHEEL_RADIUS_M       = 0.073;   //< 146 mm diameter / 2  [m]
-static constexpr double MECANUM_HALF_X       = 0.14;    //< wheel-centre to chassis X-axis [m]
-static constexpr double MECANUM_HALF_Y       = 0.21;    //< wheel-centre to chassis Y-axis [m]
+static constexpr double MECANUM_HALF_X       = 0.33;    //< wheel-centre to chassis X-axis [m]
+static constexpr double MECANUM_HALF_Y       = 0.4;    //< wheel-centre to chassis Y-axis [m]
 static constexpr double MAX_LINEAR_VELOCITY  = 3;    //< maximum chasssis speed [m/s]
 static constexpr double DEFAULT_MAX_WHEEL_MPS  = 3;  //< linear wheel speed cap  [m/s]
 static constexpr double DEFAULT_MAX_OMEGA_RADPS = 8.0;  //< angular velocity cap  [rad/s]

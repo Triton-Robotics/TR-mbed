@@ -126,9 +126,9 @@ OmniWheelSubsystem::Config chassis_config = {
     BL_VEL_CONFIG,
     BR_VEL_CONFIG,
     0.51,  // radius
-    35,     // yaw_initial_offset_ticks
-    120,
-	8.0,   // max_beyblade_omega_radps
+    240,     // yaw_initial_offset_ticks
+    90,`
+	3.0,   // max_beyblade_omega_radps
     OmniWheelSubsystem::MECANUM
 };
 

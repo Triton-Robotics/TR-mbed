@@ -280,7 +280,7 @@ class Sentry : public BaseRobot {
 
         turret_.periodic(chassis_.getChassisSpeeds().vOmega * 60 / (2 * PI));
         chassis_.periodic(imuAngles);
-        // chassis_.power_limit = referee_.robot_status.chassis_power_limit;
+        chassis_.power_limit = referee_.robot_status.chassis_power_limit;
         shooter_.periodic(referee_.power_heat_data.shooter_17mm_1_barrel_heat,
                          referee_.robot_status.shooter_barrel_heat_limit);
 

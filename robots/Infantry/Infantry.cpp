@@ -102,7 +102,7 @@ OmniWheelSubsystem::Config chassis_config = {
     BR_VEL_CONFIG,
     0.51,  // radius
     298,     // yaw_initial_offset_ticks
-    120,
+    90,
 };
 
 // State variables
