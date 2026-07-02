@@ -364,20 +364,23 @@ float OmniWheelSubsystem::setWheelSpeeds(WheelSpeeds targetMps)
 
     m_lastPidUs = now;
 
-    float totalEstimatedWatts = estimatePowerWatts(LF.getData(TORQUE))
-                               + estimatePowerWatts(RF.getData(TORQUE))
-                               + estimatePowerWatts(LB.getData(TORQUE))
-                               + estimatePowerWatts(RB.getData(TORQUE));
+    // float totalEstimatedWatts = estimatePowerWatts(LF.getData(TORQUE))
+    //                            + estimatePowerWatts(RF.getData(TORQUE))
+    //                            + estimatePowerWatts(LB.getData(TORQUE))
+    //                            + estimatePowerWatts(RB.getData(TORQUE));
 
-    // float totalEstimatedWatts = estimatePowerBetter(LF.getData(TORQUE), LF.getData(VELOCITY))
-    //                            + estimatePowerBetter(RF.getData(TORQUE), RF.getData(VELOCITY))
-    //                            + estimatePowerBetter(LB.getData(TORQUE), LB.getData(VELOCITY))
-    //                            + estimatePowerBetter(RB.getData(TORQUE), RB.getData(VELOCITY));
+    float totalEstimatedWatts = estimatePowerBetter(LF.getData(TORQUE), LF.getData(VELOCITY))
+                               + estimatePowerBetter(RF.getData(TORQUE), RF.getData(VELOCITY))
+                               + estimatePowerBetter(LB.getData(TORQUE), LB.getData(VELOCITY))
+                               + estimatePowerBetter(RB.getData(TORQUE), RB.getData(VELOCITY));
 
 
-    printf("%.2f\n", totalEstimatedWatts);
+    constexpr float ALPHA = 0.15f; // ~time-constant of a few ticks at 500 Hz
     constexpr float POWER_MARGIN_W = 10.0f;
-    float scale = std::min(1.0f, power_limit / (totalEstimatedWatts + POWER_MARGIN_W));
+    m_powerFilt += ALPHA * (totalEstimatedWatts - m_powerFilt);    
+    float scale = std::min(1.0f, power_limit / (m_powerFilt + POWER_MARGIN_W));
+
+    // float scale = std::min(1.0f, power_limit / (totalEstimatedWatts + POWER_MARGIN_W));
 
     LF.setPower(power[0] * scale);
     RF.setPower(power[1] * scale);
@@ -424,10 +427,10 @@ float OmniWheelSubsystem::estimatePowerWatts(int torqueCounts)
     constexpr float PEAK_TORQUE_COUNTS  = 559.6;
     constexpr float SATURATION_RATIO    = 0.4375f;
     constexpr float SATURATION_CURRENT  = 1.25f;   // [A]
-    constexpr float TORQUE_TO_AMP        = 1.25 * 0.3;
+    constexpr float TORQUE_TO_AMP        = 1 / 0.3;
     constexpr float BUS_VOLTAGE         = 24.0f;   // [V]
 
-    float torque = std::abs(static_cast<float>(torqueCounts)) / PEAK_TORQUE_COUNTS;
+    float torque = std::abs((float)torqueCounts) / PEAK_TORQUE_COUNTS;
 
     float currentA;
     if (torque > SATURATION_RATIO) {
@@ -447,33 +450,17 @@ float OmniWheelSubsystem::estimatePowerWatts(int torqueCounts)
 }
 
 float OmniWheelSubsystem::estimatePowerBetter(int torqueCounts, float motorVel) {
-    // Idea is to use the formula P = t*w + (I^2)R
-    constexpr float PEAK_TORQUE_COUNTS  = 559.6;
-    constexpr float SATURATION_CURRENT  = 1.25f;   // [A]
-    constexpr float TORQUE_TO_AMP       = 1.25 * 0.3;
-    constexpr float PHASE_RESISTANCE    = 0.192f;  //  datasheet
+    constexpr float COUNTS_TO_NM   = 1.0f / 559.6f; // your calibration → N·m
+    constexpr float KT_NM_PER_A    = 0.3f;          // M3508 torque constant, VERIFY
+    constexpr float PHASE_RESISTANCE = 0.194f;      // line-to-line? see note
 
-    float torque = std::abs(static_cast<float>(torqueCounts)) / PEAK_TORQUE_COUNTS; 
+    float torqueNm  = std::abs((float)torqueCounts) * COUNTS_TO_NM;
+    float currentA  = torqueNm * KT_NM_PER_A;       // I = tau / Kt   ← the key fix
 
-    float currentA = torque * TORQUE_TO_AMP;
-    // if (torque * TORQUE_TO_AMP > SATURATION_CURRENT) {
-    //     // Log an over-torque event at most once every 2000 ms
-    //     currentA = SATURATION_CURRENT;
-    //     if ((us_ticker_read() - m_lastTorqueUs) / 1000UL > 2000UL) {
-    //         m_lastTorqueUs = us_ticker_read();
-    //     }
-    //     else {
-    //         currentA = torque * TORQUE_TO_AMP;
-    //     }
-    // } else {
-    //     currentA = torque * TORQUE_TO_AMP;
-    // }
+    float powerLoss = currentA * currentA * PHASE_RESISTANCE;
+    float mechPower = std::abs(torqueNm * motorVel); // W, magnitude only
 
-    float powerLoss = (currentA * currentA) * PHASE_RESISTANCE; // Phase resistance of M3508
-                                                                                                                                                                
-    float mechanicalPower = torque * motorVel;
-
-    return mechanicalPower + powerLoss; 
+    return mechPower + powerLoss;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

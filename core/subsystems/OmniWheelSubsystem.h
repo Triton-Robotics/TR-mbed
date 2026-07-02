@@ -162,6 +162,7 @@ private:
     // from the constructor config).  The actual ω_max is derived at runtime by
     // scaling this value with √(power_limit / power_limit).
     double m_beybladeMaxOmega;     //< ω_max at reference power  [rad/s]
+    float m_powerFilt = 0.f;
 
     // ── PID / rate-limiting state ──────────────────────────────────────────────
     uint32_t      m_lastPidUs    = 0;
