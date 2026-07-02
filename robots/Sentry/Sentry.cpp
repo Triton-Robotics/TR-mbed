@@ -263,7 +263,7 @@ class Sentry : public BaseRobot {
         if ((remote_.PAUSEToggled() == true && remote_.TriggerPressed() == true) || remote_.getMouseL()) {
             des_shoot_state = ShootState::SHOOT;
             referee_.is_flywheel_on = true;
-        } else if (remote_.CUSTRPressed() == true && remote_.PAUSEToggled() == true) { //Make sure flywheel is on since that's part 
+        } else if (remote_.CUSTRPressed() == true) { //Make sure flywheel is on since that's part 
             des_shoot_state = ShootState::JAM;
             referee_.is_flywheel_on = true;
         }else if (remote_.PAUSEToggled() == true ||
