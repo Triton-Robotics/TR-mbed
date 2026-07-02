@@ -170,6 +170,7 @@ class BaseRobot {
 
         myaw = remote_.getMouseX();
         mpitch = remote_.getMouseY();
+        // printf("%d | %d\n", remote_.getMouseX(), remote_.getMouseY());
 
         jx = (abs(jx) < tolerance) ? 0 : jx;
         jy = (abs(jy) < tolerance) ? 0 : jy;

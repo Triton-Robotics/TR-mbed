@@ -292,11 +292,11 @@ void DJIRemote2::decodeFrame(const uint8_t* frame)
 
     data_.trigger = (frame[9] >> 4) & 0x01;
 
-    data_.mouseX = ((int16_t)frame[11]) | ((int16_t)frame[10] << 8);
+    data_.mouseX = ((int16_t)frame[10]) | ((int16_t)frame[11] << 8);
 
-    data_.mouseY = ((int16_t)frame[13]) | ((int16_t)frame[12] << 8);
+    data_.mouseY = ((int16_t)frame[12]) | ((int16_t)frame[13] << 8);
 
-    data_.mouseZ = ((int16_t)frame[15]) | ((int16_t)frame[14] << 8);
+    data_.mouseZ = ((int16_t)frame[14]) | ((int16_t)frame[15] << 8);
 
 
     data_.mouseL = (frame[16]) & 0x01;
