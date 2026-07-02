@@ -88,8 +88,8 @@ constexpr PID::config INDEXER_PID_POS = {0.1, 0, 0.001};
 
 // Config variables
 TurretSubsystem::config turret_config = {
-    7,
-    M3508,
+    7, // check if yaw id is actually 7
+    M3508, // check if the motor is actually M3508 or GM6020
     8,
     M3508,
     YAW_VEL_PID,
@@ -101,9 +101,9 @@ TurretSubsystem::config turret_config = {
     pitch_gravity_feedforward,
     pitch_static_friction,
     pitch_kinetic_friction,
-    CANHandler::CANBUS_1,
+    CANHandler::CANBUS_1, // check if yaw canbus is actually 1
     CANHandler::CANBUS_2,
-    -1,
+    -1, // might need to change this to 1 
     (1.0 / 3.0),
     PITCH_LOWER_BOUND,
     PITCH_UPPER_BOUND
@@ -275,7 +275,9 @@ public:
         des_turret_state.yaw_angle_degs = yaw_desired_angle;
 
         pitch_desired_angle -= mpitch * MOUSE_SENSITIVITY_PITCH_DPS * dt_us / 1000000;
+		// pitch_desired_angle += mpitch * MOUSE_PITCH_SENSITIVITY_DPS * dt_us / 1000000;
         pitch_desired_angle -= jpitch * JOYSTICK_PITCH_SENSITIVITY_DPS * dt_us / 1000000;
+		// pitch_desited_angle += jpitch * JOYSTICK_PITCH_SENSITIVITY_DPS * dt_us / 1000000;
         pitch_desired_angle = std::clamp(pitch_desired_angle, PITCH_LOWER_BOUND, PITCH_UPPER_BOUND);
         des_turret_state.pitch_angle_degs = pitch_desired_angle;
 
@@ -302,7 +304,7 @@ public:
         // }
 
 		// New Chassis logic
-        if (drive == 'u' || (drive == 'o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_S)) {
+        if (drive == 'u' || (drive == 'o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_N)) {
             des_chassis_state.vOmega = 0;
             chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
@@ -310,8 +312,7 @@ public:
             referee_.is_cv_on = false;
             referee_.is_spinning = false;
         } else if (drive == 'd' ||
-                   (drive == 'o' &&
-                    remote_.getMode() == DJIRemote2::ModeSwitch::MODE_C)) {
+                   (drive == 'o')) { //REMOVED CONTROLLER BEYBLADE
             // des_chassis_state.vOmega = omega_speed;
             chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::BEYBLADE);
             des_turret_state.turret_mode = TurretState::AIM;
@@ -380,6 +381,8 @@ public:
 
 
 
+
+
         // printf("time %ld", us_ticker_read());
 
         // Debug print statements
@@ -390,7 +393,8 @@ public:
         // printf("%d\n", shooter.getState());
         // printf("v:%d\n",testmot>>VELOCITY);
         // printf("cx: %.2f\n", remote_.getChassisX());
-        // printf("switch: %d\n", remote_.getSwitch(Remote::Switch::RIGHT_SWITCH));
+        //printf("switch: %d\n", remote_.getSwitch(Remote::Switch::RIGHT_SWITCH));
+				// print encoder values
                 // printf("%.2f\n", encoder_.encoderMovingAverage());
         // printf("%.2f %.2f\n", shooter_.flywheelL.getData(VELOCITY), shooter_.flywheelR.getData(VELOCITY));
         // printf("%.2f, %.2f, %.2f\n", imuAngles.roll, imuAngles.pitch, imuAngles.yaw);

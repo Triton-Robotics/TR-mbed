@@ -23,9 +23,9 @@ class TestBench : public BaseRobot {
         : BaseRobot(config),
           // clang-format off
         motor(DJIMotor::config{
-            1,
-            CANHandler::CANBUS_1,
-            M3508,
+            3,
+            CANHandler::CANBUS_2,
+            M2006,
             "Test motor",
             test_motor_vel_PID,
             test_motor_pos_PID
@@ -41,7 +41,7 @@ class TestBench : public BaseRobot {
     }
     
     void periodic(unsigned long dt_us) override {
-        motor.setPower(0);
+        motor.setPower(1000);
     }
 
     void end_of_loop() override {}
