@@ -369,6 +369,13 @@ float OmniWheelSubsystem::setWheelSpeeds(WheelSpeeds targetMps)
                                + estimatePowerWatts(LB.getData(TORQUE))
                                + estimatePowerWatts(RB.getData(TORQUE));
 
+    // float totalEstimatedWatts = estimatePowerBetter(LF.getData(TORQUE), LF.getData(VELOCITY))
+    //                            + estimatePowerBetter(RF.getData(TORQUE), RF.getData(VELOCITY))
+    //                            + estimatePowerBetter(LB.getData(TORQUE), LB.getData(VELOCITY))
+    //                            + estimatePowerBetter(RB.getData(TORQUE), RB.getData(VELOCITY));
+
+
+    printf("%.2f\n", totalEstimatedWatts);
     constexpr float POWER_MARGIN_W = 10.0f;
     float scale = std::min(1.0f, power_limit / (totalEstimatedWatts + POWER_MARGIN_W));
 
@@ -414,10 +421,10 @@ float OmniWheelSubsystem::limitAcceleration(float desiredRPM, float previousRPM)
  */
 float OmniWheelSubsystem::estimatePowerWatts(int torqueCounts)
 {
-    constexpr int   PEAK_TORQUE_COUNTS  = 5596;
+    constexpr float PEAK_TORQUE_COUNTS  = 559.6;
     constexpr float SATURATION_RATIO    = 0.4375f;
     constexpr float SATURATION_CURRENT  = 1.25f;   // [A]
-    constexpr float TORQUE_TO_AMP        = 2 * (14.0f / 4.9f);
+    constexpr float TORQUE_TO_AMP        = 1.25 * 0.3;
     constexpr float BUS_VOLTAGE         = 24.0f;   // [V]
 
     float torque = std::abs(static_cast<float>(torqueCounts)) / PEAK_TORQUE_COUNTS;
@@ -425,16 +432,48 @@ float OmniWheelSubsystem::estimatePowerWatts(int torqueCounts)
     float currentA;
     if (torque > SATURATION_RATIO) {
         // Log an over-torque event at most once every 200 ms
-        if ((us_ticker_read() - m_lastTorqueUs) / 1000UL > 200UL) {
+        if ((us_ticker_read() - m_lastTorqueUs) / 1000UL > 2000UL) {
             m_lastTorqueUs = us_ticker_read();
             currentA = SATURATION_CURRENT;
         }
-        currentA = torque * TORQUE_TO_AMP;
+        else { 
+            currentA = torque * TORQUE_TO_AMP;
+        }
     } else {
         currentA = torque * TORQUE_TO_AMP;
     }
 
     return BUS_VOLTAGE * currentA;
+}
+
+float OmniWheelSubsystem::estimatePowerBetter(int torqueCounts, float motorVel) {
+    // Idea is to use the formula P = t*w + (I^2)R
+    constexpr float PEAK_TORQUE_COUNTS  = 559.6;
+    constexpr float SATURATION_CURRENT  = 1.25f;   // [A]
+    constexpr float TORQUE_TO_AMP       = 1.25 * 0.3;
+    constexpr float PHASE_RESISTANCE    = 0.192f;  //  datasheet
+
+    float torque = std::abs(static_cast<float>(torqueCounts)) / PEAK_TORQUE_COUNTS; 
+
+    float currentA = torque * TORQUE_TO_AMP;
+    // if (torque * TORQUE_TO_AMP > SATURATION_CURRENT) {
+    //     // Log an over-torque event at most once every 2000 ms
+    //     currentA = SATURATION_CURRENT;
+    //     if ((us_ticker_read() - m_lastTorqueUs) / 1000UL > 2000UL) {
+    //         m_lastTorqueUs = us_ticker_read();
+    //     }
+    //     else {
+    //         currentA = torque * TORQUE_TO_AMP;
+    //     }
+    // } else {
+    //     currentA = torque * TORQUE_TO_AMP;
+    // }
+
+    float powerLoss = (currentA * currentA) * PHASE_RESISTANCE; // Phase resistance of M3508
+                                                                                                                                                                
+    float mechanicalPower = torque * motorVel;
+
+    return mechanicalPower + powerLoss; 
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

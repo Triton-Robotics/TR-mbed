@@ -217,12 +217,29 @@ class Sentry : public BaseRobot {
             referee_.is_cv_on = true;
             referee_.is_spinning = false;
         } else if (drive == 'y') {
-            des_chassis_state.vOmega = 0;
-            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::YAW_ALIGN, turret_.getState().yaw_velo_rad_s);
+            // des_chassis_state.vOmega = 0;
+            // chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::YAW_ALIGN, turret_.getState().yaw_velo_rad_s);
+            // des_turret_state.turret_mode = TurretState::AIM;
+            // referee_.is_aligned = false;
+            // referee_.is_cv_on = false;
+            // referee_.is_spinning = false;
+            if( (us_ticker_read() - jetson_state.stamp_us ) / 1000 > 500 ) {
+                des_chassis_state.vX = 0;
+                des_chassis_state.vY = 0;
+                des_chassis_state.vOmega = 0;
+
+                des_turret_state.turret_mode = TurretState::AIM;
+            } else {
+                des_chassis_state.vX = jetson_state.desired_x_vel;
+                des_chassis_state.vY = -jetson_state.desired_y_vel;
+                des_chassis_state.vOmega = jetson_state.desired_angular_vel;
+
+                des_turret_state.turret_mode = TurretState::AIM;
+                des_turret_state.yaw_angle_degs = jetson_state.desired_yaw_rads * (180 / M_PI);
+                des_turret_state.pitch_angle_degs = -jetson_state.desired_pitch_rads * (180 / M_PI);
+            }
+            chassis_.setChassisSpeeds(des_chassis_state,  OmniWheelSubsystem::BEYBLADE);
             des_turret_state.turret_mode = TurretState::AIM;
-            referee_.is_aligned = false;
-            referee_.is_cv_on = false;
-            referee_.is_spinning = false;
         }
         else {
             chassis_.setChassisSpeeds({0, 0, 0});
