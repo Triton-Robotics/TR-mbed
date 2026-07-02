@@ -67,6 +67,7 @@ void OmniWheelSubsystem::periodic(const IMU::EulerAngles &imu)
 
     // Derive robot-frame chassis speeds via inverse kinematics
     m_chassisSpeeds = wheelToChassis(m_wheelSpeeds);
+    // printf("%.2f, %.2f, %.2f, %.2f\n", m_wheelSpeeds.LF, m_wheelSpeeds.LB, m_wheelSpeeds.RF, m_wheelSpeeds.RB);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -368,7 +369,7 @@ float OmniWheelSubsystem::setWheelSpeeds(WheelSpeeds targetMps)
                                + estimatePowerWatts(LB.getData(TORQUE))
                                + estimatePowerWatts(RB.getData(TORQUE));
 
-    constexpr float POWER_MARGIN_W = 0.0f;
+    constexpr float POWER_MARGIN_W = 10.0f;
     float scale = std::min(1.0f, power_limit / (totalEstimatedWatts + POWER_MARGIN_W));
 
     LF.setPower(power[0] * scale);
@@ -416,7 +417,7 @@ float OmniWheelSubsystem::estimatePowerWatts(int torqueCounts)
     constexpr int   PEAK_TORQUE_COUNTS  = 5596;
     constexpr float SATURATION_RATIO    = 0.4375f;
     constexpr float SATURATION_CURRENT  = 1.25f;   // [A]
-    constexpr float TORQUE_TO_AMP        = 1.25 * (14.0f / 4.9f);
+    constexpr float TORQUE_TO_AMP        = 2 * (14.0f / 4.9f);
     constexpr float BUS_VOLTAGE         = 24.0f;   // [V]
 
     float torque = std::abs(static_cast<float>(torqueCounts)) / PEAK_TORQUE_COUNTS;

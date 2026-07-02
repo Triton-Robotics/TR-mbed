@@ -56,7 +56,7 @@ constexpr PID::config INDEXER_PID_POS = {0.1, 0, 0.001};
 
 // Config variables
 TurretSubsystem::config turret_config = {
-    3,
+    7,
     M3508,
     8,
     M3508,
@@ -81,7 +81,7 @@ ShooterSubsystem::config shooter_config = {
     0,
     2,
     4,
-    1,
+    6,
     FLYWHEEL_L_PID,
     FLYWHEEL_R_PID,
     INDEXER_PID_VEL,
@@ -91,7 +91,7 @@ ShooterSubsystem::config shooter_config = {
 };
 OmniWheelSubsystem::Config chassis_config = {
     1,      // left_front_can_id
-    5,      // right_front_can_id
+    3,      // right_front_can_id
     4,      // left_back_can_id
     2,      // right_back_can_id
     FL_VEL_CONFIG,
@@ -99,7 +99,7 @@ OmniWheelSubsystem::Config chassis_config = {
     BL_VEL_CONFIG,
     BR_VEL_CONFIG,
     0.51,  // radius
-    298,     // yaw_initial_offset_ticks
+    188,     // yaw_initial_offset_ticks
     120,
 };
 
@@ -184,8 +184,9 @@ class Sentry : public BaseRobot {
         // Chassis logic
         if (drive == 'u' || (drive == 'o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_N)) {
             des_chassis_state.vOmega = 0;
-            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::YAW_ORIENTED);
+            float h = chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::ROBOT_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
+            // printf("%.2f, %.2f, %.2f\n", des_chassis_state.vX, des_chassis_state.vY, h);
             // stm_state.activate_CV = 0;
             // stm_state.calibration = 0;
 
@@ -263,7 +264,7 @@ class Sentry : public BaseRobot {
 
         turret_.periodic(chassis_.getChassisSpeeds().vOmega * 60 / (2 * PI));
         chassis_.periodic(imuAngles);
-        chassis_.power_limit = referee_.robot_status.chassis_power_limit;
+        // chassis_.power_limit = referee_.robot_status.chassis_power_limit;
         shooter_.periodic(referee_.power_heat_data.shooter_17mm_1_barrel_heat,
                          referee_.robot_status.shooter_barrel_heat_limit);
 

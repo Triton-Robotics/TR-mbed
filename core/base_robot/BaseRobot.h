@@ -169,7 +169,7 @@ class BaseRobot {
         jyaw = remote_.getJoystickValue(DJIRemote2::Joystick::RIGHT_HORIZONTAL) * scalar; // -1 to 1
 
         myaw = remote_.getMouseX();
-        mpitch = -remote_.getMouseY();
+        mpitch = remote_.getMouseY();
 
         jx = (abs(jx) < tolerance) ? 0 : jx;
         jy = (abs(jy) < tolerance) ? 0 : jy;

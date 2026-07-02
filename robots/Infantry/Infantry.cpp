@@ -41,10 +41,14 @@ const float pitch_gravity_feedforward = -1200;    // We multiply this by cos(ang
 const float pitch_static_friction     = 0;//635.0 / 2;       // We multiply it by dir
 const float pitch_kinetic_friction    = 0; //5.5;     // We multiply this by pitchvelo
 
-constexpr PID::config FL_VEL_CONFIG = {2.58, 0.23 * 1e-3, 17.3 * 1e-3};
-constexpr PID::config FR_VEL_CONFIG = {2.75, 0.574 * 1e-3, 17.9 * 1e-3};
-constexpr PID::config BL_VEL_CONFIG = {4.1, 0.0523 * 1e-3, 10.9 * 1e-3};
-constexpr PID::config BR_VEL_CONFIG = {3.9, 0.159 * 1e-3, 26.1 * 1e-3};
+// constexpr PID::config FL_VEL_CONFIG = {2.58, 0.23 * 1e-3, 17.3 * 1e-3};
+// constexpr PID::config FR_VEL_CONFIG = {2.75, 0.574 * 1e-3, 17.9 * 1e-3};
+// constexpr PID::config BL_VEL_CONFIG = {4.1, 0.0523 * 1e-3, 10.9 * 1e-3};
+// constexpr PID::config BR_VEL_CONFIG = {3.9, 0.159 * 1e-3, 26.1 * 1e-3};
+constexpr PID::config FL_VEL_CONFIG = {3, 0, 0};
+constexpr PID::config FR_VEL_CONFIG = {3, 0, 0};
+constexpr PID::config BL_VEL_CONFIG = {3, 0, 0};
+constexpr PID::config BR_VEL_CONFIG = {3, 0, 0};
 
 constexpr PID::config FLYWHEEL_L_PID = {7.1849, 0.000042634, 0};
 constexpr PID::config FLYWHEEL_R_PID = {7.1849, 0.000042634, 0};
@@ -263,7 +267,7 @@ class Infantry : public BaseRobot {
         // remote_.getSwitch(Remote::Switch::RIGHT_SWITCH)); printf("imu:
         // %.2f\n", imu.getImuAngles().yaw);
         // printf("%d\n", referee_.get_game_progress());
-        // printf("yp %.2f \n", encoder_.encoderMovingAverage());
+        printf("yp %.2f \n", encoder_.encoderMovingAverage());
         // printf("%.2f, %.2f, %.2f\n", imuAngles.roll, imuAngles.pitch, imuAngles.yaw);
         // ChassisSpeeds speeds = chassis_.getChassisSpeeds();
         // printf("whoosh: %.3f\n", speeds.vOmega);

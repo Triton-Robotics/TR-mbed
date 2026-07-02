@@ -94,7 +94,7 @@ TurretSubsystem::config turret_config = {
     pitch_kinetic_friction,
     CANHandler::CANBUS_1,
     CANHandler::CANBUS_2,
-    -1,
+    1,
     (1.0 / 3.0),
     PITCH_LOWER_BOUND,
     PITCH_UPPER_BOUND
@@ -219,7 +219,7 @@ public:
         // Read jetson
         jetson_state = jetson.read();
 
-        if (drive == 'u' || (drive == 'o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_S)) {
+        if (drive == 'u' || (drive == 'o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_N)) {
             des_chassis_state.vOmega = 0;
             chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
@@ -228,7 +228,7 @@ public:
             referee_.is_spinning = false;
         } else if (drive == 'd' ||
                    (drive == 'o' &&
-                    remote_.getMode() == DJIRemote2::ModeSwitch::MODE_C)) {
+                    remote_.getMode() == DJIRemote2::ModeSwitch::MODE_S)) {
             // des_chassis_state.vOmega = omega_speed;
             chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::BEYBLADE);
             des_turret_state.turret_mode = TurretState::AIM;
@@ -295,7 +295,7 @@ public:
         // printf("v:%d\n",testmot>>VELOCITY);
         // printf("cx: %.2f\n", remote_.getChassisX());
         // printf("switch: %d\n", remote_.getSwitch(Remote::Switch::RIGHT_SWITCH));
-                // printf("%.2f\n", encoder_.encoderMovingAverage());
+        printf("%.2f\n", encoder_.encoderMovingAverage());
         // printf("%.2f %.2f\n", shooter_.flywheelL.getData(VELOCITY), shooter_.flywheelR.getData(VELOCITY));
         // printf("%.2f, %.2f, %.2f\n", imuAngles.roll, imuAngles.pitch, imuAngles.yaw);
         // printf("%d %.2f %.2f %.2f %.2f %d %.2f %d %d %d\n", 
