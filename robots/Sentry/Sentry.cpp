@@ -7,6 +7,7 @@
 #include "subsystems/TurretSubsystem.h"
 
 #include "util/communications/CANHandler.h"
+#include "util/communications/DJIRemote2.h"
 #include "util/communications/PwmIn.h"
 #include "util/communications/jetson/Jetson.h"
 #include "util/motor/DJIMotor.h"
@@ -181,22 +182,27 @@ class Sentry : public BaseRobot {
         des_turret_state.pitch_angle_degs = pitch_desired_angle;
 
         // Chassis logic
-        if (drive == 'u' || (drive == 'o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_N)) {
+        if (drive == 'u' || (drive == 'o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_S)) {
             des_chassis_state.vOmega = 0;
-            float h = chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::ROBOT_ORIENTED);
+            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::ROBOT_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
-            // printf("%.2f, %.2f, %.2f\n", des_chassis_state.vX, des_chassis_state.vY, h);
-            // stm_state.activate_CV = 0;
-            // stm_state.calibration = 0;
 
             referee_.is_aligned = false;
             referee_.is_cv_on = false;
             referee_.is_spinning = false;
         } else if (drive == 'd' ||
                    (drive == 'o' &&
-                    remote_.getMode() == DJIRemote2::ModeSwitch::MODE_S)) {
+                    remote_.getMode() == DJIRemote2::ModeSwitch::MODE_N)) {
+            des_turret_state.turret_mode = TurretState::AIM;
+            chassis_.setChassisSpeeds({0, 0, 0});
+            des_turret_state.turret_mode = TurretState::SLEEP;
+            des_turret_state.yaw_angle_degs = turret_.getState().yaw_angle_degs;
+            yaw_desired_angle = turret_.getState().yaw_angle_degs;
+            des_turret_state.pitch_angle_degs = 0;
+        }
+        else {
             // Jetson odom
-            if( (us_ticker_read() - jetson_state.stamp_us ) / 1000 > 500 ) {
+            if((us_ticker_read() - jetson_state.stamp_us ) / 1000 > 500) {
                 des_chassis_state.vX = 0;
                 des_chassis_state.vY = 0;
                 des_chassis_state.vOmega = 0;
@@ -212,46 +218,12 @@ class Sentry : public BaseRobot {
                 des_turret_state.pitch_angle_degs = -jetson_state.desired_pitch_rads * (180 / M_PI);
             }
             chassis_.setChassisSpeeds(des_chassis_state,  OmniWheelSubsystem::YAW_ORIENTED);
-            des_turret_state.turret_mode = TurretState::AIM;
-            referee_.is_aligned = false;
-            referee_.is_cv_on = true;
-            referee_.is_spinning = false;
-        } else if (drive == 'y') {
-            // des_chassis_state.vOmega = 0;
-            // chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::YAW_ALIGN, turret_.getState().yaw_velo_rad_s);
-            // des_turret_state.turret_mode = TurretState::AIM;
-            // referee_.is_aligned = false;
-            // referee_.is_cv_on = false;
-            // referee_.is_spinning = false;
-            if( (us_ticker_read() - jetson_state.stamp_us ) / 1000 > 500 ) {
-                des_chassis_state.vX = 0;
-                des_chassis_state.vY = 0;
-                des_chassis_state.vOmega = 0;
-
-                des_turret_state.turret_mode = TurretState::AIM;
-            } else {
-                des_chassis_state.vX = jetson_state.desired_x_vel;
-                des_chassis_state.vY = -jetson_state.desired_y_vel;
-                des_chassis_state.vOmega = jetson_state.desired_angular_vel;
-
-                des_turret_state.turret_mode = TurretState::AIM;
-                des_turret_state.yaw_angle_degs = jetson_state.desired_yaw_rads * (180 / M_PI);
-                des_turret_state.pitch_angle_degs = -jetson_state.desired_pitch_rads * (180 / M_PI);
+            
+            des_shoot_state = ShootState::FLYWHEEL;
+            if (jetson_state.shoot_status) {
+                des_shoot_state = ShootState::SHOOT;
             }
-            chassis_.setChassisSpeeds(des_chassis_state,  OmniWheelSubsystem::BEYBLADE);
-            des_turret_state.turret_mode = TurretState::AIM;
         }
-        else {
-            chassis_.setChassisSpeeds({0, 0, 0});
-            des_turret_state.turret_mode = TurretState::SLEEP;
-            des_turret_state.yaw_angle_degs = turret_.getState().yaw_angle_degs;
-            yaw_desired_angle = turret_.getState().yaw_angle_degs;
-            des_turret_state.pitch_angle_degs = 0;
-            referee_.is_aligned = true;
-            referee_.is_cv_on = false;
-            referee_.is_spinning = false;
-        }
-
 
         if (remote_.getDialValue() > 0.5f) {
             stm_state.calibration = 1;
@@ -259,20 +231,22 @@ class Sentry : public BaseRobot {
             stm_state.calibration = 0;
         }
 
-        // Shooter Logic
-        if ((remote_.PAUSEToggled() == true && remote_.TriggerPressed() == true) || remote_.getMouseL()) {
-            des_shoot_state = ShootState::SHOOT;
-            referee_.is_flywheel_on = true;
-        } else if (remote_.CUSTRPressed() == true) { //Make sure flywheel is on since that's part 
-            des_shoot_state = ShootState::JAM;
-            referee_.is_flywheel_on = true;
-        }else if (remote_.PAUSEToggled() == true ||
+        if (remote_.getMode() != DJIRemote2::ModeSwitch::MODE_C) {
+            // Shooter Logic if not auto
+            if ((remote_.PAUSEToggled() == true && remote_.TriggerPressed() == true) || remote_.getMouseL()) {
+                des_shoot_state = ShootState::SHOOT;
+                referee_.is_flywheel_on = true;
+            } else if (remote_.CUSTRPressed() == true) { //Make sure flywheel is on since that's part 
+                des_shoot_state = ShootState::JAM;
+                referee_.is_flywheel_on = true;
+            }else if (remote_.PAUSEToggled() == true ||
                    shot == 'd') {
-            des_shoot_state = ShootState::FLYWHEEL;
-            referee_.is_flywheel_on = true;
-        } else {
-            des_shoot_state = ShootState::OFF;
-            referee_.is_flywheel_on = false;
+                des_shoot_state = ShootState::FLYWHEEL;
+                referee_.is_flywheel_on = true;
+            } else {
+                des_shoot_state = ShootState::OFF;
+                referee_.is_flywheel_on = false;
+            }
         }
 
         turret_.setState(des_turret_state);

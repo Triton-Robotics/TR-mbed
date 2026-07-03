@@ -173,8 +173,8 @@ class Infantry : public BaseRobot {
         jetson_state = jetson.read();
         // check if new jetson state given and if we want cv
         if (cv_enabled_ && (us_ticker_read() - jetson_state.stamp_us ) / 1000 < 500) {
-            yaw_desired_angle = jetson_state.desired_yaw_rads;
-            pitch_desired_angle = jetson_state.desired_pitch_rads;
+            yaw_desired_angle = jetson_state.desired_yaw_rads * 180 / PI;
+            pitch_desired_angle = jetson_state.desired_pitch_rads * 180 / PI;
         }
 
         // Turret from remote

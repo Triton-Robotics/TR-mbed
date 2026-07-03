@@ -232,9 +232,7 @@ private:
     static float limitAcceleration(float desiredRPM, float previousRPM);
 
     // Estimate instantaneous motor power [W] from the raw torque register.
-    float estimatePowerWatts(int torqueCounts);
-    
-    float estimatePowerBetter(int torqueCounts, float motorVel); //Vel is actually angular velocity rad/s FYI
+    float estimatePowerWatts(int torqueCounts, float motorVel); //Vel is actually angular velocity rad/s FYI
 
 
     //Old power limiting BS goes here :)
