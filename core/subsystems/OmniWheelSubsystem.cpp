@@ -173,7 +173,8 @@ double OmniWheelSubsystem::CalculateBeybladeVelo(float vOmega, ChassisSpeeds lat
     // ── Beyblade omega budget ──────────────────────────────────────────
     //
     double lateralSpeedSq = lateral.vX * lateral.vX + lateral.vY * lateral.vY;
-    double omegaAvail = sqrt(abs(power_limit - VXY_SCALE * lateralSpeedSq));
+    // double omegaAvail = sqrt(abs(power_limit - VXY_SCALE * lateralSpeedSq));
+    double omegaAvail = m_maxOmegaRadps - sqrt(lateralSpeedSq); // semantic magic
 
     if (omegaAvail < vOmega) {
         if (omegaAvail < MIN_BEYBLADE_SPEED) return MIN_BEYBLADE_SPEED;

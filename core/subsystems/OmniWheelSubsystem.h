@@ -15,8 +15,8 @@ static constexpr double OMNI_PI              = 3.14159265358979;
 static constexpr double WHEEL_RADIUS_M       = 0.073;   //< 146 mm diameter / 2  [m]
 static constexpr double MECANUM_HALF_X       = 0.33;    //< wheel-centre to chassis X-axis [m]
 static constexpr double MECANUM_HALF_Y       = 0.4;    //< wheel-centre to chassis Y-axis [m]
-static constexpr double MAX_LINEAR_VELOCITY  = 3;    //< maximum chasssis speed [m/s]
-static constexpr double DEFAULT_MAX_WHEEL_MPS  = 3;  //< linear wheel speed cap  [m/s]
+static constexpr double MAX_LINEAR_VELOCITY  = 5;    //< maximum chasssis speed [m/s]
+static constexpr double DEFAULT_MAX_WHEEL_MPS  = 5;  //< linear wheel speed cap  [m/s]
 static constexpr double DEFAULT_MAX_OMEGA_RADPS = 8.0;  //< angular velocity cap  [rad/s]
 static constexpr double MIN_BEYBLADE_SPEED = 0.0;   //< min bb velo [rad/s]
 static constexpr double VXY_SCALE = 110.53;
@@ -90,7 +90,7 @@ public:
         float power_limit_watts = 60.f; //< total chassis power budget [W]
 
         // Maximum beyblade spin rate at power_limit_watts with no lateral movement [rad/s].
-        double max_beyblade_omega_radps = 3.0;
+        double max_beyblade_omega_radps = 5.0;
 
         HolonomicMode chassis_type = OMNI;
     };
