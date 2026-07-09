@@ -13,10 +13,12 @@
 
 static constexpr double OMNI_PI              = 3.14159265358979;
 static constexpr double WHEEL_RADIUS_M       = 0.073;   //< 146 mm diameter / 2  [m]
-static constexpr double MECANUM_HALF_X       = 0.14;    //< wheel-centre to chassis X-axis [m]
-static constexpr double MECANUM_HALF_Y       = 0.21;    //< wheel-centre to chassis Y-axis [m]
-static constexpr double DEFAULT_MAX_WHEEL_MPS  = 3;  //< linear wheel speed cap  [m/s]
+static constexpr double MECANUM_HALF_X       = 0.33;    //< wheel-centre to chassis X-axis [m]
+static constexpr double MECANUM_HALF_Y       = 0.4;    //< wheel-centre to chassis Y-axis [m]
+static constexpr double MAX_LINEAR_VELOCITY  = 5;    //< maximum chasssis speed [m/s]
+static constexpr double DEFAULT_MAX_WHEEL_MPS  = 5;  //< linear wheel speed cap  [m/s]
 static constexpr double DEFAULT_MAX_OMEGA_RADPS = 8.0;  //< angular velocity cap  [rad/s]
+static constexpr double MIN_BEYBLADE_SPEED = 0.0;   //< min bb velo [rad/s]
 static constexpr double VXY_SCALE = 110.53;
 static constexpr float STATIC_FRICTION_CONSTANT = 0.233924f;
 static constexpr float STATIC_FRICTION_CONSTANT_ALT = 0.8f;
@@ -70,6 +72,7 @@ public:
         YAW_ORIENTED,    //< vX/vY in field frame, heading sourced from turret encoder
         ODOM_ORIENTED,   //< vX/vY in field frame, heading from fused encoder + IMU
         BEYBLADE,
+        YAW_ALIGN,       //< vX/vY in field frame, heading from turret encoder, yaw-align mode
     };
 
     enum HolonomicMode { OMNI, MECANUM };
@@ -87,7 +90,7 @@ public:
         float power_limit_watts = 60.f; //< total chassis power budget [W]
 
         // Maximum beyblade spin rate at power_limit_watts with no lateral movement [rad/s].
-        double max_beyblade_omega_radps = 8.0;
+        double max_beyblade_omega_radps = 5.0;
 
         HolonomicMode chassis_type = OMNI;
     };
@@ -106,7 +109,7 @@ public:
     // @param speeds  desired [vX m/s, vY m/s, vOmega rad/s] in the chosen frame
     // @param mode    coordinate frame for vX / vY (vOmega is always robot-relative)
     // @return        power-budget scale factor in [0, 1]  (1.0 = no limiting)
-    float setChassisSpeeds(ChassisSpeeds speeds, DriveMode mode = ROBOT_ORIENTED);
+    float setChassisSpeeds(ChassisSpeeds speeds, DriveMode mode = ROBOT_ORIENTED, float yawVelo = 0.0f);
 
     // Snapshot the current heading as the reference origin for ODOM_ORIENTED mode.
     void setOdomReference();
@@ -159,6 +162,7 @@ private:
     // from the constructor config).  The actual ω_max is derived at runtime by
     // scaling this value with √(power_limit / power_limit).
     double m_beybladeMaxOmega;     //< ω_max at reference power  [rad/s]
+    float m_powerFilt = 0.f;
 
     // ── PID / rate-limiting state ──────────────────────────────────────────────
     uint32_t      m_lastPidUs    = 0;
@@ -228,7 +232,7 @@ private:
     static float limitAcceleration(float desiredRPM, float previousRPM);
 
     // Estimate instantaneous motor power [W] from the raw torque register.
-    float estimatePowerWatts(int torqueCounts);
+    float estimatePowerWatts(int torqueCounts, float motorVel); //Vel is actually angular velocity rad/s FYI
 
 
     //Old power limiting BS goes here :)

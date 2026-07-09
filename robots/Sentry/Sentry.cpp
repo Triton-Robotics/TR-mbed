@@ -7,6 +7,7 @@
 #include "subsystems/TurretSubsystem.h"
 
 #include "util/communications/CANHandler.h"
+#include "util/communications/DJIRemote2.h"
 #include "util/communications/PwmIn.h"
 #include "util/communications/jetson/Jetson.h"
 #include "util/motor/DJIMotor.h"
@@ -26,27 +27,27 @@ constexpr auto IMU_RESET = PA_8;
 constexpr float PITCH_LOWER_BOUND{-22.0};
 constexpr float PITCH_UPPER_BOUND{20.0};
 
-constexpr float JOYSTICK_YAW_SENSITIVITY_DPS = 600;
-constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 300;
+constexpr float JOYSTICK_YAW_SENSITIVITY_DPS = 200;
+constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 100;
 // Mouse sensitivity initialized
-constexpr float MOUSE_SENSITIVITY_YAW_DPS = 10.0;
-constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 10.0;
+constexpr float MOUSE_SENSITIVITY_YAW_DPS = 1.0;
+constexpr float MOUSE_SENSITIVITY_PITCH_DPS = 1.0;
 
-constexpr PID::config YAW_VEL_PID     = {181, 3.655 * 10e-3, 4.51 * 2.25, 32000, 1000};
-constexpr PID::config YAW_POS_PID     = {1, 0, 0, 90, 2};
-const float yaw_static_friction       = -150;       // We multiply it by dir
+constexpr PID::config YAW_VEL_PID     = {181, 3.655 * 10e-3, 4.51 * 7.5, 32000, 1000};
+constexpr PID::config YAW_POS_PID     = {1, 0, 0, 45, 2};
+const float yaw_static_friction       = 0;//-150;       // We multiply it by dir
 const float yaw_kinetic_friction      = 0;       // We multiply this by yawvelo
 
-constexpr PID::config PITCH_VEL_PID   = {173.8994, 4.898 * 10e-9, 12.474 * 10, 16000, 1000}; //{25, 0.001, 5, 16000, 1000};
+constexpr PID::config PITCH_VEL_PID   = {173.8994, 4.898 * 10e-6, 12.474 * 10e3, 16000, 2000}; //{25, 0.001, 5, 16000, 1000};
 constexpr PID::config PITCH_POS_PID   = {1, 0, 0,30,2}; //{1, 0, 0, 30, 2};
-const float pitch_gravity_feedforward = -500;    // We multiply this by cos(angle)
-const float pitch_static_friction     = 635.0 / 5;       // We multiply it by dir
+const float pitch_gravity_feedforward = -1200;    // We multiply this by cos(angle)
+const float pitch_static_friction     = 0;//635.0 / 2;       // We multiply it by dir
 const float pitch_kinetic_friction    = 0; //5.5;     // We multiply this by pitchvelo
 
-constexpr PID::config FL_VEL_CONFIG = {3.38, 0, 0.0361};
-constexpr PID::config FR_VEL_CONFIG = {3.38, 0, 0.0361};
-constexpr PID::config BL_VEL_CONFIG = {3.38, 0, 0.0361};
-constexpr PID::config BR_VEL_CONFIG = {3.38, 0, 0.0361};
+constexpr PID::config FL_VEL_CONFIG = {2.58, 0.23 * 1e-3, 17.3 * 1e-3};
+constexpr PID::config FR_VEL_CONFIG = {2.75, 0.574 * 1e-3, 17.9 * 1e-3};
+constexpr PID::config BL_VEL_CONFIG = {4.1, 0.0523 * 1e-3, 10.9 * 1e-3};
+constexpr PID::config BR_VEL_CONFIG = {3.9, 0.159 * 1e-3, 26.1 * 1e-3};
 
 constexpr PID::config FLYWHEEL_L_PID = {7.1849, 0.000042634, 0};
 constexpr PID::config FLYWHEEL_R_PID = {7.1849, 0.000042634, 0};
@@ -87,19 +88,19 @@ ShooterSubsystem::config shooter_config = {
     INDEXER_PID_VEL,
     INDEXER_PID_POS,
     CANHandler::CANBUS_2,
-    true
+    false
 };
 OmniWheelSubsystem::Config chassis_config = {
     1,      // left_front_can_id
-    2,      // right_front_can_id
+    3,      // right_front_can_id
     4,      // left_back_can_id
-    3,      // right_back_can_id
+    2,      // right_back_can_id
     FL_VEL_CONFIG,
     FR_VEL_CONFIG,
     BL_VEL_CONFIG,
     BR_VEL_CONFIG,
     0.51,  // radius
-    85.27,     // yaw_initial_offset_ticks
+    188,     // yaw_initial_offset_ticks
     120,
 };
 
@@ -138,7 +139,7 @@ class Sentry : public BaseRobot {
         // clang-format off
         i2c_(IMU_I2C_SDA, IMU_I2C_SCL), 
         imu_(i2c_, 0x6B),
-        encoder_(PB_4, true),
+        encoder_(PB_4),
         jetson_raw_serial(PC_12, PD_2,115200), // TODO: check higher baud to see if still works
         jetson(jetson_raw_serial),
         turret_(turret_config, imu_),
@@ -161,11 +162,8 @@ class Sentry : public BaseRobot {
         // TODO this should be threaded inside imu instead
         imu_.mahonyUpdateIMU(dt_us / 1000000.0);
         imuAngles = imu_.getImuAngles();
-        // TODO: use this in code correctly to drive faster
-        // chassis_.power_limit = referee_.robot_status.chassis_power_limit;
-        max_linear_vel = 1.24 + 0.0513 * chassis_.power_limit +
-                         0.000216 * (chassis_.power_limit * chassis_.power_limit);
-        // max_linear_vel = 5.0;
+
+        max_linear_vel = MAX_LINEAR_VELOCITY;
         des_chassis_state.vX = jy * max_linear_vel;
         des_chassis_state.vY = jx * max_linear_vel;
 
@@ -173,13 +171,12 @@ class Sentry : public BaseRobot {
         jetson_state = jetson.read();
 
         // Turret from remote
-        yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * dt_us / 1000000;
+        yaw_desired_angle -= myaw * 0.01;
         yaw_desired_angle -= jyaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
         yaw_desired_angle = capAngle(yaw_desired_angle);
         des_turret_state.yaw_angle_degs = yaw_desired_angle;
 
-        pitch_desired_angle -= mpitch * MOUSE_SENSITIVITY_PITCH_DPS * dt_us / 1000000;
-        pitch_desired_angle -= jpitch * JOYSTICK_PITCH_SENSITIVITY_DPS * dt_us / 1000000;
+        pitch_desired_angle -= mpitch * 0.01;
         pitch_desired_angle -= jpitch * JOYSTICK_PITCH_SENSITIVITY_DPS * dt_us / 1000000;
         pitch_desired_angle = std::clamp(pitch_desired_angle, PITCH_LOWER_BOUND, PITCH_UPPER_BOUND);
         des_turret_state.pitch_angle_degs = pitch_desired_angle;
@@ -187,19 +184,25 @@ class Sentry : public BaseRobot {
         // Chassis logic
         if (drive == 'u' || (drive == 'o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_S)) {
             des_chassis_state.vOmega = 0;
-            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::YAW_ORIENTED);
+            chassis_.setChassisSpeeds(des_chassis_state, OmniWheelSubsystem::ROBOT_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
-            // stm_state.activate_CV = 0;
-            // stm_state.calibration = 0;
 
             referee_.is_aligned = false;
             referee_.is_cv_on = false;
             referee_.is_spinning = false;
         } else if (drive == 'd' ||
                    (drive == 'o' &&
-                    remote_.getMode() == DJIRemote2::ModeSwitch::MODE_C)) {
+                    remote_.getMode() == DJIRemote2::ModeSwitch::MODE_N)) {
+            des_turret_state.turret_mode = TurretState::AIM;
+            chassis_.setChassisSpeeds({0, 0, 0});
+            des_turret_state.turret_mode = TurretState::SLEEP;
+            des_turret_state.yaw_angle_degs = turret_.getState().yaw_angle_degs;
+            yaw_desired_angle = turret_.getState().yaw_angle_degs;
+            des_turret_state.pitch_angle_degs = 0;
+        }
+        else {
             // Jetson odom
-            if( (us_ticker_read() - jetson_state.stamp_us ) / 1000 > 500 ) {
+            if((us_ticker_read() - jetson_state.stamp_us ) / 1000 > 500) {
                 des_chassis_state.vX = 0;
                 des_chassis_state.vY = 0;
                 des_chassis_state.vOmega = 0;
@@ -215,43 +218,35 @@ class Sentry : public BaseRobot {
                 des_turret_state.pitch_angle_degs = -jetson_state.desired_pitch_rads * (180 / M_PI);
             }
             chassis_.setChassisSpeeds(des_chassis_state,  OmniWheelSubsystem::YAW_ORIENTED);
-            des_turret_state.turret_mode = TurretState::AIM;
-            referee_.is_aligned = false;
-            referee_.is_cv_on = true;
-            referee_.is_spinning = false;
-        } else {
-            chassis_.setChassisSpeeds({0, 0, 0});
-            des_turret_state.turret_mode = TurretState::SLEEP;
-            des_turret_state.yaw_angle_degs = turret_.getState().yaw_angle_degs;
-            yaw_desired_angle = turret_.getState().yaw_angle_degs;
-            des_turret_state.pitch_angle_degs = 0;
-            referee_.is_aligned = true;
-            referee_.is_cv_on = false;
-            referee_.is_spinning = false;
+            
+            des_shoot_state = ShootState::FLYWHEEL;
+            if (jetson_state.shoot_status) {
+                des_shoot_state = ShootState::SHOOT;
+            }
         }
 
-
-        if (remote_.CUSTRToggled())  {
+        if (remote_.getDialValue() > 0.5f) {
             stm_state.calibration = 1;
-        }
-        else {
+        } else {
             stm_state.calibration = 0;
         }
 
-        // Shooter Logic
-        if ((remote_.PAUSEToggled() == true && remote_.TriggerPressed() == true) || remote_.getMouseL()) {
-            des_shoot_state = ShootState::SHOOT;
-            referee_.is_flywheel_on = true;
-        } else if (remote_.CUSTRPressed() == true && remote_.PAUSEToggled() == true) { //Make sure flywheel is on since that's part 
-            des_shoot_state = ShootState::JAM;
-            referee_.is_flywheel_on = true;
-        }else if (remote_.PAUSEToggled() == true ||
+        if (remote_.getMode() != DJIRemote2::ModeSwitch::MODE_C) {
+            // Shooter Logic if not auto
+            if ((remote_.PAUSEToggled() == true && remote_.TriggerPressed() == true) || remote_.getMouseL()) {
+                des_shoot_state = ShootState::SHOOT;
+                referee_.is_flywheel_on = true;
+            } else if (remote_.CUSTRPressed() == true) { //Make sure flywheel is on since that's part 
+                des_shoot_state = ShootState::JAM;
+                referee_.is_flywheel_on = true;
+            }else if (remote_.PAUSEToggled() == true ||
                    shot == 'd') {
-            des_shoot_state = ShootState::FLYWHEEL;
-            referee_.is_flywheel_on = true;
-        } else {
-            des_shoot_state = ShootState::OFF;
-            referee_.is_flywheel_on = false;
+                des_shoot_state = ShootState::FLYWHEEL;
+                referee_.is_flywheel_on = true;
+            } else {
+                des_shoot_state = ShootState::OFF;
+                referee_.is_flywheel_on = false;
+            }
         }
 
         turret_.setState(des_turret_state);

@@ -129,7 +129,7 @@ void DJIRemote2::zeroInputs()
     data_.ch2 = 1024;
     data_.ch3 = 1024;
 
-    data_.mode = 1;
+    data_.mode = 0;
     data_.pause = 0;
     data_.btnL = 0;
     data_.btnR = 0;
@@ -292,11 +292,11 @@ void DJIRemote2::decodeFrame(const uint8_t* frame)
 
     data_.trigger = (frame[9] >> 4) & 0x01;
 
-    data_.mouseX = ((int16_t)frame[11]) | ((int16_t)frame[10] << 8);
+    data_.mouseX = ((int16_t)frame[10]) | ((int16_t)frame[11] << 8);
 
-    data_.mouseY = ((int16_t)frame[13]) | ((int16_t)frame[12] << 8);
+    data_.mouseY = ((int16_t)frame[12]) | ((int16_t)frame[13] << 8);
 
-    data_.mouseZ = ((int16_t)frame[15]) | ((int16_t)frame[14] << 8);
+    data_.mouseZ = ((int16_t)frame[14]) | ((int16_t)frame[15] << 8);
 
 
     data_.mouseL = (frame[16]) & 0x01;
@@ -312,6 +312,8 @@ void DJIRemote2::decodeFrame(const uint8_t* frame)
     data_.CRC_in = ((static_cast<uint16_t>(frame[18]) >> 3) & 0x1F)
                  | ( static_cast<uint16_t>(frame[19])       << 5)
                  | ((static_cast<uint16_t>(frame[20]) & 0x07) << 13);
+
+    // printf("X: %02x %02x  Y: %02x %02x\n", frame[10], frame[11], frame[12], frame[13]);
 }
 
 void DJIRemote2::shiftLeft(size_t count)
@@ -356,7 +358,7 @@ DJIRemote2::ModeSwitch DJIRemote2::getMode() const
         case 2:
             return DJIRemote2::ModeSwitch::MODE_S;
         default:
-            return DJIRemote2::ModeSwitch::MODE_N;
+            return DJIRemote2::ModeSwitch::MODE_C;
     }
 }
 

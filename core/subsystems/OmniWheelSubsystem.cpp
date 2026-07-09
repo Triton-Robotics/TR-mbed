@@ -67,13 +67,14 @@ void OmniWheelSubsystem::periodic(const IMU::EulerAngles &imu)
 
     // Derive robot-frame chassis speeds via inverse kinematics
     m_chassisSpeeds = wheelToChassis(m_wheelSpeeds);
+    // printf("%.2f, %.2f, %.2f, %.2f\n", m_wheelSpeeds.LF, m_wheelSpeeds.LB, m_wheelSpeeds.RF, m_wheelSpeeds.RB);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // High-level drive  (public)
 // ─────────────────────────────────────────────────────────────────────────────
 
-float OmniWheelSubsystem::setChassisSpeeds(ChassisSpeeds desired, DriveMode mode)
+float OmniWheelSubsystem::setChassisSpeeds(ChassisSpeeds desired, DriveMode mode, float yawVelo)
 {
     // ── Step 1: Resolve coordinate frame → robot frame ────────────────────────
     ChassisSpeeds robotFrame;
@@ -89,8 +90,8 @@ float OmniWheelSubsystem::setChassisSpeeds(ChassisSpeeds desired, DriveMode mode
             double headingDeg = getEncoderYawDeg();
             robotFrame = rotateToRobotFrame(desired, headingDeg);
             period_time = us_ticker_read();
-            double omegaAvail = CalculateBeybladeVelo(robotFrame.vOmega, robotFrame);
-            robotFrame.vOmega = omegaAvail;
+            // double omegaAvail = CalculateBeybladeVelo(robotFrame.vOmega, robotFrame);
+            // robotFrame.vOmega = omegaAvail;
             break;
         }
 
@@ -105,8 +106,8 @@ float OmniWheelSubsystem::setChassisSpeeds(ChassisSpeeds desired, DriveMode mode
             while (fusedDeg <    0.0) fusedDeg += 360.0;
             robotFrame = rotateToRobotFrame(desired, fusedDeg);
             period_time = us_ticker_read();
-            double omegaAvail = CalculateBeybladeVelo(robotFrame.vOmega, robotFrame);
-            robotFrame.vOmega = omegaAvail;
+            // double omegaAvail = CalculateBeybladeVelo(robotFrame.vOmega, robotFrame);
+            // robotFrame.vOmega = omegaAvail;
             break;
         }
 
@@ -120,6 +121,40 @@ float OmniWheelSubsystem::setChassisSpeeds(ChassisSpeeds desired, DriveMode mode
             double omegaAvail = CalculateBeybladeVelo(m_beybladeMaxOmega, lateral);
             // Positive omega = CCW spin.  Negate here for CW if preferred.
             robotFrame = { lateral.vX, lateral.vY, omegaAvail };
+            break;
+        }
+
+        case YAW_ALIGN: {
+            // Compute yaw error(how much the yaw needs to recorrect)
+            float yawCurr = getEncoderYawDeg();
+            float yawError = (yawCurr - m_yawOffsetDeg);
+            while (yawError > 180) yawError -= 360;
+            while (yawError < -180) yawError += 360;
+            
+            if (abs(yawError) < 5) yawError = 0;
+
+            if ((yawError >= 45 && yawError < 135)) {
+                yawError -= 90;
+            }
+            if ((yawError >= 135)) {
+                yawError -= 180;
+            }
+            if (yawError < -135) {
+                yawError += 180;
+            }
+            if ((yawError >= -135 && yawError < -45)) {
+                yawError += 90;
+            }
+
+            //tune these two for optimal performance
+            float gain_align = 2;
+            float gain_yaw = 3;
+            float deg2rad = PI/180; // convert to rad and just run at 2x that rad/s
+            float omegaCmd = (gain_align * yawError * deg2rad + gain_yaw * yawVelo);
+
+            if (abs(omegaCmd) < 0.1) omegaCmd = 0;
+
+            robotFrame = rotateToRobotFrame({desired.vX, desired.vY, omegaCmd}, yawCurr);
             break;
         }
     }
@@ -138,9 +173,13 @@ double OmniWheelSubsystem::CalculateBeybladeVelo(float vOmega, ChassisSpeeds lat
     // ── Beyblade omega budget ──────────────────────────────────────────
     //
     double lateralSpeedSq = lateral.vX * lateral.vX + lateral.vY * lateral.vY;
-    double omegaAvail = sqrt(abs(power_limit - VXY_SCALE * lateralSpeedSq));
+    // double omegaAvail = sqrt(abs(power_limit - VXY_SCALE * lateralSpeedSq));
+    double omegaAvail = m_maxOmegaRadps - sqrt(lateralSpeedSq); // semantic magic
 
-    if (omegaAvail < vOmega) return omegaAvail;
+    if (omegaAvail < vOmega) {
+        if (omegaAvail < MIN_BEYBLADE_SPEED) return MIN_BEYBLADE_SPEED;
+        else return omegaAvail;
+    }
     else return vOmega;
 }
 
@@ -326,13 +365,16 @@ float OmniWheelSubsystem::setWheelSpeeds(WheelSpeeds targetMps)
 
     m_lastPidUs = now;
 
-    float totalEstimatedWatts = estimatePowerWatts(LF.getData(TORQUE))
-                               + estimatePowerWatts(RF.getData(TORQUE))
-                               + estimatePowerWatts(LB.getData(TORQUE))
-                               + estimatePowerWatts(RB.getData(TORQUE));
+    float totalEstimatedWatts = estimatePowerWatts(LF.getData(TORQUE), LF.getData(VELOCITY))
+                               + estimatePowerWatts(RF.getData(TORQUE), RF.getData(VELOCITY))
+                               + estimatePowerWatts(LB.getData(TORQUE), LB.getData(VELOCITY))
+                               + estimatePowerWatts(RB.getData(TORQUE), RB.getData(VELOCITY));
 
+
+    constexpr float ALPHA = 0.15f; // ~time-constant of a few ticks at 500 Hz
     constexpr float POWER_MARGIN_W = 10.0f;
-    float scale = std::min(1.0f, power_limit / (totalEstimatedWatts + POWER_MARGIN_W));
+    m_powerFilt += ALPHA * (totalEstimatedWatts - m_powerFilt);    
+    float scale = std::min(1.0f, power_limit / (m_powerFilt + POWER_MARGIN_W));
 
     LF.setPower(power[0] * scale);
     RF.setPower(power[1] * scale);
@@ -353,7 +395,7 @@ float OmniWheelSubsystem::setWheelSpeeds(WheelSpeeds targetMps)
  */
 float OmniWheelSubsystem::limitAcceleration(float desiredRPM, float previousRPM)
 {
-    constexpr float MAX_ACCEL = 100.0f;
+    constexpr float MAX_ACCEL = 200.0f;
     float diff = desiredRPM - previousRPM;
 
     // Snap through zero before reversing direction
@@ -374,29 +416,18 @@ float OmniWheelSubsystem::limitAcceleration(float desiredRPM, float previousRPM)
  *
  * Assumed bus voltage: 24 V.  Power = 24 V × I_total.
  */
-float OmniWheelSubsystem::estimatePowerWatts(int torqueCounts)
-{
-    constexpr int   PEAK_TORQUE_COUNTS  = 5596;
-    constexpr float SATURATION_RATIO    = 0.4375f;
-    constexpr float SATURATION_CURRENT  = 1.22f;   // [A]
-    constexpr float TORQUE_TO_AMP        = 14.0f / 4.9f;
-    constexpr float BUS_VOLTAGE         = 24.0f;   // [V]
+float OmniWheelSubsystem::estimatePowerWatts(int torqueCounts, float motorVel) {
+    constexpr float COUNTS_TO_NM   = 1.0f / 559.6f; // your calibration → N·m
+    constexpr float KT_NM_PER_A    = 0.3f;          // M3508 torque constant, VERIFY
+    constexpr float PHASE_RESISTANCE = 0.194f;      // line-to-line? see note
 
-    float torque = std::abs(static_cast<float>(torqueCounts)) / PEAK_TORQUE_COUNTS;
+    float torqueNm  = std::abs((float)torqueCounts) * COUNTS_TO_NM;
+    float currentA  = torqueNm * KT_NM_PER_A;       // I = tau / Kt   ← the key fix
 
-    float currentA;
-    if (torque > SATURATION_RATIO) {
-        // Log an over-torque event at most once every 200 ms
-        if ((us_ticker_read() - m_lastTorqueUs) / 1000UL > 200UL) {
-            m_lastTorqueUs = us_ticker_read();
-            currentA = SATURATION_CURRENT;
-        }
-        currentA = torque * TORQUE_TO_AMP;
-    } else {
-        currentA = torque * TORQUE_TO_AMP;
-    }
+    float powerLoss = currentA * currentA * PHASE_RESISTANCE;
+    float mechPower = std::abs(torqueNm * motorVel); // W, magnitude only
 
-    return BUS_VOLTAGE * currentA;
+    return mechPower + powerLoss;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
