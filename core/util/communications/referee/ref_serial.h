@@ -25,9 +25,6 @@ public:
 
     void read();
 
-    // TODO: figure out how to write ui or interobot comms 
-    void write();
-
     // Return 1 if robot is in red team, 0 if blue.
     uint8_t is_red_or_blue();
 
@@ -43,6 +40,10 @@ public:
     
     robot_status_t                          robot_status;
     power_heat_data_t                       power_heat_data;
+    bool is_spinning = false;
+    bool is_flywheel_on = false;
+    bool is_cv_on = false;
+    bool is_aligned = false;
 private:
     BufferedSerial ref;
     Mutex mutex_write_;
@@ -64,14 +65,6 @@ private:
     void Judge_GetMessage(uint16_t Data_Length);
     void Judge_sendPC();
     void RobotStatus_LEDYellow();
-
-
-    // Draw text on the UI
-    void ui_graph_characters(int operation_type, string str, int x, int y, char name);
-
-    // Delete a layer of UI drawing
-    void ui_delete_layer(int layer);
-    
 
     // ------------------------------
     // Extra stuff
@@ -107,6 +100,7 @@ private:
         @param len Length
     */
     void referee_data_pack_handle(uint8_t sof,uint16_t cmd_id, uint8_t *p_data, uint16_t len);
+    void referee_data_pack_handle(uint8_t *packet, uint16_t len);
 
     void determine_ID();
 

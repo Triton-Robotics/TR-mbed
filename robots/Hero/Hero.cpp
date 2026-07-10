@@ -1,5 +1,6 @@
 #include "base_robot/BaseRobot.h"
 #include "util/algorithms/general_functions.h"
+#include "ResetReason.h"
 
 
 #include "subsystems/ChassisSubsystem.h"
@@ -8,6 +9,7 @@
 
 #include "util/communications/CANHandler.h"
 
+#include "util/communications/PwmIn.h"
 #include "util/communications/jetson/Jetson.h"
 #include "util/motor/DJIMotor.h"
 #include "util/peripherals/imu/BNO055.h"
@@ -26,8 +28,8 @@ constexpr auto IMU_RESET = PA_8;
 constexpr float PITCH_LOWER_BOUND{-22.0};
 constexpr float PITCH_UPPER_BOUND{20.0};
 
-constexpr float JOYSTICK_YAW_SENSITIVITY_DPS = 600;
-constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 300;
+constexpr float JOYSTICK_YAW_SENSITIVITY_DPS = 300;
+constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 150;
 
 // Mouse sensitivity initialized
 constexpr float MOUSE_SENSITIVITY_YAW_DPS = 10.0;
@@ -44,20 +46,21 @@ const float pitch_gravity_feedforward = -500;    // We multiply this by cos(angl
 const float pitch_static_friction     = 635.0 / 5;       // We multiply it by dir
 const float pitch_kinetic_friction    = 0; //5.5;     // We multiply this by pitchvelo
 
-constexpr PID::config FL_VEL_CONFIG = {3, 0, 0};
-constexpr PID::config FR_VEL_CONFIG = {3, 0, 0};
-constexpr PID::config BL_VEL_CONFIG = {3, 0, 0};
-constexpr PID::config BR_VEL_CONFIG = {3, 0, 0};
+constexpr PID::config FL_VEL_CONFIG = {2.58, 0.23 * 1e-3, 17.3 * 1e-3};
+constexpr PID::config FR_VEL_CONFIG = {2.75, 0.574 * 1e-3, 17.9 * 1e-3};
+constexpr PID::config BL_VEL_CONFIG = {4.1, 0.0523 * 1e-3, 10.9 * 1e-3};
+constexpr PID::config BR_VEL_CONFIG = {3.9, 0.159 * 1e-3, 26.1 * 1e-3};
+
+constexpr PID::config FEEDER_PID = {4, 0, 1};
 
 constexpr PID::config FLYWHEEL_L_PID = {7.1849, 0.000042634, 0};
 constexpr PID::config FLYWHEEL_R_PID = {7.1849, 0.000042634, 0};
-constexpr PID::config FEEDER_PID = {4, 0, 1};
 constexpr PID::config INDEXER_PID_VEL = {2.7, 0.001, 0};
 constexpr PID::config INDEXER_PID_POS = {0.1,0,0.001};
 
 // Config variables
 TurretSubsystem::config turret_config = {
-    7,
+    7, 
     M3508,
     8,
     M3508,
@@ -82,7 +85,7 @@ HeroShooterSubsystem::config shooter_config = {
     4,
     5,
     6,
-    1,
+    6,
     FLYWHEEL_L_PID,
     FLYWHEEL_R_PID,
     FEEDER_PID,
@@ -101,7 +104,7 @@ HeroShooterSubsystem::config shooter_config = {
 //     FR_VEL_CONFIG,
 //     BL_VEL_CONFIG,
 //     BR_VEL_CONFIG,
-//     0.22617,  // radius
+//     0.22617,  // radius 
 //     0.065,    // speed_pid_ff_ks
 //     1700,     // yaw_initial_offset_ticks
 // };
@@ -181,13 +184,17 @@ public:
         // TODO this should be threaded inside imu instead
         imu_.mahonyUpdateIMU(dt_us / 1000000.0);
         imuAngles = imu_.getImuAngles();
-        // TODO: use this in code correctly to drive faster
-        max_linear_vel = 1.24 + 0.0513 * chassis_.power_limit +
-                         0.000216 * (chassis_.power_limit * chassis_.power_limit);
+    
+        max_linear_vel = MAX_VEL;
         des_chassis_state.vX = jy * max_linear_vel;
-        des_chassis_state.vY = -jx * max_linear_vel;
+        des_chassis_state.vY = jx * max_linear_vel;
 
         // Turret from remote
+        if (cv_enabled_ && (us_ticker_read() - jetson_state.stamp_us ) / 1000 < 500) {
+            yaw_desired_angle = jetson_state.desired_yaw_rads;
+            pitch_desired_angle = jetson_state.desired_pitch_rads;
+        }
+
         yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * dt_us / 1000000;
         yaw_desired_angle -= jyaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
         yaw_desired_angle = capAngle(yaw_desired_angle);
@@ -202,41 +209,56 @@ public:
         jetson_state = jetson.read();
 
         // Chassis logic
-        if (drive == 'u' || (drive == 'o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_S)) {
+        if (drive == 'u' || (drive == 'o' && remote_.getMode() == DJIRemote2::ModeSwitch::MODE_N)) {
             des_chassis_state.vOmega = 0;
-            chassis_.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ALIGN);
+            chassis_.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
-        } else if (drive == 'd' ||
+            referee_.is_aligned = false;
+            referee_.is_cv_on = false;
+            referee_.is_spinning = false;
+        } else if (drive == 'd' || //Beyblade 
                    (drive == 'o' &&
-                    remote_.getMode() == DJIRemote2::ModeSwitch::MODE_C)) {
+                    remote_.getMode() == DJIRemote2::ModeSwitch::MODE_S)) {
             des_chassis_state.vOmega = omega_speed;
             chassis_.setChassisSpeeds(des_chassis_state, ChassisSubsystem::DRIVE_MODE::YAW_ORIENTED);
             des_turret_state.turret_mode = TurretState::AIM;
+            referee_.is_aligned = false;
+            referee_.is_cv_on = false;
+            referee_.is_spinning = true;
         } else {
             chassis_.setWheelPower({0, 0, 0, 0});
             des_turret_state.turret_mode = TurretState::SLEEP;
             des_turret_state.yaw_angle_degs = turret_.getState().yaw_angle_degs;
             yaw_desired_angle = turret_.getState().yaw_angle_degs;
             des_turret_state.pitch_angle_degs = 0;
+
+            referee_.is_aligned = false;
+            referee_.is_cv_on = false;
+            referee_.is_spinning = false;
         }
 
                 
         // Shooter Logic
         if ((remote_.PAUSEToggled() == true && remote_.TriggerPressed() == true) || remote_.getMouseL()) {
             des_shoot_state = ShootState::SHOOT;
+        } else if (remote_.CUSTRPressed() == true || shot == 'z') { 
+            des_shoot_state = ShootState::JAM;
         } else if (remote_.PAUSEToggled() == true ||
                    shot == 'd') {
             des_shoot_state = ShootState::FLYWHEEL;
+            referee_.is_flywheel_on = true;
         } else {
             des_shoot_state = ShootState::OFF;
+            referee_.is_flywheel_on = false;
         }
         
         turret_.setState(des_turret_state);
         shooter_.setState(des_shoot_state);
         
         turret_.periodic(chassis_.getChassisSpeeds().vOmega * 60 / (2 * PI));
+        // chassis_.power_limit = referee_.robot_status.chassis_power_limit;
         chassis_.periodic(&imuAngles);
-        shooter_.periodic(referee_.power_heat_data.shooter_42mm_barrel_heat, 
+        shooter_.periodic(referee_.power_heat_data.shooter_17mm_1_barrel_heat,
                          referee_.robot_status.shooter_barrel_heat_limit);
 
         // jetson comms

@@ -58,6 +58,7 @@ class BaseRobot {
     // "u" - drive
     // "d" - beyblade
     // "m" - off
+    // "y" - yaw-align
 
     // "o" - joystick
     // "d" - flywheel
@@ -111,7 +112,7 @@ class BaseRobot {
             if ((loop_clock_us - prev_remote_time_us) / 1000 >= 15) {
                 remote_.update();
                 remoteRead();
-                prev_remote_time_us = us_ticker_read();
+                prev_remote_time_us = loop_clock_us;
             }
 
             if ((loop_clock_us - prev_loop_time_us) / 1000 >= main_loop_dt_ms) {
@@ -119,7 +120,7 @@ class BaseRobot {
                 led0_ = !led0_;
 
                 periodic(loop_clock_us - prev_loop_time_us);
-                prev_loop_time_us = us_ticker_read();
+                prev_loop_time_us = loop_clock_us;
 
                 // Motor updates
                 DJIMotor::sendValues();
@@ -141,12 +142,16 @@ class BaseRobot {
             drive = 'u';
         }else if(remote_.keyPressed(DJIRemote2::Key::Q)){
             drive = 'd';        
+        }else if(remote_.keyPressed(DJIRemote2::Key::B)){
+            drive = 'y';
         }
 
         if(remote_.keyPressed(DJIRemote2::Key::V)){
             shot = 'm';
         }else if(remote_.keyPressed(DJIRemote2::Key::C)){
             shot = 'd';        
+        }else if(remote_.keyPressed(DJIRemote2::Key::Z)){
+            shot = 'z';
         }
         
         if(remote_.getMouseR() || remote_.getDialValue() == -1){
@@ -157,14 +162,14 @@ class BaseRobot {
 
         //Driving input
         scalar = 1;
-        jx = remote_.getJoystickValue(DJIRemote2::Joystick::LEFT_HORIZONTAL) * scalar; // -1 to 1
+        jx = -remote_.getJoystickValue(DJIRemote2::Joystick::LEFT_HORIZONTAL) * scalar; // -1 to 1
         jy = remote_.getJoystickValue(DJIRemote2::Joystick::LEFT_VERTICAL) * scalar; // -1 to 1
         //Pitch, Yaw
         jpitch = remote_.getJoystickValue(DJIRemote2::Joystick::RIGHT_VERTICAL) * scalar; // -1 to 1
         jyaw = remote_.getJoystickValue(DJIRemote2::Joystick::RIGHT_HORIZONTAL) * scalar; // -1 to 1
 
         myaw = remote_.getMouseX();
-        mpitch = -remote_.getMouseY();
+        mpitch = remote_.getMouseY();
 
         jx = (abs(jx) < tolerance) ? 0 : jx;
         jy = (abs(jy) < tolerance) ? 0 : jy;
@@ -180,7 +185,7 @@ class BaseRobot {
             mult = 1;
         }
 
-        jx += mult * ((remote_.keyPressed(DJIRemote2::Key::D) ? 1 : 0) + (remote_.keyPressed(DJIRemote2::Key::A) ? -1 : 0));
+        jx += mult * ((remote_.keyPressed(DJIRemote2::Key::D) ? -1 : 0) + (remote_.keyPressed(DJIRemote2::Key::A) ? 1 : 0));
         jy += mult * ((remote_.keyPressed(DJIRemote2::Key::W) ? 1 : 0) + (remote_.keyPressed(DJIRemote2::Key::S) ? -1 : 0));
 
         float j_hypo = sqrt(jx * jx + jy * jy);

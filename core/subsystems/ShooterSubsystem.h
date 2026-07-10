@@ -10,7 +10,7 @@
 // Constants
 constexpr int NUM_BALLS_SHOT = 3;
 constexpr int FLYWHEEL_VELO = 550;
-constexpr int HERO_FLYWHEEL_VELO = 950;
+constexpr int HERO_FLYWHEEL_VELO = 450;
 
 // enum for states
 enum ShootState {OFF, FLYWHEEL, SHOOT, JAM};

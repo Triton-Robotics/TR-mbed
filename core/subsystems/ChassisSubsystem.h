@@ -2,7 +2,7 @@
 #define TR_EMBEDDED_CHASSIS_SUBSYSTEM_H
 
 #include "mbed.h"
-#include "util/peripherals/imu/BNO055.h"
+#include "util/peripherals/imu/IMU.h"
 #include "util/communications/PwmIn.h"
 #include "util/peripherals/encoder/MA4.h"
 
@@ -142,6 +142,8 @@ public:
     static float limitAcceleration(float desiredRPM, float previousRPM, int power);
 
     static double p_theory(int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm);
+
+    float estimatePowerWatts(int torqueCounts);
 
     static double Bisection(int LeftFrontPower, int RightFrontPower, int LeftBackPower, int RightBackPower, int LeftFrontRpm, int RightFrontRpm, int LeftBackRpm, int RightBackRpm, float chassisPowerLimit);
 
@@ -385,6 +387,8 @@ private:
     // ChassisKalman chassisKalman;
     double testAngle;
     int lastTimeMs;
+
+    unsigned long m_lastTorqueUs = 0;
 };
 
 #endif // TR_EMBEDDED_CHASSIS_SUBSYSTEM_H
