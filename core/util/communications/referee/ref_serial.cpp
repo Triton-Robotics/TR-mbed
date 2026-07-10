@@ -511,7 +511,7 @@ void Referee::referee_data_pack_handle(uint8_t sof,uint16_t cmd_id, uint8_t *p_d
     mutex_write_.unlock();
     
     ref.write(tx_buff, frame_length);
-
+}
     void Referee::referee_data_pack_handle(uint8_t *packet, uint16_t len)
 {
     // Accquires thread resources

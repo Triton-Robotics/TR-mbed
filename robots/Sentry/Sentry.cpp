@@ -186,7 +186,7 @@ class Sentry : public BaseRobot {
         jetson_state = jetson.read();
 
         // Turret from remote
-        yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * *0.01;
+        yaw_desired_angle -= myaw * MOUSE_SENSITIVITY_YAW_DPS * 0.01;
         yaw_desired_angle -= jyaw * JOYSTICK_YAW_SENSITIVITY_DPS * dt_us / 1000000;
         yaw_desired_angle = capAngle(yaw_desired_angle);
         des_turret_state.yaw_angle_degs = yaw_desired_angle;
