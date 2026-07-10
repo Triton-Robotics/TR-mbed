@@ -4,7 +4,7 @@ var searchData=
   ['wheelspeedstochassisspeeds_1',['wheelSpeedsToChassisSpeeds',['../classChassisSubsystem.html#aec467b856cdd60db1a888bfaba936ea2',1,'ChassisSubsystem']]],
   ['whoami_2',['whoAmI',['../classISM330.html#a4341e9cc7a6024de60453439fdf99b1a',1,'ISM330']]],
   ['width_3',['width',['../classAdafruit__GFX.html#aa381d8858e0cbeb2053096dab99c92a0',1,'Adafruit_GFX']]],
-  ['write_4',['write',['../classJetson.html#a1b1343dbf9a17b69c218e335f1347bb4',1,'Jetson::write()'],['../classReferee.html#a49abd53065c3c2bef0764e0934e7b175',1,'Referee::write()'],['../classStmIO.html#a5e1ce562df9335b3b0b663af9efbafc5',1,'StmIO::write()']]],
+  ['write_4',['write',['../classJetson.html#a1b1343dbf9a17b69c218e335f1347bb4',1,'Jetson::write()'],['../classStmIO.html#a5e1ce562df9335b3b0b663af9efbafc5',1,'StmIO::write()']]],
   ['write_5fdata_5fto_5fbuff_5',['write_data_to_buff',['../classWritePacket.html#aeb63fc7f42120e8ac229da4518955e81',1,'WritePacket']]],
   ['write_5freg0_6',['write_reg0',['../classBNO055.html#a325ee94cfe39a3fb1b0ae36d575ad938',1,'BNO055']]],
   ['write_5freg1_7',['write_reg1',['../classBNO055.html#a45060130cb79550438a4ea7c29b0ef88',1,'BNO055']]],

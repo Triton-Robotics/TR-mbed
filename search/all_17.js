@@ -18,7 +18,7 @@ var searchData=
   ['winner_15',['winner',['../structgame__result__t.html#ae1bca36d466c8f131b24da4472badd14',1,'game_result_t']]],
   ['work_20tr_20mbed_20tr_20mbed_20md_20ide_20clion_20md_20clion_20or_20ref_20home_20runner_20work_20tr_20mbed_20tr_20mbed_20md_20ide_20vscode_20md_20vscode_20we_20higly_20recommend_20ref_20home_20runner_20work_20tr_20mbed_20tr_20mbed_20md_20ide_20clion_20md_20clion_16',['At this point, you may choose to diverge from the CLI setup guide and set up an IDE instead. Check out the setup instructions for @ref &quot;/home/runner/work/TR-mbed/TR-mbed/.md/ide/clion.md&quot; &quot;CLion&quot; or @ref &quot;/home/runner/work/TR-mbed/TR-mbed/.md/ide/vscode.md&quot; &quot;VSCode&quot;. We higly recommend @ref &quot;/home/runner/work/TR-mbed/TR-mbed/.md/ide/clion.md&quot; &quot;CLion&quot;.',['../index.html#autotoc_md6',1,'']]],
   ['wrap_17',['wrap',['../classAdafruit__GFX.html#a8c31e63d43f7285e47aa48c363d86ce9',1,'Adafruit_GFX']]],
-  ['write_18',['write',['../classReferee.html#a49abd53065c3c2bef0764e0934e7b175',1,'Referee::write()'],['../classStmIO.html#a5e1ce562df9335b3b0b663af9efbafc5',1,'StmIO::write()'],['../classJetson.html#a1b1343dbf9a17b69c218e335f1347bb4',1,'Jetson::write()']]],
+  ['write_18',['write',['../classStmIO.html#a5e1ce562df9335b3b0b663af9efbafc5',1,'StmIO::write()'],['../classJetson.html#a1b1343dbf9a17b69c218e335f1347bb4',1,'Jetson::write()']]],
   ['write_5fdata_5fto_5fbuff_19',['write_data_to_buff',['../classWritePacket.html#aeb63fc7f42120e8ac229da4518955e81',1,'WritePacket']]],
   ['write_5freg0_20',['write_reg0',['../classBNO055.html#a325ee94cfe39a3fb1b0ae36d575ad938',1,'BNO055']]],
   ['write_5freg1_21',['write_reg1',['../classBNO055.html#a45060130cb79550438a4ea7c29b0ef88',1,'BNO055']]],

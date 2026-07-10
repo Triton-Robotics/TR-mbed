@@ -13,9 +13,11 @@ var searchData=
   ['ticks_5frevolution_10',['TICKS_REVOLUTION',['../DJIMotor_8h.html#ad03dbacc70a2fb4f766bf0d10ea3afc4',1,'DJIMotor.h']]],
   ['timeout_5fms_11',['TIMEOUT_MS',['../DJIMotor_8h.html#a3ba39dd2e759bb75ccb5787bca51a590',1,'DJIMotor.h']]],
   ['timer_12',['timer',['../Infantry_8cpp.html#a61d9ef65d75b66821896182b133b31de',1,'timer:&#160;Infantry.cpp'],['../Hero_8cpp.html#a61d9ef65d75b66821896182b133b31de',1,'timer:&#160;Hero.cpp'],['../Sentry_8cpp.html#a61d9ef65d75b66821896182b133b31de',1,'timer:&#160;Sentry.cpp']]],
-  ['trigger_13',['trigger',['../structVTMInput.html#a8f60e242cbe15392e7b7fe6e119221e7',1,'VTMInput']]],
-  ['turret_5f_14',['turret_',['../classSentry.html#a97f1db27b03f9152926a86d5b126426f',1,'Sentry::turret_'],['../classInfantry.html#ac1acb74b0258f1bc16b494088d80683e',1,'Infantry::turret_'],['../classHero.html#ad7c67c32e09216dde23794ff3c531aec',1,'Hero::turret_']]],
-  ['turret_5fconfig_15',['turret_config',['../Hero_8cpp.html#a39c7b036219664cecd90b69fed15fadf',1,'turret_config:&#160;Hero.cpp'],['../Infantry_8cpp.html#a39c7b036219664cecd90b69fed15fadf',1,'turret_config:&#160;Infantry.cpp'],['../Sentry_8cpp.html#a39c7b036219664cecd90b69fed15fadf',1,'turret_config:&#160;Sentry.cpp']]],
-  ['turret_5fmode_16',['turret_mode',['../structTurretSubsystem_1_1TurretInfo.html#a19f9a6408e6266912f5c8b65c9107931',1,'TurretSubsystem::TurretInfo']]],
-  ['type_17',['type',['../classDJIMotor.html#a72f41290da81929cbce3c01e820b7376',1,'DJIMotor::type'],['../structDJIMotor_1_1config.html#a467ac093d49103527957713503d220ee',1,'DJIMotor::config::type'],['../structShooterSubsystem_1_1config.html#a4aa136061720724ab1dcf33db697b32a',1,'ShooterSubsystem::config::type']]]
+  ['total_5ffigure_13',['TOTAL_FIGURE',['../classUI.html#aa4161fb4098dd19e8711573981677026',1,'UI']]],
+  ['total_5fstring_14',['TOTAL_STRING',['../classUI.html#a9c68037e24377694d7bf324718bed115',1,'UI']]],
+  ['trigger_15',['trigger',['../structVTMInput.html#a8f60e242cbe15392e7b7fe6e119221e7',1,'VTMInput']]],
+  ['turret_5f_16',['turret_',['../classSentry.html#a97f1db27b03f9152926a86d5b126426f',1,'Sentry::turret_'],['../classInfantry.html#ac1acb74b0258f1bc16b494088d80683e',1,'Infantry::turret_'],['../classHero.html#ad7c67c32e09216dde23794ff3c531aec',1,'Hero::turret_']]],
+  ['turret_5fconfig_17',['turret_config',['../Infantry_8cpp.html#a39c7b036219664cecd90b69fed15fadf',1,'turret_config:&#160;Infantry.cpp'],['../Hero_8cpp.html#a39c7b036219664cecd90b69fed15fadf',1,'turret_config:&#160;Hero.cpp'],['../Sentry_8cpp.html#a39c7b036219664cecd90b69fed15fadf',1,'turret_config:&#160;Sentry.cpp']]],
+  ['turret_5fmode_18',['turret_mode',['../structTurretSubsystem_1_1TurretInfo.html#a19f9a6408e6266912f5c8b65c9107931',1,'TurretSubsystem::TurretInfo']]],
+  ['type_19',['type',['../classDJIMotor.html#a72f41290da81929cbce3c01e820b7376',1,'DJIMotor::type'],['../structDJIMotor_1_1config.html#a467ac093d49103527957713503d220ee',1,'DJIMotor::config::type'],['../structShooterSubsystem_1_1config.html#a4aa136061720724ab1dcf33db697b32a',1,'ShooterSubsystem::config::type']]]
 ];

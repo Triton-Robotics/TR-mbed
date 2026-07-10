@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['_5f_5fattribute_5f_5f_0',['__attribute__',['../classRemote.html#a4c64ca0c900cc124d18e700b2c0b774a',1,'Remote::__attribute__()'],['../classDJIMotor.html#afe553590e61e964486129a2f64c4c226',1,'DJIMotor::__attribute__()'],['../DJIRemote_8cpp.html#a90777e2087bd7143ccd9f3a4b4bd3748',1,'__attribute__((unused)) bool Remote:&#160;DJIRemote.cpp']]],
+  ['_5f_5fattribute_5f_5f_0',['__attribute__',['../classRemote.html#a4c64ca0c900cc124d18e700b2c0b774a',1,'Remote::__attribute__()'],['../classDJIMotor.html#afe553590e61e964486129a2f64c4c226',1,'DJIMotor::__attribute__()'],['../ui__types_8h.html#ad09246453a4dabd919c7541484046a87',1,'__attribute__((__packed__)):&#160;ui_types.h'],['../DJIRemote_8cpp.html#a90777e2087bd7143ccd9f3a4b4bd3748',1,'__attribute__((unused)) bool Remote:&#160;DJIRemote.cpp']]],
   ['_5f_5fpacked_1',['__packed',['../struct____packed.html',1,'']]],
   ['_5fbv_2',['_BV',['../Adafruit__GFX_8h.html#a11643f271076024c395a93800b3d9546',1,'Adafruit_GFX.h']]],
   ['_5fgetc_3',['_getc',['../classSSD1308.html#a374d89d0e97d197a4be6abe9e46b5e2b',1,'SSD1308::_getc()'],['../classAdafruit__GFX.html#a63ddc768e9bdcffba5551e95ab6f58db',1,'Adafruit_GFX::_getc()']]],

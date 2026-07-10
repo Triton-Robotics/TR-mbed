@@ -1,5 +1,20 @@
 var searchData=
 [
-  ['unfiltered_0',['unfiltered',['../classRemote.html#add5cdef11d0bba19fe2960cc08c68425',1,'Remote']]],
-  ['useabsencoder_1',['useAbsEncoder',['../classDJIMotor.html#aa9af1d0a5135cc17bb97a777ecf81137',1,'DJIMotor']]]
+  ['ui_5f1_5fframe_5ft_0',['ui_1_frame_t',['../ui__types_8h.html#aeb69eb4297cb9a322256817eca81962b',1,'ui_types.h']]],
+  ['ui_5f2_5fframe_5ft_1',['ui_2_frame_t',['../ui__types_8h.html#a6cda2025a9ad2f526d09591548a12abe',1,'ui_types.h']]],
+  ['ui_5f5_5fframe_5ft_2',['ui_5_frame_t',['../ui__types_8h.html#ad3da3d9f67531d17829d881b220cbe4d',1,'ui_types.h']]],
+  ['ui_5f7_5fframe_5ft_3',['ui_7_frame_t',['../ui__types_8h.html#a24741e034572508cbc9e87b44580cfa7',1,'ui_types.h']]],
+  ['ui_5fdelete_5fframe_5ft_4',['ui_delete_frame_t',['../ui__types_8h.html#a4d323d77fd6a83589ea366a1a1339b31',1,'ui_types.h']]],
+  ['ui_5fframe_5fheader_5ft_5',['ui_frame_header_t',['../ui__types_8h.html#a4a789f1ba35e2f83dc4976c1c7410f14',1,'ui_types.h']]],
+  ['ui_5fg_5fdirty_5ffigure_6',['ui_g_dirty_figure',['../classUI.html#ad07d25a00038e49c73f53e3d251edb5b',1,'UI']]],
+  ['ui_5fg_5fdirty_5fstring_7',['ui_g_dirty_string',['../classUI.html#aabda34ce787fc44ce301d0f34a1bfd4b',1,'UI']]],
+  ['ui_5fg_5fmax_5fsend_5fcount_8',['ui_g_max_send_count',['../classUI.html#a80c0d03924c3ed4c55caf0cf477af0ab',1,'UI']]],
+  ['ui_5fg_5fnow_5ffigures_9',['ui_g_now_figures',['../classUI.html#af8f82520573b4f61c89a1254810a63bb',1,'UI']]],
+  ['ui_5fg_5fnow_5fstrings_10',['ui_g_now_strings',['../classUI.html#aa1040178fb71b3bb6ced2213b6470982',1,'UI']]],
+  ['ui_5finterface_5fnumber_5ft_11',['ui_interface_number_t',['../ui__types_8h.html#a5cedb45eaa22aa8cf20707fc940d5ed7',1,'ui_types.h']]],
+  ['ui_5finterface_5fstring_5ft_12',['ui_interface_string_t',['../ui__types_8h.html#a4e089b43a8e4b38d39246e4249fbc485',1,'ui_types.h']]],
+  ['ui_5fself_5fid_13',['ui_self_id',['../classUI.html#a7ce29044cc12a36ab33c1e93e8a76b8f',1,'UI']]],
+  ['ui_5fstring_5fframe_5ft_14',['ui_string_frame_t',['../ui__types_8h.html#a789915298a16c6f328f7ea88dabd8862',1,'ui_types.h']]],
+  ['unfiltered_15',['unfiltered',['../classRemote.html#add5cdef11d0bba19fe2960cc08c68425',1,'Remote']]],
+  ['useabsencoder_16',['useAbsEncoder',['../classDJIMotor.html#aa9af1d0a5135cc17bb97a777ecf81137',1,'DJIMotor']]]
 ];

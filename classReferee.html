@@ -102,10 +102,7 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ad9435003f3319f9db4f24fa2d738b985"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add330a354bce1936d653fd0506e6c727" id="r_add330a354bce1936d653fd0506e6c727"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classReferee.html#add330a354bce1936d653fd0506e6c727">read</a> ()</td></tr>
 <tr class="separator:add330a354bce1936d653fd0506e6c727"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a49abd53065c3c2bef0764e0934e7b175" id="r_a49abd53065c3c2bef0764e0934e7b175"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classReferee.html#a49abd53065c3c2bef0764e0934e7b175">write</a> ()</td></tr>
-<tr class="separator:a49abd53065c3c2bef0764e0934e7b175"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9f8cfdeb39c3858b384d29a36e5dc466" id="r_a9f8cfdeb39c3858b384d29a36e5dc466"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classReferee.html#a9f8cfdeb39c3858b384d29a36e5dc466">is_red_or_blue</a> ()</td></tr>
-<tr class="memdesc:a9f8cfdeb39c3858b384d29a36e5dc466"><td class="mdescLeft">&#160;</td><td class="mdescRight">判断自己红蓝方  <br /></td></tr>
 <tr class="separator:a9f8cfdeb39c3858b384d29a36e5dc466"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1f8097423b69796ed221f01e0f8bc90c" id="r_a1f8097423b69796ed221f01e0f8bc90c"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classReferee.html#a1f8097423b69796ed221f01e0f8bc90c">get_robot_id</a> ()</td></tr>
 <tr class="separator:a1f8097423b69796ed221f01e0f8bc90c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -125,6 +122,14 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a49c8deed2b295461fc9cb08fed221d4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a86637743fdcd24a5c031494e86acea6e" id="r_a86637743fdcd24a5c031494e86acea6e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structpower__heat__data__t.html">power_heat_data_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classReferee.html#a86637743fdcd24a5c031494e86acea6e">power_heat_data</a></td></tr>
 <tr class="separator:a86637743fdcd24a5c031494e86acea6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66c283fdcbfbe83592ee361b3373d978" id="r_a66c283fdcbfbe83592ee361b3373d978"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classReferee.html#a66c283fdcbfbe83592ee361b3373d978">is_spinning</a> = false</td></tr>
+<tr class="separator:a66c283fdcbfbe83592ee361b3373d978"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66a6858b616bc57f759c6f35f8a76cb2" id="r_a66a6858b616bc57f759c6f35f8a76cb2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classReferee.html#a66a6858b616bc57f759c6f35f8a76cb2">is_flywheel_on</a> = false</td></tr>
+<tr class="separator:a66a6858b616bc57f759c6f35f8a76cb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1bad9fdc42c41185b8fdfa7ae34b346d" id="r_a1bad9fdc42c41185b8fdfa7ae34b346d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classReferee.html#a1bad9fdc42c41185b8fdfa7ae34b346d">is_cv_on</a> = false</td></tr>
+<tr class="separator:a1bad9fdc42c41185b8fdfa7ae34b346d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b785c902f0e8858d741a1dee5243604" id="r_a1b785c902f0e8858d741a1dee5243604"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classReferee.html#a1b785c902f0e8858d741a1dee5243604">is_aligned</a> = false</td></tr>
+<tr class="separator:a1b785c902f0e8858d741a1dee5243604"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a6167ea3493ed3e9d6cba6795b1264bfa" name="a6167ea3493ed3e9d6cba6795b1264bfa"></a>
@@ -222,21 +227,6 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>判断自己红蓝方 </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">void</td><td></td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="retval"><dt>Return values</dt><dd>
-  <table class="retval">
-    <tr><td class="paramname">RED</td><td>BLUE </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section attention"><dt>Attention</dt><dd>数据打包,打包完成后通过串口发送到裁判系统 </dd></dl>
-
 </div>
 </div>
 <a id="add330a354bce1936d653fd0506e6c727" name="add330a354bce1936d653fd0506e6c727"></a>
@@ -307,23 +297,6 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a49abd53065c3c2bef0764e0934e7b175" name="a49abd53065c3c2bef0764e0934e7b175"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a49abd53065c3c2bef0764e0934e7b175">&#9670;&#160;</a></span>write()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Referee::write </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="ad9435003f3319f9db4f24fa2d738b985" name="ad9435003f3319f9db4f24fa2d738b985"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad9435003f3319f9db4f24fa2d738b985">&#9670;&#160;</a></span>writeThread()</h2>
 
@@ -342,6 +315,62 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="a1b785c902f0e8858d741a1dee5243604" name="a1b785c902f0e8858d741a1dee5243604"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b785c902f0e8858d741a1dee5243604">&#9670;&#160;</a></span>is_aligned</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Referee::is_aligned = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1bad9fdc42c41185b8fdfa7ae34b346d" name="a1bad9fdc42c41185b8fdfa7ae34b346d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1bad9fdc42c41185b8fdfa7ae34b346d">&#9670;&#160;</a></span>is_cv_on</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Referee::is_cv_on = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a66a6858b616bc57f759c6f35f8a76cb2" name="a66a6858b616bc57f759c6f35f8a76cb2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66a6858b616bc57f759c6f35f8a76cb2">&#9670;&#160;</a></span>is_flywheel_on</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Referee::is_flywheel_on = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a66c283fdcbfbe83592ee361b3373d978" name="a66c283fdcbfbe83592ee361b3373d978"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66c283fdcbfbe83592ee361b3373d978">&#9670;&#160;</a></span>is_spinning</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Referee::is_spinning = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a86637743fdcd24a5c031494e86acea6e" name="a86637743fdcd24a5c031494e86acea6e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a86637743fdcd24a5c031494e86acea6e">&#9670;&#160;</a></span>power_heat_data</h2>
 
@@ -372,9 +401,7 @@ Public Attributes</h2></td></tr>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>core/util/communications/referee/<a class="el" href="ref__serial_8h_source.html">ref_serial.h</a></li>
-<li>core/util/communications/referee/<a class="el" href="ref__operations_8cpp.html">ref_operations.cpp</a></li>
 <li>core/util/communications/referee/<a class="el" href="ref__serial_8cpp.html">ref_serial.cpp</a></li>
-<li>core/util/communications/referee/<a class="el" href="ref__ui_8cpp.html">ref_ui.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

@@ -82,10 +82,12 @@ $(function() {
 <div class="contents">
 <div class="textblock"><code>#include &quot;base_robot/BaseRobot.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="general__functions_8h_source.html">util/algorithms/general_functions.h</a>&quot;</code><br />
+<code>#include &quot;ResetReason.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="ChassisSubsystem_8h_source.html">subsystems/ChassisSubsystem.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="HeroShooterSubsystem_8h_source.html">subsystems/HeroShooterSubsystem.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="TurretSubsystem_8h_source.html">subsystems/TurretSubsystem.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="CANHandler_8h_source.html">util/communications/CANHandler.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="PwmIn_8h_source.html">util/communications/PwmIn.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Jetson_8h_source.html">util/communications/jetson/Jetson.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="DJIMotor_8h_source.html">util/motor/DJIMotor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="BNO055_8h_source.html">util/peripherals/imu/BNO055.h</a>&quot;</code><br />
@@ -118,9 +120,9 @@ Variables</h2></td></tr>
 <tr class="separator:ad2140529015bdef1173e030ebef1e7ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc7f892b25436a7b155a82b0cdf86d94" id="r_acc7f892b25436a7b155a82b0cdf86d94"><td class="memItemLeft" align="right" valign="top">constexpr float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_8cpp.html#acc7f892b25436a7b155a82b0cdf86d94">PITCH_UPPER_BOUND</a> {20.0}</td></tr>
 <tr class="separator:acc7f892b25436a7b155a82b0cdf86d94"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adb2a943255ed007cbac8f827b9877171" id="r_adb2a943255ed007cbac8f827b9877171"><td class="memItemLeft" align="right" valign="top">constexpr float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_8cpp.html#adb2a943255ed007cbac8f827b9877171">JOYSTICK_YAW_SENSITIVITY_DPS</a> = 600</td></tr>
+<tr class="memitem:adb2a943255ed007cbac8f827b9877171" id="r_adb2a943255ed007cbac8f827b9877171"><td class="memItemLeft" align="right" valign="top">constexpr float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_8cpp.html#adb2a943255ed007cbac8f827b9877171">JOYSTICK_YAW_SENSITIVITY_DPS</a> = 300</td></tr>
 <tr class="separator:adb2a943255ed007cbac8f827b9877171"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab84cb1918fa80bfb0b706bb125f3a2a6" id="r_ab84cb1918fa80bfb0b706bb125f3a2a6"><td class="memItemLeft" align="right" valign="top">constexpr float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_8cpp.html#ab84cb1918fa80bfb0b706bb125f3a2a6">JOYSTICK_PITCH_SENSITIVITY_DPS</a> = 300</td></tr>
+<tr class="memitem:ab84cb1918fa80bfb0b706bb125f3a2a6" id="r_ab84cb1918fa80bfb0b706bb125f3a2a6"><td class="memItemLeft" align="right" valign="top">constexpr float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_8cpp.html#ab84cb1918fa80bfb0b706bb125f3a2a6">JOYSTICK_PITCH_SENSITIVITY_DPS</a> = 150</td></tr>
 <tr class="separator:ab84cb1918fa80bfb0b706bb125f3a2a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9951e306582674e150e70105fe176de8" id="r_a9951e306582674e150e70105fe176de8"><td class="memItemLeft" align="right" valign="top">constexpr float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_8cpp.html#a9951e306582674e150e70105fe176de8">MOUSE_SENSITIVITY_YAW_DPS</a> = 10.0</td></tr>
 <tr class="separator:a9951e306582674e150e70105fe176de8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -144,20 +146,20 @@ Variables</h2></td></tr>
 <tr class="separator:a7b00de443582840b527f8610e94316a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a187deff0a2be11d3a0632017532431ce" id="r_a187deff0a2be11d3a0632017532431ce"><td class="memItemLeft" align="right" valign="top">const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_8cpp.html#a187deff0a2be11d3a0632017532431ce">pitch_kinetic_friction</a> = 0</td></tr>
 <tr class="separator:a187deff0a2be11d3a0632017532431ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a61f0523e4315c971440588b43a75bdb6" id="r_a61f0523e4315c971440588b43a75bdb6"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_8cpp.html#a61f0523e4315c971440588b43a75bdb6">FL_VEL_CONFIG</a> = {3, 0, 0}</td></tr>
+<tr class="memitem:a61f0523e4315c971440588b43a75bdb6" id="r_a61f0523e4315c971440588b43a75bdb6"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_8cpp.html#a61f0523e4315c971440588b43a75bdb6">FL_VEL_CONFIG</a> = {2.58, 0.23 * 1e-3, 17.3 * 1e-3}</td></tr>
 <tr class="separator:a61f0523e4315c971440588b43a75bdb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6440df0862261c8399ec63d158944606" id="r_a6440df0862261c8399ec63d158944606"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_8cpp.html#a6440df0862261c8399ec63d158944606">FR_VEL_CONFIG</a> = {3, 0, 0}</td></tr>
+<tr class="memitem:a6440df0862261c8399ec63d158944606" id="r_a6440df0862261c8399ec63d158944606"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_8cpp.html#a6440df0862261c8399ec63d158944606">FR_VEL_CONFIG</a> = {2.75, 0.574 * 1e-3, 17.9 * 1e-3}</td></tr>
 <tr class="separator:a6440df0862261c8399ec63d158944606"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac1531c0208a008e02902f9f807fed136" id="r_ac1531c0208a008e02902f9f807fed136"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_8cpp.html#ac1531c0208a008e02902f9f807fed136">BL_VEL_CONFIG</a> = {3, 0, 0}</td></tr>
+<tr class="memitem:ac1531c0208a008e02902f9f807fed136" id="r_ac1531c0208a008e02902f9f807fed136"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_8cpp.html#ac1531c0208a008e02902f9f807fed136">BL_VEL_CONFIG</a> = {4.1, 0.0523 * 1e-3, 10.9 * 1e-3}</td></tr>
 <tr class="separator:ac1531c0208a008e02902f9f807fed136"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f201557a3030171140f37a8b7311ec1" id="r_a3f201557a3030171140f37a8b7311ec1"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_8cpp.html#a3f201557a3030171140f37a8b7311ec1">BR_VEL_CONFIG</a> = {3, 0, 0}</td></tr>
+<tr class="memitem:a3f201557a3030171140f37a8b7311ec1" id="r_a3f201557a3030171140f37a8b7311ec1"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_8cpp.html#a3f201557a3030171140f37a8b7311ec1">BR_VEL_CONFIG</a> = {3.9, 0.159 * 1e-3, 26.1 * 1e-3}</td></tr>
 <tr class="separator:a3f201557a3030171140f37a8b7311ec1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac3f0bfba1ab1730fb907c9837785d690" id="r_ac3f0bfba1ab1730fb907c9837785d690"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_8cpp.html#ac3f0bfba1ab1730fb907c9837785d690">FEEDER_PID</a> = {4, 0, 1}</td></tr>
+<tr class="separator:ac3f0bfba1ab1730fb907c9837785d690"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac4d24743ce03ec73c3a2296c69b32490" id="r_ac4d24743ce03ec73c3a2296c69b32490"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_8cpp.html#ac4d24743ce03ec73c3a2296c69b32490">FLYWHEEL_L_PID</a> = {7.1849, 0.000042634, 0}</td></tr>
 <tr class="separator:ac4d24743ce03ec73c3a2296c69b32490"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a72a2008cea726c6159fd4c4fcbe42906" id="r_a72a2008cea726c6159fd4c4fcbe42906"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_8cpp.html#a72a2008cea726c6159fd4c4fcbe42906">FLYWHEEL_R_PID</a> = {7.1849, 0.000042634, 0}</td></tr>
 <tr class="separator:a72a2008cea726c6159fd4c4fcbe42906"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac3f0bfba1ab1730fb907c9837785d690" id="r_ac3f0bfba1ab1730fb907c9837785d690"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_8cpp.html#ac3f0bfba1ab1730fb907c9837785d690">FEEDER_PID</a> = {4, 0, 1}</td></tr>
-<tr class="separator:ac3f0bfba1ab1730fb907c9837785d690"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1ea04a52763bf7f2606c421fe4e7e1b1" id="r_a1ea04a52763bf7f2606c421fe4e7e1b1"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_8cpp.html#a1ea04a52763bf7f2606c421fe4e7e1b1">INDEXER_PID_VEL</a> = {2.7, 0.001, 0}</td></tr>
 <tr class="separator:a1ea04a52763bf7f2606c421fe4e7e1b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a481bad22389d7769991f1c7931a9961e" id="r_a481bad22389d7769991f1c7931a9961e"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Hero_8cpp.html#a481bad22389d7769991f1c7931a9961e">INDEXER_PID_POS</a> = {0.1,0,0.001}</td></tr>
@@ -214,7 +216,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a> BL_VEL_CONFIG = {3, 0, 0}</td>
+          <td class="memname">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a> BL_VEL_CONFIG = {4.1, 0.0523 * 1e-3, 10.9 * 1e-3}</td>
         </tr>
       </table>
   </td>
@@ -236,7 +238,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a> BR_VEL_CONFIG = {3, 0, 0}</td>
+          <td class="memname">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a> BR_VEL_CONFIG = {3.9, 0.159 * 1e-3, 26.1 * 1e-3}</td>
         </tr>
       </table>
   </td>
@@ -336,7 +338,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a> FL_VEL_CONFIG = {3, 0, 0}</td>
+          <td class="memname">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a> FL_VEL_CONFIG = {2.58, 0.23 * 1e-3, 17.3 * 1e-3}</td>
         </tr>
       </table>
   </td>
@@ -402,7 +404,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a> FR_VEL_CONFIG = {3, 0, 0}</td>
+          <td class="memname">constexpr <a class="el" href="structPID_1_1config.html">PID::config</a> FR_VEL_CONFIG = {2.75, 0.574 * 1e-3, 17.9 * 1e-3}</td>
         </tr>
       </table>
   </td>
@@ -548,7 +550,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 300</td>
+          <td class="memname">constexpr float JOYSTICK_PITCH_SENSITIVITY_DPS = 150</td>
         </tr>
       </table>
   </td>
@@ -570,7 +572,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr float JOYSTICK_YAW_SENSITIVITY_DPS = 600</td>
+          <td class="memname">constexpr float JOYSTICK_YAW_SENSITIVITY_DPS = 300</td>
         </tr>
       </table>
   </td>
@@ -800,7 +802,7 @@ Variables</h2></td></tr>
 <div class="line">    4,</div>
 <div class="line">    5,</div>
 <div class="line">    6,</div>
-<div class="line">    1,</div>
+<div class="line">    6,</div>
 <div class="line">    <a class="code hl_variable" href="Hero_8cpp.html#ac4d24743ce03ec73c3a2296c69b32490">FLYWHEEL_L_PID</a>,</div>
 <div class="line">    <a class="code hl_variable" href="Hero_8cpp.html#a72a2008cea726c6159fd4c4fcbe42906">FLYWHEEL_R_PID</a>,</div>
 <div class="line">    <a class="code hl_variable" href="Hero_8cpp.html#ac3f0bfba1ab1730fb907c9837785d690">FEEDER_PID</a>,</div>
@@ -810,11 +812,11 @@ Variables</h2></td></tr>
 <div class="line">    <a class="code hl_enumvalue" href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4">CANHandler::CANBUS_1</a>,</div>
 <div class="line">    <span class="keyword">false</span></div>
 <div class="line">}</div>
-<div class="ttc" id="aHero_8cpp_html_a1ea04a52763bf7f2606c421fe4e7e1b1"><div class="ttname"><a href="Hero_8cpp.html#a1ea04a52763bf7f2606c421fe4e7e1b1">INDEXER_PID_VEL</a></div><div class="ttdeci">constexpr PID::config INDEXER_PID_VEL</div><div class="ttdef"><b>Definition</b> Hero.cpp:55</div></div>
-<div class="ttc" id="aHero_8cpp_html_a481bad22389d7769991f1c7931a9961e"><div class="ttname"><a href="Hero_8cpp.html#a481bad22389d7769991f1c7931a9961e">INDEXER_PID_POS</a></div><div class="ttdeci">constexpr PID::config INDEXER_PID_POS</div><div class="ttdef"><b>Definition</b> Hero.cpp:56</div></div>
-<div class="ttc" id="aHero_8cpp_html_a72a2008cea726c6159fd4c4fcbe42906"><div class="ttname"><a href="Hero_8cpp.html#a72a2008cea726c6159fd4c4fcbe42906">FLYWHEEL_R_PID</a></div><div class="ttdeci">constexpr PID::config FLYWHEEL_R_PID</div><div class="ttdef"><b>Definition</b> Hero.cpp:53</div></div>
+<div class="ttc" id="aHero_8cpp_html_a1ea04a52763bf7f2606c421fe4e7e1b1"><div class="ttname"><a href="Hero_8cpp.html#a1ea04a52763bf7f2606c421fe4e7e1b1">INDEXER_PID_VEL</a></div><div class="ttdeci">constexpr PID::config INDEXER_PID_VEL</div><div class="ttdef"><b>Definition</b> Hero.cpp:58</div></div>
+<div class="ttc" id="aHero_8cpp_html_a481bad22389d7769991f1c7931a9961e"><div class="ttname"><a href="Hero_8cpp.html#a481bad22389d7769991f1c7931a9961e">INDEXER_PID_POS</a></div><div class="ttdeci">constexpr PID::config INDEXER_PID_POS</div><div class="ttdef"><b>Definition</b> Hero.cpp:59</div></div>
+<div class="ttc" id="aHero_8cpp_html_a72a2008cea726c6159fd4c4fcbe42906"><div class="ttname"><a href="Hero_8cpp.html#a72a2008cea726c6159fd4c4fcbe42906">FLYWHEEL_R_PID</a></div><div class="ttdeci">constexpr PID::config FLYWHEEL_R_PID</div><div class="ttdef"><b>Definition</b> Hero.cpp:57</div></div>
 <div class="ttc" id="aHero_8cpp_html_ac3f0bfba1ab1730fb907c9837785d690"><div class="ttname"><a href="Hero_8cpp.html#ac3f0bfba1ab1730fb907c9837785d690">FEEDER_PID</a></div><div class="ttdeci">constexpr PID::config FEEDER_PID</div><div class="ttdef"><b>Definition</b> Hero.cpp:54</div></div>
-<div class="ttc" id="aHero_8cpp_html_ac4d24743ce03ec73c3a2296c69b32490"><div class="ttname"><a href="Hero_8cpp.html#ac4d24743ce03ec73c3a2296c69b32490">FLYWHEEL_L_PID</a></div><div class="ttdeci">constexpr PID::config FLYWHEEL_L_PID</div><div class="ttdef"><b>Definition</b> Hero.cpp:52</div></div>
+<div class="ttc" id="aHero_8cpp_html_ac4d24743ce03ec73c3a2296c69b32490"><div class="ttname"><a href="Hero_8cpp.html#ac4d24743ce03ec73c3a2296c69b32490">FLYWHEEL_L_PID</a></div><div class="ttdeci">constexpr PID::config FLYWHEEL_L_PID</div><div class="ttdef"><b>Definition</b> Hero.cpp:56</div></div>
 <div class="ttc" id="aclassCANHandler_html_a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14"><div class="ttname"><a href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa6f6de547669800d08c99ef02a517ce14">CANHandler::CANBUS_2</a></div><div class="ttdeci">@ CANBUS_2</div><div class="ttdef"><b>Definition</b> CANHandler.h:45</div></div>
 <div class="ttc" id="aclassCANHandler_html_a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4"><div class="ttname"><a href="classCANHandler.html#a2567dbcbebbef530cd8f295406b3902aa8dbd5e52e2c5ab81a58f4a7ffedeb7d4">CANHandler::CANBUS_1</a></div><div class="ttdeci">@ CANBUS_1</div><div class="ttdef"><b>Definition</b> CANHandler.h:45</div></div>
 </div><!-- fragment -->
@@ -846,7 +848,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">= {</div>
-<div class="line">    7,</div>
+<div class="line">    7, </div>
 <div class="line">    <a class="code hl_enumvalue" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a28474eec9dbe74a0107e8bfb33d0751f">M3508</a>,</div>
 <div class="line">    8,</div>
 <div class="line">    <a class="code hl_enumvalue" href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a28474eec9dbe74a0107e8bfb33d0751f">M3508</a>,</div>
@@ -867,17 +869,17 @@ Variables</h2></td></tr>
 <div class="line">    <a class="code hl_variable" href="Hero_8cpp.html#acc7f892b25436a7b155a82b0cdf86d94">PITCH_UPPER_BOUND</a></div>
 <div class="line">}</div>
 <div class="ttc" id="aDJIMotor_8h_html_aa0b95df57b6ae3d5b5ac026d56968a54a28474eec9dbe74a0107e8bfb33d0751f"><div class="ttname"><a href="DJIMotor_8h.html#aa0b95df57b6ae3d5b5ac026d56968a54a28474eec9dbe74a0107e8bfb33d0751f">M3508</a></div><div class="ttdeci">@ M3508</div><div class="ttdef"><b>Definition</b> DJIMotor.h:43</div></div>
-<div class="ttc" id="aHero_8cpp_html_a187deff0a2be11d3a0632017532431ce"><div class="ttname"><a href="Hero_8cpp.html#a187deff0a2be11d3a0632017532431ce">pitch_kinetic_friction</a></div><div class="ttdeci">const float pitch_kinetic_friction</div><div class="ttdef"><b>Definition</b> Hero.cpp:45</div></div>
-<div class="ttc" id="aHero_8cpp_html_a30673a77f83408ab6681311170220a8a"><div class="ttname"><a href="Hero_8cpp.html#a30673a77f83408ab6681311170220a8a">pitch_gravity_feedforward</a></div><div class="ttdeci">const float pitch_gravity_feedforward</div><div class="ttdef"><b>Definition</b> Hero.cpp:43</div></div>
-<div class="ttc" id="aHero_8cpp_html_a33f6c1c8bd9077a3224435cd22891326"><div class="ttname"><a href="Hero_8cpp.html#a33f6c1c8bd9077a3224435cd22891326">yaw_kinetic_friction</a></div><div class="ttdeci">const float yaw_kinetic_friction</div><div class="ttdef"><b>Definition</b> Hero.cpp:39</div></div>
-<div class="ttc" id="aHero_8cpp_html_a7b00de443582840b527f8610e94316a3"><div class="ttname"><a href="Hero_8cpp.html#a7b00de443582840b527f8610e94316a3">pitch_static_friction</a></div><div class="ttdeci">const float pitch_static_friction</div><div class="ttdef"><b>Definition</b> Hero.cpp:44</div></div>
-<div class="ttc" id="aHero_8cpp_html_a914be9179942bf8439ce9abc372f8bc7"><div class="ttname"><a href="Hero_8cpp.html#a914be9179942bf8439ce9abc372f8bc7">yaw_static_friction</a></div><div class="ttdeci">const float yaw_static_friction</div><div class="ttdef"><b>Definition</b> Hero.cpp:38</div></div>
-<div class="ttc" id="aHero_8cpp_html_ab0aeccefb25e92d2195c914bef8c78c0"><div class="ttname"><a href="Hero_8cpp.html#ab0aeccefb25e92d2195c914bef8c78c0">PITCH_POS_PID</a></div><div class="ttdeci">constexpr PID::config PITCH_POS_PID</div><div class="ttdef"><b>Definition</b> Hero.cpp:42</div></div>
-<div class="ttc" id="aHero_8cpp_html_abc376771b0d17187ccf30ac66435de82"><div class="ttname"><a href="Hero_8cpp.html#abc376771b0d17187ccf30ac66435de82">PITCH_VEL_PID</a></div><div class="ttdeci">constexpr PID::config PITCH_VEL_PID</div><div class="ttdef"><b>Definition</b> Hero.cpp:41</div></div>
-<div class="ttc" id="aHero_8cpp_html_ac934aa5d311e980958d6ddc464858fab"><div class="ttname"><a href="Hero_8cpp.html#ac934aa5d311e980958d6ddc464858fab">YAW_POS_PID</a></div><div class="ttdeci">constexpr PID::config YAW_POS_PID</div><div class="ttdef"><b>Definition</b> Hero.cpp:37</div></div>
-<div class="ttc" id="aHero_8cpp_html_acc7f892b25436a7b155a82b0cdf86d94"><div class="ttname"><a href="Hero_8cpp.html#acc7f892b25436a7b155a82b0cdf86d94">PITCH_UPPER_BOUND</a></div><div class="ttdeci">constexpr float PITCH_UPPER_BOUND</div><div class="ttdef"><b>Definition</b> Hero.cpp:27</div></div>
-<div class="ttc" id="aHero_8cpp_html_ad2140529015bdef1173e030ebef1e7ae"><div class="ttname"><a href="Hero_8cpp.html#ad2140529015bdef1173e030ebef1e7ae">PITCH_LOWER_BOUND</a></div><div class="ttdeci">constexpr float PITCH_LOWER_BOUND</div><div class="ttdef"><b>Definition</b> Hero.cpp:26</div></div>
-<div class="ttc" id="aHero_8cpp_html_ad77739da33f21c8882d24e2fecff8143"><div class="ttname"><a href="Hero_8cpp.html#ad77739da33f21c8882d24e2fecff8143">YAW_VEL_PID</a></div><div class="ttdeci">constexpr PID::config YAW_VEL_PID</div><div class="ttdef"><b>Definition</b> Hero.cpp:36</div></div>
+<div class="ttc" id="aHero_8cpp_html_a187deff0a2be11d3a0632017532431ce"><div class="ttname"><a href="Hero_8cpp.html#a187deff0a2be11d3a0632017532431ce">pitch_kinetic_friction</a></div><div class="ttdeci">const float pitch_kinetic_friction</div><div class="ttdef"><b>Definition</b> Hero.cpp:47</div></div>
+<div class="ttc" id="aHero_8cpp_html_a30673a77f83408ab6681311170220a8a"><div class="ttname"><a href="Hero_8cpp.html#a30673a77f83408ab6681311170220a8a">pitch_gravity_feedforward</a></div><div class="ttdeci">const float pitch_gravity_feedforward</div><div class="ttdef"><b>Definition</b> Hero.cpp:45</div></div>
+<div class="ttc" id="aHero_8cpp_html_a33f6c1c8bd9077a3224435cd22891326"><div class="ttname"><a href="Hero_8cpp.html#a33f6c1c8bd9077a3224435cd22891326">yaw_kinetic_friction</a></div><div class="ttdeci">const float yaw_kinetic_friction</div><div class="ttdef"><b>Definition</b> Hero.cpp:41</div></div>
+<div class="ttc" id="aHero_8cpp_html_a7b00de443582840b527f8610e94316a3"><div class="ttname"><a href="Hero_8cpp.html#a7b00de443582840b527f8610e94316a3">pitch_static_friction</a></div><div class="ttdeci">const float pitch_static_friction</div><div class="ttdef"><b>Definition</b> Hero.cpp:46</div></div>
+<div class="ttc" id="aHero_8cpp_html_a914be9179942bf8439ce9abc372f8bc7"><div class="ttname"><a href="Hero_8cpp.html#a914be9179942bf8439ce9abc372f8bc7">yaw_static_friction</a></div><div class="ttdeci">const float yaw_static_friction</div><div class="ttdef"><b>Definition</b> Hero.cpp:40</div></div>
+<div class="ttc" id="aHero_8cpp_html_ab0aeccefb25e92d2195c914bef8c78c0"><div class="ttname"><a href="Hero_8cpp.html#ab0aeccefb25e92d2195c914bef8c78c0">PITCH_POS_PID</a></div><div class="ttdeci">constexpr PID::config PITCH_POS_PID</div><div class="ttdef"><b>Definition</b> Hero.cpp:44</div></div>
+<div class="ttc" id="aHero_8cpp_html_abc376771b0d17187ccf30ac66435de82"><div class="ttname"><a href="Hero_8cpp.html#abc376771b0d17187ccf30ac66435de82">PITCH_VEL_PID</a></div><div class="ttdeci">constexpr PID::config PITCH_VEL_PID</div><div class="ttdef"><b>Definition</b> Hero.cpp:43</div></div>
+<div class="ttc" id="aHero_8cpp_html_ac934aa5d311e980958d6ddc464858fab"><div class="ttname"><a href="Hero_8cpp.html#ac934aa5d311e980958d6ddc464858fab">YAW_POS_PID</a></div><div class="ttdeci">constexpr PID::config YAW_POS_PID</div><div class="ttdef"><b>Definition</b> Hero.cpp:39</div></div>
+<div class="ttc" id="aHero_8cpp_html_acc7f892b25436a7b155a82b0cdf86d94"><div class="ttname"><a href="Hero_8cpp.html#acc7f892b25436a7b155a82b0cdf86d94">PITCH_UPPER_BOUND</a></div><div class="ttdeci">constexpr float PITCH_UPPER_BOUND</div><div class="ttdef"><b>Definition</b> Hero.cpp:29</div></div>
+<div class="ttc" id="aHero_8cpp_html_ad2140529015bdef1173e030ebef1e7ae"><div class="ttname"><a href="Hero_8cpp.html#ad2140529015bdef1173e030ebef1e7ae">PITCH_LOWER_BOUND</a></div><div class="ttdeci">constexpr float PITCH_LOWER_BOUND</div><div class="ttdef"><b>Definition</b> Hero.cpp:28</div></div>
+<div class="ttc" id="aHero_8cpp_html_ad77739da33f21c8882d24e2fecff8143"><div class="ttname"><a href="Hero_8cpp.html#ad77739da33f21c8882d24e2fecff8143">YAW_VEL_PID</a></div><div class="ttdeci">constexpr PID::config YAW_VEL_PID</div><div class="ttdef"><b>Definition</b> Hero.cpp:38</div></div>
 </div><!-- fragment -->
 </div>
 </div>
